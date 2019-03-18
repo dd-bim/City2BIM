@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Serilog;
 
@@ -42,7 +43,16 @@ namespace City2BIM.RevitBuilder
                         foreach(int vid in p.Vertices)
                         {
                             GetGeometry.XYZ xyz = building.Vertices[vid].Position;
-                            face.Add(new XYZ(xyz.X, xyz.Y, xyz.Z));
+
+                            //face.Add(new XYZ(xyz.X, xyz.Y, xyz.Z));
+
+                            //dirty hack: revit api feet umrechnung, zu erweitern: einheit im projekt abfragen
+
+                            var xF = xyz.X * 3.28084;
+                            var yF = xyz.Y * 3.28084;
+                            var zF = xyz.Z * 3.28084;
+
+                            face.Add(new XYZ(xF, yF, zF)); //Revit feet Problem
                         }
 
                         builder.AddFace(new TessellatedFace(face, ElementId.InvalidElementId));
@@ -59,12 +69,13 @@ namespace City2BIM.RevitBuilder
                     {
                         t.Start();
 
-                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_GenericModel));
+                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+                        //Kategoriezuweisung (BuiltInCaetegory) passt in dt. Version besser ("Umgebung"), alternativ Site verwenden?
+
                         ds.ApplicationId = "Application id";
                         ds.ApplicationDataId = "Geometry object id";
 
                         ds.SetShape(result.GetGeometricalObjects());
-                        
 
                         t.Commit();
                     }
@@ -79,8 +90,17 @@ namespace City2BIM.RevitBuilder
                     continue;
                 }
             }
+            try
+            {
+                var sem = new RevitSemanticBuilder();
+                sem.CreateParameters(doc);
+            }
+            catch(Exception ex)
+            {
+                Log.Error("Semantic error: " + ex.Message);
+            }
 
-            double statSucc = success/all *100;
+            double statSucc = success / all * 100;
             double statErr = error / all * 100;
 
             Log.Information("Erfolgsquote = " + statSucc + "Prozent");

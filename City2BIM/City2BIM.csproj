@@ -70,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadCityGML.cs" />
     <Compile Include="RevitBuilder\RevitGeometryBuilder.cs" />
+    <Compile Include="RevitBuilder\RevitSemanticBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
