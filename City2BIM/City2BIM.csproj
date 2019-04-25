@@ -60,10 +60,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GetGeometry\Plane.cs" />
-    <Compile Include="GetGeometry\ReadData.cs" />
+    <Compile Include="GetGeometry\ReadGeomData.cs" />
     <Compile Include="GetGeometry\Solid.cs" />
     <Compile Include="GetGeometry\Vertex.cs" />
     <Compile Include="GetGeometry\XYZ.cs" />
+    <Compile Include="GetSemantics\Attribute.cs" />
+    <Compile Include="GetSemantics\ReadSemData.cs" />
     <Compile Include="HelloWorld.cs" />
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Serilog;
 
@@ -8,9 +7,10 @@ namespace City2BIM.RevitBuilder
     internal class RevitGeometryBuilder
     {
         private Document doc;
-        private List<GetGeometry.Solid> buildings;
+        private Dictionary<GetGeometry.Solid, Dictionary<GetSemantics.Attribute, string>> buildings;
+        //private Dictionary<GetSemantics.Attribute, string> attributes;
 
-        public RevitGeometryBuilder(Document doc, List<GetGeometry.Solid> buildings)
+        public RevitGeometryBuilder(Document doc, Dictionary<GetGeometry.Solid, Dictionary<GetSemantics.Attribute, string>> buildings)
         {
             this.doc = doc;
             this.buildings = buildings;
@@ -30,19 +30,21 @@ namespace City2BIM.RevitBuilder
             double success = 0.0;
             double error = 0.0;
 
-            foreach(GetGeometry.Solid building in buildings)
+            var i = 0;
+
+            foreach(var building in buildings)
             {
                 try
                 {
                     TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
                     builder.OpenConnectedFaceSet(true);
 
-                    foreach(GetGeometry.Plane p in building.Planes.Values)
+                    foreach(GetGeometry.Plane p in building.Key.Planes.Values)
                     {
                         List<Autodesk.Revit.DB.XYZ> face = new List<XYZ>();
                         foreach(int vid in p.Vertices)
                         {
-                            GetGeometry.XYZ xyz = building.Vertices[vid].Position;
+                            GetGeometry.XYZ xyz = building.Key.Vertices[vid].Position;
 
                             //face.Add(new XYZ(xyz.X, xyz.Y, xyz.Z));
 
@@ -65,20 +67,54 @@ namespace City2BIM.RevitBuilder
 
                     TessellatedShapeBuilderResult result = builder.GetBuildResult();
 
+                    var attributes = building.Value;
+
                     using(Transaction t = new Transaction(doc, "Create tessellated direct shape"))
                     {
                         t.Start();
 
                         DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-                        //Kategoriezuweisung (BuiltInCaetegory) passt in dt. Version besser ("Umgebung"), alternativ Site verwenden?
 
                         ds.ApplicationId = "Application id";
                         ds.ApplicationDataId = "Geometry object id";
 
                         ds.SetShape(result.GetGeometricalObjects());
 
+                        var attr = attributes.Keys;
+
+                        foreach(var aName in attr)
+                        {
+                            var p = ds.LookupParameter(aName.GmlNamespace + ": " + aName.Name);
+                            attributes.TryGetValue(aName, out var val);
+
+                            if(val != null)
+                            {
+                                switch(aName.GmlType)
+                                {
+                                    case ("intAttribute"):
+                                        p.Set(int.Parse(val));
+                                        break;
+
+                                    case ("doubleAttribute"):
+                                        var a = 0;
+                                        p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
+                                        break;
+
+                                    case ("measureAttribute"):
+                                        p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
+                                        break;
+
+                                    default:
+                                        p.Set(val);
+                                        break;
+                                }
+                            }
+                        }
+
                         t.Commit();
                     }
+
+                    i++;
 
                     Log.Information("Building builder successful");
                     success += 1;
@@ -90,16 +126,6 @@ namespace City2BIM.RevitBuilder
                     continue;
                 }
             }
-            try
-            {
-                var sem = new RevitSemanticBuilder();
-                sem.CreateParameters(doc);
-            }
-            catch(Exception ex)
-            {
-                Log.Error("Semantic error: " + ex.Message);
-            }
-
             double statSucc = success / all * 100;
             double statErr = error / all * 100;
 

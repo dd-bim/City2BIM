@@ -163,9 +163,9 @@ namespace City2BIM.GetGeometry
             vertices.Clear();
         }
 
-        public ReadData ReadData
+        public ReadGeomData ReadData
         {
-            get => default(ReadData);
+            get => default(ReadGeomData);
             set
             {
             }

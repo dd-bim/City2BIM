@@ -14,9 +14,9 @@ namespace City2BIM.GetGeometry
             Z = z;
         }
 
-        public ReadData ReadData
+        public ReadGeomData ReadData
         {
-            get => default(ReadData);
+            get => default(ReadGeomData);
             set
             {
             }
