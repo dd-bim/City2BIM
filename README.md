@@ -1,18 +1,23 @@
-Stand:
+**Stand (26.04.2019):**
+
+----Geometrie----
 
 - Gebäudegeometrie-Übertragung nach Revit (namespace-unabhängig) zu 80 - 90 Prozent
-- Parameter-Übertragung nach Revit möglich (leere Shared Parameter Datei muss vorhanden sein)
+
+----Semantik----
+
+- Auslesen der Semantik pro Gebäude aus CityGML funktioniert
+- Erstellen der Parameter für Revit anhand von CityGML-Attributen implementiert
+- Füllen der Attributwerte funktioniert
+- verschiedene Parametertypen anhand Vorgaben aus CityGML implementiert (wenn möglich) --> Text, Number, Integer, Measure 
+- Gruppierung der Parameter erfolgt nach CityGML-Modulen (bldg, core, gen, xal) 
+
+----Georef----
+
 - simple Georef funktioniert (wenn PBP bei 0/0/0, wenn Import in m, und Porjekt in m; einfache Feet-Meter Umrechnung) 
 
 
-Nächste Schritte:
-
-----Semantik----
-- Auslesen der Semantik pro Gebäude aus CityGML.
-- Erstellen der Parameter für Revit anhand von CityGML-Attributen. (für jeden File neu --> dynamisch)
-- Füllen der Attributwerte (wenn vorhanden)
-- ggf. sinnvolle Gruppierung implementieren (def: City Model data)
-- ggf. verschiedene BuiltIN-Parameter Gruppen nutzen (def: Data)
+**Nächste Schritte:**
 
 ----Georef----
 - Projekteinheit aus Revit auslesen.
