@@ -5,7 +5,7 @@ using Serilog;
 
 namespace City2BIM.GetSemantics
 {
-    public class ReadSemData
+    public class ReadSemAttributes
     {
         public HashSet<Attribute> ReadGenericAttributes(IEnumerable<XElement> bldgs, XNamespace generics)
         {
@@ -80,14 +80,14 @@ namespace City2BIM.GetSemantics
                         schemaAttr.Add(attr);
                     }
 
-                    if(typeVal.Contains("Year") || typeVal.Contains("CodeType") || typeVal.Contains("Integer"))
+                    if(typeVal.Contains("Year") || typeVal.Contains("Integer"))
                     {
                         Attribute attr = new Attribute(gmlModule, el.Attribute("name").Value, "intAttribute");
 
                         schemaAttr.Add(attr);
                     }
 
-                    if(typeVal.Contains("MeasureOrNullList") || typeVal.Contains("date"))
+                    if(typeVal.Contains("MeasureOrNullList") || typeVal.Contains("date") || typeVal.Contains("CodeType"))
                     {
                         Attribute attr = new Attribute(gmlModule, el.Attribute("name").Value, "stringAttribute");
 
@@ -149,95 +149,6 @@ namespace City2BIM.GetSemantics
             return addrAttr;
         }
 
-        public Dictionary<Attribute, string> ReadAttributeValues(XElement bldg, HashSet<Attribute> attributes, Dictionary<string, XNamespace> nsp)
-        {
-            var kvp = new Dictionary<Attribute, string>();
-            
-            foreach(var attr in attributes)
-            {
-                //values im tag eingeschlossen:
 
-                var match = bldg.Descendants().Where(n => n.Name.LocalName == attr.Name).FirstOrDefault();
-
-                //generische Attribute:
-
-                if(attr.GmlNamespace == "gen")
-                {
-                    match = bldg.Descendants().Where(n => n.Name.LocalName == "value" && n.Parent.Attribute("name").Value == attr.Name).FirstOrDefault();
-                }
-
-                if(match != null)
-                {
-                    kvp.Add(attr, match.Value);
-                }
-                else
-                {
-                    //Attribute, die als Type vorliegen:
-
-                    switch(attr.Name)
-                    {
-                        case ("LocalityType"):
-                            var matchElem = bldg.Descendants().Where(n => n.Name.LocalName == "Locality").FirstOrDefault();
-                            if(matchElem != null)
-                            {
-                                kvp.Add(attr, AddTypeValues(matchElem));
-                            }
-                            else
-                                kvp.Add(attr, null);
-                            break;
-
-                        case ("DependentLocalityType"):
-                            var matchElem2 = bldg.Descendants().Where(n => n.Name.LocalName == "DependentLocality").FirstOrDefault();
-                            if(matchElem2 != null)
-                            {
-                                kvp.Add(attr, AddTypeValues(matchElem2));
-                            }
-                            else
-                                kvp.Add(attr, null);
-                            break;
-
-                        case ("ThoroughfareType"):
-                            var matchElem3 = bldg.Descendants().Where(n => n.Name.LocalName == "Thoroughfare").FirstOrDefault();
-                            if(matchElem3 != null)
-                            {
-                                kvp.Add(attr, AddTypeValues(matchElem3));
-                            }
-                            else
-                                kvp.Add(attr, null);
-                            break;
-
-                        case ("Building_ID"):
-                            var id = bldg.Attribute(nsp["gml"]+"id").Value;
-                            if (id != null)
-                                kvp.Add(attr, id);
-                            else
-                                kvp.Add(attr, null);
-                            break;
-
-                        default:
-                            kvp.Add(attr, null);
-                            break;
-                    }
-                }
-
-                //foreach(var kp in kvp)
-                //{
-                //    Log.Information("Name: " + kp.Key + ", Value: " + kp.Value);
-                //}
-            }
-            return kvp;
-        }
-
-        private string AddTypeValues(XElement matchElem)
-        {
-            var matchAttr = matchElem.Attribute("Type");
-
-            if(matchAttr != null)
-            {
-                return matchAttr.Value;
-            }
-            else
-                return null;
-        }
     }
 }

@@ -65,7 +65,8 @@
     <Compile Include="GetGeometry\Vertex.cs" />
     <Compile Include="GetGeometry\XYZ.cs" />
     <Compile Include="GetSemantics\Attribute.cs" />
-    <Compile Include="GetSemantics\ReadSemData.cs" />
+    <Compile Include="GetSemantics\ReadSemAttributes.cs" />
+    <Compile Include="GetSemantics\ReadSemValues.cs" />
     <Compile Include="HelloWorld.cs" />
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />

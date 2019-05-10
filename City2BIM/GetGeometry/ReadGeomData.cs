@@ -26,122 +26,6 @@ namespace City2BIM.GetGeometry
             }
         }                                                             //nötig? evtl. Verknüpfung zu "ReadCityGML.cs"
 
-        //public List<Solid> ReadGeometryFromXML()
-        //{
-        //    var path = "D:\\1_CityBIM\\1_Programmierung\\City2BIM\\CityGML_Data\\CityGML_Data\\Berlin\\input_clean_3.gml";
-        //    //var path = "D:\\1_CityBIM\\1_Programmierung\\City2BIM\\CityGML_Data\\CityGML_Data\\Erfurt\\LoD2_642_5648_2_TH\\LoD2_642_5648_2_TH.gml";
-        //    //var path = "D:\\1_CityBIM\\1_Programmierung\\City2BIM\\CityGML_Data\\CityGML_Data\\Dresden\\Gebaeude_LOD1_citygml.gml";
-        //    //var path = "D:\\1_CityBIM\\1_Programmierung\\City2BIM\\CityGML_Data\\CityGML_Data\\Dresden\\Gebaeude_LOD2_citygml.gml";
-        //    //var path = "D:\\1_CityBIM\\1_Programmierung\\City2BIM\\CityGML_Data\\CityGML_Data\\Dresden\\Gebaeude_LOD3_citygml.gml";
-        //    //var path = "D:\\1_CityBIM\\1_Programmierung\\City2BIM\\CityGML_Data\\CityGML_Data\\Dresden\\Vegetation.gml";
-        //    //var path = "D:\\1_CityBIM\\1_Programmierung\\City2BIM\\CityGML_Data\\CityGML_Data\\Einzelhaus.gml";
-
-        //    XDocument doc = XDocument.Load(path);
-
-        //    Log.Information("file: " + path);
-
-        //    Log.Information("ReadGeometryFromXml Methode... (speichert bldgs in Solid-List");
-
-        //    this.allns = doc.Root.Attributes().
-        //            Where(a => a.IsNamespaceDeclaration).
-        //            GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName,
-        //            a => XNamespace.Get(a.Value)).
-        //            ToDictionary(g => g.Key,
-        //                 g => g.First());
-
-        //    List<Solid> buildings = CreateGeometry(doc);
-
-        //    Log.Debug("Buildings, Anzahl = " + buildings.Count);
-
-        //    return buildings;
-        //}
-
-        //private void readOffset(ref Double x, ref Double y, ref Double z, XElement e)
-        //{
-        //    var pointSeperated = e.Value.Split(new[] { (' ') }, StringSplitOptions.RemoveEmptyEntries);
-        //    x = Double.Parse(pointSeperated[0], CultureInfo.InvariantCulture);
-        //    y = Double.Parse(pointSeperated[1], CultureInfo.InvariantCulture);
-        //    z = Double.Parse(pointSeperated[2], CultureInfo.InvariantCulture);
-        //}
-
-        //private List<Solid> CreateGeometry(XDocument xmlDoc)
-        //{
-            //Log.Information("CreateGeometry Methode... (erzeugt Solid-List für bldgs");
-
-            ////in Datensatz Berlin problematisch (mehrere LowerCorner in verschachtelten Objekten --> es darf nur die Projekt corner gelesen werden)
-
-            ////Später als LocalPlacement in Building-Class
-            //double offsetX = 0.0;
-            //double offsetY = 0.0;
-            //double offsetZ = 0.0;
-
-            //var gml = this.allns["gml"];
-
-            //// 1. Find LowerCorner (Global oder Lokal?)
-            //IEnumerable<XElement> pointLowerCorner = xmlDoc.Descendants(gml + "lowerCorner");
-            //int clc = pointLowerCorner.Count();
-            //switch(clc)
-            //{
-            //    case 0:
-            //        Log.Information("keine lower Corner");
-            //        break;
-
-            //    case 1:
-            //        readOffset(ref offsetX, ref offsetY, ref offsetZ, pointLowerCorner.First());
-            //        Log.Information(String.Format("Eine lower Corner: {0,5:N3} {1,5:N3} {2,5:N3}  ", offsetX, offsetY, offsetZ));
-            //        break;
-
-            //    default:
-            //        Log.Information("Anzahl lower Corner: " + clc);
-            //        break;
-            //}
-
-            //XYZ lowerCorner = new XYZ(offsetX, offsetY, offsetZ);
-
-            //foreach(XElement lc in pointLowerCorner)
-            //{
-            //    string lowercorner = lc.Value;
-            //    var pointSeperated = lowercorner.Split(new[] { (' ') }, StringSplitOptions.RemoveEmptyEntries);
-            //    double x = Double.Parse(pointSeperated[0], CultureInfo.InvariantCulture);
-            //    double y = Double.Parse(pointSeperated[1], CultureInfo.InvariantCulture);
-            //    double z = Double.Parse(pointSeperated[2], CultureInfo.InvariantCulture);
-            //    lowerCorner.X = x;
-            //    lowerCorner.Y = y;
-            //    lowerCorner.Z = z;
-
-            //}
-
-            //Log.Debug("Detected LowerCorner = " + lowerCorner.X + " " + lowerCorner.Y + " " + lowerCorner.Z);
-
-            ////XNamespace nsbldg = this.allns["bldg"];
-            //Log.Information("Namespace Building: " + this.allns["bldg"].NamespaceName);
-
-            //var xmlBuildings = xmlDoc.Descendants(this.allns["bldg"] + "Building");
-            //int cb = xmlBuildings.Count();
-            //Log.Information(@"Anzahl Gebäude: " + cb);
-
-            //GetBldgSemantics(xmlBuildings.First());
-
-            //List<Solid> solidList = new List<Solid>();
-
-            //foreach(XElement xmlBuildingNode in xmlBuildings)
-            //{
-            //    solidList.Add(CollectBuilding(xmlBuildingNode, lowerCorner));
-            //} //foreach building
-
-            //Log.Debug("Start der bldg suche..");
-
-            //foreach(XElement building in buildings)
-            //{
-            //    Log.Debug("new bldg calculation...Übergabe bldg, lowercorner");
-
-            //    solidList.Add(CollectBuilding(building, lowerCorner));
-            //}
-
-        //    return solidList;
-        //}
-
-
 
         public Solid CollectBuilding(XElement building, XYZ lowerCorner)
         {
@@ -178,8 +62,9 @@ namespace City2BIM.GetGeometry
 
             Solid solid = new Solid();
 
-            foreach(var polygon in boundedBy.Descendants(allns["gml"] + "posList"))
-            {
+            //foreach(var polygon in boundedBy.Descendants(allns["gml"] + "posList"))
+                foreach(var polygon in building.Descendants(allns["gml"] + "posList"))
+                {
                 Log.Information("Auslesen der Polygone innerhalb boundedBy");
                 Log.Information("Info: je nach CityGML-Datensatz können ein oder mehrere Flächen pro boundedBy definiert sein");
 

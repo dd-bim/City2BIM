@@ -87,27 +87,35 @@ namespace City2BIM.RevitBuilder
                             var p = ds.LookupParameter(aName.GmlNamespace + ": " + aName.Name);
                             attributes.TryGetValue(aName, out var val);
 
-                            if(val != null)
+                            try
                             {
-                                switch(aName.GmlType)
+                                if(val != null)
                                 {
-                                    case ("intAttribute"):
-                                        p.Set(int.Parse(val));
-                                        break;
+                                    switch(aName.GmlType)
+                                    {
+                                        case ("intAttribute"):
+                                            p.Set(int.Parse(val));
+                                            break;
 
-                                    case ("doubleAttribute"):
-                                        var a = 0;
-                                        p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
-                                        break;
+                                        case ("doubleAttribute"):
+                                            p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
+                                            break;
 
-                                    case ("measureAttribute"):
-                                        p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
-                                        break;
+                                        case ("measureAttribute"):
+                                            var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
+                                            p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
+                                            break;
 
-                                    default:
-                                        p.Set(val);
-                                        break;
+                                        default:
+                                            p.Set(val);
+                                            break;
+                                    }
                                 }
+                            }
+                            catch
+                            {
+                                Log.Error("Semantik-Fehler bei " + aName.Name);
+                                continue;
                             }
                         }
 

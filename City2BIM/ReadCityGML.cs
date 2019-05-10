@@ -107,11 +107,15 @@ namespace City2BIM
         {
             var gml = this.allns["gml"];
 
-            var LC = xmlDoc.Elements(gml + "lowerCorner");
+            var globalBoundedBy = xmlDoc.Elements(allns["core"] + "CityModel").Single().Elements(gml + "boundedBy").FirstOrDefault();
 
-            if(LC.Count() == 1)
+            //var globalBoundedBy = xmlDoc.Elements(gml + "boundedBy").FirstOrDefault(); //sollte nur einmal vorkommen
+
+            if(globalBoundedBy != null)
             {
-                CalcLowerCorner(LC.Single(), ref lowerCorner);
+                var LC = globalBoundedBy.Descendants(gml + "lowerCorner").FirstOrDefault();
+
+                CalcLowerCorner(LC, ref lowerCorner);
 
                 return true;
             }
@@ -146,13 +150,15 @@ namespace City2BIM
 
             var folder = @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\CityGML_Data\";
 
-            var path = @"files\Berlin\input_clean_3.gml";
+            //var path = @"files\Berlin\input_clean_3.gml";
             //var path = @"files\Erfurt\LoD2_642_5648_2_TH\LoD2_642_5648_2_TH.gml";
+            var path = @"files\Greiz\LoD2_726_5616_2_TH\LoD2_726_5616_2_TH.gml";
+            //var path = @"files\Greiz\LoD2_726_5616_2_TH\sorben8_9.gml";
             //var path = @"files\Dresden\Gebaeude_LOD1_citygml.gml";
             //var path = @"files\Dresden\Gebaeude_LOD2_citygml.gml";
             //var path = @"files\Dresden\Gebaeude_LOD3_citygml.gml";
             //var path = @"files\Dresden\Vegetation.gml";
-            //var path = @"files\Einzelhaus.gml";
+            //var path = @"files\Greiz\LoD2_726_5616_2_TH\Greiz_bldg_parts.gml";
 
             XDocument xmlDoc = XDocument.Load(folder + path);
 
@@ -162,6 +168,12 @@ namespace City2BIM
                 a => XNamespace.Get(a.Value)).
                 ToDictionary(g => g.Key,
                      g => g.First());
+
+            if(this.allns.ContainsKey(""))
+            {
+                if(!this.allns.ContainsKey("core"))
+                    this.allns.Add("core", this.allns[""]);     //wenn Namespace ohne prefix vorhanden ist, ist das das core-Modul
+            }
 
             double offsetX = 0.0;
             double offsetY = 0.0;
@@ -183,7 +195,7 @@ namespace City2BIM
             //zunächst Parsen der XML-Schema-Dateien für festgelegte (möglich vorkommende) Attribute, die im bldg- und core-Modul definiert sind
             //Auslesen nur einmal (!)
 
-            var sem = new ReadSemData();
+            var sem = new ReadSemAttributes();
 
             //vorgegebene Semantik aus CityGML-Schema:
 
@@ -191,12 +203,12 @@ namespace City2BIM
             XDocument xsdBldgs = XDocument.Load(folder + @"schemas\building.xsd");
             XDocument xsdGen = XDocument.Load(folder + @"schemas\generics.xsd");
 
-            string coreNsp = "";
+            //string coreNsp = "";
 
-            if(allns.ContainsKey("core"))
-                coreNsp = "core";
+            //if(allns.ContainsKey("core"))
+            //    coreNsp = "core";
 
-            var coreAttr = sem.ReadSchemaAttributes(xsdCore, coreNsp, this.allns);
+            var coreAttr = sem.ReadSchemaAttributes(xsdCore, "core", this.allns);
             var bldgAttr = sem.ReadSchemaAttributes(xsdBldgs, "bldg", this.allns);
 
             this.attributes.UnionWith(coreAttr);
@@ -210,30 +222,19 @@ namespace City2BIM
 
             this.attributes.UnionWith(genAttr);
 
-            foreach (var attr in attributes)
+            foreach(var attr in attributes)
             {
                 Log.Information(attr.Name);
             }
 
-
             //Geometrie:____________________________________________________________________
 
-            var geom = new ReadGeomData(this.allns);
+            int i = 0, j = 0;
 
-            foreach(XElement xmlBuildingNode in gmlBuildings)
+            foreach(XElement xmlBuildingNode in gmlBuildings)     
             {
-                //List<Solid> buildings = CreateGeometry(doc);
-
-                //Log.Debug("Buildings, Anzahl = " + buildings.Count);
-
-                //--------------------------------
-
-                //Auslesen der Attributwerte
-
-                var bldgSem = sem.ReadAttributeValues(xmlBuildingNode, attributes, allns);
-
-                //geom
-
+                //lokale BoundingBox, wenn nötig (gibts das auch bei parts?)
+                //---------------------------------
                 if(!globLC)
                 {
                     var bldgLC = GetBuildingLC(xmlBuildingNode, ref lowerCorner);
@@ -241,11 +242,66 @@ namespace City2BIM
                     if(!globLC && !bldgLC)
                         Log.Information("No global and local lower corner was found!");
                 }
+                //---------------------------------
 
-                var bldgGeom = geom.CollectBuilding(xmlBuildingNode, lowerCorner);
+                var parts = xmlBuildingNode.Descendants(this.allns["bldg"] + "BuildingPart");
+                var partsCt = parts.Count();
 
-                this.solidList.Add(bldgGeom, bldgSem);
+                Log.Information("Building " + xmlBuildingNode.FirstAttribute.Value + " besitzt " + partsCt + " Teilgebäude.");
+
+                if(partsCt > 0)
+                {
+                    i++;
+
+                    foreach(var part in parts)
+                    {
+                        GetData(part, lowerCorner);
+                    }
+                }
+                else
+                {
+                    j++;
+
+                    GetData(xmlBuildingNode, lowerCorner);
+                }
+
+                //var gmlBldg = gmlBuildings.Where(a => a.Descendants(this.allns["bldg"] + "consistsOfBuildingPart").Count() == 0).ToList();//.Select(g => g.gmlBuildings);
+
+                //Log.Information("alle bldg: " + gmlBuildings.Count());
+                //Log.Information("ohne parts: " + gmlBldg.Count());
+                //Log.Information("mit parts: " + (gmlBuildings.Where(a => a.Descendants(this.allns["bldg"] + "consistsOfBuildingPart").Count() > 0)).Count());
+
+                //var gmlBldgPart = gmlBuildings.Descendants(this.allns["bldg"] + "BuildingPart");
+
+                //Log.Information("parts: " + gmlBldgPart.Count());
+
+                //var bldgs = gmlBldg.Union(gmlBldgPart);
+
+                //Log.Information("uebergabe: " + bldgs.Count());
+
+                ////Auslesen der Attributwerte
+
+                //var bldgSem = sem.ReadAttributeValues(xmlBuildingNode, attributes, allns);
+
+                ////geom
+
+                //var bldgGeom = geom.CollectBuilding(xmlBuildingNode, lowerCorner);
             }
+
+            Log.Information("Die Datei enthält " + i + " Einzelgebäude und " + j + " Gebäude mit mehreren Teilgebäuden.");
+        }
+
+        public void GetData(XElement bldg, XYZ lowerCorner)
+        {
+            var semVal = new ReadSemValues();
+            var geom = new ReadGeomData(this.allns);
+
+            var bldgSem = semVal.ReadAttributeValues(bldg, attributes, allns);
+
+            var bldgGeom = geom.CollectBuilding(bldg, lowerCorner);
+
+            //SolidList benötigt schließlich geometrisch gebildete Solids aus bldg(parts) sowie die dazugehörige Semantik (Attribute+Wert) je bldg(part)
+            this.solidList.Add(bldgGeom, bldgSem);
         }
     }
 }

@@ -81,6 +81,7 @@ namespace City2BIM.RevitBuilder
                 {
                     try
                     {
+
                         var pType = ParameterType.Text;
 
                         switch(attribute.GmlType)

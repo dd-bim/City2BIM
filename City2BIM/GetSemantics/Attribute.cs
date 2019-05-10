@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace City2BIM.GetSemantics
+﻿namespace City2BIM.GetSemantics
 {
     public class Attribute
     {
@@ -14,7 +7,7 @@ namespace City2BIM.GetSemantics
 
         private string name;
         private string description;
-        private int? code;
+        private string unit;
 
         public string Name
         {
@@ -68,24 +61,12 @@ namespace City2BIM.GetSemantics
             }
         }
 
-        public int? Code
-        {
-            get
-            {
-                return this.code;
-            }
-
-            set
-            {
-                this.code = value;
-            }
-        }
-
-        public Attribute(string namesp, string name, string type )
+        public Attribute(string namesp, string name, string type)
         {
             this.GmlNamespace = namesp;
             this.Name = name;
             this.GmlType = type;
         }
+
     }
 }
