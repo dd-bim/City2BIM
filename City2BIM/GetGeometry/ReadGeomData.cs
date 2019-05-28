@@ -29,7 +29,6 @@ namespace City2BIM.GetGeometry
 
         public Solid CollectBuilding(XElement building, XYZ lowerCorner)
         {
-            Log.Debug("collectbuilding-methode...");
 
             // 3. Erzeuge Volumenkörüer für jedes Gebäude
             // Objekt, offset, id für jedes Gebäude
@@ -53,7 +52,7 @@ namespace City2BIM.GetGeometry
 
             //var polygons = building.Descendants(this.allns["bldg"] + "boundedBy").Select(b => b.Descendants(gml + "posList"));
 
-            Log.Information("Anzahl der boundedBy-Tags innerhalb Building " + boundedBy.Count());
+            //Log.Information("Anzahl der boundedBy-Tags innerhalb Building " + boundedBy.Count());
 
             //var polys = from bound in bounds
             //            select bounds.Descendants(gml + "posList");
@@ -62,18 +61,18 @@ namespace City2BIM.GetGeometry
 
             Solid solid = new Solid();
 
-            //foreach(var polygon in boundedBy.Descendants(allns["gml"] + "posList"))
-                foreach(var polygon in building.Descendants(allns["gml"] + "posList"))
+            foreach(var polygon in boundedBy.Descendants(allns["gml"] + "posList"))
+                //foreach(var polygon in building.Descendants(allns["gml"] + "posList"))
                 {
-                Log.Information("Auslesen der Polygone innerhalb boundedBy");
-                Log.Information("Info: je nach CityGML-Datensatz können ein oder mehrere Flächen pro boundedBy definiert sein");
+                //Log.Information("Auslesen der Polygone innerhalb boundedBy");
+                //Log.Information("Info: je nach CityGML-Datensatz können ein oder mehrere Flächen pro boundedBy definiert sein");
 
                 List<XYZ> vertexList = new List<XYZ>();
                 vertexList.AddRange(CollectPoints(polygon, lowerCorner));
                 string guid = Guid.NewGuid().ToString();
 
-                Log.Debug("Anzahl Eckpunkte dieser Fläche = " + vertexList.Count);
-                Log.Debug("Fläche erhält intern die ID = " + guid);
+                //Log.Debug("Anzahl Eckpunkte dieser Fläche = " + vertexList.Count);
+                //Log.Debug("Fläche erhält intern die ID = " + guid);
 
                 if(vertexList.Count < 4)
                 {
@@ -83,7 +82,7 @@ namespace City2BIM.GetGeometry
 
                 solid.AddPlane(guid, vertexList);
 
-                Log.Information("Ebene wurde Solid hinzugefügt!");
+                //Log.Information("Ebene wurde Solid hinzugefügt!");
             }
 
             //foreach Polygon
@@ -113,7 +112,7 @@ namespace City2BIM.GetGeometry
                 double z = Double.Parse(pointsSeperated[i + 2], CultureInfo.InvariantCulture) - lowerCorner.Z;
                 polygonVertices.Add(new XYZ(x, y, z));
 
-                Log.Debug("Koordinate : " + x + "," + y + "," + z);
+                //Log.Debug("Koordinate : " + x + "," + y + "," + z);
             }
 
             return polygonVertices;

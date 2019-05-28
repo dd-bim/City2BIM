@@ -13,26 +13,44 @@ namespace City2BIM
         // Method "OnStartup" is a Method of IExternalApplication Interface and executes some tasks when Revit starts
         public Result OnStartup(UIControlledApplication application)
         {
-
-
             // Add a new Tab
             string tabName = "City2BIM";
             application.CreateRibbonTab(tabName);
 
             // Add a new ribbon panel
-            RibbonPanel panel = application.CreateRibbonPanel(tabName, "CityGML Importer");
+            RibbonPanel panel1 = application.CreateRibbonPanel(tabName, "Settings");
+            RibbonPanel panel2 = application.CreateRibbonPanel(tabName, "Geo-Position");
+            RibbonPanel panel3 = application.CreateRibbonPanel(tabName, "City2BIM");
+            RibbonPanel panel4 = application.CreateRibbonPanel(tabName, "BIM2City");
 
             //DB RibbonPanel panel = ribbonPanel(application);
             // Create a push button to trigger a command add it to the ribbon panel.
             string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
 
-            PushButton buttonTest = panel.AddItem(new PushButtonData("Test window", "test window",
-            thisAssemblyPath, "City2BIM.HelloWorld")) as PushButton;
-            buttonTest.ToolTip = "Test window appearing";
+            PushButton buttonFile = panel1.AddItem(new PushButtonData("Create info table", "Import settings",
+            thisAssemblyPath, "City2BIM.ImportSource")) as PushButton;
+            buttonFile.ToolTip = "Test window appearing";
 
-            PushButton button = panel.AddItem(new PushButtonData("Load CityGML", "Import functionality for CityGML data",
+
+           
+
+            PushButton button = panel3.AddItem(new PushButtonData("Load CityGML", "Get City Model",
             thisAssemblyPath, "City2BIM.ReadCityGML")) as PushButton;
             button.ToolTip = "Import functionality for CityGML data";
+
+            PushButton buttonCode = panel3.AddItem(new PushButtonData("Get CityGML Code Description", "Get Code Decription",
+            thisAssemblyPath, "City2BIM.ReadCode")) as PushButton;
+            button.ToolTip = "Import functionality for CityGML data";
+
+
+
+
+
+
+            PushButton buttonTeest = panel2.AddItem(new PushButtonData("Create indddfo table", "Create Info table",
+            thisAssemblyPath, "City2BIM.CreateTable")) as PushButton;
+            buttonTeest.ToolTip = "Test window appearing";
+
 
             var globePath =
             System.IO.Path.Combine(System.IO.Path.GetDirectoryName

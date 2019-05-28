@@ -124,12 +124,22 @@ namespace City2BIM.RevitBuilder
 
                     i++;
 
-                    Log.Information("Building builder successful");
+                    //Log.Information("Building builder successful");
                     success += 1;
                 }
-                catch
+                catch (System.Exception ex)
                 {
-                    Log.Error("Revit Builder error occured.");
+                    var blSeman = building.Value.Values;
+
+                    Log.Error("Revit Builder error occured: ");
+
+                    foreach(var v in blSeman)
+                    {
+                        Log.Debug(v);
+                    }
+
+                    Log.Error(ex.Message);
+
                     error += 1;
                     continue;
                 }

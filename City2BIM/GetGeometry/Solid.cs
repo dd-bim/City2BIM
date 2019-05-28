@@ -17,7 +17,8 @@ namespace City2BIM.GetGeometry
         {
             if(polygon.Count < 4)
             {
-                throw new Exception("Zu wenig Eckpunkte!");
+                //throw new Exception("Zu wenig Eckpunkte!");
+                //continue;
             }
 
             XYZ normal = new XYZ(0, 0, 0);

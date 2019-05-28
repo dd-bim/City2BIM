@@ -65,13 +65,15 @@
     <Compile Include="GetGeometry\Vertex.cs" />
     <Compile Include="GetGeometry\XYZ.cs" />
     <Compile Include="GetSemantics\Attribute.cs" />
+    <Compile Include="GetSemantics\ReadCodeList.cs" />
     <Compile Include="GetSemantics\ReadSemAttributes.cs" />
     <Compile Include="GetSemantics\ReadSemValues.cs" />
-    <Compile Include="HelloWorld.cs" />
+    <Compile Include="ImportSource.cs" />
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadCityGML.cs" />
+    <Compile Include="ReadCode.cs" />
     <Compile Include="RevitBuilder\RevitGeometryBuilder.cs" />
     <Compile Include="RevitBuilder\RevitSemanticBuilder.cs" />
   </ItemGroup>

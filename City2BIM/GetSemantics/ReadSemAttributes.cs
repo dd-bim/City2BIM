@@ -44,7 +44,6 @@ namespace City2BIM.GetSemantics
             {
                 case ("bldg"):
                     type = "AbstractBuildingType";
-                    Log.Information("Observing bldg-xsd.");
                     schemaAttr.Add(new Attribute(gmlModule, "Building_ID", "stringAttribute"));
                     var addrAttr = CreateAddressAttributes(nsp);
                     schemaAttr.UnionWith(addrAttr);
@@ -55,7 +54,6 @@ namespace City2BIM.GetSemantics
 
                 case ("core"):
                     type = "AbstractCityObjectType";
-                    Log.Information("Observing core-xsd.");
                     break;
 
                 default:
