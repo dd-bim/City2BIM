@@ -60,6 +60,7 @@ namespace City2BIM.RevitBuilder
                 DefinitionGroup parGroupGen = parFile.Groups.get_Item("CityGML-Generic Module");
                 DefinitionGroup parGroupBldg = parFile.Groups.get_Item("CityGML-Building Module");
                 DefinitionGroup parGroupAddr = parFile.Groups.get_Item("CityGML-Address Module");
+                DefinitionGroup parGroupGML = parFile.Groups.get_Item("CityGML-GML Module");
 
                 //DefinitionGroup parGroup1 = parFile.Groups.get_Item("City Model data");
 
@@ -75,6 +76,9 @@ namespace City2BIM.RevitBuilder
                 if(parGroupAddr == null)
                     parGroupAddr = parFile.Groups.Create("CityGML-Address Module");
 
+                if(parGroupGML == null)
+                    parGroupGML = parFile.Groups.Create("CityGML-GML Module");
+
                 Definition parDef = default(Definition);
 
                 foreach(var attribute in attributes)
@@ -84,21 +88,23 @@ namespace City2BIM.RevitBuilder
 
                         var pType = ParameterType.Text;
 
+                        //Typ-Übersetzung für Revit
+
                         switch(attribute.GmlType)
                         {
-                            case ("intAttribute"):
+                            case (Attribute.AttrType.intAttribute):
                                 pType = ParameterType.Integer;
                                 break;
 
-                            case ("doubleAttribute"):
+                            case (Attribute.AttrType.doubleAttribute):
                                 pType = ParameterType.Number;
                                 break;
 
-                            case ("uriAttribute"):
+                            case (Attribute.AttrType.uriAttribute):
                                 pType = ParameterType.URL;
                                 break;
 
-                            case ("measureAttribute"):
+                            case (Attribute.AttrType.measureAttribute):
                                 pType = ParameterType.Length;
                                 break;
 
@@ -106,22 +112,28 @@ namespace City2BIM.RevitBuilder
                                 break;
                         }
 
+                        //Gruppenzuordnung für Revit
+
                         switch(attribute.GmlNamespace)
                         {
-                            case ("gen"):
+                            case (Attribute.AttrNsp.gen):
                                 SetDefinitionsToGroup(parGroupGen, attribute, pType, assocCats, parDef);
                                 break;
 
-                            case ("core"):
+                            case (Attribute.AttrNsp.core):
                                 SetDefinitionsToGroup(parGroupCore, attribute, pType, assocCats, parDef);
                                 break;
 
-                            case ("bldg"):
+                            case (Attribute.AttrNsp.bldg):
                                 SetDefinitionsToGroup(parGroupBldg, attribute, pType, assocCats, parDef);
                                 break;
 
-                            case ("xal"):
+                            case (Attribute.AttrNsp.xal):
                                 SetDefinitionsToGroup(parGroupAddr, attribute, pType, assocCats, parDef);
+                                break;
+
+                            case (Attribute.AttrNsp.gml):
+                                SetDefinitionsToGroup(parGroupGML, attribute, pType, assocCats, parDef);
                                 break;
                         }
                         //ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(attribute.GmlNamespace + ": " + attribute.Name, pType);

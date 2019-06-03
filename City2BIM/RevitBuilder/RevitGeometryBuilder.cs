@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autodesk.Revit.DB;
+using City2BIM.GetSemantics;
 using Serilog;
 
 namespace City2BIM.RevitBuilder
@@ -44,17 +45,39 @@ namespace City2BIM.RevitBuilder
                         List<Autodesk.Revit.DB.XYZ> face = new List<XYZ>();
                         foreach(int vid in p.Vertices)
                         {
-                            GetGeometry.XYZ xyz = building.Key.Vertices[vid].Position;
+                            //GetGeometry.XYZ xyz = building.Key.Vertices[vid].Position;
+
+                            var verts = building.Key.Vertices;
+
+                            if(verts.Contains(verts[vid]))
+                            {
+                                GetGeometry.XYZ xyz = verts[vid].Position;
+                           
+                                
+
+                            //var xy = verts. from v in verts
+                            //         where v
+
+                            //[vid].Position;
+
+
 
                             //face.Add(new XYZ(xyz.X, xyz.Y, xyz.Z));
 
                             //dirty hack: revit api feet umrechnung, zu erweitern: einheit im projekt abfragen
 
-                            var xF = xyz.X * 3.28084;
-                            var yF = xyz.Y * 3.28084;
-                            var zF = xyz.Z * 3.28084;
 
-                            face.Add(new XYZ(xF, yF, zF)); //Revit feet Problem
+                                var xF = xyz.X * 3.28084;
+                                var yF = xyz.Y * 3.28084;
+                                var zF = xyz.Z * 3.28084;
+
+                                face.Add(new XYZ(xF, yF, zF)); //Revit feet Problem
+                            }
+
+                            else
+                            {
+                                Log.Error("id nicht vorhanden");
+                            }
                         }
 
                         builder.AddFace(new TessellatedFace(face, ElementId.InvalidElementId));
@@ -93,15 +116,15 @@ namespace City2BIM.RevitBuilder
                                 {
                                     switch(aName.GmlType)
                                     {
-                                        case ("intAttribute"):
+                                        case (Attribute.AttrType.intAttribute):
                                             p.Set(int.Parse(val));
                                             break;
 
-                                        case ("doubleAttribute"):
+                                        case (Attribute.AttrType.doubleAttribute):
                                             p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
                                             break;
 
-                                        case ("measureAttribute"):
+                                        case (Attribute.AttrType.measureAttribute):
                                             var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
                                             p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
                                             break;
@@ -127,18 +150,18 @@ namespace City2BIM.RevitBuilder
                     //Log.Information("Building builder successful");
                     success += 1;
                 }
-                catch (System.Exception ex)
+                catch(System.Exception ex)
                 {
-                    var blSeman = building.Value.Values;
+                    //var blSeman = building.Value.Values;
 
-                    Log.Error("Revit Builder error occured: ");
+                    //Log.Error("Revit Builder error occured: " + ex.Message);
 
-                    foreach(var v in blSeman)
-                    {
-                        Log.Debug(v);
-                    }
+                    //foreach(var v in blSeman)
+                    //{
+                    //    Log.Debug(v);
+                    //}
 
-                    Log.Error(ex.Message);
+                    //Log.Error(ex.Message);
 
                     error += 1;
                     continue;
@@ -147,8 +170,8 @@ namespace City2BIM.RevitBuilder
             double statSucc = success / all * 100;
             double statErr = error / all * 100;
 
-            Log.Information("Erfolgsquote = " + statSucc + "Prozent");
-            Log.Information("Fehlerquote = " + statErr + "Prozent");
+            Log.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
+            Log.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
         }
     }
 }

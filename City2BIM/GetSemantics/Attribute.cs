@@ -2,8 +2,8 @@
 {
     public class Attribute
     {
-        private string gmlNamespace;         //für Parameter-Gruppierung in Revit
-        private string gmlType;
+        private AttrNsp gmlNamespace;         //für Parameter-Gruppierung in Revit
+        private AttrType gmlType;
 
         private string name;
         private string description;
@@ -22,7 +22,7 @@
             }
         }
 
-        public string GmlType
+        public AttrType GmlType
         {
             get
             {
@@ -35,7 +35,7 @@
             }
         }
 
-        public string GmlNamespace
+        public AttrNsp GmlNamespace
         {
             get
             {
@@ -61,12 +61,14 @@
             }
         }
 
-        public Attribute(string namesp, string name, string type)
+        public Attribute(AttrNsp namesp, string name, AttrType type)
         {
             this.GmlNamespace = namesp;
             this.Name = name;
             this.GmlType = type;
         }
 
+        public enum AttrType { stringAttribute, intAttribute, doubleAttribute, measureAttribute, uriAttribute }
+        public enum AttrNsp { gml, core, xal, bldg, gen }
     }
 }

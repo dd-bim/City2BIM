@@ -17,8 +17,6 @@ namespace City2BIM.GetSemantics
             var bldgParts = bldgEl.Elements(nsp["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
 
-
-
             var kvp = new Dictionary<Attribute, string>();
 
             foreach(var attr in attributes)
@@ -30,9 +28,14 @@ namespace City2BIM.GetSemantics
 
                 //generische Attribute:
 
-                if(attr.GmlNamespace == "gen")
+                if(attr.GmlNamespace == Attribute.AttrNsp.gen)
                 {
                     matchAttr = bldg.DescendantsAndSelf().Where(n => n.Name.LocalName == "value" && n.Parent.Attribute("name").Value == attr.Name).ToList();
+                }
+
+                if(attr.GmlNamespace == Attribute.AttrNsp.gml)
+                {
+                    matchAttr = bldg.DescendantsAndSelf().Where(n => n.Name.LocalName == attr.Name && n.Name.Namespace == nsp["gml"]).ToList();
                 }
 
                 if(matchAttr != null && matchAttr.Count() == 1)
@@ -105,12 +108,9 @@ namespace City2BIM.GetSemantics
                             //kvp.Add(attr, null);
                             break;
                     }
-
                 }
 
                 //Attribute, die als Type vorliegen:
-
-
 
                 //foreach(var kp in kvp)
                 //{

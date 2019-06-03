@@ -19,7 +19,8 @@ namespace City2BIM.GetSemantics
                 {
                     var genAttr = val.Parent;
 
-                    var attr = new Attribute("gen", genAttr.Attribute("name").Value, genAttr.Name.LocalName);
+                    var attr = new Attribute(Attribute.AttrNsp.gen, genAttr.Attribute("name").Value, Attribute.AttrType.stringAttribute);
+                    //ggf. weitere Typen prüfen (laut AdV aber nur stringAttribute zulässig)
 
                     var genListNames = genAttrList.Select(c => c.Name);
 
@@ -31,102 +32,43 @@ namespace City2BIM.GetSemantics
             return genAttrList;
         }
 
-        public HashSet<Attribute> ReadSchemaAttributes(XDocument xsdDoc, string gmlModule, Dictionary<string, XNamespace> nsp)
+        public HashSet<Attribute> GetSchemaAttributes()
         {
-            var type = "";
+            var regAttr = new HashSet<Attribute>();
 
-            if(gmlModule == "")
-                gmlModule = "core";
+            //gml:name
 
-            var schemaAttr = new HashSet<Attribute>();
+            regAttr.Add(new Attribute(Attribute.AttrNsp.gml, "name", Attribute.AttrType.stringAttribute));
 
-            switch(gmlModule)
+            //-------------
+
+            //bldg-Modul
+
+            var bldgNames = new Dictionary<string, Attribute.AttrType>
             {
-                case ("bldg"):
-                    type = "AbstractBuildingType";
-                    schemaAttr.Add(new Attribute(gmlModule, "Building_ID", "stringAttribute"));
-                    var addrAttr = CreateAddressAttributes(nsp);
-                    schemaAttr.UnionWith(addrAttr);
-                    break;
+                {"Building_ID", Attribute.AttrType.stringAttribute },
+                {"class", Attribute.AttrType.stringAttribute },
+                {"function", Attribute.AttrType.stringAttribute },
+                {"usage", Attribute.AttrType.stringAttribute },
+                {"yearOfConstruction", Attribute.AttrType.intAttribute },
+                {"yearOfDemolition", Attribute.AttrType.intAttribute },
+                {"roofType", Attribute.AttrType.stringAttribute },
+                {"measuredHeight", Attribute.AttrType.measureAttribute },
+                {"storeysAboveGround", Attribute.AttrType.intAttribute },
+                {"storeysBelowGround", Attribute.AttrType.intAttribute },
+                {"storeysHeightsAboveGround", Attribute.AttrType.stringAttribute },
+                {"storeysHeightsBelowGround", Attribute.AttrType.stringAttribute }
+            };
 
-                case (""):
-                    goto case "core";
-
-                case ("core"):
-                    type = "AbstractCityObjectType";
-                    break;
-
-                default:
-                    Log.Error("No Building or CityObject was found!");
-                    type = "";
-                    break;
+            foreach(var bldg in bldgNames)
+            {
+                regAttr.Add(new Attribute(Attribute.AttrNsp.bldg, bldg.Key, bldg.Value));
             }
 
-            var xsdObj = xsdDoc.Descendants().Where(s => s.Name.LocalName == "complexType").Where(t => t.Attribute("name").Value == type);
-            var elem = xsdObj.Descendants().Where(s => s.Name.LocalName == "element");
+            //----------------------
+            //xAL (Adressen)
 
-            foreach(var el in elem)
-            {
-                if(el.Attributes("name").Count() > 0)
-                {
-                    var typeVal = el.Attribute("type").Value;
-
-                    if(typeVal.Contains("LengthType"))
-                    {
-                        Attribute attr = new Attribute(gmlModule, el.Attribute("name").Value, "measureAttribute");
-
-                        schemaAttr.Add(attr);
-                    }
-
-                    if(typeVal.Contains("Year") || typeVal.Contains("Integer"))
-                    {
-                        Attribute attr = new Attribute(gmlModule, el.Attribute("name").Value, "intAttribute");
-
-                        schemaAttr.Add(attr);
-                    }
-
-                    if(typeVal.Contains("MeasureOrNullList") || typeVal.Contains("date") || typeVal.Contains("CodeType"))
-                    {
-                        Attribute attr = new Attribute(gmlModule, el.Attribute("name").Value, "stringAttribute");
-
-                        schemaAttr.Add(attr);
-                    }
-
-                    if(typeVal.Contains("ExternalReferenceType"))
-                    {
-                        Attribute attr = new Attribute(gmlModule, "informationSystem", "uriAttribute");
-                        Attribute attr2 = new Attribute(gmlModule, "externalObject", "stringAttribute");
-
-                        schemaAttr.Add(attr);
-                        schemaAttr.Add(attr2);
-                    }
-
-                    if(typeVal.Contains("RelativeToTerrainType") || typeVal.Contains("RelativeToWaterType"))
-                    {
-                        Attribute attr = new Attribute(gmlModule, el.Attribute("name").Value, "stringAttribute");
-
-                        schemaAttr.Add(attr);
-                    }
-
-                    //Log.Information("Name: " + attr.Name + ", Type: " + attr.GmlType);
-                }
-                else
-                    Log.Information("kein name bei " + el.Name.LocalName);
-            }
-
-            //var addrAttr = CreateAddressAttributes(nsp);
-            //schemaAttr.UnionWith(addrAttr);
-
-            return schemaAttr;
-        }
-
-        private HashSet<Attribute> CreateAddressAttributes(Dictionary<string, XNamespace> nsp)
-        {
-            var addrAttr = new HashSet<Attribute>();
-
-            var type = "stringAttribute";
-
-            var attrNames = new List<string>
+            var xalNames = new List<string>
             {
                 "CountryName",
                 "LocalityName",
@@ -139,14 +81,30 @@ namespace City2BIM.GetSemantics
                 "PostalCodeNumber"
             };
 
-            foreach(var entry in attrNames)
+            foreach(var entry in xalNames)
             {
-                addrAttr.Add(new Attribute("xal", entry, type));
+                regAttr.Add(new Attribute(Attribute.AttrNsp.xal, entry, Attribute.AttrType.stringAttribute));
             }
 
-            return addrAttr;
+            //-----------------
+            //core-Modul
+
+            var coreNames = new Dictionary<string, Attribute.AttrType>
+            {
+                {"creationDate", Attribute.AttrType.stringAttribute },
+                {"terminationDate", Attribute.AttrType.stringAttribute },
+                {"informationSystem", Attribute.AttrType.uriAttribute },
+                {"externalObject", Attribute.AttrType.stringAttribute },
+                {"relativeToTerrain", Attribute.AttrType.stringAttribute },
+                {"relativeToWater", Attribute.AttrType.stringAttribute }
+            };
+
+            foreach(var core in coreNames)
+            {
+                regAttr.Add(new Attribute(Attribute.AttrNsp.core, core.Key, core.Value));
+            }
+
+            return regAttr;
         }
-
-
     }
 }

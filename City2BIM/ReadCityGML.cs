@@ -39,13 +39,15 @@ namespace City2BIM
             //var path = @"files\Berlin\input_clean_3.gml";
             //var path = @"files\Erfurt\LoD2_642_5648_2_TH\LoD2_642_5648_2_TH.gml";
             //var path = @"files\NRW\LoD2_370_5667_1_NW.gml";
-            var path = @"files\Greiz\LoD2_726_5616_2_TH\LoD2_726_5616_2_TH.gml";
+            //var path = @"files\Greiz\LoD2_726_5616_2_TH\LoD2_726_5616_2_TH.gml";
             //var path = @"files\Greiz\LoD2_726_5616_2_TH\sorben8_9.gml";
             //var path = @"files\Dresden\Gebaeude_LOD1_citygml.gml";
             //var path = @"files\Dresden\Gebaeude_LOD2_citygml.gml";
             //var path = @"files\Dresden\Gebaeude_LOD3_citygml.gml";
             //var path = @"files\Dresden\Vegetation.gml";
             //var path = @"files\Greiz\LoD2_726_5616_2_TH\Greiz_bldg_parts.gml";
+            var path = @"files\Bayern\714_5323.gml";
+            //var path = @"files\Bayern\LoD1UTM32city_p.gml";
 
             Log.Information("File: " + path);
 
@@ -170,14 +172,13 @@ namespace City2BIM
 
             //vorgegebene Semantik aus CityGML-Schema:
 
-            XDocument xsdCore = XDocument.Load(@"cityGMLBase.xsd");
-            XDocument xsdBldgs = XDocument.Load(@"building.xsd");
+            this.attributes = sem.GetSchemaAttributes();
 
-            var coreAttr = sem.ReadSchemaAttributes(xsdCore, "core", this.allns);
-            var bldgAttr = sem.ReadSchemaAttributes(xsdBldgs, "bldg", this.allns);
 
-            this.attributes.UnionWith(coreAttr);
-            this.attributes.UnionWith(bldgAttr);
+            foreach (var fest in attributes)
+            {
+                Log.Information(fest.GmlNamespace + " , " + fest.Name + " , " + fest.GmlType);
+            }
 
             //Anlegen der semantischen Attribute (ohne Werte):
             //Parsen der generischen Attribute

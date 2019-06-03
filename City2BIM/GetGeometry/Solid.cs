@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static City2BIM.Prop;
 using Serilog;
+using static City2BIM.Prop;
 
 namespace City2BIM.GetGeometry
 {
-
     public class Solid
     {
         private Dictionary<string, Plane> planes = new Dictionary<string, Plane>();
         private List<Vertex> vertices = new List<Vertex>();
 
-
         public void AddPlane(string id, List<XYZ> polygon)
         {
             if(polygon.Count < 4)
             {
-                //throw new Exception("Zu wenig Eckpunkte!");
-                //continue;
+                Log.Error("Zu wenig Eckpunkte! (AddPlane())");
+                Log.Error("Polygon falsch generiert. Anzahl Eckpunkte = " + polygon.Count);
             }
 
             XYZ normal = new XYZ(0, 0, 0);
@@ -57,6 +55,8 @@ namespace City2BIM.GetGeometry
             planes.Add(id, new Plane(id, verts, XYZ.Normalized(normal), centroid / ((double)verts.Count)));
         }
 
+        private List<Vertex> vertexErrors = new List<Vertex>();
+
         public void CalculatePositions()
         {
             foreach(Vertex v in vertices)
@@ -79,15 +79,15 @@ namespace City2BIM.GetGeometry
                                    XYZ.CrossProduct(plane1.Normal, plane2.Normal) * XYZ.ScalarProduct(plane3.Centroid, plane3.Normal)) /
                                    determinant;
                         v.Position = pos;
-
                     }
-
                     else
                     {
+                        Log.Error("Determinante ist falsch! (CalculatePositions())");
+                        Log.Error("Determinante = " + determinant);
+
                         //throw new Exception("Hier ist die Determinante falsch");
                     }
                 }
-
                 else if(v.Planes.Count > 3)
                 {
                     XYZ vertex = new XYZ(0, 0, 0);
@@ -136,15 +136,36 @@ namespace City2BIM.GetGeometry
                                    XYZ.CrossProduct(plane1.Normal, plane2.Normal) * XYZ.ScalarProduct(plane3.Centroid, plane3.Normal)) /
                                    determinant;
                         v.Position = pos;
+                    }
+                    else
+                    {
+                        Log.Error("Determinante ist falsch! (CalculatePositions(), mehr als 3 Ebenen)");
+                        Log.Error("Determinante = " + determinant);
 
+                        //throw new Exception("Hier ist die Determinante falsch");
                     }
                 }
-
                 else
                 {
-                    Log.Error("zu wenig ebenen = " + v.Planes.Count);
+                    vertexErrors.Add(v);
+
+                    Log.Error("Zu wenig Ebenen! (CalculatePositions())");
+                    Log.Error("Anzahl Ebenen = " + v.Planes.Count);
+
                     //throw new Exception("Zu wenig Ebenen");
                 }
+            }
+        }
+
+        public void RemoveWrongVertices()
+        {
+            foreach(var errV in vertexErrors)
+            {
+                var match = from v in vertices
+                            where v == errV
+                            select v;
+
+                vertices.Remove(match.Single());
             }
         }
 

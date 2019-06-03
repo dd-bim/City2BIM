@@ -74,11 +74,13 @@ namespace City2BIM.GetGeometry
                 //Log.Debug("Anzahl Eckpunkte dieser Fläche = " + vertexList.Count);
                 //Log.Debug("Fläche erhält intern die ID = " + guid);
 
-                if(vertexList.Count < 4)
-                {
-                    Log.Error("Zu wenig Eckpunkte!");
-                    throw new Exception("Zu wenig Eckpunkte!");
-                }
+                //if(vertexList.Count < 4)
+                //{
+                //    Log.Error("Zu wenig Eckpunkte!");
+                //    Log.Error("Polygon falsch generiert. Anzahl Eckpunkte = " + vertexList.Count );
+
+                //    //throw new Exception("Zu wenig Eckpunkte!");
+                //}
 
                 solid.AddPlane(guid, vertexList);
 
@@ -90,6 +92,8 @@ namespace City2BIM.GetGeometry
             // 3.2. Erzeuge Semantik für jedes Gebäud
 
             solid.CalculatePositions();
+
+            //solid.RemoveWrongVertices();
 
             foreach(Vertex v in solid.Vertices)
             {
