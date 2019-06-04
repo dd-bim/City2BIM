@@ -29,10 +29,17 @@ namespace City2BIM
                 .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
                 .CreateLogger();
 
+
+
             UIApplication uiApp = revit.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
             Log.Information("Start...");
+
+            //Import via Dialog:
+            Class1imp imp = new Class1imp();
+            var path = imp.ImportPath();
+            //-------------------------------
 
             var folder = @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\CityGML_Data\";
 
@@ -46,13 +53,17 @@ namespace City2BIM
             //var path = @"files\Dresden\Gebaeude_LOD3_citygml.gml";
             //var path = @"files\Dresden\Vegetation.gml";
             //var path = @"files\Greiz\LoD2_726_5616_2_TH\Greiz_bldg_parts.gml";
-            var path = @"files\Bayern\714_5323.gml";
+            //var path = @"files\Bayern\714_5323.gml"; //große Kachel (ca. 30% Erfolg) --> raised to 85% ! --> 92 % (prop: 1mm²)
+            //var path = @"files\Bayern\713_5322.gml"; //kleine Kachel mit nur 2 Gebäuden
+            //var path = @"files\Brandenburg\testdaten_lod2.gml";
             //var path = @"files\Bayern\LoD1UTM32city_p.gml";
 
             Log.Information("File: " + path);
 
             //Hauptmethode zur Erstellung der Geometrie, Ermitteln der Attribute und Füllen der Attributwerte
-            var solidList = ReadXMLDoc(folder + path); //ref für attributes?
+            var solidList = ReadXMLDoc(path); //ref für attributes?
+
+            //var solidList = ReadXMLDoc(folder + path); //ref für attributes?
 
             //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
             RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc, this.attributes); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
@@ -60,7 +71,7 @@ namespace City2BIM
 
             //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
             RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, solidList);
-            cityModel.CreateBuildings(); //erstellt DirectShape-Geometrie als Kategorie Umgebung
+            cityModel.CreateBuildings(path); //erstellt DirectShape-Geometrie als Kategorie Umgebung
 
             Log.Debug("ReadData-Object, gelesene Geometrien = " + solidList.Count);
 
@@ -203,6 +214,7 @@ namespace City2BIM
 
             foreach(XElement xmlBuildingNode in gmlBuildings)
             {
+                Log.Information("---------------------------------------------------------------------------------------");
                 Log.Information("Bldg-Id: " + xmlBuildingNode.FirstAttribute.Value);
 
                 //lokale BoundingBox, wenn nötig (gibts das auch bei parts?)
@@ -250,8 +262,6 @@ namespace City2BIM
 
                         bldgGeom = geom.CollectBuilding(part, lowerCorner);
 
-                        Log.Information("- Geometrie-Objekt?: " + bldgGeom.ToString());
-
                         bldgSemSpez = semVal.ReadAttributeValues(part, attributes, allns);
 
                         Log.Information("- Spezifische Semantik?: " + bldgSemSpez.Count);
@@ -287,8 +297,6 @@ namespace City2BIM
                 {
                     //Geometrie des Buildings
                     bldgGeom = geom.CollectBuilding(xmlBuildingNode, lowerCorner);
-
-                    Log.Information("- Geometrie-Objekt?: " + bldgGeom.ToString());
 
                     solids.Add(bldgGeom, bldgSemAllg);
                 }

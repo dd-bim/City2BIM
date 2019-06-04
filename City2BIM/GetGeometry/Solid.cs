@@ -13,23 +13,26 @@ namespace City2BIM.GetGeometry
 
         public void AddPlane(string id, List<XYZ> polygon)
         {
+            polygon.Add(polygon.First());
+
             if(polygon.Count < 4)
             {
-                Log.Error("Zu wenig Eckpunkte! (AddPlane())");
-                Log.Error("Polygon falsch generiert. Anzahl Eckpunkte = " + polygon.Count);
+                Log.Error("Zu wenig Eckpunkte! (AddPlane()), Polygon falsch generiert. Anzahl Eckpunkte = " + polygon.Count);
             }
 
             XYZ normal = new XYZ(0, 0, 0);
             XYZ centroid = new XYZ(0, 0, 0);
+
             List<int> verts = new List<int>(polygon.Count);
             for(int i = 1; i < polygon.Count; i++)
             {
                 //Prüfung zur Einhaltung der Punktreihenfolge und Redundanz von Punkten (S.69, MA)
-
+                 
                 bool notmatched = true;
                 for(int j = 0; j < vertices.Count; j++)
                 {
                     double dist = XYZ.DistanceSq(polygon[i], vertices[j].Position);
+
                     if(dist < Distolsq)
                     {
                         vertices[j].AddPlane(id);
@@ -55,12 +58,15 @@ namespace City2BIM.GetGeometry
             planes.Add(id, new Plane(id, verts, XYZ.Normalized(normal), centroid / ((double)verts.Count)));
         }
 
-        private List<Vertex> vertexErrors = new List<Vertex>();
+        //private List<Vertex> vertexErrors = new List<Vertex>();
 
         public void CalculatePositions()
         {
             foreach(Vertex v in vertices)
             {
+                //Log.Information("Anzahl Ebenen pro Vertex = " + v.Planes.Count);
+
+
                 if(v.Planes.Count == 3)
                 {
                     XYZ vertex = new XYZ(0, 0, 0);
@@ -82,8 +88,7 @@ namespace City2BIM.GetGeometry
                     }
                     else
                     {
-                        Log.Error("Determinante ist falsch! (CalculatePositions())");
-                        Log.Error("Determinante = " + determinant);
+                        Log.Error("Determinante ist falsch! (CalculatePositions()), Determinante = " + determinant);
 
                         //throw new Exception("Hier ist die Determinante falsch");
                     }
@@ -147,27 +152,26 @@ namespace City2BIM.GetGeometry
                 }
                 else
                 {
-                    vertexErrors.Add(v);
+                    //vertexErrors.Add(v);
 
-                    Log.Error("Zu wenig Ebenen! (CalculatePositions())");
-                    Log.Error("Anzahl Ebenen = " + v.Planes.Count);
+                    Log.Error("Zu wenig Ebenen! (CalculatePositions()), Anzahl Ebenen = " + v.Planes.Count);
 
                     //throw new Exception("Zu wenig Ebenen");
                 }
             }
         }
 
-        public void RemoveWrongVertices()
-        {
-            foreach(var errV in vertexErrors)
-            {
-                var match = from v in vertices
-                            where v == errV
-                            select v;
+        //public void RemoveWrongVertices()
+        //{
+        //    foreach(var errV in vertexErrors)
+        //    {
+        //        var match = from v in vertices
+        //                    where v == errV
+        //                    select v;
 
-                vertices.Remove(match.Single());
-            }
-        }
+        //        vertices.Remove(match.Single());
+        //    }
+        //}
 
         public List<Vertex> Vertices
         {

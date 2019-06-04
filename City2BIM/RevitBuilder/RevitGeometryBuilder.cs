@@ -24,8 +24,9 @@ namespace City2BIM.RevitBuilder
             {
             }
         }
+        
 
-        public void CreateBuildings()
+        public void CreateBuildings(string path)
         {
             double all = buildings.Count;
             double success = 0.0;
@@ -83,8 +84,11 @@ namespace City2BIM.RevitBuilder
                         builder.AddFace(new TessellatedFace(face, ElementId.InvalidElementId));
                     }
 
+
+
                     builder.CloseConnectedFaceSet();
                     builder.Target = TessellatedShapeBuilderTarget.Solid;
+
                     builder.Fallback = TessellatedShapeBuilderFallback.Abort;
                     builder.Build();
 
@@ -167,8 +171,19 @@ namespace City2BIM.RevitBuilder
                     continue;
                 }
             }
+
+            var results = new LoggerConfiguration()
+                //.MinimumLevel.Debug()
+                .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\Results_04062019.txt"/*, rollingInterval: RollingInterval.Day*/)
+                .CreateLogger();
+
             double statSucc = success / all * 100;
             double statErr = error / all * 100;
+
+            results.Information(path);
+            results.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
+            results.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
+            results.Information("------------------------------------------------------------------");
 
             Log.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
             Log.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");

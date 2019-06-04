@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1imp.cs" />
     <Compile Include="GetGeometry\Plane.cs" />
     <Compile Include="GetGeometry\ReadGeomData.cs" />
     <Compile Include="GetGeometry\Solid.cs" />
