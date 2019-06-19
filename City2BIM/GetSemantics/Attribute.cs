@@ -1,5 +1,9 @@
 ﻿namespace City2BIM.GetSemantics
 {
+
+    /// <summary>
+    /// Class for semantic attribute representation
+    /// </summary>
     public class Attribute
     {
         private AttrNsp gmlNamespace;         //für Parameter-Gruppierung in Revit
@@ -7,7 +11,6 @@
 
         private string name;
         private string description;
-        private string unit;
 
         public string Name
         {
@@ -68,7 +71,18 @@
             this.GmlType = type;
         }
 
+        /// <summary>
+        /// Enum for possible attribute types
+        /// Inspired by CityGML Generics module
+        /// Adapted for fixed attributes
+        /// </summary>
         public enum AttrType { stringAttribute, intAttribute, doubleAttribute, measureAttribute, uriAttribute }
+
+        /// <summary>
+        /// Enum for possible attribute namespaces
+        /// Shortcuts for namespaces as saved in CityGML files
+        /// </summary>
         public enum AttrNsp { gml, core, xal, bldg, gen }
+
     }
 }

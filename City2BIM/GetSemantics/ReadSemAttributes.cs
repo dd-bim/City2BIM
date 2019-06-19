@@ -5,33 +5,50 @@ using Serilog;
 
 namespace City2BIM.GetSemantics
 {
+
+    /// <summary>
+    /// Set CityGML attributes (fixed and generic)
+    /// </summary>
     public class ReadSemAttributes
     {
+
+        /// <summary>
+        /// Read generic attributes (see CityGML Generics-module)
+        /// </summary>
+        /// <param name="bldgs">all building tags per file</param>
+        /// <param name="generics">gen: namespace</param>
+        /// <returns>Disctinct list of generic attributes</returns>
         public HashSet<Attribute> ReadGenericAttributes(IEnumerable<XElement> bldgs, XNamespace generics)
         {
             var genAttrList = new HashSet<Attribute>();
 
             foreach(var bldg in bldgs)
             {
-                var genValues = bldg.Descendants(generics + "value");
+                var genValues = bldg.Descendants(generics + "value");       //tag for attribute value, needed here only for efficient search
 
                 foreach(var val in genValues)
                 {
-                    var genAttr = val.Parent;
+                    var genAttr = val.Parent;       //parent tag contains the attribute name and its type
 
+                    //Save as an attrivute
                     var attr = new Attribute(Attribute.AttrNsp.gen, genAttr.Attribute("name").Value, Attribute.AttrType.stringAttribute);
-                    //ggf. weitere Typen prüfen (laut AdV aber nur stringAttribute zulässig)
+                    //ggf. weitere Typen prüfen (laut AdV aber nur stringAttribute zulässig) -> TO DO
 
                     var genListNames = genAttrList.Select(c => c.Name);
 
                     if(!genListNames.Contains(attr.Name))
-                        genAttrList.Add(attr);
+                        genAttrList.Add(attr);              //add to hashset, if not present
                 }
             }
 
             return genAttrList;
         }
 
+
+        /// <summary>
+        /// Read fixed attributes (CityGML 2.0 standard)
+        /// </summary>
+        /// <returns>Distinct list of fixed attributes</returns>
         public HashSet<Attribute> GetSchemaAttributes()
         {
             var regAttr = new HashSet<Attribute>();

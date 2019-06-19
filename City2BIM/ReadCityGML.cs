@@ -12,6 +12,7 @@ using Serilog;
 using Attribute = City2BIM.GetSemantics.Attribute;
 using Solid = City2BIM.GetGeometry.Solid;
 using XYZ = City2BIM.GetGeometry.XYZ;
+using netDxf;
 
 namespace City2BIM
 {
@@ -29,9 +30,9 @@ namespace City2BIM
                 .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
                 .CreateLogger();
 
+           var dxf = new DxfVisualizer();
 
-
-            UIApplication uiApp = revit.Application;
+        UIApplication uiApp = revit.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
             Log.Information("Start...");
@@ -61,7 +62,7 @@ namespace City2BIM
             Log.Information("File: " + path);
 
             //Hauptmethode zur Erstellung der Geometrie, Ermitteln der Attribute und Füllen der Attributwerte
-            var solidList = ReadXMLDoc(path); //ref für attributes?
+            var solidList = ReadXMLDoc(path, dxf); //ref für attributes?
 
             //var solidList = ReadXMLDoc(folder + path); //ref für attributes?
 
@@ -70,7 +71,7 @@ namespace City2BIM
             citySem.CreateParameters(); //erstellt Shared Parameters für Kategorie Umgebung
 
             //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-            RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, solidList);
+            RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, solidList, dxf);
             cityModel.CreateBuildings(path); //erstellt DirectShape-Geometrie als Kategorie Umgebung
 
             Log.Debug("ReadData-Object, gelesene Geometrien = " + solidList.Count);
@@ -85,6 +86,8 @@ namespace City2BIM
             Log.Debug("CityModel: " + res);
 
             //debug
+
+            dxf.DrawDxf(path);
 
             return Result.Succeeded;
         }
@@ -134,10 +137,10 @@ namespace City2BIM
             lowerCorner.Y = Double.Parse(pointSeperated[1], CultureInfo.InvariantCulture);
             lowerCorner.Z = Double.Parse(pointSeperated[2], CultureInfo.InvariantCulture);
 
-            Log.Information(String.Format("Eine lower Corner: {0,5:N3} {1,5:N3} {2,5:N3}  ", lowerCorner.X, lowerCorner.Y, lowerCorner.Z));
+            //Log.Information(String.Format("Eine lower Corner: {0,5:N3} {1,5:N3} {2,5:N3}  ", lowerCorner.X, lowerCorner.Y, lowerCorner.Z));
         }
 
-        public Dictionary<Solid, Dictionary<Attribute, string>> ReadXMLDoc(string path)
+        public Dictionary<Solid, Dictionary<Attribute, string>> ReadXMLDoc(string path, DxfVisualizer dxf)
         {
             var solids = new Dictionary<Solid, Dictionary<Attribute, string>>();
 
@@ -185,12 +188,6 @@ namespace City2BIM
 
             this.attributes = sem.GetSchemaAttributes();
 
-
-            foreach (var fest in attributes)
-            {
-                Log.Information(fest.GmlNamespace + " , " + fest.Name + " , " + fest.GmlType);
-            }
-
             //Anlegen der semantischen Attribute (ohne Werte):
             //Parsen der generischen Attribute
             //Auslesen pro Bldg
@@ -231,7 +228,7 @@ namespace City2BIM
                 //---------------------------------
 
                 var semVal = new ReadSemValues();
-                var geom = new ReadGeomData(this.allns);
+                var geom = new ReadGeomData(this.allns, dxf);
 
                 //Spezialfall: BuildingParts
                 //- Geometrie liegt unterhalb Part

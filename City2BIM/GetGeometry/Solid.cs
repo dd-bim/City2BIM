@@ -13,7 +13,7 @@ namespace City2BIM.GetGeometry
 
         public void AddPlane(string id, List<XYZ> polygon)
         {
-            polygon.Add(polygon.First());
+            polygon.Add(polygon.First());       //Methode benötigt geschlossenes Polygon, daher wird Startpunkt hier wieder dem Ende hinzugefügt
 
             if(polygon.Count < 4)
             {
@@ -58,8 +58,6 @@ namespace City2BIM.GetGeometry
             planes.Add(id, new Plane(id, verts, XYZ.Normalized(normal), centroid / ((double)verts.Count)));
         }
 
-        //private List<Vertex> vertexErrors = new List<Vertex>();
-
         public void CalculatePositions()
         {
             foreach(Vertex v in vertices)
@@ -88,7 +86,7 @@ namespace City2BIM.GetGeometry
                     }
                     else
                     {
-                        Log.Error("Determinante ist falsch! (CalculatePositions()), Determinante = " + determinant);
+                        Log.Error("Determinante ist falsch bei genau 3 Ebenen!, Determinante = " + determinant);
 
                         //throw new Exception("Hier ist die Determinante falsch");
                     }
@@ -144,8 +142,7 @@ namespace City2BIM.GetGeometry
                     }
                     else
                     {
-                        Log.Error("Determinante ist falsch! (CalculatePositions(), mehr als 3 Ebenen)");
-                        Log.Error("Determinante = " + determinant);
+                        Log.Error("Determinante falsch bei " + v.Planes.Count + " Ebenen!, Determinante = " + determinant);
 
                         //throw new Exception("Hier ist die Determinante falsch");
                     }
@@ -154,7 +151,7 @@ namespace City2BIM.GetGeometry
                 {
                     //vertexErrors.Add(v);
 
-                    Log.Error("Zu wenig Ebenen! (CalculatePositions()), Anzahl Ebenen = " + v.Planes.Count);
+                    Log.Error("Zu wenig Ebenen!, Anzahl Ebenen = " + v.Planes.Count);
 
                     //throw new Exception("Zu wenig Ebenen");
                 }

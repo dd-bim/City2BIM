@@ -10,6 +10,7 @@ namespace City2BIM.GetGeometry
         private int[] vertices;
         private XYZ normal;
         private XYZ centroid;
+        private FaceType facetype;
 
         public Plane(string id, List<int> vertices, XYZ normal, XYZ centroid)
         {
@@ -47,6 +48,21 @@ namespace City2BIM.GetGeometry
             {
             }
         }
+
+        public FaceType Facetype
+        {
+            get
+            {
+                return this.facetype;
+            }
+
+            set
+            {
+                this.facetype = value;
+            }
+        }
+
+        public enum FaceType { roof, wall, ground, closure }
     }
 }
 

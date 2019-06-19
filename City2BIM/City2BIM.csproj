@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BimGisCad">
+      <HintPath>..\..\..\..\libraries\bimgiscadlib-master_06_19\bimgiscadlib-master\BimGisCad\bin\Release\netstandard2.0\BimGisCad.dll</HintPath>
+    </Reference>
+    <Reference Include="netDxf, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\netDXF.2.2.0.1\lib\net45\netDxf.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2018\RevitAPI.dll</HintPath>
@@ -60,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1imp.cs" />
+    <Compile Include="DxfVisualizer.cs" />
     <Compile Include="GetGeometry\Plane.cs" />
     <Compile Include="GetGeometry\ReadGeomData.cs" />
     <Compile Include="GetGeometry\Solid.cs" />

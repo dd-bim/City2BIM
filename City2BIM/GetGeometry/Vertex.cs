@@ -2,13 +2,19 @@
 
 namespace City2BIM.GetGeometry
 {
-
+    /// <summary>
+    ///  Vertex or Node (Topological Point)
+    /// </summary>
     public class Vertex
     {
         private XYZ position;
         HashSet<string> planes;
 
-
+        /// <summary>
+        ///  Create Vertex (Topological Point)
+        /// </summary>
+        /// /// <param name="position"> Coordinate in XYZ </param>
+        /// /// <param name="plane"> Plane to add </param>
         public Vertex(XYZ position, string plane)
         {
             this.position = position;
@@ -16,6 +22,10 @@ namespace City2BIM.GetGeometry
             this.planes.Add(plane);
         }
 
+        /// <summary>
+        ///  Add plane to vertex
+        /// </summary>
+        /// <param name="plane"> Plane to add </param>
         public void AddPlane(string plane)
         {
             planes.Add(plane);

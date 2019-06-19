@@ -8,11 +8,15 @@ using static City2BIM.Prop;
 
 namespace City2BIM.GetGeometry
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class ReadGeomData
     {
-        public ReadGeomData(Dictionary<string, XNamespace> allns)
+        public ReadGeomData(Dictionary<string, XNamespace> allns, DxfVisualizer dxf)
         {
             this.allns = allns;
+            this.dxf = dxf;
         }
 
         //private static XNamespace core = "http://www.opengis.net/citygml/1.0";
@@ -20,6 +24,7 @@ namespace City2BIM.GetGeometry
         //private static XNamespace gml = "http://www.opengis.net/gml";
 
         private Dictionary<string, XNamespace> allns;
+        private DxfVisualizer dxf;
 
         public PlugIn PlugIn
         {
@@ -29,82 +34,95 @@ namespace City2BIM.GetGeometry
             }
         }                                                             //nötig? evtl. Verknüpfung zu "ReadCityGML.cs"
 
+        /// <summary>
+        /// Main method for Solid calculation
+        /// </summary>
+        /// <param name="building">CityGML element for Building</param>
+        /// <param name="lowerCorner">XYZ coordinate of lowerCorner</param>
+        /// <returns>Solid representation for Building(part)</returns>
         public Solid CollectBuilding(XElement building, XYZ lowerCorner)
         {
-            // 3. Erzeuge Volumenkörüer für jedes Gebäude
-            // Objekt, offset, id für jedes Gebäude
+            //alle bldg:boundedBy-Elemente pro Building(part)
+            //Achtung: funktioniert nur nur LOD2 (LOD1 enthält kein boundedBy -> TO DO)
+            //bldg:boundedBy enthält in der Regel eine Polygonfläche (zB. TH), kann aber auch mehrere Flächen pro Wandtyp enthalten (zB. Berlin)
+            var boundedBy = building.Descendants(this.allns["bldg"] + "boundedBy").ToList();
 
-            //var gml = this.allns["gml"];
+            var polyList = new Dictionary<List<XYZ>, string>(); //Dictionary for all pos in polygon and FaceType (Wall, Roof, Ground, Closure)
 
-            //string gmlid = building.Attribute(gml + "id").Value;
+            foreach(var bound in boundedBy)
+            {
+                var polyType = "";          //leer initialisiert, falls keine Flächenart gespeichert (wie bspw bei LOD1)
 
-            //var xmlLc = building.Descendants(gml + "lowerCorner");
+                polyType = bound.Elements().First().Name.LocalName; //erstes Kindelement von boundedBy enthält FaceType
 
-            //if(xmlLc.Count() > 0)
-            //{
-            //    readOffset(ref lowerCorner.X, ref lowerCorner.Y, ref lowerCorner.Z, xmlLc.First());
-            //}
+                var posLists = bound.Descendants(allns["gml"] + "posList").ToList();  //alle posLists innerhalb boundedBy
 
-            //Log.Information(String.Format("LR Corner Gebäude {0,17}: {1,5:N3} {2,5:N3} {3,5:N3}  ", gmlid, lowerCorner.X, lowerCorner.Y, lowerCorner.Z));
+                foreach(var posL in posLists)
+                {
+                    var polyPts = CollectPoints(posL, lowerCorner); //Speichern der Polygonpunkte, reduziert um lowerCorner in PointList
 
-            // 3.1 Sammle alle Polygone // Falscher Ansatz. Neheme bldg.bounded
+                    //jedes Polygon wird als Punktliste zusammen mit FaceType in Dictionary geschrieben
+                    polyList.Add(polyPts, polyType);
+                }
 
-            var boundedBy = building.Descendants(this.allns["bldg"] + "boundedBy");
+                if(posLists.Count == 0)            //wenn Punkte nicht in posList gespeichert sind, dann wahrscheinlich als einzelne pos tags mit XYZ
+                {
+                    var positions = bound.Descendants(allns["gml"] + "pos").ToList();  //alle posLists innerhalb boundedBy
 
-            //var polygons = building.Descendants(this.allns["bldg"] + "boundedBy").Select(b => b.Descendants(gml + "posList"));
+                    var posList = new List<XYZ>();
 
-            //Log.Information("Anzahl der boundedBy-Tags innerhalb Building " + boundedBy.Count());
+                    foreach(var pos in positions)
+                    {
+                        var polyPt = CollectPoint(pos, lowerCorner);     //Speichern der Polygonpunkte, reduziert um lowerCorner in PointList
+                        posList.Add(polyPt);
+                    }
 
-            //var polys = from bound in bounds
-            //            select bounds.Descendants(gml + "posList");
-
-            //IEnumerable < XElement > polygons = xmlBuildingNode.Descendants(gml + "posList");
-
-            //List<XYZ> ptList = new List<XYZ>();
+                    polyList.Add(posList, polyType);
+                }
+            }
 
             //Auslesen der Polygone
             //------------------------
 
-            Dictionary<XYZ, string> ptDictPoly = new Dictionary<XYZ, string>();
+            Dictionary<XYZ, string> ptDictPoly = new Dictionary<XYZ, string>(); //Dictionary für Polygonpunkt und generierte PolygonID
 
-            foreach(var polygon in boundedBy.Descendants(allns["gml"] + "posList"))
+            foreach(var polyPts in polyList)        //Auslesen aller Polygone in Schleife
             {
-                var polyPts = CollectPoints(polygon, lowerCorner);
+                //Prüfung - gleicher Start - und Endpunkt
+                // ---------------------------------------- -
+                var checkPoly = SameStartAndEndPt(polyPts.Key);
 
-                //hier Logik implementieren, welche Fehler innerhalb der Polygon-Geometrie ausgibt und ggf. berichtigt
-
-                //Prüfung - gleicher Start- und Endpunkt
-                //-----------------------------------------
-                //var checkPoly = SameStartAndEndPt(polyPts);
-
-                //if(!checkPoly)
-                //    Log.Error("Start- und Endpunkt sind nicht gleich!");
+                if(!checkPoly)
+                    Log.Error("Start- und Endpunkt sind nicht gleich!");
+                else
+                    polyPts.Key.Remove(polyPts.Key.Last());     //Entfernen des letzten Punktes (=Start)
 
                 //----------------------------------------------------------
 
                 //Prüfung - keine redundanten Punkte (außer Start und End)
                 //-----------------------------------------
-                var checkRedun = NoRedundantPts(polyPts);
+                var checkRedun = NoRedundantPts(polyPts.Key);
 
                 if(!checkRedun)
                     Log.Error("Gleiche Punkte (außer Start- und Endpunkt) in Polygon vorhanden!");
-
                 //----------------------------------------------------------
 
-                string polyGuid = Guid.NewGuid().ToString();
+                //Generierung einer GUID pro Polygon
+                //theoretisch könnte man auch ID aus CityGML nehmen, allerdings werden dort nicht immer IDs pro Fläche vergeben (zB DD)
+                string polyGuid = Guid.NewGuid().ToString() + "_" + polyPts.Value;
 
-                foreach(var pt in polyPts)
+                foreach(var pt in polyPts.Key)
                 {
-                    ptDictPoly.Add(pt, polyGuid);       //Speicherung aller Punkte (XYZ) mit ID des zugehörigen Polygons
+                    ptDictPoly.Add(pt, polyGuid);       //Speicherung jedes Punktes (XYZ) mit ID des zugehörigen Polygons
                 }
             }
 
-            Dictionary<XYZ, string> ptDictPolyF = new Dictionary<XYZ, string>();
-
-            //Ermitteln der Punkte, welche innerhalb der Tolerant (siehe Prop-Klasse) weniger als 3 äquivalente Punkte besitzen
+            //Ermitteln der Punkte, welche innerhalb der Toleranz (siehe Prop-Klasse) weniger als 3 äquivalente Punkte besitzen
             //Ebenenschnitt benötigt mindestens 3 Ebenen, welche zum Vertex gehören
             //bei weniger als 3 Punkten werden Fehler in der CityGML-Geometrie, da weniger als 3 Ebenen für Solid-erstellung keinen Sinn ergeben (?!)
             //es werden die Punkte aller Polygone des Buildings zum Vergleich herangezogen
+
+            Dictionary<XYZ, string> ptDictPolyF = new Dictionary<XYZ, string>();    //temporäres Dictionary für vermutlich falsche Punkte (1 oder 2 Ebene(n))
 
             foreach(var pt in ptDictPoly)
             {
@@ -117,46 +135,46 @@ namespace City2BIM.GetGeometry
                     if(pt.Key == pt2)       //selber Punkt wird nicht mitgezählt
                         continue;
 
-                    double ptDist = XYZ.DistanceSq(pt.Key, pt2);
+                    double ptDist = XYZ.DistanceSq(pt.Key, pt2);    //Berechnung der Distanz zwischen Punkten
 
                     if(ptDist < Distolsq)
                     {
-                        redunCt++;
+                        redunCt++;      //wenn kleiner als Toleranz (siehe Prop-Klasse) ist der Punkt redundant
                     }
                 }
 
-                if(redunCt < 2)
+                if(redunCt < 2)        //gewünschter Fall: pro Vertex sind 3 Punkte in CityGML enthalten
                 {
-                    //Log.Error("Fehler wohl bei " + pt.Key.X + " , " + pt.Key.Y + " , " + pt.Key.Z);
-
-                    ptDictPolyF.Add(pt.Key, pt.Value);
+                    ptDictPolyF.Add(pt.Key, pt.Value);      //bei weniger als 3 (kein Ebenenschnitt möglich) -> Speichern in temp. Dict.
                 }
             }
 
-            var testCt = ptDictPoly.Count;
-
             foreach(var pt in ptDictPolyF)
             {
-                ptDictPoly.Remove(pt.Key);
+                ptDictPoly.Remove(pt.Key);  //jeder vermutlich falsche Punkt wird aus Punktliste gelöscht
+
+                dxf.DrawPoint(pt.Key.X + lowerCorner.X, pt.Key.Y + lowerCorner.Y, pt.Key.Z + lowerCorner.Z, "cityGMLremovedPts", new int[] { 255, 0, 0 });
             }
 
-            if (ptDictPolyF.Count > 0)
+            if(ptDictPolyF.Count > 0)
                 Log.Warning(ptDictPolyF.Count + " Punkte gelöscht. (In < 3 Ebenen vorhanden)");
 
-            Solid solid = new Solid();
+            Solid solid = new Solid();      //Anlegen eines Solids pro Gebäude(teil)
 
-            var polyList = ptDictPoly.Values.Distinct();  //alle Guids der Polygone
+            var polyL = ptDictPoly.Values.Distinct();  //Distinct: Zusammenfassen aller gleichen PolygonIDs zu einer ID-Liste
 
-            foreach(var polyID in polyList)
+            foreach(var polyID in polyL)
             {
                 var points = from p in ptDictPoly
                              where p.Value.Equals(polyID)
-                             select p.Key;
+                             select p.Key;                  //Selektieren aller Punkte pro Polygon-ID
 
-                //Log.Information("pointsPoly " + points.Count());
-
-                solid.AddPlane(polyID, points.ToList());
+                solid.AddPlane(polyID, points.ToList());    //Aufruf der AddPlane-Methode, Übergabe von Polygon-ID und zugehörigen Punkten
             }
+
+            //-------------------------------------------------------------------------------------------------------------
+
+            //alte Implementierung (wird evtl. später wieder genutzt, falls obige Suche verlagert wird):
 
             //foreach(var polygon in boundedBy.Descendants(allns["gml"] + "posList"))
             ////foreach(var polygon in building.Descendants(allns["gml"] + "posList"))
@@ -186,22 +204,28 @@ namespace City2BIM.GetGeometry
             //    //Log.Information("Ebene wurde Solid hinzugefügt!");
             //}
 
-            //foreach Polygon
+            //-------------------------------------------------------------------------------------------------------------
 
-            // 3.2. Erzeuge Semantik für jedes Gebäud
-
+            //Aufruf der Methode zur Bildung der Ebenenschnitte
+            //solid enthält bis jetzt Vertex-Liste mit zugehörigen Ebenen ohne neu berechnete Eckpunkte (vertices)
+            //nach Methode werden die Koordinaten der Vertices mit neuen Koordinaten aus Ebenenschnitt überschrieben/verbessert/ausgeglichen
             solid.CalculatePositions();
-
-            //solid.RemoveWrongVertices();
 
             foreach(Vertex v in solid.Vertices)
             {
-                v.Position = v.Position + lowerCorner;
+                v.Position = v.Position + lowerCorner;          //für jeden Vertex wird lowerCorner wieder addiert
             }
 
             return solid;
         }
 
+        /// <summary>
+        /// Splitting of PosList for XYZ coordinates
+        /// Subtraction of lowerCorner for mathematical calculations
+        /// </summary>
+        /// <param name="points">posList polygon</param>
+        /// <param name="lowerCorner">Coordinate XYZ lower Corner</param>
+        /// <returns>List of Polygon Points (XYZ)</returns>
         private List<XYZ> CollectPoints(XElement points, XYZ lowerCorner)
         {
             string pointString = points.Value;
@@ -210,32 +234,66 @@ namespace City2BIM.GetGeometry
 
             for(int i = 0; i < pointsSeperated.Length; i = i + 3)
             {
-                double x = Double.Parse(pointsSeperated[i], CultureInfo.InvariantCulture) - lowerCorner.X;
-                double y = Double.Parse(pointsSeperated[i + 1], CultureInfo.InvariantCulture) - lowerCorner.Y;
-                double z = Double.Parse(pointsSeperated[i + 2], CultureInfo.InvariantCulture) - lowerCorner.Z;
-                polygonVertices.Add(new XYZ(x, y, z));
+                var coord = SplitCoordinate(new string[] { pointsSeperated[i], pointsSeperated[i + 1], pointsSeperated[i + 2] }, lowerCorner);
 
-                //Log.Debug("Koordinate : " + x + "," + y + "," + z);
+                polygonVertices.Add(coord);
             }
 
-            polygonVertices.Remove(polygonVertices.Last());
+            for(int i = 0; i < polygonVertices.Count - 1; i++)
+            {
+                dxf.DrawLine(polygonVertices[i].X + lowerCorner.X, polygonVertices[i].Y + lowerCorner.Y, polygonVertices[i].Z + lowerCorner.Z, polygonVertices[i + 1].X + lowerCorner.X, polygonVertices[i + 1].Y + lowerCorner.Y, polygonVertices[i + 1].Z + lowerCorner.Z, "cityGMLlines", new int[] { 0, 255, 0 });
+            }
 
             return polygonVertices;
         }
 
+        /// <summary>
+        /// Splitting of Pos for single XYZ coordinate
+        /// Subtraction of lowerCorner for mathematical calculations
+        /// </summary>
+        /// <param name="position">pos tag</param>
+        /// <param name="lowerCorner">Coordinate XYZ lower Corner</param>
+        /// <returns>Polygon Point (XYZ)</returns>
+        private XYZ CollectPoint(XElement position, XYZ lowerCorner)
+        {
+            var pointSeperated = position.Value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return SplitCoordinate(pointSeperated, lowerCorner);
+        }
+
+        private XYZ SplitCoordinate(string[] xyzString, XYZ lowerCorner)
+        {
+            double x = Double.Parse(xyzString[0], CultureInfo.InvariantCulture) - lowerCorner.X;
+            double y = Double.Parse(xyzString[1], CultureInfo.InvariantCulture) - lowerCorner.Y;
+            double z = Double.Parse(xyzString[2], CultureInfo.InvariantCulture) - lowerCorner.Z;
+
+            dxf.DrawPoint(x + lowerCorner.X, y + lowerCorner.Y, z + lowerCorner.Z, "cityGMLpts", new int[] { 0, 255, 0 });
+
+            return new XYZ(x, y, z);
+        }
+
+        /// <summary>
+        /// Checks polygon conditions (Start = End)
+        /// </summary>
+        /// <param name="points">PointList Polygon</param>
+        /// <param name="lowerCorner">Coordinate XYZ lower Corner</param>
+        /// <returns>List of Polygon Points</returns>
         private bool SameStartAndEndPt(List<XYZ> polygon)
         {
-            bool decision = true;
-
             var start = polygon.First();
             var end = polygon.Last();
 
             if(start.X != end.X || start.Y != end.Y || start.Z != end.Z)
-                decision = false;
+                return false;
 
-            return decision;
+            return true;
         }
 
+        /// <summary>
+        /// Checks polygon conditions (Redundant Points?)
+        /// </summary>
+        /// <param name="points">PointList Polygon</param>
+        /// <returns>List of Polygon Points</returns>
         private bool NoRedundantPts(List<XYZ> polygon)
         {
             foreach(var pt in polygon)
@@ -243,8 +301,6 @@ namespace City2BIM.GetGeometry
                 var samePts = from p in polygon
                               where (pt != p && pt.X == p.X && pt.Y == p.Y && pt.Z == p.Z)
                               select p;
-
-                //Log.Warning("SamePoints " + samePts.Count());
 
                 if(pt == polygon.First() && samePts.Count() > 1)
                     return false;
