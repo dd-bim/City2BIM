@@ -12,7 +12,6 @@ using Serilog;
 using Attribute = City2BIM.GetSemantics.Attribute;
 using Solid = City2BIM.GetGeometry.Solid;
 using XYZ = City2BIM.GetGeometry.XYZ;
-using netDxf;
 
 namespace City2BIM
 {
@@ -30,9 +29,9 @@ namespace City2BIM
                 .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
                 .CreateLogger();
 
-           var dxf = new DxfVisualizer();
+            var dxf = new DxfVisualizer();
 
-        UIApplication uiApp = revit.Application;
+            UIApplication uiApp = revit.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
             Log.Information("Start...");
@@ -235,9 +234,9 @@ namespace City2BIM
                 //- Semantik liegt teilweise unterhalb Part (spezifische Attribute, wie Dachform)
                 //- Semantik liegt teilweise unterhalb Building (selbe Ebene wie Parts, allgemeine Semantik für alle Parts, Bsp. Adresse)
 
-                var xmlBuildingParts = xmlBuildingNode.Descendants(this.allns["bldg"] + "BuildingPart");
+                var xmlParts = xmlBuildingNode.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
 
-                var partsCt = xmlBuildingParts.Count();
+                var partsCt = xmlParts.Count();
 
                 Log.Information("- BuildingParts?: " + partsCt);
 
@@ -251,11 +250,29 @@ namespace City2BIM
                 var bldgGeom = new Solid();
 
                 //Geometrie auslesen hängt davon ab, ob es Parts gibt (geometriebildend sind die Parts, jeder Part wird eigenständiges Revit-Objekt)
-                if(partsCt > 0)
+                //Beispieldatensätze zeigen unterschiedliche Implementierungen
+                //Fall a: keine Parts implementiert -> Geometrie immer direkt unterhalb als Kinder von Building (zB Berlin)
+                //Fall b: Parts implementiert -> Bldg, die Parts enthalten, speichern Geometrie nur als Kinder von BuildingPart (zB TH)
+                //Fall c: Parts implementiert -> Bldg, die Parts enthalten, speichern Geometrie gemischt -> tlw. als Kinder von Bldg, tlw als Kinder von Part (zB BB)
+
+                if(xmlParts.Any())     //Fall b und c (Gebäude, die Parts haben)
                 {
-                    foreach(var part in xmlBuildingParts)
+                    if(xmlBuildingNode.Elements(this.allns["bldg"] + "boundedBy").Any() ||
+                        xmlBuildingNode.Elements(this.allns["bldg"] + "lod1Solid").Any() ||
+                        xmlBuildingNode.Elements(this.allns["bldg"] + "lod1MultiSurface").Any())   //Fall c (LOD2 und LOD1)
+                    {
+                        bldgGeom = geom.CollectBuilding(xmlBuildingNode, lowerCorner);
+
+                        solids.Add(bldgGeom, bldgSemAllg);
+                    }
+
+                    var xmlBuildingParts = xmlParts.Elements(this.allns["bldg"] + "BuildingPart");    //in LOD1 und LOD2 möglich
+
+                    foreach(var part in xmlBuildingParts)       //Fall b und c
                     {
                         //zusätzlich spezifische Semantik je Part auslesen
+
+                        Log.Information("BldgPart-Id: " + part.FirstAttribute.Value);
 
                         bldgGeom = geom.CollectBuilding(part, lowerCorner);
 
@@ -291,7 +308,7 @@ namespace City2BIM
                     }
                 }
                 else
-                {
+                {   //Fall a (und alle Gebäude für Fall b und c, die keine Parts haben)
                     //Geometrie des Buildings
                     bldgGeom = geom.CollectBuilding(xmlBuildingNode, lowerCorner);
 

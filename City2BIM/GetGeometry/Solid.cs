@@ -62,8 +62,8 @@ namespace City2BIM.GetGeometry
         {
             foreach(Vertex v in vertices)
             {
-                //Log.Information("Anzahl Ebenen pro Vertex = " + v.Planes.Count);
-
+                if (v.Planes.Count != 3)
+                    Log.Warning("Anzahl Ebenen pro Vertex = " + v.Planes.Count);
 
                 if(v.Planes.Count == 3)
                 {

@@ -43,9 +43,19 @@ namespace City2BIM.GetGeometry
         public Solid CollectBuilding(XElement building, XYZ lowerCorner)
         {
             //alle bldg:boundedBy-Elemente pro Building(part)
-            //Achtung: funktioniert nur nur LOD2 (LOD1 enthält kein boundedBy -> TO DO)
+            //bei LOD1: lod1Solid bzw lod1Surfaces
             //bldg:boundedBy enthält in der Regel eine Polygonfläche (zB. TH), kann aber auch mehrere Flächen pro Wandtyp enthalten (zB. Berlin)
-            var boundedBy = building.Descendants(this.allns["bldg"] + "boundedBy").ToList();
+            var boundedBy = building.Elements(this.allns["bldg"] + "boundedBy").ToList();   //nur LOD2
+
+            if(boundedBy.Count == 0)        //für LOD1-Fälle
+            {
+                boundedBy = building.Elements(this.allns["bldg"] + "lod1Solid").ToList();       //LOD1 mit Solids (AdV-Standard)
+
+                if(boundedBy.Count == 0)
+                {
+                    boundedBy = building.Elements(this.allns["bldg"] + "lod1MultiSurface").ToList();       //LOD1 mit MultiSurfaces (nicht empfohlen, aber zB in DD)
+                }
+            }
 
             var polyList = new Dictionary<List<XYZ>, string>(); //Dictionary for all pos in polygon and FaceType (Wall, Roof, Ground, Closure)
 
@@ -67,17 +77,22 @@ namespace City2BIM.GetGeometry
 
                 if(posLists.Count == 0)            //wenn Punkte nicht in posList gespeichert sind, dann wahrscheinlich als einzelne pos tags mit XYZ
                 {
-                    var positions = bound.Descendants(allns["gml"] + "pos").ToList();  //alle posLists innerhalb boundedBy
+                    var rings = bound.Descendants(allns["gml"] + "LinearRing");  //alle posLists innerhalb boundedBy
 
-                    var posList = new List<XYZ>();
-
-                    foreach(var pos in positions)
+                    foreach(var ring in rings)
                     {
-                        var polyPt = CollectPoint(pos, lowerCorner);     //Speichern der Polygonpunkte, reduziert um lowerCorner in PointList
-                        posList.Add(polyPt);
-                    }
+                        var positions = ring.Descendants(allns["gml"] + "pos");  //alle posLists innerhalb boundedBy
 
-                    polyList.Add(posList, polyType);
+                        var posList = new List<XYZ>();
+
+                        foreach(var pos in positions)
+                        {
+                            var polyPt = CollectPoint(pos, lowerCorner);     //Speichern der Polygonpunkte, reduziert um lowerCorner in PointList
+                            posList.Add(polyPt);
+                        }
+
+                        polyList.Add(posList, polyType);
+                    }
                 }
             }
 
