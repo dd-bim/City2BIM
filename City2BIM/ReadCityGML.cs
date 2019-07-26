@@ -71,7 +71,10 @@ namespace City2BIM
 
             //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
             RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, solidList, dxf);
-            cityModel.CreateBuildings(path); //erstellt DirectShape-Geometrie als Kategorie Umgebung
+
+            Transform revitTransf = GetRevitProjectLocation(doc);
+
+            cityModel.CreateBuildings(path, revitTransf); //erstellt DirectShape-Geometrie als Kategorie Umgebung
 
             Log.Debug("ReadData-Object, gelesene Geometrien = " + solidList.Count);
 
@@ -127,6 +130,24 @@ namespace City2BIM
             }
             else
                 return false;
+        }
+
+        private Transform GetRevitProjectLocation(Document doc)
+        {
+            ProjectLocation proj = doc.ActiveProjectLocation;
+            ProjectPosition projPos = proj.GetProjectPosition(Autodesk.Revit.DB.XYZ.Zero);
+
+            double angle = projPos.Angle;
+            double elevation = projPos.Elevation;
+            double easting = projPos.EastWest;
+            double northing = projPos.NorthSouth;
+
+            Transform trot = Transform.CreateRotation(Autodesk.Revit.DB.XYZ.BasisZ, -angle);
+            var vector = new Autodesk.Revit.DB.XYZ(easting, northing, elevation);
+            Transform ttrans = Transform.CreateTranslation(-vector);
+            Transform transf = trot.Multiply(ttrans);
+
+            return transf;
         }
 
         private void CalcLowerCorner(XElement gmlCorner, ref XYZ lowerCorner)

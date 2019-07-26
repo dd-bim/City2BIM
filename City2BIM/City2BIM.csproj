@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Class1imp.cs" />
     <Compile Include="DxfVisualizer.cs" />
+    <Compile Include="GetGeometry\GeomValidation.cs" />
     <Compile Include="GetGeometry\Plane.cs" />
     <Compile Include="GetGeometry\ReadGeomData.cs" />
     <Compile Include="GetGeometry\Solid.cs" />

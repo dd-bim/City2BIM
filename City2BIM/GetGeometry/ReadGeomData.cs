@@ -57,11 +57,12 @@ namespace City2BIM.GetGeometry
                 }
             }
 
-            var polyList = new Dictionary<List<XYZ>, string>(); //Dictionary for all pos in polygon and FaceType (Wall, Roof, Ground, Closure)
+            var polyList = new Dictionary<string, List<XYZ>>(); //Dictionary for all pos in polygon and FaceType (Wall, Roof, Ground, Closure)
 
             foreach(var bound in boundedBy)
             {
                 var polyType = "";          //leer initialisiert, falls keine Flächenart gespeichert (wie bspw bei LOD1)
+                var i = 0;
 
                 polyType = bound.Elements().First().Name.LocalName; //erstes Kindelement von boundedBy enthält FaceType
 
@@ -69,18 +70,33 @@ namespace City2BIM.GetGeometry
 
                 foreach(var posL in posLists)
                 {
+                    i++;
+
                     var polyPts = CollectPoints(posL, lowerCorner); //Speichern der Polygonpunkte, reduziert um lowerCorner in PointList
 
-                    //jedes Polygon wird als Punktliste zusammen mit FaceType in Dictionary geschrieben
-                    polyList.Add(polyPts, polyType);
+                    //bldgEl.Attribute(nsp["gml"] + "id").Value;
+
+                    var polygonID = posL.AncestorsAndSelf().Attributes(allns["gml"] + "id").First();
+
+                    var polyIdent = polygonID + "_" + polyType;
+
+                    if(polyList.ContainsKey(polyIdent))                //Fall tritt ein, wenn Polygone nirgends ID besitzen, sondern nur umfassendes Bldg
+                        polyIdent = polygonID + "_" + i + "_" + polyType;    //ID besteht aus Bldg_ID + Zähler pro Ring (Polygon)
+
+                    //jedes Polygon wird als Punktliste zusammen mit ID und verkettetem faceType in Dictionary geschrieben
+                    polyList.Add(polyIdent, polyPts);
                 }
 
                 if(posLists.Count == 0)            //wenn Punkte nicht in posList gespeichert sind, dann wahrscheinlich als einzelne pos tags mit XYZ
                 {
                     var rings = bound.Descendants(allns["gml"] + "LinearRing");  //alle posLists innerhalb boundedBy
 
+                    var j = 0; //RingCounter: für ID, wenn Polygone keine eigene ID besitzen (zB LOD1)
+
                     foreach(var ring in rings)
                     {
+                        j++;
+
                         var positions = ring.Descendants(allns["gml"] + "pos");  //alle posLists innerhalb boundedBy
 
                         var posList = new List<XYZ>();
@@ -91,7 +107,14 @@ namespace City2BIM.GetGeometry
                             posList.Add(polyPt);
                         }
 
-                        polyList.Add(posList, polyType);
+                        var polygonID = ring.AncestorsAndSelf().Attributes(allns["gml"] + "id").First();
+
+                        var polyIdent = polygonID + "_" + polyType;
+
+                        if (polyList.ContainsKey(polyIdent))                //Fall tritt ein, wenn Polygone nirgends ID besitzen, sondern nur umfassendes Bldg
+                            polyIdent = polygonID + "_" + j +"_" + polyType;    //ID besteht aus Bldg_ID + Zähler pro Ring (Polygon)
+
+                        polyList.Add(polyIdent, posList);
                     }
                 }
             }
@@ -105,30 +128,28 @@ namespace City2BIM.GetGeometry
             {
                 //Prüfung - gleicher Start - und Endpunkt
                 // ---------------------------------------- -
-                var checkPoly = SameStartAndEndPt(polyPts.Key);
+                var checkPoly = SameStartAndEndPt(polyPts.Value);
 
                 if(!checkPoly)
                     Log.Error("Start- und Endpunkt sind nicht gleich!");
                 else
-                    polyPts.Key.Remove(polyPts.Key.Last());     //Entfernen des letzten Punktes (=Start)
+                    polyPts.Value.Remove(polyPts.Value.Last());     //Entfernen des letzten Punktes (=Start)
 
+
+             
                 //----------------------------------------------------------
 
                 //Prüfung - keine redundanten Punkte (außer Start und End)
                 //-----------------------------------------
-                var checkRedun = NoRedundantPts(polyPts.Key);
+                var checkRedun = NoRedundantPts(polyPts.Value);
 
                 if(!checkRedun)
                     Log.Error("Gleiche Punkte (außer Start- und Endpunkt) in Polygon vorhanden!");
                 //----------------------------------------------------------
-
-                //Generierung einer GUID pro Polygon
-                //theoretisch könnte man auch ID aus CityGML nehmen, allerdings werden dort nicht immer IDs pro Fläche vergeben (zB DD)
-                string polyGuid = Guid.NewGuid().ToString() + "_" + polyPts.Value;
-
-                foreach(var pt in polyPts.Key)
+  
+                foreach(var pt in polyPts.Value)
                 {
-                    ptDictPoly.Add(pt, polyGuid);       //Speicherung jedes Punktes (XYZ) mit ID des zugehörigen Polygons
+                    ptDictPoly.Add(pt, polyPts.Key);       //Speicherung jedes Punktes (XYZ) mit ID des zugehörigen Polygons
                 }
             }
 
@@ -137,42 +158,70 @@ namespace City2BIM.GetGeometry
             //bei weniger als 3 Punkten werden Fehler in der CityGML-Geometrie, da weniger als 3 Ebenen für Solid-erstellung keinen Sinn ergeben (?!)
             //es werden die Punkte aller Polygone des Buildings zum Vergleich herangezogen
 
-            Dictionary<XYZ, string> ptDictPolyF = new Dictionary<XYZ, string>();    //temporäres Dictionary für vermutlich falsche Punkte (1 oder 2 Ebene(n))
+            //alle XYZ-Koordinaten der zum Gebäude gehörenden Polygone, geordnet nach X,Y,Z (zur schnelleren Suche in for-Schleife)
+            var bldgXYZ = ptDictPoly.Keys.OrderBy(x => x.X).OrderBy(y => y.Y).OrderBy(z => z.Z).ToList();
 
-            foreach(var pt in ptDictPoly)
+            var bldgXYZF = new List<XYZ>();    //temporäre Liste für vermutlich falsche Punkte (1 oder 2 Polygone)
+
+            var redCt = 0;  //Schleifenvariable (=0 für Start)
+
+            for(int i = 0; i < bldgXYZ.Count; i += redCt)   //Schleife zur Suche identischer Punkte (innerhalb Toleranz, Hochzählen um Anzahl ident. Pkt.)
             {
-                var redunCt = 0; //Zähler für redundante Punkte (innerhalb Toleranz)
+                var polyID = (from p in ptDictPoly
+                              where p.Key == bldgXYZ[i]
+                              select p.Value).Single();
 
-                var ptList = ptDictPoly.Keys;
+                int locRedCt = 0;                   //interner Zähler für redundante Punkte
+                var redPts = new List<XYZ>();       //Initialsierung für Liste ident. Punkte pro Durchlauf
 
-                foreach(var pt2 in ptList)
+                redCt = 1;                          //Punkt i zählt mit
+
+                for(int j = i + 1; j < bldgXYZ.Count; j++)      //interne Schleife (j jeweils i+1, nächster Punkt in Liste)
+                //foreach(var xyzOther in bldgXYZ)
                 {
-                    if(pt.Key == pt2)       //selber Punkt wird nicht mitgezählt
+                    if(bldgXYZ[i] == bldgXYZ[j])        //zur Sicherheit
                         continue;
 
-                    double ptDist = XYZ.DistanceSq(pt.Key, pt2);    //Berechnung der Distanz zwischen Punkten
+                    double ptDist = XYZ.DistanceSq(bldgXYZ[i], bldgXYZ[j]);     //Distanzberechnung
 
                     if(ptDist < Distolsq)
                     {
-                        redunCt++;      //wenn kleiner als Toleranz (siehe Prop-Klasse) ist der Punkt redundant
+                        //wenn kleiner als Toleranz (siehe Prop-Klasse) ist der Punkt redundant
+                        locRedCt++;
+                        redCt++;
+
+                        redPts.Add(bldgXYZ[j]);
+                    }
+                    else
+                    {
+                        break;          //Abbruch, wenn kein "identischer" Punkt mehr gefunden wird (durch geordnete Liste wird keiner vergessen)
                     }
                 }
 
-                if(redunCt < 2)        //gewünschter Fall: pro Vertex sind 3 Punkte in CityGML enthalten
+                if(locRedCt < 2)        //gewünschter Fall: pro Vertex sind 3 Punkte in CityGML enthalten
                 {
-                    ptDictPolyF.Add(pt.Key, pt.Value);      //bei weniger als 3 (kein Ebenenschnitt möglich) -> Speichern in temp. Dict.
+                    bldgXYZF.Add(bldgXYZ[i]);      //bei weniger als 3 (kein Ebenenschnitt möglich) -> Speichern in temp. Liste
+                    bldgXYZF.AddRange(redPts);
                 }
             }
 
-            foreach(var pt in ptDictPolyF)
+            foreach(var ptF in bldgXYZF)
             {
-                ptDictPoly.Remove(pt.Key);  //jeder vermutlich falsche Punkt wird aus Punktliste gelöscht
+                ptDictPoly.Remove(ptF);  //jeder vermutlich falsche Punkt wird aus Punktliste gelöscht
 
-                dxf.DrawPoint(pt.Key.X + lowerCorner.X, pt.Key.Y + lowerCorner.Y, pt.Key.Z + lowerCorner.Z, "cityGMLremovedPts", new int[] { 255, 0, 0 });
+                ptDictPoly.TryGetValue(ptF, out string id);
+
+                var ptX = ptF.X + lowerCorner.X;
+                var ptY = ptF.Y + lowerCorner.Y;
+                var ptZ = ptF.Z + lowerCorner.Z;
+
+                Log.Information("Deleted Pt: " + ptX + " , " + ptY + " , " + ptZ + " at " +  id);
+
+                dxf.DrawPoint(ptF.X + lowerCorner.X, ptF.Y + lowerCorner.Y, ptF.Z + lowerCorner.Z, "cityGMLremovedPts", new int[] { 255, 0, 0 });
             }
 
-            if(ptDictPolyF.Count > 0)
-                Log.Warning(ptDictPolyF.Count + " Punkte gelöscht. (In < 3 Ebenen vorhanden)");
+            if(bldgXYZF.Count > 0)
+                Log.Warning(bldgXYZF.Count + " Punkte gelöscht. (In < 3 Ebenen vorhanden)");
 
             Solid solid = new Solid();      //Anlegen eines Solids pro Gebäude(teil)
 

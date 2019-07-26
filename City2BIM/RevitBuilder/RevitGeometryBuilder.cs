@@ -29,7 +29,7 @@ namespace City2BIM.RevitBuilder
             }
         }
 
-        public void CreateBuildings(string path)
+        public void CreateBuildings(string path, Transform rvtTransf)
         {
             double all = buildings.Count;
             double success = 0.0;
@@ -37,8 +37,401 @@ namespace City2BIM.RevitBuilder
 
             var i = 0;
 
-            ElementId roofCol, wallCol, groundCol, closureCol;
+            ElementId roofCol = null;
+            ElementId wallCol = null;
+            ElementId groundCol = null;
+            ElementId closureCol = null;
 
+            CreateColorAsMaterial(ref roofCol, ref wallCol, ref groundCol, ref closureCol);
+
+            foreach(var building in buildings)
+            {
+                var attributes = building.Value;
+
+                try
+                {
+                    TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
+                    builder.OpenConnectedFaceSet(true);
+
+                    foreach(GetGeometry.Plane p in building.Key.Planes.Values)
+                    {
+                        List<Autodesk.Revit.DB.XYZ> face = new List<XYZ>();
+                        foreach(int vid in p.Vertices)
+                        {
+                            //GetGeometry.XYZ xyz = building.Key.Vertices[vid].Position;
+
+                            var verts = building.Key.Vertices;
+
+                            if(verts.Contains(verts[vid]))
+                            {
+                                GetGeometry.XYZ xyz = verts[vid].Position;
+
+                                var xF = xyz.X * 3.28084;
+                                var yF = xyz.Y * 3.28084;
+                                var zF = xyz.Z * 3.28084;
+
+                                var revitXYZ = new XYZ(xF, yF, zF);
+
+                                var revTransXYZ = rvtTransf.OfPoint(revitXYZ);
+
+                                face.Add(revTransXYZ); //Revit feet Problem
+
+                                dxf.DrawPoint(xF / 3.28084, yF / 3.28084, zF / 3.28084, "revitFaceVertex", new int[] { 0, 0, 255 });
+                            }
+                            else
+                            {
+                                Log.Error("id nicht vorhanden");
+                            }
+                        }
+
+                        for(int m = 0; m < face.Count - 1; m++)
+                        {
+                            dxf.DrawLine(face[m].X / 3.28084, face[m].Y / 3.28084, face[m].Z / 3.28084, face[m + 1].X / 3.28084, face[m + 1].Y / 3.28084, face[m + 1].Z / 3.28084, "revitFaceLines", new int[] { 0, 0, 255 });
+                        }
+
+                        int ind = p.ID.LastIndexOf("_");
+                        var e = p.ID.Substring(ind + 1);
+
+                        TessellatedFace faceT;
+
+                        switch(e)
+                        {
+                            case ("RoofSurface"):
+                                faceT = new TessellatedFace(face, roofCol);
+                                break;
+
+                            case ("WallSurface"):
+                                faceT = new TessellatedFace(face, wallCol);
+                                break;
+
+                            case ("GroundSurface"):
+                                faceT = new TessellatedFace(face, groundCol);
+                                break;
+
+                            case ("ClosureSurface"):
+                                faceT = new TessellatedFace(face, closureCol);
+                                break;
+
+                            default:
+                                faceT = new TessellatedFace(face, ElementId.InvalidElementId);
+                                break;
+                        }
+
+                        builder.AddFace(faceT);
+                    }
+
+                    builder.CloseConnectedFaceSet();
+
+                    builder.Target = TessellatedShapeBuilderTarget.Solid;
+
+                    builder.Fallback = TessellatedShapeBuilderFallback.Abort;
+                    builder.Build();
+
+                    TessellatedShapeBuilderResult result = builder.GetBuildResult();
+
+                    using(Transaction t = new Transaction(doc, "Create tessellated direct shape"))
+                    {
+                        t.Start();
+
+                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+
+                        ds.ApplicationId = "Application id";
+                        ds.ApplicationDataId = "Geometry object id";
+
+                        ds.SetShape(result.GetGeometricalObjects());
+
+                        ds = SetAttributeValues(ds, attributes);
+
+                        var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+
+                        var commAttr = ds.LookupParameter(commAttrLabel);
+
+                        commAttr.Set("LOD2");
+
+                        t.Commit();
+                    }
+
+                    i++;
+
+                    //Log.Information("Building builder successful");
+                    success += 1;
+                }
+                catch(System.Exception ex)
+                {
+                    try
+                    {
+                        var maxHeight = (from v in building.Key.Vertices
+                                         orderby v.Position.Z descending
+                                         select v.Position.Z).FirstOrDefault();
+
+                        var groundPlane = (from p in building.Key.Planes
+                                           where p.Key.Contains("Ground")
+                                           select p.Value).SingleOrDefault();
+
+                        var poly = new List<XYZ>();
+
+                        foreach(int vid in groundPlane.Vertices)
+                        {
+                            var verts = building.Key.Vertices;
+
+                            if(verts.Contains(verts[vid]))
+                            {
+                                GetGeometry.XYZ xyz = verts[vid].Position;
+
+                                var xF = xyz.X * 3.28084;
+                                var yF = xyz.Y * 3.28084;
+                                var zF = xyz.Z * 3.28084;
+
+                                var revitXYZ = new XYZ(xF, yF, zF);
+
+                                var revTransXYZ = rvtTransf.OfPoint(revitXYZ);
+
+                                poly.Add(revTransXYZ);
+                            }
+                        }
+
+                        //List<Curve> edges = new List<Curve>();
+
+                        List<CurveLoop> loopList = new List<CurveLoop>();
+
+                        List<Curve> edges = new List<Curve>();
+
+                        for(var c = 1; c < poly.Count; c++)
+                        {
+                            Line edge = Line.CreateBound(poly[c - 1], poly[c]);
+
+                            edges.Add(edge);
+                        }
+
+                        edges.Add(Line.CreateBound(poly[poly.Count - 1], poly[0]));
+
+                        CurveLoop baseLoop = CurveLoop.Create(edges);
+                        loopList.Add(baseLoop);
+
+                        double height = maxHeight * 3.28084 - poly[0].Z;
+
+                        Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, XYZ.BasisZ, height);
+
+                        using(Transaction t = new Transaction(doc, "Create lod1 extrusion"))
+                        {
+                            t.Start();
+                            // create direct shape and assign the sphere shape
+                            DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+
+                            ds.SetShape(new GeometryObject[] { lod1bldg });
+
+                            ds = SetAttributeValues(ds, attributes);
+
+                            var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+
+                            var commAttr = ds.LookupParameter(commAttrLabel);
+
+                            commAttr.Set("LOD1 (simplified from LOD2)");
+
+                            t.Commit();
+                        }
+                    }
+                    catch(System.Exception exc)
+                    {
+                        continue;
+                    }
+
+                    error += 1;
+                    continue;
+                }
+            }
+
+            var results = new LoggerConfiguration()
+               //.MinimumLevel.Debug()
+               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\Results_04062019_1qmm.txt"/*, rollingInterval: RollingInterval.Day*/)
+               .CreateLogger();
+
+            double statSucc = success / all * 100;
+            double statErr = error / all * 100;
+
+            results.Information(path);
+            results.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
+            results.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
+            results.Information("------------------------------------------------------------------");
+
+            Log.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
+            Log.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
+
+            try
+            {
+                CreateBuildingsWithFaces(rvtTransf);
+            }
+            catch { }
+        }
+
+        public void CreateBuildingsWithFaces(Transform rvtTransf)
+        {
+            foreach(var building in buildings)
+            {
+                //var attributes = building.Value;
+
+                foreach(var plane in building.Key.Planes)
+                {
+                    try
+                    {
+                        var poly = new List<XYZ>();
+
+                        foreach(int vid in plane.Value.Vertices)
+                        {
+                            var verts = building.Key.Vertices;
+
+                            if(verts.Contains(verts[vid]))
+                            {
+                                GetGeometry.XYZ xyz = verts[vid].Position;
+
+                                var xF = xyz.X * 3.28084;
+                                var yF = xyz.Y * 3.28084;
+                                var zF = xyz.Z * 3.28084;
+
+                                var revitXYZ = new XYZ(xF, yF, zF);
+
+                                var revTransXYZ = rvtTransf.OfPoint(revitXYZ);
+
+                                poly.Add(revTransXYZ);
+                            }
+                        }
+                        List<CurveLoop> loopList = new List<CurveLoop>();
+                        List<Curve> edges = new List<Curve>();
+
+                        for(var c = 1; c < poly.Count; c++)
+                        {
+                            Line edge = Line.CreateBound(poly[c - 1], poly[c]);
+
+                            edges.Add(edge);
+                        }
+
+                        edges.Add(Line.CreateBound(poly[poly.Count - 1], poly[0]));
+
+                        CurveLoop baseLoop = CurveLoop.Create(edges);
+                        loopList.Add(baseLoop);
+
+                        double height = 0.01 * 3.28084;
+
+                        XYZ normal = new XYZ(plane.Value.Normal.X, plane.Value.Normal.Y, plane.Value.Normal.Z);
+
+                        Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height);
+
+                        using(Transaction t = new Transaction(doc, "Create face extrusion"))
+                        {
+                            t.Start();
+                            // create direct shape and assign the sphere shape
+
+                            int ind = plane.Key.LastIndexOf("_");
+                            var e = plane.Key.Substring(ind + 1);
+
+                            Color color = new Color(0, 0, 0);
+                            ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
+
+                            switch(e)
+                            {
+                                case ("RoofSurface"):
+                                    color = new Color(255, 0, 0);
+                                    elem = new ElementId(BuiltInCategory.OST_Roofs);
+                                    break;
+
+                                case ("WallSurface"):
+                                    color = new Color(80, 80, 80);
+                                    elem = new ElementId(BuiltInCategory.OST_Walls);
+                                    break;
+
+                                case ("GroundSurface"):
+                                    color = new Color(0, 0, 0);
+                                    elem = new ElementId(BuiltInCategory.OST_Floors);
+                                    break;
+
+                                case ("ClosureSurface"):
+                                    color = new Color(245, 245, 245);
+                                    elem = new ElementId(BuiltInCategory.OST_Walls);
+                                    break;
+
+                                default:
+                                    color = new Color(120, 120, 120);
+                                    break;
+                            }
+
+                            //OverrideGraphicSettings ogs = new OverrideGraphicSettings();
+                            //ogs.SetProjectionLineColor(color);
+                            //ogs.SetProjectionFillColor(color);
+                            //ogs.SetCutFillColor(color);
+                            //ogs.SetCutLineColor(color);
+
+                            DirectShape ds = DirectShape.CreateElement(doc, elem);
+
+                            //doc.ActiveView.SetElementOverrides(ds.Id, ogs);
+
+                            ds.SetShape(new GeometryObject[] { bldgFaceSolid });
+
+                            var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+
+                            var commAttr = ds.LookupParameter(commAttrLabel);
+
+                            commAttr.Set("Face-Solid (LOD2)");
+
+                            SetAttributeValues(ds, building.Value);
+
+                            t.Commit();
+                        }
+                    }
+                    catch
+                    {
+                        Log.Information("Error at " + plane.Key);
+                        continue;
+                    }
+                }
+            }
+        }
+
+        private DirectShape SetAttributeValues(DirectShape ds, Dictionary<Attribute, string> attributes)
+        {
+            var attr = attributes.Keys;
+
+            foreach(var aName in attr)
+            {
+                var p = ds.LookupParameter(aName.GmlNamespace + ": " + aName.Name);
+                attributes.TryGetValue(aName, out var val);
+
+                try
+                {
+                    if(val != null)
+                    {
+                        switch(aName.GmlType)
+                        {
+                            case (Attribute.AttrType.intAttribute):
+                                p.Set(int.Parse(val));
+                                break;
+
+                            case (Attribute.AttrType.doubleAttribute):
+                                p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
+                                break;
+
+                            case (Attribute.AttrType.measureAttribute):
+                                var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
+                                p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
+                                break;
+
+                            default:
+                                p.Set(val);
+                                break;
+                        }
+                    }
+                }
+                catch
+                {
+                    Log.Error("Semantik-Fehler bei " + aName.Name);
+                    continue;
+                }
+            }
+
+            return ds;
+        }
+
+        private void CreateColorAsMaterial(ref ElementId roofCol, ref ElementId wallCol, ref ElementId groundCol, ref ElementId closureCol)
+        {
             using(Transaction t = new Transaction(doc, "Create material"))
             {
                 t.Start();
@@ -104,198 +497,6 @@ namespace City2BIM.RevitBuilder
 
                 t.Commit();
             }
-
-            foreach(var building in buildings)
-            {
-                var attributes = building.Value;
-
-                try
-                {
-                    TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
-                    builder.OpenConnectedFaceSet(true);
-
-                    foreach(GetGeometry.Plane p in building.Key.Planes.Values)
-                    {
-                        List<Autodesk.Revit.DB.XYZ> face = new List<XYZ>();
-                        foreach(int vid in p.Vertices)
-                        {
-                            //GetGeometry.XYZ xyz = building.Key.Vertices[vid].Position;
-
-                            var verts = building.Key.Vertices;
-
-                            if(verts.Contains(verts[vid]))
-                            {
-                                GetGeometry.XYZ xyz = verts[vid].Position;
-
-                                //var xy = verts. from v in verts
-                                //         where v
-
-                                //[vid].Position;
-
-                                //face.Add(new XYZ(xyz.X, xyz.Y, xyz.Z));
-
-                                //dirty hack: revit api feet umrechnung, zu erweitern: einheit im projekt abfragen
-
-                                var xF = xyz.X * 3.28084;
-                                var yF = xyz.Y * 3.28084;
-                                var zF = xyz.Z * 3.28084;
-
-                                face.Add(new XYZ(xF, yF, zF)); //Revit feet Problem
-
-                                dxf.DrawPoint(xF / 3.28084, yF / 3.28084, zF / 3.28084, "revitFaceVertex", new int[] { 0, 0, 255 });
-                            }
-                            else
-                            {
-                                Log.Error("id nicht vorhanden");
-                            }
-                        }
-
-                        for(int m = 0; m < face.Count - 1; m++)
-                        {
-                            dxf.DrawLine(face[m].X / 3.28084, face[m].Y / 3.28084, face[m].Z / 3.28084, face[m + 1].X / 3.28084, face[m + 1].Y / 3.28084, face[m + 1].Z / 3.28084, "revitFaceLines", new int[] { 0, 0, 255 });
-                        }
-
-                        int ind = p.ID.LastIndexOf("_");
-                        var e = p.ID.Substring(ind + 1);
-
-                        TessellatedFace faceT;
-
-                        switch(e)
-                        {
-                            case ("RoofSurface"):
-                                faceT = new TessellatedFace(face, roofCol);
-                                break;
-
-                            case ("WallSurface"):
-                                faceT = new TessellatedFace(face, wallCol);
-                                break;
-
-                            case ("GroundSurface"):
-                                faceT = new TessellatedFace(face, groundCol);
-                                break;
-
-                            case ("ClosureSurface"):
-                                faceT = new TessellatedFace(face, closureCol);
-                                break;
-
-                            default:
-                                faceT = new TessellatedFace(face, ElementId.InvalidElementId);
-                                break;
-                        }
-
-                        builder.AddFace(faceT);
-                    }
-
-                    builder.CloseConnectedFaceSet();
-
-                    // builder.Target = TessellatedShapeBuilderTarget.
-
-                    builder.Target = TessellatedShapeBuilderTarget.Solid;
-
-                    builder.Fallback = TessellatedShapeBuilderFallback.Abort;
-                    builder.Build();
-
-                    TessellatedShapeBuilderResult result = builder.GetBuildResult();
-
-                    //Test für appendshape
-
-                    using(Transaction t = new Transaction(doc, "Create tessellated direct shape"))
-                    {
-                        t.Start();
-
-                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-
-                        ds.ApplicationId = "Application id";
-                        ds.ApplicationDataId = "Geometry object id";
-
-                        ds.SetShape(result.GetGeometricalObjects());
-
-                        var attr = attributes.Keys;
-
-                        foreach(var aName in attr)
-                        {
-                            var p = ds.LookupParameter(aName.GmlNamespace + ": " + aName.Name);
-                            attributes.TryGetValue(aName, out var val);
-
-                            try
-                            {
-                                if(val != null)
-                                {
-                                    switch(aName.GmlType)
-                                    {
-                                        case (Attribute.AttrType.intAttribute):
-                                            p.Set(int.Parse(val));
-                                            break;
-
-                                        case (Attribute.AttrType.doubleAttribute):
-                                            p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
-                                            break;
-
-                                        case (Attribute.AttrType.measureAttribute):
-                                            var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
-                                            p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
-                                            break;
-
-                                        default:
-                                            p.Set(val);
-                                            break;
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                                Log.Error("Semantik-Fehler bei " + aName.Name);
-                                continue;
-                            }
-                        }
-
-                        t.Commit();
-                    }
-
-                    i++;
-
-                    //Log.Information("Building builder successful");
-                    success += 1;
-                }
-                catch(System.Exception ex)
-                {
-                    //var blSeman = building.Value.Values;
-
-                    //Log.Error("Revit Builder error occured: " + ex.Message + ", " + ex.StackTrace);
-
-                    //foreach(var v in blSeman)
-                    //{
-                    //    Log.Debug(v);
-                    //}
-
-                    //Log.Error(ex.Message);
-
-                    var id = (from a in attributes
-                              where a.Key.Name.Equals("Building_ID")
-                              select a.Value).FirstOrDefault();
-
-                    Log.Error("Error at " + id);
-
-                    error += 1;
-                    continue;
-                }
-            }
-
-            var results = new LoggerConfiguration()
-               //.MinimumLevel.Debug()
-               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\Results_04062019_1qmm.txt"/*, rollingInterval: RollingInterval.Day*/)
-               .CreateLogger();
-
-            double statSucc = success / all * 100;
-            double statErr = error / all * 100;
-
-            results.Information(path);
-            results.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
-            results.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
-            results.Information("------------------------------------------------------------------");
-
-            Log.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
-            Log.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
         }
     }
 }

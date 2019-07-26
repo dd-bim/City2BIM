@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace City2BIM.GetGeometry
     
@@ -23,22 +24,35 @@ namespace City2BIM.GetGeometry
         public int[] Vertices
         {
             get { return vertices; }
+            set
+            {
+                this.vertices = value;
+            }
         }
 
 
         public string ID
         {
             get { return id; }
+
         }
 
         public XYZ Normal
         {
             get { return normal; }
+            set
+            {
+                this.normal = value;
+            }
         }
 
         public XYZ Centroid
         {
             get { return centroid; }
+            set
+            {
+                this.centroid = value;
+            }
         }
 
         public Solid Solid
