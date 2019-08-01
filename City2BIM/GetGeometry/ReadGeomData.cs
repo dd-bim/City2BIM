@@ -57,7 +57,7 @@ namespace City2BIM.GetGeometry
                 }
             }
 
-            var polyList = new Dictionary<string, List<XYZ>>(); //Dictionary for all pos in polygon and FaceType (Wall, Roof, Ground, Closure)
+            var polyList = new Dictionary<string[], List<XYZ>>(); //Dictionary for all pos in polygon and FaceType (Wall, Roof, Ground, Closure)
 
             foreach(var bound in boundedBy)
             {
@@ -74,17 +74,20 @@ namespace City2BIM.GetGeometry
 
                     var polyPts = CollectPoints(posL, lowerCorner); //Speichern der Polygonpunkte, reduziert um lowerCorner in PointList
 
-                    //bldgEl.Attribute(nsp["gml"] + "id").Value;
+                    string ringType = "exterior";
+
+                    if((posL.Ancestors(allns["gml"] + "interior").Count() > 0))
+                        ringType = "interior";
 
                     var polygonID = posL.AncestorsAndSelf().Attributes(allns["gml"] + "id").First();
 
-                    var polyIdent = polygonID + "_" + polyType;
+                    string[] polyIdType = new string[] { polygonID.ToString(), polyType, ringType };
 
-                    if(polyList.ContainsKey(polyIdent))                //Fall tritt ein, wenn Polygone nirgends ID besitzen, sondern nur umfassendes Bldg
-                        polyIdent = polygonID + "_" + i + "_" + polyType;    //ID besteht aus Bldg_ID + Zähler pro Ring (Polygon)
+                    if(polyList.ContainsKey(polyIdType))                //Fall tritt ein, wenn Polygone nirgends ID besitzen, sondern nur umfassendes Bldg
+                        polyIdType = new string[] { polygonID.ToString() + "_" + i, polyType, ringType };
 
                     //jedes Polygon wird als Punktliste zusammen mit ID und verkettetem faceType in Dictionary geschrieben
-                    polyList.Add(polyIdent, polyPts);
+                    polyList.Add(polyIdType, polyPts);
                 }
 
                 if(posLists.Count == 0)            //wenn Punkte nicht in posList gespeichert sind, dann wahrscheinlich als einzelne pos tags mit XYZ
@@ -109,12 +112,17 @@ namespace City2BIM.GetGeometry
 
                         var polygonID = ring.AncestorsAndSelf().Attributes(allns["gml"] + "id").First();
 
-                        var polyIdent = polygonID + "_" + polyType;
+                        string ringType = "exterior";
 
-                        if (polyList.ContainsKey(polyIdent))                //Fall tritt ein, wenn Polygone nirgends ID besitzen, sondern nur umfassendes Bldg
-                            polyIdent = polygonID + "_" + j +"_" + polyType;    //ID besteht aus Bldg_ID + Zähler pro Ring (Polygon)
+                        if((ring.Ancestors(allns["gml"] + "interior").Count() > 0))
+                            ringType = "interior";
 
-                        polyList.Add(polyIdent, posList);
+                        string[] polyIdType = new string[] { polygonID.ToString(), polyType, ringType };
+
+                        if(polyList.ContainsKey(polyIdType))                //Fall tritt ein, wenn Polygone nirgends ID besitzen, sondern nur umfassendes Bldg
+                            polyIdType = new string[] { polygonID.ToString() + "_" + j, polyType, ringType };    //ID besteht aus Bldg_ID + Zähler pro Ring (Polygon)
+
+                        polyList.Add(polyIdType, posList);
                     }
                 }
             }
@@ -122,7 +130,7 @@ namespace City2BIM.GetGeometry
             //Auslesen der Polygone
             //------------------------
 
-            Dictionary<XYZ, string> ptDictPoly = new Dictionary<XYZ, string>(); //Dictionary für Polygonpunkt und generierte PolygonID
+            Dictionary<XYZ, string[]> ptDictPoly = new Dictionary<XYZ, string[]>(); //Dictionary für Polygonpunkt und generierte PolygonID
 
             foreach(var polyPts in polyList)        //Auslesen aller Polygone in Schleife
             {
@@ -135,8 +143,6 @@ namespace City2BIM.GetGeometry
                 else
                     polyPts.Value.Remove(polyPts.Value.Last());     //Entfernen des letzten Punktes (=Start)
 
-
-             
                 //----------------------------------------------------------
 
                 //Prüfung - keine redundanten Punkte (außer Start und End)
@@ -146,7 +152,7 @@ namespace City2BIM.GetGeometry
                 if(!checkRedun)
                     Log.Error("Gleiche Punkte (außer Start- und Endpunkt) in Polygon vorhanden!");
                 //----------------------------------------------------------
-  
+
                 foreach(var pt in polyPts.Value)
                 {
                     ptDictPoly.Add(pt, polyPts.Key);       //Speicherung jedes Punktes (XYZ) mit ID des zugehörigen Polygons
@@ -167,9 +173,9 @@ namespace City2BIM.GetGeometry
 
             for(int i = 0; i < bldgXYZ.Count; i += redCt)   //Schleife zur Suche identischer Punkte (innerhalb Toleranz, Hochzählen um Anzahl ident. Pkt.)
             {
-                var polyID = (from p in ptDictPoly
-                              where p.Key == bldgXYZ[i]
-                              select p.Value).Single();
+                //var polyID = (from p in ptDictPoly
+                //              where p.Key == bldgXYZ[i]
+                //              select p.Value).Single();
 
                 int locRedCt = 0;                   //interner Zähler für redundante Punkte
                 var redPts = new List<XYZ>();       //Initialsierung für Liste ident. Punkte pro Durchlauf
@@ -209,13 +215,13 @@ namespace City2BIM.GetGeometry
             {
                 ptDictPoly.Remove(ptF);  //jeder vermutlich falsche Punkt wird aus Punktliste gelöscht
 
-                ptDictPoly.TryGetValue(ptF, out string id);
+                ptDictPoly.TryGetValue(ptF, out string[] id);
 
                 var ptX = ptF.X + lowerCorner.X;
                 var ptY = ptF.Y + lowerCorner.Y;
                 var ptZ = ptF.Z + lowerCorner.Z;
 
-                Log.Information("Deleted Pt: " + ptX + " , " + ptY + " , " + ptZ + " at " +  id);
+                Log.Information("Deleted Pt: " + ptX + " , " + ptY + " , " + ptZ + " at " + id);
 
                 dxf.DrawPoint(ptF.X + lowerCorner.X, ptF.Y + lowerCorner.Y, ptF.Z + lowerCorner.Z, "cityGMLremovedPts", new int[] { 255, 0, 0 });
             }
@@ -232,8 +238,15 @@ namespace City2BIM.GetGeometry
                 var points = from p in ptDictPoly
                              where p.Value.Equals(polyID)
                              select p.Key;                  //Selektieren aller Punkte pro Polygon-ID
-
-                solid.AddPlane(polyID, points.ToList());    //Aufruf der AddPlane-Methode, Übergabe von Polygon-ID und zugehörigen Punkten
+                try
+                {
+                    solid.AddPlane(polyID[0], polyID[1], polyID[2], points.ToList());    //Aufruf der AddPlane-Methode, Übergabe von Polygon-ID und zugehörigen Punkten
+                }
+                catch(Exception ex)
+                {
+                    var exs = ex.Message;
+                    var esd = ex.StackTrace;
+                    continue; }
             }
 
             //-------------------------------------------------------------------------------------------------------------

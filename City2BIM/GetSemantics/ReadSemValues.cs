@@ -6,14 +6,8 @@ namespace City2BIM.GetSemantics
 {
     internal class ReadSemValues
     {
-        //private Dictionary<Attribute, string> kvp = new Dictionary<Attribute, string>();
-
         public Dictionary<Attribute, string> ReadAttributeValues(XElement bldgEl, HashSet<Attribute> attributes, Dictionary<string, XNamespace> nsp)
         {
-            //wahrscheinlich noch zu implementieren:
-            //Ausschließen von XML-Elementen innerhalb BuildingPart?
-
-            //    var bldgElem = ancesBdg.Elements().ToList();//.Where(n => n.Name.LocalName == attr.Name).ToList();
             var bldgParts = bldgEl.Elements(nsp["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
 

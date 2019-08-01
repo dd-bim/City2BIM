@@ -18,11 +18,10 @@ namespace City2BIM
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.
     /// </remarks>
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    public class ReadCityGML : IExternalCommand
+    public class ReadCityGML
     {
         // The main Execute method (inherited from IExternalCommand) must be public
-        public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
+        public ReadCityGML(ExternalCommandData revit, bool solid)
         {
             Log.Logger = new LoggerConfiguration()
                 //.MinimumLevel.Debug()
@@ -40,43 +39,36 @@ namespace City2BIM
             Class1imp imp = new Class1imp();
             var path = imp.ImportPath();
             //-------------------------------
-
-            var folder = @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\CityGML_Data\";
-
-            //var path = @"files\Berlin\input_clean_3.gml";
-            //var path = @"files\Erfurt\LoD2_642_5648_2_TH\LoD2_642_5648_2_TH.gml";
-            //var path = @"files\NRW\LoD2_370_5667_1_NW.gml";
-            //var path = @"files\Greiz\LoD2_726_5616_2_TH\LoD2_726_5616_2_TH.gml";
-            //var path = @"files\Greiz\LoD2_726_5616_2_TH\sorben8_9.gml";
-            //var path = @"files\Dresden\Gebaeude_LOD1_citygml.gml";
-            //var path = @"files\Dresden\Gebaeude_LOD2_citygml.gml";
-            //var path = @"files\Dresden\Gebaeude_LOD3_citygml.gml";
-            //var path = @"files\Dresden\Vegetation.gml";
-            //var path = @"files\Greiz\LoD2_726_5616_2_TH\Greiz_bldg_parts.gml";
-            //var path = @"files\Bayern\714_5323.gml"; //große Kachel (ca. 30% Erfolg) --> raised to 85% ! --> 92 % (prop: 1mm²)
-            //var path = @"files\Bayern\713_5322.gml"; //kleine Kachel mit nur 2 Gebäuden
-            //var path = @"files\Brandenburg\testdaten_lod2.gml";
-            //var path = @"files\Bayern\LoD1UTM32city_p.gml";
-
             Log.Information("File: " + path);
 
             //Hauptmethode zur Erstellung der Geometrie, Ermitteln der Attribute und Füllen der Attributwerte
             var solidList = ReadXMLDoc(path, dxf); //ref für attributes?
 
-            //var solidList = ReadXMLDoc(folder + path); //ref für attributes?
+            Log.Debug("ReadData-Object, gelesene Geometrien = " + solidList.Count);
 
             //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
             RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc, this.attributes); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
-            citySem.CreateParameters(); //erstellt Shared Parameters für Kategorie Umgebung
 
             //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
             RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, solidList, dxf);
 
             Transform revitTransf = GetRevitProjectLocation(doc);
 
-            cityModel.CreateBuildings(path, revitTransf); //erstellt DirectShape-Geometrie als Kategorie Umgebung
+            //Parameter für Revit-Kategorie erstellen
+            //nach ausgewählter Methode (Solids oder Flächen) Parameter an zugehörige Kategorien übergeben
 
-            Log.Debug("ReadData-Object, gelesene Geometrien = " + solidList.Count);
+            if(solid)
+            {
+                citySem.CreateParameters(BuiltInCategory.OST_Entourage); //erstellt Shared Parameters für Kategorie Umgebung
+                cityModel.CreateBuildings(path, revitTransf); //erstellt DirectShape-Geometrie als Kategorie Umgebung
+            }
+            else
+            {
+                citySem.CreateParameters(BuiltInCategory.OST_Walls);
+                citySem.CreateParameters(BuiltInCategory.OST_Roofs);
+                citySem.CreateParameters(BuiltInCategory.OST_StructuralFoundation);
+                cityModel.CreateBuildingsWithFaces(revitTransf); //erstellt DirectShape-Geometrien der jeweiligen Kategorie
+            }
 
             string res = "";
 
@@ -90,8 +82,6 @@ namespace City2BIM
             //debug
 
             dxf.DrawDxf(path);
-
-            return Result.Succeeded;
         }
 
         private Dictionary<string, XNamespace> allns;

@@ -41,9 +41,9 @@ namespace City2BIM.RevitBuilder
             return application.OpenSharedParameterFile();
         }
 
-        public void CreateParameters()
+        public void CreateParameters(BuiltInCategory category)
         {
-            Category cat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Entourage);
+            Category cat = doc.Settings.Categories.get_Item(category);
             CategorySet assocCats = doc.Application.Create.NewCategorySet();
             assocCats.Insert(cat);
 
@@ -136,25 +136,6 @@ namespace City2BIM.RevitBuilder
                                 SetDefinitionsToGroup(parGroupGML, attribute, pType, assocCats, parDef);
                                 break;
                         }
-                        //ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(attribute.GmlNamespace + ": " + attribute.Name, pType);
-
-                        //// create an instance definition in definition group MyParameters
-
-                        //extDef.UserModifiable = true;      //nicht modifizierbar?! nur zum Lesen der CityGML oder auch editierbar für IFC-Property-Export
-
-                        //// Set tooltip
-                        //extDef.Description = attribute.Description + i;  //später Übersetzungen der Codes als Description
-
-                        //Definition parDef = default(Definition);
-
-                        //parDef = parGroupGen.Definitions.Create(extDef);
-
-                        //ExternalDefinition yoc = parGroup1.Definitions.get_Item(attribute.Name) as ExternalDefinition;
-
-                        ////Create an instance of InstanceBinding
-                        //InstanceBinding instanceBinding = doc.Application.Create.NewInstanceBinding(assocCats);
-
-                        //doc.ParameterBindings.Insert(yoc, instanceBinding, BuiltInParameterGroup.PG_DATA);  //Parameter-Gruppe Daten ok?
                     }
                     catch(Exception ex)
                     {

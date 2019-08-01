@@ -19,7 +19,7 @@ namespace City2BIM
 
             // Add a new ribbon panel
             RibbonPanel panel1 = application.CreateRibbonPanel(tabName, "Settings");
-            RibbonPanel panel2 = application.CreateRibbonPanel(tabName, "Geo-Position");
+            RibbonPanel panel2 = application.CreateRibbonPanel(tabName, "Georeferencing");
             RibbonPanel panel3 = application.CreateRibbonPanel(tabName, "City2BIM");
             RibbonPanel panel4 = application.CreateRibbonPanel(tabName, "BIM2City");
 
@@ -31,12 +31,17 @@ namespace City2BIM
             thisAssemblyPath, "City2BIM.ImportSource")) as PushButton;
             buttonFile.ToolTip = "Test window appearing";
 
+            PushButton buttonGeoRef = panel2.AddItem(new PushButtonData("Show Georef information", "Import settings",
+            thisAssemblyPath, "City2BIM.RevitCommands.Georeferencing.GeorefUI")) as PushButton;
+            buttonFile.ToolTip = "Show georef";
 
-           
+            PushButton btSolid = panel3.AddItem(new PushButtonData("LoadCityGMLSolids", "Get City Model as Solids",
+            thisAssemblyPath, "City2BIM.ReadCityGMLSolids")) as PushButton;
+            btSolid.ToolTip = "Import functionality for CityGML data as Solid models with category Entourage";
 
-            PushButton button = panel3.AddItem(new PushButtonData("Load CityGML", "Get City Model",
-            thisAssemblyPath, "City2BIM.ReadCityGML")) as PushButton;
-            button.ToolTip = "Import functionality for CityGML data";
+            PushButton button = panel3.AddItem(new PushButtonData("LoadCityGMLFaces", "Get City Model as Faces",
+            thisAssemblyPath, "City2BIM.ReadCityGMLFaces")) as PushButton;
+            button.ToolTip = "Import functionality for CityGML data as Face models with categories Wall, StructuralSlab and Roof";
 
             PushButton buttonCode = panel3.AddItem(new PushButtonData("Get CityGML Code Description", "Get Code Decription",
             thisAssemblyPath, "City2BIM.ReadCode")) as PushButton;

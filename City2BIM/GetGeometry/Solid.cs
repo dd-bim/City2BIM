@@ -11,8 +11,10 @@ namespace City2BIM.GetGeometry
         private Dictionary<string, Plane> planes = new Dictionary<string, Plane>();
         private List<Vertex> vertices = new List<Vertex>();
 
-        public void AddPlane(string id, List<XYZ> polygon)
+        public void AddPlane(string id, string faceType, string ringType, List<XYZ> polygon)
         {
+            var idDict = id + "_" + faceType + "_" + ringType;      //nur so unique!
+
             polygon.Add(polygon.First());       //Methode benötigt geschlossenes Polygon, daher wird Startpunkt hier wieder dem Ende hinzugefügt
 
             if(polygon.Count < 4)
@@ -35,7 +37,7 @@ namespace City2BIM.GetGeometry
 
                     if(dist < Distolsq)
                     {
-                        vertices[j].AddPlane(id);
+                        vertices[j].AddPlane(idDict);
                         verts.Add(j);
                         notmatched = false;
                         break;
@@ -44,7 +46,7 @@ namespace City2BIM.GetGeometry
 
                 if(notmatched)
                 {
-                    Vertex v = new Vertex(polygon[i], id);
+                    Vertex v = new Vertex(polygon[i], idDict);
                     verts.Add(vertices.Count);
                     vertices.Add(v);
                 }
@@ -58,7 +60,49 @@ namespace City2BIM.GetGeometry
                 centroid += polygon[i];
             }
 
-            var plane = new Plane(id, verts, XYZ.Normalized(normal), centroid / ((double)verts.Count));
+            Plane.FaceType fType = Plane.FaceType.unknown;
+
+            switch(faceType)
+            {
+                case ("GroundSurface"):
+                    fType = Plane.FaceType.ground;
+                    break;
+
+                case ("WallSurface"):
+                    fType = Plane.FaceType.wall;
+                    break;
+
+                case ("ClosureSurface"):
+                    fType = Plane.FaceType.closure;
+                    break;
+
+                case ("RoofSurface"):
+                    fType = Plane.FaceType.roof;
+                    break;
+
+                default:
+                    break;
+            }
+
+            Plane.RingType rType = Plane.RingType.unknown;
+
+            switch(ringType)
+            {
+                case ("exterior"):
+                    rType = Plane.RingType.exterior;
+                    break;
+
+                case ("interior"):
+                    rType = Plane.RingType.interior;
+                    break;
+
+                default:
+                    break;
+            }
+
+
+
+            var plane = new Plane(id, verts, XYZ.Normalized(normal), centroid / ((double)verts.Count), fType, rType);
 
             //Log.Information("plane: " + id);
 
@@ -67,7 +111,7 @@ namespace City2BIM.GetGeometry
             //    Log.Information(v.ToString());
             //}
 
-            planes.Add(id, plane);
+            planes.Add(idDict, plane);
         }
 
         private void CheckPlanes()
@@ -209,7 +253,7 @@ namespace City2BIM.GetGeometry
             }
 
             var norm = XYZ.Normalized(normal);
-            var compPlane = new Plane(idA + idB, newVerts, norm, centroid / ((double)newVerts.Count));
+            var compPlane = new Plane(idA + idB, newVerts, norm, centroid / ((double)newVerts.Count), Plane.FaceType.unknown, Plane.RingType.unknown);
 
             Log.Information("Normale, neue Ebene = " + norm.X + ", " + norm.Y + ", " + norm.Z);
 

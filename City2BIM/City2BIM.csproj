@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BimGisCad">
       <HintPath>..\..\..\..\libraries\bimgiscadlib-master_06_19\bimgiscadlib-master\BimGisCad\bin\Release\netstandard2.0\BimGisCad.dll</HintPath>
@@ -81,13 +84,20 @@
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadCityGMLSolids.cs" />
+    <Compile Include="ReadCityGMLFaces.cs" />
     <Compile Include="ReadCityGML.cs" />
     <Compile Include="ReadCode.cs" />
     <Compile Include="RevitBuilder\RevitGeometryBuilder.cs" />
     <Compile Include="RevitBuilder\RevitSemanticBuilder.cs" />
+    <Compile Include="RevitCommands\Georeferencing\GeorefUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="RevitCommands\BIM2City\" />
+    <Folder Include="RevitCommands\City2BIM\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
