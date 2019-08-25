@@ -1,85 +1,137 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Serilog;
 
 namespace City2BIM.GetSemantics
 {
-
     /// <summary>
     /// Set CityGML attributes (fixed and generic)
     /// </summary>
     public class ReadSemAttributes
     {
-
         /// <summary>
         /// Read generic attributes (see CityGML Generics-module)
         /// </summary>
         /// <param name="bldgs">all building tags per file</param>
         /// <param name="generics">gen: namespace</param>
         /// <returns>Disctinct list of generic attributes</returns>
-        public HashSet<Attribute> ReadGenericAttributes(IEnumerable<XElement> bldgs, XNamespace generics)
+        public HashSet<GmlAttribute> ReadGenericAttributes(IEnumerable<XElement> bldgs, Dictionary<string, XNamespace> nsp)
         {
-            var genAttrList = new HashSet<Attribute>();
+            var genAttrList = new HashSet<GmlAttribute>();
+            var genAttrNames = new HashSet<string>();
+            var genAttrRef = new HashSet<GmlAttribute.AttrHierarchy>();
 
             foreach(var bldg in bldgs)
             {
-                var genValues = bldg.Descendants(generics + "value");       //tag for attribute value, needed here only for efficient search
+                var genValues = bldg.Descendants(nsp["gen"] + "value");       //tag for attribute value, needed here only for efficient search
 
                 foreach(var val in genValues)
                 {
                     var genAttr = val.Parent;       //parent tag contains the attribute name and its type
 
-                    //Save as an attrivute
-                    var attr = new Attribute(Attribute.AttrNsp.gen, genAttr.Attribute("name").Value, Attribute.AttrType.stringAttribute);
+                    var attr = new GmlAttribute(GmlAttribute.AttrNsp.gen, genAttr.Attribute("name").Value, GmlAttribute.AttrType.stringAttribute, GmlAttribute.AttrHierarchy.bldg);
+
+                    var wallGen = genAttr.Ancestors(nsp["bldg"] + "WallSurface");
+                    if(wallGen.Any())
+                        attr.Reference = GmlAttribute.AttrHierarchy.wall;
+
+                    var roofGen = genAttr.Ancestors(nsp["bldg"] + "RoofSurface");
+                    if(roofGen.Any())
+                        attr.Reference = GmlAttribute.AttrHierarchy.roof;
+
+                    var groundGen = genAttr.Ancestors(nsp["bldg"] + "GroundSurface");
+                    if(groundGen.Any())
+                        attr.Reference = GmlAttribute.AttrHierarchy.ground;
+
+                    var closureGen = genAttr.Ancestors(nsp["bldg"] + "ClosureSurface");
+                    if(closureGen.Any())
+                        attr.Reference = GmlAttribute.AttrHierarchy.closure;
+
                     //ggf. weitere Typen prüfen (laut AdV aber nur stringAttribute zulässig) -> TO DO
 
-                    var genListNames = genAttrList.Select(c => c.Name);
+                    //if(!genListNames.Contains(attr.Name))
+                    //{
+                    //    genAttrList.Add(attr);                              //add to hashset, if not present
+                    //    genAttrListBldg.Add(attr);
+                    //}
 
-                    if(!genListNames.Contains(attr.Name))
-                        genAttrList.Add(attr);              //add to hashset, if not present
+                    var names = attr.Name;
+                    var references = attr.Reference;
+
+                    bool refn = genAttrRef.Contains(attr.Reference);
+                    bool name = genAttrNames.Contains(attr.Name);
+
+                    if(!refn)
+                    {
+                        genAttrList.Add(attr);
+                        genAttrNames.Add(attr.Name);
+                        genAttrRef.Add(attr.Reference);
+                    }
+                    else
+                    {
+                        var attrRef = from g in genAttrList
+                                      where g.Reference == attr.Reference
+                                      select g.Name;
+
+                        if(!attrRef.Contains(attr.Name))
+                        {
+                            genAttrList.Add(attr);
+                            genAttrNames.Add(attr.Name);
+                            genAttrRef.Add(attr.Reference);
+                        }
+                    }
+
+                    //else
+                    //{                                                       //duplicate will not be added but handled as surface attribute
+                    //                                                        //they occure multiple times because an building contains multiple surfaces
+                    //    var duplicate = (from g in genAttrListBldg
+                    //                     where g.Name == attr.Name
+                    //                     select g).SingleOrDefault();
+
+                    //    if(duplicate != null)
+                    //        duplicate.Reference = GmlAttribute.AttrHierarchy.surface;
+                    //}
                 }
             }
 
             return genAttrList;
         }
 
-
         /// <summary>
         /// Read fixed attributes (CityGML 2.0 standard)
         /// </summary>
         /// <returns>Distinct list of fixed attributes</returns>
-        public HashSet<Attribute> GetSchemaAttributes()
+        public HashSet<GmlAttribute> GetSchemaAttributes()
         {
-            var regAttr = new HashSet<Attribute>();
+            var regAttr = new HashSet<GmlAttribute>();
 
             //gml:name
 
-            regAttr.Add(new Attribute(Attribute.AttrNsp.gml, "name", Attribute.AttrType.stringAttribute));
+            regAttr.Add(new GmlAttribute(GmlAttribute.AttrNsp.gml, "name", GmlAttribute.AttrType.stringAttribute, GmlAttribute.AttrHierarchy.bldg));
 
             //-------------
 
             //bldg-Modul
 
-            var bldgNames = new Dictionary<string, Attribute.AttrType>
+            var bldgNames = new Dictionary<string, GmlAttribute.AttrType>
             {
-                {"Building_ID", Attribute.AttrType.stringAttribute },
-                {"class", Attribute.AttrType.stringAttribute },
-                {"function", Attribute.AttrType.stringAttribute },
-                {"usage", Attribute.AttrType.stringAttribute },
-                {"yearOfConstruction", Attribute.AttrType.intAttribute },
-                {"yearOfDemolition", Attribute.AttrType.intAttribute },
-                {"roofType", Attribute.AttrType.stringAttribute },
-                {"measuredHeight", Attribute.AttrType.measureAttribute },
-                {"storeysAboveGround", Attribute.AttrType.intAttribute },
-                {"storeysBelowGround", Attribute.AttrType.intAttribute },
-                {"storeysHeightsAboveGround", Attribute.AttrType.stringAttribute },
-                {"storeysHeightsBelowGround", Attribute.AttrType.stringAttribute }
+                {"Building_ID", GmlAttribute.AttrType.stringAttribute },
+                {"class", GmlAttribute.AttrType.stringAttribute },
+                {"function", GmlAttribute.AttrType.stringAttribute },
+                {"usage", GmlAttribute.AttrType.stringAttribute },
+                {"yearOfConstruction", GmlAttribute.AttrType.intAttribute },
+                {"yearOfDemolition", GmlAttribute.AttrType.intAttribute },
+                {"roofType", GmlAttribute.AttrType.stringAttribute },
+                {"measuredHeight", GmlAttribute.AttrType.measureAttribute },
+                {"storeysAboveGround", GmlAttribute.AttrType.intAttribute },
+                {"storeysBelowGround", GmlAttribute.AttrType.intAttribute },
+                {"storeysHeightsAboveGround", GmlAttribute.AttrType.stringAttribute },
+                {"storeysHeightsBelowGround", GmlAttribute.AttrType.stringAttribute }
             };
 
             foreach(var bldg in bldgNames)
             {
-                regAttr.Add(new Attribute(Attribute.AttrNsp.bldg, bldg.Key, bldg.Value));
+                regAttr.Add(new GmlAttribute(GmlAttribute.AttrNsp.bldg, bldg.Key, bldg.Value, GmlAttribute.AttrHierarchy.bldg));
             }
 
             //----------------------
@@ -100,25 +152,25 @@ namespace City2BIM.GetSemantics
 
             foreach(var entry in xalNames)
             {
-                regAttr.Add(new Attribute(Attribute.AttrNsp.xal, entry, Attribute.AttrType.stringAttribute));
+                regAttr.Add(new GmlAttribute(GmlAttribute.AttrNsp.xal, entry, GmlAttribute.AttrType.stringAttribute, GmlAttribute.AttrHierarchy.bldg));
             }
 
             //-----------------
             //core-Modul
 
-            var coreNames = new Dictionary<string, Attribute.AttrType>
+            var coreNames = new Dictionary<string, GmlAttribute.AttrType>
             {
-                {"creationDate", Attribute.AttrType.stringAttribute },
-                {"terminationDate", Attribute.AttrType.stringAttribute },
-                {"informationSystem", Attribute.AttrType.uriAttribute },
-                {"externalObject", Attribute.AttrType.stringAttribute },
-                {"relativeToTerrain", Attribute.AttrType.stringAttribute },
-                {"relativeToWater", Attribute.AttrType.stringAttribute }
+                {"creationDate", GmlAttribute.AttrType.stringAttribute },
+                {"terminationDate", GmlAttribute.AttrType.stringAttribute },
+                {"informationSystem", GmlAttribute.AttrType.uriAttribute },
+                {"externalObject", GmlAttribute.AttrType.stringAttribute },
+                {"relativeToTerrain", GmlAttribute.AttrType.stringAttribute },
+                {"relativeToWater", GmlAttribute.AttrType.stringAttribute }
             };
 
             foreach(var core in coreNames)
             {
-                regAttr.Add(new Attribute(Attribute.AttrNsp.core, core.Key, core.Value));
+                regAttr.Add(new GmlAttribute(GmlAttribute.AttrNsp.core, core.Key, core.Value, GmlAttribute.AttrHierarchy.bldg));
             }
 
             return regAttr;

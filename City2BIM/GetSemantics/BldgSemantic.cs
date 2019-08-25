@@ -1,12 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using City2BIM.GmlRep;
 
 namespace City2BIM.GetSemantics
 {
-    internal class ReadSemValues
+    public class BldgSemantic
     {
+        private string bldgID;
+        private string bldgPartID;
+        private Dictionary<GmlAttribute, string> bldgAttr;
+        private Dictionary<string, Dictionary<GmlAttribute, string>> planeAttr;
+
+        public void FillAttributes(XElement bldgEl, HashSet<GmlAttribute> attributes, Dictionary<string, XNamespace> nsp)
+        {
+            ////Except BuildingParts from detection, if applicable (buildingParts are handled as bldg when calling the method)
+            //var bldgParts = bldgEl.Elements(nsp["bldg"] + "consistsOfBuildingPart");
+            //var bldg = bldgEl.Elements().Except(bldgParts);
+
+            this.bldgID = bldgEl.Attribute(nsp["gml"] + "id").Value;
+
+
+
+
+        }
+
+
+
         public Dictionary<GmlAttribute, string> ReadAttributeValuesBldg(XElement bldgEl, HashSet<GmlAttribute> attributes, Dictionary<string, XNamespace> nsp)
         {
             var bldgAttributes = attributes.Where(a => a.Reference == GmlAttribute.AttrHierarchy.bldg);
@@ -110,11 +129,11 @@ namespace City2BIM.GetSemantics
             return kvp;
         }
 
-        public Dictionary<GmlAttribute, string> ReadAttributeValuesSurface(XElement surfaceEl, HashSet<GmlAttribute> attributes, GmlSurface.FaceType type)
+        public Dictionary<GmlAttribute, string> ReadAttributeValuesSurface(XElement surfaceEl, HashSet<GmlAttribute> attributes)
         {
             var kvp = new Dictionary<GmlAttribute, string>();
 
-            var surfaceAttributes = attributes.Where(a => a.Reference.ToString() == type.ToString());
+            var surfaceAttributes = attributes.Where(a => a.Reference == GmlAttribute.AttrHierarchy.surface);
 
             foreach(var attr in surfaceAttributes)
             {

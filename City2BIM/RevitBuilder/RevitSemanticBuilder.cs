@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using Autodesk.Revit.DB;
 using Serilog;
-using Attribute = City2BIM.GetSemantics.Attribute;
+using GmlAttribute = City2BIM.GetSemantics.GmlAttribute;
 
 namespace City2BIM.RevitBuilder
 {
     internal class RevitSemanticBuilder
     {
         private Document doc;
-        private HashSet<Attribute> attributes;
 
-        public RevitSemanticBuilder(Document doc, HashSet<Attribute> attributes)
+        public RevitSemanticBuilder(Document doc)
         {
             this.doc = doc;
-            this.attributes = attributes;
         }
 
         //nötige RevitAPI-interen Methoden zum Anlegen der SharedParameters sowie Gruppen
@@ -31,7 +29,7 @@ namespace City2BIM.RevitBuilder
         {
             var filePath = sharedParameterFile.Split('.')[0];
 
-            var newFile = filePath + "_test.txt";
+            var newFile = filePath + "_test2.txt";
 
             File.Copy(sharedParameterFile, newFile, true);
 
@@ -41,7 +39,7 @@ namespace City2BIM.RevitBuilder
             return application.OpenSharedParameterFile();
         }
 
-        public void CreateParameters(BuiltInCategory category)
+        public void CreateParameters(BuiltInCategory category, IEnumerable<GmlAttribute> attributes)
         {
             Category cat = doc.Settings.Categories.get_Item(category);
             CategorySet assocCats = doc.Application.Create.NewCategorySet();
@@ -85,26 +83,25 @@ namespace City2BIM.RevitBuilder
                 {
                     try
                     {
-
                         var pType = ParameterType.Text;
 
                         //Typ-Übersetzung für Revit
 
                         switch(attribute.GmlType)
                         {
-                            case (Attribute.AttrType.intAttribute):
+                            case (GmlAttribute.AttrType.intAttribute):
                                 pType = ParameterType.Integer;
                                 break;
 
-                            case (Attribute.AttrType.doubleAttribute):
+                            case (GmlAttribute.AttrType.doubleAttribute):
                                 pType = ParameterType.Number;
                                 break;
 
-                            case (Attribute.AttrType.uriAttribute):
+                            case (GmlAttribute.AttrType.uriAttribute):
                                 pType = ParameterType.URL;
                                 break;
 
-                            case (Attribute.AttrType.measureAttribute):
+                            case (GmlAttribute.AttrType.measureAttribute):
                                 pType = ParameterType.Length;
                                 break;
 
@@ -116,23 +113,23 @@ namespace City2BIM.RevitBuilder
 
                         switch(attribute.GmlNamespace)
                         {
-                            case (Attribute.AttrNsp.gen):
+                            case (GmlAttribute.AttrNsp.gen):
                                 SetDefinitionsToGroup(parGroupGen, attribute, pType, assocCats, parDef);
                                 break;
 
-                            case (Attribute.AttrNsp.core):
+                            case (GmlAttribute.AttrNsp.core):
                                 SetDefinitionsToGroup(parGroupCore, attribute, pType, assocCats, parDef);
                                 break;
 
-                            case (Attribute.AttrNsp.bldg):
+                            case (GmlAttribute.AttrNsp.bldg):
                                 SetDefinitionsToGroup(parGroupBldg, attribute, pType, assocCats, parDef);
                                 break;
 
-                            case (Attribute.AttrNsp.xal):
+                            case (GmlAttribute.AttrNsp.xal):
                                 SetDefinitionsToGroup(parGroupAddr, attribute, pType, assocCats, parDef);
                                 break;
 
-                            case (Attribute.AttrNsp.gml):
+                            case (GmlAttribute.AttrNsp.gml):
                                 SetDefinitionsToGroup(parGroupGML, attribute, pType, assocCats, parDef);
                                 break;
                         }
@@ -147,7 +144,7 @@ namespace City2BIM.RevitBuilder
             }
         }
 
-        private void SetDefinitionsToGroup(DefinitionGroup parGroup, Attribute attribute, ParameterType pType, CategorySet assocCats, Definition parDef)
+        private void SetDefinitionsToGroup(DefinitionGroup parGroup, GmlAttribute attribute, ParameterType pType, CategorySet assocCats, Definition parDef)
         {
             ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(attribute.GmlNamespace + ": " + attribute.Name, pType);
 

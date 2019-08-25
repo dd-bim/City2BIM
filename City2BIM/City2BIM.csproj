@@ -70,16 +70,19 @@
   <ItemGroup>
     <Compile Include="Class1imp.cs" />
     <Compile Include="DxfVisualizer.cs" />
-    <Compile Include="GetGeometry\GeomValidation.cs" />
-    <Compile Include="GetGeometry\Plane.cs" />
-    <Compile Include="GetGeometry\ReadGeomData.cs" />
-    <Compile Include="GetGeometry\Solid.cs" />
-    <Compile Include="GetGeometry\Vertex.cs" />
-    <Compile Include="GetGeometry\XYZ.cs" />
-    <Compile Include="GetSemantics\Attribute.cs" />
+    <Compile Include="GetGeometry\ValidateGeometry.cs" />
+    <Compile Include="GetGeometry\C2BPlane.cs" />
+    <Compile Include="GetGeometry\C2BSolid.cs" />
+    <Compile Include="GetGeometry\C2BVertex.cs" />
+    <Compile Include="GetGeometry\C2BPoint.cs" />
+    <Compile Include="GetSemantics\GmlAttribute.cs" />
     <Compile Include="GetSemantics\ReadCodeList.cs" />
     <Compile Include="GetSemantics\ReadSemAttributes.cs" />
+    <Compile Include="GetSemantics\BldgSemantic.cs" />
     <Compile Include="GetSemantics\ReadSemValues.cs" />
+    <Compile Include="GmlRep\GmlBldg.cs" />
+    <Compile Include="GmlRep\GmlBldgPart.cs" />
+    <Compile Include="GmlRep\GmlSurface.cs" />
     <Compile Include="ImportSource.cs" />
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />

@@ -5,9 +5,9 @@ namespace City2BIM.GetGeometry
     /// <summary>
     ///  Vertex or Node (Topological Point)
     /// </summary>
-    public class Vertex
+    public class C2BVertex
     {
-        private XYZ position;
+        private C2BPoint position;
         HashSet<string> planes;
 
         /// <summary>
@@ -15,7 +15,7 @@ namespace City2BIM.GetGeometry
         /// </summary>
         /// /// <param name="position"> Coordinate in XYZ </param>
         /// /// <param name="plane"> Plane to add </param>
-        public Vertex(XYZ position, string plane)
+        public C2BVertex(C2BPoint position, string plane)
         {
             this.position = position;
             this.planes = new HashSet<string>();
@@ -31,7 +31,7 @@ namespace City2BIM.GetGeometry
             planes.Add(plane);
         }
 
-        public XYZ Position
+        public C2BPoint Position
         {
             get { return position; }
             set { position = value; }
@@ -42,9 +42,9 @@ namespace City2BIM.GetGeometry
             get { return planes; }
         }
 
-        public Solid Solid
+        public C2BSolid Solid
         {
-            get => default(Solid);
+            get => default(C2BSolid);
             set
             {
             }
