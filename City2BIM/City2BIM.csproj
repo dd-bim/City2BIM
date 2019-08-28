@@ -68,7 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1imp.cs" />
+    <Compile Include="FileDialog.cs" />
     <Compile Include="DxfVisualizer.cs" />
     <Compile Include="GetGeometry\ValidateGeometry.cs" />
     <Compile Include="GetGeometry\C2BPlane.cs" />
@@ -87,12 +87,15 @@
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadCityGMLSolids.cs" />
-    <Compile Include="ReadCityGMLFaces.cs" />
     <Compile Include="ReadCityGML.cs" />
+    <Compile Include="RevitBuilder\RevitTopoSurfaceBuilder.cs" />
+    <Compile Include="RevitCommands\City2BIM\ReadCityGMLSolids.cs" />
+    <Compile Include="RevitCommands\City2BIM\ReadCityGMLFaces.cs" />
+    <Compile Include="ReadTerrain.cs" />
     <Compile Include="ReadCode.cs" />
     <Compile Include="RevitBuilder\RevitGeometryBuilder.cs" />
     <Compile Include="RevitBuilder\RevitSemanticBuilder.cs" />
+    <Compile Include="RevitCommands\DTM2BIM\ReadTerrainXYZ.cs" />
     <Compile Include="RevitCommands\Georeferencing\GeorefUI.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="RevitCommands\BIM2City\" />
-    <Folder Include="RevitCommands\City2BIM\" />
+    <Folder Include="RevitCommands\NAS2BIM\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

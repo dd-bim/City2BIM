@@ -12,10 +12,11 @@ namespace City2BIM.GmlRep
     {
         private string surfaceId;
         private FaceType facetype;
-        private List<C2BPoint> exterior;
-        private List<C2BPoint> interior;
+        //private List<C2BPoint> exterior;
+        //private List<C2BPoint> interior;
         private Dictionary<GmlAttribute, string> surfaceAttributes;
-        private C2BPlane plane;
+        private C2BPlane planeExt;
+        private C2BPlane planeInt;
 
         public string SurfaceId
         {
@@ -43,19 +44,6 @@ namespace City2BIM.GmlRep
             }
         }
 
-        public C2BPlane Plane
-        {
-            get
-            {
-                return this.plane;
-            }
-
-            set
-            {
-                this.plane = value;
-            }
-        }
-
         public FaceType Facetype
         {
             get
@@ -69,29 +57,55 @@ namespace City2BIM.GmlRep
             }
         }
 
-        public List<C2BPoint> Exterior
+        //public List<C2BPoint> Exterior
+        //{
+        //    get
+        //    {
+        //        return this.exterior;
+        //    }
+
+        //    set
+        //    {
+        //        this.exterior = value;
+        //    }
+        //}
+
+        //public List<C2BPoint> Interior
+        //{
+        //    get
+        //    {
+        //        return this.interior;
+        //    }
+
+        //    set
+        //    {
+        //        this.interior = value;
+        //    }
+        //}
+
+        public C2BPlane PlaneExt
         {
             get
             {
-                return this.exterior;
+                return this.planeExt;
             }
 
             set
             {
-                this.exterior = value;
+                this.planeExt = value;
             }
         }
 
-        public List<C2BPoint> Interior
+        public C2BPlane PlaneInt
         {
             get
             {
-                return this.interior;
+                return this.planeInt;
             }
 
             set
             {
-                this.interior = value;
+                this.planeInt = value;
             }
         }
 

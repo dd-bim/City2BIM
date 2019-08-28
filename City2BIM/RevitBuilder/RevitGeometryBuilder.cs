@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using City2BIM.GetGeometry;
@@ -38,132 +39,6 @@ namespace City2BIM.RevitBuilder
             {
             }
         }
-
-        //public void CreateBuildings(string path, Transform rvtTransf)
-        //{
-        //    double all = buildings.Count;
-        //    double success = 0.0;
-        //    double error = 0.0;
-
-        //    var i = 0;
-
-        //    foreach(var building in buildings)
-        //    {
-        //        var attributes = building.Value;
-
-        //        try
-        //        {
-        //            TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
-        //            builder.OpenConnectedFaceSet(true);
-
-        //            var planesById = building.Key.Planes.GroupBy(c => c.Value.ID);
-
-        //            foreach(var planeGroup in planesById)
-        //            {
-        //                IList<IList<Autodesk.Revit.DB.XYZ>> faceList = new List<IList<XYZ>>();
-        //                ElementId colorMat = ElementId.InvalidElementId;
-
-        //                foreach(var plane in planeGroup)
-        //                {
-        //                    var p = plane.Value;
-
-        //                    IList<Autodesk.Revit.DB.XYZ> face = new List<XYZ>();
-        //                    foreach(int vid in p.Vertices)
-        //                    {
-        //                        //GetGeometry.XYZ xyz = building.Key.Vertices[vid].Position;
-
-        //                        var verts = building.Key.Vertices;
-
-        //                        if(verts.Contains(verts[vid]))
-        //                        {
-        //                            GetGeometry.C2BPoint xyz = verts[vid].Position;
-
-        //                            var xF = xyz.X * 3.28084;
-        //                            var yF = xyz.Y * 3.28084;
-        //                            var zF = xyz.Z * 3.28084;
-
-        //                            var revitXYZ = new XYZ(xF, yF, zF);
-
-        //                            var revTransXYZ = rvtTransf.OfPoint(revitXYZ);
-
-        //                            face.Add(revTransXYZ); //Revit feet Problem
-
-        //                            dxf.DrawPoint(xF / 3.28084, yF / 3.28084, zF / 3.28084, "revitFaceVertex", new int[] { 0, 0, 255 });
-        //                        }
-        //                        else
-        //                        {
-        //                            Log.Error("id nicht vorhanden");
-        //                        }
-        //                    }
-
-        //                    for(int m = 0; m < face.Count - 1; m++)
-        //                    {
-        //                        dxf.DrawLine(face[m].X / 3.28084, face[m].Y / 3.28084, face[m].Z / 3.28084, face[m + 1].X / 3.28084, face[m + 1].Y / 3.28084, face[m + 1].Z / 3.28084, "revitFaceLines", new int[] { 0, 0, 255 });
-        //                    }
-
-        //                    colorMat = colors[p.Facetype];
-
-        //                    if(p.Ringtype == GetGeometry.C2BPlane.RingType.exterior)       //Sicherstellung, dass äußerer Ring immer als erstes steht
-        //                        faceList.Insert(0, face);
-        //                    else
-        //                        faceList.Add(face);
-        //                }
-        //                var faceT = new TessellatedFace(faceList, colorMat);
-
-        //                builder.AddFace(faceT);
-        //            }
-
-        //            builder.CloseConnectedFaceSet();
-
-        //            builder.Target = TessellatedShapeBuilderTarget.Solid;
-
-        //            builder.Fallback = TessellatedShapeBuilderFallback.Abort;
-        //            builder.Build();
-
-        //            TessellatedShapeBuilderResult result = builder.GetBuildResult();
-
-        //            using(Transaction t = new Transaction(doc, "Create tessellated direct shape"))
-        //            {
-        //                t.Start();
-
-        //                DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-
-        //                ds.ApplicationId = "Application id";
-        //                ds.ApplicationDataId = "Geometry object id";
-
-        //                ds.SetShape(result.GetGeometricalObjects());
-
-        //                ds = SetAttributeValues(ds, attributes);
-
-        //                var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-
-        //                var commAttr = ds.LookupParameter(commAttrLabel);
-
-        //                commAttr.Set("LOD2");
-
-        //                t.Commit();
-        //            }
-
-        //            i++;
-
-        //            //Log.Information("Building builder successful");
-        //            success += 1;
-        //        }
-        //        catch(System.Exception ex)
-        //        {
-        //            try
-        //            {
-        //                CreateLOD1Building(building, rvtTransf);
-        //            }
-        //            catch
-        //            {
-        //                continue;
-        //            }
-
-        //            error += 1;
-        //            continue;
-        //        }
-        //    }
 
         private Transform GetRevitProjectLocation(Document doc)
         {
@@ -315,6 +190,7 @@ namespace City2BIM.RevitBuilder
                         ds.SetShape(result.GetGeometricalObjects());
 
                         ds = SetAttributeValues(ds, building.BldgAttributes);
+                        ds.Pinned = true;
 
                         var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
 
@@ -376,6 +252,11 @@ namespace City2BIM.RevitBuilder
                         attributes.Add(attr.Key, attr.Value);
                     }
 
+                    //Identify GmlSurface with current plane
+                    var surface = (from pl in building.BldgSurfaces
+                                   where pl.SurfaceId == plane.Key
+                                   select pl).SingleOrDefault();
+
                     try
                     {
                         var poly = new List<XYZ>();
@@ -410,14 +291,7 @@ namespace City2BIM.RevitBuilder
 
                         XYZ normal = new XYZ(plane.Value.Normal.X, plane.Value.Normal.Y, plane.Value.Normal.Z);
 
-                        //Identify GmlSurface with current plane
-                        var surface = (from pl in building.BldgSurfaces
-                                       where pl.SurfaceId == plane.Key
-                                       select pl).SingleOrDefault();
-
-                        var fType = surface.Facetype;
-
-                        SolidOptions opt = new SolidOptions(colors[fType], ElementId.InvalidElementId);
+                        SolidOptions opt = new SolidOptions(colors[surface.Facetype], ElementId.InvalidElementId);
 
                         Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height, opt);
 
@@ -428,7 +302,7 @@ namespace City2BIM.RevitBuilder
 
                             ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
 
-                            switch(fType)
+                            switch(surface.Facetype)
                             {
                                 case (GmlSurface.FaceType.roof):
                                     elem = new ElementId(BuiltInCategory.OST_Roofs);
@@ -467,17 +341,132 @@ namespace City2BIM.RevitBuilder
 
                             ds = SetAttributeValues(ds, attributes);
 
+                            ds.Pinned = true;
+
                             t.Commit();
                         }
                     }
 
                     catch(System.Exception ex)
                     {
-                        var ba = ex.Message;
-                        var shs = ex.StackTrace;
-                        var dd = ex.Data;
+                        try
+                        {
+                            CreateSurfaceWithOriginalPoints(surface, attributes);
+                            Log.Warning("Face-Fallback used, because of: " + ex.Message);
+                        }
+                        catch(Exception exX)
+                        {
+                            Log.Error("Face-Fallback not possible: " + exX.Message);
+
+                            continue;
+                        }
                     }
                 }
+            }
+        }
+
+        private void CreateSurfaceWithOriginalPoints(GmlSurface surface, Dictionary<GmlAttribute, string> attributes)
+        {
+            var pts = surface.PlaneExt.PolygonPts;
+
+            C2BPoint normalVc = new C2BPoint(0, 0, 0);
+            C2BPoint centroidPl = new C2BPoint(0, 0, 0);
+
+            List<CurveLoop> loopList = new List<CurveLoop>();
+            List<Curve> edges = new List<Curve>();
+
+            for(var c = 1; c < pts.Count; c++)
+            {
+                normalVc += C2BPoint.CrossProduct(pts[c - 1], pts[c]);
+
+                centroidPl += pts[c];
+            }
+
+            var centroid = centroidPl / (pts.Count - 1);
+            var normalizedVc = C2BPoint.Normalized(normalVc);
+
+            var projectedVerts = new List<XYZ>();
+
+            foreach(var pt in pts)
+            {
+                var vecPtCent = pt - centroid;
+                var d = C2BPoint.ScalarProduct(vecPtCent, normalizedVc);
+
+                var vecLotCent = new C2BPoint(d * normalizedVc.X, d * normalizedVc.Y, d * normalizedVc.Z);
+                var vertNew = pt - vecLotCent;
+                var vertRevXYZ = TransformPointForRevit(vertNew);
+
+                projectedVerts.Add(vertRevXYZ);
+            }
+
+            for(var c = 1; c < projectedVerts.Count; c++)
+            {
+                Line edge = Line.CreateBound(projectedVerts[c - 1], projectedVerts[c]);
+
+                edges.Add(edge);
+            }
+
+            CurveLoop baseLoop = CurveLoop.Create(edges);
+            loopList.Add(baseLoop);
+
+            double height = 0.01 * 3.28084;
+
+            XYZ normal = new XYZ(normalizedVc.X, normalizedVc.Y, normalizedVc.Z);
+
+            SolidOptions opt = new SolidOptions(colors[surface.Facetype], ElementId.InvalidElementId);
+
+            Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height, opt);
+
+            using(Transaction t = new Transaction(doc, "Create face extrusion"))
+            {
+                t.Start();
+                // create direct shape and assign the sphere shape
+
+                ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
+
+                switch(surface.Facetype)
+                {
+                    case (GmlSurface.FaceType.roof):
+                        elem = new ElementId(BuiltInCategory.OST_Roofs);
+
+                        break;
+
+                    case (GmlSurface.FaceType.wall):
+                        elem = new ElementId(BuiltInCategory.OST_Walls);
+                        break;
+
+                    case (GmlSurface.FaceType.ground):
+                        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
+                        break;
+
+                    case (GmlSurface.FaceType.closure):
+                        elem = new ElementId(BuiltInCategory.OST_Walls);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                DirectShape ds = DirectShape.CreateElement(doc, elem);
+
+                ds.SetShape(new GeometryObject[] { bldgFaceSolid });
+
+                var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+
+                var commAttr = ds.LookupParameter(commAttrLabel);
+
+                commAttr.Set("Face-Solid (LOD2) Fallback");
+
+                foreach(var attr in surface.SurfaceAttributes)
+                {
+                    attributes.Add(attr.Key, attr.Value);
+                }
+
+                ds = SetAttributeValues(ds, attributes);
+
+                ds.Pinned = true;
+
+                t.Commit();
             }
         }
 
@@ -586,6 +575,7 @@ namespace City2BIM.RevitBuilder
                 ds.SetShape(new GeometryObject[] { lod1bldg });
 
                 ds = SetAttributeValues(ds, building.BldgAttributes);
+                ds.Pinned = true;
 
                 var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
 

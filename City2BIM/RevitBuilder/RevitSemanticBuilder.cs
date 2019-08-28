@@ -35,6 +35,9 @@ namespace City2BIM.RevitBuilder
 
             // set the path of shared parameter file to current Revit
             application.SharedParametersFilename = newFile;
+
+            //application.SharedParametersFilename = sharedParameterFile;
+
             // open the file
             return application.OpenSharedParameterFile();
         }

@@ -22,6 +22,7 @@ namespace City2BIM
             RibbonPanel panel2 = application.CreateRibbonPanel(tabName, "Georeferencing");
             RibbonPanel panel3 = application.CreateRibbonPanel(tabName, "City2BIM");
             RibbonPanel panel4 = application.CreateRibbonPanel(tabName, "BIM2City");
+            RibbonPanel panel5 = application.CreateRibbonPanel(tabName, "DTM2BIM");
 
             //DB RibbonPanel panel = ribbonPanel(application);
             // Create a push button to trigger a command add it to the ribbon panel.
@@ -47,6 +48,9 @@ namespace City2BIM
             thisAssemblyPath, "City2BIM.ReadCode")) as PushButton;
             button.ToolTip = "Import functionality for CityGML data";
 
+            PushButton buttonDTM = panel5.AddItem(new PushButtonData("DTM_Importer", "Get DTM from XYZ-file",
+            thisAssemblyPath, "City2BIM.ReadTerrainXYZ")) as PushButton;
+            button.ToolTip = "Import functionality for Digital Terrain Models out of XYZ data (regular grid)";
 
 
 

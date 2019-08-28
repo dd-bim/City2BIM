@@ -38,8 +38,8 @@ namespace City2BIM
             Log.Information("Start...");
 
             //Import via Dialog:
-            Class1imp imp = new Class1imp();
-            var path = imp.ImportPath();
+            FileDialog imp = new FileDialog();
+            var path = imp.ImportPathCityGML();
             //-------------------------------
             Log.Information("File: " + path);
 
@@ -52,7 +52,7 @@ namespace City2BIM
 
             Log.Information("Validate CityGML geometry data...");
             //Filter of surface points (Geometry validation)
-            gmlBuildings = FilterPolygonPoints(gmlBuildings);
+            gmlBuildings = ImprovePolygonPoints(gmlBuildings);
 
             Log.Information("Calculate solids from CityGML geometry data...");
             //Creation of Solids
@@ -124,235 +124,6 @@ namespace City2BIM
             dxf.DrawDxf(path);
         }
 
-        //private bool GetGlobalLC(XDocument xmlDoc, ref C2BPoint lowerCorner)
-        //{
-        //    var gml = this.allns["gml"];
-
-        //    var globalBoundedBy = xmlDoc.Elements(allns["core"] + "CityModel").Single().Elements(gml + "boundedBy").FirstOrDefault();
-
-        //    //var globalBoundedBy = xmlDoc.Elements(gml + "boundedBy").FirstOrDefault(); //sollte nur einmal vorkommen
-
-        //    if(globalBoundedBy != null)
-        //    {
-        //        var LC = globalBoundedBy.Descendants(gml + "lowerCorner").FirstOrDefault();
-
-        //        CalcLowerCorner(LC, ref lowerCorner);
-
-        //        return true;
-        //    }
-        //    else
-        //        return false;
-        //}
-
-        //private bool GetBuildingLC(XElement bldg, ref C2BPoint lowerCorner)
-        //{
-        //    var gml = this.allns["gml"];
-
-        //    var LC = bldg.Elements(gml + "boundedBy").Single().Descendants(gml + "lowerCorner");
-
-        //    if(LC.Count() == 1)
-        //    {
-        //        CalcLowerCorner(LC.Single(), ref lowerCorner);
-        //        return true;
-        //    }
-        //    else
-        //        return false;
-        //}
-
-        //private void CalcLowerCorner(XElement gmlCorner, ref C2BPoint lowerCorner)
-        //{
-        //    var pointSeperated = gmlCorner.Value.Split(new[] { (' ') }, StringSplitOptions.RemoveEmptyEntries);
-        //    lowerCorner.X = Double.Parse(pointSeperated[0], CultureInfo.InvariantCulture);
-        //    lowerCorner.Y = Double.Parse(pointSeperated[1], CultureInfo.InvariantCulture);
-        //    lowerCorner.Z = Double.Parse(pointSeperated[2], CultureInfo.InvariantCulture);
-
-        //    //Log.Information(String.Format("Eine lower Corner: {0,5:N3} {1,5:N3} {2,5:N3}  ", lowerCorner.X, lowerCorner.Y, lowerCorner.Z));
-        //}
-
-        //public Dictionary<C2BSolid, Dictionary<GmlAttribute, string>> ReadXMLDoc(string path, DxfVisualizer dxf)
-        //{
-        //    var solids = new Dictionary<C2BSolid, Dictionary<GmlAttribute, string>>();
-
-        //    XDocument xmlDoc = XDocument.Load(path);
-
-        //    this.allns = xmlDoc.Root.Attributes().
-        //        Where(a => a.IsNamespaceDeclaration).
-        //        GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName,
-        //        a => XNamespace.Get(a.Value)).
-        //        ToDictionary(g => g.Key,
-        //             g => g.First());
-
-        //    foreach(var ns in allns)
-        //    {
-        //        Log.Debug("Namespaces: " + ns.Key);
-        //    }
-
-        //    if(this.allns.ContainsKey(""))
-        //    {
-        //        if(!this.allns.ContainsKey("core"))
-        //            this.allns.Add("core", this.allns[""]);     //wenn Namespace ohne prefix vorhanden ist, ist das das core-Modul
-        //    }
-
-        //    double offsetX = 0.0;
-        //    double offsetY = 0.0;
-        //    double offsetZ = 0.0;
-
-        //    C2BPoint lowerCorner = new C2BPoint(offsetX, offsetY, offsetZ);
-
-        //    var globLC = GetGlobalLC(xmlDoc, ref lowerCorner);
-        //    Log.Debug("Global LC?: " + globLC);
-
-        //    var gmlBuildings = xmlDoc.Descendants(this.allns["bldg"] + "Building"); //alle Bldg-Elemente samt Kindern und Kindeskindern
-        //    Log.Debug("Anzahl von Buildings: " + gmlBuildings.Count());
-
-        //    //Semantik:____________________________________________________________________
-
-        //    //Anlegen der semantischen Attribute (ohne Werte):
-        //    //zunächst Parsen der XML-Schema-Dateien für festgelegte (möglich vorkommende) Attribute, die im bldg- und core-Modul definiert sind
-        //    //Auslesen nur einmal (!)
-
-        //    var sem = new ReadSemAttributes();
-
-        //    //vorgegebene Semantik aus CityGML-Schema:
-
-        //    this.attributes = sem.GetSchemaAttributes();
-
-        //    //Anlegen der semantischen Attribute (ohne Werte):
-        //    //Parsen der generischen Attribute
-        //    //Auslesen pro Bldg
-
-        //    var genAttr = sem.ReadGenericAttributes(gmlBuildings, this.allns["gen"]);
-
-        //    this.attributes.UnionWith(genAttr);
-
-        //    Log.Debug("Gefundene Attribute:");
-
-        //    foreach(var attr in attributes)
-        //    {
-        //        Log.Debug(" - " + attr.GmlNamespace + " , " + attr.Name);
-        //    }
-
-        //    //Geometrie:____________________________________________________________________
-
-        //    int i = 0, j = 0;
-
-        //    Log.Information("Auslesen der einzelnen Gebäude:");
-
-        //    foreach(XElement xmlBuildingNode in gmlBuildings)
-        //    {
-        //        Log.Information("---------------------------------------------------------------------------------------");
-        //        Log.Information("Bldg-Id: " + xmlBuildingNode.FirstAttribute.Value);
-
-        //        //lokale BoundingBox, wenn nötig (gibts das auch bei parts?)
-        //        //---------------------------------
-        //        if(!globLC)
-        //        {
-        //            var bldgLC = GetBuildingLC(xmlBuildingNode, ref lowerCorner);
-
-        //            Log.Debug("- LocalLC?: " + bldgLC);
-
-        //            if(!globLC && !bldgLC)
-        //                Log.Debug("- No global and local lower corner was found!");
-        //        }
-        //        //---------------------------------
-
-        //        var semVal = new ReadSemValues();
-        //        var geom = new ReadGeomData(this.allns, dxf);
-
-        //        //Spezialfall: BuildingParts
-        //        //- Geometrie liegt unterhalb Part
-        //        //- Semantik liegt teilweise unterhalb Part (spezifische Attribute, wie Dachform)
-        //        //- Semantik liegt teilweise unterhalb Building (selbe Ebene wie Parts, allgemeine Semantik für alle Parts, Bsp. Adresse)
-
-        //        var xmlParts = xmlBuildingNode.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
-
-        //        var partsCt = xmlParts.Count();
-
-        //        Log.Information("- BuildingParts?: " + partsCt);
-
-        //        //allgemeine Semantik (direkt in Building)
-        //        var bldgSemAllg = semVal.ReadAttributeValuesBldg(xmlBuildingNode, attributes, allns); //in Methode regeln, dass Parts nicht gelesen werden
-
-        //        Log.Information("- Allgemeine Semantik?: " + bldgSemAllg.Count);
-
-        //        var bldgSemSpez = new Dictionary<GmlAttribute, string>();
-
-        //        var bldgGeom = new C2BSolid();
-
-        //        //Geometrie auslesen hängt davon ab, ob es Parts gibt (geometriebildend sind die Parts, jeder Part wird eigenständiges Revit-Objekt)
-        //        //Beispieldatensätze zeigen unterschiedliche Implementierungen
-        //        //Fall a: keine Parts implementiert -> Geometrie immer direkt unterhalb als Kinder von Building (zB Berlin)
-        //        //Fall b: Parts implementiert -> Bldg, die Parts enthalten, speichern Geometrie nur als Kinder von BuildingPart (zB TH)
-        //        //Fall c: Parts implementiert -> Bldg, die Parts enthalten, speichern Geometrie gemischt -> tlw. als Kinder von Bldg, tlw als Kinder von Part (zB BB)
-
-        //        if(xmlParts.Any())     //Fall b und c (Gebäude, die Parts haben)
-        //        {
-        //            if(xmlBuildingNode.Elements(this.allns["bldg"] + "boundedBy").Any() ||
-        //                xmlBuildingNode.Elements(this.allns["bldg"] + "lod1Solid").Any() ||
-        //                xmlBuildingNode.Elements(this.allns["bldg"] + "lod1MultiSurface").Any())   //Fall c (LOD2 und LOD1)
-        //            {
-        //                bldgGeom = geom.CollectBuilding(xmlBuildingNode, lowerCorner);
-
-        //                solids.Add(bldgGeom, bldgSemAllg);
-        //            }
-
-        //            var xmlBuildingParts = xmlParts.Elements(this.allns["bldg"] + "BuildingPart");    //in LOD1 und LOD2 möglich
-
-        //            foreach(var part in xmlBuildingParts)       //Fall b und c
-        //            {
-        //                //zusätzlich spezifische Semantik je Part auslesen
-
-        //                Log.Information("BldgPart-Id: " + part.FirstAttribute.Value);
-
-        //                bldgGeom = geom.CollectBuilding(part, lowerCorner);
-
-        //                bldgSemSpez = semVal.ReadAttributeValuesBldg(part, attributes, allns);
-
-        //                Log.Information("- Spezifische Semantik?: " + bldgSemSpez.Count);
-
-        //                Dictionary<GmlAttribute, string> bldgSem = new Dictionary<GmlAttribute, string>(bldgSemAllg);
-
-        //                foreach(KeyValuePair<GmlAttribute, String> kvp in bldgSemSpez)
-        //                {
-        //                    Log.Debug("- Parts-Dictionary lesen...");
-
-        //                    if(!bldgSem.ContainsKey(kvp.Key))
-        //                    {
-        //                        bldgSem.Add(kvp.Key, kvp.Value);
-
-        //                        Log.Debug("- Key nicht allgemein vorhanden --> wird hinzugefügt: " + kvp.Key.Name);
-        //                    }
-        //                    else
-        //                    {
-        //                        Log.Debug("- Key allgemein schon vorhanden --> wird ersetzt: " + kvp.Key.Name);
-        //                        Log.Debug("- alter Wert: " + bldgSem[kvp.Key]);
-
-        //                        bldgSem[kvp.Key] = kvp.Value;       //Überschreiben des Attributes, falls es in Part wieder vorkommt
-
-        //                        Log.Debug("- neuer Wert: " + bldgSem[kvp.Key]);
-        //                    }
-        //                }
-
-        //                //SolidList benötigt schließlich geometrisch gebildete Solids aus bldg(parts) sowie die dazugehörige Semantik (Attribute+Wert) je bldg(part)
-        //                solids.Add(bldgGeom, bldgSem);
-        //            }
-        //        }
-        //        else
-        //        {   //Fall a (und alle Gebäude für Fall b und c, die keine Parts haben)
-        //            //Geometrie des Buildings
-        //            bldgGeom = geom.CollectBuilding(xmlBuildingNode, lowerCorner);
-
-        //            solids.Add(bldgGeom, bldgSemAllg);
-        //        }
-        //    }
-
-        //    return solids;
-        //}
-
-        //-----
-        //----
-        //------
-
         /// <summary>
         /// Splitting of PosList for XYZ coordinates
         /// Subtraction of lowerCorner for mathematical calculations
@@ -423,13 +194,31 @@ namespace City2BIM
                     Log.Debug("Amount exterior polygons: " + posListExt.Count());
 
                     if(posListExt.Any())
-                        surface.Exterior = CollectPoints(posListExt.FirstOrDefault(), lowerCorner);
+                    {
+                        var planeExt = new C2BPlane(surface.SurfaceId);
+
+                        planeExt.PolygonPts = CollectPoints(posListExt.FirstOrDefault(), lowerCorner);
+
+                        surface.PlaneExt = planeExt;
+                    }
+
+                    //if(posListExt.Any())
+                    //    surface.Exterior = CollectPoints(posListExt.FirstOrDefault(), lowerCorner);
 
                     var posListInt = poly.Descendants(allns["gml"] + "posList").Where(x => x.Ancestors(allns["gml"] + "interior").Count() > 0);
                     Log.Debug("Amount interior polygons: " + posListInt.Count());
 
+                    //if(posListInt.Any())
+                    //    surface.Interior = CollectPoints(posListInt.FirstOrDefault(), lowerCorner);
+
                     if(posListInt.Any())
-                        surface.Interior = CollectPoints(posListInt.FirstOrDefault(), lowerCorner);
+                    {
+                        var planeInt = new C2BPlane(surface.SurfaceId + "_void");
+
+                        planeInt.PolygonPts = CollectPoints(posListInt.FirstOrDefault(), lowerCorner);
+
+                        surface.PlaneInt = planeInt;
+                    }
 
                     surfaces.Add(surface);
                 }
@@ -537,7 +326,6 @@ namespace City2BIM
 
                 gmlBldg.BldgSurfaces = surfaces;
 
-
                 //TO DO: EINBINDEN DER PARTS + LOGGING
 
                 //investigation of building parts
@@ -565,7 +353,7 @@ namespace City2BIM
             return gmlBldgs;
         }
 
-        public List<GmlBldg> FilterPolygonPoints(List<GmlBldg> bldgs)
+        public List<GmlBldg> ImprovePolygonPoints(List<GmlBldg> bldgs)
         {
             var newBldgs = new List<GmlBldg>();
 
@@ -574,6 +362,7 @@ namespace City2BIM
                 var surfaces = bldg.BldgSurfaces;
 
                 var validation = new ValidateGeometry();
+
                 var filteredSurfaces = validation.FilterUnneccessaryPoints(surfaces);
 
                 bldg.BldgSurfaces = filteredSurfaces;
@@ -597,19 +386,19 @@ namespace City2BIM
 
                 foreach(var surface in surfaces)
                 {
-                    bldg.BldgSolid.AddPlane(surface.SurfaceId, surface.Exterior);
+                    bldg.BldgSolid.AddPlane(surface.SurfaceId, surface.PlaneExt.PolygonPts);
                     Log.Debug("Exterior plane created: " + surface.SurfaceId);
 
-                    if(surface.Interior != null)
+                    if(surface.PlaneInt != null)
                     {
-                        bldg.BldgSolid.AddPlane(surface.SurfaceId + "_void", surface.Interior);
+                        bldg.BldgSolid.AddPlane(surface.SurfaceId + "_void", surface.PlaneInt.PolygonPts);
                         Log.Debug("Interior plane created: " + surface.SurfaceId + "_void");
                     }
                 }
 
                 var abL = new List<double[]>();
 
-                foreach (var v in bldg.BldgSolid.Vertices)
+                foreach(var v in bldg.BldgSolid.Vertices)
                 {
                     var ab = new double[] { v.Position.X, v.Position.Y, v.Position.Z };
                     abL.Add(ab);
@@ -626,14 +415,10 @@ namespace City2BIM
                     abcL.Add(abc);
                 }
 
-                for (int i = 0; i < abcL.Count; i++)
+                for(int i = 0; i < abcL.Count; i++)
                 {
                     Log.Debug("Difference = " + (abcL[i][0] - abL[i][0]) + " / " + (abcL[i][1] - abL[i][1]) + " / " + (abcL[i][2] - abL[i][2]));
                 }
-
-
-
-                
 
                 newBldgs.Add(bldg);
             }

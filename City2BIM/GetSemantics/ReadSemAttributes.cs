@@ -47,14 +47,6 @@ namespace City2BIM.GetSemantics
                     if(closureGen.Any())
                         attr.Reference = GmlAttribute.AttrHierarchy.closure;
 
-                    //ggf. weitere Typen prüfen (laut AdV aber nur stringAttribute zulässig) -> TO DO
-
-                    //if(!genListNames.Contains(attr.Name))
-                    //{
-                    //    genAttrList.Add(attr);                              //add to hashset, if not present
-                    //    genAttrListBldg.Add(attr);
-                    //}
-
                     var names = attr.Name;
                     var references = attr.Reference;
 

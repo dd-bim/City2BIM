@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace City2BIM.GetGeometry
-    
-{
 
+{
     public class C2BPlane
     {
         private string id;
         private int[] vertices;
         private C2BPoint normal;
         private C2BPoint centroid;
-        //private FaceType facetype;
-        //private RingType ringtype;
+        private List<C2BPoint> polygonPts;
 
-        public C2BPlane(string id, List<int> vertices, C2BPoint normal, C2BPoint centroid/*, FaceType fType, RingType rType*/)
+        public C2BPlane(string id)
+        {
+            this.id = id;
+        }
+
+        public C2BPlane(string id, List<int> vertices, C2BPoint normal, C2BPoint centroid)
         {
             this.id = id;
             this.vertices = vertices.ToArray();
             this.normal = normal;
             this.centroid = centroid;
-            //this.Facetype = fType;
-            //this.Ringtype = rType;
         }
 
         public int[] Vertices
@@ -33,11 +33,9 @@ namespace City2BIM.GetGeometry
             }
         }
 
-
         public string ID
         {
             get { return id; }
-
         }
 
         public C2BPoint Normal
@@ -66,35 +64,17 @@ namespace City2BIM.GetGeometry
             }
         }
 
-        //public FaceType Facetype
-        //{
-        //    get
-        //    {
-        //        return this.facetype;
-        //    }
+        public List<C2BPoint> PolygonPts
+        {
+            get
+            {
+                return this.polygonPts;
+            }
 
-        //    set
-        //    {
-        //        this.facetype = value;
-        //    }
-        //}
-
-        //public RingType Ringtype
-        //{
-        //    get
-        //    {
-        //        return this.ringtype;
-        //    }
-
-        //    set
-        //    {
-        //        this.ringtype = value;
-        //    }
-        //}
-
-        //public enum FaceType { roof, wall, ground, closure, unknown }
-
-        //public enum RingType { holeless, exterior, interior, unknown }
+            set
+            {
+                this.polygonPts = value;
+            }
+        }
     }
 }
-

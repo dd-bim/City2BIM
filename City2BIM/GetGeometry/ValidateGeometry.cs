@@ -7,32 +7,32 @@ namespace City2BIM.GetGeometry
 {
     internal class ValidateGeometry
     {
-        public List<GmlSurface> FilterUnneccessaryPoints(List<GmlSurface> rawSurfaces)
+        public List<GmlSurface> FilterUnneccessaryPoints(List<GmlSurface> planeSurfaces)
         {
             var filteredSurfaces = new List<GmlSurface>();
             var ptListWithPolyID = new Dictionary<C2BPoint, string>();
 
-            foreach(var rawSurface in rawSurfaces)
+            foreach(var planeSurface in planeSurfaces)
             {
                 //Prüfung - gleicher Start - und Endpunkt
                 //Entfernen des letzten Punktes, wenn gleich zum Startpunkt (Normalfall bei Polygon)
                 // ---------------------------------------- -
                 Log.Debug("Check polygon geometry for same start and end point...");
-                var checkPolyEx = SameStartAndEndPt(rawSurface.Exterior);
+                var checkPolyEx = SameStartAndEndPt(planeSurface.PlaneExt.PolygonPts);
 
                 if(!checkPolyEx)
                     Log.Error("Not equal at exterior polygon!");
                 else
-                    rawSurface.Exterior.Remove(rawSurface.Exterior.Last());
+                    planeSurface.PlaneExt.PolygonPts.Remove(planeSurface.PlaneExt.PolygonPts.Last());
 
-                if(rawSurface.Interior != null)
+                if(planeSurface.PlaneInt != null)
                 {
-                    var checkPolyIn = SameStartAndEndPt(rawSurface.Interior);
+                    var checkPolyIn = SameStartAndEndPt(planeSurface.PlaneInt.PolygonPts);
 
                     if(!checkPolyIn)
                         Log.Error("Not equal at interior polygon!");
                     else
-                        rawSurface.Interior.Remove(rawSurface.Interior.Last());
+                        planeSurface.PlaneInt.PolygonPts.Remove(planeSurface.PlaneInt.PolygonPts.Last());
                 }
                 //------------------------------------------------------------------------------
 
@@ -40,14 +40,14 @@ namespace City2BIM.GetGeometry
                 //erstmal nur Logging, wie behandeln? unterschiedliche Handungsweisen nötig je nach Reihenfolge
                 //-----------------------------------------
                 Log.Debug("Check polygon geometry for redundant points in polygon (beside of start/end...");
-                var checkRedunEx = NoRedundantPts(rawSurface.Exterior);
+                var checkRedunEx = NoRedundantPts(planeSurface.PlaneExt.PolygonPts);
 
                 if(!checkRedunEx)
                     Log.Error("Redundant points at exterior polygon!");
 
-                if(rawSurface.Interior != null)
+                if(planeSurface.PlaneInt != null)
                 {
-                    var checkRedunIn = NoRedundantPts(rawSurface.Interior);
+                    var checkRedunIn = NoRedundantPts(planeSurface.PlaneInt.PolygonPts);
 
                     if(!checkRedunIn)
                         Log.Error("Redundant points at interior polygon!");
@@ -57,16 +57,16 @@ namespace City2BIM.GetGeometry
                 //Combining of all polygon points of a building for determining of points which are not part of at least 3 planes
                 //Storing of id neccessary for later identification and updating of polygon point list
                 Log.Debug("Check all building polygon points (vertices) for occurence in at least 3 surfaces (planes)...");
-                foreach(var rawPt in rawSurface.Exterior)
+                foreach(var rawPt in planeSurface.PlaneExt.PolygonPts)
                 {
-                    ptListWithPolyID.Add(rawPt, rawSurface.SurfaceId);
+                    ptListWithPolyID.Add(rawPt, planeSurface.SurfaceId);
                 }
 
-                if(rawSurface.Interior != null)
+                if(planeSurface.PlaneInt != null)
                 {
-                    foreach(var rawPt in rawSurface.Interior)
+                    foreach(var rawPt in planeSurface.PlaneInt.PolygonPts)
                     {
-                        ptListWithPolyID.Add(rawPt, rawSurface.SurfaceId + "_void");
+                        ptListWithPolyID.Add(rawPt, planeSurface.SurfaceId + "_void");
                     }
                 }
             }
@@ -134,9 +134,6 @@ namespace City2BIM.GetGeometry
 
                 Log.Debug("Create new surface without detected points...");
 
-                var filteredSurface = new GmlSurface();
-                filteredSurface.SurfaceId = polyID;
-
                 var pInt = from p in polyL
                            where p.Contains("void")
                            select p;
@@ -153,21 +150,20 @@ namespace City2BIM.GetGeometry
                                              where p.Value == voidP
                                              select p.Key).ToList();                  //Selektieren aller Punkte pro Polygon-ID
 
-                            filteredSurface.Interior = pointsInt;
+                            //filteredSurface.PlaneInt.PolygonPts = pointsInt;
                         }
                     }
                 }
 
-                filteredSurface.Exterior = points;
+                var surfaceEquiv = (from a in planeSurfaces
+                                    where a.SurfaceId == polyID
+                                    select a).SingleOrDefault();
 
-                var surface = (from a in rawSurfaces
-                               where a.SurfaceId == polyID
-                               select a).SingleOrDefault();
+                points.Add(points[0]);
 
-                filteredSurface.Facetype = surface.Facetype;
-                filteredSurface.SurfaceAttributes = surface.SurfaceAttributes;
+                surfaceEquiv.PlaneExt.PolygonPts = points;
 
-                filteredSurfaces.Add(filteredSurface);
+                filteredSurfaces.Add(surfaceEquiv);
             }
 
             return filteredSurfaces;
