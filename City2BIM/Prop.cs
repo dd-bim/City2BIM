@@ -6,6 +6,8 @@
 
         //public static readonly double Distolsq = 0.0009; //3cm^2!
 
+        //public static readonly double Distolsq = 0.0001; //1cm^2!
+
         /// <summary>
         /// Assumption tolerance for same points
         /// </summary>

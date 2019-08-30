@@ -365,6 +365,8 @@ namespace City2BIM
 
                 var filteredSurfaces = validation.FilterUnneccessaryPoints(surfaces);
 
+                //var flattenedSurfaces = validation.FlatteningSurfaces(filteredSurfaces);
+
                 bldg.BldgSurfaces = filteredSurfaces;
 
                 newBldgs.Add(bldg);

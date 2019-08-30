@@ -60,6 +60,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -97,13 +99,26 @@
     <Compile Include="RevitBuilder\RevitSemanticBuilder.cs" />
     <Compile Include="RevitCommands\DTM2BIM\ReadTerrainXYZ.cs" />
     <Compile Include="RevitCommands\Georeferencing\GeorefUI.cs" />
+    <Compile Include="RevitCommands\NAS2BIM\ReadALKIS.cs" />
+    <Compile Include="_NAS_Soeren\ImportData.cs" />
+    <Compile Include="_NAS_Soeren\ImportXMLData.cs" />
+    <Compile Include="_NAS_Soeren\MainData.cs" />
+    <Compile Include="_NAS_Soeren\NasImportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_NAS_Soeren\NasImportForm.Designer.cs" />
+    <Compile Include="_NAS_Soeren\PlugIn.cs" />
+    <Compile Include="_NAS_Soeren\ReadData.cs" />
+    <Compile Include="_NAS_Soeren\ReadXml.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="RevitCommands\BIM2City\" />
-    <Folder Include="RevitCommands\NAS2BIM\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="_NAS_Soeren\NasImportForm.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

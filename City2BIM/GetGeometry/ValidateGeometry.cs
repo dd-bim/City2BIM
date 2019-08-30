@@ -7,6 +7,50 @@ namespace City2BIM.GetGeometry
 {
     internal class ValidateGeometry
     {
+        public List<GmlSurface> FlatteningSurfaces(List<GmlSurface> rawSurfaces)
+        {
+            var flattenedSurfaces = new List<GmlSurface>();
+
+            foreach(var surface in rawSurfaces)
+            {
+                var rawPoints = surface.PlaneExt.PolygonPts;
+
+                C2BPoint normalVc = new C2BPoint(0, 0, 0);
+                C2BPoint centroidPl = new C2BPoint(0, 0, 0);
+
+                for(var c = 1; c < rawPoints.Count; c++)
+                {
+                    normalVc += C2BPoint.CrossProduct(rawPoints[c - 1], rawPoints[c]);
+
+                    centroidPl += rawPoints[c];
+                }
+
+                var centroid = centroidPl / (rawPoints.Count - 1);
+                var normalizedVc = C2BPoint.Normalized(normalVc);
+
+                var projectedVerts = new List<C2BPoint>();
+
+                foreach(var pt in rawPoints)
+                {
+                    var vecPtCent = pt - centroid;
+                    var d = C2BPoint.ScalarProduct(vecPtCent, normalizedVc);
+
+                    var vecLotCent = new C2BPoint(d * normalizedVc.X, d * normalizedVc.Y, d * normalizedVc.Z);
+                    var vertNew = pt - vecLotCent;
+
+                    projectedVerts.Add(vertNew);
+                }
+
+                surface.PlaneExt.Normal = normalizedVc;
+                surface.PlaneExt.Centroid = centroid;
+                surface.PlaneExt.PolygonPts = projectedVerts;
+
+                flattenedSurfaces.Add(surface);
+            }
+
+            return flattenedSurfaces;
+        }
+
         public List<GmlSurface> FilterUnneccessaryPoints(List<GmlSurface> planeSurfaces)
         {
             var filteredSurfaces = new List<GmlSurface>();
