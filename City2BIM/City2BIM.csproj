@@ -99,6 +99,7 @@
     <Compile Include="RevitBuilder\RevitSemanticBuilder.cs" />
     <Compile Include="RevitCommands\DTM2BIM\ReadTerrainXYZ.cs" />
     <Compile Include="RevitCommands\Georeferencing\GeorefUI.cs" />
+    <Compile Include="RevitCommands\IFCExport\ExportIFC.cs" />
     <Compile Include="RevitCommands\NAS2BIM\ReadALKIS.cs" />
     <Compile Include="_NAS_Soeren\ImportData.cs" />
     <Compile Include="_NAS_Soeren\ImportXMLData.cs" />

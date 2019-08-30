@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI;
-using Serilog;
 
 namespace City2BIM
 {
@@ -22,105 +20,127 @@ namespace City2BIM
             string tabName = "City2BIM";
             application.CreateRibbonTab(tabName);
 
+            #region Settings panel
+
             // Add a new ribbon panel
             RibbonPanel panel1 = application.CreateRibbonPanel(tabName, "Settings");
 
-            PushButton btSettings = 
+            PushButton btSettings =
                 panel1.AddItem(new PushButtonData("Create info table", "Import settings", thisAssemblyPath, "City2BIM.ImportSource")) as PushButton;
             btSettings.ToolTip = "Test window appearing";
 
+            #endregion Settings panel
+
+            #region Georef panel
+
             RibbonPanel panel2 = application.CreateRibbonPanel(tabName, "Georeferencing");
 
-            PushButton btGeoSettings =
-                panel2.AddItem(new PushButtonData("Create info table", "Import settings", thisAssemblyPath, "City2BIM.ImportSource")) as PushButton;
-            btSettings.ToolTip = "Test window appearing";
-
-            //// Add the buttons to the panel
-            //List<RibbonItem> projectButtons = new List<RibbonItem>();
-            //projectButtons.AddRange(panel2.AddStackedItems(btGeoSettings, btSettings, btGeoSettings));
-
-            RibbonPanel panel3 = application.CreateRibbonPanel(tabName, "City2BIM");
-            RibbonPanel panel4 = application.CreateRibbonPanel(tabName, "ALKIS2BIM");
-            RibbonPanel panel5 = application.CreateRibbonPanel(tabName, "DTM2BIM");
-            RibbonPanel panel6 = application.CreateRibbonPanel(tabName, "test");
-
-
-
-
-
-            PushButton buttonGeoRef = panel2.AddItem(new PushButtonData("Show Georef information", "Import settings",
-            thisAssemblyPath, "City2BIM.RevitCommands.Georeferencing.GeorefUI")) as PushButton;
-            buttonGeoRef.ToolTip = "Show georef";
-
-            PushButton btSolid = panel3.AddItem(new PushButtonData("LoadCityGMLSolids", "Get City Model as Solids",
-            thisAssemblyPath, "City2BIM.ReadCityGMLSolids")) as PushButton;
-            btSolid.ToolTip = "Import functionality for CityGML data as Solid models with category Entourage";
-
-            PushButton button = panel3.AddItem(new PushButtonData("LoadCityGMLFaces", "Get City Model as Faces",
-            thisAssemblyPath, "City2BIM.ReadCityGMLFaces")) as PushButton;
-            button.ToolTip = "Import functionality for CityGML data as Face models with categories Wall, StructuralSlab and Roof";
-
-            PushButton buttonCode = panel3.AddItem(new PushButtonData("Get CityGML Code Description", "Get Code Decription",
-            thisAssemblyPath, "City2BIM.ReadCode")) as PushButton;
-            button.ToolTip = "Import functionality for CityGML data";
-
-            PushButton buttonAlkis = panel4.AddItem(new PushButtonData("LoadALKIS", "Get ALKIS datafrom NAS-XML file",
-            thisAssemblyPath, "City2BIM.ReadALKIS")) as PushButton;
-            button.ToolTip = "Import functionality ALKIS data (NAS-XML)";
-
-            PushButton buttonDTM = panel5.AddItem(new PushButtonData("DTM_Importer", "Get DTM from XYZ-file",
-            thisAssemblyPath, "City2BIM.ReadTerrainXYZ")) as PushButton;
-            button.ToolTip = "Import functionality for Digital Terrain Models out of XYZ data (regular grid)";
-
-
-
-
-
-
-            PushButton buttonTeest = panel2.AddItem(new PushButtonData("Create indddfo table", "Create Info table",
-            thisAssemblyPath, "City2BIM.CreateTable")) as PushButton;
-            buttonTeest.ToolTip = "Test window appearing";
-
-
             var globePath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName
-            (System.Reflection.Assembly.GetExecutingAssembly().Location), "Georef_32px_96dpi.png");
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Georef_32px_96dpi.png");
             Uri uriImage = new Uri(globePath);
             BitmapImage largeImage = new BitmapImage(uriImage);
 
-            var terrainPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName
-            (System.Reflection.Assembly.GetExecutingAssembly().Location), "DTM_32px_96dpi.png");
-                        Uri uriImageT = new Uri(terrainPath);
-                        BitmapImage largeImageT = new BitmapImage(uriImageT);
+            PushButton buttonGeoRef = panel2.AddItem(new PushButtonData("Show Georef information", "Level of Georef",
+            thisAssemblyPath, "City2BIM.GeorefUI")) as PushButton;
+            buttonGeoRef.ToolTip = "Show georef information for current project.";
+            buttonGeoRef.LargeImage = largeImage;
 
-            var alkisPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName
-            (System.Reflection.Assembly.GetExecutingAssembly().Location), "ALKIS_32px_96dpi.png");
-                        Uri uriImageA = new Uri(alkisPath);
-                        BitmapImage largeImageA = new BitmapImage(uriImageA);
+            #endregion Georef panel
+
+            #region City2BIM panel
+
+            //---------------------City2BIM panel------------------------------------------------------------
+
+            RibbonPanel panel3 = application.CreateRibbonPanel(tabName, "City2BIM");
 
             var citygmlPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName
-            (System.Reflection.Assembly.GetExecutingAssembly().Location), "citygml_32px_96dpi.png");
-                        Uri uriImageC = new Uri(citygmlPath);
-                        BitmapImage largeImageC = new BitmapImage(uriImageC);
+                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "citygml_32px_96dpi.png");
+            Uri uriImageC = new Uri(citygmlPath);
+            BitmapImage largeImageC = new BitmapImage(uriImageC);
 
+            PulldownButton btCityGml = panel3.AddItem(new PulldownButtonData("LoadCityGML", "Import City Model...")) as PulldownButton;
+            btCityGml.ToolTip = "Import functionality for CityGML data.";
+            btCityGml.LargeImage = largeImageC;
 
-            button.LargeImage = largeImageC;
+            PushButtonData btSolid = new PushButtonData("LoadCityGMLSolids", "... as Solids",
+            thisAssemblyPath, "City2BIM.ReadCityGMLSolids");
+            btSolid.ToolTip = "Imports one Solid representation for each Building(part) to Revit category Entourage.";
+
+            PushButtonData btSurfaces = new PushButtonData("LoadCityGMLFaces", "... as Surfaces",
+            thisAssemblyPath, "City2BIM.ReadCityGMLFaces");
+            btSurfaces.ToolTip = "Imports every Surface to the matching Revit category Wall, Roof or Slab.";
+
+            btCityGml.AddPushButton(btSurfaces);
+            btCityGml.AddPushButton(btSolid);
+
+            //PushButton buttonCode = panel3.AddItem(new PushButtonData("Get CityGML Code Description", "Get Code Decription",
+            //thisAssemblyPath, "City2BIM.ReadCode")) as PushButton;
+            //buttonCode.ToolTip = "Import functionality for CityGML data";
+
+            //RadioButtonGroupData radioGeom = new RadioButtonGroupData("RadioGmlGeom");
+            //RadioButtonGroup radioGeomGroup = panel3.AddItem(radioGeom) as RadioButtonGroup;
+
+            //// create toggle buttons and add to radio button group
+            //ToggleButtonData tbFaces = new ToggleButtonData("toggleButton1", "Import Surfaces");
+            //tbFaces.ToolTip = "CityGML geometry will be imported as Surfaces in Wall/Roof/Slab category.";
+
+            //ToggleButtonData tbSolids = new ToggleButtonData("toggleButton2", "Green");
+            //tbSolids.ToolTip = "CityGML geometry will be imported as Solids in Entourage category.";
+
+            //radioGeomGroup.AddItem(tbFaces);
+            //radioGeomGroup.AddItem(tbSolids);
+
+            //-------------------------------------------------------------------------------------------------
+
+            #endregion City2BIM panel
+
+            #region ALKIS panel
+
+            RibbonPanel panel4 = application.CreateRibbonPanel(tabName, "ALKIS2BIM");
+
+            var alkisPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ALKIS_32px_96dpi.png");
+            Uri uriImageA = new Uri(alkisPath);
+            BitmapImage largeImageA = new BitmapImage(uriImageA);
+
+            PushButton buttonAlkis = panel4.AddItem(new PushButtonData("LoadALKIS", "Import ALKIS data",
+            thisAssemblyPath, "City2BIM.ReadALKIS")) as PushButton;
+            buttonAlkis.ToolTip = "Import functionality ALKIS data from NAS-XML files.)";
             buttonAlkis.LargeImage = largeImageA;
-            buttonGeoRef.LargeImage = largeImage;
+
+            #endregion ALKIS panel
+
+            #region Terrain panel
+
+            RibbonPanel panel5 = application.CreateRibbonPanel(tabName, "DTM2BIM");
+
+            var terrainPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DTM_32px_96dpi.png");
+            Uri uriImageT = new Uri(terrainPath);
+            BitmapImage largeImageT = new BitmapImage(uriImageT);
+
+            PushButton buttonDTM = panel5.AddItem(new PushButtonData("DTM_Importer", "Get Terrain data",
+            thisAssemblyPath, "City2BIM.ReadTerrainXYZ")) as PushButton;
+            buttonDTM.ToolTip = "Import functionality for Digital Terrain Models out of XYZ data (regular grid)";
             buttonDTM.LargeImage = largeImageT;
 
+            #endregion Terrain panel
 
-            //----------Test
+            #region IFC Export panel
 
-            //PulldownButton pull = new PulldownButtonData("pull1", "pulltest") as PulldownButton;
+            RibbonPanel panel6 = application.CreateRibbonPanel(tabName, "IFC Export");
 
+            var ifcExportPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "IFC_32px_96dpi.png");
+            Uri uriImageIfc = new Uri(ifcExportPath);
+            BitmapImage largeImageIfc = new BitmapImage(uriImageIfc);
 
+            PushButton buttonIFC = panel6.AddItem(new PushButtonData("IFC_Exporter", "Export data to IFC-file",
+            thisAssemblyPath, "City2BIM.ExportIFC")) as PushButton;
+            buttonIFC.ToolTip = "Export functionality for writing IFC files.";
+            buttonIFC.LargeImage = largeImageIfc;
 
-
-
+            #endregion IFC Export panel
 
             return Result.Succeeded;
         }
