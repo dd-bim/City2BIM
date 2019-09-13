@@ -69,15 +69,18 @@ namespace City2BIM.GetGeometry
                 else
                     planeSurface.PlaneExt.PolygonPts.Remove(planeSurface.PlaneExt.PolygonPts.Last());
 
-                if(planeSurface.PlaneInt != null)
-                {
-                    var checkPolyIn = SameStartAndEndPt(planeSurface.PlaneInt.PolygonPts);
+                //if(planeSurface.PlaneInt.Count > 0)
+                //{
+                //    foreach(var pl in planeSurface.PlaneInt)
+                //    {
+                //        var checkPolyIn = SameStartAndEndPt(pl.PolygonPts);
 
-                    if(!checkPolyIn)
-                        Log.Error("Not equal at interior polygon!");
-                    else
-                        planeSurface.PlaneInt.PolygonPts.Remove(planeSurface.PlaneInt.PolygonPts.Last());
-                }
+                //        if(!checkPolyIn)
+                //            Log.Error("Not equal at interior polygon!");
+                //        else
+                //            pl.PolygonPts.Remove(pl.PolygonPts.Last());
+                //    }
+                //}
                 //------------------------------------------------------------------------------
 
                 //Prüfung - keine redundanten Punkte (außer Start und End)
@@ -89,13 +92,16 @@ namespace City2BIM.GetGeometry
                 if(!checkRedunEx)
                     Log.Error("Redundant points at exterior polygon!");
 
-                if(planeSurface.PlaneInt != null)
-                {
-                    var checkRedunIn = NoRedundantPts(planeSurface.PlaneInt.PolygonPts);
+                //if(planeSurface.PlaneInt.Count > 0)
+                //{
+                //    foreach(var pl in planeSurface.PlaneInt)
+                //    {
+                //        var checkRedunIn = NoRedundantPts(pl.PolygonPts);
 
-                    if(!checkRedunIn)
-                        Log.Error("Redundant points at interior polygon!");
-                }
+                //        if(!checkRedunIn)
+                //            Log.Error("Redundant points at interior polygon!");
+                //    }
+                //}
                 //-------------------------------------------------------------------------------------------------------------
 
                 //Combining of all polygon points of a building for determining of points which are not part of at least 3 planes
@@ -103,16 +109,19 @@ namespace City2BIM.GetGeometry
                 Log.Debug("Check all building polygon points (vertices) for occurence in at least 3 surfaces (planes)...");
                 foreach(var rawPt in planeSurface.PlaneExt.PolygonPts)
                 {
-                    ptListWithPolyID.Add(rawPt, planeSurface.SurfaceId);
+                    ptListWithPolyID.Add(rawPt, planeSurface.PlaneExt.ID);
                 }
 
-                if(planeSurface.PlaneInt != null)
-                {
-                    foreach(var rawPt in planeSurface.PlaneInt.PolygonPts)
-                    {
-                        ptListWithPolyID.Add(rawPt, planeSurface.SurfaceId + "_void");
-                    }
-                }
+                //if(planeSurface.PlaneInt.Count > 0)
+                //{
+                //    foreach(var pl in planeSurface.PlaneInt)
+                //    {
+                //        foreach(var rawPt in pl.PolygonPts)
+                //        {
+                //            ptListWithPolyID.Add(rawPt, pl.ID);
+                //        }
+                //    }
+                //}
             }
 
             var bldgXYZ = ptListWithPolyID.Keys.OrderBy(x => x.X).OrderBy(y => y.Y).OrderBy(z => z.Z).ToList();
@@ -165,51 +174,70 @@ namespace City2BIM.GetGeometry
             if(bldgXYZF.Count > 0)
                 Log.Warning("Amount of points not occured at min 3 planes: " + bldgXYZF.Count);
 
-            var polyL = ptListWithPolyID.Values.Distinct();  //Distinct: Zusammenfassen aller gleichen PolygonIDs zu einer ID-Liste
+            //Now: recirculation of the points to the respective polygon via id
+
+            var polyL = ptListWithPolyID.Values.Distinct();  //Distinct: Combine all the same PolygonIDs to an ID list
 
             foreach(var polyID in polyL)
             {
+                //skip for interior polygons (will be handled internally)
                 if(polyID.Contains("void"))
                     continue;
 
+                //Identify points which are belonging to the same polygon via same id
+
                 var points = (from p in ptListWithPolyID
                               where p.Value == polyID
-                              select p.Key).ToList();                  //Selektieren aller Punkte pro Polygon-ID
+                              select p.Key).ToList();
 
                 Log.Debug("Create new surface without detected points...");
 
-                var pInt = from p in polyL
-                           where p.Contains("void")
-                           select p;
-
-                if(pInt.Count() > 0)
-                {
-                    foreach(var voidP in pInt)
-                    {
-                        var idInt = voidP.Split('_')[0];
-
-                        if(idInt == polyID)
-                        {
-                            var pointsInt = (from p in ptListWithPolyID
-                                             where p.Value == voidP
-                                             select p.Key).ToList();                  //Selektieren aller Punkte pro Polygon-ID
-
-                            //filteredSurface.PlaneInt.PolygonPts = pointsInt;
-                        }
-                    }
-                }
+                //Identify the matching GmlSurface
 
                 var surfaceEquiv = (from a in planeSurfaces
-                                    where a.SurfaceId == polyID
+                                    where a.PlaneExt.ID == polyID
                                     select a).SingleOrDefault();
 
+                //Adding of startpoint at the end for valid polygon (was removed before for correct identifying of unneccessary points)
                 points.Add(points[0]);
 
                 surfaceEquiv.PlaneExt.PolygonPts = points;
 
+                //----handling of possible interior polygons-----
+                //if(surfaceEquiv.PlaneInt.Count > 0)            //if original surface has interior polygons...
+                //{
+                //    //identify interior polygons
+
+                //    var intPoints = from poly in polyL
+                //                    where poly.Contains(surfaceEquiv.SurfaceId + "_void")
+                //                    select poly;
+
+                //    var intPlanes = new List<C2BPlane>();
+
+                //    //there could be more than one hole (interior polygon)
+                //    foreach(var pId in intPoints)
+                //    {
+                //        var intPlane = new C2BPlane(pId);
+
+                //        //Identify points which are belonging to the same polygon via same id
+
+                //        var pointsInt = (from pt in ptListWithPolyID
+                //                         where pt.Value == pId
+                //                         select pt.Key).ToList();
+
+                //        //Adding of startpoint at the end for valid polygon (was removed before for correct identifying of unneccessary points)
+                //        pointsInt.Add(pointsInt[0]);
+
+                //        intPlane.PolygonPts = pointsInt;
+
+                //        intPlanes.Add(intPlane);
+                //    }
+
+                //    surfaceEquiv.PlaneInt = intPlanes;
+                //}
+                //----------------------------------------------
                 filteredSurfaces.Add(surfaceEquiv);
             }
-
             return filteredSurfaces;
         }
 

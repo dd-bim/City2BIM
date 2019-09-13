@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using City2BIM.RevitCommands.Georeferencing;
 
 namespace City2BIM
 {
@@ -10,7 +11,8 @@ namespace City2BIM
         // The main Execute method (inherited from IExternalCommand) must be public
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            TaskDialog.Show("Georef options", "Coming soon...");
+            var form = new GeoRef_Form(revit);
+            form.ShowDialog();
 
             return Result.Succeeded;
         }

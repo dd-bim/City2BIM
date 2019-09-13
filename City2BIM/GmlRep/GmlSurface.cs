@@ -12,11 +12,9 @@ namespace City2BIM.GmlRep
     {
         private string surfaceId;
         private FaceType facetype;
-        //private List<C2BPoint> exterior;
-        //private List<C2BPoint> interior;
         private Dictionary<GmlAttribute, string> surfaceAttributes;
         private C2BPlane planeExt;
-        private C2BPlane planeInt;
+        private List<C2BPlane> planeInt;
 
         public string SurfaceId
         {
@@ -57,32 +55,6 @@ namespace City2BIM.GmlRep
             }
         }
 
-        //public List<C2BPoint> Exterior
-        //{
-        //    get
-        //    {
-        //        return this.exterior;
-        //    }
-
-        //    set
-        //    {
-        //        this.exterior = value;
-        //    }
-        //}
-
-        //public List<C2BPoint> Interior
-        //{
-        //    get
-        //    {
-        //        return this.interior;
-        //    }
-
-        //    set
-        //    {
-        //        this.interior = value;
-        //    }
-        //}
-
         public C2BPlane PlaneExt
         {
             get
@@ -96,7 +68,7 @@ namespace City2BIM.GmlRep
             }
         }
 
-        public C2BPlane PlaneInt
+        public List<C2BPlane> PlaneInt
         {
             get
             {

@@ -21,10 +21,8 @@ namespace City2BIM.GetGeometry
             get { return planes; }
         }
 
-        public void AddPlane(string id, /*string ringType,*/ List<C2BPoint> polygon)
+        public void AddPlane(string id, List<C2BPoint> polygon)
         {
-            //polygon.Add(polygon.First());       //Methode benötigt geschlossenes Polygon, daher wird Startpunkt hier wieder dem Ende hinzugefügt
-
             if(polygon.Count < 5)
             {
                 Log.Error("Not enough points for valid plane: " + polygon.Count);

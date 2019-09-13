@@ -72,17 +72,6 @@ namespace City2BIM.GetSemantics
                             genAttrRef.Add(attr.Reference);
                         }
                     }
-
-                    //else
-                    //{                                                       //duplicate will not be added but handled as surface attribute
-                    //                                                        //they occure multiple times because an building contains multiple surfaces
-                    //    var duplicate = (from g in genAttrListBldg
-                    //                     where g.Name == attr.Name
-                    //                     select g).SingleOrDefault();
-
-                    //    if(duplicate != null)
-                    //        duplicate.Reference = GmlAttribute.AttrHierarchy.surface;
-                    //}
                 }
             }
 

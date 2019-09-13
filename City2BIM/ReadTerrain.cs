@@ -25,7 +25,7 @@ namespace City2BIM
             Document doc = uiApp.ActiveUIDocument.Document;
 
             Log.Information("Start...");
-
+ 
             //Import via Dialog:
             FileDialog imp = new FileDialog();
             var path = imp.ImportPathXYZ();
