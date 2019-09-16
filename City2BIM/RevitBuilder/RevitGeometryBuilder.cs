@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
+using City2BIM.RevitCommands.Georeferencing;
 using Serilog;
 
 namespace City2BIM.RevitBuilder
@@ -13,7 +14,9 @@ namespace City2BIM.RevitBuilder
     {
         private DxfVisualizer dxf;
         private City2BIM.GetGeometry.C2BPoint gmlCorner;
-        private Transform revitPBP;
+        private Transform revitPBPTrafo;
+        private XYZ vectorPBP;
+        private double scale;
         private Document doc;
 
         //private Dictionary<GetGeometry.C2BSolid, Dictionary<GetSemantics.GmlAttribute, string>> buildings;
@@ -27,7 +30,7 @@ namespace City2BIM.RevitBuilder
             this.doc = doc;
             this.buildings = buildings;
             this.gmlCorner = gmlCorner;
-            this.revitPBP = GetRevitProjectLocation(doc);
+            this.revitPBPTrafo = GetRevitProjectLocation(doc);
             this.dxf = dxf;
             this.colors = CreateColorAsMaterial();
         }
@@ -43,7 +46,7 @@ namespace City2BIM.RevitBuilder
         #region coordinate transformation
 
         /// <summary>
-        /// Reads the Revot project location (PBP)
+        /// Reads the Revit project location (PBP)
         /// </summary>
         /// <param name="doc">Revit document</param>
         /// <returns>Revit transformation matrix</returns>
@@ -58,9 +61,16 @@ namespace City2BIM.RevitBuilder
             double northing = projPos.NorthSouth;
 
             Transform trot = Transform.CreateRotation(Autodesk.Revit.DB.XYZ.BasisZ, -angle);
-            var vector = new Autodesk.Revit.DB.XYZ(easting, northing, elevation);
-            Transform ttrans = Transform.CreateTranslation(-vector);
+            this.vectorPBP = new Autodesk.Revit.DB.XYZ(easting, northing, elevation);
+            Transform ttrans = Transform.CreateTranslation(-vectorPBP);
             Transform transf = trot.Multiply(ttrans);
+
+            //scale because of projected input data?
+            var projInfo = doc.ProjectInformation.LookupParameter("Scale");
+            this.scale = UTMcalc.ParseDouble(projInfo.AsString());
+
+            if(double.IsNaN(scale))
+                this.scale = 1;
 
             return transf;
         }
@@ -73,20 +83,29 @@ namespace City2BIM.RevitBuilder
         private XYZ TransformPointForRevit(C2BPoint gmlLocalPt)
         {
             //At first add lowerCorner from gml
-            var xGlobal = gmlLocalPt.X + gmlCorner.X;
-            var yGlobal = gmlLocalPt.Y + gmlCorner.Y;
+            var xGlobalProj = gmlLocalPt.X + gmlCorner.X;
+            var yGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
             var zGlobal = gmlLocalPt.Z + gmlCorner.Z;
 
+            var deltaX = xGlobalProj - (vectorPBP.X * 0.3048);
+            var deltaY = yGlobalProj - (vectorPBP.Y * 0.3048);
+
+            var deltaXUnproj = deltaX / scale;
+            var deltaYUnproj = deltaY / scale;
+
+            var xGlobalUnproj = xGlobalProj - deltaX + deltaXUnproj;
+            var yGlobalUnproj = yGlobalProj - deltaY + deltaYUnproj;
+
             //Muiltiplication with feet factor (neccessary because of feet in Revit database)
-            var xFeet = xGlobal / 0.3048;
-            var yFeet = yGlobal / 0.3048;
+            var xFeet = xGlobalUnproj / 0.3048;
+            var yFeet = yGlobalUnproj / 0.3048;
             var zFeet = zGlobal / 0.3048;
 
             //Creation of Revit point
             var revitXYZ = new XYZ(xFeet, yFeet, zFeet);
 
             //Transform global coordinate to Revit project coordinate system (system of project base point)
-            var revTransXYZ = revitPBP.OfPoint(revitXYZ);
+            var revTransXYZ = revitPBPTrafo.OfPoint(revitXYZ);
 
             return revTransXYZ;
         }

@@ -64,8 +64,12 @@ namespace City2BIM
             //Parameter für Revit-Kategorie erstellen
             //nach ausgewählter Methode (Solids oder Flächen) Parameter an zugehörige Kategorien übergeben
 
+            // TO DO: Logik für Parameter File -Auswahl oder Location
+
+            var parameterPath = @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt";
+
             //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-            RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
+            RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc, parameterPath); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
 
             if(solid)
             {

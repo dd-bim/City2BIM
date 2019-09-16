@@ -10,10 +10,25 @@ namespace City2BIM.RevitBuilder
     internal class RevitSemanticBuilder
     {
         private Document doc;
+        private DefinitionFile parFile;
 
-        public RevitSemanticBuilder(Document doc)
+        public RevitSemanticBuilder(Document doc, string parameterPath)
         {
             this.doc = doc;
+
+            var filePath = parameterPath.Split('.')[0];
+
+            var newFile = filePath + "_test2.txt";
+
+            File.Copy(parameterPath, newFile, true);
+
+            // set the path of shared parameter file to current Revit
+            doc.Application.SharedParametersFilename = newFile;
+
+            //application.SharedParametersFilename = sharedParameterFile;
+
+            // open the file
+            this.parFile = doc.Application.OpenSharedParameterFile();
         }
 
         //nötige RevitAPI-interen Methoden zum Anlegen der SharedParameters sowie Gruppen
@@ -25,21 +40,78 @@ namespace City2BIM.RevitBuilder
         //erfordert Scanning aller Attribute in allen vorkommenden gebäuden
         //erst nacher Füllen pro bldg, wenn Attribut gesetzt
 
-        private DefinitionFile SetAndOpenExternalSharedParamFile(Autodesk.Revit.ApplicationServices.Application application, string sharedParameterFile)
+        //private DefinitionFile SetAndOpenExternalSharedParamFile(Autodesk.Revit.ApplicationServices.Application application, string sharedParameterFile)
+        //{
+        //    var filePath = sharedParameterFile.Split('.')[0];
+
+        //    var newFile = filePath + "_test2.txt";
+
+        //    File.Copy(sharedParameterFile, newFile, true);
+
+        //    // set the path of shared parameter file to current Revit
+        //    application.SharedParametersFilename = newFile;
+
+        //    //application.SharedParametersFilename = sharedParameterFile;
+
+        //    // open the file
+        //    return application.OpenSharedParameterFile();
+        //}
+        public void CreateParameters(BuiltInCategory category, string[] attributes)
         {
-            var filePath = sharedParameterFile.Split('.')[0];
+            Category cat = doc.Settings.Categories.get_Item(category);
+            CategorySet assocCats = doc.Application.Create.NewCategorySet();
+            assocCats.Insert(cat);
 
-            var newFile = filePath + "_test2.txt";
+            //zunächst wird der Fall betrachtet, dass nur leere Shared Parameter Files vorliegen (leer = "nur" Revit-Tabellenkopf)
+            using(Transaction tParam = new Transaction(doc, "Insert Parameter"))
+            {
+                tParam.Start();
 
-            File.Copy(sharedParameterFile, newFile, true);
+                //opened the txt-file and set it to shared parameter file
+                //var parFile = SetAndOpenExternalSharedParamFile(doc.Application, @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt");
+                //Testdefinitionen (Hierarchie? evtl. nützlich)
 
-            // set the path of shared parameter file to current Revit
-            application.SharedParametersFilename = newFile;
+                DefinitionGroup parGroupGeo = parFile.Groups.get_Item("Georeferencing");
 
-            //application.SharedParametersFilename = sharedParameterFile;
+                //DefinitionGroup parGroup1 = parFile.Groups.get_Item("City Model data");
 
-            // open the file
-            return application.OpenSharedParameterFile();
+                if(parGroupGeo == null)
+                    parGroupGeo = parFile.Groups.Create("Georeferencing");
+
+                Definition parDef = default(Definition);
+
+                foreach(var attribute in attributes)
+                {
+                    try
+                    {
+                        ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(attribute, ParameterType.Text);
+
+                        // create an instance definition in definition group MyParameters
+
+                        extDef.UserModifiable = true;      //nicht modifizierbar?! nur zum Lesen der CityGML oder auch editierbar für IFC-Property-Export
+
+                        // Set tooltip
+                        //extDef.Description = attribute.Description + i;  //später Übersetzungen der Codes als Description
+
+                        //Definition parDef = default(Definition);
+
+                        parDef = parGroupGeo.Definitions.Create(extDef);
+
+                        ExternalDefinition yoc = parGroupGeo.Definitions.get_Item(attribute) as ExternalDefinition;
+
+                        //Create an instance of InstanceBinding
+                        InstanceBinding instanceBinding = doc.Application.Create.NewInstanceBinding(assocCats);
+
+                        doc.ParameterBindings.Insert(yoc, instanceBinding, BuiltInParameterGroup.PG_DATA);  //Parameter-Gruppe Daten ok?
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.Error("Error while attributing: " + attribute + "message: " + ex.Message);
+                    }
+                }
+
+                tParam.Commit();
+            }
         }
 
         public void CreateParameters(BuiltInCategory category, IEnumerable<GmlAttribute> attributes)
@@ -54,7 +126,7 @@ namespace City2BIM.RevitBuilder
                 tParam.Start();
 
                 //opened the txt-file and set it to shared parameter file
-                var parFile = SetAndOpenExternalSharedParamFile(doc.Application, @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt");
+                //var parFile = SetAndOpenExternalSharedParamFile(doc.Application, @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt");
                 //Testdefinitionen (Hierarchie? evtl. nützlich)
 
                 DefinitionGroup parGroupCore = parFile.Groups.get_Item("CityGML-Core Module");

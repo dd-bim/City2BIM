@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using City2BIM.RevitBuilder;
+using Serilog;
 
 namespace City2BIM.RevitCommands.Georeferencing
 {
@@ -28,46 +32,47 @@ namespace City2BIM.RevitCommands.Georeferencing
         private string geoAddress;
         private SiteLocation geoSite;
         private ProjectPosition geoProject;
+        private ProjectInfo geoInfo;
         private Document doc;
 
-        public ProjectPosition GeoProject
-        {
-            get
-            {
-                return this.geoProject;
-            }
+        //public ProjectPosition GeoProject
+        //{
+        //    get
+        //    {
+        //        return this.geoProject;
+        //    }
 
-            set
-            {
-                this.geoProject = value;
-            }
-        }
+        //    set
+        //    {
+        //        this.geoProject = value;
+        //    }
+        //}
 
-        public SiteLocation GeoSite
-        {
-            get
-            {
-                return this.geoSite;
-            }
+        //public SiteLocation GeoSite
+        //{
+        //    get
+        //    {
+        //        return this.geoSite;
+        //    }
 
-            set
-            {
-                this.geoSite = value;
-            }
-        }
+        //    set
+        //    {
+        //        this.geoSite = value;
+        //    }
+        //}
 
-        public string GeoAddress
-        {
-            get
-            {
-                return this.geoAddress;
-            }
+        //public string GeoAddress
+        //{
+        //    get
+        //    {
+        //        return this.geoAddress;
+        //    }
 
-            set
-            {
-                this.geoAddress = value;
-            }
-        }
+        //    set
+        //    {
+        //        this.geoAddress = value;
+        //    }
+        //}
 
         public GeoRef_Form(ExternalCommandData revit)
         {
@@ -126,21 +131,47 @@ namespace City2BIM.RevitCommands.Georeferencing
             tb_elev.Text = (geoSite.Elevation * feetToM).ToString();
             tb_trueNorth.Text = (geoProject.Angle * radToDeg).ToString();
 
-            // True North ?????
-
             #endregion Get SiteLocation
 
             #region Get Project Location
 
-            tb_eastings50.Text = (geoProject.EastWest * feetToM).ToString();
-            tb_northings50.Text = (geoProject.NorthSouth * feetToM).ToString();
-            tb_elev.Text = (geoProject.Elevation * feetToM).ToString();         //!!Elevation wie in Site!!
-            tb_rotation50.Text = (geoProject.Angle * radToDeg).ToString();      //!!GridNorth!!
+            var east = geoInfo.Parameters;//.LookupParameter("Eastings");
+            if (east.HasValue)
+                tb_eastings50.Text = east.AsString();
+            else
+                tb_eastings50.Text = (geoProject.EastWest * feetToM).ToString();
 
-            //tb_scale50.Text = "Platzhalter, Scale-Calc";
+            var north = geoInfo.LookupParameter("Northings");
+            if(north.HasValue)
+                tb_northings50.Text = north.AsString();
+            else
+                tb_northings50.Text = (geoProject.NorthSouth * feetToM).ToString();
 
-            //tb_CRSname50.Text = "TO DO: Project Property";
-            //tb_vertDatum.Text = "TO DO: Project Property";
+            var height = geoInfo.LookupParameter("OrthogonalHeight");
+            if(height.HasValue)
+                tb_elev.Text = north.AsString();
+            else
+                tb_elev.Text = (geoProject.Elevation * feetToM).ToString();
+
+            var rotAbs = geoInfo.LookupParameter("XAxisAbscissa");
+            var rotOrd = geoInfo.LookupParameter("XAxisOrdinate");
+
+            if (rotAbs.HasValue && rotOrd.HasValue)
+                tb_rotation50.Text = UTMcalc.VectorToAzimuth(UTMcalc.ParseDouble(rotAbs.AsString()), UTMcalc.ParseDouble(rotOrd.AsString())).ToString();
+
+            var scale = geoInfo.LookupParameter("Scale");
+            if(scale.HasValue)
+                tb_scale50.Text = scale.AsString();
+            else
+                tb_scale50.Text = "1";
+
+            var epsg = geoInfo.LookupParameter("CRS Name");
+            if(epsg.HasValue)
+                cb_epsg.Text = epsg.AsString();
+
+            var vertD = geoInfo.LookupParameter("VerticalDatum");
+            if(vertD.HasValue)
+                cb_vertDatum.Text = vertD.AsString();
 
             #endregion Get Project Location
         }
@@ -219,10 +250,10 @@ namespace City2BIM.RevitCommands.Georeferencing
                 #region Set SiteLocation
 
                 var lat = UTMcalc.StringToDeg(tb_lat.Text, (bool)rb_dms.IsChecked);
-                this.GeoSite.Latitude = UTMcalc.DegToRad(lat);
+                this.geoSite.Latitude = UTMcalc.DegToRad(lat);
 
                 var lon = UTMcalc.StringToDeg(tb_lon.Text, (bool)rb_dms.IsChecked);
-                this.GeoSite.Longitude = UTMcalc.DegToRad(lon);
+                this.geoSite.Longitude = UTMcalc.DegToRad(lon);
 
                 //kein SETTER für SiteLocation.Elevation ???!!! --> nur PBP-Elevation nutzen? --> IFC-Test durchführen!
 
@@ -230,7 +261,7 @@ namespace City2BIM.RevitCommands.Georeferencing
                 //    this.GeoSite.Elevation = elev / feetToM;
 
                 var trueN = UTMcalc.StringToDeg(tb_trueNorth.Text, (bool)rb_dms.IsChecked);
-                this.GeoProject.Angle = UTMcalc.DegToRad(trueN);
+                this.geoProject.Angle = UTMcalc.DegToRad(trueN);
 
                 //andere SiteLocation.Attribute setzen ? u.a auch GeoCoordinateSystem?
 
@@ -239,34 +270,66 @@ namespace City2BIM.RevitCommands.Georeferencing
                 #region Set ProjectLocation
 
                 var east = UTMcalc.ParseDouble(tb_eastings50.Text);
-                this.GeoProject.EastWest = east / feetToM;
+                this.geoProject.EastWest = east / feetToM;
 
                 var north = UTMcalc.ParseDouble(tb_northings50.Text);
-                this.GeoProject.NorthSouth = north / feetToM;
+                this.geoProject.NorthSouth = north / feetToM;
 
                 var height = UTMcalc.ParseDouble(tb_elev.Text);
-                this.GeoProject.Elevation = height / feetToM;
+                this.geoProject.Elevation = height / feetToM;
 
-                this.geoLoc.SetProjectPosition(XYZ.Zero, this.GeoProject);
+                this.geoLoc.SetProjectPosition(XYZ.Zero, this.geoProject);
 
-                //wohin Grid-North
-                //if(double.TryParse(tb_rotation50.Text, out var rot))
-                //    this.GeoProject.Angle = rot / radToDeg;
-
-                //TO DO: Scale
-                //TO DO: CRS
-                //TO DO: Vertical Datum
-
-                if(double.TryParse(tb_scale50.Text, out var scale))
-                    //this.GeoProject.Elevation = height / feetToM;
-
-                    //    tb_CRSname50.Text = "TO DO: Project Property";
-                    //tb_vertDatum.Text = "TO DO: Project Property";
-
-                    #endregion Set ProjectLocation
-
-                    t.Commit();
+                t.Commit();
             }
+            #endregion Set ProjectLocation
+
+            #region Write Project Properties
+
+            var sem = new RevitSemanticBuilder(doc, @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt");
+
+            var vector = UTMcalc.AzimuthToVector(this.geoProject.Angle);
+
+            var georefAttr = new Dictionary<string, string>()
+                {
+                    { "Eastings", (this.geoProject.EastWest * feetToM).ToString() },
+                    { "Northings", (this.geoProject.NorthSouth * feetToM).ToString() },
+                    { "OrthogonalHeight", (this.geoProject.Elevation * feetToM).ToString() },
+                    { "XAxisAbscissa", vector[0].ToString() },
+                    { "XAxisOrdinate", vector[1].ToString() },
+                    { "Scale", tb_scale50.Text },
+                    { "CRS Name", cb_epsg.Text },
+                    { "VerticalDatum", cb_vertDatum.Text }
+                };
+
+            var geoAttr = georefAttr.Select(k => k.Key).ToArray();
+
+            sem.CreateParameters(BuiltInCategory.OST_ProjectInformation, geoAttr);
+
+            using(Transaction t = new Transaction(doc, "Apply georeferencing to Project Info"))
+            {
+                t.Start();
+
+                var proj = doc.ProjectInformation;
+
+                foreach(var aName in georefAttr.Keys)
+                {
+                    var p = proj.LookupParameter(aName);
+                    georefAttr.TryGetValue(aName, out var val);
+
+                    try
+                    {
+                        p.Set(val);
+                    }
+                    catch
+                    {
+                        Log.Error("Semantik-Fehler bei " + aName);
+                        continue;
+                    }
+                }
+                t.Commit();
+            }
+            #endregion Write Project Properties
         }
 
         private void bt_quit_Click(object sender, RoutedEventArgs e)
