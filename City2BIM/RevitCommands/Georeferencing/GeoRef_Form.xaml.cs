@@ -76,6 +76,9 @@ namespace City2BIM.RevitCommands.Georeferencing
 
         public GeoRef_Form(ExternalCommandData revit)
         {
+            UIApplication uiApp = revit.Application;
+            this.doc = uiApp.ActiveUIDocument.Document;
+
             InitializeComponent();
 
             var path10 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "icon_georef10.png");
@@ -103,10 +106,10 @@ namespace City2BIM.RevitCommands.Georeferencing
                 cb_vertDatum.Items.Add(item);
             }
 
-            UIApplication uiApp = revit.Application;
-            this.doc = uiApp.ActiveUIDocument.Document;
 
-            this.geoAddress = doc.ProjectInformation.Address;
+
+            this.geoInfo = doc.ProjectInformation;
+            this.geoAddress = geoInfo.Address;
             this.geoSite = doc.SiteLocation;
             this.geoLoc = doc.ActiveProjectLocation;
             this.geoProject = geoLoc.GetProjectPosition(XYZ.Zero);
@@ -135,42 +138,42 @@ namespace City2BIM.RevitCommands.Georeferencing
 
             #region Get Project Location
 
-            var east = geoInfo.Parameters;//.LookupParameter("Eastings");
-            if (east.HasValue)
+            var east = geoInfo.LookupParameter("Eastings");
+            if (east != null)
                 tb_eastings50.Text = east.AsString();
             else
                 tb_eastings50.Text = (geoProject.EastWest * feetToM).ToString();
 
             var north = geoInfo.LookupParameter("Northings");
-            if(north.HasValue)
+            if(north != null)
                 tb_northings50.Text = north.AsString();
             else
                 tb_northings50.Text = (geoProject.NorthSouth * feetToM).ToString();
 
             var height = geoInfo.LookupParameter("OrthogonalHeight");
-            if(height.HasValue)
-                tb_elev.Text = north.AsString();
+            if(height != null)
+                tb_elev.Text = height.AsString();
             else
                 tb_elev.Text = (geoProject.Elevation * feetToM).ToString();
 
             var rotAbs = geoInfo.LookupParameter("XAxisAbscissa");
             var rotOrd = geoInfo.LookupParameter("XAxisOrdinate");
 
-            if (rotAbs.HasValue && rotOrd.HasValue)
+            if (rotAbs != null && rotOrd != null)
                 tb_rotation50.Text = UTMcalc.VectorToAzimuth(UTMcalc.ParseDouble(rotAbs.AsString()), UTMcalc.ParseDouble(rotOrd.AsString())).ToString();
 
             var scale = geoInfo.LookupParameter("Scale");
-            if(scale.HasValue)
+            if(scale != null)
                 tb_scale50.Text = scale.AsString();
             else
                 tb_scale50.Text = "1";
 
             var epsg = geoInfo.LookupParameter("CRS Name");
-            if(epsg.HasValue)
+            if(epsg != null)
                 cb_epsg.Text = epsg.AsString();
 
             var vertD = geoInfo.LookupParameter("VerticalDatum");
-            if(vertD.HasValue)
+            if(vertD != null)
                 cb_vertDatum.Text = vertD.AsString();
 
             #endregion Get Project Location
@@ -286,7 +289,7 @@ namespace City2BIM.RevitCommands.Georeferencing
 
             #region Write Project Properties
 
-            var sem = new RevitSemanticBuilder(doc, @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt");
+            var sem = new RevitSemanticBuilder(doc);
 
             var vector = UTMcalc.AzimuthToVector(this.geoProject.Angle);
 
@@ -304,7 +307,7 @@ namespace City2BIM.RevitCommands.Georeferencing
 
             var geoAttr = georefAttr.Select(k => k.Key).ToArray();
 
-            sem.CreateParameters(BuiltInCategory.OST_ProjectInformation, geoAttr);
+            sem.CreateProjectParameters("Georeferencing", geoAttr);
 
             using(Transaction t = new Transaction(doc, "Apply georeferencing to Project Info"))
             {

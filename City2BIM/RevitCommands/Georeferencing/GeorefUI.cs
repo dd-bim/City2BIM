@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Reflection;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using City2BIM.RevitCommands.Georeferencing;
 

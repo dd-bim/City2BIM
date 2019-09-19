@@ -66,53 +66,59 @@ namespace City2BIM
 
             // TO DO: Logik für Parameter File -Auswahl oder Location
 
-            var parameterPath = @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt";
-
             //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-            RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc, parameterPath); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
+            RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
+
+            citySem.CreateParameters(attributes); //erstellt Shared Parameters für Kategorie Umgebung
 
             if(solid)
             {
-                var entourageAttr = from a in attributes
-                                    where a.Reference == GmlAttribute.AttrHierarchy.bldg
-                                    select a;
+                //var entourageAttr = from a in attributes
+                //                    where a.Reference == GmlAttribute.AttrHierarchy.bldg
+                //                    select a;
 
-                Log.Information("Create Revit Parameters for Category Entorurage...");
-                citySem.CreateParameters(BuiltInCategory.OST_Entourage, entourageAttr); //erstellt Shared Parameters für Kategorie Umgebung
+                //Log.Information("Create Revit Parameters for Category Entorurage...");
+                //citySem.CreateParameters(/*BuiltInCategory.OST_Entourage, */entourageAttr); //erstellt Shared Parameters für Kategorie Umgebung
+
+                //citySem.AttachParametersToCategory(attributes);
 
                 Log.Information("Calculate Revit Geometry for Building Solids...");
                 cityModel.CreateBuildings(); //erstellt DirectShape-Geometrie als Kategorie Umgebung
             }
             else
             {
-                var wallClosureAttr = from a in attributes
-                                      where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
-                                      a.Reference == GmlAttribute.AttrHierarchy.wall ||
-                                      a.Reference == GmlAttribute.AttrHierarchy.closure
-                                      select a;
+                //var wallClosureAttr = from a in attributes
+                //                      where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
+                //                      a.Reference == GmlAttribute.AttrHierarchy.wall ||
+                //                      a.Reference == GmlAttribute.AttrHierarchy.closure
+                //                      select a;
 
-                Log.Information("Create Revit Parameters for Category Walls...");
-                citySem.CreateParameters(BuiltInCategory.OST_Walls, wallClosureAttr);
+                //Log.Information("Create Revit Parameters for Category Walls...");
+                //citySem.CreateParameters(/*BuiltInCategory.OST_Walls, */wallClosureAttr);
 
-                var roofAttr = from a in attributes
-                               where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
-                               a.Reference == GmlAttribute.AttrHierarchy.roof
-                               select a;
+                //var roofAttr = from a in attributes
+                //               where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
+                //               a.Reference == GmlAttribute.AttrHierarchy.roof
+                //               select a;
 
-                Log.Information("Create Revit Parameters for Category Roof...");
-                citySem.CreateParameters(BuiltInCategory.OST_Roofs, roofAttr);
+                //Log.Information("Create Revit Parameters for Category Roof...");
+                //citySem.CreateParameters(/*BuiltInCategory.OST_Roofs, */roofAttr);
 
-                var groundAttr = from a in attributes
-                                 where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
-                                 a.Reference == GmlAttribute.AttrHierarchy.ground
-                                 select a;
+                //var groundAttr = from a in attributes
+                //                 where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
+                //                 a.Reference == GmlAttribute.AttrHierarchy.ground
+                //                 select a;
 
-                Log.Information("Create Revit Parameters for Category Ground...");
-                citySem.CreateParameters(BuiltInCategory.OST_StructuralFoundation, groundAttr);
+                //Log.Information("Create Revit Parameters for Category Ground...");
+                //citySem.CreateParameters(/*BuiltInCategory.OST_StructuralFoundation, */groundAttr);
+
+                //citySem.AttachParametersToCategory(attributes);
 
                 Log.Information("Calculate Revit Geometry for Building Faces...");
                 cityModel.CreateBuildingsWithFaces(); //erstellt DirectShape-Geometrien der jeweiligen Kategorie
             }
+
+            
 
             string res = "";
 

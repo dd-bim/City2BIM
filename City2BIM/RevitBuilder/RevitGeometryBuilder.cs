@@ -67,7 +67,10 @@ namespace City2BIM.RevitBuilder
 
             //scale because of projected input data?
             var projInfo = doc.ProjectInformation.LookupParameter("Scale");
-            this.scale = UTMcalc.ParseDouble(projInfo.AsString());
+            if(projInfo == null)
+                this.scale = 1;
+            else
+                this.scale = UTMcalc.ParseDouble(projInfo.AsString());
 
             if(double.IsNaN(scale))
                 this.scale = 1;
@@ -544,7 +547,7 @@ namespace City2BIM.RevitBuilder
                         break;
 
                     case (GmlSurface.FaceType.closure):
-                        elem = new ElementId(BuiltInCategory.OST_Walls);
+                        elem = new ElementId(BuiltInCategory.OST_GenericModel);
                         break;
 
                     default:
@@ -678,6 +681,8 @@ namespace City2BIM.RevitBuilder
 
                         t.Commit();
                     }
+
+                    Log.Information("Creation of Face-Solid successful!");
                 }
 
                 catch(System.Exception ex)
@@ -686,10 +691,12 @@ namespace City2BIM.RevitBuilder
                     {
                         CreateSurfaceWithOriginalPoints(surface, attributes);
                         Log.Warning("Face-Fallback used, because of: " + ex.Message);
+                        Log.Information("Fallback successful!");
                     }
                     catch(Exception exX)
                     {
                         Log.Error("Face-Fallback not possible: " + exX.Message);
+                        Log.Information("Could not create Geometry!");
 
                         continue;
                     }
@@ -735,9 +742,9 @@ namespace City2BIM.RevitBuilder
                         }
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
-                    Log.Error("Semantik-Fehler bei " + aName.Name);
+                    Log.Error("Semantik-Fehler bei " + aName.Name + " Error: " + ex.Message);
                     continue;
                 }
             }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using Autodesk.Revit.DB;
-using Serilog;
 using GmlAttribute = City2BIM.GetSemantics.GmlAttribute;
 
 namespace City2BIM.RevitBuilder
@@ -10,236 +11,299 @@ namespace City2BIM.RevitBuilder
     internal class RevitSemanticBuilder
     {
         private Document doc;
-        private DefinitionFile parFile;
+        private DefinitionFile city2BimParameterFile;
+        private string userDefinedParameterFile;
 
-        public RevitSemanticBuilder(Document doc, string parameterPath)
+        public RevitSemanticBuilder(Document doc)
         {
             this.doc = doc;
+            this.userDefinedParameterFile = doc.Application.SharedParametersFilename;
 
-            var filePath = parameterPath.Split('.')[0];
+            // create shared parameter file
+            String modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            String paramFile = modulePath + "\\City2BIM_Parameters.txt";
+            if(File.Exists(paramFile))
+            {
+                File.Delete(paramFile);
+            }
+            FileStream fs = File.Create(paramFile);
 
-            var newFile = filePath + "_test2.txt";
+            fs.Close();
 
-            File.Copy(parameterPath, newFile, true);
+            doc.Application.SharedParametersFilename = paramFile;
 
-            // set the path of shared parameter file to current Revit
-            doc.Application.SharedParametersFilename = newFile;
-
-            //application.SharedParametersFilename = sharedParameterFile;
-
-            // open the file
-            this.parFile = doc.Application.OpenSharedParameterFile();
+            this.city2BimParameterFile = doc.Application.OpenSharedParameterFile();
         }
 
-        //nötige RevitAPI-interen Methoden zum Anlegen der SharedParameters sowie Gruppen
-        //benötigt Übergaben der Gruppennamen (Vorschlag: CityGML_"namespace", zB CityGML_bldg, CityGML_gen)
-        //dazu namespaces aller bldg-descendants übergeben
-        //benötigt Parametername sowie Parameterwert
-
-        //Herausforderung: SharedParameterFile muss alle eventuell vorkommenden Parameter beinhalten
-        //erfordert Scanning aller Attribute in allen vorkommenden gebäuden
-        //erst nacher Füllen pro bldg, wenn Attribut gesetzt
-
-        //private DefinitionFile SetAndOpenExternalSharedParamFile(Autodesk.Revit.ApplicationServices.Application application, string sharedParameterFile)
-        //{
-        //    var filePath = sharedParameterFile.Split('.')[0];
-
-        //    var newFile = filePath + "_test2.txt";
-
-        //    File.Copy(sharedParameterFile, newFile, true);
-
-        //    // set the path of shared parameter file to current Revit
-        //    application.SharedParametersFilename = newFile;
-
-        //    //application.SharedParametersFilename = sharedParameterFile;
-
-        //    // open the file
-        //    return application.OpenSharedParameterFile();
-        //}
-        public void CreateParameters(BuiltInCategory category, string[] attributes)
+        public void CreateProjectParameters(string paramGroupName, string[] attributes)
         {
-            Category cat = doc.Settings.Categories.get_Item(category);
-            CategorySet assocCats = doc.Application.Create.NewCategorySet();
-            assocCats.Insert(cat);
+            //Create groups in parFile if not existent
+            DefinitionGroup parGroupGeoref = SetDefinitionGroupToParameterFile(paramGroupName);
 
-            //zunächst wird der Fall betrachtet, dass nur leere Shared Parameter Files vorliegen (leer = "nur" Revit-Tabellenkopf)
-            using(Transaction tParam = new Transaction(doc, "Insert Parameter"))
+            Category projInfoCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_ProjectInformation);
+
+            var parProjInfo = GetExistentCategoryParameters(projInfoCat);
+
+            foreach(var attribute in attributes)
             {
-                tParam.Start();
+                Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute, ParameterType.Text);
 
-                //opened the txt-file and set it to shared parameter file
-                //var parFile = SetAndOpenExternalSharedParamFile(doc.Application, @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt");
-                //Testdefinitionen (Hierarchie? evtl. nützlich)
+                CategorySet assocCats = doc.Application.Create.NewCategorySet();
 
-                DefinitionGroup parGroupGeo = parFile.Groups.get_Item("Georeferencing");
+                if(!parProjInfo.Contains(attribute))
+                    assocCats.Insert(projInfoCat);
 
-                //DefinitionGroup parGroup1 = parFile.Groups.get_Item("City Model data");
-
-                if(parGroupGeo == null)
-                    parGroupGeo = parFile.Groups.Create("Georeferencing");
-
-                Definition parDef = default(Definition);
-
-                foreach(var attribute in attributes)
+                if(!assocCats.IsEmpty)
                 {
-                    try
+                    BindParameterDefinitionToCategories(paramDef, assocCats);
+                }
+            }
+
+            //set SharedParameterFile back to user defined one (if applied)
+
+            if(this.userDefinedParameterFile != null)
+                doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
+        }
+
+        public void CreateParameters(IEnumerable<GmlAttribute> attributes)
+        {
+            //Create groups in parFile if not existent
+            DefinitionGroup parGroupCore = SetDefinitionGroupToParameterFile("CityGML-Core");
+            DefinitionGroup parGroupGen = SetDefinitionGroupToParameterFile("CityGML-Generics");
+            DefinitionGroup parGroupBldg = SetDefinitionGroupToParameterFile("CityGML-Building");
+            DefinitionGroup parGroupAddr = SetDefinitionGroupToParameterFile("CityGML-Address");
+            DefinitionGroup parGroupGML = SetDefinitionGroupToParameterFile("CityGML-GML");
+
+            //creation of unique attribute list because attribute list can contain multiple attributes
+            //with the same name but different category assignments
+            var uniqueAttr = new Dictionary<Definition, List<GmlAttribute.AttrHierarchy>>();
+
+            //loop over attributes
+
+            var genCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_GenericModel);
+            var wallCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Walls);
+            var roofCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Roofs);
+            var groundCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_StructuralFoundation);
+            var entCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Entourage);
+
+            var parClosure = GetExistentCategoryParameters(genCat);
+            var parWall = GetExistentCategoryParameters(wallCat);
+            var parRoof = GetExistentCategoryParameters(roofCat);
+            var parGround = GetExistentCategoryParameters(groundCat);
+            var parEnt = GetExistentCategoryParameters(entCat);
+
+            var parBldg = parClosure.Union(parWall).Union(parRoof).Union(parGround).Union(parEnt);
+
+            var groupedAttributes = attributes.GroupBy(r => (r.GmlNamespace + ": " + r.Name));
+
+            foreach(var attributeGroup in groupedAttributes)
+            {
+                string paramName = attributeGroup.Key;
+
+                GmlAttribute attribute = attributeGroup.First();
+
+                var ab = attributeGroup.ToList();
+
+                ParameterType pType = default(ParameterType);
+
+                switch(attribute.GmlType)
+                {
+                    case (GmlAttribute.AttrType.intAttribute):
+                        pType = ParameterType.Integer;
+                        break;
+
+                    case (GmlAttribute.AttrType.doubleAttribute):
+                        pType = ParameterType.Number;
+                        break;
+
+                    case (GmlAttribute.AttrType.uriAttribute):
+                        pType = ParameterType.URL;
+                        break;
+
+                    case (GmlAttribute.AttrType.measureAttribute):
+                        pType = ParameterType.Length;
+                        break;
+
+                    case (GmlAttribute.AttrType.stringAttribute):
+                        pType = ParameterType.Text;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                DefinitionGroup currentGroup = default(DefinitionGroup);
+
+                switch(attribute.GmlNamespace)
+                {
+                    case (GmlAttribute.AttrNsp.gen):
+                        currentGroup = parGroupGen;
+                        break;
+
+                    case (GmlAttribute.AttrNsp.core):
+                        currentGroup = parGroupCore;
+                        break;
+
+                    case (GmlAttribute.AttrNsp.bldg):
+                        currentGroup = parGroupBldg;
+                        break;
+
+                    case (GmlAttribute.AttrNsp.xal):
+                        currentGroup = parGroupAddr;
+                        break;
+
+                    case (GmlAttribute.AttrNsp.gml):
+                        currentGroup = parGroupGML;
+                        break;
+                }
+
+                Definition paramDef = SetDefinitionsToGroup(currentGroup, paramName, pType);
+
+                CategorySet assocCats = doc.Application.Create.NewCategorySet();
+
+                var unAttr = attributeGroup.Select(a => a.Reference).ToList();
+
+                if(unAttr.Contains(GmlAttribute.AttrHierarchy.bldg) ||
+                    unAttr.Contains(GmlAttribute.AttrHierarchy.surface))
+                {
+                    if(!parBldg.Contains(attributeGroup.Key))
                     {
-                        ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(attribute, ParameterType.Text);
-
-                        // create an instance definition in definition group MyParameters
-
-                        extDef.UserModifiable = true;      //nicht modifizierbar?! nur zum Lesen der CityGML oder auch editierbar für IFC-Property-Export
-
-                        // Set tooltip
-                        //extDef.Description = attribute.Description + i;  //später Übersetzungen der Codes als Description
-
-                        //Definition parDef = default(Definition);
-
-                        parDef = parGroupGeo.Definitions.Create(extDef);
-
-                        ExternalDefinition yoc = parGroupGeo.Definitions.get_Item(attribute) as ExternalDefinition;
-
-                        //Create an instance of InstanceBinding
-                        InstanceBinding instanceBinding = doc.Application.Create.NewInstanceBinding(assocCats);
-
-                        doc.ParameterBindings.Insert(yoc, instanceBinding, BuiltInParameterGroup.PG_DATA);  //Parameter-Gruppe Daten ok?
-                    }
-                    catch(Exception ex)
-                    {
-                        Log.Error("Error while attributing: " + attribute + "message: " + ex.Message);
+                        assocCats.Insert(entCat);
+                        assocCats.Insert(wallCat);
+                        assocCats.Insert(roofCat);
+                        assocCats.Insert(groundCat);
+                        assocCats.Insert(genCat);
                     }
                 }
 
-                tParam.Commit();
+                if(unAttr.Contains(GmlAttribute.AttrHierarchy.wall))
+                {
+                    if(!parWall.Contains(attributeGroup.Key))
+                        assocCats.Insert(wallCat);
+                }
+                if(unAttr.Contains(GmlAttribute.AttrHierarchy.roof))
+                {
+                    if(!parRoof.Contains(attributeGroup.Key))
+                        assocCats.Insert(roofCat);
+                }
+
+                if(unAttr.Contains(GmlAttribute.AttrHierarchy.ground))
+                {
+                    if(!parGround.Contains(attributeGroup.Key))
+                        assocCats.Insert(groundCat);
+                }
+
+                if(unAttr.Contains(GmlAttribute.AttrHierarchy.closure))
+                {
+                    if(!parClosure.Contains(attributeGroup.Key))
+                        assocCats.Insert(genCat);
+                }
+
+                if(!assocCats.IsEmpty)
+                {
+                    BindParameterDefinitionToCategories(paramDef, assocCats);
+                }
             }
+
+            //set SharedParameterFile back to user defined one (if applied)
+
+            if(this.userDefinedParameterFile != null)
+                doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
         }
 
-        public void CreateParameters(BuiltInCategory category, IEnumerable<GmlAttribute> attributes)
+        /// <summary>
+        /// Transaction: Adds DefinitionGroup (SharedParameterFile) or get existing one
+        /// </summary>
+        /// <param name="groupName">Defined name of DefinitionGroup</param>
+        /// <returns>DefinitionGroup</returns>
+        private DefinitionGroup SetDefinitionGroupToParameterFile(string groupName)
         {
-            Category cat = doc.Settings.Categories.get_Item(category);
-            CategorySet assocCats = doc.Application.Create.NewCategorySet();
-            assocCats.Insert(cat);
+            //if group already exists in file - set:
+            DefinitionGroup paramGroup = city2BimParameterFile.Groups.get_Item(groupName);
 
-            //zunächst wird der Fall betrachtet, dass nur leere Shared Parameter Files vorliegen (leer = "nur" Revit-Tabellenkopf)
+            //if not - create:
+            if(paramGroup == null)
+            {
+                using(Transaction transDefGroup = new Transaction(doc, "Insert ParameterGroup"))
+                {
+                    transDefGroup.Start();
+                    paramGroup = city2BimParameterFile.Groups.Create(groupName);
+                    transDefGroup.Commit();
+                }
+            }
+            return paramGroup;
+        }
+
+        /// <summary>
+        /// Transaction: Adds Definition to DefinitionGroup (SharedParameterFile)
+        /// </summary>
+        /// <param name="parGroup">Group where Parameter should be inserted</param>
+        /// <param name="paramName">Input data for parameter</param>
+        /// <param name="pType">Data type for parameter</param>
+        /// <returns>Parameter Definition</returns>
+        private Definition SetDefinitionsToGroup(DefinitionGroup parGroup, string paramName, ParameterType pType)
+        {
+            //if definition already exists in file - set:
+            Definition paramDef = parGroup.Definitions.get_Item(paramName);
+
+            //if not - create:
             using(Transaction tParam = new Transaction(doc, "Insert Parameter"))
             {
                 tParam.Start();
-
-                //opened the txt-file and set it to shared parameter file
-                //var parFile = SetAndOpenExternalSharedParamFile(doc.Application, @"D:\1_CityBIM\1_Programmierung\City2BIM\CityGML_Data\SharedParameterFile.txt");
-                //Testdefinitionen (Hierarchie? evtl. nützlich)
-
-                DefinitionGroup parGroupCore = parFile.Groups.get_Item("CityGML-Core Module");
-                DefinitionGroup parGroupGen = parFile.Groups.get_Item("CityGML-Generic Module");
-                DefinitionGroup parGroupBldg = parFile.Groups.get_Item("CityGML-Building Module");
-                DefinitionGroup parGroupAddr = parFile.Groups.get_Item("CityGML-Address Module");
-                DefinitionGroup parGroupGML = parFile.Groups.get_Item("CityGML-GML Module");
-
-                //DefinitionGroup parGroup1 = parFile.Groups.get_Item("City Model data");
-
-                if(parGroupCore == null)
-                    parGroupCore = parFile.Groups.Create("CityGML-Core Module");
-
-                if(parGroupGen == null)
-                    parGroupGen = parFile.Groups.Create("CityGML-Generic Module");
-
-                if(parGroupBldg == null)
-                    parGroupBldg = parFile.Groups.Create("CityGML-Building Module");
-
-                if(parGroupAddr == null)
-                    parGroupAddr = parFile.Groups.Create("CityGML-Address Module");
-
-                if(parGroupGML == null)
-                    parGroupGML = parFile.Groups.Create("CityGML-GML Module");
-
-                Definition parDef = default(Definition);
-
-                foreach(var attribute in attributes)
-                {
-                    try
-                    {
-                        var pType = ParameterType.Text;
-
-                        //Typ-Übersetzung für Revit
-
-                        switch(attribute.GmlType)
-                        {
-                            case (GmlAttribute.AttrType.intAttribute):
-                                pType = ParameterType.Integer;
-                                break;
-
-                            case (GmlAttribute.AttrType.doubleAttribute):
-                                pType = ParameterType.Number;
-                                break;
-
-                            case (GmlAttribute.AttrType.uriAttribute):
-                                pType = ParameterType.URL;
-                                break;
-
-                            case (GmlAttribute.AttrType.measureAttribute):
-                                pType = ParameterType.Length;
-                                break;
-
-                            default: //stringAttribute, dateAttribute: ParameterType.Text;
-                                break;
-                        }
-
-                        //Gruppenzuordnung für Revit
-
-                        switch(attribute.GmlNamespace)
-                        {
-                            case (GmlAttribute.AttrNsp.gen):
-                                SetDefinitionsToGroup(parGroupGen, attribute, pType, assocCats, parDef);
-                                break;
-
-                            case (GmlAttribute.AttrNsp.core):
-                                SetDefinitionsToGroup(parGroupCore, attribute, pType, assocCats, parDef);
-                                break;
-
-                            case (GmlAttribute.AttrNsp.bldg):
-                                SetDefinitionsToGroup(parGroupBldg, attribute, pType, assocCats, parDef);
-                                break;
-
-                            case (GmlAttribute.AttrNsp.xal):
-                                SetDefinitionsToGroup(parGroupAddr, attribute, pType, assocCats, parDef);
-                                break;
-
-                            case (GmlAttribute.AttrNsp.gml):
-                                SetDefinitionsToGroup(parGroupGML, attribute, pType, assocCats, parDef);
-                                break;
-                        }
-                    }
-                    catch(Exception ex)
-                    {
-                        Log.Error("Error while attributing: " + attribute.Name + "message: " + ex.Message);
-                    }
-                }
-
+                ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(paramName, pType);
+                paramDef = parGroup.Definitions.Create(extDef);
                 tParam.Commit();
+            }
+            return paramDef;
+        }
+
+        /// <summary>
+        /// Transaction: Binds delivered parameter to associated categories
+        /// </summary>
+        /// <param name="paramDef">Parameter definition</param>
+        /// <param name="associatedCategories">Categories where Parameter should apply</param>
+        private void BindParameterDefinitionToCategories(Definition paramDef, CategorySet associatedCategories)
+        {
+            using(Transaction transBindToCat = new Transaction(doc, "Bind Parameter"))
+            {
+                transBindToCat.Start();
+
+                //Create an instance of InstanceBinding
+                InstanceBinding instanceBinding = doc.Application.Create.NewInstanceBinding(associatedCategories);
+
+                doc.ParameterBindings.Insert(paramDef, instanceBinding, BuiltInParameterGroup.PG_DATA);  //Parameter-Gruppe Daten ok?
+
+                transBindToCat.Commit();
             }
         }
 
-        private void SetDefinitionsToGroup(DefinitionGroup parGroup, GmlAttribute attribute, ParameterType pType, CategorySet assocCats, Definition parDef)
+        /// <summary>
+        /// Reads Parameteres of delivered category
+        /// </summary>
+        /// <param name="currentCat">Category which should be invetigated</param>
+        /// <returns>List of existent Parameters</returns>
+        private List<string> GetExistentCategoryParameters(Category currentCat)
         {
-            ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(attribute.GmlNamespace + ": " + attribute.Name, pType);
+            List<string> parList = new List<string>();
 
-            // create an instance definition in definition group MyParameters
+            var bindingMap = doc.ParameterBindings;
 
-            extDef.UserModifiable = true;      //nicht modifizierbar?! nur zum Lesen der CityGML oder auch editierbar für IFC-Property-Export
+            var iterator = bindingMap.ForwardIterator();
 
-            // Set tooltip
-            //extDef.Description = attribute.Description + i;  //später Übersetzungen der Codes als Description
+            while(iterator.MoveNext())
+            {
+                var elementBinding = iterator.Current as ElementBinding;
 
-            //Definition parDef = default(Definition);
+                if(elementBinding.Categories.Contains(currentCat))
+                {
+                    var definiton = iterator.Key as Definition;
 
-            parDef = parGroup.Definitions.Create(extDef);
+                    var parName = definiton.Name;
 
-            ExternalDefinition yoc = parGroup.Definitions.get_Item(attribute.GmlNamespace + ": " + attribute.Name) as ExternalDefinition;
-
-            //Create an instance of InstanceBinding
-            InstanceBinding instanceBinding = doc.Application.Create.NewInstanceBinding(assocCats);
-
-            doc.ParameterBindings.Insert(yoc, instanceBinding, BuiltInParameterGroup.PG_DATA);  //Parameter-Gruppe Daten ok?
+                    parList.Add(parName);
+                }
+            }
+            return parList;
         }
     }
 }
