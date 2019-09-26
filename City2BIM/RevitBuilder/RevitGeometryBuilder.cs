@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
 using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
 using City2BIM.RevitCommands.Georeferencing;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace City2BIM.RevitBuilder
 {
     internal class RevitGeometryBuilder
     {
-        private DxfVisualizer dxf;
+        //private DxfVisualizer dxf;
         private City2BIM.GetGeometry.C2BPoint gmlCorner;
         private Transform revitPBPTrafo;
+        private bool swapNE;
         private XYZ vectorPBP;
         private double scale;
         private Document doc;
@@ -25,14 +26,16 @@ namespace City2BIM.RevitBuilder
         private Dictionary<GmlRep.GmlSurface.FaceType, ElementId> colors;
         //private Dictionary<GetSemantics.Attribute, string> attributes;
 
-        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner, DxfVisualizer dxf)
+        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner, bool swapNE/*, DxfVisualizer dxf*/)
         {
             this.doc = doc;
             this.buildings = buildings;
+            this.swapNE = swapNE;
             this.gmlCorner = gmlCorner;
             this.revitPBPTrafo = GetRevitProjectLocation(doc);
-            this.dxf = dxf;
+            //this.dxf = dxf;
             this.colors = CreateColorAsMaterial();
+
         }
 
         public PlugIn PlugIn
@@ -67,12 +70,12 @@ namespace City2BIM.RevitBuilder
 
             //scale because of projected input data?
             var projInfo = doc.ProjectInformation.LookupParameter("Scale");
-            if(projInfo == null)
+            if (projInfo == null || !projInfo.HasValue)
                 this.scale = 1;
             else
-                this.scale = UTMcalc.ParseDouble(projInfo.AsString());
+                this.scale = projInfo.AsDouble();
 
-            if(double.IsNaN(scale))
+            if (double.IsNaN(scale))
                 this.scale = 1;
 
             return transf;
@@ -86,8 +89,15 @@ namespace City2BIM.RevitBuilder
         private XYZ TransformPointForRevit(C2BPoint gmlLocalPt)
         {
             //At first add lowerCorner from gml
-            var xGlobalProj = gmlLocalPt.X + gmlCorner.X;
-            var yGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
+            double xGlobalProj = gmlLocalPt.X + gmlCorner.X;
+            double yGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
+
+            if (swapNE)
+            {
+                xGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
+                yGlobalProj = gmlLocalPt.X + gmlCorner.X;
+            }
+
             var zGlobal = gmlLocalPt.Z + gmlCorner.Z;
 
             var deltaX = xGlobalProj - (vectorPBP.X * 0.3048);
@@ -99,7 +109,7 @@ namespace City2BIM.RevitBuilder
             var xGlobalUnproj = xGlobalProj - deltaX + deltaXUnproj;
             var yGlobalUnproj = yGlobalProj - deltaY + deltaYUnproj;
 
-            //Muiltiplication with feet factor (neccessary because of feet in Revit database)
+            //Multiplication with feet factor (neccessary because of feet in Revit database)
             var xFeet = xGlobalUnproj / 0.3048;
             var yFeet = yGlobalUnproj / 0.3048;
             var zFeet = zGlobal / 0.3048;
@@ -128,7 +138,7 @@ namespace City2BIM.RevitBuilder
 
             var i = 0;
 
-            foreach(var building in buildings)
+            foreach (var building in buildings)
             {
                 try
                 {
@@ -137,7 +147,7 @@ namespace City2BIM.RevitBuilder
 
                     var tesselatedFaces = CreateRevitFaceList(building.BldgSolid, building.BldgSurfaces);
 
-                    foreach(var faceT in tesselatedFaces)
+                    foreach (var faceT in tesselatedFaces)
                         builder.AddFace(faceT);
 
                     builder.CloseConnectedFaceSet();
@@ -150,7 +160,7 @@ namespace City2BIM.RevitBuilder
 
                     TessellatedShapeBuilderResult result = builder.GetBuildResult();
 
-                    using(Transaction t = new Transaction(doc, "Create tessellated direct shape"))
+                    using (Transaction t = new Transaction(doc, "Create tessellated direct shape"))
                     {
                         t.Start();
 
@@ -178,7 +188,7 @@ namespace City2BIM.RevitBuilder
                     //Log.Information("Building builder successful");
                     success += 1;
                 }
-                catch(System.Exception ex)
+                catch (System.Exception ex)
                 {
                     try
                     {
@@ -194,9 +204,9 @@ namespace City2BIM.RevitBuilder
                 }
             }
 
-            foreach(var bldg in buildings)
+            foreach (var bldg in buildings)
             {
-                foreach(var building in bldg.Parts)
+                foreach (var building in bldg.Parts)
                 {
                     try
                     {
@@ -205,7 +215,7 @@ namespace City2BIM.RevitBuilder
 
                         var tesselatedFaces = CreateRevitFaceList(building.PartSolid, building.PartSurfaces);
 
-                        foreach(var faceT in tesselatedFaces)
+                        foreach (var faceT in tesselatedFaces)
                             builder.AddFace(faceT);
 
                         builder.CloseConnectedFaceSet();
@@ -218,7 +228,7 @@ namespace City2BIM.RevitBuilder
 
                         TessellatedShapeBuilderResult result = builder.GetBuildResult();
 
-                        using(Transaction t = new Transaction(doc, "Create tessellated direct shape"))
+                        using (Transaction t = new Transaction(doc, "Create tessellated direct shape"))
                         {
                             t.Start();
 
@@ -247,13 +257,13 @@ namespace City2BIM.RevitBuilder
                         //Log.Information("Building builder successful");
                         success += 1;
                     }
-                    catch(System.Exception ex)
+                    catch (System.Exception ex)
                     {
                         try
                         {
-                            foreach(var d in bldg.BldgAttributes)
+                            foreach (var d in bldg.BldgAttributes)
                             {
-                                if(!building.BldgPartAttributes.ContainsKey(d.Key))
+                                if (!building.BldgPartAttributes.ContainsKey(d.Key))
                                     building.BldgPartAttributes.Add(d.Key, d.Value);
                             }
 
@@ -299,7 +309,7 @@ namespace City2BIM.RevitBuilder
                                  where p.Facetype == GmlSurface.FaceType.ground
                                  select p;
 
-            foreach(var groundSurface in groundSurfaces)
+            foreach (var groundSurface in groundSurfaces)
             {
                 try
                 {
@@ -309,11 +319,11 @@ namespace City2BIM.RevitBuilder
 
                     var poly = new List<XYZ>();
 
-                    foreach(int vid in groundPlane.Vertices)
+                    foreach (int vid in groundPlane.Vertices)
                     {
                         var verts = solid.Vertices;
 
-                        if(verts.Contains(verts[vid]))
+                        if (verts.Contains(verts[vid]))
                         {
                             var revTransXYZ = TransformPointForRevit(verts[vid].Position);
 
@@ -327,7 +337,7 @@ namespace City2BIM.RevitBuilder
 
                     List<Curve> edges = new List<Curve>();
 
-                    for(var c = 1; c < poly.Count; c++)
+                    for (var c = 1; c < poly.Count; c++)
                     {
                         Line edge = Line.CreateBound(poly[c - 1], poly[c]);
 
@@ -343,7 +353,7 @@ namespace City2BIM.RevitBuilder
 
                     Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, XYZ.BasisZ, extrHeight);
 
-                    using(Transaction t = new Transaction(doc, "Create lod1 extrusion"))
+                    using (Transaction t = new Transaction(doc, "Create lod1 extrusion"))
                     {
                         t.Start();
                         // create direct shape and assign the sphere shape
@@ -376,11 +386,11 @@ namespace City2BIM.RevitBuilder
 
             ElementId colorMat = ElementId.InvalidElementId;
 
-            foreach(var plane in solid.Planes)
+            foreach (var plane in solid.Planes)
             {
                 IList<IList<Autodesk.Revit.DB.XYZ>> faceList = new List<IList<XYZ>>(); //neccessary if also interior face will occure
 
-                if(plane.Key.Contains("void)"))         //interior planes will be handled separately
+                if (plane.Key.Contains("void)"))         //interior planes will be handled separately
                     continue;
 
                 //var p = plane.Value;
@@ -429,11 +439,11 @@ namespace City2BIM.RevitBuilder
         {
             IList<Autodesk.Revit.DB.XYZ> facePoints = new List<XYZ>();
 
-            foreach(int vid in plane.Vertices)
+            foreach (int vid in plane.Vertices)
             {
                 var verts = solid.Vertices;
 
-                if(verts.Contains(verts[vid]))
+                if (verts.Contains(verts[vid]))
                 {
                     //Transformation for revit
                     var revTransXYZ = TransformPointForRevit(verts[vid].Position);
@@ -455,15 +465,15 @@ namespace City2BIM.RevitBuilder
 
         public void CreateBuildingsWithFaces()
         {
-            foreach(var building in buildings)
+            foreach (var building in buildings)
             {
                 CreateSurfaceSolid(building.BldgSolid, building.BldgSurfaces, building.BldgAttributes);
 
-                foreach(var part in building.Parts)
+                foreach (var part in building.Parts)
                 {
-                    foreach(var d in building.BldgAttributes)
+                    foreach (var d in building.BldgAttributes)
                     {
-                        if(!part.BldgPartAttributes.ContainsKey(d.Key))
+                        if (!part.BldgPartAttributes.ContainsKey(d.Key))
                             part.BldgPartAttributes.Add(d.Key, d.Value);
                     }
 
@@ -482,7 +492,7 @@ namespace City2BIM.RevitBuilder
             List<CurveLoop> loopList = new List<CurveLoop>();
             List<Curve> edges = new List<Curve>();
 
-            for(var c = 1; c < pts.Count; c++)
+            for (var c = 1; c < pts.Count; c++)
             {
                 normalVc += C2BPoint.CrossProduct(pts[c - 1], pts[c]);
 
@@ -494,7 +504,7 @@ namespace City2BIM.RevitBuilder
 
             var projectedVerts = new List<XYZ>();
 
-            foreach(var pt in pts)
+            foreach (var pt in pts)
             {
                 var vecPtCent = pt - centroid;
                 var d = C2BPoint.ScalarProduct(vecPtCent, normalizedVc);
@@ -506,7 +516,7 @@ namespace City2BIM.RevitBuilder
                 projectedVerts.Add(vertRevXYZ);
             }
 
-            for(var c = 1; c < projectedVerts.Count; c++)
+            for (var c = 1; c < projectedVerts.Count; c++)
             {
                 Line edge = Line.CreateBound(projectedVerts[c - 1], projectedVerts[c]);
 
@@ -524,14 +534,14 @@ namespace City2BIM.RevitBuilder
 
             Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height, opt);
 
-            using(Transaction t = new Transaction(doc, "Create face extrusion"))
+            using (Transaction t = new Transaction(doc, "Create face extrusion"))
             {
                 t.Start();
                 // create direct shape and assign the sphere shape
 
                 ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
 
-                switch(surface.Facetype)
+                switch (surface.Facetype)
                 {
                     case (GmlSurface.FaceType.roof):
                         elem = new ElementId(BuiltInCategory.OST_Roofs);
@@ -564,7 +574,7 @@ namespace City2BIM.RevitBuilder
 
                 commAttr.Set("Face-Solid (LOD2) Fallback");
 
-                foreach(var attr in surface.SurfaceAttributes)
+                foreach (var attr in surface.SurfaceAttributes)
                 {
                     attributes.Add(attr.Key, attr.Value);
                 }
@@ -579,11 +589,11 @@ namespace City2BIM.RevitBuilder
 
         private void CreateSurfaceSolid(C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> bldgAttributes)
         {
-            foreach(var plane in solid.Planes)
+            foreach (var plane in solid.Planes)
             {
                 var attributes = new Dictionary<GmlAttribute, string>();
 
-                foreach(var attr in bldgAttributes)
+                foreach (var attr in bldgAttributes)
                 {
                     attributes.Add(attr.Key, attr.Value);
                 }
@@ -597,11 +607,11 @@ namespace City2BIM.RevitBuilder
                 {
                     var poly = new List<XYZ>();
 
-                    foreach(int vid in plane.Value.Vertices)
+                    foreach (int vid in plane.Value.Vertices)
                     {
                         var verts = solid.Vertices;
 
-                        if(verts.Contains(verts[vid]))
+                        if (verts.Contains(verts[vid]))
                         {
                             var revTransXYZ = TransformPointForRevit(verts[vid].Position);
 
@@ -611,7 +621,7 @@ namespace City2BIM.RevitBuilder
                     List<CurveLoop> loopList = new List<CurveLoop>();
                     List<Curve> edges = new List<Curve>();
 
-                    for(var c = 1; c < poly.Count; c++)
+                    for (var c = 1; c < poly.Count; c++)
                     {
                         Line edge = Line.CreateBound(poly[c - 1], poly[c]);
 
@@ -631,14 +641,14 @@ namespace City2BIM.RevitBuilder
 
                     Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height, opt);
 
-                    using(Transaction t = new Transaction(doc, "Create face extrusion"))
+                    using (Transaction t = new Transaction(doc, "Create face extrusion"))
                     {
                         t.Start();
                         // create direct shape and assign the sphere shape
 
                         ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
 
-                        switch(surface.Facetype)
+                        switch (surface.Facetype)
                         {
                             case (GmlSurface.FaceType.roof):
                                 elem = new ElementId(BuiltInCategory.OST_Roofs);
@@ -670,7 +680,7 @@ namespace City2BIM.RevitBuilder
 
                         commAttr.Set("Face-Solid (LOD2)");
 
-                        foreach(var attr in surface.SurfaceAttributes)
+                        foreach (var attr in surface.SurfaceAttributes)
                         {
                             attributes.Add(attr.Key, attr.Value);
                         }
@@ -685,7 +695,7 @@ namespace City2BIM.RevitBuilder
                     Log.Information("Creation of Face-Solid successful!");
                 }
 
-                catch(System.Exception ex)
+                catch (System.Exception ex)
                 {
                     try
                     {
@@ -693,7 +703,7 @@ namespace City2BIM.RevitBuilder
                         Log.Warning("Face-Fallback used, because of: " + ex.Message);
                         Log.Information("Fallback successful!");
                     }
-                    catch(Exception exX)
+                    catch (Exception exX)
                     {
                         Log.Error("Face-Fallback not possible: " + exX.Message);
                         Log.Information("Could not create Geometry!");
@@ -712,16 +722,16 @@ namespace City2BIM.RevitBuilder
         {
             var attr = attributes.Keys;
 
-            foreach(var aName in attr)
+            foreach (var aName in attr)
             {
                 var p = ds.LookupParameter(aName.GmlNamespace + ": " + aName.Name);
                 attributes.TryGetValue(aName, out var val);
 
                 try
                 {
-                    if(val != null)
+                    if (val != null)
                     {
-                        switch(aName.GmlType)
+                        switch (aName.GmlType)
                         {
                             case (GmlAttribute.AttrType.intAttribute):
                                 p.Set(int.Parse(val));
@@ -742,7 +752,7 @@ namespace City2BIM.RevitBuilder
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.Error("Semantik-Fehler bei " + aName.Name + " Error: " + ex.Message);
                     continue;
@@ -759,7 +769,7 @@ namespace City2BIM.RevitBuilder
             ElementId groundCol = ElementId.InvalidElementId;
             ElementId closureCol = ElementId.InvalidElementId;
 
-            using(Transaction t = new Transaction(doc, "Create material"))
+            using (Transaction t = new Transaction(doc, "Create material"))
             {
                 t.Start();
 
@@ -771,7 +781,7 @@ namespace City2BIM.RevitBuilder
                     where materialElement.Name == "CityGML_Roof"
                     select materialElement.Id;
 
-                if(roofCols.Count() == 0)
+                if (roofCols.Count() == 0)
                 {
                     roofCol = Material.Create(doc, "CityGML_Roof");
                     Material matRoof = doc.GetElement(roofCol) as Material;
@@ -785,7 +795,7 @@ namespace City2BIM.RevitBuilder
                     where materialElement.Name == "CityGML_Wall"
                     select materialElement.Id;
 
-                if(wallCols.Count() == 0)
+                if (wallCols.Count() == 0)
                 {
                     wallCol = Material.Create(doc, "CityGML_Wall");
                     Material matWall = doc.GetElement(wallCol) as Material;
@@ -799,7 +809,7 @@ namespace City2BIM.RevitBuilder
                 where materialElement.Name == "CityGML_Ground"
                 select materialElement.Id;
 
-                if(groundCols.Count() == 0)
+                if (groundCols.Count() == 0)
                 {
                     groundCol = Material.Create(doc, "CityGML_Ground");
                     Material matGround = doc.GetElement(groundCol) as Material;
@@ -813,7 +823,7 @@ namespace City2BIM.RevitBuilder
                         where materialElement.Name == "CityGML_Closure"
                         select materialElement.Id;
 
-                if(groundCols.Count() == 0)
+                if (groundCols.Count() == 0)
                 {
                     closureCol = Material.Create(doc, "CityGML_Closure");
                     Material matClosure = doc.GetElement(closureCol) as Material;

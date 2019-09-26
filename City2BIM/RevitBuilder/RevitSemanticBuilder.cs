@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Autodesk.Revit.DB;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Autodesk.Revit.DB;
+using System.Text;
 using GmlAttribute = City2BIM.GetSemantics.GmlAttribute;
 
 namespace City2BIM.RevitBuilder
@@ -14,6 +15,8 @@ namespace City2BIM.RevitBuilder
         private DefinitionFile city2BimParameterFile;
         private string userDefinedParameterFile;
 
+        //public enum Groups { CityGML_Core, CityGML_Generics, CityGML_Building, CityGML_Address, CityGML_gml, ePSet_MapConversion, ePSet_ProjectedCRS };
+
         public RevitSemanticBuilder(Document doc)
         {
             this.doc = doc;
@@ -22,7 +25,7 @@ namespace City2BIM.RevitBuilder
             // create shared parameter file
             String modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             String paramFile = modulePath + "\\City2BIM_Parameters.txt";
-            if(File.Exists(paramFile))
+            if (File.Exists(paramFile))
             {
                 File.Delete(paramFile);
             }
@@ -35,7 +38,8 @@ namespace City2BIM.RevitBuilder
             this.city2BimParameterFile = doc.Application.OpenSharedParameterFile();
         }
 
-        public void CreateProjectParameters(string paramGroupName, string[] attributes)
+
+        public void CreateProjectParameters(string paramGroupName, Dictionary<string, GetSemantics.GmlAttribute.AttrType> attributes)
         {
             //Create groups in parFile if not existent
             DefinitionGroup parGroupGeoref = SetDefinitionGroupToParameterFile(paramGroupName);
@@ -44,25 +48,63 @@ namespace City2BIM.RevitBuilder
 
             var parProjInfo = GetExistentCategoryParameters(projInfoCat);
 
-            foreach(var attribute in attributes)
+            foreach (var attribute in attributes)
             {
-                Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute, ParameterType.Text);
+                Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute.Key, GetParameterType(attribute.Value));
 
                 CategorySet assocCats = doc.Application.Create.NewCategorySet();
 
-                if(!parProjInfo.Contains(attribute))
+                if (!parProjInfo.Contains(attribute.Key))
                     assocCats.Insert(projInfoCat);
 
-                if(!assocCats.IsEmpty)
+                if (!assocCats.IsEmpty)
                 {
                     BindParameterDefinitionToCategories(paramDef, assocCats);
                 }
             }
 
+            CategorySet cats = new CategorySet();
+            cats.Insert(projInfoCat);
+
+            CreateParameterSetFile(cats);
+
             //set SharedParameterFile back to user defined one (if applied)
 
-            if(this.userDefinedParameterFile != null)
+            if (this.userDefinedParameterFile != null)
                 doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
+        }
+
+        private ParameterType GetParameterType(GetSemantics.GmlAttribute.AttrType gmlType)
+        {
+            ParameterType pType = default(ParameterType);
+
+            switch (gmlType)
+            {
+                case (GmlAttribute.AttrType.intAttribute):
+                    pType = ParameterType.Integer;
+                    break;
+
+                case (GmlAttribute.AttrType.doubleAttribute):
+                    pType = ParameterType.Number;
+                    break;
+
+                case (GmlAttribute.AttrType.uriAttribute):
+                    pType = ParameterType.URL;
+                    break;
+
+                case (GmlAttribute.AttrType.measureAttribute):
+                    pType = ParameterType.Length;
+                    break;
+
+                case (GmlAttribute.AttrType.stringAttribute):
+                    pType = ParameterType.Text;
+                    break;
+
+                default:
+                    break;
+            }
+
+            return pType;
         }
 
         public void CreateParameters(IEnumerable<GmlAttribute> attributes)
@@ -86,17 +128,17 @@ namespace City2BIM.RevitBuilder
             var groundCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_StructuralFoundation);
             var entCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Entourage);
 
-            var parClosure = GetExistentCategoryParameters(genCat);
-            var parWall = GetExistentCategoryParameters(wallCat);
-            var parRoof = GetExistentCategoryParameters(roofCat);
-            var parGround = GetExistentCategoryParameters(groundCat);
-            var parEnt = GetExistentCategoryParameters(entCat);
+            var parClosure = GetExistentCategoryParametersDef(genCat);
+            var parWall = GetExistentCategoryParametersDef(wallCat);
+            var parRoof = GetExistentCategoryParametersDef(roofCat);
+            var parGround = GetExistentCategoryParametersDef(groundCat);
+            var parEnt = GetExistentCategoryParametersDef(entCat);
 
             var parBldg = parClosure.Union(parWall).Union(parRoof).Union(parGround).Union(parEnt);
 
             var groupedAttributes = attributes.GroupBy(r => (r.GmlNamespace + ": " + r.Name));
 
-            foreach(var attributeGroup in groupedAttributes)
+            foreach (var attributeGroup in groupedAttributes)
             {
                 string paramName = attributeGroup.Key;
 
@@ -104,37 +146,9 @@ namespace City2BIM.RevitBuilder
 
                 var ab = attributeGroup.ToList();
 
-                ParameterType pType = default(ParameterType);
-
-                switch(attribute.GmlType)
-                {
-                    case (GmlAttribute.AttrType.intAttribute):
-                        pType = ParameterType.Integer;
-                        break;
-
-                    case (GmlAttribute.AttrType.doubleAttribute):
-                        pType = ParameterType.Number;
-                        break;
-
-                    case (GmlAttribute.AttrType.uriAttribute):
-                        pType = ParameterType.URL;
-                        break;
-
-                    case (GmlAttribute.AttrType.measureAttribute):
-                        pType = ParameterType.Length;
-                        break;
-
-                    case (GmlAttribute.AttrType.stringAttribute):
-                        pType = ParameterType.Text;
-                        break;
-
-                    default:
-                        break;
-                }
-
                 DefinitionGroup currentGroup = default(DefinitionGroup);
 
-                switch(attribute.GmlNamespace)
+                switch (attribute.GmlNamespace)
                 {
                     case (GmlAttribute.AttrNsp.gen):
                         currentGroup = parGroupGen;
@@ -157,16 +171,16 @@ namespace City2BIM.RevitBuilder
                         break;
                 }
 
-                Definition paramDef = SetDefinitionsToGroup(currentGroup, paramName, pType);
+                Definition paramDef = SetDefinitionsToGroup(currentGroup, paramName, GetParameterType(attribute.GmlType));
 
                 CategorySet assocCats = doc.Application.Create.NewCategorySet();
 
                 var unAttr = attributeGroup.Select(a => a.Reference).ToList();
 
-                if(unAttr.Contains(GmlAttribute.AttrHierarchy.bldg) ||
+                if (unAttr.Contains(GmlAttribute.AttrHierarchy.bldg) ||
                     unAttr.Contains(GmlAttribute.AttrHierarchy.surface))
                 {
-                    if(!parBldg.Contains(attributeGroup.Key))
+                    if (!parBldg.Select(n => n.Name).Contains(attributeGroup.Key))
                     {
                         assocCats.Insert(entCat);
                         assocCats.Insert(wallCat);
@@ -176,38 +190,49 @@ namespace City2BIM.RevitBuilder
                     }
                 }
 
-                if(unAttr.Contains(GmlAttribute.AttrHierarchy.wall))
+                if (unAttr.Contains(GmlAttribute.AttrHierarchy.wall))
                 {
-                    if(!parWall.Contains(attributeGroup.Key))
+                    if (!parWall.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(wallCat);
                 }
-                if(unAttr.Contains(GmlAttribute.AttrHierarchy.roof))
+                if (unAttr.Contains(GmlAttribute.AttrHierarchy.roof))
                 {
-                    if(!parRoof.Contains(attributeGroup.Key))
+                    if (!parRoof.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(roofCat);
                 }
 
-                if(unAttr.Contains(GmlAttribute.AttrHierarchy.ground))
+                if (unAttr.Contains(GmlAttribute.AttrHierarchy.ground))
                 {
-                    if(!parGround.Contains(attributeGroup.Key))
+                    if (!parGround.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(groundCat);
                 }
 
-                if(unAttr.Contains(GmlAttribute.AttrHierarchy.closure))
+                if (unAttr.Contains(GmlAttribute.AttrHierarchy.closure))
                 {
-                    if(!parClosure.Contains(attributeGroup.Key))
+                    if (!parClosure.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(genCat);
                 }
 
-                if(!assocCats.IsEmpty)
+                if (!assocCats.IsEmpty)
                 {
                     BindParameterDefinitionToCategories(paramDef, assocCats);
                 }
             }
 
+            //create ParameterSet-File for correct PropertySet-Definition in IFC file
+
+            CategorySet allCategories = new CategorySet();
+            allCategories.Insert(genCat);
+            allCategories.Insert(wallCat);
+            allCategories.Insert(roofCat);
+            allCategories.Insert(groundCat);
+            allCategories.Insert(entCat);
+
+            CreateParameterSetFile(allCategories);
+
             //set SharedParameterFile back to user defined one (if applied)
 
-            if(this.userDefinedParameterFile != null)
+            if (this.userDefinedParameterFile != null)
                 doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
         }
 
@@ -222,9 +247,9 @@ namespace City2BIM.RevitBuilder
             DefinitionGroup paramGroup = city2BimParameterFile.Groups.get_Item(groupName);
 
             //if not - create:
-            if(paramGroup == null)
+            if (paramGroup == null)
             {
-                using(Transaction transDefGroup = new Transaction(doc, "Insert ParameterGroup"))
+                using (Transaction transDefGroup = new Transaction(doc, "Insert ParameterGroup"))
                 {
                     transDefGroup.Start();
                     paramGroup = city2BimParameterFile.Groups.Create(groupName);
@@ -247,7 +272,7 @@ namespace City2BIM.RevitBuilder
             Definition paramDef = parGroup.Definitions.get_Item(paramName);
 
             //if not - create:
-            using(Transaction tParam = new Transaction(doc, "Insert Parameter"))
+            using (Transaction tParam = new Transaction(doc, "Insert Parameter"))
             {
                 tParam.Start();
                 ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(paramName, pType);
@@ -264,7 +289,7 @@ namespace City2BIM.RevitBuilder
         /// <param name="associatedCategories">Categories where Parameter should apply</param>
         private void BindParameterDefinitionToCategories(Definition paramDef, CategorySet associatedCategories)
         {
-            using(Transaction transBindToCat = new Transaction(doc, "Bind Parameter"))
+            using (Transaction transBindToCat = new Transaction(doc, "Bind Parameter"))
             {
                 transBindToCat.Start();
 
@@ -290,11 +315,11 @@ namespace City2BIM.RevitBuilder
 
             var iterator = bindingMap.ForwardIterator();
 
-            while(iterator.MoveNext())
+            while (iterator.MoveNext())
             {
                 var elementBinding = iterator.Current as ElementBinding;
 
-                if(elementBinding.Categories.Contains(currentCat))
+                if (elementBinding.Categories.Contains(currentCat))
                 {
                     var definiton = iterator.Key as Definition;
 
@@ -304,6 +329,98 @@ namespace City2BIM.RevitBuilder
                 }
             }
             return parList;
+        }
+
+        private List<Definition> GetExistentCategoryParametersDef(Category currentCat)
+        {
+            List<Definition> parList = new List<Definition>();
+
+            var bindingMap = doc.ParameterBindings;
+
+            var iterator = bindingMap.ForwardIterator();
+
+            while (iterator.MoveNext())
+            {
+                var elementBinding = iterator.Current as ElementBinding;
+
+                if (elementBinding.Categories.Contains(currentCat))
+                {
+                    var definiton = iterator.Key as Definition;
+
+                    //var parName = definiton.Name;
+
+                    parList.Add(definiton);
+                }
+            }
+            return parList;
+        }
+
+        public void CreateParameterSetFile(CategorySet categories)
+        {
+            string paramSetFile = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\City2BIM_ParameterSet.txt";
+
+            // Delete the file if it exists.
+            if (File.Exists(paramSetFile))
+            {
+                File.Delete(paramSetFile);
+            }
+            string tab = "\t", pset = "PropertySet:", type = "T", newLine = Environment.NewLine;
+
+            using (FileStream fs = File.Create(paramSetFile))
+            {
+                foreach (Category category in categories)
+                {
+                    string elementType = "";
+
+                    switch (category.Id.IntegerValue)
+                    {
+                        case (int)BuiltInCategory.OST_ProjectInformation:
+                            elementType = "IfcProject";
+                            break;
+
+                        case (int)BuiltInCategory.OST_GenericModel:
+                            elementType = "IfcBuildingElementProxy";
+                            break;
+
+                        case (int)BuiltInCategory.OST_Walls:
+                            elementType = "IfcWall";
+                            break;
+
+                        case (int)BuiltInCategory.OST_Roofs:
+                            elementType = "IfcRoof";
+                            break;
+
+                        case (int)BuiltInCategory.OST_StructuralFoundation:
+                            elementType = "IfcSlab";
+                            break;
+
+                        case (int)BuiltInCategory.OST_Entourage:
+                            elementType = "IfcBuildingElementProxy";
+                            break;
+                    }
+
+                    var defAtCat = GetExistentCategoryParametersDef(category);
+
+                    foreach (DefinitionGroup defGr in city2BimParameterFile.Groups)
+                    {
+                        AddText(fs, newLine + pset + tab + defGr.Name + tab + type + tab + elementType);
+
+                        foreach (Definition def in defGr.Definitions)
+                        {
+                            if (defAtCat.Select(s => s.Name).Contains(def.Name))
+                                AddText(fs, newLine + tab + def.Name + tab + def.ParameterType);
+                            else { }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        private static void AddText(FileStream fs, string value)
+        {
+            byte[] info = new UTF8Encoding(true).GetBytes(value);
+            fs.Write(info, 0, info.Length);
         }
     }
 }

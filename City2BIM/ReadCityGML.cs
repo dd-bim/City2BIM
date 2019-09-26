@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Xml.Linq;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
 using City2BIM.RevitBuilder;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Xml.Linq;
 using C2BPoint = City2BIM.GetGeometry.C2BPoint;
 using C2BSolid = City2BIM.GetGeometry.C2BSolid;
 using GmlAttribute = City2BIM.GetSemantics.GmlAttribute;
@@ -30,7 +30,9 @@ namespace City2BIM
                 .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
                 .CreateLogger();
 
-            var dxf = new DxfVisualizer();
+            //var dxf = new DxfVisualizer();
+
+            //var ifc = Autodesk.Revit.DB.IFC.
 
             UIApplication uiApp = revit.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
@@ -43,95 +45,302 @@ namespace City2BIM
             //-------------------------------
             Log.Information("File: " + path);
 
-            //Hauptmethode zur Erstellung der Geometrie, Ermitteln der Attribute und Füllen der Attributwerte
-            //var solidList = ReadXMLDoc(path, dxf); //ref für attributes?
-
             Log.Information("Start reading CityGML data...");
-            //Daten einlesen mit Semantik sowie Geometrie (Rohdaten, Punktlisten)
-            var gmlBuildings = ReadGmlData(path, dxf);
 
-            Log.Information("Validate CityGML geometry data...");
-            //Filter of surface points (Geometry validation)
-            gmlBuildings = ImprovePolygonPoints(gmlBuildings);
+            //Load XML document
+            XDocument gmlDoc = XDocument.Load(path);
+            //-----------------------------------------
 
-            Log.Information("Calculate solids from CityGML geometry data...");
-            //Creation of Solids
-            gmlBuildings = CalculateSolids(gmlBuildings);
+            #region Namespaces
 
-            //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-            RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, gmlBuildings, this.lowerCornerPt, dxf);
+            Log.Debug("Read all namespaces in CityGML document...");
+            //Save all namespaces in Dictionary with shortenings
+            this.allns = gmlDoc.Root.Attributes().
+                Where(a => a.IsNamespaceDeclaration).
+                GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
+                ToDictionary(g => g.Key, g => g.First());
 
-            //Parameter für Revit-Kategorie erstellen
-            //nach ausgewählter Methode (Solids oder Flächen) Parameter an zugehörige Kategorien übergeben
-
-            // TO DO: Logik für Parameter File -Auswahl oder Location
-
-            //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-            RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
-
-            citySem.CreateParameters(attributes); //erstellt Shared Parameters für Kategorie Umgebung
-
-            if(solid)
+            //special case:
+            if (this.allns.ContainsKey(""))
             {
-                //var entourageAttr = from a in attributes
-                //                    where a.Reference == GmlAttribute.AttrHierarchy.bldg
-                //                    select a;
+                if (!this.allns.ContainsKey("core"))
+                {
+                    this.allns.Add("core", this.allns[""]);     //if namespace has no shortener --> core namespace is used
 
-                //Log.Information("Create Revit Parameters for Category Entorurage...");
-                //citySem.CreateParameters(/*BuiltInCategory.OST_Entourage, */entourageAttr); //erstellt Shared Parameters für Kategorie Umgebung
-
-                //citySem.AttachParametersToCategory(attributes);
-
-                Log.Information("Calculate Revit Geometry for Building Solids...");
-                cityModel.CreateBuildings(); //erstellt DirectShape-Geometrie als Kategorie Umgebung
-            }
-            else
-            {
-                //var wallClosureAttr = from a in attributes
-                //                      where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
-                //                      a.Reference == GmlAttribute.AttrHierarchy.wall ||
-                //                      a.Reference == GmlAttribute.AttrHierarchy.closure
-                //                      select a;
-
-                //Log.Information("Create Revit Parameters for Category Walls...");
-                //citySem.CreateParameters(/*BuiltInCategory.OST_Walls, */wallClosureAttr);
-
-                //var roofAttr = from a in attributes
-                //               where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
-                //               a.Reference == GmlAttribute.AttrHierarchy.roof
-                //               select a;
-
-                //Log.Information("Create Revit Parameters for Category Roof...");
-                //citySem.CreateParameters(/*BuiltInCategory.OST_Roofs, */roofAttr);
-
-                //var groundAttr = from a in attributes
-                //                 where a.Reference == GmlAttribute.AttrHierarchy.bldg ||
-                //                 a.Reference == GmlAttribute.AttrHierarchy.ground
-                //                 select a;
-
-                //Log.Information("Create Revit Parameters for Category Ground...");
-                //citySem.CreateParameters(/*BuiltInCategory.OST_StructuralFoundation, */groundAttr);
-
-                //citySem.AttachParametersToCategory(attributes);
-
-                Log.Information("Calculate Revit Geometry for Building Faces...");
-                cityModel.CreateBuildingsWithFaces(); //erstellt DirectShape-Geometrien der jeweiligen Kategorie
+                    Log.Debug("Replace empty namespace shorterner with core namespace");
+                }
             }
 
-            
+            foreach (var ns in allns)
+            {
+                Log.Debug("Namespace: " + ns.Key);
+            }
+            //------------------------------------------------------------------------------------------------------------------------
 
-            string res = "";
+            #endregion Namespaces
 
-            if(cityModel == null)
-                res = "empty";
-            else
-                res = "not empty";
+            Log.Information("Check Input CRS...");
 
-            Log.Debug("CityModel: " + res);
+            bool sameXY = false, sameHeight = false, swapNE = false;
+            CheckInputCRS(doc, gmlDoc, ref sameXY, ref sameHeight, ref swapNE);
 
-            //debug
+            bool continueImport = true;
 
-            dxf.DrawDxf(path);
+            if (!sameXY || !sameHeight)
+            {
+                TaskDialog crsDialog = new TaskDialog("Warning");
+                crsDialog.AllowCancellation = true;
+
+                crsDialog.MainInstruction = "Different CRS in input file and Georef settings detected!";
+
+                string messageXY = "There are different CRS for the XY-plane.";
+                string messageHeight = "There are different CRS for the Elevation";
+                string messageDecision = "Press OK to ignore and continue Import or cancel for checking Georef settings.";
+
+                if (!sameXY && !sameHeight)
+                    crsDialog.MainContent = messageXY + "\r\n" + messageHeight + "\r\n" + messageDecision;
+
+                if (!sameXY && sameHeight)
+                    crsDialog.MainContent = messageXY + "\r\n" + messageDecision;
+
+                if (sameXY && !sameHeight)
+                    crsDialog.MainContent = messageHeight + "\r\n" + messageDecision;
+
+                crsDialog.CommonButtons = TaskDialogCommonButtons.Ok | TaskDialogCommonButtons.Cancel;
+
+                var result = crsDialog.Show();
+
+                if (result == TaskDialogResult.Cancel)
+                    continueImport = false;
+            }
+
+            if (continueImport)
+            {
+                //Daten einlesen mit Semantik sowie Geometrie (Rohdaten, Punktlisten)
+                var gmlBuildings = ReadGmlData(gmlDoc/*, dxf*/);
+
+                Log.Information("Validate CityGML geometry data...");
+                //Filter of surface points (Geometry validation)
+                gmlBuildings = ImprovePolygonPoints(gmlBuildings);
+
+                Log.Information("Calculate solids from CityGML geometry data...");
+                //Creation of Solids
+                gmlBuildings = CalculateSolids(gmlBuildings);
+
+                //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
+                RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, gmlBuildings, this.lowerCornerPt, swapNE/*, dxf*/);
+
+                //Parameter für Revit-Kategorie erstellen
+                //nach ausgewählter Methode (Solids oder Flächen) Parameter an zugehörige Kategorien übergeben
+
+                // TO DO: Logik für Parameter File -Auswahl oder Location
+
+                //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
+                RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
+
+                citySem.CreateParameters(attributes); //erstellt Shared Parameters für Kategorie Umgebung
+
+                if (solid)
+                {
+                    Log.Information("Calculate Revit Geometry for Building Solids...");
+                    cityModel.CreateBuildings(); //erstellt DirectShape-Geometrie als Kategorie Umgebung
+                }
+                else
+                {
+                    Log.Information("Calculate Revit Geometry for Building Faces...");
+                    cityModel.CreateBuildingsWithFaces(); //erstellt DirectShape-Geometrien der jeweiligen Kategorie
+                }
+
+                string res = "";
+
+                if (cityModel == null)
+                    res = "empty";
+                else
+                    res = "not empty";
+
+                Log.Debug("CityModel: " + res);
+
+                //dxf.DrawDxf(path);
+            }
+        }
+
+        /// <summary>
+        /// Compares georef settings and input crs from gml-file
+        /// </summary>
+        /// <param name="revDoc">Active Revit document</param>
+        /// <param name="gmlDoc">Imported GML document</param>
+        /// <param name="sameCRSxy">ref for decision of same XY-crs</param>
+        /// <param name="sameCRSh">ref for decision of same height-crs</param>
+        /// <param name="swapNE">ref for decision of needed swap of N and E (some EPSG have swapped order of N and E)</param>
+        private void CheckInputCRS(Document revDoc, XDocument gmlDoc, ref bool sameCRSxy, ref bool sameCRSh, ref bool swapNE)
+        {
+            var envelope = gmlDoc.Descendants(this.allns["gml"] + "Envelope").FirstOrDefault();
+
+            var attr = envelope.Attributes();
+            var srsName = envelope.Attribute("srsName");
+            string gmlCRS = srsName.Value;
+
+            var geoInfo = revDoc.ProjectInformation;
+
+            #region XY comparison
+
+            string inputCRS = "";
+            string existCRS = "";
+            string revCRSxy = "";
+
+            var epsg = geoInfo.LookupParameter("CRS Name");
+            if (epsg != null)
+                revCRSxy = epsg.AsString();
+
+            #region Input File - ADV-srsName (no EPSG)
+
+            if (gmlCRS.Contains("ETRS_89") ||
+                gmlCRS.Contains("ETRS89") ||
+                gmlCRS.Contains("ETRS_1989") ||
+                gmlCRS.Contains("ETRS1989"))
+            {
+                if (gmlCRS.Contains("UTM") && gmlCRS.Contains("31"))
+                    inputCRS = "UTM31";
+
+                if (gmlCRS.Contains("UTM") && gmlCRS.Contains("32"))
+                    inputCRS = "UTM32";
+
+                if (gmlCRS.Contains("UTM") && gmlCRS.Contains("33"))
+                    inputCRS = "UTM33";
+            }
+
+            #endregion Input File - ADV-srsName (no EPSG)
+
+            #region Input File - EPSG-srsName
+
+            if (gmlCRS.Contains("EPSG"))
+            {
+                if (gmlCRS.Contains("25831") ||
+                    gmlCRS.Contains("3043") ||
+                    gmlCRS.Contains("5649") ||
+                    gmlCRS.Contains("5651") ||
+                    gmlCRS.Contains("5554"))
+                { inputCRS = "UTM31"; }
+
+                if (gmlCRS.Contains("25832") ||
+                    gmlCRS.Contains("3044") ||
+                    gmlCRS.Contains("4647") ||
+                    gmlCRS.Contains("5652") ||
+                    gmlCRS.Contains("5555"))
+                { inputCRS = "UTM32"; }
+
+                if (gmlCRS.Contains("25833") ||
+                    gmlCRS.Contains("3045") ||
+                    gmlCRS.Contains("5650") ||
+                    gmlCRS.Contains("5653") ||
+                    gmlCRS.Contains("5556"))
+                { inputCRS = "UTM33"; }
+            }
+
+            #endregion Input File - EPSG-srsName
+
+            #region Revit-Settings
+
+            if (revCRSxy.Equals("EPSG:25831") ||
+                revCRSxy.Equals("EPSG:3043") ||
+                revCRSxy.Equals("EPSG:5649") ||
+                revCRSxy.Equals("EPSG:5651") ||
+                revCRSxy.Equals("EPSG:5554"))
+            {
+                existCRS = "UTM31";
+            }
+
+            if (revCRSxy.Equals("EPSG:25832") ||
+                revCRSxy.Equals("EPSG:3044") ||
+                revCRSxy.Equals("EPSG:4647") ||
+                revCRSxy.Equals("EPSG:5652") ||
+                revCRSxy.Equals("EPSG:5555"))
+            {
+                existCRS = "UTM32";
+            }
+
+            if (revCRSxy.Equals("EPSG:25833") ||
+                revCRSxy.Equals("EPSG:3045") ||
+                revCRSxy.Equals("EPSG:5650") ||
+                revCRSxy.Equals("EPSG:5653") ||
+                revCRSxy.Equals("EPSG:5556"))
+            {
+                existCRS = "UTM33";
+            }
+
+            #endregion Revit-Settings
+
+            if (inputCRS.Equals(existCRS))
+                sameCRSxy = true;
+
+            #endregion XY comparison
+
+            #region Height comparison
+
+            string inputVert = "";
+            string existVert = "";
+
+            var vertD = geoInfo.LookupParameter("VerticalDatum");
+            if (vertD != null)
+                existVert = vertD.AsString();
+
+            #region Input File - ADV-srsName (no EPSG)
+
+            if (gmlCRS.Contains("DHHN"))
+            {
+                if (gmlCRS.Contains("2016"))
+                    inputVert = "DHHN2016";
+
+                if (gmlCRS.Contains("92"))
+                    inputVert = "DHHN92";
+
+                if (gmlCRS.Contains("85"))
+                    inputVert = "DHHN85 (NN)";
+            }
+
+            if (gmlCRS.Contains("SNN") && gmlCRS.Contains("76"))
+                inputVert = "SNN76 (HN)";
+
+            #endregion Input File - ADV-srsName (no EPSG)
+
+            #region Input File - EPSG-srsName
+
+            if (gmlCRS.Contains("EPSG"))
+            {
+                if (gmlCRS.Contains("5054") || gmlCRS.Contains("5055") || gmlCRS.Contains("5056") ||
+                    gmlCRS.Contains("5783"))
+                {
+                    inputVert = "DHHN92";
+                }
+                if (gmlCRS.Contains("7037"))
+                    inputVert = "DHHN2016";
+
+                if (gmlCRS.Contains("5784"))
+                    inputVert = "DHHN85 (NN)";
+
+                if (gmlCRS.Contains("5785"))
+                    inputVert = "SNN76 (HN)";
+            }
+
+            #endregion Input File - EPSG-srsName
+
+            if (inputVert.Equals(existVert))
+                sameCRSh = true;
+
+            #endregion Height comparison
+
+            #region Swap of North-East neccessary
+
+            if (gmlCRS.Contains("3043") ||
+                gmlCRS.Contains("3044") ||
+                gmlCRS.Contains("3045") ||
+                gmlCRS.Contains("5651") ||
+                gmlCRS.Contains("5652") ||
+                gmlCRS.Contains("5653"))
+            { swapNE = true; }
+
+            #endregion Swap of North-East neccessary
+
         }
 
         /// <summary>
@@ -147,7 +356,7 @@ namespace City2BIM
             var pointsSeperated = pointString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var polygonVertices = new List<C2BPoint>();
 
-            for(int i = 0; i < pointsSeperated.Length; i = i + 3)
+            for (int i = 0; i < pointsSeperated.Length; i = i + 3)
             {
                 var coord = SplitCoordinate(new string[] { pointsSeperated[i], pointsSeperated[i + 1], pointsSeperated[i + 2] }, lowerCorner);
 
@@ -191,22 +400,22 @@ namespace City2BIM
 
             var lod2Walls = bldg.Descendants(this.allns["bldg"] + "WallSurface");
 
-            foreach(var wall in lod2Walls)
+            foreach (var wall in lod2Walls)
             {
                 var polysW = wall.Descendants(this.allns["gml"] + "Polygon").ToList();
 
-                for(var i = 0; i < polysW.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                for (var i = 0; i < polysW.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
                 {
                     var surface = new GmlSurface();
 
                     var faceID = IdentifySurfaceID(wall);
 
-                    if(faceID == "")
+                    if (faceID == "")
                     {
                         faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
                     }
 
-                    if(polysW.Count() > 1)
+                    if (polysW.Count() > 1)
                         surface.SurfaceId = faceID + "_" + i;
                     else
                         surface.SurfaceId = faceID;
@@ -226,22 +435,22 @@ namespace City2BIM
 
             var lod2Roofs = bldg.Descendants(this.allns["bldg"] + "RoofSurface");
 
-            foreach(var roof in lod2Roofs)
+            foreach (var roof in lod2Roofs)
             {
                 var polysR = roof.Descendants(this.allns["gml"] + "Polygon").ToList();
 
-                for(var i = 0; i < polysR.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                for (var i = 0; i < polysR.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
                 {
                     var surface = new GmlSurface();
 
                     var faceID = IdentifySurfaceID(roof);
 
-                    if(faceID == "")
+                    if (faceID == "")
                     {
                         faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
                     }
 
-                    if(polysR.Count() > 1)
+                    if (polysR.Count() > 1)
                         surface.SurfaceId = faceID + "_" + i;
                     else
                         surface.SurfaceId = faceID;
@@ -261,22 +470,22 @@ namespace City2BIM
 
             var lod2Grounds = bldg.Descendants(this.allns["bldg"] + "GroundSurface");
 
-            foreach(var ground in lod2Grounds)
+            foreach (var ground in lod2Grounds)
             {
                 var polysG = ground.Descendants(this.allns["gml"] + "Polygon").ToList();
 
-                for(var i = 0; i < polysG.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                for (var i = 0; i < polysG.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
                 {
                     var surface = new GmlSurface();
 
                     var faceID = IdentifySurfaceID(ground);
 
-                    if(faceID == "")
+                    if (faceID == "")
                     {
                         faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
                     }
 
-                    if(polysG.Count() > 1)
+                    if (polysG.Count() > 1)
                         surface.SurfaceId = faceID + "_" + i;
                     else
                         surface.SurfaceId = faceID;
@@ -296,22 +505,22 @@ namespace City2BIM
 
             var lod2Closures = bldg.Descendants(this.allns["bldg"] + "ClosureSurface");
 
-            foreach(var closure in lod2Closures)
+            foreach (var closure in lod2Closures)
             {
                 var polysC = closure.Descendants(this.allns["gml"] + "Polygon").ToList();
 
-                for(var i = 0; i < polysC.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                for (var i = 0; i < polysC.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
                 {
                     var surface = new GmlSurface();
 
                     var faceID = IdentifySurfaceID(closure);
 
-                    if(faceID == "")
+                    if (faceID == "")
                     {
                         faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
                     }
 
-                    if(polysC.Count() > 1)
+                    if (polysC.Count() > 1)
                         surface.SurfaceId = faceID + "_" + i;
                     else
                         surface.SurfaceId = faceID;
@@ -332,27 +541,27 @@ namespace City2BIM
             //one occurence per building
             var lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1Solid").FirstOrDefault();
 
-            if(lod1Rep == null)
+            if (lod1Rep == null)
                 lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1MultiSurface").FirstOrDefault();
 
-            if(lod1Rep != null)
+            if (lod1Rep != null)
             {
                 var polys = lod1Rep.Descendants(this.allns["gml"] + "Polygon").ToList();
                 var elemsWithID = lod1Rep.DescendantsAndSelf().Where(a => a.Attribute(allns["gml"] + "id") != null);
 
-                for(var i = 0; i < polys.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                for (var i = 0; i < polys.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
                 {
                     var surface = new GmlSurface();
 
                     var faceID = polys[i].Attribute(allns["gml"] + "id").Value;
 
-                    if(faceID == null)
+                    if (faceID == null)
                     {
                         var gmlSolid = lod1Rep.Descendants(this.allns["gml"] + "Solid").FirstOrDefault();
 
                         faceID = gmlSolid.Attribute(allns["gml"] + "id").Value;
 
-                        if(faceID == null)
+                        if (faceID == null)
                         {
                             faceID = bldgEl.Attribute(allns["gml"] + "id").Value + "_" + i;
                         }
@@ -381,36 +590,36 @@ namespace City2BIM
         {
             var faceID = surface.Attribute(allns["gml"] + "id");
 
-            if(faceID != null)
+            if (faceID != null)
                 return faceID.Value;
 
             var multiS = surface.Descendants(allns["gml"] + "MultiSurface");
 
-            if(multiS.Count() == 1)
+            if (multiS.Count() == 1)
             {
                 var multiID = multiS.Single().Attribute(allns["gml"] + "id");
 
-                if(multiID != null)
+                if (multiID != null)
                     return multiID.Value;
             }
 
             var poly = surface.Descendants(allns["gml"] + "Polygon");
 
-            if(poly.Count() == 1)
+            if (poly.Count() == 1)
             {
                 var polyID = poly.Single().Attribute(allns["gml"] + "id");
 
-                if(polyID != null)
+                if (polyID != null)
                     return polyID.Value;
             }
 
             var ring = surface.Descendants(allns["gml"] + "LinearRing");
 
-            if(ring.Count() == 1)
+            if (ring.Count() == 1)
             {
                 var ringID = ring.Single().Attribute(allns["gml"] + "id");
 
-                if(ringID != null)
+                if (ringID != null)
                     return ringID.Value;
             }
 
@@ -440,7 +649,7 @@ namespace City2BIM
 
             var planeExt = new C2BPlane(surface.SurfaceId);
 
-            if(posListExt.Any())
+            if (posListExt.Any())
             {
                 planeExt.PolygonPts = CollectPoints(posListExt.FirstOrDefault(), this.lowerCornerPt);
             }
@@ -450,7 +659,7 @@ namespace City2BIM
 
                 var ptList = new List<C2BPoint>();
 
-                foreach(var pos in posExt)
+                foreach (var pos in posExt)
                 {
                     ptList.Add(CollectPoint(pos, this.lowerCornerPt));
                 }
@@ -473,9 +682,9 @@ namespace City2BIM
 
             var intPlanes = new List<C2BPlane>();
 
-            if(posListInt.Any())
+            if (posListInt.Any())
             {
-                for(var j = 0; j < posListInt.Count(); j++)
+                for (var j = 0; j < posListInt.Count(); j++)
                 {
                     var planeInt = new C2BPlane(surface.SurfaceId + "_void_" + j);
 
@@ -490,17 +699,17 @@ namespace City2BIM
             {
                 var rings = interiorF.Descendants(allns["gml"] + "LinearRing").ToList();
 
-                for(var k = 0; k < rings.Count() - 1; k++)
+                for (var k = 0; k < rings.Count() - 1; k++)
                 {
                     var posInt = rings[k].Descendants(allns["gml"] + "pos");
 
-                    if(posInt.Any())
+                    if (posInt.Any())
                     {
                         var planeInt = new C2BPlane(surface.SurfaceId + "_void_" + k);
 
                         var ptList = new List<C2BPoint>();
 
-                        foreach(var pos in posInt)
+                        foreach (var pos in posInt)
                         {
                             ptList.Add(CollectPoint(pos, this.lowerCornerPt));
                         }
@@ -517,39 +726,9 @@ namespace City2BIM
             return surface;
         }
 
-        public List<GmlBldg> ReadGmlData(string path, DxfVisualizer dxf)
+        public List<GmlBldg> ReadGmlData(XDocument gmlDoc/*, DxfVisualizer dxf*/)
         {
-            //Load XML document
-            XDocument gmlDoc = XDocument.Load(path);
-            //-----------------------------------------
 
-            #region Namespaces
-
-            Log.Debug("Read all namespaces in CityGML document...");
-            //Save all namespaces in Dictionary with shortenings
-            this.allns = gmlDoc.Root.Attributes().
-                Where(a => a.IsNamespaceDeclaration).
-                GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
-                ToDictionary(g => g.Key, g => g.First());
-
-            //special case:
-            if(this.allns.ContainsKey(""))
-            {
-                if(!this.allns.ContainsKey("core"))
-                {
-                    this.allns.Add("core", this.allns[""]);     //if namespace has no shortener --> core namespace is used
-
-                    Log.Debug("Replace empty namespace shorterner with core namespace");
-                }
-            }
-
-            foreach(var ns in allns)
-            {
-                Log.Debug("Namespace: " + ns.Key);
-            }
-            //------------------------------------------------------------------------------------------------------------------------
-
-            #endregion Namespaces
 
             #region LowerCorner
 
@@ -585,7 +764,7 @@ namespace City2BIM
             //union for consistent attribute list
             this.attributes.UnionWith(genAttr);
             Log.Debug("Amount: " + this.attributes.Count);
-            foreach(var attr in attributes)
+            foreach (var attr in attributes)
             {
                 Log.Debug("Attribute: " + attr.Name + " for category " + attr.Reference);
             }
@@ -599,7 +778,7 @@ namespace City2BIM
             var gmlBldgs = new List<GmlBldg>();
 
             Log.Debug("Loop over all buildings...");
-            foreach(var bldg in gmlBuildings)
+            foreach (var bldg in gmlBuildings)
             {
                 //create instance of GmlBldg
                 var gmlBldg = new GmlBldg();
@@ -624,7 +803,7 @@ namespace City2BIM
 
                 var parts = new List<GmlBldgPart>();
 
-                foreach(var part in gmlBuildingParts)
+                foreach (var part in gmlBuildingParts)
                 {
                     //create instace for building part
                     var gmlBldgPart = new GmlBldgPart();
@@ -660,7 +839,7 @@ namespace City2BIM
         {
             var newBldgs = new List<GmlBldg>();
 
-            foreach(var bldg in bldgs)
+            foreach (var bldg in bldgs)
             {
                 var surfaces = bldg.BldgSurfaces;
 
@@ -683,20 +862,20 @@ namespace City2BIM
             var newBldgs = new List<GmlBldg>();
 
             Log.Debug("Calculate solid for each building...");
-            foreach(var bldg in bldgs)
+            foreach (var bldg in bldgs)
             {
                 bldg.BldgSolid = new C2BSolid();
 
                 var surfaces = bldg.BldgSurfaces;
 
-                foreach(var surface in surfaces)
+                foreach (var surface in surfaces)
                 {
                     bldg.BldgSolid.AddPlane(surface.SurfaceId, surface.PlaneExt.PolygonPts);
                     Log.Debug("Exterior plane created: " + surface.SurfaceId);
 
-                    if(surface.PlaneInt.Count > 0)
+                    if (surface.PlaneInt.Count > 0)
                     {
-                        foreach(var pl in surface.PlaneInt)
+                        foreach (var pl in surface.PlaneInt)
 
                             bldg.BldgSolid.AddPlane(pl.ID, pl.PolygonPts);
                         Log.Debug("Interior plane created: " + surface.SurfaceId + "_void");
@@ -707,20 +886,20 @@ namespace City2BIM
 
                 var newParts = new List<GmlBldgPart>();
 
-                foreach(var part in parts)
+                foreach (var part in parts)
                 {
                     var newPart = part;
 
                     var partSolid = new C2BSolid();
 
-                    foreach(var partSurface in newPart.PartSurfaces)
+                    foreach (var partSurface in newPart.PartSurfaces)
                     {
                         partSolid.AddPlane(partSurface.SurfaceId, partSurface.PlaneExt.PolygonPts);
                         Log.Debug("Exterior plane for part created: " + partSurface.SurfaceId);
 
-                        if(partSurface.PlaneInt.Count > 0)
+                        if (partSurface.PlaneInt.Count > 0)
                         {
-                            foreach(var pl in partSurface.PlaneInt)
+                            foreach (var pl in partSurface.PlaneInt)
 
                                 partSolid.AddPlane(pl.ID, pl.PolygonPts);
                             Log.Debug("Interior plane for part created: " + partSurface.SurfaceId + "_void");
