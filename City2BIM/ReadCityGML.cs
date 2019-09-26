@@ -42,6 +42,9 @@ namespace City2BIM
             //Import via Dialog:
             FileDialog imp = new FileDialog();
             var path = imp.ImportPathCityGML();
+
+            if (path == "")
+                throw new Exception("No file choosened!");
             //-------------------------------
             Log.Information("File: " + path);
 
@@ -150,6 +153,8 @@ namespace City2BIM
                     Log.Information("Calculate Revit Geometry for Building Faces...");
                     cityModel.CreateBuildingsWithFaces(); //erstellt DirectShape-Geometrien der jeweiligen Kategorie
                 }
+
+                //citySem.CreateParameterSetFile();
 
                 string res = "";
 

@@ -22,19 +22,16 @@ namespace City2BIM.RevitBuilder
             this.doc = doc;
             this.userDefinedParameterFile = doc.Application.SharedParametersFilename;
 
-            // create shared parameter file
-            String modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            String paramFile = modulePath + "\\City2BIM_Parameters.txt";
-            if (File.Exists(paramFile))
+            //create shared parameter file
+            string modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string paramFile = modulePath + "\\City2BIM_Parameters.txt";
+
+            if (!File.Exists(paramFile))
             {
-                File.Delete(paramFile);
+                FileStream fs = File.Create(paramFile);
+                fs.Close();
             }
-            FileStream fs = File.Create(paramFile);
-
-            fs.Close();
-
             doc.Application.SharedParametersFilename = paramFile;
-
             this.city2BimParameterFile = doc.Application.OpenSharedParameterFile();
         }
 
@@ -44,7 +41,7 @@ namespace City2BIM.RevitBuilder
             //Create groups in parFile if not existent
             DefinitionGroup parGroupGeoref = SetDefinitionGroupToParameterFile(paramGroupName);
 
-            Category projInfoCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_ProjectInformation);
+            Category projInfoCat = GetCategory(BuiltInCategory.OST_ProjectInformation);
 
             var parProjInfo = GetExistentCategoryParameters(projInfoCat);
 
@@ -62,12 +59,6 @@ namespace City2BIM.RevitBuilder
                     BindParameterDefinitionToCategories(paramDef, assocCats);
                 }
             }
-
-            CategorySet cats = new CategorySet();
-            cats.Insert(projInfoCat);
-
-            CreateParameterSetFile(cats);
-
             //set SharedParameterFile back to user defined one (if applied)
 
             if (this.userDefinedParameterFile != null)
@@ -103,8 +94,24 @@ namespace City2BIM.RevitBuilder
                 default:
                     break;
             }
-
             return pType;
+        }
+
+        private Category GetCategory(BuiltInCategory builInCat)
+        {
+            return doc.Settings.Categories.get_Item(builInCat);
+        }
+
+        private CategorySet GetCategorySet(List<BuiltInCategory> builtInCats)
+        {
+            CategorySet catSet = new CategorySet();
+
+            foreach (BuiltInCategory builtInCat in builtInCats)
+            {
+                catSet.Insert(GetCategory(builtInCat));
+            }
+
+            return catSet;
         }
 
         public void CreateParameters(IEnumerable<GmlAttribute> attributes)
@@ -122,11 +129,11 @@ namespace City2BIM.RevitBuilder
 
             //loop over attributes
 
-            var genCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_GenericModel);
-            var wallCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Walls);
-            var roofCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Roofs);
-            var groundCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_StructuralFoundation);
-            var entCat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Entourage);
+            var genCat = GetCategory(BuiltInCategory.OST_GenericModel);
+            var wallCat = GetCategory(BuiltInCategory.OST_Walls);
+            var roofCat = GetCategory(BuiltInCategory.OST_Roofs);
+            var groundCat = GetCategory(BuiltInCategory.OST_StructuralFoundation);
+            var entCat = GetCategory(BuiltInCategory.OST_Entourage);
 
             var parClosure = GetExistentCategoryParametersDef(genCat);
             var parWall = GetExistentCategoryParametersDef(wallCat);
@@ -219,17 +226,6 @@ namespace City2BIM.RevitBuilder
                 }
             }
 
-            //create ParameterSet-File for correct PropertySet-Definition in IFC file
-
-            CategorySet allCategories = new CategorySet();
-            allCategories.Insert(genCat);
-            allCategories.Insert(wallCat);
-            allCategories.Insert(roofCat);
-            allCategories.Insert(groundCat);
-            allCategories.Insert(entCat);
-
-            CreateParameterSetFile(allCategories);
-
             //set SharedParameterFile back to user defined one (if applied)
 
             if (this.userDefinedParameterFile != null)
@@ -272,12 +268,15 @@ namespace City2BIM.RevitBuilder
             Definition paramDef = parGroup.Definitions.get_Item(paramName);
 
             //if not - create:
-            using (Transaction tParam = new Transaction(doc, "Insert Parameter"))
+            if (paramDef == null)
             {
-                tParam.Start();
-                ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(paramName, pType);
-                paramDef = parGroup.Definitions.Create(extDef);
-                tParam.Commit();
+                using (Transaction tParam = new Transaction(doc, "Insert Parameter"))
+                {
+                    tParam.Start();
+                    ExternalDefinitionCreationOptions extDef = new ExternalDefinitionCreationOptions(paramName, pType);
+                    paramDef = parGroup.Definitions.Create(extDef);
+                    tParam.Commit();
+                }
             }
             return paramDef;
         }
@@ -355,20 +354,24 @@ namespace City2BIM.RevitBuilder
             return parList;
         }
 
-        public void CreateParameterSetFile(CategorySet categories)
+        public void CreateParameterSetFile()
         {
-            string paramSetFile = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\City2BIM_ParameterSet.txt";
+            CategorySet usedCategories = GetCategorySet(
+                new List<BuiltInCategory>(){
+            BuiltInCategory.OST_ProjectInformation,
+            BuiltInCategory.OST_Walls,
+            BuiltInCategory.OST_Roofs,
+            BuiltInCategory.OST_StructuralFoundation,
+            BuiltInCategory.OST_Entourage,
+            BuiltInCategory.OST_GenericModel });
 
-            // Delete the file if it exists.
-            if (File.Exists(paramSetFile))
-            {
-                File.Delete(paramSetFile);
-            }
+
+            string paramSetFile = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\City2BIM_ParameterSet.txt";
             string tab = "\t", pset = "PropertySet:", type = "T", newLine = Environment.NewLine;
 
-            using (FileStream fs = File.Create(paramSetFile))
+            using (FileStream fs = File.Open(paramSetFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
             {
-                foreach (Category category in categories)
+                foreach (Category category in usedCategories)
                 {
                     string elementType = "";
 
@@ -408,8 +411,16 @@ namespace City2BIM.RevitBuilder
                         foreach (Definition def in defGr.Definitions)
                         {
                             if (defAtCat.Select(s => s.Name).Contains(def.Name))
-                                AddText(fs, newLine + tab + def.Name + tab + def.ParameterType);
-                            else { }
+                            {
+                                string ifcParType = def.ParameterType.ToString();
+
+                                if (ifcParType.Equals("Number"))
+                                    ifcParType = "Real";
+
+                                AddText(fs, newLine + tab + def.Name + tab + ifcParType);
+                            }
+                                
+
                         }
                     }
 

@@ -19,6 +19,9 @@ namespace City2BIM
         {
             TaskDialog.Show("Ifc Export", "Coming soon...");
 
+            var ifcSem = new RevitBuilder.RevitSemanticBuilder(revit.Application.ActiveUIDocument.Document);
+            ifcSem.CreateParameterSetFile();
+
             return Result.Succeeded;
         }
     }

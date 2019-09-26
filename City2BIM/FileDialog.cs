@@ -12,7 +12,12 @@ namespace City2BIM
 
             fileWin.Show();
 
-            var path = ModelPathUtils.ConvertModelPathToUserVisiblePath(fileWin.GetSelectedModelPath());
+            var filePath = fileWin.GetSelectedModelPath();
+
+            if (filePath == null)
+                return "";
+
+            var path = ModelPathUtils.ConvertModelPathToUserVisiblePath(filePath);
 
             return path;
         }

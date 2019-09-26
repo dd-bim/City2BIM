@@ -342,6 +342,8 @@ namespace City2BIM.RevitCommands.Georeferencing
                         }
                     }
                 }
+                //sem.CreateParameterSetFile();
+
                 t.Commit();
             }
             #endregion Write Project Properties
