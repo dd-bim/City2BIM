@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="FileDialog.cs" />
     <Compile Include="DxfVisualizer.cs" />
+    <Compile Include="GetGeometry\C2BEdge.cs" />
     <Compile Include="GetGeometry\ValidateGeometry.cs" />
     <Compile Include="GetGeometry\C2BPlane.cs" />
     <Compile Include="GetGeometry\C2BSolid.cs" />

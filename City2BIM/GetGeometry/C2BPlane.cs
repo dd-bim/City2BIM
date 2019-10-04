@@ -10,18 +10,20 @@ namespace City2BIM.GetGeometry
         private C2BPoint normal;
         private C2BPoint centroid;
         private List<C2BPoint> polygonPts;
+        private List<C2BEdge> edges;
 
         public C2BPlane(string id)
         {
             this.id = id;
         }
 
-        public C2BPlane(string id, List<int> vertices, C2BPoint normal, C2BPoint centroid)
+        public C2BPlane(string id, List<int> vertices, C2BPoint normal, C2BPoint centroid, List<C2BEdge> edges)
         {
             this.id = id;
             this.vertices = vertices.ToArray();
             this.normal = normal;
             this.centroid = centroid;
+            this.edges = edges;
         }
 
         public int[] Vertices
@@ -36,6 +38,10 @@ namespace City2BIM.GetGeometry
         public string ID
         {
             get { return id; }
+            set
+            {
+                this.id = value;
+            }
         }
 
         public C2BPoint Normal
@@ -76,5 +82,7 @@ namespace City2BIM.GetGeometry
                 this.polygonPts = value;
             }
         }
+
+        internal List<C2BEdge> Edges { get => edges; set => edges = value; }
     }
 }

@@ -69,8 +69,6 @@ namespace City2BIM.GetSemantics
                             {
                                 kvp.Add(attr, AddTypeValues(matchElem));
                             }
-                            //else
-                            //    kvp.Add(attr, null);
                             break;
 
                         case ("DependentLocalityType"):
@@ -79,8 +77,6 @@ namespace City2BIM.GetSemantics
                             {
                                 kvp.Add(attr, AddTypeValues(matchElem2));
                             }
-                            //else
-                            //    kvp.Add(attr, null);
                             break;
 
                         case ("ThoroughfareType"):
@@ -89,20 +85,15 @@ namespace City2BIM.GetSemantics
                             {
                                 kvp.Add(attr, AddTypeValues(matchElem3));
                             }
-                            //else
-                            //    kvp.Add(attr, null);
                             break;
 
                         case ("Building_ID"):
                             var id = bldgEl.Attribute(nsp["gml"] + "id").Value;
                             if(id != null)
                                 kvp.Add(attr, id);
-                            //else
-                            //    kvp.Add(attr, null);
                             break;
 
                         default:
-                            //kvp.Add(attr, null);
                             break;
                     }
                 }

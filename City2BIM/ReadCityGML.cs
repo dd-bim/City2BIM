@@ -733,8 +733,6 @@ namespace City2BIM
 
         public List<GmlBldg> ReadGmlData(XDocument gmlDoc/*, DxfVisualizer dxf*/)
         {
-
-
             #region LowerCorner
 
             //TO DO - Fallback, if no LowerCorner specified --> take first point occurence
@@ -910,6 +908,7 @@ namespace City2BIM
                             Log.Debug("Interior plane for part created: " + partSurface.SurfaceId + "_void");
                         }
                     }
+                    partSolid.IdentifySimilarPlanes();
 
                     partSolid.CalculatePositions();
 
@@ -927,6 +926,8 @@ namespace City2BIM
                 //    var ab = new double[] { v.Position.X, v.Position.Y, v.Position.Z };
                 //    abL.Add(ab);
                 //}
+
+                bldg.BldgSolid.IdentifySimilarPlanes();
 
                 Log.Debug("Calculate new vertex positions via level cut...");
                 bldg.BldgSolid.CalculatePositions();
