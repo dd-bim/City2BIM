@@ -74,10 +74,6 @@ namespace City2BIM
                 }
             }
 
-            foreach (var ns in allns)
-            {
-                Log.Debug("Namespace: " + ns.Key);
-            }
             //------------------------------------------------------------------------------------------------------------------------
 
             #endregion Namespaces
@@ -153,19 +149,6 @@ namespace City2BIM
                     Log.Information("Calculate Revit Geometry for Building Faces...");
                     cityModel.CreateBuildingsWithFaces(); //erstellt DirectShape-Geometrien der jeweiligen Kategorie
                 }
-
-                //citySem.CreateParameterSetFile();
-
-                string res = "";
-
-                if (cityModel == null)
-                    res = "empty";
-                else
-                    res = "not empty";
-
-                Log.Debug("CityModel: " + res);
-
-                //dxf.DrawDxf(path);
             }
         }
 
@@ -583,11 +566,6 @@ namespace City2BIM
 
             #endregion lod1Surfaces
 
-            Log.Debug("Amount walls: " + lod2Walls.Count());
-            Log.Debug("Amount roofs: " + lod2Roofs.Count());
-            Log.Debug("Amount closures: " + lod2Closures.Count());
-            Log.Debug("Amount grounds: " + lod2Grounds.Count());
-
             return surfaces;
         }
 
@@ -862,11 +840,17 @@ namespace City2BIM
 
         public List<GmlBldg> CalculateSolids(List<GmlBldg> bldgs)
         {
+            int[] ctPlanes = new int[10];
+            
+            List<string> detFBldgs = new List<string>();
+
             var newBldgs = new List<GmlBldg>();
 
             Log.Debug("Calculate solid for each building...");
             foreach (var bldg in bldgs)
             {
+                bool detF = true;
+
                 bldg.BldgSolid = new C2BSolid();
 
                 var surfaces = bldg.BldgSurfaces;
@@ -910,7 +894,10 @@ namespace City2BIM
                     }
                     partSolid.IdentifySimilarPlanes();
 
-                    partSolid.CalculatePositions();
+                    partSolid.CalculatePositions(ref ctPlanes, ref detF);
+
+                    if (!detF)
+                        detFBldgs.Add(part.BldgPartId);
 
                     newPart.PartSolid = partSolid; //.CalculatePositions();
 
@@ -929,8 +916,10 @@ namespace City2BIM
 
                 bldg.BldgSolid.IdentifySimilarPlanes();
 
-                Log.Debug("Calculate new vertex positions via level cut...");
-                bldg.BldgSolid.CalculatePositions();
+                bldg.BldgSolid.CalculatePositions(ref ctPlanes, ref detF);
+
+                if (!detF)
+                    detFBldgs.Add(bldg.BldgId);
 
                 //var abcL = new List<double[]>();
 
@@ -947,6 +936,17 @@ namespace City2BIM
 
                 newBldgs.Add(bldg);
             }
+
+            for (var i = 0; i < ctPlanes.Length; i++)
+            {
+                Log.Debug("Counter for " + i + " = " + ctPlanes[i]);
+            }
+
+            Log.Debug("Bldgs with Error at det error at level cut:"+ detFBldgs.Count);
+            foreach (var detf in detFBldgs)
+                Log.Debug(detf);
+
+            
 
             return newBldgs;
         }

@@ -25,6 +25,11 @@ namespace City2BIM.GetGeometry
             get { return planes; }
         }
 
+        public Dictionary<string, C2BPlane> PlanesCopy
+        {
+            get { return planesCopy; }
+        }
+
         public List<C2BEdge> Edges { get => edges; set => edges = value; }
 
         public void AddPlane(string id, List<C2BPoint> polygon)
@@ -146,42 +151,53 @@ namespace City2BIM.GetGeometry
             {
                 AggregatePlanes(ref similarPlanes);
             }
+
+            RemoveNoCornerVertices();
         }
 
 
         private void AggregatePlanes(ref bool simPlanes)
         {
-
+            //double locDistolsq = 0.000001; //1mm^2! -8
+            //double locDistolsq = 0.0000001; //1mm^2! -7
+            //double locDistolsq = 0.00000001; //1mm^2! -6
+            //double locDistolsq = 0.00001; //1mm^2! -5
+            double locDistolsq = 0.0001; //1mm^2! -4
+            //double locDistolsq = 0.001; //1mm^2! -2
+            //double locDistolsq = 0.01; //1mm^2! -2
 
             for (var i = 0; i < Edges.Count; i++)
             {
                 for (var j = i + 1; j < Edges.Count; j++)
                 {
+                    //if (i == j)
+                    //    continue;
+
                     if (Edges[i].Start == Edges[j].End && Edges[i].End == Edges[j].Start &&
-                        C2BPoint.DistanceSq(Edges[i].PlaneNormal, Edges[j].PlaneNormal) < Distolsq)
+                        C2BPoint.DistanceSq(Edges[i].PlaneNormal, Edges[j].PlaneNormal) < locDistolsq)
                     {
-                        var logPlanes = new LoggerConfiguration()
-                            .MinimumLevel.Debug()
-                            .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_planes" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
-                            .CreateLogger();
+                        //var logPlanes = new LoggerConfiguration()
+                        //    .MinimumLevel.Debug()
+                        //    .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_planes" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
+                        //    .CreateLogger();
 
-                        logPlanes.Information("Potential similar Planes: ");
-                        logPlanes.Information("Plane A: " + Edges[i].PlaneId);
-                        logPlanes.Information("Plane B: " + Edges[j].PlaneId);
+                        //logPlanes.Information("Potential similar Planes: ");
+                        //logPlanes.Information("Plane A: " + Edges[i].PlaneId);
+                        //logPlanes.Information("Plane B: " + Edges[j].PlaneId);
 
-                        logPlanes.Information("Edges before:");
+                        //logPlanes.Information("Edges before:");
 
-                        foreach (var ed in edges)
-                        {
-                            logPlanes.Information(ed.PlaneId + ": " + ed.Start + " / " + ed.End);
-                        }
+                        //foreach (var ed in edges)
+                        //{
+                        //    logPlanes.Information(ed.PlaneId + ": " + ed.Start + " / " + ed.End);
+                        //}
 
-                        logPlanes.Information("PlanesCopy before:");
+                        //logPlanes.Information("PlanesCopy before:");
 
-                        foreach (var pl in planesCopy)
-                        {
-                            logPlanes.Information(pl.Key);
-                        }
+                        //foreach (var pl in planesCopy)
+                        //{
+                        //    logPlanes.Information(pl.Key);
+                        //}
 
                         C2BPlane plane1 = planesCopy[Edges[i].PlaneId];
                         C2BPlane plane2 = planesCopy[Edges[j].PlaneId];
@@ -191,8 +207,8 @@ namespace City2BIM.GetGeometry
 
                         for (var k = 0; k < cursorEdgeB; k++)
                         {
-                            var edge = plane2.Edges[k];
-                            plane2.Edges.RemoveAt(k);
+                            var edge = plane2.Edges[0];
+                            plane2.Edges.RemoveAt(0);
                             plane2.Edges.Add(edge);
                         }
 
@@ -247,368 +263,154 @@ namespace City2BIM.GetGeometry
 
                         foreach (var e in Edges)
                         {
-                            logPlanes.Information(e.PlaneId);
+                            //logPlanes.Information(e.PlaneId);
 
                             if (e.PlaneId == currentID1 || e.PlaneId == currentID2)
                             {
                                 e.PlaneId = newID;
-                                logPlanes.Information("true");
+                                //logPlanes.Information("true");
                             }
-                            else
-                                logPlanes.Information("false");
+                            //else
+                            //    logPlanes.Information("false");
                         }
 
                         Edges[i].PlaneId = null;
                         Edges[j].PlaneId = null;
 
+                        //calc logic for new plane normal and new plane centroid
+
+                        C2BPoint planeNormal = plane1.Normal;
+                        C2BPoint planeCentroid = plane1.Centroid;
+
+                        UpdatePlaneParameters(newID, newVerts, ref planeNormal, ref planeCentroid);
+
                         planesCopy.Remove(plane1.ID);
                         planesCopy.Remove(plane2.ID);
-                        planesCopy.Add(newID, new C2BPlane(newID, newVerts, plane1.Normal, plane1.Centroid, cpdEdgeList));
-
-                        logPlanes.Information("Edges after:");
-
-                        foreach (var ed in edges)
-                        {
-                            logPlanes.Information(ed.PlaneId + ": " + ed.Start + " / " + ed.End);
-                        }
-
-                        logPlanes.Information("PlanesCopy after:");
-
-                        foreach (var pl in planesCopy)
-                        {
-                            logPlanes.Information(pl.Key);
-                        }
+                        planesCopy.Add(newID, new C2BPlane(newID, newVerts, planeNormal, planeCentroid, cpdEdgeList));
 
                         break;
                     }
                     else
                         simPlanes = false;
                 }
-                //break;
             }
         }
 
-
-        //    List<string> PlanesToRemove = new List<string>();
-        //    List<C2BPlane> PlanesToAdd = new List<C2BPlane>();
-
-        //    foreach (var plane in planesCopy)
-        //    {
-        //        if (PlanesToRemove.Contains(plane.Key))
-        //            continue;
-
-        //        var plEdges = plane.Value.Edges;
-        //        var otherPlEdges = new List<C2BEdge>();
-
-        //        for (var i = 0; i < plEdges.Count; i++)
-        //        {
-        //            for (var j = 0; j < Edges.Count; j++)
-        //            {
-        //                if (plane.Key.Equals(Edges[j].PlaneId))
-        //                    continue;
-
-        //                if (plEdges[i].Start == Edges[j].End && plEdges[i].End == Edges[j].Start &&
-        //                    C2BPoint.DistanceSq(plEdges[i].PlaneNormal, Edges[j].PlaneNormal) < Distolsq)
-        //                {
-
-        //                    Log.Information("Potential similar Planes: ");
-        //                    Log.Information("bldg: " + id);
-        //                    Log.Information("Plane A: " + plEdges[i].PlaneId);
-        //                    Log.Information("Plane B: " + Edges[j].PlaneId);
-
-        //                    otherPlEdges.Add(Edges[j]);
-        //                }
-        //            }
-        //        }
-        //        if (otherPlEdges.Any())
-        //        {
-        //            var cpdPlane = CompoundPlanes(plane.Value, otherPlEdges);      //--> Rückgabe, was in PlanesCopy geändert werden muss (add / remove) --> Schreiben in Liste --> Transaction nach Durchlauf ?
-
-        //            PlanesToAdd.Add(cpdPlane);
-
-        //            foreach (var ed in otherPlEdges)
-        //            {
-        //                PlanesToRemove.Add(ed.PlaneId);
-        //            }
-        //        }
-        //    }
-
-        //    foreach (var pl in PlanesToRemove)
-        //    {
-        //        planesCopy.Remove(pl);
-        //    }
-
-        //    foreach (var pl in PlanesToAdd)
-        //    {
-        //        planesCopy.Add(pl.ID, pl);
-        //    }
-
-
-        //}
-
-
-
-        private C2BPlane CompoundPlanes(C2BPlane plane, List<C2BEdge> otherEdges)
+        private void UpdatePlaneParameters(string planeID, List<int> newVerts, ref C2BPoint planeNormal, ref C2BPoint planeCentroid)
         {
-            try
+            C2BPoint norm = new C2BPoint(0, 0, 0);
+            C2BPoint centr = new C2BPoint(0, 0, 0);
+
+            for (var i = 0; i < newVerts.Count; i++)
             {
-                string newID = plane.ID;
-                HashSet<string> oldIDs = new HashSet<string>();
-                var cpdPlane = new C2BPlane(newID);
+                int lastVert = newVerts.Last();
 
-                foreach (var oEdge in otherEdges)
-                {
-                    List<C2BEdge> cpdEdgeList = new List<C2BEdge>();
+                if (i != 0)
+                    lastVert = newVerts[i - 1];
 
-                    C2BPlane plane2 = Planes[oEdge.PlaneId];
+                int currVert = newVerts[i];
 
-                    C2BEdge plEdge = plane.Edges.Where(a => a.Start == oEdge.End).Where(a => a.End == oEdge.Start).FirstOrDefault();
+                C2BPoint lastPt = Vertices[lastVert].Position;
+                C2BPoint thisPt = Vertices[currVert].Position;
 
-                    int cursorEdgeA = plane.Edges.IndexOf(plEdge);
-                    int cursorEdgeB = plane2.Edges.IndexOf(oEdge);
+                centr += thisPt;
 
-                    for (var i = 0; i < cursorEdgeB; i++)
-                    {
-                        var edge = plane2.Edges[i];
-                        plane2.Edges.RemoveAt(i);
-                        plane2.Edges.Add(edge);
-                    }
+                norm += C2BPoint.CrossProduct(lastPt, thisPt);
 
-                    cpdEdgeList.AddRange(plane.Edges);
-                    cpdEdgeList.RemoveAt(cursorEdgeA);
-                    cpdEdgeList.InsertRange(cursorEdgeB + 1, plane2.Edges);
-                    cpdEdgeList.Remove(oEdge);
-
-
-                    var newVerts = cpdEdgeList.Select(e => e.End).ToList();
-                    newID = plane.ID + "_" + plane2.ID;
-                    oldIDs.Add(plane.ID);
-                    oldIDs.Add(plane2.ID);
-
-                    cpdPlane.ID = newID;
-                    cpdPlane.Vertices = newVerts.ToArray();
-                    cpdPlane.Edges = cpdEdgeList;
-                    //planesCopy.Add(cpdPlane.ID, cpdPlane);
-
-                    plane = cpdPlane;
-                }
-
-                return cpdPlane;
-
-
-                //List<C2BEdge> cpdEdgeList = new List<C2BEdge>();
-
-                //C2BPlane plane1 = Planes[a.PlaneId];
-                //C2BPlane plane2 = Planes[b.PlaneId];
-
-                //int cursorEdgeA = plane1.Edges.IndexOf(a);
-                //int cursorEdgeB = plane2.Edges.IndexOf(b);
-
-                //for (var i = 0; i < cursorEdgeB; i++)
-                //{
-                //    var edge = plane2.Edges[i];
-                //    plane2.Edges.RemoveAt(i);
-                //    plane2.Edges.Add(edge);
-                //}
-
-                //cpdEdgeList.AddRange(plane1.Edges);
-                //cpdEdgeList.RemoveAt(cursorEdgeA);
-                //cpdEdgeList.InsertRange(cursorEdgeB + 1, plane2.Edges);
-                //cpdEdgeList.Remove(b);
-
-                //edgeList saved
-                //--------------------------------------
-
-                //create compoundPlane with same Parameters as in one of the similar planes
-                //Discussion: new Centroid-Calculation neccessary?, new Normal? (no significant changes)
-
-                //foreach (var oldID in oldIDs)
-                //{
-                //    var changeVert = from v in Vertices
-                //                     where v.Planes.Contains(oldID)
-                //                     select v;
-
-
-                //    foreach (var v in changeVert)
-                //    {
-                //        v.Planes.Remove(oldID);
-                //        v.Planes.Add(newID);
-                //    }
-
-                //    planesCopy.Remove(oldID);
-                //}
-
-
+                Vertices[newVerts[i]].Planes.Add(planeID);
 
             }
-            catch
-            {
-                //Log.Error("error in compoundPlane" + a.ID + " , " + b.ID);
 
-                return null;
-            }
+            planeNormal = C2BPoint.Normalized(norm);
+            planeCentroid = centr / (double)newVerts.Count;
+
+            UpdateVertexPositions(newVerts, planeNormal, planeCentroid);
+
         }
 
-        //private C2BPlane CreateNewPlane(List<int> newVerts, string idA, string idB)
-        //{
-        //    C2BPoint centroid = new C2BPoint(0, 0, 0);
-        //    C2BPoint normal = new C2BPoint(0, 0, 0);
-        //    var xyzList = new List<C2BPoint>();
-
-        //    foreach(var vInd in newVerts)
-        //    {
-        //        GetGeometry.C2BPoint vertPos = vertices[vInd].Position;
-        //        xyzList.Add(vertPos);
-        //    }
-
-        //    xyzList.Add(xyzList.First());
-
-        //    for(int m = 1; m < xyzList.Count; m++)
-        //    {
-        //        normal += C2BPoint.CrossProduct(xyzList[m - 1], xyzList[m]);
-        //        centroid += xyzList[m];
-        //    }
-
-        //    var norm = C2BPoint.Normalized(normal);
-        //    var compPlane = new C2BPlane(idA + idB, newVerts, norm, centroid / ((double)newVerts.Count), C2BPlane.FaceType.unknown, C2BPlane.RingType.unknown);
-
-        //    Log.Information("Normale, neue Ebene = " + norm.X + ", " + norm.Y + ", " + norm.Z);
-
-        //    return compPlane;
-        //}
-
-        //private void RemoveVertices()
-        //{
-        //    var vert2Pl = from v in vertices
-        //                  where v.Planes.Count < 3
-        //                  select v;
-
-        //    var examInd = new List<int>();
-
-        //    foreach(var v2Pl in vert2Pl)
-        //    {
-        //        var index = vertices.IndexOf(v2Pl);
-        //        examInd.Add(index);
-        //    }
-
-        //    foreach(var ind in examInd)
-        //    {
-        //        foreach(var pla in planes)
-        //        {
-        //            if(pla.Value.Vertices.Contains(ind))
-        //            {
-        //                var newVerts = pla.Value.Vertices.Where(val => val != ind).ToArray();
-
-        //                pla.Value.Vertices = newVerts;
-
-        //                //.............Redundanz, noch in Methode zusammenfassen, Ebenenparameter müssen nach Löschen neu bestimmt werden
-
-        //                Log.Information("Normale, noch nicht veränderte Ebene = " + pla.Value.Normal.X + ", " + pla.Value.Normal.Y + ", " + pla.Value.Normal.Z);
-
-        //                C2BPoint centroid = new C2BPoint(0, 0, 0);
-        //                C2BPoint normal = new C2BPoint(0, 0, 0);
-        //                var xyzList = new List<C2BPoint>();
-
-        //                foreach(var vInd in pla.Value.Vertices)
-        //                {
-        //                    GetGeometry.C2BPoint vertPos = vertices[vInd].Position;
-        //                    xyzList.Add(vertPos);
-        //                }
-
-        //                xyzList.Add(xyzList.First());
-
-        //                for(int m = 1; m < xyzList.Count; m++)
-        //                {
-        //                    normal += C2BPoint.CrossProduct(xyzList[m - 1], xyzList[m]);
-        //                    centroid += xyzList[m];
-        //                }
-
-        //                var norm = C2BPoint.Normalized(normal);
-
-        //                pla.Value.Normal = norm;
-        //                pla.Value.Centroid = centroid / ((double)newVerts.Length);
-        //                //var compPlane = new Plane(idA + idB, newVerts, norm, centroid / ((double)newVerts.Count));
-
-        //                Log.Information("Normale, veränderte Ebene = " + norm.X + ", " + norm.Y + ", " + norm.Z);
-
-        //                //...........................................
-        //            }
-        //        }
-        //    }
-
-        //    vertices.RemoveAll(v => vert2Pl.Contains(v));
-        //}
-
-        public void CalculatePositions()
+        private void RemoveNoCornerVertices()
         {
-            //Log.Information("Planes.Count vorher = " + planes.Count);
+            var remVerts = Vertices.Where(v => v.Planes.Count < 3);
 
-            //var pla18 = from pl in planes.Values
-            //            where pl.Vertices.Contains(18)
-            //            select pl;
 
-            //var pla24 = from pl in planes.Values
-            //            where pl.Vertices.Contains(24)
-            //            select pl;
 
-            //foreach(var pl in planes.Values)
-            //{
-            //    Log.Information("VPlane Id: " + pl.ID);
-
-            //    foreach(var vert in pl.Vertices)
-            //    {
-            //        Log.Information("Vertices: " + vert);
-            //    }
-            //}
-
-            //Log.Information("Ebenencheck");
-            //Log.Information("--------------");
-
-            ////CheckPlanes();
-
-            //Log.Information("--------------");
-            //Log.Information("Planes.Count nachher = " + planes.Count);
-
-            //var a = vertices.Count;
-            //Log.Information("Vertices.Count vorher = " + vertices.Count);
-
-            ////RemoveVertices();
-
-            //var b = vertices.Count;
-            //Log.Information("Vertices.Count nachher = " + vertices.Count);
-
-            //if((a - b) != 0)
-            //    Log.Information("Vertex nach EqualPlanes gelöscht!");
-
-            //foreach(var pl in planes.Values)
-            //{
-            //    Log.Information("NPlane Id: " + pl.ID);
-
-            //    foreach(var vert in pl.Vertices)
-            //    {
-            //        Log.Information("Vertices: " + vert);
-            //    }
-            //}
-
-            foreach (C2BVertex v in vertices)
+            foreach (var v in remVerts)
             {
-                //Log.Debug("Level cut at Vertex " + v.Position.X + " ," + v.Position.Y + " ," + v.Position.Z + " for " + v.Planes.Count + " planes.");
+                int vIndex = Vertices.IndexOf(v);
 
-                if (v.Planes.Count != 3)
+                var planesInd = from p in PlanesCopy
+                                where p.Value.Vertices.Contains(vIndex)
+                                select p.Value;
+
+                foreach (var pl in planesInd)
                 {
-                    Log.Error("Anzahl Ebenen pro Vertex = " + v.Planes.Count);
-
-                    foreach (var vert in v.Planes)
-                    {
-                        Log.Warning("Vertices: " + vert);
-                    }
+                    pl.Vertices = pl.Vertices.Where(i => i != vIndex).ToArray();
                 }
 
-                if (v.Planes.Count == 3)
+
+
+            }
+
+
+
+            //Removes Vertices with less than 3 Planes out of Vertex-List
+            //Vertices.RemoveAll(v => v.Planes.Count < 3);
+
+            //Also Removement in Planes(Copy)-List necessary
+
+
+        }
+
+        private void UpdateVertexPositions(List<int> newVerts, C2BPoint planeNormal, C2BPoint planeCentroid)
+        {
+            var projectedVerts = new List<C2BPoint>();
+
+            for (var i = 0; i < newVerts.Count; i++)
+            {
+                C2BPoint thisPt = Vertices[newVerts[i]].Position;
+
+                var vecPtCent = thisPt - planeCentroid;
+                var d = C2BPoint.ScalarProduct(vecPtCent, planeNormal);
+
+                var vecLotCent = new C2BPoint(d * planeNormal.X, d * planeNormal.Y, d * planeNormal.Z);
+                var vertNew = thisPt - vecLotCent;
+
+                //-----debug
+
+                var diffPt = thisPt - vertNew;
+
+
+
+                Vertices[newVerts[i]].Position = vertNew;
+
+
+            }
+
+        }
+
+        public void CalculatePositions(ref int[] ctPlanes, ref bool detF)
+        {
+            Dictionary<int, string[]> planesToSplit = new Dictionary<int, string[]>();
+
+            for (var v = 0; v < vertices.Count; v++)
+            {
+                ctPlanes[vertices[v].Planes.Count]++;
+
+                Log.Debug("Calculation for " + v);
+
+                if (vertices[v].Planes.Count < 3)     //cases of removed vertices before, no longer consideration but no removement of Vertex-List because of consistency
                 {
+                    Log.Debug("Skip because < 3 Planes!");
+                    continue;
+                }
+
+                if (vertices[v].Planes.Count == 3)    //optimal wished case --> no danger of non planar curve loops
+                {
+                    Log.Debug("Optimal case: 3 Planes!");
+
                     C2BPoint vertex = new C2BPoint(0, 0, 0);
 
-                    string[] vplanes = v.Planes.ToArray<string>();
+                    string[] vplanes = vertices[v].Planes.ToArray<string>();
                     //C2BPlane plane1 = planes[vplanes[0]];
                     //C2BPlane plane2 = planes[vplanes[1]];
                     //C2BPlane plane3 = planes[vplanes[2]];
@@ -617,8 +419,6 @@ namespace City2BIM.GetGeometry
                     C2BPlane plane2 = planesCopy[vplanes[1]];
                     C2BPlane plane3 = planesCopy[vplanes[2]];
 
-
-
                     double determinant = C2BPoint.ScalarProduct(plane1.Normal, C2BPoint.CrossProduct(plane2.Normal, plane3.Normal));
 
                     if (Math.Abs(determinant) > Determinanttol)
@@ -627,89 +427,107 @@ namespace City2BIM.GetGeometry
                                    C2BPoint.CrossProduct(plane3.Normal, plane1.Normal) * C2BPoint.ScalarProduct(plane2.Centroid, plane2.Normal) +
                                    C2BPoint.CrossProduct(plane1.Normal, plane2.Normal) * C2BPoint.ScalarProduct(plane3.Centroid, plane3.Normal)) /
                                    determinant;
-                        v.Position = pos;
+                        vertices[v].Position = pos;
                     }
                     else
                     {
                         Log.Error("Determinante ist falsch bei genau 3 Ebenen!, Determinante = " + determinant);
+                        Log.Debug("Involved Planes:");
+                        Log.Debug(plane1.ID);
+                        Log.Debug(plane2.ID);
+                        Log.Debug(plane3.ID);
 
+                        detF = false;
                         //throw new Exception("Hier ist die Determinante falsch");
                     }
                 }
-                else if (v.Planes.Count > 3)
+
+                if (vertices[v].Planes.Count > 3)
                 {
-                    Log.Information("Vertex > 3) " + v.Position.X + " , " + v.Position.Y + " , " + v.Position.Z);
+                    Log.Debug("Dangerous case: " + vertices[v].Planes.Count + " Planes!");
 
-                    foreach (var p in v.Planes)
-                    {
-                        Log.Information("Planes " + p);
-                    }
+                    //Find best planes for level cut
+                    //To avoid missing planarity in resulting curve loops, planes with more than 3 vertices gets priority for level cut
+                    //This ensures planarity in involved planes
 
-                    //Ebenencheck
+                    //case 1:
+                    //if exact 3 planes have more than 3 vertices this planes will calculate the level cut
+                    //for the other plane(s) there will be no negative effect on planarity (because they are triangles)
 
-                    C2BPoint vertex = new C2BPoint(0, 0, 0);
+                    //case 2:
+                    //if less than 3 planes have more than 3 vertices select as first/second/third plane the best configuration for level cut
+                    //for the other plane(s) there will be no negative effect on planarity (because they are triangles)
 
-                    string[] vplanes = v.Planes.ToArray<string>();
-                    double bestskalar = 1;
-                    //C2BPlane plane1 = planes[vplanes[0]];
-                    //C2BPlane plane2 = planes[vplanes[0]];
-                    //C2BPlane plane3 = planes[vplanes[0]];
+                    //case 3:
+                    //if more than 3 planes have more than 3 vertices select the planes with the best configuration for level cut
+                    //the other planes with more than 3 vertices must be splitted so that there is an triangle instead at vertex
+                    //for the other plane(s) with 3 vertices there will be no negative effect on planarity (because they are triangles)
+
+                    string[] vplanes = vertices[v].Planes.ToArray<string>();
 
                     C2BPlane plane1 = planesCopy[vplanes[0]];
                     C2BPlane plane2 = planesCopy[vplanes[0]];
                     C2BPlane plane3 = planesCopy[vplanes[0]];
 
-                    for (int i = 0; i < v.Planes.Count - 1; i++)
+                    Dictionary<string, int> planeVertCt = new Dictionary<string, int>();
+
+                    for (int i = 0; i < vertices[v].Planes.Count; i++)
                     {
-                        //C2BPlane p1 = planes[vplanes[i]];
+                        int vertCt = planesCopy[vplanes[i]].Vertices.Count();
+                        planeVertCt.Add(vplanes[i], vertCt);
+                    }
 
-                        C2BPlane p1 = planesCopy[vplanes[i]];
+                    planeVertCt = (from entry in planeVertCt
+                                   orderby entry.Value descending
+                                   select entry).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-                        for (int j = i + 1; j < v.Planes.Count; j++)
-                        {
-                            //C2BPlane p2 = Planes[vplanes[j]];
+                    int noTriangCt = planeVertCt.Values.Where(n => n > 3).Count();
 
-                            C2BPlane p2 = planesCopy[vplanes[j]];
+                    if (noTriangCt == 3)
+                    {
+                        //case 1
+                        plane1 = planesCopy[planeVertCt.ElementAt(0).Key];
+                        plane2 = planesCopy[planeVertCt.ElementAt(1).Key];
+                        plane3 = planesCopy[planeVertCt.ElementAt(2).Key];
+                    }
 
-                            //Log.Information("Normalen, p1: " + p1.Normal.X + " , " + p1.Normal.Y + " , " + p1.Normal.Z);
-                            //Log.Information("Normalen, p2: " + p2.Normal.X + " , " + p2.Normal.Y + " , " + p2.Normal.Z);
+                    if (noTriangCt < 3)
+                    {
+                        //case 2
+                        plane1 = planesCopy[planeVertCt.ElementAt(0).Key];          //first plane is either triangle or not (no matter for first plane ?!)
 
-                            double skalar = Math.Abs(C2BPoint.ScalarProduct(p1.Normal, p2.Normal));
+                        if (planeVertCt.ElementAt(1).Value > 3)                     //second plane is no triangle
+                            plane2 = planesCopy[planeVertCt.ElementAt(1).Key];
+                        else
+                        {                                                           //second plane is a triangle, so alle other planes are triangle --> search for best config
+                            string[] planes = planeVertCt.Keys.Where(w => w != planeVertCt.Keys.ElementAt(0)).ToArray();
 
-                            //var degSkalar = Math.Acos(skalar) * (180 / Math.PI);
-
-                            //if(degSkalar < 1)
-                            //{
-                            //    Log.Warning("Skalarprodukt: " + skalar + " entspricht " + degSkalar + "schlechter Schnitt!");
-
-                            //    CompoundPlanes(p1, p2);
-
-                            //    //Planes zusammenführen...
-                            //}
-                            //else
-                            //    Log.Information("Skalarprodukt: " + skalar + " entspricht " + degSkalar);
-
-                            if (skalar < bestskalar)         //sucht besten skalar für besten Schnitt (möglichst rechtwinklig)
-                            {
-                                bestskalar = skalar;
-                                plane1 = p1;
-                                plane2 = p2;
-                                vertex = C2BPoint.CrossProduct(plane1.Normal, plane2.Normal);
-                            }
+                            FindBestCutConfig(planes, plane1, ref plane2, ref plane3);
                         }
                     }
 
-                    for (int k = 0; k < v.Planes.Count; k++)
+                    if (noTriangCt > 3)
                     {
-                        //C2BPlane p3 = planes[vplanes[k]];
+                        //case 3
+                        //find best configuration out of planes with more than 3 vertices
+                        //so at first select no triangle planes:
 
-                        C2BPlane p3 = planesCopy[vplanes[k]];
-                        double skalar = Math.Abs(C2BPoint.ScalarProduct(vertex, p3.Normal));
-                        if (skalar > bestskalar)
-                        {
-                            plane3 = p3;
-                        }
+                        Dictionary<string, int> noTriangPl = planeVertCt.Where(n => n.Value != 3).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+                        plane1 = planesCopy[noTriangPl.ElementAt(0).Key];
+
+                        string[] planes = noTriangPl.Keys.Where(w => w != noTriangPl.Keys.ElementAt(0)).ToArray();
+
+                        FindBestCutConfig(planes, plane1, ref plane2, ref plane3);
+
+                        var planesToSplitId = (from pl in planeVertCt
+                                             where pl.Key != plane1.ID && pl.Key != plane2.ID && pl.Key != plane3.ID
+                                             select pl.Key).ToArray();
+
+                        planesToSplit.Add(v, planesToSplitId);
                     }
+
+                    //------------------Level Cut----------------
 
                     double determinant = C2BPoint.ScalarProduct(plane1.Normal, C2BPoint.CrossProduct(plane2.Normal, plane3.Normal));
 
@@ -719,48 +537,136 @@ namespace City2BIM.GetGeometry
                                    C2BPoint.CrossProduct(plane3.Normal, plane1.Normal) * C2BPoint.ScalarProduct(plane2.Centroid, plane2.Normal) +
                                    C2BPoint.CrossProduct(plane1.Normal, plane2.Normal) * C2BPoint.ScalarProduct(plane3.Centroid, plane3.Normal)) /
                                    determinant;
-                        v.Position = pos;
+                        vertices[v].Position = pos;
                     }
                     else
                     {
-                        Log.Error("Determinante falsch bei " + v.Planes.Count + " Ebenen!, Determinante = " + determinant);
+                        Log.Error("Determinante falsch bei " + vertices[v].Planes.Count + " Ebenen!, Determinante = " + determinant);
+                        Log.Debug("Involved Planes:");
+                        Log.Debug(plane1.ID);
+                        Log.Debug(plane2.ID);
+                        Log.Debug(plane3.ID);
 
+                        detF = false;
                         //throw new Exception("Hier ist die Determinante falsch");
                     }
-                }
-                else
-                {
-                    //vertexErrors.Add(v);
 
-                    Log.Error("Zu wenig Ebenen!, Anzahl Ebenen = " + v.Planes.Count);
 
-                    //throw new Exception("Zu wenig Ebenen");
                 }
             }
 
-            foreach (var e in Edges)
+            foreach (var vPl in planesToSplit)
             {
-                Log.Information("Edge-PlaneID: " + e.PlaneId);
+                Log.Debug("Split at " + vPl.Key + " for:");
+
+
+                foreach (var p in vPl.Value)
+                {
+                    Log.Debug(p);
+
+                    var sPlane = planesCopy[p];
+                    var sVerts = sPlane.Vertices;
+
+                    var index = Array.IndexOf(sVerts, vPl.Key);
+
+                    int vertBefore = 0;
+                    int vertNext = 0;
+
+                    if (index == 0)
+                        vertBefore = sVerts[sVerts.Length - 1];
+                    else
+                        vertBefore = sVerts[index - 1];
+
+                    if (index == sVerts[sVerts.Length - 1])
+                        vertNext = sVerts[0];
+                    else
+                        vertNext = sVerts[index + 1];
+
+                    //Normale ist hier alte nicht exakte Normale, centroid und edges sind def falsch (sollte aber alles nicht mehr relevant sein)
+                    C2BPlane splitPlaneTri = 
+                        new C2BPlane(p + "_split1", new List<int>() { vertBefore, vPl.Key, vertNext }, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
+
+                    List<int> restVerts = sVerts.Where(w => w != vPl.Key).ToList();
+
+                    //Rest des Planes (Dreieck an Vertex abgeschnitten), beachte falsche Edges, (Normale), Centroid
+                    C2BPlane splitPlaneRest =
+                        new C2BPlane(p + "_split2", restVerts, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
+
+                    planesCopy.Add(splitPlaneTri.ID, splitPlaneTri);
+                    planesCopy.Add(splitPlaneRest.ID, splitPlaneRest);
+                    planesCopy.Remove(p);
+
+
+                }
+                    
+
+
+
+
+
+
             }
 
         }
 
+        private void FindBestCutConfig(string[] planes, C2BPlane plane1, ref C2BPlane plane2, ref C2BPlane plane3)
+        {
+            C2BPoint vertex = new C2BPoint(0, 0, 0);
 
+            double bestskalar = 1;
 
+            int p2ind = 0;
 
+            //for (int i = 0; i < v.Planes.Count - 1; i++)
+            //{
+            //    //C2BPlane p1 = planes[vplanes[i]];
 
-        //public void ClearSolid()
-        //{
-        //    planes.Clear();
-        //    vertices.Clear();
-        //}
+            //    C2BPlane p1 = planesCopy[vplanes[i]];
 
-        //public ReadGeometry ReadData
-        //{
-        //    get => default(ReadGeometry);
-        //    set
-        //    {
-        //    }
-        //}
+                for (int j = 0; j < planes.Length; j++)
+                {
+                    //C2BPlane p2 = Planes[vplanes[j]];
+
+                    plane2 = planesCopy[planes[j]];
+
+                    double skalar = Math.Abs(C2BPoint.ScalarProduct(plane1.Normal, plane2.Normal));
+
+                    if (skalar < bestskalar)         //sucht besten skalar für besten Schnitt (möglichst rechtwinklig)
+                    {
+                        bestskalar = skalar;
+                        vertex = C2BPoint.CrossProduct(plane1.Normal, plane2.Normal);
+
+                        p2ind = j;
+                    }
+                }
+            //}
+
+            for (int k = 0; k < planes.Length; k++)
+            {
+                if (k == p2ind)
+                    continue;
+                
+                //C2BPlane p3 = planes[vplanes[k]];
+
+                C2BPlane p3 = planesCopy[planes[k]];
+                double skalar = Math.Abs(C2BPoint.ScalarProduct(vertex, p3.Normal));
+                if (skalar > bestskalar)
+                {
+                    plane3 = p3;
+                }
+            }
+
+            if (plane3 == plane2 || plane3 == plane1)
+            {
+                for (int k = 0; k < planes.Length; k++)
+                {
+                    if (k == p2ind)
+                        continue;
+
+                    plane3 = planesCopy[planes[k]];
+                    break;
+                }
+            }
+        }
     }
 }

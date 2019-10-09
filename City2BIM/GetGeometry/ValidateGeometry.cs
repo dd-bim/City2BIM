@@ -61,7 +61,6 @@ namespace City2BIM.GetGeometry
                 //Prüfung - gleicher Start - und Endpunkt
                 //Entfernen des letzten Punktes, wenn gleich zum Startpunkt (Normalfall bei Polygon)
                 // ---------------------------------------- -
-                Log.Debug("Check polygon geometry for same start and end point...");
                 var checkPolyEx = SameStartAndEndPt(planeSurface.PlaneExt.PolygonPts);
 
                 if(!checkPolyEx)
@@ -86,7 +85,6 @@ namespace City2BIM.GetGeometry
                 //Prüfung - keine redundanten Punkte (außer Start und End)
                 //erstmal nur Logging, wie behandeln? unterschiedliche Handungsweisen nötig je nach Reihenfolge
                 //-----------------------------------------
-                Log.Debug("Check polygon geometry for redundant points in polygon (beside of start/end...");
                 var checkRedunEx = NoRedundantPts(planeSurface.PlaneExt.PolygonPts);
 
                 if(!checkRedunEx)
@@ -106,7 +104,6 @@ namespace City2BIM.GetGeometry
 
                 //Combining of all polygon points of a building for determining of points which are not part of at least 3 planes
                 //Storing of id neccessary for later identification and updating of polygon point list
-                Log.Debug("Check all building polygon points (vertices) for occurence in at least 3 surfaces (planes)...");
                 foreach(var rawPt in planeSurface.PlaneExt.PolygonPts)
                 {
                     ptListWithPolyID.Add(rawPt, planeSurface.PlaneExt.ID);

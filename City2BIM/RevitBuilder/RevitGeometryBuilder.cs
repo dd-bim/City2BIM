@@ -2,7 +2,6 @@
 using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
-using City2BIM.RevitCommands.Georeferencing;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -187,15 +186,22 @@ namespace City2BIM.RevitBuilder
 
                     //Log.Information("Building builder successful");
                     success += 1;
+
+                    Log.Information("Calculation completed at " + building.BldgId);
                 }
                 catch (System.Exception ex)
                 {
+                    Log.Warning("No solid calculation possbile at " + building.BldgId + " !: " + ex.Message);
+
+
                     try
                     {
                         CreateLOD1Building(building.BldgSolid, building.BldgSurfaces, building.BldgAttributes);
+                        Log.Information("Fallback completed at " + building.BldgId);
                     }
-                    catch
+                    catch (Exception exx)
                     {
+                        Log.Error("No bldg at " + building.BldgId + " !: " + exx.Message);
                         continue;
                     }
 
@@ -386,7 +392,12 @@ namespace City2BIM.RevitBuilder
 
             ElementId colorMat = ElementId.InvalidElementId;
 
-            foreach (var plane in solid.Planes)
+            //PlanesCopy wirklich reduziert?
+
+            Log.Debug("CT Planes____:" + solid.Planes.Count);
+            Log.Debug("CT PlanesCopy:" + solid.PlanesCopy.Count);
+
+            foreach (var plane in solid.PlanesCopy) //Planes
             {
                 IList<IList<Autodesk.Revit.DB.XYZ>> faceList = new List<IList<XYZ>>(); //neccessary if also interior face will occure
 
@@ -399,18 +410,18 @@ namespace City2BIM.RevitBuilder
 
                 //Identify GmlSurface with current plane
 
-                var surface = (from pl in surfaces
-                               where pl.SurfaceId == plane.Key
-                               select pl).SingleOrDefault();
+                //var surface = (from pl in surfaces
+                //               where pl.SurfaceId == plane.Key
+                //               select pl).SingleOrDefault();
 
-                colorMat = colors[surface.Facetype];
+                //colorMat = colors[surface.Facetype];
 
                 //Case: interior plane is applicable
                 //---------------------------------------
                 //Interior faces needs special consideration because of suffix _void in Id
-                var interiors = from plInt in solid.Planes
-                                where plInt.Key.Contains("_void")
-                                select plInt;
+                //var interiors = from plInt in solid.Planes
+                //                where plInt.Key.Contains("_void")
+                //                select plInt;
 
                 //if(interiors.Any())
                 //{
@@ -589,7 +600,29 @@ namespace City2BIM.RevitBuilder
 
         private void CreateSurfaceSolid(C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> bldgAttributes)
         {
-            foreach (var plane in solid.Planes)
+            foreach (var plane in solid.PlanesCopy)
+            {
+                Log.Debug("plane: " + plane.Key);
+                foreach (var v in plane.Value.Vertices)
+                {
+                    Log.Debug("Plane-verts: " + v);
+                }
+            }
+
+            int i = 0;
+
+            foreach (var vert in solid.Vertices)
+            {
+                Log.Debug("Vertex: " + i);
+                i++;
+                foreach (var v in vert.Planes)
+                {
+                    Log.Debug("Vertex-Planes: " + v);
+                }
+            }
+
+
+            foreach (var plane in solid.PlanesCopy)
             {
                 var attributes = new Dictionary<GmlAttribute, string>();
 
@@ -599,9 +632,9 @@ namespace City2BIM.RevitBuilder
                 }
 
                 //Identify GmlSurface with current plane
-                var surface = (from pl in surfaces
-                               where pl.SurfaceId == plane.Key
-                               select pl).SingleOrDefault();
+                //var surface = (from pl in surfaces
+                //               where pl.SurfaceId == plane.Key
+                //               select pl).SingleOrDefault();
 
                 try
                 {
@@ -637,7 +670,7 @@ namespace City2BIM.RevitBuilder
 
                     XYZ normal = new XYZ(plane.Value.Normal.X, plane.Value.Normal.Y, plane.Value.Normal.Z);
 
-                    SolidOptions opt = new SolidOptions(colors[surface.Facetype], ElementId.InvalidElementId);
+                    SolidOptions opt = new SolidOptions(/*colors[surface.Facetype]*/ ElementId.InvalidElementId, ElementId.InvalidElementId);
 
                     Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height, opt);
 
@@ -648,28 +681,28 @@ namespace City2BIM.RevitBuilder
 
                         ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
 
-                        switch (surface.Facetype)
-                        {
-                            case (GmlSurface.FaceType.roof):
-                                elem = new ElementId(BuiltInCategory.OST_Roofs);
+                        //switch (surface.Facetype)
+                        //{
+                        //    case (GmlSurface.FaceType.roof):
+                        //        elem = new ElementId(BuiltInCategory.OST_Roofs);
 
-                                break;
+                        //        break;
 
-                            case (GmlSurface.FaceType.wall):
-                                elem = new ElementId(BuiltInCategory.OST_Walls);
-                                break;
+                        //    case (GmlSurface.FaceType.wall):
+                        //        elem = new ElementId(BuiltInCategory.OST_Walls);
+                        //        break;
 
-                            case (GmlSurface.FaceType.ground):
-                                elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
-                                break;
+                        //    case (GmlSurface.FaceType.ground):
+                        //        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
+                        //        break;
 
-                            case (GmlSurface.FaceType.closure):
-                                elem = new ElementId(BuiltInCategory.OST_Walls);
-                                break;
+                        //    case (GmlSurface.FaceType.closure):
+                        //        elem = new ElementId(BuiltInCategory.OST_Walls);
+                        //        break;
 
-                            default:
-                                break;
-                        }
+                        //    default:
+                        //        break;
+                        //}
                         DirectShape ds = DirectShape.CreateElement(doc, elem);
 
                         ds.SetShape(new GeometryObject[] { bldgFaceSolid });
@@ -680,10 +713,10 @@ namespace City2BIM.RevitBuilder
 
                         commAttr.Set("Face-Solid (LOD2)");
 
-                        foreach (var attr in surface.SurfaceAttributes)
-                        {
-                            attributes.Add(attr.Key, attr.Value);
-                        }
+                        //foreach (var attr in surface.SurfaceAttributes)
+                        //{
+                        //    attributes.Add(attr.Key, attr.Value);
+                        //}
 
                         ds = SetAttributeValues(ds, attributes);
 
@@ -699,14 +732,14 @@ namespace City2BIM.RevitBuilder
                 {
                     try
                     {
-                        CreateSurfaceWithOriginalPoints(surface, attributes);
-                        Log.Warning("Face-Fallback used, because of: " + ex.Message);
+                        //CreateSurfaceWithOriginalPoints(surface, attributes);
+                        Log.Warning("Face-Fallback used at " + plane.Key + " , because of: " + ex.Message);
                         Log.Information("Fallback successful!");
                     }
                     catch (Exception exX)
                     {
-                        Log.Error("Face-Fallback not possible: " + exX.Message);
-                        Log.Information("Could not create Geometry!");
+                        //Log.Error("Face-Fallback not possible: at " + plane.Key + " + exX.Message);
+                        //Log.Information("Could not create Geometry!");
 
                         continue;
                     }

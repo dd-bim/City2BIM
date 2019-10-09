@@ -16,8 +16,8 @@
         /// <summary>
         /// Tolerance for valid determinant
         /// </summary>
-        public static readonly double Determinanttol = 1.0E-4;
-        //public static readonly double Determinanttol = 1.0E-8;
+        //public static readonly double Determinanttol = 1.0E-4;
+        public static readonly double Determinanttol = 1.0E-8;
 
         public static GetGeometry.C2BSolid Solid
         {
