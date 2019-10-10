@@ -411,146 +411,61 @@ namespace City2BIM.GetGeometry
                     C2BPoint vertex = new C2BPoint(0, 0, 0);
 
                     string[] vplanes = vertices[v].Planes.ToArray<string>();
-                    //C2BPlane plane1 = planes[vplanes[0]];
-                    //C2BPlane plane2 = planes[vplanes[1]];
-                    //C2BPlane plane3 = planes[vplanes[2]];
 
-                    C2BPlane plane1 = planesCopy[vplanes[0]];
-                    C2BPlane plane2 = planesCopy[vplanes[1]];
-                    C2BPlane plane3 = planesCopy[vplanes[2]];
-
-                    double determinant = C2BPoint.ScalarProduct(plane1.Normal, C2BPoint.CrossProduct(plane2.Normal, plane3.Normal));
-
-                    if (Math.Abs(determinant) > Determinanttol)
-                    {
-                        C2BPoint pos = (C2BPoint.CrossProduct(plane2.Normal, plane3.Normal) * C2BPoint.ScalarProduct(plane1.Centroid, plane1.Normal) +
-                                   C2BPoint.CrossProduct(plane3.Normal, plane1.Normal) * C2BPoint.ScalarProduct(plane2.Centroid, plane2.Normal) +
-                                   C2BPoint.CrossProduct(plane1.Normal, plane2.Normal) * C2BPoint.ScalarProduct(plane3.Centroid, plane3.Normal)) /
-                                   determinant;
-                        vertices[v].Position = pos;
-                    }
-                    else
-                    {
-                        Log.Error("Determinante ist falsch bei genau 3 Ebenen!, Determinante = " + determinant);
-                        Log.Debug("Involved Planes:");
-                        Log.Debug(plane1.ID);
-                        Log.Debug(plane2.ID);
-                        Log.Debug(plane3.ID);
-
-                        detF = false;
-                        //throw new Exception("Hier ist die Determinante falsch");
-                    }
+                    //vertices[v].Position = CalculateLevelCut(planes[vplanes[0]], planes[vplanes[1]], planes[vplanes[2]]);
+                    vertices[v].Position = CalculateLevelCut(planesCopy[vplanes[0]], planesCopy[vplanes[1]], planesCopy[vplanes[2]]);
                 }
 
                 if (vertices[v].Planes.Count > 3)
                 {
                     Log.Debug("Dangerous case: " + vertices[v].Planes.Count + " Planes!");
 
-                    //Find best planes for level cut
-                    //To avoid missing planarity in resulting curve loops, planes with more than 3 vertices gets priority for level cut
-                    //This ensures planarity in involved planes
-
-                    //case 1:
-                    //if exact 3 planes have more than 3 vertices this planes will calculate the level cut
-                    //for the other plane(s) there will be no negative effect on planarity (because they are triangles)
-
-                    //case 2:
-                    //if less than 3 planes have more than 3 vertices select as first/second/third plane the best configuration for level cut
-                    //for the other plane(s) there will be no negative effect on planarity (because they are triangles)
-
-                    //case 3:
-                    //if more than 3 planes have more than 3 vertices select the planes with the best configuration for level cut
-                    //the other planes with more than 3 vertices must be splitted so that there is an triangle instead at vertex
-                    //for the other plane(s) with 3 vertices there will be no negative effect on planarity (because they are triangles)
-
                     string[] vplanes = vertices[v].Planes.ToArray<string>();
 
-                    C2BPlane plane1 = planesCopy[vplanes[0]];
-                    C2BPlane plane2 = planesCopy[vplanes[0]];
-                    C2BPlane plane3 = planesCopy[vplanes[0]];
+                    int first = 0, second = 0, third = 0;
+                    double d = 100;
+                    C2BPoint origPos = vertices[v].Position;
+                    C2BPoint calcPos = origPos;
 
-                    Dictionary<string, int> planeVertCt = new Dictionary<string, int>();
-
-                    for (int i = 0; i < vertices[v].Planes.Count; i++)
+                    for (var i = 0; i < vplanes.Length - 2; i++)
                     {
-                        int vertCt = planesCopy[vplanes[i]].Vertices.Count();
-                        planeVertCt.Add(vplanes[i], vertCt);
-                    }
+                        for (var j = i + 1; j < vplanes.Length - 1; j++)
+                        {
+                            for (var k = j + 1; k < vplanes.Length; k++)
+                            {
+                                C2BPoint currPos = CalculateLevelCut(planesCopy[vplanes[i]], planesCopy[vplanes[j]], planesCopy[vplanes[k]]);
 
-                    planeVertCt = (from entry in planeVertCt
-                                   orderby entry.Value descending
-                                   select entry).ToDictionary(pair => pair.Key, pair => pair.Value);
+                                if (currPos == null)
+                                    continue;
 
-                    int noTriangCt = planeVertCt.Values.Where(n => n > 3).Count();
+                                double dOld = d;
+                                double dNew = C2BPoint.DistanceSq(origPos, currPos);
 
-                    if (noTriangCt == 3)
-                    {
-                        //case 1
-                        plane1 = planesCopy[planeVertCt.ElementAt(0).Key];
-                        plane2 = planesCopy[planeVertCt.ElementAt(1).Key];
-                        plane3 = planesCopy[planeVertCt.ElementAt(2).Key];
-                    }
+                                if (dNew < dOld)
+                                {
+                                    calcPos = currPos;
+                                    first = i;
+                                    second = j;
+                                    third = k;
 
-                    if (noTriangCt < 3)
-                    {
-                        //case 2
-                        plane1 = planesCopy[planeVertCt.ElementAt(0).Key];          //first plane is either triangle or not (no matter for first plane ?!)
-
-                        if (planeVertCt.ElementAt(1).Value > 3)                     //second plane is no triangle
-                            plane2 = planesCopy[planeVertCt.ElementAt(1).Key];
-                        else
-                        {                                                           //second plane is a triangle, so alle other planes are triangle --> search for best config
-                            string[] planes = planeVertCt.Keys.Where(w => w != planeVertCt.Keys.ElementAt(0)).ToArray();
-
-                            FindBestCutConfig(planes, plane1, ref plane2, ref plane3);
+                                    d = dNew;
+                                }
+                            }
                         }
                     }
 
-                    if (noTriangCt > 3)
-                    {
-                        //case 3
-                        //find best configuration out of planes with more than 3 vertices
-                        //so at first select no triangle planes:
+                    //Freitag: obigen Algorithmus erweitern
+                    //nicht in jedem Fall Lösung mit geringster Distanz--> Wenn vertretbar (Grenze überlegen!) auch andere Lösungen in Betracht ziehen
+                    //vermieden werden sollte, dass als splitPlanes, Ebenen mit vielen Vertices übrig bleiben
+                    //Splitten ist bei denen nicht ohne Weiteres möglich --> ideal 3 oder 4 Vertices!
+                    //wenn mehr als 4, Algorithmus zur Kompletttriangulation überlegen
 
-                        Dictionary<string, int> noTriangPl = planeVertCt.Where(n => n.Value != 3).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-                        plane1 = planesCopy[noTriangPl.ElementAt(0).Key];
+                    vertices[v].Position = calcPos;
 
-                        string[] planes = noTriangPl.Keys.Where(w => w != noTriangPl.Keys.ElementAt(0)).ToArray();
+                    string[] splitPlanes = vplanes.Where(w => w != vplanes[first] && w != vplanes[second] && w != vplanes[third]).ToArray();
 
-                        FindBestCutConfig(planes, plane1, ref plane2, ref plane3);
-
-                        var planesToSplitId = (from pl in planeVertCt
-                                             where pl.Key != plane1.ID && pl.Key != plane2.ID && pl.Key != plane3.ID
-                                             select pl.Key).ToArray();
-
-                        planesToSplit.Add(v, planesToSplitId);
-                    }
-
-                    //------------------Level Cut----------------
-
-                    double determinant = C2BPoint.ScalarProduct(plane1.Normal, C2BPoint.CrossProduct(plane2.Normal, plane3.Normal));
-
-                    if (Math.Abs(determinant) > Determinanttol)
-                    {
-                        C2BPoint pos = (C2BPoint.CrossProduct(plane2.Normal, plane3.Normal) * C2BPoint.ScalarProduct(plane1.Centroid, plane1.Normal) +
-                                   C2BPoint.CrossProduct(plane3.Normal, plane1.Normal) * C2BPoint.ScalarProduct(plane2.Centroid, plane2.Normal) +
-                                   C2BPoint.CrossProduct(plane1.Normal, plane2.Normal) * C2BPoint.ScalarProduct(plane3.Centroid, plane3.Normal)) /
-                                   determinant;
-                        vertices[v].Position = pos;
-                    }
-                    else
-                    {
-                        Log.Error("Determinante falsch bei " + vertices[v].Planes.Count + " Ebenen!, Determinante = " + determinant);
-                        Log.Debug("Involved Planes:");
-                        Log.Debug(plane1.ID);
-                        Log.Debug(plane2.ID);
-                        Log.Debug(plane3.ID);
-
-                        detF = false;
-                        //throw new Exception("Hier ist die Determinante falsch");
-                    }
-
+                    planesToSplit.Add(v, splitPlanes);
 
                 }
             }
@@ -559,114 +474,102 @@ namespace City2BIM.GetGeometry
             {
                 Log.Debug("Split at " + vPl.Key + " for:");
 
-
-                foreach (var p in vPl.Value)
+                try
                 {
-                    Log.Debug(p);
 
-                    var sPlane = planesCopy[p];
-                    var sVerts = sPlane.Vertices;
-
-                    var index = Array.IndexOf(sVerts, vPl.Key);
-
-                    int vertBefore = 0;
-                    int vertNext = 0;
-
-                    if (index == 0)
-                        vertBefore = sVerts[sVerts.Length - 1];
-                    else
-                        vertBefore = sVerts[index - 1];
-
-                    if (index == sVerts[sVerts.Length - 1])
-                        vertNext = sVerts[0];
-                    else
-                        vertNext = sVerts[index + 1];
-
-                    //Normale ist hier alte nicht exakte Normale, centroid und edges sind def falsch (sollte aber alles nicht mehr relevant sein)
-                    C2BPlane splitPlaneTri = 
-                        new C2BPlane(p + "_split1", new List<int>() { vertBefore, vPl.Key, vertNext }, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
-
-                    List<int> restVerts = sVerts.Where(w => w != vPl.Key).ToList();
-
-                    //Rest des Planes (Dreieck an Vertex abgeschnitten), beachte falsche Edges, (Normale), Centroid
-                    C2BPlane splitPlaneRest =
-                        new C2BPlane(p + "_split2", restVerts, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
-
-                    planesCopy.Add(splitPlaneTri.ID, splitPlaneTri);
-                    planesCopy.Add(splitPlaneRest.ID, splitPlaneRest);
-                    planesCopy.Remove(p);
-
-
-                }
-                    
-
-
-
-
-
-
-            }
-
-        }
-
-        private void FindBestCutConfig(string[] planes, C2BPlane plane1, ref C2BPlane plane2, ref C2BPlane plane3)
-        {
-            C2BPoint vertex = new C2BPoint(0, 0, 0);
-
-            double bestskalar = 1;
-
-            int p2ind = 0;
-
-            //for (int i = 0; i < v.Planes.Count - 1; i++)
-            //{
-            //    //C2BPlane p1 = planes[vplanes[i]];
-
-            //    C2BPlane p1 = planesCopy[vplanes[i]];
-
-                for (int j = 0; j < planes.Length; j++)
-                {
-                    //C2BPlane p2 = Planes[vplanes[j]];
-
-                    plane2 = planesCopy[planes[j]];
-
-                    double skalar = Math.Abs(C2BPoint.ScalarProduct(plane1.Normal, plane2.Normal));
-
-                    if (skalar < bestskalar)         //sucht besten skalar für besten Schnitt (möglichst rechtwinklig)
+                    foreach (var p in vPl.Value)
                     {
-                        bestskalar = skalar;
-                        vertex = C2BPoint.CrossProduct(plane1.Normal, plane2.Normal);
+                        Log.Debug(p);
 
-                        p2ind = j;
+                        var sPlane = planesCopy[p];
+                        var sVerts = sPlane.Vertices;
+
+                        if (sVerts.Length == 3)
+                            continue;
+
+                        var index = Array.IndexOf(sVerts, vPl.Key);
+
+                        int vertBefore = 0;
+                        int vertNext = 0;
+
+                        if (index == 0)
+                            vertBefore = sVerts[sVerts.Length - 1];
+                        else
+                            vertBefore = sVerts[index - 1];
+
+                        if (index == sVerts[sVerts.Length - 1])
+                            vertNext = sVerts[0];
+                        else
+                            vertNext = sVerts[index + 1];
+
+                        //Normale ist hier alte nicht exakte Normale, centroid und edges sind def falsch (sollte aber alles nicht mehr relevant sein)
+                        C2BPlane splitPlaneTri =
+                            new C2BPlane(p + "_split1", new List<int>() { vertBefore, vPl.Key, vertNext }, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
+
+                        List<int> restVerts = sVerts.Where(w => w != vPl.Key).ToList();
+
+                        //Rest des Planes (Dreieck an Vertex abgeschnitten), beachte falsche Edges, (Normale), Centroid
+                        C2BPlane splitPlaneRest =
+                            new C2BPlane(p + "_split2", restVerts, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
+
+
+
+                        //check CCW order in new splitted triangle:
+
+                        //_isCCW = Vector2.Det(lup - prev, next - prev) > 0.0;
+                        //Det: Det(Vector2 a, Vector2 b) => (a.X * b.Y) - (a.Y * b.X);
+
+                        var ptBef = Vertices[vertBefore].Position;
+                        var ptCurr = Vertices[vPl.Key].Position;
+                        var ptNext = Vertices[vertNext].Position;
+
+                        var vecBef = ptCurr - ptBef;
+                        var vecNext = ptNext - ptBef;
+
+                        var det = (vecBef.X * vecNext.Y) - (vecBef.Y * vecNext.X);
+
+
+
+                        string detS = "";
+
+                        if (det < -0.05)
+                            detS = "minus";
+                        else if (det > 0.05)
+                            detS = "plus";
+                        else
+                            detS = "null";
+
+
+                        planesCopy.Add(detS + splitPlaneTri.ID, splitPlaneTri);
+                        planesCopy.Add(detS + splitPlaneRest.ID, splitPlaneRest);
+                        planesCopy.Remove(p);
+
+
                     }
                 }
-            //}
-
-            for (int k = 0; k < planes.Length; k++)
-            {
-                if (k == p2ind)
-                    continue;
-                
-                //C2BPlane p3 = planes[vplanes[k]];
-
-                C2BPlane p3 = planesCopy[planes[k]];
-                double skalar = Math.Abs(C2BPoint.ScalarProduct(vertex, p3.Normal));
-                if (skalar > bestskalar)
+                catch
                 {
-                    plane3 = p3;
-                }
-            }
+                    continue; }
 
-            if (plane3 == plane2 || plane3 == plane1)
+            }
+        }
+
+
+        private C2BPoint CalculateLevelCut(C2BPlane plane1, C2BPlane plane2, C2BPlane plane3)
+        {
+            double determinant = 0;
+            determinant = C2BPoint.ScalarProduct(plane1.Normal, C2BPoint.CrossProduct(plane2.Normal, plane3.Normal));
+
+            if (Math.Abs(determinant) > Determinanttol)
             {
-                for (int k = 0; k < planes.Length; k++)
-                {
-                    if (k == p2ind)
-                        continue;
-
-                    plane3 = planesCopy[planes[k]];
-                    break;
-                }
+                C2BPoint pos = (C2BPoint.CrossProduct(plane2.Normal, plane3.Normal) * C2BPoint.ScalarProduct(plane1.Centroid, plane1.Normal) +
+                           C2BPoint.CrossProduct(plane3.Normal, plane1.Normal) * C2BPoint.ScalarProduct(plane2.Centroid, plane2.Normal) +
+                           C2BPoint.CrossProduct(plane1.Normal, plane2.Normal) * C2BPoint.ScalarProduct(plane3.Centroid, plane3.Normal)) /
+                           determinant;
+                return pos;
             }
+            else
+                return null;
         }
     }
 }

@@ -711,7 +711,7 @@ namespace City2BIM.RevitBuilder
 
                         var commAttr = ds.LookupParameter(commAttrLabel);
 
-                        commAttr.Set("Face-Solid (LOD2)");
+                        commAttr.Set("Face-Solid (LOD2): " + plane.Key);
 
                         //foreach (var attr in surface.SurfaceAttributes)
                         //{
