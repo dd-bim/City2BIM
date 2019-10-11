@@ -158,13 +158,11 @@ namespace City2BIM.GetGeometry
 
         private void AggregatePlanes(ref bool simPlanes)
         {
-            //double locDistolsq = 0.000001; //1mm^2! -8
-            //double locDistolsq = 0.0000001; //1mm^2! -7
-            //double locDistolsq = 0.00000001; //1mm^2! -6
-            //double locDistolsq = 0.00001; //1mm^2! -5
-            double locDistolsq = 0.0001; //1mm^2! -4
-            //double locDistolsq = 0.001; //1mm^2! -2
-            //double locDistolsq = 0.01; //1mm^2! -2
+            //double locDistolsq = 0.000001; //1mm^2! -5
+            //double locDistolsq = 0.00001; //3mm^2! -5
+            //double locDistolsq = 0.0001; //1cm^2! -4
+            //double locDistolsq = 0.001; //3cm^2! -2
+            //double locDistolsq = 0.01; //1dm^2! -2
 
             for (var i = 0; i < Edges.Count; i++)
             {
@@ -421,11 +419,14 @@ namespace City2BIM.GetGeometry
                     Log.Debug("Dangerous case: " + vertices[v].Planes.Count + " Planes!");
 
                     string[] vplanes = vertices[v].Planes.ToArray<string>();
+                    string[] splitPlanes = new string[vplanes.Count() - 3];
 
                     int first = 0, second = 0, third = 0;
+                    int firstSub = 0, secondSub = 0, thirdSub = 0;
                     double d = 100;
                     C2BPoint origPos = vertices[v].Position;
                     C2BPoint calcPos = origPos;
+                    bool divisible = false;
 
                     for (var i = 0; i < vplanes.Length - 2; i++)
                     {
@@ -443,32 +444,69 @@ namespace City2BIM.GetGeometry
 
                                 if (dNew < dOld)
                                 {
-                                    calcPos = currPos;
-                                    first = i;
-                                    second = j;
-                                    third = k;
+                                  
 
-                                    d = dNew;
+
+                                    firstSub = i;
+                                    secondSub = j;
+                                    thirdSub = k;
+
+                                    //extension:
+                                    //not the best case if other planes have to much vertices (difficult to split later)
+
+                                    string[] otherPlanes = vplanes.Where(w => w != vplanes[i] && w != vplanes[j] && w != vplanes[k]).ToArray();
+
+                                    int[] vertsCt = new int[otherPlanes.Count()];
+
+                                    for (int n = 0; n < otherPlanes.Length; n++)
+                                    {
+                                        vertsCt[n] = planesCopy[otherPlanes[n]].Vertices.Count();
+                                    }
+
+                                    int greater5verts = vertsCt.Where(m => m > 4).Count();
+
+                                    if (greater5verts == 0 && dNew < 0.005)        //5 mm as border good level cut result 
+                                    {
+                                        first = i;
+                                        second = j;
+                                        third = k;
+
+                                        calcPos = currPos;
+                                        d = dNew;
+
+                                        divisible = true;
+
+                                        splitPlanes = otherPlanes;
+                                    }
                                 }
                             }
                         }
                     }
 
-                    //Freitag: obigen Algorithmus erweitern
-                    //nicht in jedem Fall Lösung mit geringster Distanz--> Wenn vertretbar (Grenze überlegen!) auch andere Lösungen in Betracht ziehen
-                    //vermieden werden sollte, dass als splitPlanes, Ebenen mit vielen Vertices übrig bleiben
-                    //Splitten ist bei denen nicht ohne Weiteres möglich --> ideal 3 oder 4 Vertices!
-                    //wenn mehr als 4, Algorithmus zur Kompletttriangulation überlegen
-
-
                     vertices[v].Position = calcPos;
 
-                    string[] splitPlanes = vplanes.Where(w => w != vplanes[first] && w != vplanes[second] && w != vplanes[third]).ToArray();
+                    //string[] splitPlanes = vplanes.Where(w => w != vplanes[first] && w != vplanes[second] && w != vplanes[third]).ToArray();
 
                     planesToSplit.Add(v, splitPlanes);
 
+                    if (!divisible)
+                    {
+                        Log.Debug("Komplizierter Schnitt nötig!");
+                    }
+                    else
+                    {
+                        Log.Debug("Kein komplizierter Schnitt nötig!");
+                    }
                 }
+                //Freitag: obigen Algorithmus erweitern
+                //nicht in jedem Fall Lösung mit geringster Distanz--> Wenn vertretbar (Grenze überlegen!) auch andere Lösungen in Betracht ziehen
+                //vermieden werden sollte, dass als splitPlanes, Ebenen mit vielen Vertices übrig bleiben
+                //Splitten ist bei denen nicht ohne Weiteres möglich --> ideal 3 oder 4 Vertices!
+                //wenn mehr als 4, Algorithmus zur Kompletttriangulation überlegen
             }
+
+
+            //Achtung: nur für SplitPlanes mit 4 Vertices (=Vierecke)
 
             foreach (var vPl in planesToSplit)
             {
@@ -484,33 +522,56 @@ namespace City2BIM.GetGeometry
                         var sPlane = planesCopy[p];
                         var sVerts = sPlane.Vertices;
 
-                        if (sVerts.Length == 3)
+                        if (sVerts.Length == 3)     //no split neccessary because of triangle plane
                             continue;
 
                         var index = Array.IndexOf(sVerts, vPl.Key);
 
                         int vertBefore = 0;
                         int vertNext = 0;
+                        int vertOpposite = 0;
+                        
+                        switch (index)
+                        {
+                            case 0:
+                                {
+                                    vertBefore = sVerts[3];
+                                    vertNext = sVerts[1];
+                                    vertOpposite = sVerts[2];
+                                    break;
+                                }
+                            case 1:
+                                {
+                                    vertBefore = sVerts[0];
+                                    vertNext = sVerts[2];
+                                    vertOpposite = sVerts[3];
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    vertBefore = sVerts[1];
+                                    vertNext = sVerts[3];
+                                    vertOpposite = sVerts[0];
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    vertBefore = sVerts[2];
+                                    vertNext = sVerts[0];
+                                    vertOpposite = sVerts[1];
+                                    break;
+                                }
+                        }
 
-                        if (index == 0)
-                            vertBefore = sVerts[sVerts.Length - 1];
-                        else
-                            vertBefore = sVerts[index - 1];
-
-                        if (index == sVerts[sVerts.Length - 1])
-                            vertNext = sVerts[0];
-                        else
-                            vertNext = sVerts[index + 1];
+                        //PlanesToSplit enthalten bestenfalls nur noch Planes, mit 4 Vertices
 
                         //Normale ist hier alte nicht exakte Normale, centroid und edges sind def falsch (sollte aber alles nicht mehr relevant sein)
-                        C2BPlane splitPlaneTri =
-                            new C2BPlane(p + "_split1", new List<int>() { vertBefore, vPl.Key, vertNext }, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
-
-                        List<int> restVerts = sVerts.Where(w => w != vPl.Key).ToList();
+                        C2BPlane splitPlaneTri1 =
+                            new C2BPlane(p + "_split1", new List<int>() { vertBefore, vPl.Key, vertOpposite }, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
 
                         //Rest des Planes (Dreieck an Vertex abgeschnitten), beachte falsche Edges, (Normale), Centroid
-                        C2BPlane splitPlaneRest =
-                            new C2BPlane(p + "_split2", restVerts, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
+                        C2BPlane splitPlaneTri2 =
+                            new C2BPlane(p + "_split2", new List<int>() { vertOpposite, vPl.Key, vertNext }, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
 
 
 
@@ -519,29 +580,29 @@ namespace City2BIM.GetGeometry
                         //_isCCW = Vector2.Det(lup - prev, next - prev) > 0.0;
                         //Det: Det(Vector2 a, Vector2 b) => (a.X * b.Y) - (a.Y * b.X);
 
-                        var ptBef = Vertices[vertBefore].Position;
-                        var ptCurr = Vertices[vPl.Key].Position;
-                        var ptNext = Vertices[vertNext].Position;
+                        //var ptBef = Vertices[vertBefore].Position;
+                        //var ptCurr = Vertices[vPl.Key].Position;
+                        //var ptNext = Vertices[vertNext].Position;
 
-                        var vecBef = ptCurr - ptBef;
-                        var vecNext = ptNext - ptBef;
+                        //var vecBef = ptCurr - ptBef;
+                        //var vecNext = ptNext - ptBef;
 
-                        var det = (vecBef.X * vecNext.Y) - (vecBef.Y * vecNext.X);
-
-
-
-                        string detS = "";
-
-                        if (det < -0.05)
-                            detS = "minus";
-                        else if (det > 0.05)
-                            detS = "plus";
-                        else
-                            detS = "null";
+                        //var det = (vecBef.X * vecNext.Y) - (vecBef.Y * vecNext.X);
 
 
-                        planesCopy.Add(detS + splitPlaneTri.ID, splitPlaneTri);
-                        planesCopy.Add(detS + splitPlaneRest.ID, splitPlaneRest);
+
+                        //string detS = "";
+
+                        //if (det < -0.05)
+                        //    detS = "minus";
+                        //else if (det > 0.05)
+                        //    detS = "plus";
+                        //else
+                        //    detS = "null";
+
+
+                        planesCopy.Add(/*detS + */"SPLITTED_01" + splitPlaneTri1.ID, splitPlaneTri1);
+                        planesCopy.Add(/*detS + */"SPLITTED_02" + splitPlaneTri2.ID, splitPlaneTri2);
                         planesCopy.Remove(p);
 
 
@@ -549,7 +610,8 @@ namespace City2BIM.GetGeometry
                 }
                 catch
                 {
-                    continue; }
+                    continue;
+                }
 
             }
         }
