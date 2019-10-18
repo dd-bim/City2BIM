@@ -30,10 +30,6 @@ namespace City2BIM
                 .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
                 .CreateLogger();
 
-            //var dxf = new DxfVisualizer();
-
-            //var ifc = Autodesk.Revit.DB.IFC.
-
             UIApplication uiApp = revit.Application;
             Document doc = uiApp.ActiveUIDocument.Document;
 
@@ -120,7 +116,7 @@ namespace City2BIM
 
                 Log.Information("Validate CityGML geometry data...");
                 //Filter of surface points (Geometry validation)
-                gmlBuildings = ImprovePolygonPoints(gmlBuildings);
+                //gmlBuildings = ImprovePolygonPoints(gmlBuildings);
 
                 Log.Information("Calculate solids from CityGML geometry data...");
                 //Creation of Solids
@@ -382,191 +378,164 @@ namespace City2BIM
             var bldgParts = bldgEl.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
 
+            bool lod2 = bldg.DescendantsAndSelf().Where(l => l.Name.LocalName.Contains("lod2")).Count() > 0;
+            bool lod1 = bldg.DescendantsAndSelf().Where(l => l.Name.LocalName.Contains("lod1")).Count() > 0;
+
             var surfaces = new List<GmlSurface>();
 
-            #region WallSurfaces
-
-            var lod2Walls = bldg.Descendants(this.allns["bldg"] + "WallSurface");
-
-            foreach (var wall in lod2Walls)
+            if (lod2)
             {
-                var polysW = wall.Descendants(this.allns["gml"] + "Polygon").ToList();
+                #region WallSurfaces
 
-                for (var i = 0; i < polysW.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                var lod2Walls = bldg.Descendants(this.allns["bldg"] + "WallSurface");
+
+                foreach (var wall in lod2Walls)
                 {
-                    var surface = new GmlSurface();
-
-                    var faceID = IdentifySurfaceID(wall);
-
-                    if (faceID == "")
-                    {
-                        faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
-                    }
-
-                    if (polysW.Count() > 1)
-                        surface.SurfaceId = faceID + "_" + i;
-                    else
-                        surface.SurfaceId = faceID;
-
-                    surface.Facetype = GmlSurface.FaceType.wall;
-                    surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(wall, attributes, GmlSurface.FaceType.wall);
-
-                    var surfacePl = ReadSurfaceData(polysW[i], surface);
-
-                    surfaces.Add(surfacePl);
+                    List<GmlSurface> wallSurface = ReadSurfaceType(bldgEl, wall, GmlSurface.FaceType.wall);
+                    surfaces.AddRange(wallSurface);
                 }
-            }
 
-            #endregion WallSurfaces
+                #endregion WallSurfaces
 
-            #region RoofSurfaces
+                #region RoofSurfaces
 
-            var lod2Roofs = bldg.Descendants(this.allns["bldg"] + "RoofSurface");
+                var lod2Roofs = bldg.Descendants(this.allns["bldg"] + "RoofSurface");
 
-            foreach (var roof in lod2Roofs)
-            {
-                var polysR = roof.Descendants(this.allns["gml"] + "Polygon").ToList();
-
-                for (var i = 0; i < polysR.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                foreach (var roof in lod2Roofs)
                 {
-                    var surface = new GmlSurface();
-
-                    var faceID = IdentifySurfaceID(roof);
-
-                    if (faceID == "")
-                    {
-                        faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
-                    }
-
-                    if (polysR.Count() > 1)
-                        surface.SurfaceId = faceID + "_" + i;
-                    else
-                        surface.SurfaceId = faceID;
-
-                    surface.Facetype = GmlSurface.FaceType.roof;
-                    surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(roof, attributes, GmlSurface.FaceType.roof);
-
-                    var surfacePl = ReadSurfaceData(polysR[i], surface);
-
-                    surfaces.Add(surfacePl);
+                    List<GmlSurface> roofSurface = ReadSurfaceType(bldgEl, roof, GmlSurface.FaceType.roof);
+                    surfaces.AddRange(roofSurface);
                 }
-            }
 
-            #endregion RoofSurfaces
+                #endregion RoofSurfaces
 
-            #region GroundSurfaces
+                #region GroundSurfaces
 
-            var lod2Grounds = bldg.Descendants(this.allns["bldg"] + "GroundSurface");
+                var lod2Grounds = bldg.Descendants(this.allns["bldg"] + "GroundSurface");
 
-            foreach (var ground in lod2Grounds)
-            {
-                var polysG = ground.Descendants(this.allns["gml"] + "Polygon").ToList();
-
-                for (var i = 0; i < polysG.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                foreach (var ground in lod2Grounds)
                 {
-                    var surface = new GmlSurface();
-
-                    var faceID = IdentifySurfaceID(ground);
-
-                    if (faceID == "")
-                    {
-                        faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
-                    }
-
-                    if (polysG.Count() > 1)
-                        surface.SurfaceId = faceID + "_" + i;
-                    else
-                        surface.SurfaceId = faceID;
-
-                    surface.Facetype = GmlSurface.FaceType.ground;
-                    surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(ground, attributes, GmlSurface.FaceType.ground);
-
-                    var surfacePl = ReadSurfaceData(polysG[i], surface);
-
-                    surfaces.Add(surfacePl);
+                    List<GmlSurface> groundSurface = ReadSurfaceType(bldgEl, ground, GmlSurface.FaceType.ground);
+                    surfaces.AddRange(groundSurface);
                 }
-            }
 
-            #endregion GroundSurfaces
+                #endregion GroundSurfaces
 
-            #region ClosureSurfaces
+                #region ClosureSurfaces
 
-            var lod2Closures = bldg.Descendants(this.allns["bldg"] + "ClosureSurface");
+                var lod2Closures = bldg.Descendants(this.allns["bldg"] + "ClosureSurface");
 
-            foreach (var closure in lod2Closures)
-            {
-                var polysC = closure.Descendants(this.allns["gml"] + "Polygon").ToList();
-
-                for (var i = 0; i < polysC.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                foreach (var closure in lod2Closures)
                 {
-                    var surface = new GmlSurface();
-
-                    var faceID = IdentifySurfaceID(closure);
-
-                    if (faceID == "")
-                    {
-                        faceID = bldgEl.Attribute(allns["gml"] + "id").Value;
-                    }
-
-                    if (polysC.Count() > 1)
-                        surface.SurfaceId = faceID + "_" + i;
-                    else
-                        surface.SurfaceId = faceID;
-
-                    surface.Facetype = GmlSurface.FaceType.closure;
-                    surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(closure, attributes, GmlSurface.FaceType.closure);
-
-                    var surfacePl = ReadSurfaceData(polysC[i], surface);
-
-                    surfaces.Add(surfacePl);
+                    List<GmlSurface> closureSurface = ReadSurfaceType(bldgEl, closure, GmlSurface.FaceType.closure);
+                    surfaces.AddRange(closureSurface);
                 }
-            }
 
-            #endregion ClosureSurfaces
+                #endregion ClosureSurfaces
 
-            #region lod1Surfaces
+                #region OuterCeilingSurfaces
 
-            //one occurence per building
-            var lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1Solid").FirstOrDefault();
+                var lod2OuterCeiling = bldg.Descendants(this.allns["bldg"] + "OuterCeilingSurface");
 
-            if (lod1Rep == null)
-                lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1MultiSurface").FirstOrDefault();
-
-            if (lod1Rep != null)
-            {
-                var polys = lod1Rep.Descendants(this.allns["gml"] + "Polygon").ToList();
-                var elemsWithID = lod1Rep.DescendantsAndSelf().Where(a => a.Attribute(allns["gml"] + "id") != null);
-
-                for (var i = 0; i < polys.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+                foreach (var ceiling in lod2OuterCeiling)
                 {
-                    var surface = new GmlSurface();
+                    List<GmlSurface> outerCeilingSurface = ReadSurfaceType(bldgEl, ceiling, GmlSurface.FaceType.outerCeiling);
+                    surfaces.AddRange(outerCeilingSurface);
+                }
 
-                    var faceID = polys[i].Attribute(allns["gml"] + "id").Value;
+                #endregion OuterCeilingSurfaces
 
-                    if (faceID == null)
+                #region OuterFloorSurfaces
+
+                var lod2OuterFloor = bldg.Descendants(this.allns["bldg"] + "OuterFloorSurface");
+
+                foreach (var floor in lod2OuterFloor)
+                {
+                    List<GmlSurface> outerFloorSurface = ReadSurfaceType(bldgEl, floor, GmlSurface.FaceType.outerFloor);
+                    surfaces.AddRange(outerFloorSurface);
+                }
+
+                #endregion OuterFloorSurfaces
+            }
+            else if (lod1)
+            {
+                #region lod1Surfaces
+
+                //one occurence per building
+                var lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1Solid").FirstOrDefault();
+
+                if (lod1Rep == null)
+                    lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1MultiSurface").FirstOrDefault();
+
+                if (lod1Rep != null)
+                {
+                    var polys = lod1Rep.Descendants(this.allns["gml"] + "Polygon").ToList();
+                    var elemsWithID = lod1Rep.DescendantsAndSelf().Where(a => a.Attribute(allns["gml"] + "id") != null);
+
+                    for (var i = 0; i < polys.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
                     {
-                        var gmlSolid = lod1Rep.Descendants(this.allns["gml"] + "Solid").FirstOrDefault();
+                        var surface = new GmlSurface();
 
-                        faceID = gmlSolid.Attribute(allns["gml"] + "id").Value;
+                        var faceID = polys[i].Attribute(allns["gml"] + "id").Value;
 
                         if (faceID == null)
                         {
-                            faceID = bldgEl.Attribute(allns["gml"] + "id").Value + "_" + i;
+                            var gmlSolid = lod1Rep.Descendants(this.allns["gml"] + "Solid").FirstOrDefault();
+
+                            faceID = gmlSolid.Attribute(allns["gml"] + "id").Value;
+
+                            if (faceID == null)
+                            {
+                                faceID = bldgEl.Attribute(allns["gml"] + "id").Value + "_" + i;
+                            }
                         }
+
+                        surface.Facetype = GmlSurface.FaceType.unknown;
+                        surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(polys[i], attributes, GmlSurface.FaceType.unknown);
+
+                        var surfacePl = ReadSurfaceData(polys[i], surface);
+
+                        surfaces.Add(surfacePl);
                     }
-
-                    surface.Facetype = GmlSurface.FaceType.unknown;
-                    surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(polys[i], attributes, GmlSurface.FaceType.unknown);
-
-                    var surfacePl = ReadSurfaceData(polys[i], surface);
-
-                    surfaces.Add(surfacePl);
                 }
-            }
 
-            #endregion lod1Surfaces
+                #endregion lod1Surfaces
+            }
+            else
+                Log.Debug("No lod2 or lod1 detected. No support yet.");
 
             return surfaces;
+        }
+
+        private List<GmlSurface> ReadSurfaceType(XElement bldg, XElement gmlSurface, GmlSurface.FaceType type)
+        {
+            List<GmlSurface> polyList = new List<GmlSurface>(); 
+            
+            var polysR = gmlSurface.Descendants(this.allns["gml"] + "Polygon").ToList();
+
+            for (var i = 0; i < polysR.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
+            {
+                var surface = new GmlSurface();
+
+                var faceID = IdentifySurfaceID(gmlSurface);
+
+                if (faceID == "")
+                {
+                    faceID = bldg.Attribute(allns["gml"] + "id").Value;
+                }
+
+                if (polysR.Count() > 1)
+                    surface.SurfaceId = faceID + "_" + i;
+                else
+                    surface.SurfaceId = faceID;
+
+                surface.Facetype = type;
+                surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(gmlSurface, attributes, type);
+
+                var surfacePl = ReadSurfaceData(polysR[i], surface);
+                polyList.Add(surfacePl);
+            }
+            return polyList;
         }
 
         private string IdentifySurfaceID(XElement surface)
@@ -628,13 +597,12 @@ namespace City2BIM
             var exteriorF = poly.Descendants(this.allns["gml"] + "exterior").FirstOrDefault();
 
             var posListExt = exteriorF.Descendants(allns["gml"] + "posList");
-            Log.Debug("Amount exterior polygons: " + posListExt.Count());
 
             var planeExt = new C2BPlane(surface.SurfaceId);
 
             if (posListExt.Any())
             {
-                planeExt.PolygonPts = CollectPoints(posListExt.FirstOrDefault(), this.lowerCornerPt);
+                surface.ExteriorPts = CollectPoints(posListExt.FirstOrDefault(), this.lowerCornerPt);
             }
             else
             {
@@ -647,10 +615,8 @@ namespace City2BIM
                     ptList.Add(CollectPoint(pos, this.lowerCornerPt));
                 }
 
-                planeExt.PolygonPts = ptList;
+                surface.ExteriorPts = ptList;
             }
-
-            surface.PlaneExt = planeExt;
 
             #endregion ExteriorPolygon
 
@@ -661,26 +627,23 @@ namespace City2BIM
             var interiorF = poly.Descendants(this.allns["gml"] + "interior");
 
             var posListInt = interiorF.Descendants(allns["gml"] + "posList").ToList();
-            Log.Debug("Amount interior polygons: " + posListInt.Count());
 
-            var intPlanes = new List<C2BPlane>();
 
             if (posListInt.Any())
             {
+                List<List<C2BPoint>> interiorPolys = new List<List<C2BPoint>>();
+
                 for (var j = 0; j < posListInt.Count(); j++)
                 {
-                    var planeInt = new C2BPlane(surface.SurfaceId + "_void_" + j);
-
-                    planeInt.PolygonPts = CollectPoints(posListInt[j], this.lowerCornerPt);
-
-                    intPlanes.Add(planeInt);
+                    interiorPolys.Add(CollectPoints(posListInt[j], this.lowerCornerPt));
                 }
-
-                surface.PlaneInt = intPlanes;
+                surface.InteriorPts = interiorPolys;
             }
             else
             {
                 var rings = interiorF.Descendants(allns["gml"] + "LinearRing").ToList();
+
+                List<List<C2BPoint>> interiorPolys = new List<List<C2BPoint>>();
 
                 for (var k = 0; k < rings.Count() - 1; k++)
                 {
@@ -688,20 +651,16 @@ namespace City2BIM
 
                     if (posInt.Any())
                     {
-                        var planeInt = new C2BPlane(surface.SurfaceId + "_void_" + k);
-
                         var ptList = new List<C2BPoint>();
 
                         foreach (var pos in posInt)
                         {
                             ptList.Add(CollectPoint(pos, this.lowerCornerPt));
                         }
-
-                        planeInt.PolygonPts = ptList;
+                        interiorPolys.Add(ptList);
                     }
                 }
-
-                surface.PlaneInt = intPlanes;
+                surface.InteriorPts = interiorPolys;
             }
 
             #endregion InteriorPolygon
@@ -816,57 +775,41 @@ namespace City2BIM
             return gmlBldgs;
         }
 
-        public List<GmlBldg> ImprovePolygonPoints(List<GmlBldg> bldgs)
-        {
-            var newBldgs = new List<GmlBldg>();
+        //public List<GmlBldg> ImprovePolygonPoints(List<GmlBldg> bldgs)
+        //{
+        //    var newBldgs = new List<GmlBldg>();
 
-            foreach (var bldg in bldgs)
-            {
-                var surfaces = bldg.BldgSurfaces;
+        //    foreach (var bldg in bldgs)
+        //    {
+        //        var surfaces = bldg.BldgSurfaces;
 
-                var validation = new ValidateGeometry();
+        //        var validation = new ValidateGeometry();
 
-                var filteredSurfaces = validation.FilterUnneccessaryPoints(surfaces);
+        //        var filteredSurfaces = validation.FilterUnneccessaryPoints(surfaces);
 
-                //var flattenedSurfaces = validation.FlatteningSurfaces(filteredSurfaces);
+        //        //var flattenedSurfaces = validation.FlatteningSurfaces(filteredSurfaces);
 
-                bldg.BldgSurfaces = filteredSurfaces;
+        //        bldg.BldgSurfaces = filteredSurfaces;
 
-                newBldgs.Add(bldg);
-            }
+        //        newBldgs.Add(bldg);
+        //    }
 
-            return newBldgs;
-        }
+        //    return newBldgs;
+        //}
 
         public List<GmlBldg> CalculateSolids(List<GmlBldg> bldgs)
         {
-            int[] ctPlanes = new int[10];
-            
-            List<string> detFBldgs = new List<string>();
-
             var newBldgs = new List<GmlBldg>();
 
-            Log.Debug("Calculate solid for each building...");
             foreach (var bldg in bldgs)
             {
-                bool detF = true;
-
                 bldg.BldgSolid = new C2BSolid();
 
                 var surfaces = bldg.BldgSurfaces;
 
                 foreach (var surface in surfaces)
                 {
-                    bldg.BldgSolid.AddPlane(surface.SurfaceId, surface.PlaneExt.PolygonPts);
-                    Log.Debug("Exterior plane created: " + surface.SurfaceId);
-
-                    if (surface.PlaneInt.Count > 0)
-                    {
-                        foreach (var pl in surface.PlaneInt)
-
-                            bldg.BldgSolid.AddPlane(pl.ID, pl.PolygonPts);
-                        Log.Debug("Interior plane created: " + surface.SurfaceId + "_void");
-                    }
+                    bldg.BldgSolid.AddPlane(surface.SurfaceId, surface.ExteriorPts, surface.InteriorPts);
                 }
 
                 var parts = bldg.Parts;
@@ -881,72 +824,25 @@ namespace City2BIM
 
                     foreach (var partSurface in newPart.PartSurfaces)
                     {
-                        partSolid.AddPlane(partSurface.SurfaceId, partSurface.PlaneExt.PolygonPts);
-                        Log.Debug("Exterior plane for part created: " + partSurface.SurfaceId);
-
-                        if (partSurface.PlaneInt.Count > 0)
-                        {
-                            foreach (var pl in partSurface.PlaneInt)
-
-                                partSolid.AddPlane(pl.ID, pl.PolygonPts);
-                            Log.Debug("Interior plane for part created: " + partSurface.SurfaceId + "_void");
-                        }
+                        partSolid.AddPlane(partSurface.SurfaceId, partSurface.ExteriorPts, partSurface.InteriorPts);
                     }
                     partSolid.IdentifySimilarPlanes();
 
-                    partSolid.CalculatePositions(ref ctPlanes, ref detF);
+                    partSolid.CalculatePositions();
 
-                    if (!detF)
-                        detFBldgs.Add(part.BldgPartId);
-
-                    newPart.PartSolid = partSolid; //.CalculatePositions();
+                    newPart.PartSolid = partSolid;
 
                     newParts.Add(newPart);
                 }
 
                 bldg.Parts = newParts;
 
-                //var abL = new List<double[]>();
-
-                //foreach(var v in bldg.BldgSolid.Vertices)
-                //{
-                //    var ab = new double[] { v.Position.X, v.Position.Y, v.Position.Z };
-                //    abL.Add(ab);
-                //}
-
                 bldg.BldgSolid.IdentifySimilarPlanes();
 
-                bldg.BldgSolid.CalculatePositions(ref ctPlanes, ref detF);
-
-                if (!detF)
-                    detFBldgs.Add(bldg.BldgId);
-
-                //var abcL = new List<double[]>();
-
-                //foreach(var v in bldg.BldgSolid.Vertices)
-                //{
-                //    var abc = new double[] { v.Position.X, v.Position.Y, v.Position.Z };
-                //    abcL.Add(abc);
-                //}
-
-                //for(int i = 0; i < abcL.Count; i++)
-                //{
-                //    Log.Debug("Difference = " + (abcL[i][0] - abL[i][0]) + " / " + (abcL[i][1] - abL[i][1]) + " / " + (abcL[i][2] - abL[i][2]));
-                //}
+                bldg.BldgSolid.CalculatePositions();
 
                 newBldgs.Add(bldg);
             }
-
-            for (var i = 0; i < ctPlanes.Length; i++)
-            {
-                Log.Debug("Counter for " + i + " = " + ctPlanes[i]);
-            }
-
-            Log.Debug("Bldgs with Error at det error at level cut:"+ detFBldgs.Count);
-            foreach (var detf in detFBldgs)
-                Log.Debug(detf);
-
-            
 
             return newBldgs;
         }

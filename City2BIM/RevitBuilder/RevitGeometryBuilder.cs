@@ -401,39 +401,30 @@ namespace City2BIM.RevitBuilder
             {
                 IList<IList<Autodesk.Revit.DB.XYZ>> faceList = new List<IList<XYZ>>(); //neccessary if also interior face will occure
 
-                if (plane.Key.Contains("void)"))         //interior planes will be handled separately
-                    continue;
-
                 //var p = plane.Value;
 
-                var faceExterior = IdentifyFacePoints(plane.Value, solid);
+                IList<XYZ> faceExterior = IdentifyFacePoints(plane.Value.Vertices, solid);
+
+                foreach (int[] intFace in plane.Value.InnerVertices)
+                {
+                    IList<XYZ> faceInterior = IdentifyFacePoints(intFace, solid);
+                    faceList.Add(faceInterior);
+                }
 
                 //Identify GmlSurface with current plane
 
-                //var surface = (from pl in surfaces
-                //               where pl.SurfaceId == plane.Key
-                //               select pl).SingleOrDefault();
+                var involvedSurfaces = from pl in surfaces
+                                       where plane.Key.Contains(pl.SurfaceId)
+                                       select pl;
 
-                //colorMat = colors[surface.Facetype];
+                var faceTypes = involvedSurfaces.Select(f => f.Facetype).Distinct();
 
-                //Case: interior plane is applicable
-                //---------------------------------------
-                //Interior faces needs special consideration because of suffix _void in Id
-                //var interiors = from plInt in solid.Planes
-                //                where plInt.Key.Contains("_void")
-                //                select plInt;
-
-                //if(interiors.Any())
-                //{
-                //    foreach(var interior in interiors)
-                //    {
-                //        if(interior.Key.Contains(surface.SurfaceId))
-                //        {
-                //            var faceInterior = IdentifyFacePoints(interior.Value, solid);
-                //            faceList.Add(faceInterior);                                     //if interior face is applicable, added to facelist
-                //        }
-                //    }
-                //}
+                if (faceTypes.Count() == 1)
+                    colorMat = colors[faceTypes.Single()];
+                else if (faceTypes.Count() > 1)
+                {
+                    colorMat = colors[faceTypes.First()];
+                }
 
                 faceList.Insert(0, faceExterior);       //"normal" exterior faces on first place (Insert important if interior faces are added before)
 
@@ -446,18 +437,18 @@ namespace City2BIM.RevitBuilder
             return faceListT;
         }
 
-        public IList<XYZ> IdentifyFacePoints(C2BPlane plane, C2BSolid solid)
+        public IList<XYZ> IdentifyFacePoints(int[] vertsPlane, C2BSolid solid)
         {
             IList<Autodesk.Revit.DB.XYZ> facePoints = new List<XYZ>();
 
-            foreach (int vid in plane.Vertices)
+            foreach (int vid in vertsPlane)
             {
-                var verts = solid.Vertices;
+                var verticesXYZ = solid.Vertices;
 
-                if (verts.Contains(verts[vid]))
+                if (verticesXYZ.Contains(verticesXYZ[vid]))
                 {
                     //Transformation for revit
-                    var revTransXYZ = TransformPointForRevit(verts[vid].Position);
+                    var revTransXYZ = TransformPointForRevit(verticesXYZ[vid].Position);
 
                     facePoints.Add(revTransXYZ);
                 }
@@ -495,7 +486,7 @@ namespace City2BIM.RevitBuilder
 
         private void CreateSurfaceWithOriginalPoints(GmlSurface surface, Dictionary<GmlAttribute, string> attributes)
         {
-            var pts = surface.PlaneExt.PolygonPts;
+            var pts = surface.ExteriorPts;  
 
             C2BPoint normalVc = new C2BPoint(0, 0, 0);
             C2BPoint centroidPl = new C2BPoint(0, 0, 0);
@@ -569,6 +560,14 @@ namespace City2BIM.RevitBuilder
 
                     case (GmlSurface.FaceType.closure):
                         elem = new ElementId(BuiltInCategory.OST_GenericModel);
+                        break;
+
+                    case (GmlSurface.FaceType.outerCeiling):
+                        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
+                        break;
+
+                    case (GmlSurface.FaceType.outerFloor):
+                        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
                         break;
 
                     default:
@@ -873,6 +872,8 @@ namespace City2BIM.RevitBuilder
                 { GmlRep.GmlSurface.FaceType.roof, roofCol },
                 { GmlRep.GmlSurface.FaceType.wall, wallCol },
                 { GmlRep.GmlSurface.FaceType.ground, groundCol },
+                { GmlRep.GmlSurface.FaceType.outerCeiling, groundCol },
+                { GmlRep.GmlSurface.FaceType.outerFloor, groundCol },
                 { GmlRep.GmlSurface.FaceType.closure, closureCol }
             };
 

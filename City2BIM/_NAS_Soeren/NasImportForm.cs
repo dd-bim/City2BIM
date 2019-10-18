@@ -174,7 +174,7 @@ namespace NasImport
             #region Transformation und UTM-Reduktion
             //Zuerst wird die Position des Projektbasispunkts bestimmt
             ProjectLocation projloc = doc.ActiveProjectLocation;
-            ProjectPosition position_data = projloc.get_ProjectPosition(XYZ.Zero);
+            ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
             double angle = position_data.Angle;
             double elevation = position_data.Elevation;
             double easting = position_data.EastWest;

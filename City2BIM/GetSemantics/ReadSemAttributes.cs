@@ -47,6 +47,14 @@ namespace City2BIM.GetSemantics
                     if(closureGen.Any())
                         attr.Reference = GmlAttribute.AttrHierarchy.closure;
 
+                    var floorGen = genAttr.Ancestors(nsp["bldg"] + "OuterFloorSurface");
+                    if (floorGen.Any())
+                        attr.Reference = GmlAttribute.AttrHierarchy.outerFloor;
+
+                    var ceilingGen = genAttr.Ancestors(nsp["bldg"] + "OuterCeilingSurface");
+                    if (ceilingGen.Any())
+                        attr.Reference = GmlAttribute.AttrHierarchy.outerCeiling;
+
                     var names = attr.Name;
                     var references = attr.Reference;
 

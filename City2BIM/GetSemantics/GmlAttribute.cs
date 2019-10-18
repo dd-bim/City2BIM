@@ -98,6 +98,6 @@
         /// </summary>
         public enum AttrNsp { gml, core, xal, bldg, gen }
 
-        public enum AttrHierarchy { bldg, surface, wall, ground, roof, closure }
+        public enum AttrHierarchy { bldg, surface, wall, ground, roof, closure, outerCeiling, outerFloor }
     }
 }
