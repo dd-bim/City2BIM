@@ -15,11 +15,10 @@ namespace City2BIM.GetGeometry
         /// </summary>
         /// /// <param name="position"> Coordinate in XYZ </param>
         /// /// <param name="plane"> Plane to add </param>
-        public C2BVertex(C2BPoint position, string plane)
+        public C2BVertex(C2BPoint position)
         {
             this.position = position;
             this.planes = new HashSet<string>();
-            this.planes.Add(plane);
         }
 
         /// <summary>

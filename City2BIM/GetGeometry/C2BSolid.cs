@@ -8,96 +8,43 @@ namespace City2BIM.GetGeometry
 {
     public class C2BSolid
     {
-        private Dictionary<string, C2BPlane> planes = new Dictionary<string, C2BPlane>();
-        private Dictionary<string, C2BPlane> planesCopy = new Dictionary<string, C2BPlane>();
-        private List<C2BVertex> vertices = new List<C2BVertex>();
-        private List<C2BEdge> edges = new List<C2BEdge>();
+        private Guid internalID;
+        private string gmlID;
+        private Dictionary<string, C2BPlane> _planes = new Dictionary<string, C2BPlane>();
+        private List<C2BVertex> _vertices = new List<C2BVertex>();
+        private List<C2BEdge> _edges = new List<C2BEdge>();
 
         public List<C2BVertex> Vertices
         {
-            get { return vertices; }
+            get { return _vertices; }
+            set
+            {
+                this._vertices = value;
+            }
         }
 
         public Dictionary<string, C2BPlane> Planes
         {
-            get { return planes; }
+            get { return _planes; }
+
         }
 
-        public Dictionary<string, C2BPlane> PlanesCopy
+        public List<C2BEdge> Edges { get => _edges; set => _edges = value; }
+
+        public Guid InternalID { get => internalID; }
+
+        public C2BSolid(string gmlID)
         {
-            get { return planesCopy; }
+            this.internalID = Guid.NewGuid();
+            this.gmlID = gmlID;
         }
-
-        public List<C2BEdge> Edges { get => edges; set => edges = value; }
 
         public void AddPlane(string id, List<C2BPoint> polygon, List<List<C2BPoint>> innerPolygons = null)
         {
-            if (polygon.Count < 4)
-            {
-                Log.Error("Not enough points for valid plane: " + polygon.Count);
-            }
-
             C2BPoint normal = new C2BPoint(0, 0, 0);
             C2BPoint centroid = new C2BPoint(0, 0, 0);
 
             List<C2BEdge> locEdges = new List<C2BEdge>();
-
-            ////list for vertex-integers (size = polygon-points.Length)
-            //List<int> verts = new List<int>(polygon.Count);
-            //int currentInt = 0;
-
-            ////Loop over all polygon points (starts with 1 for no redundant point detecting)
-            //for (int i = 1; i < polygon.Count; i++)
-            //{
-            //    int beforeInt = currentInt;
-
-            //    //bool for decision if new vertex must be created
-            //    bool notmatched = true;
-
-            //    //inner loop over all vertices (list per whole building (!), if vertices contains objects)
-            //    for (int j = 0; j < Vertices.Count; j++)
-            //    {
-            //        //calclation of distance between current polygon point and current vertex in list 
-            //        double dist = C2BPoint.DistanceSq(polygon[i], vertices[j].Position);
-
-            //        //case: distance smaller than setted Distolsq (= points are topological identical --> Vertex)
-            //        //if points are identical, an equivalent vertex is still existinng in vertices list
-            //        if (dist < Distolsq)
-            //        {
-            //            currentInt = j;
-
-            //            //add plane id to current vertex in list
-            //            vertices[j].AddPlane(id);
-            //            //add vertex-iterator to verts list (for later identification)
-            //            verts.Add(j);
-            //            notmatched = false;
-            //            break;
-            //        }
-            //    }
-
-            //    //no match --> a new vertex needs to create
-            //    if (notmatched)
-            //    {
-            //        currentInt = vertices.Count;
-
-            //        C2BVertex v = new C2BVertex(polygon[i], id);
-            //        //list of verts gets a new number at the end of list
-            //        verts.Add(vertices.Count);
-            //        //Vertex bldg list gets new Vertex
-            //        vertices.Add(v);
-            //    }
-
-            //    //------------------------------------------------------------------------------
-
-            //    //adds normal value (normal of plane which current point and the point before span) 
-            //    normal += C2BPoint.CrossProduct(polygon[i - 1], polygon[i]);
-
-            //    //adds current coordinates to centroid variable for later centroid calculation
-            //    centroid += polygon[i];
-
-            //    //edge needs start- and end vertex, and also normal between points for later identification of similar planes
-
-            //}
 
             List<int> extVerts = CalculateVertexCoords(id, polygon, true, ref normal, ref centroid);
             List<List<int>> intVertsList = new List<List<int>>();
@@ -152,7 +99,7 @@ namespace City2BIM.GetGeometry
                 for (int j = 0; j < Vertices.Count; j++)
                 {
                     //calclation of distance between current polygon point and current vertex in list 
-                    double dist = C2BPoint.DistanceSq(polygon[i], vertices[j].Position);
+                    double dist = C2BPoint.DistanceSq(polygon[i], Vertices[j].Position);
 
                     //case: distance smaller than setted Distolsq (= points are topological identical --> Vertex)
                     //if points are identical, an equivalent vertex is still existinng in vertices list
@@ -161,7 +108,7 @@ namespace City2BIM.GetGeometry
                         currentInt = j;
 
                         //add plane id to current vertex in list
-                        vertices[j].AddPlane(id);
+                        Vertices[j].AddPlane(id);
                         //add vertex-iterator to verts list (for later identification)
                         verts.Add(j);
                         notmatched = false;
@@ -172,24 +119,27 @@ namespace City2BIM.GetGeometry
                 //no match --> a new vertex needs to create
                 if (notmatched)
                 {
-                    currentInt = vertices.Count;
+                    currentInt = Vertices.Count;
 
-                    C2BVertex v = new C2BVertex(polygon[i], id);
+                    C2BVertex v = new C2BVertex(polygon[i]);
+                    v.AddPlane(id);
                     //list of verts gets a new number at the end of list
-                    verts.Add(vertices.Count);
+                    verts.Add(Vertices.Count);
                     //Vertex bldg list gets new Vertex
-                    vertices.Add(v);
+                    Vertices.Add(v);
                 }
 
                 //------------------------------------------------------------------------------
 
                 if (exterior)
                 {
-                //adds normal value (normal of plane which current point and the point before span) 
-                normal += C2BPoint.CrossProduct(polygon[i - 1], polygon[i]);
+                    //adds normal value (normal of plane which current point and the point before span) 
+                    var locN = C2BPoint.CrossProduct(polygon[i - 1], polygon[i]);
 
-                //adds current coordinates to centroid variable for later centroid calculation
-                centroid += polygon[i];
+                    normal += locN;
+
+                    //adds current coordinates to centroid variable for later centroid calculation
+                    centroid += polygon[i];
                 }
             }
 
@@ -199,27 +149,19 @@ namespace City2BIM.GetGeometry
 
         public void IdentifySimilarPlanes()
         {
-            //----------------------------------------------------
-            //PlaneyCopy list needed for later address at level cuts
-            //original list will not be corrupted because original surface geometry should be imported (not combined surfaces)
-            planesCopy = new Dictionary<string, C2BPlane>();
-
-            foreach (var pl in Planes)
-            {
-                planesCopy.Add(pl.Key, pl.Value);
-            }
-            //----------------------------------------------------
-
-            //cases for similar planes
+            //cases for similar Planes
             //1.) simple case: similar plane normal and one shared edge
-            //2.) special cases: more than two planes with similar plane normal and respectively one shared edge (case 1 applied multiple times)
-            //the possibility of case 2 requires combining of two planes and a new search for similar planes after each combination
+            //2.) special cases: more than two Planes with similar plane normal and respectively one shared edge (case 1 applied multiple times)
+            //the possibility of case 2 requires combining of two Planes and a new search for similar Planes after each combination
 
             bool similarPlanes = true;
 
-            while (similarPlanes)
+            if (Edges.Count > 0)
             {
-                AggregatePlanes(ref similarPlanes);
+                while (similarPlanes)
+                {
+                    AggregatePlanes(ref similarPlanes);
+                }
             }
 
             RemoveNoCornerVertices();
@@ -239,80 +181,87 @@ namespace City2BIM.GetGeometry
                     if (Edges[i].Start == Edges[j].End && Edges[i].End == Edges[j].Start &&
                         distNorm < locDistolsq)
                     {
-                        C2BPlane plane1 = planesCopy[Edges[i].PlaneId];
-                        C2BPlane plane2 = planesCopy[Edges[j].PlaneId];
-
-                        int cursorEdgeA = plane1.Edges.IndexOf(Edges[i]);
-                        int cursorEdgeB = plane2.Edges.IndexOf(Edges[j]);
-
-                        for (var k = 0; k < cursorEdgeB; k++)
+                        try
                         {
-                            var edge = plane2.Edges[0];
-                            plane2.Edges.RemoveAt(0);
-                            plane2.Edges.Add(edge);
-                        }
 
-                        List<C2BEdge> cpdEdgeList = new List<C2BEdge>();
+                            C2BPlane plane1 = Planes[Edges[i].PlaneId];
+                            C2BPlane plane2 = Planes[Edges[j].PlaneId];
 
-                        cpdEdgeList.AddRange(plane1.Edges);
-                        cpdEdgeList.RemoveAt(cursorEdgeA);
-                        cpdEdgeList.InsertRange(cursorEdgeA, plane2.Edges);
-                        cpdEdgeList.Remove(Edges[j]);
+                            int cursorEdgeA = plane1.Edges.IndexOf(Edges[i]);
+                            int cursorEdgeB = plane2.Edges.IndexOf(Edges[j]);
 
-                        var newVerts = cpdEdgeList.Select(e => e.End).ToList();
-                        var newID = Edges[i].PlaneId + "_" + Edges[j].PlaneId;
-
-
-                        var changeVert1 = from v in Vertices
-                                          where v.Planes.Contains(Edges[i].PlaneId)
-                                          select v;
-
-                        var changeVert2 = from v in Vertices
-                                          where v.Planes.Contains(Edges[j].PlaneId)
-                                          select v;
-
-                        foreach (var v in changeVert1)
-                        {
-                            v.Planes.Remove(Edges[i].PlaneId);
-                            v.Planes.Add(newID);
-                        }
-
-                        foreach (var v in changeVert2)
-                        {
-                            v.Planes.Remove(Edges[j].PlaneId);
-                            v.Planes.Add(newID);
-                        }
-
-                        var currentID1 = Edges[i].PlaneId;
-                        var currentID2 = Edges[j].PlaneId;
-
-                        foreach (var e in Edges)
-                        {
-                            //logPlanes.Information(e.PlaneId);
-
-                            if (e.PlaneId == currentID1 || e.PlaneId == currentID2)
+                            for (var k = 0; k < cursorEdgeB; k++)
                             {
-                                e.PlaneId = newID;
+                                var edge = plane2.Edges[0];
+                                plane2.Edges.RemoveAt(0);
+                                plane2.Edges.Add(edge);
                             }
+
+                            List<C2BEdge> cpdEdgeList = new List<C2BEdge>();
+
+                            cpdEdgeList.AddRange(plane1.Edges);
+                            cpdEdgeList.RemoveAt(cursorEdgeA);
+                            cpdEdgeList.InsertRange(cursorEdgeA, plane2.Edges);
+                            cpdEdgeList.Remove(Edges[j]);
+
+                            var newVerts = cpdEdgeList.Select(e => e.End).ToList();
+                            var newID = Edges[i].PlaneId + "_" + Edges[j].PlaneId;
+
+                            var changeVert1 = from v in Vertices
+                                              where v.Planes.Contains(Edges[i].PlaneId)
+                                              select v;
+
+                            var changeVert2 = from v in Vertices
+                                              where v.Planes.Contains(Edges[j].PlaneId)
+                                              select v;
+
+                            foreach (var v in changeVert1)
+                            {
+                                v.Planes.Remove(Edges[i].PlaneId);
+                                v.Planes.Add(newID);
+                            }
+
+                            foreach (var v in changeVert2)
+                            {
+                                v.Planes.Remove(Edges[j].PlaneId);
+                                v.Planes.Add(newID);
+                            }
+
+                            var currentID1 = Edges[i].PlaneId;
+                            var currentID2 = Edges[j].PlaneId;
+
+                            foreach (var e in Edges)
+                            {
+                                //logPlanes.Information(e.PlaneId);
+
+                                if (e.PlaneId == currentID1 || e.PlaneId == currentID2)
+                                {
+                                    e.PlaneId = newID;
+                                }
+                            }
+
+                            Edges[i].PlaneId = null;
+                            Edges[j].PlaneId = null;
+
+                            //calc logic for new plane normal and new plane centroid
+
+                            C2BPoint planeNormal = plane1.Normal;
+                            C2BPoint planeCentroid = plane1.Centroid;
+
+                            List<int[]> innerVerts = plane1.InnerVertices;
+
+                            innerVerts.AddRange(plane2.InnerVertices);
+
+                            UpdatePlaneParameters(newID, newVerts, ref planeNormal, ref planeCentroid);
+
+                            Planes.Remove(plane1.ID);
+                            Planes.Remove(plane2.ID);
+                            Planes.Add(newID, new C2BPlane(newID, newVerts, innerVerts, planeNormal, planeCentroid, cpdEdgeList));
                         }
-
-                        Edges[i].PlaneId = null;
-                        Edges[j].PlaneId = null;
-
-                        //calc logic for new plane normal and new plane centroid
-
-                        C2BPoint planeNormal = plane1.Normal;
-                        C2BPoint planeCentroid = plane1.Centroid;
-
-                        List<int[]> innerVerts = plane1.InnerVertices;
-
-                        innerVerts.AddRange(plane2.InnerVertices);
-
-                        UpdatePlaneParameters(newID, newVerts, ref planeNormal, ref planeCentroid);
-
-                        planesCopy.Remove(plane1.ID);
-                        planesCopy.Remove(plane2.ID);
-                        planesCopy.Add(newID, new C2BPlane(newID, newVerts, innerVerts, planeNormal, planeCentroid, cpdEdgeList));
+                        catch
+                        {
+                            continue;
+                        }
 
                         break;
                     }
@@ -349,8 +298,6 @@ namespace City2BIM.GetGeometry
 
             planeNormal = C2BPoint.Normalized(norm);
             planeCentroid = centr / (double)newVerts.Count;
-
-            //UpdateVertexPositions(newVerts, planeNormal, planeCentroid);
         }
 
         private void RemoveNoCornerVertices()
@@ -361,20 +308,20 @@ namespace City2BIM.GetGeometry
             {
                 int vIndex = Vertices.IndexOf(v);
 
-                var planesInd = from p in PlanesCopy
-                                where p.Value.Vertices.Contains(vIndex) 
+                var PlanesInd = from p in Planes
+                                where p.Value.Vertices.Contains(vIndex)
                                 select p.Value;
 
-                foreach (var pl in planesInd)
+                foreach (var pl in PlanesInd)
                 {
                     pl.Vertices = pl.Vertices.Where(i => i != vIndex).ToArray();
                 }
 
-                var planesIndInt = from p in PlanesCopy
+                var PlanesIndInt = from p in Planes
                                    where p.Value.InnerVertices.Any()
                                    select p.Value;
 
-                foreach (var plane in planesIndInt)
+                foreach (var plane in PlanesIndInt)
                 {
                     for (int j = 0; j < plane.InnerVertices.Count; j++)
                     {
@@ -385,209 +332,385 @@ namespace City2BIM.GetGeometry
             }
         }
 
-        //private void UpdateVertexPositions(List<int> newVerts, C2BPoint planeNormal, C2BPoint planeCentroid)
-        //{
-        //    var projectedVerts = new List<C2BPoint>();
-
-        //    for (var i = 0; i < newVerts.Count; i++)
-        //    {
-        //        C2BPoint thisPt = Vertices[newVerts[i]].Position;
-
-        //        var vecPtCent = thisPt - planeCentroid;
-        //        var d = C2BPoint.ScalarProduct(vecPtCent, planeNormal);
-
-        //        var vecLotCent = new C2BPoint(d * planeNormal.X, d * planeNormal.Y, d * planeNormal.Z);
-        //        var vertNew = thisPt - vecLotCent;
-
-        //        Vertices[newVerts[i]].Position = vertNew;
-        //    }
-        //}
-
         public void CalculatePositions()
         {
-            Dictionary<int, string[]> planesToSplit = new Dictionary<int, string[]>();
 
-            for (var v = 0; v < vertices.Count; v++)
+
+            Log.Debug("START Vertext-Calculation at: " + gmlID + "----------------------------------------------");
+
+            Dictionary<string, List<int>> PlanesToSplit = new Dictionary<string, List<int>>();
+
+            for (var v = 0; v < Vertices.Count; v++)
             {
-                Log.Debug("Calculation for " + v);
-
-                if (vertices[v].Planes.Count < 3)     //cases of removed vertices before, no longer consideration but no removement of Vertex-List because of consistency
-                {
-                    Log.Debug("Skip because < 3 Planes!");
-                    continue;
-                }
-
-                if (vertices[v].Planes.Count == 3)    //optimal wished case --> no danger of non planar curve loops
-                {
-                    Log.Debug("Optimal case: 3 Planes!");
-
-                    C2BPoint vertex = new C2BPoint(0, 0, 0);
-
-                    string[] vplanes = vertices[v].Planes.ToArray<string>();
-
-                    //vertices[v].Position = CalculateLevelCut(planes[vplanes[0]], planes[vplanes[1]], planes[vplanes[2]]);
-                    vertices[v].Position = CalculateLevelCut(planesCopy[vplanes[0]], planesCopy[vplanes[1]], planesCopy[vplanes[2]]);
-                }
-
-                if (vertices[v].Planes.Count > 3)
-                {
-                    Log.Debug("Dangerous case: " + vertices[v].Planes.Count + " Planes!");
-
-                    string[] vplanes = vertices[v].Planes.ToArray<string>();
-                    string[] splitPlanes = new string[vplanes.Count() - 3];
-
-                    int first = 0, second = 0, third = 0;
-                    int firstSub = 0, secondSub = 0, thirdSub = 0;
-                    double d = 100;
-                    C2BPoint origPos = vertices[v].Position;
-                    C2BPoint calcPos = origPos;
-                    bool divisible = false;
-
-                    for (var i = 0; i < vplanes.Length - 2; i++)
-                    {
-                        for (var j = i + 1; j < vplanes.Length - 1; j++)
-                        {
-                            for (var k = j + 1; k < vplanes.Length; k++)
-                            {
-                                C2BPoint currPos = CalculateLevelCut(planesCopy[vplanes[i]], planesCopy[vplanes[j]], planesCopy[vplanes[k]]);
-
-                                if (currPos == null)
-                                    continue;
-
-                                double dOld = d;
-                                double dNew = C2BPoint.DistanceSq(origPos, currPos);
-
-                                if (dNew < dOld)
-                                {
-                                    firstSub = i;
-                                    secondSub = j;
-                                    thirdSub = k;
-
-                                    //extension:
-                                    //not the best case if other planes have to much vertices (difficult to split later)
-
-                                    string[] otherPlanes = vplanes.Where(w => w != vplanes[i] && w != vplanes[j] && w != vplanes[k]).ToArray();
-
-                                    int[] vertsCt = new int[otherPlanes.Count()];
-
-                                    for (int n = 0; n < otherPlanes.Length; n++)
-                                    {
-                                        vertsCt[n] = planesCopy[otherPlanes[n]].Vertices.Count();
-                                    }
-
-                                    int greater5verts = vertsCt.Where(m => m > 4).Count();
-
-                                    if (greater5verts == 0 && dNew < 10 /*0.05*/)       
-                                    {
-                                        first = i;
-                                        second = j;
-                                        third = k;
-
-                                        calcPos = currPos;
-                                        d = dNew;
-
-                                        divisible = true;
-
-                                        splitPlanes = otherPlanes;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    vertices[v].Position = calcPos;
-
-                    planesToSplit.Add(v, splitPlanes);
-
-                    if (!divisible)
-                    {
-                        Log.Debug("Komplizierter Schnitt nötig!");
-                    }
-                    else
-                    {
-                        Log.Debug("Kein komplizierter Schnitt nötig!");
-                    }
-                }
-            }
-            //Achtung: nur für SplitPlanes mit 4 Vertices (=Vierecke)
-
-            foreach (var vPl in planesToSplit)
-            {
-                Log.Debug("Split at " + vPl.Key + " for:");
-
                 try
                 {
 
-                    foreach (var p in vPl.Value)
+                    #region Level Cut (3 planes - unambiguous)
+
+                    if (Vertices[v].Planes.Count == 3)    //optimal wished case --> no danger of non planar curve loops
                     {
-                        Log.Debug(p);
+                        C2BPoint vertex = new C2BPoint(0, 0, 0);
 
-                        var sPlane = planesCopy[p];
-                        var sVerts = sPlane.Vertices;
+                        string[] vPlanes = Vertices[v].Planes.ToArray<string>();
 
-                        if (sVerts.Length == 3)     //no split neccessary because of triangle plane
-                            continue;
+                        Vertices[v].Position = CalculateLevelCut(Planes[vPlanes[0]], Planes[vPlanes[1]], Planes[vPlanes[2]]);
+                    }
 
-                        var index = Array.IndexOf(sVerts, vPl.Key);
+                    #endregion Level Cut (3 planes - unambiguous)
 
-                        int vertBefore = 0;
-                        int vertNext = 0;
-                        int vertOpposite = 0;
-                        
-                        switch (index)
+                    #region Level Cut (> 3 planes - ambiguous, further calculations)
+
+                    if (Vertices[v].Planes.Count > 3)
+                    {
+                        Log.Debug("LEVEL CUT ambiguous: more than 3 Vertices at " + v + "---------------------");
+
+                        string[] vPlanes = Vertices[v].Planes.ToArray<string>();
+                        string[] splitPlanes = new string[vPlanes.Count() - 3];
+
+                        double d = 100;
+                        C2BPoint origPos = Vertices[v].Position;
+                        C2BPoint calcPos = origPos;
+
+                        List<string> ordPlanes = new List<string>();
+                        List<string> unordPlanes = new List<string>();
+
+                        List<string> convexPl = new List<string>();
+                        int ctConcave = 0;
+
+                        #region Test - Selection of cutted planes regarding concaveness 
+
+                        foreach (string pId in vPlanes)
                         {
-                            case 0:
+                            var sPlane = Planes[pId];
+                            var sVerts = sPlane.Vertices;
+                            int vertCt = sVerts.Count();
+
+                            int v1 = 0;
+                            int v3 = 0;
+                            int v4 = 0;
+
+                            FindAdjacentIndices(sVerts, v, out v1, out v3, out v4);
+
+                            bool divisible = true;
+
+                            //CCW test for plane at vertex where cut of more than 3 planes applied
+                            bool ccw = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[v3].Position, sPlane.Normal);
+
+                            //CCW test with possibly new edge and other polygon vertices to avoid false split generation
+
+                            int[] vRest = sVerts.Where(vtx => vtx != v1 && vtx != v && vtx != v3).ToArray();
+
+                            if (ccw)
+                            {
+                                foreach (int vtx in vRest)
                                 {
-                                    vertBefore = sVerts[3];
-                                    vertNext = sVerts[1];
-                                    vertOpposite = sVerts[2];
-                                    break;
+                                    bool ccwPlane = C2BPoint.CCW(Vertices[v1].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
+
+                                    if (!ccwPlane)
+                                    {
+                                        bool ccwPlane2 = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[vtx].Position, sPlane.Normal);
+                                        bool ccwPlane3 = C2BPoint.CCW(Vertices[v].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
+
+                                        if (ccwPlane2 && ccwPlane3)
+                                        {
+                                            divisible = false;
+                                            break;
+                                        }
+                                    }
                                 }
-                            case 1:
-                                {
-                                    vertBefore = sVerts[0];
-                                    vertNext = sVerts[2];
-                                    vertOpposite = sVerts[3];
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    vertBefore = sVerts[1];
-                                    vertNext = sVerts[3];
-                                    vertOpposite = sVerts[0];
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    vertBefore = sVerts[2];
-                                    vertNext = sVerts[0];
-                                    vertOpposite = sVerts[1];
-                                    break;
-                                }
+                            }
+                            else
+                                divisible = false;
+
+                            //if CCW gets false there is an concave angle at vertex for the investigated plane 
+                            //if CCW gets an value next to 0 there is an collinear situation at vertex for the investigated plane (also false result)
+                            //for both of this situations a splitting of the planes later on could lead to a wrong solid calculation
+                            //therefore this planes should be part in the level cut (so they not have to be splitted)
+                            //exeptional cases are ih the concave plane has 4 vertices --> then a splitting with the opposite vertex is also possible 
+
+
+
+                            if (!divisible && vertCt > 4)
+                            {
+                                ordPlanes.Insert(0, pId);
+                                ctConcave++;
+                            }
+                            else
+                                unordPlanes.Add(pId);
                         }
 
-                        //PlanesToSplit enthalten bestenfalls nur noch Planes, mit 4 Vertices
-                        //Achtung: Löcher (InnerVerts werden in SplitPlanes übernommen --> funktioniert nur, wenn wirlich keine Löcher vorhanden sind --> TO DO!
+                        ordPlanes.AddRange(unordPlanes.OrderByDescending(p => Planes[p].Vertices.Count()));
 
-                        //Normale ist hier alte nicht exakte Normale, centroid und edges sind def falsch (sollte aber alles nicht mehr relevant sein)
-                        C2BPlane splitPlaneTri1 =
-                            new C2BPlane(p + "_split1", new List<int>() { vertBefore, vPl.Key, vertOpposite }, sPlane.InnerVertices, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
+                        Log.Debug("RESULT of Selection:");
+                        Log.Debug("...forced Planes: " + ctConcave);
+                        Log.Debug("Cut1: " + Planes[ordPlanes[0]].Vertices.Count());
+                        Log.Debug("Cut2: " + Planes[ordPlanes[1]].Vertices.Count());
+                        Log.Debug("Cut3: " + Planes[ordPlanes[2]].Vertices.Count());
 
-                        //Rest des Planes (Dreieck an Vertex abgeschnitten), beachte falsche Edges, (Normale), Centroid
-                        C2BPlane splitPlaneTri2 =
-                            new C2BPlane(p + "_split2", new List<int>() { vertOpposite, vPl.Key, vertNext }, sPlane.InnerVertices, sPlane.Normal, sPlane.Centroid, sPlane.Edges);
+                        for (int i = 3; i < ordPlanes.Count; i++)
+                        {
+                            Log.Debug("Split" + (i + 1) + ": " + Planes[ordPlanes[i]].Vertices.Count());
+                        }
 
-                        planesCopy.Add("SPLITTED_01" + splitPlaneTri1.ID, splitPlaneTri1);
-                        planesCopy.Add("SPLITTED_02" + splitPlaneTri2.ID, splitPlaneTri2);
-                        planesCopy.Remove(p);
+                        Log.Debug("------------------------------------");
+
+                        for (var i = 0; i < ordPlanes.Count - 2; i++)
+                        {
+                            for (var j = i + 1; j < ordPlanes.Count - 1; j++)
+                            {
+                                for (var k = j + 1; k < ordPlanes.Count; k++)
+                                {
+                                    C2BPoint currPos = CalculateLevelCut(Planes[ordPlanes[i]], Planes[ordPlanes[j]], Planes[ordPlanes[k]]);
+
+                                    if (currPos == null)
+                                        continue;
+
+                                    double dNew = C2BPoint.DistanceSq(origPos, currPos);
+
+                                    if (dNew < d)        //shorter distance of level cut result to original coord
+                                    {
+                                        calcPos = currPos;
+                                        d = dNew;
+
+                                        //not at level cut involved planes --> those ones must be splitted if they have more than 3 vertices for planarity
+                                        splitPlanes = ordPlanes.Where(w => w != ordPlanes[i] && w != ordPlanes[j] && w != ordPlanes[k]).ToArray();
+
+                                    }
+
+                                    if (ctConcave > 2)
+                                        break;
+
+                                    if (d < 0.05)
+                                        break;
+                                }
+
+                                if (ctConcave == 2)
+                                    break;
+
+                                if (d < 0.05)
+                                    break;
+                            }
+                            if (ctConcave == 1)
+                                break;
+
+                            if (d < 0.05)
+                                break;
+                        }
+
+                        Log.Debug("RESULT of Level Cut = " + d);
+                        Log.Debug("------------------------------------");
+
+                        #endregion Test - Selection of cutted planes regarding concaveness
+
+                        Vertices[v].Position = calcPos;
+
+                        foreach (string pl in splitPlanes)
+                        {
+                            if (PlanesToSplit.ContainsKey(pl))
+                                PlanesToSplit[pl].Add(v);
+                            else
+                                PlanesToSplit.Add(pl, new List<int> { v });
+                        }
                     }
+
+                    #endregion Level Cut (> 3 planes - ambiguous, further calculations)
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Log.Error(ex.Message);
                     continue;
                 }
 
             }
+
+            #region Split Planes which were not inclued in level cut
+
+            Log.Debug("RESULT of Splits: ");
+            Log.Debug("------------------------------------");
+
+            foreach (var vPl in PlanesToSplit)
+            {
+                try
+                {
+
+                    //Info: each plane consists of its ID as Key and a List of integers which represent the vertices where a split is neccessary
+
+                    //List of integer-Arrays which represent the Vertex-Lists of the new planes                
+                    List<int[]> newPlaneVertices = new List<int[]>();
+
+                    //properties of the the plane which has to be split
+                    var sPlane = Planes[vPl.Key];
+                    int[] sVerts = sPlane.Vertices;
+                    int ctVerts = sVerts.Length;
+
+                    //in case of triangle, no split is neccessary (3 vertices define unambiguously a plane) 
+                    if (ctVerts == 3)
+                    {
+                        Log.Debug("NO SPLIT: Plane is Triangle");
+                        continue;
+                    }
+
+                    //no matter of number of vertices, at first the first Vertex will be investigated
+                    int vtx = vPl.Value.First();
+
+                    //adjacent vertices at plane will be read
+                    FindAdjacentIndices(sVerts, vtx, out int vertBefore, out int vertNext, out int vertOpp);
+
+                    //definition of first result of split is an triangle (beside of inner else: number of vertices > 1 and plane has more than 4 corners) 
+                    int[] triangleS1 = new int[3];
+
+                    triangleS1[0] = vertBefore;
+                    triangleS1[1] = vtx;
+
+                    //no matter of number of vertices where a split should apply: if plane has 4 corners, it could be split like the follow (result 2 triangles)
+                    if (ctVerts == 4)
+                    {
+                        Log.Debug("SIMPLE, 2 Triangles, at " + gmlID + "_" + sPlane.ID);
+
+                        triangleS1[2] = vertOpp;
+
+                        int[] triangleS2 = new int[3] { vtx, vertNext, vertOpp };
+
+                        newPlaneVertices.Add(triangleS1);
+                        newPlaneVertices.Add(triangleS2);
+                    }
+                    //if plane has more than 4 corners, we must differentiate regarding the number vertices where a split should apply 
+                    else
+                    {
+                        //if only one split apply, there is a simple division into a triangle and a polygon with n vertices
+                        if (vPl.Value.Count == 1)
+                        {
+                            Log.Debug("SIMPLE, 1 Triangle, 1 nPolygon, at " + gmlID + "_" + sPlane.ID);
+
+                            triangleS1[2] = vertNext;
+
+                            int[] polygonS2 = sVerts.Where(s => s != vtx).ToArray();
+                            int[] vertSplit2 = sVerts.Where(s => s != vtx).ToArray();
+
+                            newPlaneVertices.Add(triangleS1);
+                            newPlaneVertices.Add(polygonS2);
+                        }
+                        //if more than one split apply, there is a complicated division regarding the order of the relevant vertices in original polygon
+                        //NOTE: this could be fail, if 
+                        //...there is a concave vertex inside
+                        //...centroid is outside of polygon
+                        else
+                        {
+                            Log.Debug("COMPLICATED, nTriangles at centroid, at " + gmlID + "_" + sPlane.ID);
+
+                            //new index at end of vertex-list for centroid
+                            int indvCen = Vertices.Count;
+
+                            //creation of triangle-vertex-arrays (each edge and the centroid of original plane create a new triangle)
+                            for (int i = 1; i < ctVerts; i++)
+                            {
+                                int[] splitTri = new int[3] { sVerts[i - 1], sVerts[i], indvCen };
+                                newPlaneVertices.Add(splitTri);
+                            }
+
+                            int[] splitTriLast = new int[3] { sVerts[ctVerts - 1], sVerts[0], indvCen };
+                            newPlaneVertices.Add(splitTriLast);
+
+                            //new instance of Vertex for centroid
+                            C2BVertex vCen = new C2BVertex(sPlane.Centroid);
+
+                            //add the new Vertex to Solid.Vertices-List
+                            Vertices.Add(vCen);
+                        }
+                    }
+
+                    //create planes out of new Vertex-Arrays and add them to Solid.Planes and Solid.Vertices[i].Planes
+                    foreach (int[] newPoly in newPlaneVertices)
+                    {
+                        string splitId = vPl.Key + Guid.NewGuid().ToString();
+
+                        CalculatePlaneParameters(newPoly.ToList(), out var normalPoly, out var centerPoly);
+
+                        C2BPlane splitPlanePoly =
+                            new C2BPlane(splitId, newPoly.ToList(), sPlane.InnerVertices, normalPoly, centerPoly, sPlane.Edges);
+
+                        Planes.Add(splitId, splitPlanePoly);
+                        Planes.Remove(vPl.Key);
+
+                        foreach (int v in newPoly)
+                        {
+                            Vertices[v].AddPlane(splitId);
+                        }
+                    }
+
+                    #endregion Split Planes which were not inclued in level cut
+
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    continue;
+                }
+
+            }
+
+            Log.Debug("END Vertext-Calculation at: " + gmlID + "----------------------------------------------");
+            Log.Debug("---------------------------------------------------------------------------------------");
+            Log.Debug("---------------------------------------------------------------------------------------");
+            Log.Debug("---------------------------------------------------------------------------------------");
+
+
+
+        }
+
+        private void FindAdjacentIndices(int[] plVertices, int vertex, out int vBefore, out int vNext, out int vOpp)
+        {
+            int index = Array.IndexOf(plVertices, vertex);
+
+            vBefore = 0;
+            vNext = 0;
+            vOpp = 0;
+
+            if (index == 0)
+            {
+                vBefore = plVertices[plVertices.Length - 1];
+                vNext = plVertices[1];
+                vOpp = plVertices[2];
+            }
+            else if (index == plVertices.Length - 1)
+            {
+                vBefore = plVertices[index - 1];
+                vNext = plVertices[0];
+                vOpp = plVertices[1];
+            }
+            else
+            {
+                vBefore = plVertices[index - 1];
+                vNext = plVertices[index + 1];
+                if (index == plVertices.Length - 2)
+                    vOpp = plVertices[0];
+                else
+                    vOpp = plVertices[index + 2];
+            }
+        }
+
+        private void CalculatePlaneParameters(List<int> planeVerts, out C2BPoint planeNormal, out C2BPoint center)
+        {
+            var verts = (from v in planeVerts
+                         select Vertices[v].Position).ToList();
+
+            C2BPoint normal = new C2BPoint(0, 0, 0);
+            C2BPoint centroid = new C2BPoint(0, 0, 0);
+
+            for (int i = 1; i < verts.Count; i++)
+            {
+                //adds normal value (normal of plane which current point and the point before span) 
+                normal += C2BPoint.CrossProduct(verts[i - 1], verts[i]);
+
+                //adds current coordinates to centroid variable for later centroid calculation
+                centroid += verts[i];
+            }
+            centroid += verts[0];
+            normal += C2BPoint.CrossProduct(verts[verts.Count - 1], verts[0]);
+
+            planeNormal = C2BPoint.Normalized(normal);
+            center = centroid / verts.Count;
+
         }
 
         private C2BPoint CalculateLevelCut(C2BPlane plane1, C2BPlane plane2, C2BPlane plane3)

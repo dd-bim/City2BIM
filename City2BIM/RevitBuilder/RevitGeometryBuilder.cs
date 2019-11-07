@@ -11,7 +11,6 @@ namespace City2BIM.RevitBuilder
 {
     internal class RevitGeometryBuilder
     {
-        //private DxfVisualizer dxf;
         private City2BIM.GetGeometry.C2BPoint gmlCorner;
         private Transform revitPBPTrafo;
         private bool swapNE;
@@ -19,30 +18,18 @@ namespace City2BIM.RevitBuilder
         private double scale;
         private Document doc;
 
-        //private Dictionary<GetGeometry.C2BSolid, Dictionary<GetSemantics.GmlAttribute, string>> buildings;
         private List<GmlRep.GmlBldg> buildings;
-
         private Dictionary<GmlRep.GmlSurface.FaceType, ElementId> colors;
-        //private Dictionary<GetSemantics.Attribute, string> attributes;
 
-        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner, bool swapNE/*, DxfVisualizer dxf*/)
+
+        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner, bool swapNE)
         {
             this.doc = doc;
             this.buildings = buildings;
             this.swapNE = swapNE;
             this.gmlCorner = gmlCorner;
             this.revitPBPTrafo = GetRevitProjectLocation(doc);
-            //this.dxf = dxf;
             this.colors = CreateColorAsMaterial();
-
-        }
-
-        public PlugIn PlugIn
-        {
-            get => default(PlugIn);
-            set
-            {
-            }
         }
 
         #region coordinate transformation
@@ -114,7 +101,7 @@ namespace City2BIM.RevitBuilder
             var zFeet = zGlobal / 0.3048;
 
             //Creation of Revit point
-            var revitXYZ = new XYZ(xFeet, yFeet, zFeet);
+            var revitXYZ = new XYZ(yFeet, xFeet, zFeet);
 
             //Transform global coordinate to Revit project coordinate system (system of project base point)
             var revTransXYZ = revitPBPTrafo.OfPoint(revitXYZ);
@@ -131,179 +118,184 @@ namespace City2BIM.RevitBuilder
         /// </summary>
         public void CreateBuildings()
         {
-            double all = buildings.Count;
             double success = 0.0;
             double error = 0.0;
-
-            var i = 0;
-
-            foreach (var building in buildings)
-            {
-                try
-                {
-                    TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
-                    builder.OpenConnectedFaceSet(true);
-
-                    var tesselatedFaces = CreateRevitFaceList(building.BldgSolid, building.BldgSurfaces);
-
-                    foreach (var faceT in tesselatedFaces)
-                        builder.AddFace(faceT);
-
-                    builder.CloseConnectedFaceSet();
-
-                    builder.Target = TessellatedShapeBuilderTarget.Solid;
-
-                    builder.Fallback = TessellatedShapeBuilderFallback.Abort;
-
-                    builder.Build();
-
-                    TessellatedShapeBuilderResult result = builder.GetBuildResult();
-
-                    using (Transaction t = new Transaction(doc, "Create tessellated direct shape"))
-                    {
-                        t.Start();
-
-                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-
-                        ds.ApplicationId = "Application id";
-                        ds.ApplicationDataId = "Geometry object id";
-
-                        ds.SetShape(result.GetGeometricalObjects());
-
-                        ds = SetAttributeValues(ds, building.BldgAttributes);
-                        ds.Pinned = true;
-
-                        var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-
-                        var commAttr = ds.LookupParameter(commAttrLabel);
-
-                        commAttr.Set("LOD2");
-
-                        t.Commit();
-                    }
-
-                    i++;
-
-                    //Log.Information("Building builder successful");
-                    success += 1;
-
-                    Log.Information("Calculation completed at " + building.BldgId);
-                }
-                catch (System.Exception ex)
-                {
-                    Log.Warning("No solid calculation possbile at " + building.BldgId + " !: " + ex.Message);
-
-
-                    try
-                    {
-                        CreateLOD1Building(building.BldgSolid, building.BldgSurfaces, building.BldgAttributes);
-                        Log.Information("Fallback completed at " + building.BldgId);
-                    }
-                    catch (Exception exx)
-                    {
-                        Log.Error("No bldg at " + building.BldgId + " !: " + exx.Message);
-                        continue;
-                    }
-
-                    error += 1;
-                    continue;
-                }
-            }
-
-            foreach (var bldg in buildings)
-            {
-                foreach (var building in bldg.Parts)
-                {
-                    try
-                    {
-                        TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
-                        builder.OpenConnectedFaceSet(true);
-
-                        var tesselatedFaces = CreateRevitFaceList(building.PartSolid, building.PartSurfaces);
-
-                        foreach (var faceT in tesselatedFaces)
-                            builder.AddFace(faceT);
-
-                        builder.CloseConnectedFaceSet();
-
-                        builder.Target = TessellatedShapeBuilderTarget.Solid;
-
-                        builder.Fallback = TessellatedShapeBuilderFallback.Abort;
-
-                        builder.Build();
-
-                        TessellatedShapeBuilderResult result = builder.GetBuildResult();
-
-                        using (Transaction t = new Transaction(doc, "Create tessellated direct shape"))
-                        {
-                            t.Start();
-
-                            DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-
-                            ds.ApplicationId = "Application id";
-                            ds.ApplicationDataId = "Geometry object id";
-
-                            ds.SetShape(result.GetGeometricalObjects());
-
-                            ds = SetAttributeValues(ds, bldg.BldgAttributes);
-                            ds = SetAttributeValues(ds, building.BldgPartAttributes);
-                            ds.Pinned = true;
-
-                            var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-
-                            var commAttr = ds.LookupParameter(commAttrLabel);
-
-                            commAttr.Set("LOD2 (Part)");
-
-                            t.Commit();
-                        }
-
-                        i++;
-
-                        //Log.Information("Building builder successful");
-                        success += 1;
-                    }
-                    catch (System.Exception ex)
-                    {
-                        try
-                        {
-                            foreach (var d in bldg.BldgAttributes)
-                            {
-                                if (!building.BldgPartAttributes.ContainsKey(d.Key))
-                                    building.BldgPartAttributes.Add(d.Key, d.Value);
-                            }
-
-                            CreateLOD1Building(building.PartSolid, building.PartSurfaces, bldg.BldgAttributes);
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-
-                        error += 1;
-                        continue;
-                    }
-                }
-            }
+            double fatalError = 0.0;
 
             var results = new LoggerConfiguration()
                //.MinimumLevel.Debug()
-               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\Results_04062019_1qmm.txt"/*, rollingInterval: RollingInterval.Day*/)
+               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitErrors_Solids.txt", rollingInterval: RollingInterval.Hour)
+               .CreateLogger();
+
+            double all = 0.0;
+
+            foreach (var bldg in buildings)
+            {
+                foreach (var part in bldg.Parts)
+                {
+                    if (part.PartSolid.Planes.Count > 0)
+                    {
+                        all++;
+
+                        try
+                        {
+                            CreateRevitRepresentation(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, part.BldgPartAttributes);
+                            success++;
+                        }
+                        catch (System.Exception ex)
+                        {
+                            error++;
+                            WriteRevitBuildErrorsToLog(results, ex.Message, bldg.BldgId, part.BldgPartId);
+
+                            try
+                            {
+                                CreateLOD1Building(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, part.BldgPartAttributes);
+                            }
+                            catch (Exception exx)
+                            {
+                                fatalError++;
+                                WriteRevitBuildErrorsToLog(results, exx.Message, "fatal" + bldg.BldgId, part.BldgPartId);
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                if (bldg.BldgSolid.Planes.Count > 0)
+                {
+
+                    try
+                    {
+                        all++;
+                        CreateRevitRepresentation(bldg.BldgSolid.InternalID.ToString(), bldg.BldgSolid, bldg.BldgSurfaces, bldg.BldgAttributes);
+                        success++;
+                    }
+
+                    catch (System.Exception ex)
+                    {
+                        error++;
+                        WriteRevitBuildErrorsToLog(results, ex.Message, bldg.BldgId);
+
+                        try
+                        {
+                            CreateLOD1Building(bldg.BldgSolid.InternalID.ToString(), bldg.BldgSolid, bldg.BldgSurfaces, bldg.BldgAttributes);
+                        }
+                        catch (Exception exx)
+                        {
+                            fatalError++;
+                            WriteRevitBuildErrorsToLog(results, ex.Message, "fatal" + bldg.BldgId);
+                            continue;
+                        }
+                        continue;
+                    }
+                }
+            }
+
+            //-------internal statistic file------------------------
+
+            WriteStatisticToLog(all, success, error, fatalError);
+
+            //-------internal statistic file------------------------
+        }
+
+        private void WriteRevitBuildErrorsToLog(Serilog.Core.Logger results, string ex, string buildingID, string partID = null, string surfaceID = null, string surfaceType = null)
+        {
+            if (partID != null)
+                results.Error("At buildingPart: " + ex);
+            else
+                results.Error("At building: " + ex);
+
+            results.Error(buildingID);
+            if (partID != null)
+                results.Error(partID);
+            if (surfaceID != null)
+                results.Error(surfaceID);
+            if (surfaceType != null)
+                results.Error(surfaceType);
+            results.Error("--------------------------------------------------");
+        }
+
+        private void WriteStatisticToLog(double all, double success, double? error, double? fatalError)
+        {
+            var results = new LoggerConfiguration()
+               //.MinimumLevel.Debug()
+               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\Statistic.txt"/*, rollingInterval: RollingInterval.Day*/)
                .CreateLogger();
 
             double statSucc = success / all * 100;
-            double statErr = error / all * 100;
 
-            results.Information(@"C:\Users\goerne\Desktop\logs_revit_plugin");
-            results.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
-            results.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
+            results.Information("Amount of Solids or Surfaces: " + all);
+            results.Information("Success rate = " + statSucc + " procent = " + success + " objects");
+
+            if (error.HasValue)
+            {
+                double statErr = (double)error / all * 100;
+                results.Warning("Failure rate (LOD1 Fallback) = " + statErr + " procent = " + error + " objects");
+            }
+
+            if (fatalError.HasValue)
+            {
+                double fatStatErr = (double)fatalError / all * 100;
+                results.Error("Fatal error: no geometry at = " + fatStatErr + " procent = " + fatalError + " objects");
+            }
             results.Information("------------------------------------------------------------------");
-
-            Log.Information("Erfolgsquote = " + statSucc + "Prozent = " + success + "Gebäude");
-            Log.Information("Fehlerquote = " + statErr + "Prozent = " + error + "Gebäude");
         }
 
-        private void CreateLOD1Building(C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> attributes)
+        private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> bldgAttributes, Dictionary<GmlAttribute, string> partAttributes = null)
+        {
+            TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
+            builder.OpenConnectedFaceSet(true);
+
+            var tesselatedFaces = CreateRevitFaceList(solid, surfaces);
+
+            foreach (var faceT in tesselatedFaces)
+                builder.AddFace(faceT);
+
+            builder.CloseConnectedFaceSet();
+
+            builder.Target = TessellatedShapeBuilderTarget.Solid;
+
+            builder.Fallback = TessellatedShapeBuilderFallback.Abort;
+
+            builder.Build();
+
+            TessellatedShapeBuilderResult result = builder.GetBuildResult();
+
+            using (Transaction t = new Transaction(doc, "Create tessellated direct shape"))
+            {
+                t.Start();
+
+                DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+
+                ds.ApplicationId = "Application id";
+                ds.ApplicationDataId = "Geometry object id";
+
+                ds.SetShape(result.GetGeometricalObjects());
+
+                ds = SetAttributeValues(ds, bldgAttributes);
+
+                if (partAttributes != null)
+                    ds = SetAttributeValues(ds, partAttributes);
+                ds.Pinned = true;
+
+                SetRevitInternalParameters(internalID, "CityGML: LOD2-Solid", ds);
+
+                t.Commit();
+            }
+        }
+
+        private void SetRevitInternalParameters(string guid, string comment, DirectShape ds)
+        {
+            string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+            Parameter commAttr = ds.LookupParameter(commAttrLabel);
+            commAttr.Set(comment);
+
+            string idAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_MARK);
+            Parameter idAttr = ds.LookupParameter(idAttrLabel);
+            idAttr.Set(guid);
+        }
+
+        private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> attributes, Dictionary<GmlAttribute, string> partAttributes = null)
         {
             var ordByHeight = from v in solid.Vertices
                               orderby v.Position.Z
@@ -320,7 +312,7 @@ namespace City2BIM.RevitBuilder
                 try
                 {
                     var groundPlane = (from p in solid.Planes
-                                       where p.Key == groundSurface.SurfaceId
+                                       where p.Key.Contains(groundSurface.InternalID.ToString())
                                        select p.Value).SingleOrDefault();
 
                     var poly = new List<XYZ>();
@@ -336,8 +328,6 @@ namespace City2BIM.RevitBuilder
                             poly.Add(revTransXYZ);
                         }
                     }
-
-                    //List<Curve> edges = new List<Curve>();
 
                     List<CurveLoop> loopList = new List<CurveLoop>();
 
@@ -368,13 +358,11 @@ namespace City2BIM.RevitBuilder
                         ds.SetShape(new GeometryObject[] { lod1bldg });
 
                         ds = SetAttributeValues(ds, attributes);
+                        if (partAttributes != null)
+                            ds = SetAttributeValues(ds, partAttributes);
                         ds.Pinned = true;
 
-                        var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-
-                        var commAttr = ds.LookupParameter(commAttrLabel);
-
-                        commAttr.Set("LOD1 (simplified from LOD2)");
+                        SetRevitInternalParameters(internalID, "CityGML: LOD1-Solid (simplified from LOD2)", ds);
 
                         t.Commit();
                     }
@@ -392,12 +380,7 @@ namespace City2BIM.RevitBuilder
 
             ElementId colorMat = ElementId.InvalidElementId;
 
-            //PlanesCopy wirklich reduziert?
-
-            Log.Debug("CT Planes____:" + solid.Planes.Count);
-            Log.Debug("CT PlanesCopy:" + solid.PlanesCopy.Count);
-
-            foreach (var plane in solid.PlanesCopy) //Planes
+            foreach (var plane in solid.Planes) //Planes
             {
                 IList<IList<Autodesk.Revit.DB.XYZ>> faceList = new List<IList<XYZ>>(); //neccessary if also interior face will occure
 
@@ -414,7 +397,7 @@ namespace City2BIM.RevitBuilder
                 //Identify GmlSurface with current plane
 
                 var involvedSurfaces = from pl in surfaces
-                                       where plane.Key.Contains(pl.SurfaceId)
+                                       where plane.Key.Contains(pl.InternalID.ToString())
                                        select pl;
 
                 var faceTypes = involvedSurfaces.Select(f => f.Facetype).Distinct();
@@ -463,30 +446,69 @@ namespace City2BIM.RevitBuilder
 
         #endregion Solid to Revit incl. LOD1-Fallback
 
-        #region Surfaces to Revit incl. Fallback
-
+        #region Surfaces to Revit
         public void CreateBuildingsWithFaces()
         {
+            double success = 0.0;
+            double error = 0.0;
+            double all = 0.0;
+
+            var results = new LoggerConfiguration()
+               //.MinimumLevel.Debug()
+               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitErrors.txt", rollingInterval: RollingInterval.Hour)
+               .CreateLogger();
+
             foreach (var building in buildings)
             {
-                CreateSurfaceSolid(building.BldgSolid, building.BldgSurfaces, building.BldgAttributes);
-
                 foreach (var part in building.Parts)
                 {
-                    foreach (var d in building.BldgAttributes)
+                    foreach (var surface in part.PartSurfaces)
                     {
-                        if (!part.BldgPartAttributes.ContainsKey(d.Key))
-                            part.BldgPartAttributes.Add(d.Key, d.Value);
-                    }
+                        all++;
 
-                    CreateSurfaceSolid(part.PartSolid, part.PartSurfaces, part.BldgPartAttributes);
+                        try
+                        {
+                            CreateRevitFaceRepresentation(surface, building.BldgAttributes, part.BldgPartAttributes);
+                            success++;
+
+                        }
+                        catch (Exception ex)
+                        {
+                            error++;
+                            WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, part.BldgPartId, surface.SurfaceId, surface.Facetype.ToString());
+                            continue;
+                        }
+                    }
+                }
+
+                foreach (var surface in building.BldgSurfaces)
+                {
+                    all++;
+
+                    try
+                    {
+                        CreateRevitFaceRepresentation(surface, building.BldgAttributes);
+                        success++;
+                    }
+                    catch (Exception ex)
+                    {
+                        error++;
+                        WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, null, surface.SurfaceId, surface.Facetype.ToString());
+                        continue;
+                    }
                 }
             }
+            //-------------------
+
+            WriteStatisticToLog(all, success, null, error);
+
+            //-----------------------
+
         }
 
-        private void CreateSurfaceWithOriginalPoints(GmlSurface surface, Dictionary<GmlAttribute, string> attributes)
+        private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<GmlAttribute, string> bldgAttributes, Dictionary<GmlAttribute, string> partAttributes = null)
         {
-            var pts = surface.ExteriorPts;  
+            var pts = surface.ExteriorPts;
 
             C2BPoint normalVc = new C2BPoint(0, 0, 0);
             C2BPoint centroidPl = new C2BPoint(0, 0, 0);
@@ -578,174 +600,18 @@ namespace City2BIM.RevitBuilder
 
                 ds.SetShape(new GeometryObject[] { bldgFaceSolid });
 
-                var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+                SetRevitInternalParameters(surface.InternalID.ToString(), "CityGML: LOD2-Surface", ds);
 
-                var commAttr = ds.LookupParameter(commAttrLabel);
-
-                commAttr.Set("Face-Solid (LOD2) Fallback");
-
-                foreach (var attr in surface.SurfaceAttributes)
-                {
-                    attributes.Add(attr.Key, attr.Value);
-                }
-
-                ds = SetAttributeValues(ds, attributes);
+                ds = SetAttributeValues(ds, bldgAttributes);
+                if (partAttributes != null)
+                    ds = SetAttributeValues(ds, partAttributes);
+                ds = SetAttributeValues(ds, surface.SurfaceAttributes);
 
                 ds.Pinned = true;
 
                 t.Commit();
             }
         }
-
-        private void CreateSurfaceSolid(C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> bldgAttributes)
-        {
-            foreach (var plane in solid.PlanesCopy)
-            {
-                Log.Debug("plane: " + plane.Key);
-                foreach (var v in plane.Value.Vertices)
-                {
-                    Log.Debug("Plane-verts: " + v);
-                }
-            }
-
-            int i = 0;
-
-            foreach (var vert in solid.Vertices)
-            {
-                Log.Debug("Vertex: " + i);
-                i++;
-                foreach (var v in vert.Planes)
-                {
-                    Log.Debug("Vertex-Planes: " + v);
-                }
-            }
-
-
-            foreach (var plane in solid.PlanesCopy)
-            {
-                var attributes = new Dictionary<GmlAttribute, string>();
-
-                foreach (var attr in bldgAttributes)
-                {
-                    attributes.Add(attr.Key, attr.Value);
-                }
-
-                //Identify GmlSurface with current plane
-                //var surface = (from pl in surfaces
-                //               where pl.SurfaceId == plane.Key
-                //               select pl).SingleOrDefault();
-
-                try
-                {
-                    var poly = new List<XYZ>();
-
-                    foreach (int vid in plane.Value.Vertices)
-                    {
-                        var verts = solid.Vertices;
-
-                        if (verts.Contains(verts[vid]))
-                        {
-                            var revTransXYZ = TransformPointForRevit(verts[vid].Position);
-
-                            poly.Add(revTransXYZ);
-                        }
-                    }
-                    List<CurveLoop> loopList = new List<CurveLoop>();
-                    List<Curve> edges = new List<Curve>();
-
-                    for (var c = 1; c < poly.Count; c++)
-                    {
-                        Line edge = Line.CreateBound(poly[c - 1], poly[c]);
-
-                        edges.Add(edge);
-                    }
-
-                    edges.Add(Line.CreateBound(poly[poly.Count - 1], poly[0]));
-
-                    CurveLoop baseLoop = CurveLoop.Create(edges);
-                    loopList.Add(baseLoop);
-
-                    double height = 0.01 * 3.28084;
-
-                    XYZ normal = new XYZ(plane.Value.Normal.X, plane.Value.Normal.Y, plane.Value.Normal.Z);
-
-                    SolidOptions opt = new SolidOptions(/*colors[surface.Facetype]*/ ElementId.InvalidElementId, ElementId.InvalidElementId);
-
-                    Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height, opt);
-
-                    using (Transaction t = new Transaction(doc, "Create face extrusion"))
-                    {
-                        t.Start();
-                        // create direct shape and assign the sphere shape
-
-                        ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
-
-                        //switch (surface.Facetype)
-                        //{
-                        //    case (GmlSurface.FaceType.roof):
-                        //        elem = new ElementId(BuiltInCategory.OST_Roofs);
-
-                        //        break;
-
-                        //    case (GmlSurface.FaceType.wall):
-                        //        elem = new ElementId(BuiltInCategory.OST_Walls);
-                        //        break;
-
-                        //    case (GmlSurface.FaceType.ground):
-                        //        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
-                        //        break;
-
-                        //    case (GmlSurface.FaceType.closure):
-                        //        elem = new ElementId(BuiltInCategory.OST_Walls);
-                        //        break;
-
-                        //    default:
-                        //        break;
-                        //}
-                        DirectShape ds = DirectShape.CreateElement(doc, elem);
-
-                        ds.SetShape(new GeometryObject[] { bldgFaceSolid });
-
-                        var commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-
-                        var commAttr = ds.LookupParameter(commAttrLabel);
-
-                        commAttr.Set("Face-Solid (LOD2): " + plane.Key);
-
-                        //foreach (var attr in surface.SurfaceAttributes)
-                        //{
-                        //    attributes.Add(attr.Key, attr.Value);
-                        //}
-
-                        ds = SetAttributeValues(ds, attributes);
-
-                        ds.Pinned = true;
-
-                        t.Commit();
-                    }
-
-                    Log.Information("Creation of Face-Solid successful!");
-                }
-
-                catch (System.Exception ex)
-                {
-                    try
-                    {
-                        //CreateSurfaceWithOriginalPoints(surface, attributes);
-                        Log.Warning("Face-Fallback used at " + plane.Key + " , because of: " + ex.Message);
-                        Log.Information("Fallback successful!");
-                    }
-                    catch (Exception exX)
-                    {
-                        //Log.Error("Face-Fallback not possible: at " + plane.Key + " + exX.Message);
-                        //Log.Information("Could not create Geometry!");
-
-                        continue;
-                    }
-                }
-            }
-        }
-
         #endregion Surfaces to Revit incl. Fallback
 
         #region Attributes and Colors to Revit

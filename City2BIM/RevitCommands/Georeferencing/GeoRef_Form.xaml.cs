@@ -98,19 +98,19 @@ namespace City2BIM.RevitCommands.Georeferencing
 
             var east = geoInfo.LookupParameter("Eastings");
             if (east != null)
-                tb_eastings50.Text = east.AsString();
+                tb_eastings50.Text = east.AsDouble().ToString();
             else
                 tb_eastings50.Text = (geoProject.EastWest * feetToM).ToString();
 
             var north = geoInfo.LookupParameter("Northings");
             if (north != null)
-                tb_northings50.Text = north.AsString();
+                tb_northings50.Text = north.AsDouble().ToString();
             else
                 tb_northings50.Text = (geoProject.NorthSouth * feetToM).ToString();
 
             var height = geoInfo.LookupParameter("OrthogonalHeight");
             if (height != null)
-                tb_elev.Text = height.AsString();
+                tb_elev.Text = height.AsDouble().ToString();
             else
                 tb_elev.Text = (geoProject.Elevation * feetToM).ToString();
 
@@ -118,15 +118,15 @@ namespace City2BIM.RevitCommands.Georeferencing
             var rotOrd = geoInfo.LookupParameter("XAxisOrdinate");
 
             if (rotAbs != null && rotOrd != null)
-                tb_rotation50.Text = UTMcalc.VectorToAzimuth(UTMcalc.ParseDouble(rotAbs.AsString()), UTMcalc.ParseDouble(rotOrd.AsString())).ToString();
+                tb_rotation50.Text = (UTMcalc.VectorToAzimuth(rotAbs.AsDouble(), rotOrd.AsDouble()).ToString());
 
             var scale = geoInfo.LookupParameter("Scale");
             if (scale != null)
-                tb_scale50.Text = scale.AsString();
+                tb_scale50.Text = scale.AsDouble().ToString();
             else
                 tb_scale50.Text = "1";
 
-            var epsg = geoInfo.LookupParameter("CRS Name");
+            var epsg = geoInfo.LookupParameter("Name");
             if (epsg != null)
                 cb_epsg.Text = epsg.AsString();
 

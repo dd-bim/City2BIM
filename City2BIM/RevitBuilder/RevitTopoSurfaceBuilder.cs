@@ -17,14 +17,6 @@ namespace City2BIM.RevitBuilder
             this.revitPBP = GetRevitProjectLocation(doc);
         }
 
-        public PlugIn PlugIn
-        {
-            get => default(PlugIn);
-            set
-            {
-            }
-        }
-
         private Transform GetRevitProjectLocation(Document doc)
         {
             ProjectLocation proj = doc.ActiveProjectLocation;

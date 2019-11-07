@@ -15,8 +15,6 @@ namespace City2BIM.RevitBuilder
         private DefinitionFile city2BimParameterFile;
         private string userDefinedParameterFile;
 
-        //public enum Groups { CityGML_Core, CityGML_Generics, CityGML_Building, CityGML_Address, CityGML_gml, ePSet_MapConversion, ePSet_ProjectedCRS };
-
         public RevitSemanticBuilder(Document doc)
         {
             this.doc = doc;

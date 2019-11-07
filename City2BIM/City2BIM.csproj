@@ -56,13 +56,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BimGisCad">
-      <HintPath>..\..\..\..\libraries\bimgiscadlib-master_06_19\bimgiscadlib-master\BimGisCad\bin\Release\netstandard2.0\BimGisCad.dll</HintPath>
+      <HintPath>..\..\..\..\libraries\bimgiscadlib-master_10_19\bimgiscadlib-master\BimGisCad\bin\Release\netstandard2.0\BimGisCad.dll</HintPath>
     </Reference>
     <Reference Include="GeoJSON.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoJSON.Net.1.1.64\lib\net45\GeoJSON.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="netDxf, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\netDXF.2.2.0.1\lib\net45\netDxf.dll</HintPath>
     </Reference>
     <Reference Include="NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -107,9 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileDialog.cs" />
-    <Compile Include="DxfVisualizer.cs" />
     <Compile Include="GetGeometry\C2BEdge.cs" />
-    <Compile Include="GetGeometry\ValidateGeometry.cs" />
     <Compile Include="GetGeometry\C2BPlane.cs" />
     <Compile Include="GetGeometry\C2BSolid.cs" />
     <Compile Include="GetGeometry\C2BVertex.cs" />

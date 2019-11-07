@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 
 namespace City2BIM.GetGeometry
 {
@@ -12,30 +13,6 @@ namespace City2BIM.GetGeometry
             X = x;
             Y = y;
             Z = z;
-        }
-
-        //public ReadGeometry ReadData
-        //{
-        //    get => default(ReadGeometry);
-        //    set
-        //    {
-        //    }
-        //}
-
-        public C2BPlane Plane
-        {
-            get => default(C2BPlane);
-            set
-            {
-            }
-        }
-
-        public C2BVertex Vertex
-        {
-            get => default(C2BVertex);
-            set
-            {
-            }
         }
 
         public static C2BPoint operator +(C2BPoint a, C2BPoint b)
@@ -79,6 +56,27 @@ namespace City2BIM.GetGeometry
         public static double ScalarProduct(C2BPoint a, C2BPoint b)
         {
             return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        }
+
+        public static bool CCW(C2BPoint p1, C2BPoint p2, C2BPoint p3, C2BPoint vecNormal)
+        {
+            var normal = new C2BPoint(0, 0, 0);
+            normal += C2BPoint.CrossProduct(p1, p2);
+            normal += C2BPoint.CrossProduct(p2, p3);
+            normal += C2BPoint.CrossProduct(p3, p1);
+
+            var vecTri = C2BPoint.Normalized(normal);
+
+            var diffVec = vecTri - vecNormal;
+
+            //Log.Debug("Plane-Normal:    " + vecNormal.X + " / " + vecNormal.Y + " / " + vecNormal.Z);
+            //Log.Debug("Triangle-Normal: " + vecTri.X + " / " + vecTri.Y + " / " + vecTri.Z);
+
+            if (diffVec.X < 0.1 && diffVec.Y < 0.1 && diffVec.Z < 0.1)
+            {
+                return true;
+            }
+            return false;
         }
 
         public static double DistanceSq(C2BPoint a, C2BPoint b)

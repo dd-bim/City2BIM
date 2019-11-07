@@ -10,14 +10,19 @@ namespace City2BIM.GmlRep
 {
     public class GmlSurface
     {
+        private Guid internalID;        
         private string surfaceId;
         private FaceType facetype;
         private Dictionary<GmlAttribute, string> surfaceAttributes;
         private List<C2BPoint> exteriorPts;
         private List<List<C2BPoint>> interiorPts;
 
-        //private C2BPlane planeExt;
-        //private List<C2BPlane> planeInt;
+        public Guid InternalID { get => internalID; }
+
+        public GmlSurface()
+        {
+            this.internalID = Guid.NewGuid();
+        }
 
         public string SurfaceId
         {
@@ -58,34 +63,8 @@ namespace City2BIM.GmlRep
             }
         }
 
-        //public C2BPlane PlaneExt
-        //{
-        //    get
-        //    {
-        //        return this.planeExt;
-        //    }
-
-        //    set
-        //    {
-        //        this.planeExt = value;
-        //    }
-        //}
-
         public List<List<C2BPoint>> InteriorPts { get => interiorPts; set => interiorPts = value; }
         public List<C2BPoint> ExteriorPts { get => exteriorPts; set => exteriorPts = value; }
-
-        //public List<C2BPlane> PlaneInt
-        //{
-        //    get
-        //    {
-        //        return this.planeInt;
-        //    }
-
-        //    set
-        //    {
-        //        this.planeInt = value;
-        //    }
-        //}
 
         public enum FaceType { roof, wall, ground, closure, outerCeiling, outerFloor, unknown }
     }

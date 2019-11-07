@@ -12,14 +12,6 @@ namespace City2BIM.GmlRep
         private List<GmlSurface> bldgSurfaces;
         private C2BSolid bldgSolid;
 
-        //public GmlBldg(XElement gmlBldg, HashSet<GmlAttribute> attributes, Dictionary<string, XNamespace> nsp)
-        //{
-        //    this.BldgId = gmlBldg.Attribute(nsp["gml"] + "id").Value;
-
-        //    this.BldgAttributes = new ReadSemValues().ReadAttributeValuesBldg(gmlBldg, attributes, nsp);
-
-        //}
-
         public string BldgId
         {
             get

@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
 using City2BIM.RevitBuilder;
@@ -44,8 +43,6 @@ namespace City2BIM
             //-------------------------------
             Log.Information("File: " + path);
 
-            Log.Information("Start reading CityGML data...");
-
             //Load XML document
             XDocument gmlDoc = XDocument.Load(path);
             //-----------------------------------------
@@ -74,7 +71,6 @@ namespace City2BIM
 
             #endregion Namespaces
 
-            Log.Information("Check Input CRS...");
 
             bool sameXY = false, sameHeight = false, swapNE = false;
             CheckInputCRS(doc, gmlDoc, ref sameXY, ref sameHeight, ref swapNE);
@@ -111,19 +107,15 @@ namespace City2BIM
 
             if (continueImport)
             {
-                //Daten einlesen mit Semantik sowie Geometrie (Rohdaten, Punktlisten)
-                var gmlBuildings = ReadGmlData(gmlDoc/*, dxf*/);
+                var gmlBuildings = ReadGmlData(gmlDoc);
 
-                Log.Information("Validate CityGML geometry data...");
-                //Filter of surface points (Geometry validation)
-                //gmlBuildings = ImprovePolygonPoints(gmlBuildings);
-
-                Log.Information("Calculate solids from CityGML geometry data...");
-                //Creation of Solids
-                gmlBuildings = CalculateSolids(gmlBuildings);
-
+                if (solid)
+                {
+                    //Creation of Solids
+                    gmlBuildings = CalculateSolids(gmlBuildings);
+                }
                 //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-                RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, gmlBuildings, this.lowerCornerPt, swapNE/*, dxf*/);
+                RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, gmlBuildings, this.lowerCornerPt, swapNE);
 
                 //Parameter für Revit-Kategorie erstellen
                 //nach ausgewählter Methode (Solids oder Flächen) Parameter an zugehörige Kategorien übergeben
@@ -137,12 +129,10 @@ namespace City2BIM
 
                 if (solid)
                 {
-                    Log.Information("Calculate Revit Geometry for Building Solids...");
                     cityModel.CreateBuildings(); //erstellt DirectShape-Geometrie als Kategorie Umgebung
                 }
                 else
                 {
-                    Log.Information("Calculate Revit Geometry for Building Faces...");
                     cityModel.CreateBuildingsWithFaces(); //erstellt DirectShape-Geometrien der jeweiligen Kategorie
                 }
             }
@@ -346,7 +336,6 @@ namespace City2BIM
 
                 polygonVertices.Add(coord);
             }
-
             return polygonVertices;
         }
 
@@ -364,10 +353,74 @@ namespace City2BIM
             return SplitCoordinate(pointSeperated, lowerCorner);
         }
 
+        private bool CheckSameStartEnd(List<C2BPoint> rawPolygon)
+        {
+            if (rawPolygon.First().X != rawPolygon.Last().X)
+                return false;
+
+            if (rawPolygon.First().Y != rawPolygon.Last().Y)
+                return false;
+
+            if (rawPolygon.First().Z != rawPolygon.Last().Z)
+                return false;
+
+            return true;
+        }
+
+        private bool CheckNumberOfPoints(List<C2BPoint> redPolygon)
+        {
+            if (redPolygon.Count < 4)
+                return false;
+
+            return true;
+        }
+
+        private List<C2BPoint> CheckForDeadEndAtZCoord(List<C2BPoint> rawPolygon)       //prüft nur über Koordinatenkomponenetenvergleich und nur für Fall gleiche XY-Koordinaten
+        {
+            //avoids this:          (dead end will be removed, works only for points with same XY coordinates, dead end along Z axis)
+            //       _______      
+            //      |       |
+            //      |       |
+            //      |_______|
+            //      |
+            //      |
+
+            List<C2BPoint> deletePt = new List<C2BPoint>();
+            
+            for (int i = 0; i < rawPolygon.Count - 2; i++)
+            {
+                if (rawPolygon[i].X != rawPolygon[i + 2].X)         //check to proceed quickly
+                    continue;
+
+                if (rawPolygon[i].Y != rawPolygon[i + 2].Y)         //check to proceed quickly
+                    continue;
+
+                if (rawPolygon[i].X != rawPolygon[i + 1].X)         //check to proceed quickly
+                    continue;
+
+                if (rawPolygon[i].Y != rawPolygon[i + 1].Y)         //check to proceed quickly
+                    continue;
+
+                double z1z2 = Math.Abs(rawPolygon[i].Z - rawPolygon[i + 1].Z);
+                double z2z3 = Math.Abs(rawPolygon[i + 1].Z - rawPolygon[i + 2].Z);
+                double z1z3 = Math.Abs(rawPolygon[i].Z - rawPolygon[i + 2].Z);
+                double sum = Math.Round(z1z2 + z2z3,4);
+
+                if (sum == Math.Round(z1z3,4))                                    //in this case no dead end
+                    continue;
+
+                deletePt.Add(rawPolygon[i + 1]);                    //second point is dead end --> will be removed later
+            }
+
+            return deletePt;
+        }
+
         private C2BPoint SplitCoordinate(string[] xyzString, C2BPoint lowerCorner)
         {
-            double x = Double.Parse(xyzString[0], CultureInfo.InvariantCulture) - lowerCorner.X;
-            double y = Double.Parse(xyzString[1], CultureInfo.InvariantCulture) - lowerCorner.Y;
+            //Achtung: Linkssystem vs Rechtssystem
+
+            double x = Double.Parse(xyzString[1], CultureInfo.InvariantCulture) - lowerCorner.X;
+            double y = Double.Parse(xyzString[0], CultureInfo.InvariantCulture) - lowerCorner.Y;
             double z = Double.Parse(xyzString[2], CultureInfo.InvariantCulture) - lowerCorner.Z;
 
             return new C2BPoint(x, y, z);
@@ -378,10 +431,15 @@ namespace City2BIM
             var bldgParts = bldgEl.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
 
+            var surfaces = new List<GmlSurface>();
+
+            bool poly = bldg.Descendants().Where(l => l.Name.LocalName.Contains("Polygon")).Any();
+
+            if (!poly)                  //no polygons --> directly return (e.g. Buildings with Parts but no geometry at building level)
+                return surfaces;
+
             bool lod2 = bldg.DescendantsAndSelf().Where(l => l.Name.LocalName.Contains("lod2")).Count() > 0;
             bool lod1 = bldg.DescendantsAndSelf().Where(l => l.Name.LocalName.Contains("lod1")).Count() > 0;
-
-            var surfaces = new List<GmlSurface>();
 
             if (lod2)
             {
@@ -502,32 +560,25 @@ namespace City2BIM
                 #endregion lod1Surfaces
             }
             else
-                Log.Debug("No lod2 or lod1 detected. No support yet.");
+                Log.Error("No lod2 or lod1 detected. No support yet.");
 
             return surfaces;
         }
 
         private List<GmlSurface> ReadSurfaceType(XElement bldg, XElement gmlSurface, GmlSurface.FaceType type)
         {
-            List<GmlSurface> polyList = new List<GmlSurface>(); 
-            
+            List<GmlSurface> polyList = new List<GmlSurface>();
+
             var polysR = gmlSurface.Descendants(this.allns["gml"] + "Polygon").ToList();
 
             for (var i = 0; i < polysR.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
             {
                 var surface = new GmlSurface();
 
-                var faceID = IdentifySurfaceID(gmlSurface);
+                var faceID = polysR[i].Attribute(allns["gml"] + "id");
 
-                if (faceID == "")
-                {
-                    faceID = bldg.Attribute(allns["gml"] + "id").Value;
-                }
-
-                if (polysR.Count() > 1)
-                    surface.SurfaceId = faceID + "_" + i;
-                else
-                    surface.SurfaceId = faceID;
+                if (faceID != null)
+                    surface.SurfaceId = faceID.Value;
 
                 surface.Facetype = type;
                 surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(gmlSurface, attributes, type);
@@ -536,46 +587,6 @@ namespace City2BIM
                 polyList.Add(surfacePl);
             }
             return polyList;
-        }
-
-        private string IdentifySurfaceID(XElement surface)
-        {
-            var faceID = surface.Attribute(allns["gml"] + "id");
-
-            if (faceID != null)
-                return faceID.Value;
-
-            var multiS = surface.Descendants(allns["gml"] + "MultiSurface");
-
-            if (multiS.Count() == 1)
-            {
-                var multiID = multiS.Single().Attribute(allns["gml"] + "id");
-
-                if (multiID != null)
-                    return multiID.Value;
-            }
-
-            var poly = surface.Descendants(allns["gml"] + "Polygon");
-
-            if (poly.Count() == 1)
-            {
-                var polyID = poly.Single().Attribute(allns["gml"] + "id");
-
-                if (polyID != null)
-                    return polyID.Value;
-            }
-
-            var ring = surface.Descendants(allns["gml"] + "LinearRing");
-
-            if (ring.Count() == 1)
-            {
-                var ringID = ring.Single().Attribute(allns["gml"] + "id");
-
-                if (ringID != null)
-                    return ringID.Value;
-            }
-
-            return "";
         }
 
         /// <summary>
@@ -598,25 +609,54 @@ namespace City2BIM
 
             var posListExt = exteriorF.Descendants(allns["gml"] + "posList");
 
-            var planeExt = new C2BPlane(surface.SurfaceId);
+            var ptList = new List<C2BPoint>();
 
             if (posListExt.Any())
             {
-                surface.ExteriorPts = CollectPoints(posListExt.FirstOrDefault(), this.lowerCornerPt);
+                ptList.AddRange(CollectPoints(posListExt.FirstOrDefault(), this.lowerCornerPt));
             }
             else
             {
                 var posExt = exteriorF.Descendants(allns["gml"] + "pos");
 
-                var ptList = new List<C2BPoint>();
-
                 foreach (var pos in posExt)
                 {
                     ptList.Add(CollectPoint(pos, this.lowerCornerPt));
                 }
-
-                surface.ExteriorPts = ptList;
             }
+
+            //-------------------Check section-----------------------
+
+            //Start = End
+
+            if (!CheckSameStartEnd(ptList))
+            {
+                ptList.Clear();
+                Log.Error("NOT CLOSED: Polygon does not have the same start and end point. The Polygon will be ignored at " + surface.SurfaceId);
+            }               
+
+            //Dead end check
+
+            List<C2BPoint> deletion = CheckForDeadEndAtZCoord(ptList);
+
+            if (deletion.Count > 0)
+            {
+                Log.Warning("INTERSECTION: Dead end detected. Point for dead end will be deleted at " + surface.SurfaceId);
+            }
+
+            List<C2BPoint> pointsRed = ptList.Except(deletion).ToList();
+
+            //Too few points (possibly reduced point list will be investigated because dead end could be removed)
+
+            if (!CheckNumberOfPoints(pointsRed))
+            {
+                ptList.Clear();
+                Log.Error("TOO FEW POINTS: Polygon does not have enough points. The Polygon will be ignored at " + surface.SurfaceId);
+            }
+
+            //-----------------------------------------------------------
+
+            surface.ExteriorPts = pointsRed;
 
             #endregion ExteriorPolygon
 
@@ -627,7 +667,6 @@ namespace City2BIM
             var interiorF = poly.Descendants(this.allns["gml"] + "interior");
 
             var posListInt = interiorF.Descendants(allns["gml"] + "posList").ToList();
-
 
             if (posListInt.Any())
             {
@@ -651,13 +690,13 @@ namespace City2BIM
 
                     if (posInt.Any())
                     {
-                        var ptList = new List<C2BPoint>();
+                        var ptListI = new List<C2BPoint>();
 
                         foreach (var pos in posInt)
                         {
-                            ptList.Add(CollectPoint(pos, this.lowerCornerPt));
+                            ptListI.Add(CollectPoint(pos, this.lowerCornerPt));
                         }
-                        interiorPolys.Add(ptList);
+                        interiorPolys.Add(ptListI);
                     }
                 }
                 surface.InteriorPts = interiorPolys;
@@ -672,26 +711,19 @@ namespace City2BIM
         {
             #region LowerCorner
 
-            //TO DO - Fallback, if no LowerCorner specified --> take first point occurence
-
             //For better calculation, Identify lower Corner
-            Log.Debug("Read lowerCorner for mathematical operations (first oocurence in file)...");
             var lowerCorner = gmlDoc.Descendants(this.allns["gml"] + "lowerCorner").FirstOrDefault();
             this.lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
-            Log.Debug("Lower Corner: " + lowerCornerPt.X + " ," + lowerCornerPt.Y + " ," + lowerCornerPt.Z);
 
             #endregion LowerCorner
 
             //Read all overall building elements
-            Log.Debug("Read all bldg:Building elements...");
             var gmlBuildings = gmlDoc.Descendants(this.allns["bldg"] + "Building");
-            Log.Debug("Amount: " + gmlBuildings.Count());
             //--------------------------------------------------------------------------
 
             #region Semantics
 
             //Read all semantic attributes first:
-            Log.Debug("Read all semantic attributes over all buildings...");
             //Loop over all buildings, parameter list in Revit needs consistent parameters for object types
             var sem = new ReadSemAttributes();
 
@@ -703,11 +735,6 @@ namespace City2BIM
 
             //union for consistent attribute list
             this.attributes.UnionWith(genAttr);
-            Log.Debug("Amount: " + this.attributes.Count);
-            foreach (var attr in attributes)
-            {
-                Log.Debug("Attribute: " + attr.Name + " for category " + attr.Reference);
-            }
             //--------------------------------------------------------------------------------------------------------------------------
 
             #endregion Semantics
@@ -717,21 +744,16 @@ namespace City2BIM
             //set up of individual building elements for overall list
             var gmlBldgs = new List<GmlBldg>();
 
-            Log.Debug("Loop over all buildings...");
             foreach (var bldg in gmlBuildings)
             {
                 //create instance of GmlBldg
                 var gmlBldg = new GmlBldg();
                 //use gml_id as id for building
                 gmlBldg.BldgId = bldg.Attribute(allns["gml"] + "id").Value;
-                Log.Debug("Get building id: " + gmlBldg.BldgId);
 
                 //read attributes for building (first level, no parts are handled internally in method)
-                Log.Debug("Read all attribute values...");
                 gmlBldg.BldgAttributes = new ReadSemValues().ReadAttributeValuesBldg(bldg, attributes, allns);
-                Log.Debug("Attribute reading finished!");
 
-                Log.Debug("Read all surfaces...");
                 var surfaces = new List<GmlSurface>();
 
                 surfaces = ReadSurfaces(bldg, attributes);
@@ -756,7 +778,6 @@ namespace City2BIM
 
                     var partSurfaces = new List<GmlSurface>();
 
-                    Log.Debug("Read all part surfaces...");
                     partSurfaces = ReadSurfaces(part, attributes);
 
                     gmlBldgPart.PartSurfaces = partSurfaces;
@@ -775,41 +796,19 @@ namespace City2BIM
             return gmlBldgs;
         }
 
-        //public List<GmlBldg> ImprovePolygonPoints(List<GmlBldg> bldgs)
-        //{
-        //    var newBldgs = new List<GmlBldg>();
-
-        //    foreach (var bldg in bldgs)
-        //    {
-        //        var surfaces = bldg.BldgSurfaces;
-
-        //        var validation = new ValidateGeometry();
-
-        //        var filteredSurfaces = validation.FilterUnneccessaryPoints(surfaces);
-
-        //        //var flattenedSurfaces = validation.FlatteningSurfaces(filteredSurfaces);
-
-        //        bldg.BldgSurfaces = filteredSurfaces;
-
-        //        newBldgs.Add(bldg);
-        //    }
-
-        //    return newBldgs;
-        //}
-
         public List<GmlBldg> CalculateSolids(List<GmlBldg> bldgs)
         {
             var newBldgs = new List<GmlBldg>();
 
             foreach (var bldg in bldgs)
             {
-                bldg.BldgSolid = new C2BSolid();
+                bldg.BldgSolid = new C2BSolid(bldg.BldgId);
 
                 var surfaces = bldg.BldgSurfaces;
 
                 foreach (var surface in surfaces)
                 {
-                    bldg.BldgSolid.AddPlane(surface.SurfaceId, surface.ExteriorPts, surface.InteriorPts);
+                    bldg.BldgSolid.AddPlane(surface.InternalID.ToString(), surface.ExteriorPts, surface.InteriorPts);
                 }
 
                 var parts = bldg.Parts;
@@ -820,11 +819,11 @@ namespace City2BIM
                 {
                     var newPart = part;
 
-                    var partSolid = new C2BSolid();
+                    var partSolid = new C2BSolid(part.BldgPartId);
 
                     foreach (var partSurface in newPart.PartSurfaces)
                     {
-                        partSolid.AddPlane(partSurface.SurfaceId, partSurface.ExteriorPts, partSurface.InteriorPts);
+                        partSolid.AddPlane(partSurface.InternalID.ToString(), partSurface.ExteriorPts, partSurface.InteriorPts);
                     }
                     partSolid.IdentifySimilarPlanes();
 
@@ -843,7 +842,6 @@ namespace City2BIM
 
                 newBldgs.Add(bldg);
             }
-
             return newBldgs;
         }
     }
