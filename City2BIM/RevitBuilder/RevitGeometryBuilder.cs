@@ -183,7 +183,7 @@ namespace City2BIM.RevitBuilder
                         catch (Exception exx)
                         {
                             fatalError++;
-                            WriteRevitBuildErrorsToLog(results, ex.Message, "fatal" + bldg.BldgId);
+                            WriteRevitBuildErrorsToLog(results, exx.Message, "fatal" + bldg.BldgId);
                             continue;
                         }
                         continue;
@@ -309,68 +309,56 @@ namespace City2BIM.RevitBuilder
 
             foreach (var groundSurface in groundSurfaces)
             {
-                try
+                //try
+                //{
+                var polyGround = groundSurface.ExteriorPts;
+
+                C2BPoint normalizedVc = new C2BPoint(0, 0, 0);
+                var poly = CalcPlanarFace(groundSurface.ExteriorPts, ref normalizedVc);
+
+                List<CurveLoop> loopList = new List<CurveLoop>();
+                List<Curve> edges = new List<Curve>();
+
+                for (var c = 1; c < poly.Count; c++)
                 {
-                    var groundPlane = (from p in solid.Planes
-                                       where p.Key.Contains(groundSurface.InternalID.ToString())
-                                       select p.Value).SingleOrDefault();
+                    Line edge = Line.CreateBound(poly[c - 1], poly[c]);
 
-                    var poly = new List<XYZ>();
-
-                    foreach (int vid in groundPlane.Vertices)
-                    {
-                        var verts = solid.Vertices;
-
-                        if (verts.Contains(verts[vid]))
-                        {
-                            var revTransXYZ = TransformPointForRevit(verts[vid].Position);
-
-                            poly.Add(revTransXYZ);
-                        }
-                    }
-
-                    List<CurveLoop> loopList = new List<CurveLoop>();
-
-                    List<Curve> edges = new List<Curve>();
-
-                    for (var c = 1; c < poly.Count; c++)
-                    {
-                        Line edge = Line.CreateBound(poly[c - 1], poly[c]);
-
-                        edges.Add(edge);
-                    }
-
-                    edges.Add(Line.CreateBound(poly[poly.Count - 1], poly[0]));
-
-                    CurveLoop baseLoop = CurveLoop.Create(edges);
-                    loopList.Add(baseLoop);
-
-                    var extrHeight = height * 3.28084;
-
-                    Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, XYZ.BasisZ, extrHeight);
-
-                    using (Transaction t = new Transaction(doc, "Create lod1 extrusion"))
-                    {
-                        t.Start();
-                        // create direct shape and assign the sphere shape
-                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-
-                        ds.SetShape(new GeometryObject[] { lod1bldg });
-
-                        ds = SetAttributeValues(ds, attributes);
-                        if (partAttributes != null)
-                            ds = SetAttributeValues(ds, partAttributes);
-                        ds.Pinned = true;
-
-                        SetRevitInternalParameters(internalID, "CityGML: LOD1-Solid (simplified from LOD2)", ds);
-
-                        t.Commit();
-                    }
+                    edges.Add(edge);
                 }
-                catch
+
+                CurveLoop baseLoop = CurveLoop.Create(edges);
+                loopList.Add(baseLoop);
+
+                var extrHeight = height * 3.28084;
+
+                XYZ normalRev = new XYZ(normalizedVc.X, normalizedVc.Y, normalizedVc.Z);
+
+                Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normalRev, extrHeight);
+
+                using (Transaction t = new Transaction(doc, "Create lod1 extrusion"))
                 {
-                    continue;
+                    t.Start();
+                    // create direct shape and assign the sphere shape
+                    DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+
+                    ds.SetShape(new GeometryObject[] { lod1bldg });
+
+                    ds = SetAttributeValues(ds, attributes);
+                    if (partAttributes != null)
+                        ds = SetAttributeValues(ds, partAttributes);
+                    ds.Pinned = true;
+
+                    SetRevitInternalParameters(internalID, "CityGML: LOD1-Solid (simplified from LOD2)", ds);
+
+                    t.Commit();
                 }
+                //}
+                //catch (Exception ex)
+                //{
+                //    fatalError++;
+                //    WriteRevitBuildErrorsToLog(results, exx.Message, "fatal" + bldg.BldgId);
+                //    continue;
+                //}
             }
         }
 
@@ -506,15 +494,10 @@ namespace City2BIM.RevitBuilder
 
         }
 
-        private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<GmlAttribute, string> bldgAttributes, Dictionary<GmlAttribute, string> partAttributes = null)
+        private List<XYZ> CalcPlanarFace(List<C2BPoint> pts, ref C2BPoint normalizedVc)
         {
-            var pts = surface.ExteriorPts;
-
-            C2BPoint normalVc = new C2BPoint(0, 0, 0);
             C2BPoint centroidPl = new C2BPoint(0, 0, 0);
-
-            List<CurveLoop> loopList = new List<CurveLoop>();
-            List<Curve> edges = new List<Curve>();
+            C2BPoint normalVc = new C2BPoint(0, 0, 0);
 
             for (var c = 1; c < pts.Count; c++)
             {
@@ -524,7 +507,7 @@ namespace City2BIM.RevitBuilder
             }
 
             var centroid = centroidPl / (pts.Count - 1);
-            var normalizedVc = C2BPoint.Normalized(normalVc);
+            normalizedVc = C2BPoint.Normalized(normalVc);
 
             var projectedVerts = new List<XYZ>();
 
@@ -539,6 +522,18 @@ namespace City2BIM.RevitBuilder
 
                 projectedVerts.Add(vertRevXYZ);
             }
+
+            return projectedVerts;
+        }
+
+        private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<GmlAttribute, string> bldgAttributes, Dictionary<GmlAttribute, string> partAttributes = null)
+        {
+            C2BPoint normalizedVc = new C2BPoint(0, 0, 0);
+
+            var projectedVerts = CalcPlanarFace(surface.ExteriorPts, ref normalizedVc);
+
+            List<CurveLoop> loopList = new List<CurveLoop>();
+            List<Curve> edges = new List<Curve>();
 
             for (var c = 1; c < projectedVerts.Count; c++)
             {

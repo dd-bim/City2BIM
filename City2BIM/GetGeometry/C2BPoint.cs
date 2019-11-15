@@ -72,7 +72,7 @@ namespace City2BIM.GetGeometry
             //Log.Debug("Plane-Normal:    " + vecNormal.X + " / " + vecNormal.Y + " / " + vecNormal.Z);
             //Log.Debug("Triangle-Normal: " + vecTri.X + " / " + vecTri.Y + " / " + vecTri.Z);
 
-            if (diffVec.X < 0.1 && diffVec.Y < 0.1 && diffVec.Z < 0.1)
+            if (diffVec.X < 0.2 && diffVec.Y < 0.2 && diffVec.Z < 0.2)
             {
                 return true;
             }

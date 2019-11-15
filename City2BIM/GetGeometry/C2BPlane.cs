@@ -93,27 +93,6 @@ namespace City2BIM.GetGeometry
             }
         }
 
-        public C2BSolid Solid
-        {
-            get => default(C2BSolid);
-            set
-            {
-            }
-        }
-
-        public List<C2BPoint> PolygonPts
-        {
-            get
-            {
-                return this.polygonPts;
-            }
-
-            set
-            {
-                this.polygonPts = value;
-            }
-        }
-
         internal List<C2BEdge> Edges { get => edges; set => edges = value; }
     }
 }

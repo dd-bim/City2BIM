@@ -375,43 +375,142 @@ namespace City2BIM
             return true;
         }
 
-        private List<C2BPoint> CheckForDeadEndAtZCoord(List<C2BPoint> rawPolygon)       //prüft nur über Koordinatenkomponenetenvergleich und nur für Fall gleiche XY-Koordinaten
+        private List<C2BPoint> CheckDuplicates(List<C2BPoint> redPolygon)
+        {
+            List<C2BPoint> duplPts = new List<C2BPoint>();
+
+            for (int i = 1; i < redPolygon.Count; i++)
+            {
+                if (redPolygon[i - 1].X != redPolygon[i].X)
+                    continue;
+
+                if (redPolygon[i - 1].Y != redPolygon[i].Y)
+                    continue;
+
+                if (redPolygon[i - 1].Z != redPolygon[i].Z)
+                    continue;
+
+                duplPts.Add(redPolygon[i]);
+                Log.Warning("DUPLICATES: Polygon does have duplicate points. One occurence will be removed.");
+            }
+            foreach (var dupl in duplPts)
+            {
+                redPolygon.Remove(dupl);
+            }
+            return redPolygon;
+        }
+
+        private List<C2BPoint> CheckForDeadEndAtAxisPlane(List<C2BPoint> rawPolygonSE, char fixedAxis)       //prüft nur über Koordinatenkomponenetenvergleich und nur für Fall gleiche XY-Koordinaten
         {
             //avoids this:          (dead end will be removed, works only for points with same XY coordinates, dead end along Z axis)
             //       _______      
             //      |       |
             //      |       |
-            //      |_______|
-            //      |
-            //      |
+            //      |_______|_________
 
             List<C2BPoint> deletePt = new List<C2BPoint>();
-            
-            for (int i = 0; i < rawPolygon.Count - 2; i++)
+
+            var rawPolygon = new List<C2BPoint>();
+            rawPolygon.AddRange(rawPolygonSE);
+            rawPolygon.RemoveAt(0);
+
+            switch (fixedAxis)
             {
-                if (rawPolygon[i].X != rawPolygon[i + 2].X)         //check to proceed quickly
-                    continue;
+                case 'x':
+                    {
+                        var sameGroups = rawPolygon.GroupBy(c => Math.Round(c.X,2));
+                        if (sameGroups.Count() == 1)
+                            return deletePt;                   //whole Polygon is in XY plane --> e.g. GroundPlane --> no point added
+                        break;
+                    }
 
-                if (rawPolygon[i].Y != rawPolygon[i + 2].Y)         //check to proceed quickly
-                    continue;
+                case 'y':
+                    {
+                        var sameGroups = rawPolygon.GroupBy(c => Math.Round(c.Y));
+                        if (sameGroups.Count() == 1)
+                            return deletePt;                   //whole Polygon is in XY plane --> e.g. GroundPlane --> no point added
+                        break;
+                    }
 
-                if (rawPolygon[i].X != rawPolygon[i + 1].X)         //check to proceed quickly
-                    continue;
-
-                if (rawPolygon[i].Y != rawPolygon[i + 1].Y)         //check to proceed quickly
-                    continue;
-
-                double z1z2 = Math.Abs(rawPolygon[i].Z - rawPolygon[i + 1].Z);
-                double z2z3 = Math.Abs(rawPolygon[i + 1].Z - rawPolygon[i + 2].Z);
-                double z1z3 = Math.Abs(rawPolygon[i].Z - rawPolygon[i + 2].Z);
-                double sum = Math.Round(z1z2 + z2z3,4);
-
-                if (sum == Math.Round(z1z3,4))                                    //in this case no dead end
-                    continue;
-
-                deletePt.Add(rawPolygon[i + 1]);                    //second point is dead end --> will be removed later
+                case 'z':
+                    {
+                        var sameGroups = rawPolygon.GroupBy(c => Math.Round(c.Z));
+                        if (sameGroups.Count() == 1)
+                            return deletePt;                   //whole Polygon is in XY plane --> e.g. GroundPlane --> no point added
+                        break;
+                    }
             }
 
+            for (int i = 0; i < rawPolygon.Count; i++)
+            {
+                C2BPoint curr = rawPolygon[i];
+                C2BPoint next = rawPolygon[0];
+                C2BPoint upperNext = rawPolygon[0];
+
+                if (i < rawPolygon.Count - 2)
+                {
+                    next = rawPolygon[i + 1];
+                    upperNext = rawPolygon[i + 2];
+                }
+                else if (i == rawPolygon.Count - 2)
+                {
+                    next = rawPolygon[i + 1];
+                    upperNext = rawPolygon[0];
+                }
+                else
+                {
+                    next = rawPolygon[0];
+                    upperNext = rawPolygon[1];
+                }
+
+                if (fixedAxis == 'x')
+                {
+                    if (curr.X != upperNext.X)         //check to proceed quickly
+                        continue;
+
+                    if (curr.X != next.X)         //check to proceed quickly
+                        continue;
+                }
+
+                if (fixedAxis == 'y')
+                {
+                    if (curr.Y != upperNext.Y)         //check to proceed quickly
+                        continue;
+
+                    if (curr.Y != next.Y)         //check to proceed quickly
+                        continue;
+                }
+
+                if (fixedAxis == 'z')
+                {
+                    if (curr.Z != upperNext.Z)         //check to proceed quickly
+                        continue;
+
+                    if (curr.Z != next.Z)         //check to proceed quickly
+                        continue;
+                }
+
+                var d12 = C2BPoint.DistanceSq(curr, next);
+                var d23 = C2BPoint.DistanceSq(next, upperNext);
+                var d13 = C2BPoint.DistanceSq(curr, upperNext);
+
+                if (d13 > d12 && d13 > d23)     //in this case no dead end
+                    continue;
+
+                if (d13 < 0.001 || d12 < 0.001 || d23 < 0.001)
+                    continue;
+
+                Log.Debug(d13.ToString());
+                Log.Debug(d12.ToString());
+                Log.Debug(d23.ToString());
+                
+
+                var delPts = from r in rawPolygonSE
+                             where (r.X == next.X && r.Y == next.Y && r.Z == next.Z)
+                             select r;
+
+                deletePt.AddRange(delPts);                    //second point is dead end --> will be removed later
+            }
             return deletePt;
         }
 
@@ -631,20 +730,125 @@ namespace City2BIM
 
             if (!CheckSameStartEnd(ptList))
             {
-                ptList.Clear();
-                Log.Error("NOT CLOSED: Polygon does not have the same start and end point. The Polygon will be ignored at " + surface.SurfaceId);
-            }               
-
-            //Dead end check
-
-            List<C2BPoint> deletion = CheckForDeadEndAtZCoord(ptList);
-
-            if (deletion.Count > 0)
-            {
-                Log.Warning("INTERSECTION: Dead end detected. Point for dead end will be deleted at " + surface.SurfaceId);
+                ptList.Add(ptList[0]);
+                Log.Warning("NOT CLOSED: Polygon does not have the same start and end point. The first point will be added at the end. " + surface.SurfaceId);
             }
 
-            List<C2BPoint> pointsRed = ptList.Except(deletion).ToList();
+            List<C2BPoint> pointsRed = ptList;
+            //-------------
+
+            var deletionXY = CheckForDeadEndAtAxisPlane(pointsRed, 'z');
+
+            if (deletionXY.Count > 0)
+            {
+                Log.Warning("INTERSECTION: Dead ends at z Axis plane =  " + deletionXY.Count + " at " + surface.SurfaceId);
+
+                Log.Debug("Pts before deletion XY:");
+                foreach (var pt in pointsRed)
+                {
+                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
+                }
+
+                bool addNewStart = false;
+
+                if (deletionXY.Where(p => p.X == pointsRed[0].X && p.Y == pointsRed[0].Y && p.Z == pointsRed[0].Z).Any())
+                    addNewStart = true;
+
+                pointsRed = pointsRed.Except(deletionXY).ToList();
+
+                Log.Debug("CT deletion pts= " + deletionXY.Count);
+
+                if (addNewStart)
+                {
+                    pointsRed.Add(pointsRed[0]);
+                    Log.Warning("Added new Start point! " + surface.SurfaceId);
+                }
+
+                Log.Debug("Pts after deletion XY:");
+                foreach (var pt in pointsRed)
+                {
+                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
+                }
+
+                Log.Information("----------");
+            }
+
+            var deletionXZ = CheckForDeadEndAtAxisPlane(pointsRed, 'y');
+
+            if (deletionXZ.Count > 0)
+            {
+                Log.Warning("INTERSECTION: Dead ends at y Axis plane =  " + deletionXZ.Count + " at " + surface.SurfaceId);
+
+                Log.Debug("Pts before deletion XZ:");
+                foreach (var pt in pointsRed)
+                {
+                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
+                }
+
+                bool addNewStart = false;
+
+                if (deletionXZ.Where(p => p.X == pointsRed[0].X && p.Y == pointsRed[0].Y && p.Z == pointsRed[0].Z).Any())
+                    addNewStart = true;
+
+                pointsRed = pointsRed.Except(deletionXZ).ToList();
+
+                Log.Debug("CT deletion pts= " + deletionXZ.Count);
+
+                if (addNewStart)
+                {
+                    pointsRed.Add(pointsRed[0]);
+                    Log.Warning("Added new Start point! " + surface.SurfaceId);
+                }
+
+                Log.Debug("Pts after deletion XZ:");
+                foreach (var pt in pointsRed)
+                {
+                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
+                }
+
+                Log.Information("----------");
+            }
+
+            var deletionYZ = CheckForDeadEndAtAxisPlane(pointsRed, 'x');
+
+            if (deletionYZ.Count > 0)
+            {
+                Log.Warning("INTERSECTION: Dead ends at x Axis plane =  " + deletionYZ.Count + " at " + surface.SurfaceId);
+
+                Log.Debug("Pts before deletion YZ:");
+                foreach (var pt in pointsRed)
+                {
+                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
+                }
+
+                bool addNewStart = false;
+
+                if (deletionYZ.Where(p => p.X == pointsRed[0].X && p.Y == pointsRed[0].Y && p.Z == pointsRed[0].Z).Any())
+                    addNewStart = true;
+
+                pointsRed = pointsRed.Except(deletionYZ).ToList();
+
+                Log.Debug("CT deletion pts= " + deletionYZ.Count);
+
+                if (addNewStart)
+                {
+                    pointsRed.Add(pointsRed[0]);
+                    Log.Warning("Added new Start point! " + surface.SurfaceId);
+                }
+
+                Log.Debug("Pts after deletion YZ:");
+                foreach (var pt in pointsRed)
+                {
+                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
+                }
+
+                Log.Information("----------");
+            }
+
+            //--------------
+
+            //Duplicates:
+            pointsRed = CheckDuplicates(pointsRed);
 
             //Too few points (possibly reduced point list will be investigated because dead end could be removed)
 

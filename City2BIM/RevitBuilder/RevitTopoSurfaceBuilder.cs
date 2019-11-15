@@ -7,7 +7,6 @@ namespace City2BIM.RevitBuilder
 {
     internal class RevitTopoSurfaceBuilder
     {
-        //private City2BIM.GetGeometry.C2BPoint gmlCorner;
         private Transform revitPBP;
         private Document doc;
 

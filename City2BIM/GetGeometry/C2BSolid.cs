@@ -168,104 +168,170 @@ namespace City2BIM.GetGeometry
         }
 
 
+        /// <summary>
+        /// Aggregates polygon planes which are (almost) the same plane
+        /// </summary>
+        /// <param name="simPlanes">bool for loop break control</param>
         private void AggregatePlanes(ref bool simPlanes)
         {
-            double locDistolsq = 0.0025; //entspricht 5 cm
+            //defined tolerance for same planes (distance between ends of normalized plane vector)
+            double locDistolsq = 0.0025; //== 5 cm
 
-            for (var i = 0; i < Edges.Count; i++)
+            //loop over all edges at solid
+            for (var i = 0; i < Edges.Count - 1; i++)
             {
                 for (var j = i + 1; j < Edges.Count; j++)
                 {
+                    //distane between end of normalized normal vectors
                     double distNorm = C2BPoint.DistanceSq(Edges[i].PlaneNormal, Edges[j].PlaneNormal);
 
+                    //condition: distance within tolerance and same edge (Start=End, End=Start)
                     if (Edges[i].Start == Edges[j].End && Edges[i].End == Edges[j].Start &&
                         distNorm < locDistolsq)
                     {
                         try
                         {
-
+                            //identify planes where same edges apply
                             C2BPlane plane1 = Planes[Edges[i].PlaneId];
                             C2BPlane plane2 = Planes[Edges[j].PlaneId];
+
+                            bool samePlane = false;
+
+                            if (plane1.ID == plane2.ID)
+                                samePlane = true;
 
                             int cursorEdgeA = plane1.Edges.IndexOf(Edges[i]);
                             int cursorEdgeB = plane2.Edges.IndexOf(Edges[j]);
 
-                            for (var k = 0; k < cursorEdgeB; k++)
+                            if (!samePlane)
                             {
-                                var edge = plane2.Edges[0];
-                                plane2.Edges.RemoveAt(0);
-                                plane2.Edges.Add(edge);
-                            }
 
-                            List<C2BEdge> cpdEdgeList = new List<C2BEdge>();
-
-                            cpdEdgeList.AddRange(plane1.Edges);
-                            cpdEdgeList.RemoveAt(cursorEdgeA);
-                            cpdEdgeList.InsertRange(cursorEdgeA, plane2.Edges);
-                            cpdEdgeList.Remove(Edges[j]);
-
-                            var newVerts = cpdEdgeList.Select(e => e.End).ToList();
-                            var newID = Edges[i].PlaneId + "_" + Edges[j].PlaneId;
-
-                            var changeVert1 = from v in Vertices
-                                              where v.Planes.Contains(Edges[i].PlaneId)
-                                              select v;
-
-                            var changeVert2 = from v in Vertices
-                                              where v.Planes.Contains(Edges[j].PlaneId)
-                                              select v;
-
-                            foreach (var v in changeVert1)
-                            {
-                                v.Planes.Remove(Edges[i].PlaneId);
-                                v.Planes.Add(newID);
-                            }
-
-                            foreach (var v in changeVert2)
-                            {
-                                v.Planes.Remove(Edges[j].PlaneId);
-                                v.Planes.Add(newID);
-                            }
-
-                            var currentID1 = Edges[i].PlaneId;
-                            var currentID2 = Edges[j].PlaneId;
-
-                            foreach (var e in Edges)
-                            {
-                                //logPlanes.Information(e.PlaneId);
-
-                                if (e.PlaneId == currentID1 || e.PlaneId == currentID2)
+                                for (var k = 0; k < cursorEdgeB; k++)
                                 {
-                                    e.PlaneId = newID;
+                                    var edge = plane2.Edges[0];
+                                    plane2.Edges.RemoveAt(0);
+                                    plane2.Edges.Add(edge);
                                 }
+
+                                List<C2BEdge> cpdEdgeList = new List<C2BEdge>();
+
+                                cpdEdgeList.AddRange(plane1.Edges);
+                                cpdEdgeList.RemoveAt(cursorEdgeA);
+                                cpdEdgeList.InsertRange(cursorEdgeA, plane2.Edges);
+                                cpdEdgeList.Remove(Edges[j]);
+
+                                var newVerts = cpdEdgeList.Select(e => e.End).ToList();
+                                var newID = Edges[i].PlaneId + "_" + Edges[j].PlaneId;
+
+                                var changeVert1 = from v in Vertices
+                                                  where v.Planes.Contains(Edges[i].PlaneId)
+                                                  select v;
+
+                                var changeVert2 = from v in Vertices
+                                                  where v.Planes.Contains(Edges[j].PlaneId)
+                                                  select v;
+
+                                foreach (var v in changeVert1)
+                                {
+                                    v.Planes.Remove(Edges[i].PlaneId);
+                                    v.Planes.Add(newID);
+                                }
+
+                                foreach (var v in changeVert2)
+                                {
+                                    v.Planes.Remove(Edges[j].PlaneId);
+                                    v.Planes.Add(newID);
+                                }
+
+                                var currentID1 = Edges[i].PlaneId;
+                                var currentID2 = Edges[j].PlaneId;
+
+                                foreach (var e in Edges)
+                                {
+                                    //logPlanes.Information(e.PlaneId);
+
+                                    if (e.PlaneId == currentID1 || e.PlaneId == currentID2)
+                                    {
+                                        e.PlaneId = newID;
+                                    }
+                                }
+
+                                Edges[i].PlaneId = null;
+                                Edges[j].PlaneId = null;
+
+                                //calc logic for new plane normal and new plane centroid
+
+                                C2BPoint planeNormal = plane1.Normal;
+                                C2BPoint planeCentroid = plane1.Centroid;
+
+                                List<int[]> innerVerts = plane1.InnerVertices;
+
+                                innerVerts.AddRange(plane2.InnerVertices);
+
+                                UpdatePlaneParameters(newID, newVerts, ref planeNormal, ref planeCentroid);
+
+                                Planes.Remove(plane1.ID);
+                                Planes.Remove(plane2.ID);
+                                Planes.Add(newID, new C2BPlane(newID, newVerts, innerVerts, planeNormal, planeCentroid, cpdEdgeList));
+
+                                Log.Information("Match Plane 1: " + plane1.ID);
+                                Log.Information("Match Plane 2: " + plane2.ID);
+
+                                Log.Information("United Plane:  " + newID);
+
+                            }
+                            else
+                            {
+                                Log.Information("Match at unified Plane: " + plane1.ID);
+
+                                var uniPlane = plane1;
+
+                                var vs = uniPlane.Vertices.GroupBy(vtx => vtx);
+                                var vt = vs.Where(vx => vx.Count() > 1);
+                                var vtt = vt.First().Key;
+
+                                var ind = uniPlane.Vertices.ToList().IndexOf(vtt);
+
+                                int vdeadEnd = 0;
+
+                                if (ind == uniPlane.Vertices.Length - 1)
+                                    vdeadEnd = uniPlane.Vertices[0];
+                                else
+                                    vdeadEnd = uniPlane.Vertices[ind + 1];
+
+                                var verts = uniPlane.Vertices.ToList();
+
+                                verts.RemoveAt(ind);
+                                verts.Remove(vdeadEnd);
+
+                                uniPlane.Vertices = verts.ToArray();
+
+                                var pNormal = uniPlane.Normal;
+                                var pCentr = uniPlane.Centroid;
+
+                                UpdatePlaneParameters(uniPlane.ID, verts, ref pNormal, ref pCentr);
+
+                                Edges[i].PlaneId = null;
+                                Edges[j].PlaneId = null;
+
+                                Planes[plane1.ID].Centroid = pCentr;
+                                Planes[plane1.ID].Normal = pNormal;
+                                Planes[plane1.ID].Vertices = verts.ToArray();
+
                             }
 
-                            Edges[i].PlaneId = null;
-                            Edges[j].PlaneId = null;
-
-                            //calc logic for new plane normal and new plane centroid
-
-                            C2BPoint planeNormal = plane1.Normal;
-                            C2BPoint planeCentroid = plane1.Centroid;
-
-                            List<int[]> innerVerts = plane1.InnerVertices;
-
-                            innerVerts.AddRange(plane2.InnerVertices);
-
-                            UpdatePlaneParameters(newID, newVerts, ref planeNormal, ref planeCentroid);
-
-                            Planes.Remove(plane1.ID);
-                            Planes.Remove(plane2.ID);
-                            Planes.Add(newID, new C2BPlane(newID, newVerts, innerVerts, planeNormal, planeCentroid, cpdEdgeList));
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            Log.Error(ex.Message);
                             continue;
                         }
-
                         break;
                     }
                     else
+                        simPlanes = false;
+
+                    if (j == Edges.Count - 1)
                         simPlanes = false;
                 }
             }
@@ -335,7 +401,6 @@ namespace City2BIM.GetGeometry
         public void CalculatePositions()
         {
 
-
             Log.Debug("START Vertext-Calculation at: " + gmlID + "----------------------------------------------");
 
             Dictionary<string, List<int>> PlanesToSplit = new Dictionary<string, List<int>>();
@@ -379,70 +444,115 @@ namespace City2BIM.GetGeometry
 
                         #region Test - Selection of cutted planes regarding concaveness 
 
-                        foreach (string pId in vPlanes)
+                        //foreach (string pId in vPlanes)
+                        //{
+                        //    var sPlane = Planes[pId];
+                        //    var sVerts = sPlane.Vertices;
+                        //    int vertCt = sVerts.Count();
+
+                        //    int v1 = 0;
+                        //    int v3 = 0;
+                        //    int v4 = 0;
+
+                        //    FindAdjacentIndices(sVerts, v, out v1, out v3, out v4);
+
+                        //    bool divisible = true;
+
+                        //    //CCW test for plane at vertex where cut of more than 3 planes applied
+                        //    bool ccw = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[v3].Position, sPlane.Normal);
+
+                        //    //CCW test with possibly new edge and other polygon vertices to avoid false split generation
+
+                        //    int[] vRest = sVerts.Where(vtx => vtx != v1 && vtx != v && vtx != v3).ToArray();
+
+                        //    if (ccw)
+                        //    {
+                        //        foreach (int vtx in vRest)
+                        //        {
+                        //            bool ccwPlane = C2BPoint.CCW(Vertices[v1].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
+
+                        //            if (!ccwPlane)
+                        //            {
+                        //                bool ccwPlane2 = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[vtx].Position, sPlane.Normal);
+                        //                bool ccwPlane3 = C2BPoint.CCW(Vertices[v].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
+
+                        //                if (ccwPlane2 && ccwPlane3)
+                        //                {
+                        //                    divisible = false;
+                        //                    break;
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //    else
+                        //        divisible = false;
+
+                        //    //if CCW gets false there is an concave angle at vertex for the investigated plane 
+                        //    //if CCW gets an value next to 0 there is an collinear situation at vertex for the investigated plane (also false result)
+                        //    //for both of this situations a splitting of the planes later on could lead to a wrong solid calculation
+                        //    //therefore this planes should be part in the level cut (so they not have to be splitted)
+                        //    //exeptional cases are ih the concave plane has 4 vertices --> then a splitting with the opposite vertex is also possible 
+
+
+
+                        //    if (!divisible && vertCt > 4)
+                        //    {
+                        //        ordPlanes.Add(pId);
+                        //        ctConcave++;
+                        //    }
+                        //    else
+                        //        unordPlanes.Add(pId);
+                        //}
+
+                        unordPlanes = vPlanes.ToList();
+
+                        int ctNoConvex = 0;
+                        List<string> unordPlanes1 = new List<string>();
+                        List<string> unordPlanes2 = new List<string>();
+
+                        foreach (var plane in unordPlanes)
                         {
-                            var sPlane = Planes[pId];
-                            var sVerts = sPlane.Vertices;
-                            int vertCt = sVerts.Count();
+                            bool convex = true;
 
-                            int v1 = 0;
-                            int v3 = 0;
-                            int v4 = 0;
+                            var adjacPlane = Planes[plane];
+                            var verts = adjacPlane.Vertices;
 
-                            FindAdjacentIndices(sVerts, v, out v1, out v3, out v4);
+                            bool ccwAngleStart = C2BPoint.CCW(Vertices[verts.Length - 1].Position, Vertices[verts[0]].Position, Vertices[verts[1]].Position, adjacPlane.Normal);
+                            bool ccwAngleEnd = C2BPoint.CCW(Vertices[verts.Length - 2].Position, Vertices[verts.Length - 1].Position, Vertices[verts[0]].Position, adjacPlane.Normal);
 
-                            bool divisible = true;
-
-                            //CCW test for plane at vertex where cut of more than 3 planes applied
-                            bool ccw = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[v3].Position, sPlane.Normal);
-
-                            //CCW test with possibly new edge and other polygon vertices to avoid false split generation
-
-                            int[] vRest = sVerts.Where(vtx => vtx != v1 && vtx != v && vtx != v3).ToArray();
-
-                            if (ccw)
+                            if (!ccwAngleStart || !ccwAngleEnd)
                             {
-                                foreach (int vtx in vRest)
+                                convex = false;
+                            }
+
+                            for (int vtx = 1; vtx < verts.Length - 1; vtx++)
+                            {
+                                bool ccwAngle = C2BPoint.CCW(Vertices[vtx - 1].Position, Vertices[vtx].Position, Vertices[vtx + 1].Position, adjacPlane.Normal);
+
+                                if (!ccwAngle)
                                 {
-                                    bool ccwPlane = C2BPoint.CCW(Vertices[v1].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
-
-                                    if (!ccwPlane)
-                                    {
-                                        bool ccwPlane2 = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[vtx].Position, sPlane.Normal);
-                                        bool ccwPlane3 = C2BPoint.CCW(Vertices[v].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
-
-                                        if (ccwPlane2 && ccwPlane3)
-                                        {
-                                            divisible = false;
-                                            break;
-                                        }
-                                    }
+                                    convex = false;
                                 }
                             }
-                            else
-                                divisible = false;
 
-                            //if CCW gets false there is an concave angle at vertex for the investigated plane 
-                            //if CCW gets an value next to 0 there is an collinear situation at vertex for the investigated plane (also false result)
-                            //for both of this situations a splitting of the planes later on could lead to a wrong solid calculation
-                            //therefore this planes should be part in the level cut (so they not have to be splitted)
-                            //exeptional cases are ih the concave plane has 4 vertices --> then a splitting with the opposite vertex is also possible 
-
-
-
-                            if (!divisible && vertCt > 4)
+                            if (!convex && verts.Length > 4)
                             {
-                                ordPlanes.Insert(0, pId);
-                                ctConcave++;
+                                unordPlanes1.Add(plane);
+                                ctNoConvex++;
                             }
                             else
-                                unordPlanes.Add(pId);
+                            {
+                                unordPlanes2.Add(plane);
+                            }
+
                         }
 
-                        ordPlanes.AddRange(unordPlanes.OrderByDescending(p => Planes[p].Vertices.Count()));
+                        ordPlanes.AddRange(unordPlanes1.OrderByDescending(p => Planes[p].Vertices.Count()));
+                        ordPlanes.AddRange(unordPlanes2.OrderByDescending(p => Planes[p].Vertices.Count()));
 
                         Log.Debug("RESULT of Selection:");
-                        Log.Debug("...forced Planes: " + ctConcave);
+                        Log.Debug("...forced PlanesA: " + ctConcave);
+                        Log.Debug("...forced PlanesB: " + ctNoConvex);
                         Log.Debug("Cut1: " + Planes[ordPlanes[0]].Vertices.Count());
                         Log.Debug("Cut2: " + Planes[ordPlanes[1]].Vertices.Count());
                         Log.Debug("Cut3: " + Planes[ordPlanes[2]].Vertices.Count());
@@ -477,20 +587,20 @@ namespace City2BIM.GetGeometry
 
                                     }
 
-                                    if (ctConcave > 2)
+                                    if ((ctConcave+ctNoConvex) > 2)
                                         break;
 
                                     if (d < 0.05)
                                         break;
                                 }
 
-                                if (ctConcave == 2)
+                                if ((ctConcave + ctNoConvex) == 2)
                                     break;
 
                                 if (d < 0.05)
                                     break;
                             }
-                            if (ctConcave == 1)
+                            if ((ctConcave + ctNoConvex) == 1)
                                 break;
 
                             if (d < 0.05)
@@ -570,6 +680,25 @@ namespace City2BIM.GetGeometry
                         triangleS1[2] = vertOpp;
 
                         int[] triangleS2 = new int[3] { vtx, vertNext, vertOpp };
+
+                        bool ccwOpp1 = C2BPoint.CCW(Vertices[vertBefore].Position, Vertices[vtx].Position, Vertices[vertOpp].Position, sPlane.Normal);
+                        bool ccwOpp2 = C2BPoint.CCW(Vertices[vtx].Position, Vertices[vertNext].Position, Vertices[vertOpp].Position, sPlane.Normal);
+                        bool ccwVtx1 = C2BPoint.CCW(Vertices[vertBefore].Position, Vertices[vtx].Position, Vertices[vertNext].Position, sPlane.Normal);
+                        bool ccwVtx2 = C2BPoint.CCW(Vertices[vertBefore].Position, Vertices[vertNext].Position, Vertices[vertOpp].Position, sPlane.Normal);
+
+                        if (!ccwOpp1 || !ccwOpp2)
+                        {
+                            if (ccwVtx1 && ccwVtx2)
+                            {
+                                triangleS1[2] = vertNext;
+                                
+                                triangleS2[0] = vertBefore;
+                                triangleS2[1] = vertNext;
+                                triangleS2[2] = vertOpp;
+
+                                Log.Information("Split with 2 Trinagles changed!");
+                            }
+                        }
 
                         newPlaneVertices.Add(triangleS1);
                         newPlaneVertices.Add(triangleS2);
@@ -653,9 +782,6 @@ namespace City2BIM.GetGeometry
             Log.Debug("---------------------------------------------------------------------------------------");
             Log.Debug("---------------------------------------------------------------------------------------");
             Log.Debug("---------------------------------------------------------------------------------------");
-
-
-
         }
 
         private void FindAdjacentIndices(int[] plVertices, int vertex, out int vBefore, out int vNext, out int vOpp)
