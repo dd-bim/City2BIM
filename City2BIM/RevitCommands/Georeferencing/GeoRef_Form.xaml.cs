@@ -5,9 +5,12 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace City2BIM.RevitCommands.Georeferencing
 {
@@ -378,5 +381,38 @@ namespace City2BIM.RevitCommands.Georeferencing
                 tb_lon.Text = UTMcalc.DegToString(val, (bool)rb_dms.IsChecked);
             }
         }
+
+        private void bt_test_Click(object sender, RoutedEventArgs e)
+        {
+
+            
+
+
+            string wfsLink = "https://hosting.virtualcitywfs.de/deutschland_viewer/wfs?Request=GetFeature&Service=WFS&Version=2.0.0&typenames=bldg:Building&BBOX=%201260537.3654,6617876.1074,1260892.0810,6618248.7379";
+
+            XDocument gmlDoc = XDocument.Load(wfsLink);
+
+            var allns = gmlDoc.Root.Attributes().
+                Where(a => a.IsNamespaceDeclaration).
+                GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
+                ToDictionary(g => g.Key, g => g.First());
+
+            var bldgParts = gmlDoc.Descendants(allns["bldg"] + "consistsOfBuildingPart");
+
+
+            //System.Diagnostics.Process.Start(wfsLink);
+
+            //http
+
+            //var body = new StreamReader(context.Request.InputStream).ReadToEnd();
+
+
+
+            //var xmlDocument = new XmlDocument();
+            //xmlDocument.LoadXml(body);
+            //xmlDocument.Save("Settings.xml");
+
+        }
+
     }
 }
