@@ -120,6 +120,5 @@
         <Image x:Name="georef10_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="22,76,0,75" Width="75" Source="../../img/icon_georef10.png" Stretch="UniformToFill" Grid.Row="0" />
         <Image x:Name="georef20_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="20,25,0,26" Width="75" Source="../../img/icon_georef20.png" Stretch="UniformToFill" Grid.Row="1" />
         <Image x:Name="georef50_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="20,25,0,25" Width="75" Source="../../img/icon_georef50.png" Stretch="UniformToFill" Grid.Row="2" />
-        <Button Content="test" x:Name="bt_applyGeoref_Copy" Margin="123,0,28,170" Height="30" Width="120" Click="bt_test_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="1" />
     </Grid>
 </Window>

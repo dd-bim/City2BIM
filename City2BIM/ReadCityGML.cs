@@ -22,29 +22,60 @@ namespace City2BIM
         private HashSet<GmlAttribute> attributes = new HashSet<GmlAttribute>();
 
         // The main Execute method (inherited from IExternalCommand) must be public
-        public ReadCityGML(ExternalCommandData revit, bool solid)
+        public ReadCityGML(Document doc, bool solid)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
                 .CreateLogger();
 
-            UIApplication uiApp = revit.Application;
-            Document doc = uiApp.ActiveUIDocument.Document;
+            string path = "";
 
-            Log.Information("Start...");
+            XDocument gmlDoc;
 
-            //Import via Dialog:
-            FileDialog imp = new FileDialog();
-            var path = imp.ImportPathCityGML();
+            if (ImportSettings.DoFileImport)
+            {
+                //local file path
+                path = ImportSettings.FileUrl;
 
-            if (path == "")
-                throw new Exception("No file choosened!");
+                //Load XML document from local file
+                gmlDoc = XDocument.Load(path);
+
+
+            }
+            else
+            {
+                //server url as specified (if no change VCS server will be called)
+                string wfsUrl = ImportSettings.ServerUrl;
+
+                //client class for xml-POST request from WFS server
+                WFS.WFSClient client = new WFS.WFSClient(wfsUrl);
+
+                //response with parameters: Site-Lon, Site-Lat, extent, max response of bldgs, CRS)
+                //Site coordinates from Revit.SiteLocation
+                //extent from used-defined def (default: 300 m)
+                //max response dependent of server settings (at VCS), currently 500
+                //CRS:  supported from server are currently: Pseudo-Mercator (3857), LatLon (4326), German National Systems: West(25832), East(25833)
+                //      supported by PlugIn are only the both German National Systems
+
+                gmlDoc = client.getFeaturesCircle(ImportSettings.WgsCoord[1], ImportSettings.WgsCoord[0], ImportSettings.Extent, 500, ImportSettings.Epsg);
+
+                //Test-Export --> may implement possibility to store CityGML-response from server
+                gmlDoc.Save(@"C:\Users\goerne\Desktop\logs_revit_plugin\server_gmls\" + Math.Round(ImportSettings.WgsCoord[0], 3) + "_" + Math.Round(ImportSettings.WgsCoord[1], 3) + ".gml");
+
+            }
+
+
+            ////Import via Dialog:
+            //FileDialog imp = new FileDialog();
+            //var path = imp.ImportPathCityGML();
+
+            //if (path == "")
+            //    throw new Exception("No file choosened!");
             //-------------------------------
             Log.Information("File: " + path);
 
-            //Load XML document
-            XDocument gmlDoc = XDocument.Load(path);
+
             //-----------------------------------------
 
             #region Namespaces
@@ -70,7 +101,6 @@ namespace City2BIM
             //------------------------------------------------------------------------------------------------------------------------
 
             #endregion Namespaces
-
 
             bool sameXY = false, sameHeight = false, swapNE = false;
             CheckInputCRS(doc, gmlDoc, ref sameXY, ref sameHeight, ref swapNE);
@@ -115,7 +145,7 @@ namespace City2BIM
                     gmlBuildings = CalculateSolids(gmlBuildings);
                 }
                 //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-                RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, gmlBuildings, this.lowerCornerPt, swapNE);
+                RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, gmlBuildings, this.lowerCornerPt/*, swapNE*/);
 
                 //Parameter für Revit-Kategorie erstellen
                 //nach ausgewählter Methode (Solids oder Flächen) Parameter an zugehörige Kategorien übergeben
@@ -418,7 +448,7 @@ namespace City2BIM
             {
                 case 'x':
                     {
-                        var sameGroups = rawPolygon.GroupBy(c => Math.Round(c.X,2));
+                        var sameGroups = rawPolygon.GroupBy(c => Math.Round(c.X, 2));
                         if (sameGroups.Count() == 1)
                             return deletePt;                   //whole Polygon is in XY plane --> e.g. GroundPlane --> no point added
                         break;
@@ -503,7 +533,7 @@ namespace City2BIM
                 Log.Debug(d13.ToString());
                 Log.Debug(d12.ToString());
                 Log.Debug(d23.ToString());
-                
+
 
                 var delPts = from r in rawPolygonSE
                              where (r.X == next.X && r.Y == next.Y && r.Z == next.Z)
@@ -516,16 +546,22 @@ namespace City2BIM
 
         private C2BPoint SplitCoordinate(string[] xyzString, C2BPoint lowerCorner)
         {
-            //Achtung: Linkssystem vs Rechtssystem
-
-            double x = Double.Parse(xyzString[1], CultureInfo.InvariantCulture) - lowerCorner.X;
-            double y = Double.Parse(xyzString[0], CultureInfo.InvariantCulture) - lowerCorner.Y;
             double z = Double.Parse(xyzString[2], CultureInfo.InvariantCulture) - lowerCorner.Z;
 
-            return new C2BPoint(x, y, z);
+            //Left-handed (geodetic) vs. right-handed (mathematical) system
+
+            double axis0 = Double.Parse(xyzString[0], CultureInfo.InvariantCulture);
+            double axis1 = Double.Parse(xyzString[1], CultureInfo.InvariantCulture);
+
+            if (ImportSettings.IsGeodeticSystem)
+            {
+                return new C2BPoint(axis1 - lowerCorner.X, axis0 - lowerCorner.Y, z);
+            }
+            else
+                return new C2BPoint(axis0 - lowerCorner.X, axis1 - lowerCorner.Y, z);
         }
 
-        private List<GmlSurface> ReadSurfaces(XElement bldgEl, HashSet<GmlAttribute> attributes)
+        private List<GmlSurface> ReadSurfaces(XElement bldgEl, HashSet<GmlAttribute> attributes, out GmlBldg.LodRep lod)
         {
             var bldgParts = bldgEl.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
@@ -535,20 +571,27 @@ namespace City2BIM
             bool poly = bldg.Descendants().Where(l => l.Name.LocalName.Contains("Polygon")).Any();
 
             if (!poly)                  //no polygons --> directly return (e.g. Buildings with Parts but no geometry at building level)
+            {
+                lod = GmlBldg.LodRep.unknown;
                 return surfaces;
-
+            }
             bool lod2 = bldg.DescendantsAndSelf().Where(l => l.Name.LocalName.Contains("lod2")).Count() > 0;
             bool lod1 = bldg.DescendantsAndSelf().Where(l => l.Name.LocalName.Contains("lod1")).Count() > 0;
 
             if (lod2)
             {
+                lod = GmlBldg.LodRep.LOD2;
+
                 #region WallSurfaces
 
-                var lod2Walls = bldg.Descendants(this.allns["bldg"] + "WallSurface");
+                var lod2Walls = bldg.DescendantsAndSelf(this.allns["bldg"] + "WallSurface");
 
                 foreach (var wall in lod2Walls)
                 {
                     List<GmlSurface> wallSurface = ReadSurfaceType(bldgEl, wall, GmlSurface.FaceType.wall);
+                    if (wallSurface == null)
+                        return null;
+                    
                     surfaces.AddRange(wallSurface);
                 }
 
@@ -556,7 +599,7 @@ namespace City2BIM
 
                 #region RoofSurfaces
 
-                var lod2Roofs = bldg.Descendants(this.allns["bldg"] + "RoofSurface");
+                var lod2Roofs = bldg.DescendantsAndSelf(this.allns["bldg"] + "RoofSurface");
 
                 foreach (var roof in lod2Roofs)
                 {
@@ -568,7 +611,7 @@ namespace City2BIM
 
                 #region GroundSurfaces
 
-                var lod2Grounds = bldg.Descendants(this.allns["bldg"] + "GroundSurface");
+                var lod2Grounds = bldg.DescendantsAndSelf(this.allns["bldg"] + "GroundSurface");
 
                 foreach (var ground in lod2Grounds)
                 {
@@ -580,7 +623,7 @@ namespace City2BIM
 
                 #region ClosureSurfaces
 
-                var lod2Closures = bldg.Descendants(this.allns["bldg"] + "ClosureSurface");
+                var lod2Closures = bldg.DescendantsAndSelf(this.allns["bldg"] + "ClosureSurface");
 
                 foreach (var closure in lod2Closures)
                 {
@@ -592,7 +635,7 @@ namespace City2BIM
 
                 #region OuterCeilingSurfaces
 
-                var lod2OuterCeiling = bldg.Descendants(this.allns["bldg"] + "OuterCeilingSurface");
+                var lod2OuterCeiling = bldg.DescendantsAndSelf(this.allns["bldg"] + "OuterCeilingSurface");
 
                 foreach (var ceiling in lod2OuterCeiling)
                 {
@@ -604,7 +647,7 @@ namespace City2BIM
 
                 #region OuterFloorSurfaces
 
-                var lod2OuterFloor = bldg.Descendants(this.allns["bldg"] + "OuterFloorSurface");
+                var lod2OuterFloor = bldg.DescendantsAndSelf(this.allns["bldg"] + "OuterFloorSurface");
 
                 foreach (var floor in lod2OuterFloor)
                 {
@@ -618,11 +661,13 @@ namespace City2BIM
             {
                 #region lod1Surfaces
 
+                lod = GmlBldg.LodRep.LOD1;
+
                 //one occurence per building
-                var lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1Solid").FirstOrDefault();
+                var lod1Rep = bldg.DescendantsAndSelf(this.allns["bldg"] + "lod1Solid").FirstOrDefault();
 
                 if (lod1Rep == null)
-                    lod1Rep = bldg.Descendants(this.allns["bldg"] + "lod1MultiSurface").FirstOrDefault();
+                    lod1Rep = bldg.DescendantsAndSelf(this.allns["bldg"] + "lod1MultiSurface").FirstOrDefault();
 
                 if (lod1Rep != null)
                 {
@@ -659,7 +704,11 @@ namespace City2BIM
                 #endregion lod1Surfaces
             }
             else
+            {
+                lod = GmlBldg.LodRep.unknown;
                 Log.Error("No lod2 or lod1 detected. No support yet.");
+            }
+
 
             return surfaces;
         }
@@ -683,6 +732,9 @@ namespace City2BIM
                 surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(gmlSurface, attributes, type);
 
                 var surfacePl = ReadSurfaceData(polysR[i], surface);
+                if (surfacePl == null)
+                    return null;
+                
                 polyList.Add(surfacePl);
             }
             return polyList;
@@ -725,6 +777,14 @@ namespace City2BIM
             }
 
             //-------------------Check section-----------------------
+
+            //bool extentCheck = false;
+
+            ////Check if within user-defined extent
+            //bool outOfExtent = ptList.Where(c => c.X > ImportSettings.Extent || c.Y > ImportSettings.Extent).Any();
+
+            //if (outOfExtent)
+            //    return null;
 
             //Start = End
 
@@ -915,10 +975,18 @@ namespace City2BIM
         {
             #region LowerCorner
 
-            //For better calculation, Identify lower Corner
-            var lowerCorner = gmlDoc.Descendants(this.allns["gml"] + "lowerCorner").FirstOrDefault();
-            this.lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
-
+            //if (ImportSettings.IsGeoreferenced)
+            //{
+            //    lowerCornerPt.X = ImportSettings.ProjCoord[0];
+            //    lowerCornerPt.Y = ImportSettings.ProjCoord[1];
+            //    lowerCornerPt.Z = ImportSettings.ProjElevation;
+            //}
+            //else
+            //{
+                //For better calculation, Identify lower Corner
+                var lowerCorner = gmlDoc.Descendants(this.allns["gml"] + "lowerCorner").FirstOrDefault();
+                this.lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
+            //}
             #endregion LowerCorner
 
             //Read all overall building elements
@@ -960,8 +1028,9 @@ namespace City2BIM
 
                 var surfaces = new List<GmlSurface>();
 
-                surfaces = ReadSurfaces(bldg, attributes);
+                surfaces = ReadSurfaces(bldg, attributes, out var lod);
 
+                gmlBldg.Lod = lod.ToString();
                 gmlBldg.BldgSurfaces = surfaces;
 
                 //investigation of building parts
@@ -982,8 +1051,9 @@ namespace City2BIM
 
                     var partSurfaces = new List<GmlSurface>();
 
-                    partSurfaces = ReadSurfaces(part, attributes);
+                    partSurfaces = ReadSurfaces(part, attributes, out var lodP);
 
+                    gmlBldgPart.Lod = lodP.ToString();
                     gmlBldgPart.PartSurfaces = partSurfaces;
 
                     parts.Add(gmlBldgPart);

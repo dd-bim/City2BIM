@@ -11,6 +11,7 @@ namespace City2BIM.GmlRep
         private List<GmlBldgPart> parts;
         private List<GmlSurface> bldgSurfaces;
         private C2BSolid bldgSolid;
+        private string lod;
 
         public string BldgId
         {
@@ -76,5 +77,10 @@ namespace City2BIM.GmlRep
                 this.bldgSurfaces = value;
             }
         }
+
+        public string Lod { get => lod; set => lod = value; }
+
+        public enum LodRep { LOD1, LOD2, LOD1_Fallback, LOD2_Fallback, unknown }
+
     }
 }

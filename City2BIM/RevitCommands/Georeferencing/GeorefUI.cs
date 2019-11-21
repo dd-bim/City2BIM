@@ -12,7 +12,11 @@ namespace City2BIM
         // The main Execute method (inherited from IExternalCommand) must be public
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            var form = new GeoRef_Form(revit);
+            Document doc = revit.Application.ActiveUIDocument.Document;
+
+            ImportSettings.SetInitialSettings(doc);
+
+            var form = new GeoRef_Form(doc);
             form.ShowDialog();
 
             return Result.Succeeded;

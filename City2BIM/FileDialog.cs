@@ -1,38 +1,49 @@
-﻿using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
+﻿using System.Windows.Forms;
 
 namespace City2BIM
 {
     internal class FileDialog
     {
-        public string ImportPathCityGML()
+        public enum Data { CityGML, ALKIS, DGM };
+
+        public string ImportPath(Data geodata)
         {
-            FileOpenDialog fileWin = new FileOpenDialog("CityGML-files (*.gml)|*.gml|All Files (*.*)|*.*");
-            fileWin.Title = "Select CityGML file.";
+            OpenFileDialog ofd = new OpenFileDialog();
 
-            fileWin.Show();
+            switch (geodata)
+            {
+                case (Data.CityGML):
+                    {
+                        ofd.Title = "Select CityGML file.";
+                        ofd.Filter = "CityGML (*.gml) | *.gml* | CityGML (*.xml) | *.xml* | All Files (*.*) | *.*";
+                        break;
+                    }
+                case (Data.ALKIS):
+                    {
+                        ofd.Title = "Select NAS-ALKIS file.";
+                        ofd.Filter = "NAS-XML |*.xml | All Files (*.*) | *.*";
+                        break;
+                    }
+                case (Data.DGM):
+                    {
+                        ofd.Title = "Select Grid terrain file.";
+                        ofd.Filter = "DGM - XYZ coordinates (*.txt) | *.txt | DGM - XYZ coordinates (*.csv) | *.csv | All Files (*.*) | *.*";
+                        break;
+                    }
+                default:
+                    {
+                        ofd.Title = "Select file.";
+                        ofd.Filter = "All Files (*.*) | *.*";
+                        break;
+                    }
+            }
 
-            var filePath = fileWin.GetSelectedModelPath();
-
-            if (filePath == null)
-                return "";
-
-            var path = ModelPathUtils.ConvertModelPathToUserVisiblePath(filePath);
-
-            return path;
-        }
-
-        public string ImportPathXYZ()
-        {
-            FileOpenDialog fileWin =
-                new FileOpenDialog("DGM - XYZ coordinates (*.txt)|*.txt|DGM - XYZ coordinates (*.csv)|*.csv|All Files (*.*)|*.*");
-            fileWin.Title = "Select Terrain file with XYZ data.";
-
-            fileWin.Show();
-
-            var path = ModelPathUtils.ConvertModelPathToUserVisiblePath(fileWin.GetSelectedModelPath());
-
-            return path;
+            if (ofd.ShowDialog() == DialogResult.OK && ofd.FileName.Length > 0)
+            {
+                return ofd.FileName;
+            }
+            else
+                return null;
         }
     }
 }

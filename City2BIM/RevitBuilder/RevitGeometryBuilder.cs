@@ -13,7 +13,7 @@ namespace City2BIM.RevitBuilder
     {
         private City2BIM.GetGeometry.C2BPoint gmlCorner;
         private Transform revitPBPTrafo;
-        private bool swapNE;
+        //private bool swapNE;
         private XYZ vectorPBP;
         private double scale;
         private Document doc;
@@ -22,11 +22,11 @@ namespace City2BIM.RevitBuilder
         private Dictionary<GmlRep.GmlSurface.FaceType, ElementId> colors;
 
 
-        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner, bool swapNE)
+        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner/*, bool swapNE*/)
         {
             this.doc = doc;
             this.buildings = buildings;
-            this.swapNE = swapNE;
+            //this.swapNE = swapNE;
             this.gmlCorner = gmlCorner;
             this.revitPBPTrafo = GetRevitProjectLocation(doc);
             this.colors = CreateColorAsMaterial();
@@ -78,11 +78,11 @@ namespace City2BIM.RevitBuilder
             double xGlobalProj = gmlLocalPt.X + gmlCorner.X;
             double yGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
 
-            if (swapNE)
-            {
-                xGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
-                yGlobalProj = gmlLocalPt.X + gmlCorner.X;
-            }
+            //if (swapNE)
+            //{
+            //    xGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
+            //    yGlobalProj = gmlLocalPt.X + gmlCorner.X;
+            //}
 
             var zGlobal = gmlLocalPt.Z + gmlCorner.Z;
 
@@ -139,7 +139,7 @@ namespace City2BIM.RevitBuilder
 
                         try
                         {
-                            CreateRevitRepresentation(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, part.BldgPartAttributes);
+                            CreateRevitRepresentation(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, part.Lod, part.BldgPartAttributes);
                             success++;
                         }
                         catch (System.Exception ex)
@@ -167,7 +167,7 @@ namespace City2BIM.RevitBuilder
                     try
                     {
                         all++;
-                        CreateRevitRepresentation(bldg.BldgSolid.InternalID.ToString(), bldg.BldgSolid, bldg.BldgSurfaces, bldg.BldgAttributes);
+                        CreateRevitRepresentation(bldg.BldgSolid.InternalID.ToString(), bldg.BldgSolid, bldg.BldgSurfaces, bldg.BldgAttributes, bldg.Lod);
                         success++;
                     }
 
@@ -241,7 +241,7 @@ namespace City2BIM.RevitBuilder
             results.Information("------------------------------------------------------------------");
         }
 
-        private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> bldgAttributes, Dictionary<GmlAttribute, string> partAttributes = null)
+        private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> bldgAttributes, string lod, Dictionary<GmlAttribute, string> partAttributes = null)
         {
             TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
             builder.OpenConnectedFaceSet(true);
@@ -278,7 +278,7 @@ namespace City2BIM.RevitBuilder
                     ds = SetAttributeValues(ds, partAttributes);
                 ds.Pinned = true;
 
-                SetRevitInternalParameters(internalID, "CityGML: LOD2-Solid", ds);
+                SetRevitInternalParameters(internalID, lod, ds);
 
                 t.Commit();
             }
@@ -348,7 +348,7 @@ namespace City2BIM.RevitBuilder
                         ds = SetAttributeValues(ds, partAttributes);
                     ds.Pinned = true;
 
-                    SetRevitInternalParameters(internalID, "CityGML: LOD1-Solid (simplified from LOD2)", ds);
+                    SetRevitInternalParameters(internalID, "LOD1 (Fallback from LOD2)", ds);
 
                     t.Commit();
                 }
@@ -456,7 +456,7 @@ namespace City2BIM.RevitBuilder
 
                         try
                         {
-                            CreateRevitFaceRepresentation(surface, building.BldgAttributes, part.BldgPartAttributes);
+                            CreateRevitFaceRepresentation(surface, building.BldgAttributes, part.Lod, part.BldgPartAttributes);
                             success++;
 
                         }
@@ -475,7 +475,7 @@ namespace City2BIM.RevitBuilder
 
                     try
                     {
-                        CreateRevitFaceRepresentation(surface, building.BldgAttributes);
+                        CreateRevitFaceRepresentation(surface, building.BldgAttributes, building.Lod);
                         success++;
                     }
                     catch (Exception ex)
@@ -526,7 +526,7 @@ namespace City2BIM.RevitBuilder
             return projectedVerts;
         }
 
-        private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<GmlAttribute, string> bldgAttributes, Dictionary<GmlAttribute, string> partAttributes = null)
+        private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<GmlAttribute, string> bldgAttributes, string lod, Dictionary<GmlAttribute, string> partAttributes = null)
         {
             C2BPoint normalizedVc = new C2BPoint(0, 0, 0);
 
@@ -595,7 +595,7 @@ namespace City2BIM.RevitBuilder
 
                 ds.SetShape(new GeometryObject[] { bldgFaceSolid });
 
-                SetRevitInternalParameters(surface.InternalID.ToString(), "CityGML: LOD2-Surface", ds);
+                SetRevitInternalParameters(surface.InternalID.ToString(), lod, ds);
 
                 ds = SetAttributeValues(ds, bldgAttributes);
                 if (partAttributes != null)
@@ -735,7 +735,8 @@ namespace City2BIM.RevitBuilder
                 { GmlRep.GmlSurface.FaceType.ground, groundCol },
                 { GmlRep.GmlSurface.FaceType.outerCeiling, groundCol },
                 { GmlRep.GmlSurface.FaceType.outerFloor, groundCol },
-                { GmlRep.GmlSurface.FaceType.closure, closureCol }
+                { GmlRep.GmlSurface.FaceType.closure, closureCol },
+                { GmlRep.GmlSurface.FaceType.unknown, wallCol }
             };
 
             return colorList;

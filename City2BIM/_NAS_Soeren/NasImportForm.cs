@@ -26,7 +26,9 @@ namespace NasImport
     public partial class NasImportForm : System.Windows.Forms.Form
 
     {
-        ExternalCommandData commandData;
+        //ExternalCommandData commandData;
+        Document doc;
+        UIDocument uiDoc;
         MainData m_dataBuffer;
         double feetToMeter = 1.0 / 0.3048;
         double RE = 6380;       //mittlerer Erdradius in km
@@ -72,13 +74,10 @@ namespace NasImport
             }
         }
 
-        public NasImportForm(ExternalCommandData cData)
+        public NasImportForm(UIDocument uiDoc)
         {
-            commandData = cData;
-
-            UIApplication app = commandData.Application;
-            UIDocument uidoc = app.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            this.doc = uiDoc.Document;
+            this.uiDoc = uiDoc;
 
             InitializeComponent();
         }
@@ -154,10 +153,10 @@ namespace NasImport
         
         private void button1_Click(object sender, EventArgs e)
         {
-            UIApplication uiapp = commandData.Application;
-            UIDocument uidoc = uiapp.ActiveUIDocument;
-            Document doc = uidoc.Document;
-            Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+            //UIApplication uiapp = commandData.Application;
+            //UIDocument uidoc = uiapp.ActiveUIDocument;
+            //Document doc = uidoc.Document;
+            Autodesk.Revit.ApplicationServices.Application app = doc.Application;
 
             XmlDocument xmlDoc = new XmlDocument();
             string str = ofd.FileName;
@@ -465,7 +464,7 @@ namespace NasImport
                     transIndu.Commit();
                     this.Refresh();
 
-                    ICollection<Element> eleColle = SelectAllElements(uidoc, doc);
+                    ICollection<Element> eleColle = SelectAllElements(uiDoc, doc);
 
                     foreach (Element el in eleColle)
                     {
@@ -623,7 +622,7 @@ namespace NasImport
                     transWohn.Commit();
                     this.Refresh();
 
-                    ICollection<Element> eleColle = SelectAllElements(uidoc, doc);
+                    ICollection<Element> eleColle = SelectAllElements(uiDoc, doc);
 
                     foreach (Element el in eleColle)
                     {
@@ -781,7 +780,7 @@ namespace NasImport
                     transSport.Commit();
                     this.Refresh();
 
-                    ICollection<Element> eleColle = SelectAllElements(uidoc, doc);
+                    ICollection<Element> eleColle = SelectAllElements(uiDoc, doc);
 
                     foreach (Element el in eleColle)
                     {
@@ -940,7 +939,7 @@ namespace NasImport
                     transStrass.Commit();
                     this.Refresh();
 
-                    ICollection<Element> eleColle = SelectAllElements(uidoc, doc);
+                    ICollection<Element> eleColle = SelectAllElements(uiDoc, doc);
 
                     foreach (Element el in eleColle)
                     {
@@ -1099,7 +1098,7 @@ namespace NasImport
                     transGem.Commit();
                     this.Refresh();
 
-                    ICollection<Element> eleColle = SelectAllElements(uidoc, doc);
+                    ICollection<Element> eleColle = SelectAllElements(uiDoc, doc);
 
                     foreach (Element el in eleColle)
                     {
@@ -1710,7 +1709,7 @@ namespace NasImport
                             tExtFlst.Commit();
                             this.Refresh();
 
-                            ICollection<Element> eleColle = SelectAllElements(uidoc, doc);
+                            ICollection<Element> eleColle = SelectAllElements(uiDoc, doc);
 
                             foreach (Element el in eleColle)
                             {
@@ -1953,7 +1952,7 @@ namespace NasImport
                             tIntFlst.Commit();
                             this.Refresh();
 
-                            ICollection<Element> eleColle = SelectAllElements(uidoc, doc);
+                            ICollection<Element> eleColle = SelectAllElements(uiDoc, doc);
 
                             foreach (Element el in eleColle)
                             {

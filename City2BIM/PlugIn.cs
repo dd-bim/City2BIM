@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI;
+using City2BIM.RevitCommands.City2BIM;
 
 namespace City2BIM
 {
@@ -72,6 +73,10 @@ namespace City2BIM
 
             btCityGml.AddPushButton(btSurfaces);
             btCityGml.AddPushButton(btSolid);
+
+            PushButton btCitySettings = panel3.AddItem(new PushButtonData("OpenCityGMLSettings", "Settings",
+            thisAssemblyPath, "City2BIM.OpenSettings")) as PushButton;
+            btCitySettings.ToolTip = "Import settings for city model.";
 
             //PushButton buttonCode = panel3.AddItem(new PushButtonData("Get CityGML Code Description", "Get Code Decription",
             //thisAssemblyPath, "City2BIM.ReadCode")) as PushButton;

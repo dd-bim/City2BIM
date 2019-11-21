@@ -14,21 +14,18 @@ namespace City2BIM
     public class ReadTerrain
     {
         // The main Execute method (inherited from IExternalCommand) must be public
-        public ReadTerrain(ExternalCommandData revit)
+        public ReadTerrain(Document doc)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
                 .CreateLogger();
 
-            UIApplication uiApp = revit.Application;
-            Document doc = uiApp.ActiveUIDocument.Document;
-
             Log.Information("Start...");
  
             //Import via Dialog:
             FileDialog imp = new FileDialog();
-            var path = imp.ImportPathXYZ();
+            var path = imp.ImportPath(FileDialog.Data.DGM);
             //-------------------------------
             Log.Information("File: " + path);
 

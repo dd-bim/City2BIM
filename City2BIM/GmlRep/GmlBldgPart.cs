@@ -10,6 +10,7 @@ namespace City2BIM.GmlRep
         private Dictionary<GmlAttribute, string> bldgPartAttributes;
         private List<GmlSurface> partSurfaces;
         private C2BSolid partSolid;
+        private string lod;
 
         public string BldgPartId
         {
@@ -49,6 +50,8 @@ namespace City2BIM.GmlRep
                 this.bldgPartAttributes = value;
             }
         }
+
+        public string Lod { get => lod; set => lod = value; }
 
         internal List<GmlSurface> PartSurfaces
         {

@@ -55,9 +55,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BimGisCad">
-      <HintPath>..\..\..\..\libraries\bimgiscadlib-master_10_19\bimgiscadlib-master\BimGisCad\bin\Release\netstandard2.0\BimGisCad.dll</HintPath>
-    </Reference>
     <Reference Include="GeoJSON.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoJSON.Net.1.1.64\lib\net45\GeoJSON.Net.dll</HintPath>
     </Reference>
@@ -128,6 +125,11 @@
     </Compile>
     <Compile Include="ReadCityGML.cs" />
     <Compile Include="RevitBuilder\RevitTopoSurfaceBuilder.cs" />
+    <Compile Include="RevitCommands\City2BIM\CityGML_settings.xaml.cs">
+      <DependentUpon>CityGML_settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ImportSettings.cs" />
+    <Compile Include="RevitCommands\City2BIM\OpenSettings.cs" />
     <Compile Include="RevitCommands\City2BIM\ReadCityGMLSolids.cs" />
     <Compile Include="RevitCommands\City2BIM\ReadCityGMLFaces.cs" />
     <Compile Include="ReadTerrain.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="RevitCommands\Georeferencing\UTMcalc.cs" />
     <Compile Include="RevitCommands\IFCExport\ExportIFC.cs" />
     <Compile Include="RevitCommands\NAS2BIM\ReadALKIS.cs" />
+    <Compile Include="WFSClient.cs" />
     <Compile Include="_NAS_Soeren\ImportData.cs" />
     <Compile Include="_NAS_Soeren\ImportXMLData.cs" />
     <Compile Include="_NAS_Soeren\MainData.cs" />
@@ -149,7 +152,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="_NAS_Soeren\NasImportForm.Designer.cs" />
-    <Compile Include="_NAS_Soeren\PlugIn.cs" />
     <Compile Include="_NAS_Soeren\ReadData.cs" />
     <Compile Include="_NAS_Soeren\ReadXml.cs" />
   </ItemGroup>
@@ -169,6 +171,10 @@
     <EmbeddedResource Include="_NAS_Soeren\NasImportForm.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="RevitCommands\City2BIM\CityGML_settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RevitCommands\Georeferencing\GeoRef_Form.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
