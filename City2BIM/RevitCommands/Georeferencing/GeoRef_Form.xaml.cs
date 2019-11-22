@@ -22,11 +22,7 @@ namespace City2BIM.RevitCommands.Georeferencing
         public const double radToDeg = 180 / Math.PI;
         public const double feetToM = 0.3048;
 
-        public string[] epsgList = new string[] {   "EPSG:25832", "EPSG:25833",
-                                                    "EPSG:3044", "EPSG:3045",
-                                                    "EPSG:4647", "EPSG:5650",
-                                                    "EPSG:5652", "EPSG:5653",
-                                                    "EPSG:5555", "EPSG:5556",};
+        public string[] epsgList = new string[] {   "EPSG:25832", "EPSG:25833"};
 
         public string[] vertDatList = new string[] { "DHHN2016", "DHHN92", "DHHN85 (NN)", "SNN76 (HN)" };
 
@@ -87,19 +83,20 @@ namespace City2BIM.RevitCommands.Georeferencing
 
             #region Get SiteLocation
 
-            tb_lat.Text = ImportSettings.WgsCoord[0].ToString();
-            tb_lon.Text = ImportSettings.WgsCoord[1].ToString();
-            tb_elev.Text = ImportSettings.ProjElevation.ToString();
-            tb_trueNorth.Text = ImportSettings.ProjAngle.ToString();
+            tb_lat.Text = GeoRefSettings.WgsCoord[0].ToString();
+            tb_lon.Text = GeoRefSettings.WgsCoord[1].ToString();
+            tb_elev.Text = GeoRefSettings.ProjElevation.ToString();
+            tb_trueNorth.Text = GeoRefSettings.ProjAngle.ToString();
 
             #endregion Get SiteLocation
 
             #region Get Project Location
 
-            tb_eastings50.Text = ImportSettings.ProjCoord[1].ToString();
-            tb_northings50.Text = ImportSettings.ProjCoord[0].ToString();
-            tb_elev.Text = ImportSettings.ProjElevation.ToString();
-            tb_scale50.Text = ImportSettings.ProjScale.ToString();
+            tb_eastings50.Text = GeoRefSettings.ProjCoord[1].ToString();
+            tb_northings50.Text = GeoRefSettings.ProjCoord[0].ToString();
+            tb_elev.Text = GeoRefSettings.ProjElevation.ToString();
+
+            tb_scale50.Text = GeoRefSettings.ProjScale.ToString();
 
 
             //Information parameter: Grid North
@@ -109,7 +106,7 @@ namespace City2BIM.RevitCommands.Georeferencing
                 tb_rotation50.Text = (UTMcalc.VectorToAzimuth(rotAbs.AsDouble(), rotOrd.AsDouble()).ToString());
 
             //CRS from settings
-            cb_epsg.Text = ImportSettings.Epsg;
+            cb_epsg.Text = GeoRefSettings.Epsg;
                 
            //Information parameter: Vertical Datum
             
@@ -143,14 +140,14 @@ namespace City2BIM.RevitCommands.Georeferencing
                 if (crs.Equals("EPSG:25832") || crs.Equals("EPSG:3044") || crs.Equals("EPSG:4647") || crs.Equals("EPSG:5652") || crs.Equals("EPSG:5555"))
                 {
                     zone = 32;
-                    ImportSettings.Epsg = "EPSG:25832";
+                    GeoRefSettings.Epsg = "EPSG:25832";
                 }
                     
 
                 if (crs.Equals("EPSG:25833") || crs.Equals("EPSG:3045") || crs.Equals("EPSG:5650") || crs.Equals("EPSG:5653") || crs.Equals("EPSG:5556"))
                 {
                     zone = 32;
-                    ImportSettings.Epsg = "EPSG:25833";
+                    GeoRefSettings.Epsg = "EPSG:25833";
                 }
 
 
@@ -193,7 +190,7 @@ namespace City2BIM.RevitCommands.Georeferencing
                 tb_elev.Text = UTMcalc.DoubleToString(orthoHeight, 4);
             }
 
-            ImportSettings.IsGeoreferenced = true;
+            GeoRefSettings.IsGeoreferenced = true;
         }
 
         private void bt_applyGeoref_Click(object sender, RoutedEventArgs e)
@@ -341,9 +338,9 @@ namespace City2BIM.RevitCommands.Georeferencing
             }
             #endregion Write Project Properties
 
-            ImportSettings.SetInitialSettings(doc);     //upates ImportSettings with new GeoRef data
-            ImportSettings.ProjScale = UTMcalc.ParseDouble(tb_scale50.Text);
-            ImportSettings.Epsg = cb_epsg.Text;
+            GeoRefSettings.SetInitialSettings(doc);     //upates ImportSettings with new GeoRef data
+            GeoRefSettings.ProjScale = UTMcalc.ParseDouble(tb_scale50.Text);
+            GeoRefSettings.Epsg = cb_epsg.Text;
         }
 
         private void bt_quit_Click(object sender, RoutedEventArgs e)

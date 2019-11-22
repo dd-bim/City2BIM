@@ -125,10 +125,11 @@
     </Compile>
     <Compile Include="ReadCityGML.cs" />
     <Compile Include="RevitBuilder\RevitTopoSurfaceBuilder.cs" />
+    <Compile Include="RevitCommands\City2BIM\City2BIM_prop.cs" />
     <Compile Include="RevitCommands\City2BIM\CityGML_settings.xaml.cs">
       <DependentUpon>CityGML_settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ImportSettings.cs" />
+    <Compile Include="GeoRefSettings.cs" />
     <Compile Include="RevitCommands\City2BIM\OpenSettings.cs" />
     <Compile Include="RevitCommands\City2BIM\ReadCityGMLSolids.cs" />
     <Compile Include="RevitCommands\City2BIM\ReadCityGMLFaces.cs" />

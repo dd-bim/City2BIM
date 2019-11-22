@@ -19,12 +19,8 @@
         //public static readonly double Determinanttol = 1.0E-4;
         public static readonly double Determinanttol = 1.0E-8;
 
-        public static GetGeometry.C2BSolid Solid
-        {
-            get => default(GetGeometry.C2BSolid);
-            set
-            {
-            }
-        }
+        public const double radToDeg = 180 / System.Math.PI;
+        public const double feetToM = 0.3048;
+
     }
 }

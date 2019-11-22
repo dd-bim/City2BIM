@@ -44,25 +44,25 @@ namespace City2BIM.RevitBuilder
             ProjectLocation proj = doc.ActiveProjectLocation;
             ProjectPosition projPos = proj.GetProjectPosition(Autodesk.Revit.DB.XYZ.Zero);
 
-            double angle = projPos.Angle;
-            double elevation = projPos.Elevation;
-            double easting = projPos.EastWest;
-            double northing = projPos.NorthSouth;
+            double angle = GeoRefSettings.ProjAngle / Prop.radToDeg; //  projPos.Angle;
+            double elevation = GeoRefSettings.ProjElevation / Prop.feetToM; // projPos.Elevation;
+            double easting = GeoRefSettings.ProjCoord[1] / Prop.feetToM; // projPos.EastWest;
+            double northing = GeoRefSettings.ProjCoord[0] / Prop.feetToM; // projPos.NorthSouth;
 
             Transform trot = Transform.CreateRotation(Autodesk.Revit.DB.XYZ.BasisZ, -angle);
             this.vectorPBP = new Autodesk.Revit.DB.XYZ(easting, northing, elevation);
             Transform ttrans = Transform.CreateTranslation(-vectorPBP);
             Transform transf = trot.Multiply(ttrans);
 
-            //scale because of projected input data?
-            var projInfo = doc.ProjectInformation.LookupParameter("Scale");
-            if (projInfo == null || !projInfo.HasValue)
-                this.scale = 1;
-            else
-                this.scale = projInfo.AsDouble();
+            ////scale because of projected input data?
+            //var projInfo = doc.ProjectInformation.LookupParameter("Scale");
+            //if (projInfo == null || !projInfo.HasValue)
+            //    this.scale = 1;
+            //else
+            //    this.scale = projInfo.AsDouble();
 
-            if (double.IsNaN(scale))
-                this.scale = 1;
+            //if (double.IsNaN(scale))
+            //    this.scale = 1;
 
             return transf;
         }
@@ -78,22 +78,29 @@ namespace City2BIM.RevitBuilder
             double xGlobalProj = gmlLocalPt.X + gmlCorner.X;
             double yGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
 
-            //if (swapNE)
-            //{
-            //    xGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
-            //    yGlobalProj = gmlLocalPt.X + gmlCorner.X;
-            //}
-
-            var zGlobal = gmlLocalPt.Z + gmlCorner.Z;
-
             var deltaX = xGlobalProj - (vectorPBP.X * 0.3048);
             var deltaY = yGlobalProj - (vectorPBP.Y * 0.3048);
 
-            var deltaXUnproj = deltaX / scale;
-            var deltaYUnproj = deltaY / scale;
+            if (City2BIM.RevitCommands.City2BIM.City2BIM_prop.IsGeodeticSystem)
+            {
+                xGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
+                yGlobalProj = gmlLocalPt.X + gmlCorner.X;
+
+                deltaX = xGlobalProj - (vectorPBP.Y * 0.3048);
+                deltaY = yGlobalProj - (vectorPBP.X * 0.3048);
+            }
+
+            
+
+
+
+            var deltaXUnproj = deltaX / GeoRefSettings.ProjScale; // scale;
+            var deltaYUnproj = deltaY / GeoRefSettings.ProjScale; // scale;
 
             var xGlobalUnproj = xGlobalProj - deltaX + deltaXUnproj;
             var yGlobalUnproj = yGlobalProj - deltaY + deltaYUnproj;
+
+            var zGlobal = gmlLocalPt.Z + gmlCorner.Z;
 
             //Multiplication with feet factor (neccessary because of feet in Revit database)
             var xFeet = xGlobalUnproj / 0.3048;

@@ -3,6 +3,7 @@ using Autodesk.Revit.UI;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
 using City2BIM.RevitBuilder;
+using City2BIM.RevitCommands.City2BIM;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -33,20 +34,10 @@ namespace City2BIM
 
             XDocument gmlDoc;
 
-            if (ImportSettings.DoFileImport)
-            {
-                //local file path
-                path = ImportSettings.FileUrl;
-
-                //Load XML document from local file
-                gmlDoc = XDocument.Load(path);
-
-
-            }
-            else
+            if (City2BIM_prop.IsServerRequest)
             {
                 //server url as specified (if no change VCS server will be called)
-                string wfsUrl = ImportSettings.ServerUrl;
+                string wfsUrl = City2BIM_prop.ServerUrl;
 
                 //client class for xml-POST request from WFS server
                 WFS.WFSClient client = new WFS.WFSClient(wfsUrl);
@@ -58,10 +49,23 @@ namespace City2BIM
                 //CRS:  supported from server are currently: Pseudo-Mercator (3857), LatLon (4326), German National Systems: West(25832), East(25833)
                 //      supported by PlugIn are only the both German National Systems
 
-                gmlDoc = client.getFeaturesCircle(ImportSettings.WgsCoord[1], ImportSettings.WgsCoord[0], ImportSettings.Extent, 500, ImportSettings.Epsg);
+                if (GeoRefSettings.Epsg != "EPSG:25832" && GeoRefSettings.Epsg != "EPSG:25833")
+                    TaskDialog.Show("EPSG not supported!", "Only EPSG:25832 or EPSG:25833 will be supported by server. Please change the EPSG-Code in Georeferencing window.");
+
+                gmlDoc = client.getFeaturesCircle(City2BIM_prop.ServerCoord[0], City2BIM_prop.ServerCoord[1], City2BIM_prop.Extent, 500, GeoRefSettings.Epsg);
 
                 //Test-Export --> may implement possibility to store CityGML-response from server
-                gmlDoc.Save(@"C:\Users\goerne\Desktop\logs_revit_plugin\server_gmls\" + Math.Round(ImportSettings.WgsCoord[0], 3) + "_" + Math.Round(ImportSettings.WgsCoord[1], 3) + ".gml");
+                gmlDoc.Save(@"C:\Users\goerne\Desktop\logs_revit_plugin\server_gmls\" + Math.Round(GeoRefSettings.WgsCoord[0], 3) + "_" + Math.Round(GeoRefSettings.WgsCoord[1], 3) + ".gml");
+
+
+            }
+            else
+            {
+                //local file path
+                path = City2BIM_prop.FileUrl;
+
+                //Load XML document from local file
+                gmlDoc = XDocument.Load(path);
 
             }
 
@@ -553,11 +557,11 @@ namespace City2BIM
             double axis0 = Double.Parse(xyzString[0], CultureInfo.InvariantCulture);
             double axis1 = Double.Parse(xyzString[1], CultureInfo.InvariantCulture);
 
-            if (ImportSettings.IsGeodeticSystem)
-            {
-                return new C2BPoint(axis1 - lowerCorner.X, axis0 - lowerCorner.Y, z);
-            }
-            else
+            //if (City2BIM_prop.IsGeodeticSystem)
+            //{
+            //    return new C2BPoint(axis1 - lowerCorner.X, axis0 - lowerCorner.Y, z);
+            //}
+            //else
                 return new C2BPoint(axis0 - lowerCorner.X, axis1 - lowerCorner.Y, z);
         }
 
@@ -591,7 +595,7 @@ namespace City2BIM
                     List<GmlSurface> wallSurface = ReadSurfaceType(bldgEl, wall, GmlSurface.FaceType.wall);
                     if (wallSurface == null)
                         return null;
-                    
+
                     surfaces.AddRange(wallSurface);
                 }
 
@@ -734,7 +738,7 @@ namespace City2BIM
                 var surfacePl = ReadSurfaceData(polysR[i], surface);
                 if (surfacePl == null)
                     return null;
-                
+
                 polyList.Add(surfacePl);
             }
             return polyList;
@@ -983,9 +987,9 @@ namespace City2BIM
             //}
             //else
             //{
-                //For better calculation, Identify lower Corner
-                var lowerCorner = gmlDoc.Descendants(this.allns["gml"] + "lowerCorner").FirstOrDefault();
-                this.lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
+            //For better calculation, Identify lower Corner
+            var lowerCorner = gmlDoc.Descendants(this.allns["gml"] + "lowerCorner").FirstOrDefault();
+            this.lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
             //}
             #endregion LowerCorner
 

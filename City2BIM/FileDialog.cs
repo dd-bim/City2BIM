@@ -15,7 +15,7 @@ namespace City2BIM
                 case (Data.CityGML):
                     {
                         ofd.Title = "Select CityGML file.";
-                        ofd.Filter = "CityGML (*.gml) | *.gml* | CityGML (*.xml) | *.xml* | All Files (*.*) | *.*";
+                        ofd.Filter = "CityGML (*.gml) | *.gml | CityGML (*.xml) | *.xml | All Files (*.*) | *.*";
                         break;
                     }
                 case (Data.ALKIS):

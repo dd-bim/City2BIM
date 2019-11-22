@@ -12,7 +12,7 @@ namespace City2BIM.RevitCommands.Georeferencing
         public static readonly double UtmFalseEasting = 500000.0;
         public static readonly double UtmFalseNorthing = 10000000.0;
 
-        public static readonly Ellipsoid Grs80 = new Ellipsoid(Constants.GRS80.MajorRadius, Constants.GRS80.Flattening);
+        public static readonly Ellipsoid Grs80 = new Ellipsoid(NETGeographicLib.Constants.GRS80.MajorRadius, NETGeographicLib.Constants.GRS80.Flattening);
 
         private static readonly TransverseMercator utmGrs80 = new TransverseMercator(Grs80.MajorRadius, Grs80.Flattening, UtmScale);
 

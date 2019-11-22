@@ -14,7 +14,7 @@ namespace City2BIM
         {
             Document doc = revit.Application.ActiveUIDocument.Document;
 
-            ImportSettings.SetInitialSettings(doc);
+            GeoRefSettings.SetInitialSettings(doc);
 
             var form = new GeoRef_Form(doc);
             form.ShowDialog();

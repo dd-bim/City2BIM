@@ -15,7 +15,7 @@ namespace City2BIM
         {
             UIDocument uiDoc = revit.Application.ActiveUIDocument;
 
-            ImportSettings.SetInitialSettings(uiDoc.Document);
+            GeoRefSettings.SetInitialSettings(uiDoc.Document);
 
 
                 NasImportForm newForm = new NasImportForm(uiDoc);
