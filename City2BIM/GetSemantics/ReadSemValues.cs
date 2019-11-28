@@ -7,14 +7,14 @@ namespace City2BIM.GetSemantics
 {
     internal class ReadSemValues
     {
-        public Dictionary<GmlAttribute, string> ReadAttributeValuesBldg(XElement bldgEl, HashSet<GmlAttribute> attributes, Dictionary<string, XNamespace> nsp)
+        public Dictionary<XmlAttribute, string> ReadAttributeValuesBldg(XElement bldgEl, HashSet<XmlAttribute> attributes, Dictionary<string, XNamespace> nsp)
         {
-            var bldgAttributes = attributes.Where(a => a.Reference == GmlAttribute.AttrHierarchy.bldg);
+            var bldgAttributes = attributes.Where(a => a.Reference == XmlAttribute.AttrHierarchy.bldg);
 
             var bldgParts = bldgEl.Elements(nsp["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
 
-            var kvp = new Dictionary<GmlAttribute, string>();
+            var kvp = new Dictionary<XmlAttribute, string>();
 
             foreach(var attr in bldgAttributes)
             {
@@ -25,12 +25,12 @@ namespace City2BIM.GetSemantics
 
                 //generische Attribute:
 
-                if(attr.GmlNamespace == GmlAttribute.AttrNsp.gen)
+                if(attr.XmlNamespace == XmlAttribute.AttrNsp.gen)
                 {
                     matchAttr = bldg.DescendantsAndSelf().Where(n => n.Name.LocalName == "value" && n.Parent.Attribute("name").Value == attr.Name).ToList();
                 }
 
-                if(attr.GmlNamespace == GmlAttribute.AttrNsp.gml)
+                if(attr.XmlNamespace == XmlAttribute.AttrNsp.gml)
                 {
                     matchAttr = bldg.DescendantsAndSelf().Where(n => n.Name.LocalName == attr.Name && n.Name.Namespace == nsp["gml"]).ToList();
                 }
@@ -101,9 +101,9 @@ namespace City2BIM.GetSemantics
             return kvp;
         }
 
-        public Dictionary<GmlAttribute, string> ReadAttributeValuesSurface(XElement surfaceEl, HashSet<GmlAttribute> attributes, GmlSurface.FaceType type)
+        public Dictionary<XmlAttribute, string> ReadAttributeValuesSurface(XElement surfaceEl, HashSet<XmlAttribute> attributes, GmlSurface.FaceType type)
         {
-            var kvp = new Dictionary<GmlAttribute, string>();
+            var kvp = new Dictionary<XmlAttribute, string>();
 
             var surfaceAttributes = attributes.Where(a => a.Reference.ToString() == type.ToString());
 

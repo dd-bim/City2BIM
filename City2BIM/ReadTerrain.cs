@@ -7,7 +7,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Serilog;
 using C2BPoint = City2BIM.GetGeometry.C2BPoint;
-using GmlAttribute = City2BIM.GetSemantics.GmlAttribute;
+using GmlAttribute = City2BIM.GetSemantics.XmlAttribute;
 
 namespace City2BIM
 {

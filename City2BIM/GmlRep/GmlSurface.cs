@@ -13,7 +13,7 @@ namespace City2BIM.GmlRep
         private Guid internalID;        
         private string surfaceId;
         private FaceType facetype;
-        private Dictionary<GmlAttribute, string> surfaceAttributes;
+        private Dictionary<XmlAttribute, string> surfaceAttributes;
         private List<C2BPoint> exteriorPts;
         private List<List<C2BPoint>> interiorPts;
 
@@ -37,7 +37,7 @@ namespace City2BIM.GmlRep
             }
         }
 
-        public Dictionary<GmlAttribute, string> SurfaceAttributes
+        public Dictionary<XmlAttribute, string> SurfaceAttributes
         {
             get
             {

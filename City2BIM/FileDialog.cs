@@ -15,19 +15,19 @@ namespace City2BIM
                 case (Data.CityGML):
                     {
                         ofd.Title = "Select CityGML file.";
-                        ofd.Filter = "CityGML (*.gml) | *.gml | CityGML (*.xml) | *.xml | All Files (*.*) | *.*";
+                        ofd.Filter = "CityGML (*.gml) | *.gml| CityGML (*.xml) | *.xml| All Files (*.*) | *.*";
                         break;
                     }
                 case (Data.ALKIS):
                     {
                         ofd.Title = "Select NAS-ALKIS file.";
-                        ofd.Filter = "NAS-XML |*.xml | All Files (*.*) | *.*";
+                        ofd.Filter = "NAS-XML |*.xml| All Files (*.*) | *.*";
                         break;
                     }
                 case (Data.DGM):
                     {
                         ofd.Title = "Select Grid terrain file.";
-                        ofd.Filter = "DGM - XYZ coordinates (*.txt) | *.txt | DGM - XYZ coordinates (*.csv) | *.csv | All Files (*.*) | *.*";
+                        ofd.Filter = "DGM - XYZ coordinates (*.txt) | *.txt| DGM - XYZ coordinates (*.csv) | *.csv| All Files (*.*) | *.*";
                         break;
                     }
                 default:

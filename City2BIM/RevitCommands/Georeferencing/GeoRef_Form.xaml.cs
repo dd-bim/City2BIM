@@ -146,7 +146,7 @@ namespace City2BIM.RevitCommands.Georeferencing
 
                 if (crs.Equals("EPSG:25833") || crs.Equals("EPSG:3045") || crs.Equals("EPSG:5650") || crs.Equals("EPSG:5653") || crs.Equals("EPSG:5556"))
                 {
-                    zone = 32;
+                    zone = 33;
                     GeoRefSettings.Epsg = "EPSG:25833";
                 }
 
@@ -266,26 +266,26 @@ namespace City2BIM.RevitCommands.Georeferencing
                     { "VerticalDatum", cb_vertDatum.Text }
                 };
 
-            var mapAttributes = new Dictionary<string, GetSemantics.GmlAttribute.AttrType>()
+            var mapAttributes = new Dictionary<string, GetSemantics.XmlAttribute.AttrType>()
             {
-                    { "Eastings", GetSemantics.GmlAttribute.AttrType.doubleAttribute },
-                    { "Northings", GetSemantics.GmlAttribute.AttrType.doubleAttribute },
-                    { "OrthogonalHeight", GetSemantics.GmlAttribute.AttrType.doubleAttribute },
-                    { "XAxisAbscissa", GetSemantics.GmlAttribute.AttrType.doubleAttribute },
-                    { "XAxisOrdinate", GetSemantics.GmlAttribute.AttrType.doubleAttribute },
-                    { "Scale", GetSemantics.GmlAttribute.AttrType.doubleAttribute },
+                    { "Eastings", GetSemantics.XmlAttribute.AttrType.doubleAttribute },
+                    { "Northings", GetSemantics.XmlAttribute.AttrType.doubleAttribute },
+                    { "OrthogonalHeight", GetSemantics.XmlAttribute.AttrType.doubleAttribute },
+                    { "XAxisAbscissa", GetSemantics.XmlAttribute.AttrType.doubleAttribute },
+                    { "XAxisOrdinate", GetSemantics.XmlAttribute.AttrType.doubleAttribute },
+                    { "Scale", GetSemantics.XmlAttribute.AttrType.doubleAttribute },
             };
 
             sem.CreateProjectParameters("ePSet_MapConversion", mapAttributes);
 
-            var crsAttributes = new Dictionary<string, GetSemantics.GmlAttribute.AttrType>()
+            var crsAttributes = new Dictionary<string, GetSemantics.XmlAttribute.AttrType>()
             {
-                    { "Name", GetSemantics.GmlAttribute.AttrType.stringAttribute },
-                    { "Description", GetSemantics.GmlAttribute.AttrType.stringAttribute  },
-                    { "GeodeticDatum", GetSemantics.GmlAttribute.AttrType.stringAttribute  },
-                    { "VerticalDatum", GetSemantics.GmlAttribute.AttrType.stringAttribute  },
-                    { "MapProjection", GetSemantics.GmlAttribute.AttrType.stringAttribute  },
-                    { "MapZone", GetSemantics.GmlAttribute.AttrType.stringAttribute  },
+                    { "Name", GetSemantics.XmlAttribute.AttrType.stringAttribute },
+                    { "Description", GetSemantics.XmlAttribute.AttrType.stringAttribute  },
+                    { "GeodeticDatum", GetSemantics.XmlAttribute.AttrType.stringAttribute  },
+                    { "VerticalDatum", GetSemantics.XmlAttribute.AttrType.stringAttribute  },
+                    { "MapProjection", GetSemantics.XmlAttribute.AttrType.stringAttribute  },
+                    { "MapZone", GetSemantics.XmlAttribute.AttrType.stringAttribute  },
             };
 
             sem.CreateProjectParameters("ePSet_ProjectedCRS", crsAttributes);

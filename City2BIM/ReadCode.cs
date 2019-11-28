@@ -9,7 +9,7 @@ using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.RevitBuilder;
 using Serilog;
-using Attribute = City2BIM.GetSemantics.GmlAttribute;
+using Attribute = City2BIM.GetSemantics.XmlAttribute;
 using Solid = City2BIM.GetGeometry.C2BSolid;
 using XYZ = City2BIM.GetGeometry.C2BPoint;
 

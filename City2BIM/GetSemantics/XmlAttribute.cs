@@ -3,10 +3,10 @@
     /// <summary>
     /// Class for semantic attribute representation
     /// </summary>
-    public class GmlAttribute
+    public class XmlAttribute
     {
-        private AttrNsp gmlNamespace;         //für Parameter-Gruppierung in Revit
-        private AttrType gmlType;
+        private AttrNsp xmlNamespace;         //für Parameter-Gruppierung in Revit
+        private AttrType xmlType;
         private AttrHierarchy reference;
 
         private string name;
@@ -25,16 +25,16 @@
             }
         }
 
-        public AttrType GmlType
+        public AttrType XmlType
         {
             get
             {
-                return this.gmlType;
+                return this.xmlType;
             }
 
             set
             {
-                this.gmlType = value;
+                this.xmlType = value;
             }
         }
 
@@ -51,16 +51,16 @@
             }
         }
 
-        public AttrNsp GmlNamespace
+        public AttrNsp XmlNamespace
         {
             get
             {
-                return this.gmlNamespace;
+                return this.xmlNamespace;
             }
 
             set
             {
-                this.gmlNamespace = value;
+                this.xmlNamespace = value;
             }
         }
 
@@ -77,11 +77,11 @@
             }
         }
 
-        public GmlAttribute(AttrNsp namesp, string name, AttrType type, AttrHierarchy reference)
+        public XmlAttribute(AttrNsp namesp, string name, AttrType type, AttrHierarchy reference)
         {
-            this.GmlNamespace = namesp;
+            this.XmlNamespace = namesp;
             this.Name = name;
-            this.GmlType = type;
+            this.XmlType = type;
             this.Reference = reference;
         }
 
@@ -90,14 +90,14 @@
         /// Inspired by CityGML Generics module
         /// Adapted for fixed attributes
         /// </summary>
-        public enum AttrType { stringAttribute, intAttribute, doubleAttribute, measureAttribute, uriAttribute }
+        public enum AttrType { stringAttribute, intAttribute, doubleAttribute, measureAttribute, areaAttribute, uriAttribute, boolAttribute }
 
         /// <summary>
         /// Enum for possible attribute namespaces
         /// Shortcuts for namespaces as saved in CityGML files
         /// </summary>
-        public enum AttrNsp { gml, core, xal, bldg, gen }
+        public enum AttrNsp { gml, core, xal, bldg, gen, alkis }
 
-        public enum AttrHierarchy { bldg, surface, wall, ground, roof, closure, outerCeiling, outerFloor }
+        public enum AttrHierarchy { bldg, surface, wall, ground, roof, closure, outerCeiling, outerFloor, parcel, usage }
     }
 }

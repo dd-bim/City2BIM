@@ -12,7 +12,7 @@ using System.Linq;
 using System.Xml.Linq;
 using C2BPoint = City2BIM.GetGeometry.C2BPoint;
 using C2BSolid = City2BIM.GetGeometry.C2BSolid;
-using GmlAttribute = City2BIM.GetSemantics.GmlAttribute;
+using XmlAttribute = City2BIM.GetSemantics.XmlAttribute;
 
 namespace City2BIM
 {
@@ -20,7 +20,7 @@ namespace City2BIM
     {
         private C2BPoint lowerCornerPt;
         private Dictionary<string, XNamespace> allns;
-        private HashSet<GmlAttribute> attributes = new HashSet<GmlAttribute>();
+        private HashSet<XmlAttribute> attributes = new HashSet<XmlAttribute>();
 
         // The main Execute method (inherited from IExternalCommand) must be public
         public ReadCityGML(Document doc, bool solid)
@@ -38,6 +38,9 @@ namespace City2BIM
             {
                 //server url as specified (if no change VCS server will be called)
                 string wfsUrl = City2BIM_prop.ServerUrl;
+
+                //to ensure correct coordinate order (VCS response is always YXZ order)
+                City2BIM_prop.IsGeodeticSystem = true;
 
                 //client class for xml-POST request from WFS server
                 WFS.WFSClient client = new WFS.WFSClient(wfsUrl);
@@ -159,7 +162,7 @@ namespace City2BIM
                 //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
                 RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
 
-                citySem.CreateParameters(attributes); //erstellt Shared Parameters für Kategorie Umgebung
+                citySem.CreateParameters(attributes, FileDialog.Data.CityGML); //erstellt Shared Parameters für Kategorie Umgebung
 
                 if (solid)
                 {
@@ -556,16 +559,11 @@ namespace City2BIM
 
             double axis0 = Double.Parse(xyzString[0], CultureInfo.InvariantCulture);
             double axis1 = Double.Parse(xyzString[1], CultureInfo.InvariantCulture);
-
-            //if (City2BIM_prop.IsGeodeticSystem)
-            //{
-            //    return new C2BPoint(axis1 - lowerCorner.X, axis0 - lowerCorner.Y, z);
-            //}
-            //else
+          
                 return new C2BPoint(axis0 - lowerCorner.X, axis1 - lowerCorner.Y, z);
         }
 
-        private List<GmlSurface> ReadSurfaces(XElement bldgEl, HashSet<GmlAttribute> attributes, out GmlBldg.LodRep lod)
+        private List<GmlSurface> ReadSurfaces(XElement bldgEl, HashSet<XmlAttribute> attributes, out GmlBldg.LodRep lod)
         {
             var bldgParts = bldgEl.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
@@ -979,18 +977,10 @@ namespace City2BIM
         {
             #region LowerCorner
 
-            //if (ImportSettings.IsGeoreferenced)
-            //{
-            //    lowerCornerPt.X = ImportSettings.ProjCoord[0];
-            //    lowerCornerPt.Y = ImportSettings.ProjCoord[1];
-            //    lowerCornerPt.Z = ImportSettings.ProjElevation;
-            //}
-            //else
-            //{
             //For better calculation, Identify lower Corner
             var lowerCorner = gmlDoc.Descendants(this.allns["gml"] + "lowerCorner").FirstOrDefault();
             this.lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
-            //}
+
             #endregion LowerCorner
 
             //Read all overall building elements

@@ -17,12 +17,15 @@ namespace City2BIM
 
             GeoRefSettings.SetInitialSettings(uiDoc.Document);
 
+            AlkisReader alkis = new AlkisReader(uiDoc.Document);
 
-                NasImportForm newForm = new NasImportForm(uiDoc);
-                var result = newForm.ShowDialog();
-                if(result == System.Windows.Forms.DialogResult.OK)
-                {
-                }
+
+
+                //NasImportForm newForm = new NasImportForm(uiDoc);
+                //var result = newForm.ShowDialog();
+                //if(result == System.Windows.Forms.DialogResult.OK)
+                //{
+                //}
 
                 return Result.Succeeded;
           

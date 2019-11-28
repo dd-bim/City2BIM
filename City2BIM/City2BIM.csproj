@@ -101,12 +101,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileDialog.cs" />
+    <Compile Include="GeorefCalc.cs" />
     <Compile Include="GetGeometry\C2BEdge.cs" />
     <Compile Include="GetGeometry\C2BPlane.cs" />
     <Compile Include="GetGeometry\C2BSolid.cs" />
     <Compile Include="GetGeometry\C2BVertex.cs" />
     <Compile Include="GetGeometry\C2BPoint.cs" />
-    <Compile Include="GetSemantics\GmlAttribute.cs" />
+    <Compile Include="GetSemantics\XmlAttribute.cs" />
     <Compile Include="GetSemantics\ReadCodeList.cs" />
     <Compile Include="GetSemantics\ReadSemAttributes.cs" />
     <Compile Include="GetSemantics\BldgSemantic.cs" />
@@ -124,6 +125,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReadCityGML.cs" />
+    <Compile Include="RevitBuilder\RevitAlkisBuilder.cs" />
+    <Compile Include="RevitBuilder\RevitGeorefSetter.cs" />
     <Compile Include="RevitBuilder\RevitTopoSurfaceBuilder.cs" />
     <Compile Include="RevitCommands\City2BIM\City2BIM_prop.cs" />
     <Compile Include="RevitCommands\City2BIM\CityGML_settings.xaml.cs">
@@ -146,6 +149,10 @@
     <Compile Include="RevitCommands\IFCExport\ExportIFC.cs" />
     <Compile Include="RevitCommands\NAS2BIM\ReadALKIS.cs" />
     <Compile Include="WFSClient.cs" />
+    <Compile Include="_NAS_Soeren\AlkisReader.cs" />
+    <Compile Include="_NAS_Soeren\Alkis_Semantic.cs" />
+    <Compile Include="_NAS_Soeren\Alkis_Sem_Reader.cs" />
+    <Compile Include="_NAS_Soeren\AX_Object.cs" />
     <Compile Include="_NAS_Soeren\ImportData.cs" />
     <Compile Include="_NAS_Soeren\ImportXMLData.cs" />
     <Compile Include="_NAS_Soeren\MainData.cs" />

@@ -2,6 +2,7 @@
 using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
+using City2BIM.RevitCommands.City2BIM;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,8 @@ namespace City2BIM.RevitBuilder
     internal class RevitGeometryBuilder
     {
         private City2BIM.GetGeometry.C2BPoint gmlCorner;
-        private Transform revitPBPTrafo;
-        //private bool swapNE;
-        private XYZ vectorPBP;
-        private double scale;
         private Document doc;
+        private Transform trafo = RevitGeorefSetter.TrafoPBP;
 
         private List<GmlRep.GmlBldg> buildings;
         private Dictionary<GmlRep.GmlSurface.FaceType, ElementId> colors;
@@ -26,97 +24,9 @@ namespace City2BIM.RevitBuilder
         {
             this.doc = doc;
             this.buildings = buildings;
-            //this.swapNE = swapNE;
             this.gmlCorner = gmlCorner;
-            this.revitPBPTrafo = GetRevitProjectLocation(doc);
             this.colors = CreateColorAsMaterial();
         }
-
-        #region coordinate transformation
-
-        /// <summary>
-        /// Reads the Revit project location (PBP)
-        /// </summary>
-        /// <param name="doc">Revit document</param>
-        /// <returns>Revit transformation matrix</returns>
-        private Transform GetRevitProjectLocation(Document doc)
-        {
-            ProjectLocation proj = doc.ActiveProjectLocation;
-            ProjectPosition projPos = proj.GetProjectPosition(Autodesk.Revit.DB.XYZ.Zero);
-
-            double angle = GeoRefSettings.ProjAngle / Prop.radToDeg; //  projPos.Angle;
-            double elevation = GeoRefSettings.ProjElevation / Prop.feetToM; // projPos.Elevation;
-            double easting = GeoRefSettings.ProjCoord[1] / Prop.feetToM; // projPos.EastWest;
-            double northing = GeoRefSettings.ProjCoord[0] / Prop.feetToM; // projPos.NorthSouth;
-
-            Transform trot = Transform.CreateRotation(Autodesk.Revit.DB.XYZ.BasisZ, -angle);
-            this.vectorPBP = new Autodesk.Revit.DB.XYZ(easting, northing, elevation);
-            Transform ttrans = Transform.CreateTranslation(-vectorPBP);
-            Transform transf = trot.Multiply(ttrans);
-
-            ////scale because of projected input data?
-            //var projInfo = doc.ProjectInformation.LookupParameter("Scale");
-            //if (projInfo == null || !projInfo.HasValue)
-            //    this.scale = 1;
-            //else
-            //    this.scale = projInfo.AsDouble();
-
-            //if (double.IsNaN(scale))
-            //    this.scale = 1;
-
-            return transf;
-        }
-
-        /// <summary>
-        /// Transforms gml point coordinates to Revit coordinates
-        /// </summary>
-        /// <param name="gmlLocalPt">local gml point (reduced with lower corner or so)</param>
-        /// <returns>Revit XYZ coordinate</returns>
-        private XYZ TransformPointForRevit(C2BPoint gmlLocalPt)
-        {
-            //At first add lowerCorner from gml
-            double xGlobalProj = gmlLocalPt.X + gmlCorner.X;
-            double yGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
-
-            var deltaX = xGlobalProj - (vectorPBP.X * 0.3048);
-            var deltaY = yGlobalProj - (vectorPBP.Y * 0.3048);
-
-            if (City2BIM.RevitCommands.City2BIM.City2BIM_prop.IsGeodeticSystem)
-            {
-                xGlobalProj = gmlLocalPt.Y + gmlCorner.Y;
-                yGlobalProj = gmlLocalPt.X + gmlCorner.X;
-
-                deltaX = xGlobalProj - (vectorPBP.Y * 0.3048);
-                deltaY = yGlobalProj - (vectorPBP.X * 0.3048);
-            }
-
-            
-
-
-
-            var deltaXUnproj = deltaX / GeoRefSettings.ProjScale; // scale;
-            var deltaYUnproj = deltaY / GeoRefSettings.ProjScale; // scale;
-
-            var xGlobalUnproj = xGlobalProj - deltaX + deltaXUnproj;
-            var yGlobalUnproj = yGlobalProj - deltaY + deltaYUnproj;
-
-            var zGlobal = gmlLocalPt.Z + gmlCorner.Z;
-
-            //Multiplication with feet factor (neccessary because of feet in Revit database)
-            var xFeet = xGlobalUnproj / 0.3048;
-            var yFeet = yGlobalUnproj / 0.3048;
-            var zFeet = zGlobal / 0.3048;
-
-            //Creation of Revit point
-            var revitXYZ = new XYZ(yFeet, xFeet, zFeet);
-
-            //Transform global coordinate to Revit project coordinate system (system of project base point)
-            var revTransXYZ = revitPBPTrafo.OfPoint(revitXYZ);
-
-            return revTransXYZ;
-        }
-
-        #endregion coordinate transformation
 
         #region Solid to Revit incl. LOD1-Fallback
 
@@ -170,7 +80,6 @@ namespace City2BIM.RevitBuilder
 
                 if (bldg.BldgSolid.Planes.Count > 0)
                 {
-
                     try
                     {
                         all++;
@@ -248,7 +157,7 @@ namespace City2BIM.RevitBuilder
             results.Information("------------------------------------------------------------------");
         }
 
-        private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> bldgAttributes, string lod, Dictionary<GmlAttribute, string> partAttributes = null)
+        private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> bldgAttributes, string lod, Dictionary<XmlAttribute, string> partAttributes = null)
         {
             TessellatedShapeBuilder builder = new TessellatedShapeBuilder();
             builder.OpenConnectedFaceSet(true);
@@ -302,7 +211,7 @@ namespace City2BIM.RevitBuilder
             idAttr.Set(guid);
         }
 
-        private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<GmlAttribute, string> attributes, Dictionary<GmlAttribute, string> partAttributes = null)
+        private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> attributes, Dictionary<XmlAttribute, string> partAttributes = null)
         {
             var ordByHeight = from v in solid.Vertices
                               orderby v.Position.Z
@@ -426,7 +335,16 @@ namespace City2BIM.RevitBuilder
                 if (verticesXYZ.Contains(verticesXYZ[vid]))
                 {
                     //Transformation for revit
-                    var revTransXYZ = TransformPointForRevit(verticesXYZ[vid].Position);
+                    var ptCalc = new GeorefCalc();
+                    var unprojectedPt = ptCalc.CalcUnprojectedPoint(verticesXYZ[vid].Position, City2BIM_prop.IsGeodeticSystem, gmlCorner);
+
+                    var revitPt = unprojectedPt / Prop.feetToM;
+
+                    //Creation of Revit point
+                    var revitXYZ = new XYZ(revitPt.Y, revitPt.X, revitPt.Z);
+
+                    //Transform global coordinate to Revit project coordinate system (system of project base point)
+                    var revTransXYZ = trafo.OfPoint(revitXYZ);
 
                     facePoints.Add(revTransXYZ);
                 }
@@ -525,7 +443,17 @@ namespace City2BIM.RevitBuilder
 
                 var vecLotCent = new C2BPoint(d * normalizedVc.X, d * normalizedVc.Y, d * normalizedVc.Z);
                 var vertNew = pt - vecLotCent;
-                var vertRevXYZ = TransformPointForRevit(vertNew);
+
+                var ptCalc = new GeorefCalc();
+                var unprojectedPt = ptCalc.CalcUnprojectedPoint(vertNew, City2BIM_prop.IsGeodeticSystem, gmlCorner);
+
+                var revitPt = unprojectedPt / Prop.feetToM;
+
+                //Creation of Revit point
+                var revitXYZ = new XYZ(revitPt.Y, revitPt.X, revitPt.Z);
+
+                //Transform global coordinate to Revit project coordinate system (system of project base point)
+                var vertRevXYZ = trafo.OfPoint(revitXYZ);
 
                 projectedVerts.Add(vertRevXYZ);
             }
@@ -533,7 +461,7 @@ namespace City2BIM.RevitBuilder
             return projectedVerts;
         }
 
-        private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<GmlAttribute, string> bldgAttributes, string lod, Dictionary<GmlAttribute, string> partAttributes = null)
+        private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<XmlAttribute, string> bldgAttributes, string lod, Dictionary<XmlAttribute, string> partAttributes = null)
         {
             C2BPoint normalizedVc = new C2BPoint(0, 0, 0);
 
@@ -618,30 +546,30 @@ namespace City2BIM.RevitBuilder
 
         #region Attributes and Colors to Revit
 
-        private DirectShape SetAttributeValues(DirectShape ds, Dictionary<GmlAttribute, string> attributes)
+        private DirectShape SetAttributeValues(DirectShape ds, Dictionary<XmlAttribute, string> attributes)
         {
             var attr = attributes.Keys;
 
             foreach (var aName in attr)
             {
-                var p = ds.LookupParameter(aName.GmlNamespace + ": " + aName.Name);
+                var p = ds.LookupParameter(aName.XmlNamespace + ": " + aName.Name);
                 attributes.TryGetValue(aName, out var val);
 
                 try
                 {
                     if (val != null)
                     {
-                        switch (aName.GmlType)
+                        switch (aName.XmlType)
                         {
-                            case (GmlAttribute.AttrType.intAttribute):
+                            case (XmlAttribute.AttrType.intAttribute):
                                 p.Set(int.Parse(val));
                                 break;
 
-                            case (GmlAttribute.AttrType.doubleAttribute):
+                            case (XmlAttribute.AttrType.doubleAttribute):
                                 p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
                                 break;
 
-                            case (GmlAttribute.AttrType.measureAttribute):
+                            case (XmlAttribute.AttrType.measureAttribute):
                                 var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
                                 p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
                                 break;
@@ -723,7 +651,7 @@ namespace City2BIM.RevitBuilder
                         where materialElement.Name == "CityGML_Closure"
                         select materialElement.Id;
 
-                if (groundCols.Count() == 0)
+                if (closureCols.Count() == 0)
                 {
                     closureCol = Material.Create(doc, "CityGML_Closure");
                     Material matClosure = doc.GetElement(closureCol) as Material;

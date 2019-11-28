@@ -7,7 +7,7 @@ namespace City2BIM.GmlRep
     public class GmlBldg
     {
         private string bldgId;
-        private Dictionary<GmlAttribute, string> bldgAttributes;
+        private Dictionary<XmlAttribute, string> bldgAttributes;
         private List<GmlBldgPart> parts;
         private List<GmlSurface> bldgSurfaces;
         private C2BSolid bldgSolid;
@@ -26,7 +26,7 @@ namespace City2BIM.GmlRep
             }
         }
 
-        public Dictionary<GmlAttribute, string> BldgAttributes
+        public Dictionary<XmlAttribute, string> BldgAttributes
         {
             get
             {

@@ -16,7 +16,7 @@ namespace City2BIM
 
             GeoRefSettings.SetInitialSettings(doc);
 
-            var process = new ReadCityGML(doc, true);
+            var process = new ReadCityGML(doc, false);
 
             return Result.Succeeded;
         }

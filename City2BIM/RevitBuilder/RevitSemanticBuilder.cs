@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using GmlAttribute = City2BIM.GetSemantics.GmlAttribute;
+using XmlAttribute = City2BIM.GetSemantics.XmlAttribute;
 
 namespace City2BIM.RevitBuilder
 {
@@ -34,7 +34,7 @@ namespace City2BIM.RevitBuilder
         }
 
 
-        public void CreateProjectParameters(string paramGroupName, Dictionary<string, GetSemantics.GmlAttribute.AttrType> attributes)
+        public void CreateProjectParameters(string paramGroupName, Dictionary<string, GetSemantics.XmlAttribute.AttrType> attributes)
         {
             //Create groups in parFile if not existent
             DefinitionGroup parGroupGeoref = SetDefinitionGroupToParameterFile(paramGroupName);
@@ -63,30 +63,38 @@ namespace City2BIM.RevitBuilder
                 doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
         }
 
-        private ParameterType GetParameterType(GetSemantics.GmlAttribute.AttrType gmlType)
+        private ParameterType GetParameterType(GetSemantics.XmlAttribute.AttrType gmlType)
         {
             ParameterType pType = default(ParameterType);
 
             switch (gmlType)
             {
-                case (GmlAttribute.AttrType.intAttribute):
+                case (XmlAttribute.AttrType.intAttribute):
                     pType = ParameterType.Integer;
                     break;
 
-                case (GmlAttribute.AttrType.doubleAttribute):
+                case (XmlAttribute.AttrType.doubleAttribute):
                     pType = ParameterType.Number;
                     break;
 
-                case (GmlAttribute.AttrType.uriAttribute):
+                case (XmlAttribute.AttrType.uriAttribute):
                     pType = ParameterType.URL;
                     break;
 
-                case (GmlAttribute.AttrType.measureAttribute):
+                case (XmlAttribute.AttrType.measureAttribute):
                     pType = ParameterType.Length;
                     break;
 
-                case (GmlAttribute.AttrType.stringAttribute):
+                case (XmlAttribute.AttrType.stringAttribute):
                     pType = ParameterType.Text;
+                    break;
+
+                case (XmlAttribute.AttrType.areaAttribute):
+                    pType = ParameterType.Area;
+                    break;
+
+                case (XmlAttribute.AttrType.boolAttribute):
+                    pType = ParameterType.YesNo;
                     break;
 
                 default:
@@ -112,7 +120,7 @@ namespace City2BIM.RevitBuilder
             return catSet;
         }
 
-        public void CreateParameters(IEnumerable<GmlAttribute> attributes)
+        public void CreateParameters(IEnumerable<XmlAttribute> attributes, FileDialog.Data dataType)
         {
             //Create groups in parFile if not existent
             DefinitionGroup parGroupCore = SetDefinitionGroupToParameterFile("CityGML-Core");
@@ -120,10 +128,11 @@ namespace City2BIM.RevitBuilder
             DefinitionGroup parGroupBldg = SetDefinitionGroupToParameterFile("CityGML-Building");
             DefinitionGroup parGroupAddr = SetDefinitionGroupToParameterFile("CityGML-Address");
             DefinitionGroup parGroupGML = SetDefinitionGroupToParameterFile("CityGML-GML");
+            DefinitionGroup parGroupAlkis = SetDefinitionGroupToParameterFile("ALKIS-Parcel");
 
             //creation of unique attribute list because attribute list can contain multiple attributes
             //with the same name but different category assignments
-            var uniqueAttr = new Dictionary<Definition, List<GmlAttribute.AttrHierarchy>>();
+            var uniqueAttr = new Dictionary<Definition, List<XmlAttribute.AttrHierarchy>>();
 
             //loop over attributes
 
@@ -132,58 +141,69 @@ namespace City2BIM.RevitBuilder
             var roofCat = GetCategory(BuiltInCategory.OST_Roofs);
             var groundCat = GetCategory(BuiltInCategory.OST_StructuralFoundation);
             var entCat = GetCategory(BuiltInCategory.OST_Entourage);
+            var topoCat = GetCategory(BuiltInCategory.OST_Topography);
 
             var parClosure = GetExistentCategoryParametersDef(genCat);
             var parWall = GetExistentCategoryParametersDef(wallCat);
             var parRoof = GetExistentCategoryParametersDef(roofCat);
             var parGround = GetExistentCategoryParametersDef(groundCat);
             var parEnt = GetExistentCategoryParametersDef(entCat);
+            var parTopo = GetExistentCategoryParametersDef(topoCat);
 
             var parBldg = parClosure.Union(parWall).Union(parRoof).Union(parGround).Union(parEnt);
 
-            var groupedAttributes = attributes.GroupBy(r => (r.GmlNamespace + ": " + r.Name));
+
+            var groupedAttributes = attributes.GroupBy(r => (r.XmlNamespace + ": " + r.Name));
 
             foreach (var attributeGroup in groupedAttributes)
             {
                 string paramName = attributeGroup.Key;
 
-                GmlAttribute attribute = attributeGroup.First();
-
-                var ab = attributeGroup.ToList();
+                XmlAttribute attribute = attributeGroup.First();
 
                 DefinitionGroup currentGroup = default(DefinitionGroup);
 
-                switch (attribute.GmlNamespace)
+                switch (attribute.XmlNamespace)
                 {
-                    case (GmlAttribute.AttrNsp.gen):
+                    case (XmlAttribute.AttrNsp.alkis):
+                        currentGroup = parGroupAlkis;
+                        break;
+
+                    case (XmlAttribute.AttrNsp.gen):
                         currentGroup = parGroupGen;
                         break;
 
-                    case (GmlAttribute.AttrNsp.core):
+                    case (XmlAttribute.AttrNsp.core):
                         currentGroup = parGroupCore;
                         break;
 
-                    case (GmlAttribute.AttrNsp.bldg):
+                    case (XmlAttribute.AttrNsp.bldg):
                         currentGroup = parGroupBldg;
                         break;
 
-                    case (GmlAttribute.AttrNsp.xal):
+                    case (XmlAttribute.AttrNsp.xal):
                         currentGroup = parGroupAddr;
                         break;
 
-                    case (GmlAttribute.AttrNsp.gml):
+                    case (XmlAttribute.AttrNsp.gml):
                         currentGroup = parGroupGML;
                         break;
                 }
 
-                Definition paramDef = SetDefinitionsToGroup(currentGroup, paramName, GetParameterType(attribute.GmlType));
+                Definition paramDef = SetDefinitionsToGroup(currentGroup, paramName, GetParameterType(attribute.XmlType));
 
                 CategorySet assocCats = doc.Application.Create.NewCategorySet();
 
                 var unAttr = attributeGroup.Select(a => a.Reference).ToList();
 
-                if (unAttr.Contains(GmlAttribute.AttrHierarchy.bldg) ||
-                    unAttr.Contains(GmlAttribute.AttrHierarchy.surface))
+                if (unAttr.Contains(XmlAttribute.AttrHierarchy.parcel))
+                {
+                    if (!parTopo.Select(n => n.Name).Contains(attributeGroup.Key))
+                        assocCats.Insert(topoCat);
+                }
+
+                if (unAttr.Contains(XmlAttribute.AttrHierarchy.bldg) ||
+                    unAttr.Contains(XmlAttribute.AttrHierarchy.surface))
                 {
                     if (!parBldg.Select(n => n.Name).Contains(attributeGroup.Key))
                     {
@@ -195,24 +215,24 @@ namespace City2BIM.RevitBuilder
                     }
                 }
 
-                if (unAttr.Contains(GmlAttribute.AttrHierarchy.wall))
+                if (unAttr.Contains(XmlAttribute.AttrHierarchy.wall))
                 {
                     if (!parWall.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(wallCat);
                 }
-                if (unAttr.Contains(GmlAttribute.AttrHierarchy.roof))
+                if (unAttr.Contains(XmlAttribute.AttrHierarchy.roof))
                 {
                     if (!parRoof.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(roofCat);
                 }
 
-                if (unAttr.Contains(GmlAttribute.AttrHierarchy.ground))
+                if (unAttr.Contains(XmlAttribute.AttrHierarchy.ground))
                 {
                     if (!parGround.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(groundCat);
                 }
 
-                if (unAttr.Contains(GmlAttribute.AttrHierarchy.closure))
+                if (unAttr.Contains(XmlAttribute.AttrHierarchy.closure))
                 {
                     if (!parClosure.Select(n => n.Name).Contains(attributeGroup.Key))
                         assocCats.Insert(genCat);
@@ -417,7 +437,7 @@ namespace City2BIM.RevitBuilder
 
                                 AddText(fs, newLine + tab + def.Name + tab + ifcParType);
                             }
-                                
+
 
                         }
                     }

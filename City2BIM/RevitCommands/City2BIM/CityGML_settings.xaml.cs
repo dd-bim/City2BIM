@@ -16,6 +16,17 @@ namespace City2BIM.RevitCommands.City2BIM
             tb_extent.Text = City2BIM_prop.Extent.ToString();
             tb_file.Text = City2BIM_prop.FileUrl;
             tb_server.Text = City2BIM_prop.ServerUrl;
+
+            if (City2BIM_prop.IsServerRequest)
+                rb_server.IsChecked = true;
+            else
+                rb_file.IsChecked = true;
+
+            if (City2BIM_prop.IsGeodeticSystem)
+                rb_YXZ.IsChecked = true;
+            else
+                rb_XYZ.IsChecked = true;
+
         }
 
         private void bt_browse_Click(object sender, RoutedEventArgs e)

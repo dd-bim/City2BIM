@@ -18,7 +18,7 @@
         </Grid.ColumnDefinitions>
         <GroupBox Name="gr_source" Header="Source" FontSize="12" Grid.Column="2" Width="150" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,15,0,0">
             <StackPanel Grid.Column="1">
-                <RadioButton Name="rb_server" IsChecked="True" Content="VCS server" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,15,0,0"/>
+                <RadioButton Name="rb_server" Content="VCS server" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,15,0,0"/>
                 <RadioButton x:Name="rb_file" Content="CityGML file" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="15,15,0,0"/>
             </StackPanel>
         </GroupBox>
@@ -67,7 +67,7 @@
                 <TextBox Name="tb_file" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="413" Grid.ColumnSpan="3" Margin="88,16,0,17"/>
                 <Button Content="Browse..." Name="bt_browse" Click="bt_browse_Click" Grid.Row="0" Grid.Column="3" Width="100" Height="25" Margin="10,10,48,11"/>
                 <Label Content="Order of coordinates:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Height="26" Margin="0,13,0,12" />
-                <RadioButton Name="rb_YXZ" Grid.ColumnSpan="2" IsChecked="True" Content="YXZ / ENH (Eastings, Northings, Height)" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Height="15" Margin="0,18" Width="228"/>
+                <RadioButton Name="rb_YXZ" Grid.ColumnSpan="2" Content="YXZ / ENH (Eastings, Northings, Height)" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Height="15" Margin="0,18" Width="228"/>
                 <RadioButton Name="rb_XYZ" Grid.ColumnSpan="2" Content="XYZ / NEH (Northings, Eastings, Height)" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1" Height="15" Margin="0,18,21,18" Width="228"/>
                 <Label Content="File:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="71" Height="26" Margin="0,10,0,15" />
             </Grid>

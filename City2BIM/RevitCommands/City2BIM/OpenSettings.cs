@@ -19,6 +19,10 @@ namespace City2BIM
         // The main Execute method (inherited from IExternalCommand) must be public
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            Document doc = revit.Application.ActiveUIDocument.Document;
+
+            GeoRefSettings.SetInitialSettings(doc);
+
             var process = new RevitCommands.City2BIM.CityGML_settings();
             process.ShowDialog();
 

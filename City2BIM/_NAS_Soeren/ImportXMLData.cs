@@ -8,12 +8,12 @@ using Autodesk.Revit;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-namespace NasImport 
+namespace NasImport
 {
     class ImportXMLData : ImportData
     {
         public ImportXMLData(ExternalCommandData commandData, ImportFormat importFormat)
-            : base (commandData, importFormat)
+            : base(commandData, importFormat)
         {
             m_filter = "XML Documents (*.xml) | *.xml";
             m_title = "Import XML";
