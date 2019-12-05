@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 
-namespace City2BIM._NAS_Soeren
+namespace City2BIM.Alkis
 {
     public class Alkis_Sem_Reader
     {

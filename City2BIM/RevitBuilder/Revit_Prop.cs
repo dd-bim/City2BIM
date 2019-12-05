@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace City2BIM.RevitBuilder
 {
-    public static class RevitGeorefSetter
+    public static class Revit_Prop
     {
         private static Transform trafoPBP = SetRevitProjectTransformation();
+        private static ElementId terrainId;
 
+        public static ElementId TerrainId { get => terrainId; set => terrainId = value; }
         public static Transform TrafoPBP { get => trafoPBP; }
 
         /// <summary>

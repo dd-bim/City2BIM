@@ -1,6 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
-using City2BIM._NAS_Soeren;
+using City2BIM.Alkis;
 using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using Serilog;
@@ -12,7 +12,7 @@ namespace City2BIM.RevitBuilder
 {
     class RevitAlkisBuilder
     {
-        private Transform trafoPBP = RevitGeorefSetter.TrafoPBP;
+        private Transform trafoPBP = Revit_Prop.TrafoPBP;
         private Document doc;
         private Dictionary<ColorType, ElementId> colors;
 
@@ -53,12 +53,12 @@ namespace City2BIM.RevitBuilder
 
         public void CreateTopo(List<AX_Object> topoObjs)
         {
-            //Test: Map ob existent topoSurface
+
 
             FilteredElementCollector collector0 = new FilteredElementCollector(doc);
             IList<Element> topos = collector0.OfClass(typeof(TopographySurface)).ToElements();
 
-            var existTopoId = topos.FirstOrDefault().Id;
+            //var existTopoId = topos.FirstOrDefault().Id;
 
             //each AX_Object will be represented as SubRegion
             //it is not allowed that subRegions overlap in Revit
@@ -165,11 +165,6 @@ namespace City2BIM.RevitBuilder
                 {
                     try
                     {
-
-                        //FailureHandlingOptions options = topoTransaction.GetFailureHandlingOptions();
-                        //options.SetFailuresPreprocessor(new AxesFailure());
-                        //topoTransaction.SetFailureHandlingOptions(options);
-
                         topoTransaction.Start();
                         //SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
                         TopographySurface topoRef = TopographySurface.Create(doc, revPtsOffset);
@@ -194,7 +189,7 @@ namespace City2BIM.RevitBuilder
                     try
                     {
                         List<CurveLoop> loopList = new List<CurveLoop>();
-                        
+
                         //exterior Ring
 
                         List<Curve> edges = new List<Curve>();
@@ -240,15 +235,15 @@ namespace City2BIM.RevitBuilder
                         {
                             try
                             {
-                                //FailureHandlingOptions options = transIndu.GetFailureHandlingOptions();
-                                //options.SetFailuresPreprocessor(new AxesFailure());
-                                //transIndu.SetFailureHandlingOptions(options);
+                                FailureHandlingOptions options = subTrans.GetFailureHandlingOptions();
+                                options.SetFailuresPreprocessor(new AxesFailure());
+                                subTrans.SetFailureHandlingOptions(options);
 
                                 subTrans.Start();
                                 //SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
 
                                 //if (obj.Group == AX_Object.AXGroup.usage || obj.Group == AX_Object.AXGroup.building)
-                                    topoId = existTopoId;
+                                //topoId = existTopoId;
 
                                 SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
                                 siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
@@ -277,33 +272,60 @@ namespace City2BIM.RevitBuilder
                 }
 
             }
-
-
-
-
-            ////Gesamt-Topos --> Lesen der BBox
-
-            //XYZ origin = new XYZ(0, 0, 0);
-            //XYZ normal = new XYZ(0, 0, 1 /*feetToMeter*/);
-            //Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
-
-            //ElementId elementIdFlst = default(ElementId);
-
-            //Transaction topoTransaction = new Transaction(doc, "Create Topography Gesamt Flurstücke");
-            //{
-            //    FailureHandlingOptions options = topoTransaction.GetFailureHandlingOptions();
-            //    options.SetFailuresPreprocessor(new AxesFailure());
-            //    topoTransaction.SetFailureHandlingOptions(options);
-
-            //    topoTransaction.Start();
-            //    SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-            //    TopographySurface flst = TopographySurface.Create(doc, pointsFlst);
-            //    Parameter gesamt = flst.LookupParameter("Kommentare");
-            //    gesamt.Set("TopoGesamt");
-            //    elementIdFlst = flst.Id;
-            //}
-            //topoTransaction.Commit();
         }
+
+        public class AxesFailure : IFailuresPreprocessor
+        {
+            //Eventhandler, der eine ignorierbare Warnung, die nur auf einzelnen Geräten auftrat, überspringt.
+            public FailureProcessingResult PreprocessFailures(
+              FailuresAccessor a)
+            {
+                // inside event handler, get all warnings
+                IList<FailureMessageAccessor> failures
+                  = a.GetFailureMessages();
+
+                foreach (FailureMessageAccessor f in failures)
+                {
+                    // check failure definition ids 
+                    // against ones to dismiss:
+
+                    FailureDefinitionId id
+                      = f.GetFailureDefinitionId();
+
+                    if (BuiltInFailures.InaccurateFailures.InaccurateSketchLine
+                      == id)
+                    {
+                        a.DeleteWarning(f);
+                    }
+                }
+                return FailureProcessingResult.Continue;
+            }
+        }
+
+
+        ////Gesamt-Topos --> Lesen der BBox
+
+        //XYZ origin = new XYZ(0, 0, 0);
+        //XYZ normal = new XYZ(0, 0, 1 /*feetToMeter*/);
+        //Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
+
+        //ElementId elementIdFlst = default(ElementId);
+
+        //Transaction topoTransaction = new Transaction(doc, "Create Topography Gesamt Flurstücke");
+        //{
+        //    FailureHandlingOptions options = topoTransaction.GetFailureHandlingOptions();
+        //    options.SetFailuresPreprocessor(new AxesFailure());
+        //    topoTransaction.SetFailureHandlingOptions(options);
+
+        //    topoTransaction.Start();
+        //    SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
+        //    TopographySurface flst = TopographySurface.Create(doc, pointsFlst);
+        //    Parameter gesamt = flst.LookupParameter("Kommentare");
+        //    gesamt.Set("TopoGesamt");
+        //    elementIdFlst = flst.Id;
+        //}
+        //topoTransaction.Commit();
+
 
         private SiteSubRegion SetAttributeValues(SiteSubRegion ds, Dictionary<XmlAttribute, string> attributes)
         {

@@ -1,6 +1,6 @@
-﻿using Autodesk.Revit.DB;
+﻿using City2BIM.Alkis;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using NasImport;
 
 namespace City2BIM
 {
@@ -19,20 +19,8 @@ namespace City2BIM
 
             AlkisReader alkis = new AlkisReader(uiDoc.Document);
 
+            return Result.Succeeded;
 
-
-                //NasImportForm newForm = new NasImportForm(uiDoc);
-                //var result = newForm.ShowDialog();
-                //if(result == System.Windows.Forms.DialogResult.OK)
-                //{
-                //}
-
-                return Result.Succeeded;
-          
-
-            //var process = new NasImport.PlugIn();
-
-            //return Result.Succeeded;
         }
     }
 }

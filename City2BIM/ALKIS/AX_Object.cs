@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace City2BIM._NAS_Soeren
+namespace City2BIM.Alkis
 {
     public class AX_Object
     {

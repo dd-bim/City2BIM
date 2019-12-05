@@ -41,7 +41,9 @@ namespace City2BIM.RevitBuilder
 
             Category projInfoCat = GetCategory(BuiltInCategory.OST_ProjectInformation);
 
-            var parProjInfo = GetExistentCategoryParameters(projInfoCat);
+            List<Definition> parProjInfoDef = GetExistentCategoryParametersDef(projInfoCat);
+
+            var parProjInfo = parProjInfoDef.Select(p => p.Name);   //needed name for comparison
 
             foreach (var attribute in attributes)
             {
@@ -202,7 +204,7 @@ namespace City2BIM.RevitBuilder
                         assocCats.Insert(topoCat);
                 }
 
-                if (unAttr.Contains(XmlAttribute.AttrHierarchy.bldg) ||
+                if (unAttr.Contains(XmlAttribute.AttrHierarchy.bldgCity) ||
                     unAttr.Contains(XmlAttribute.AttrHierarchy.surface))
                 {
                     if (!parBldg.Select(n => n.Name).Contains(attributeGroup.Key))
@@ -324,30 +326,6 @@ namespace City2BIM.RevitBuilder
         /// </summary>
         /// <param name="currentCat">Category which should be invetigated</param>
         /// <returns>List of existent Parameters</returns>
-        private List<string> GetExistentCategoryParameters(Category currentCat)
-        {
-            List<string> parList = new List<string>();
-
-            var bindingMap = doc.ParameterBindings;
-
-            var iterator = bindingMap.ForwardIterator();
-
-            while (iterator.MoveNext())
-            {
-                var elementBinding = iterator.Current as ElementBinding;
-
-                if (elementBinding.Categories.Contains(currentCat))
-                {
-                    var definiton = iterator.Key as Definition;
-
-                    var parName = definiton.Name;
-
-                    parList.Add(parName);
-                }
-            }
-            return parList;
-        }
-
         private List<Definition> GetExistentCategoryParametersDef(Category currentCat)
         {
             List<Definition> parList = new List<Definition>();
@@ -363,8 +341,6 @@ namespace City2BIM.RevitBuilder
                 if (elementBinding.Categories.Contains(currentCat))
                 {
                     var definiton = iterator.Key as Definition;
-
-                    //var parName = definiton.Name;
 
                     parList.Add(definiton);
                 }

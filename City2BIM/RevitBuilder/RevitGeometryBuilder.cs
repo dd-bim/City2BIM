@@ -14,7 +14,7 @@ namespace City2BIM.RevitBuilder
     {
         private City2BIM.GetGeometry.C2BPoint gmlCorner;
         private Document doc;
-        private Transform trafo = RevitGeorefSetter.TrafoPBP;
+        private Transform trafo = Revit_Prop.TrafoPBP;
 
         private List<GmlRep.GmlBldg> buildings;
         private Dictionary<GmlRep.GmlSurface.FaceType, ElementId> colors;
@@ -219,20 +219,35 @@ namespace City2BIM.RevitBuilder
 
             var height = ordByHeight.LastOrDefault() - ordByHeight.FirstOrDefault();
 
-            var groundSurfaces = from p in surfaces
+            var groundSurfaces = (from p in surfaces
                                  where p.Facetype == GmlSurface.FaceType.ground
-                                 select p;
+                                 select p).ToList();
+
+            var outerCeilingSurfaces = (from p in surfaces
+                                       where p.Facetype == GmlSurface.FaceType.outerCeiling
+                                       select p).ToList();
+
+            if (outerCeilingSurfaces.Count > 0)
+            {
+                groundSurfaces.AddRange(outerCeilingSurfaces);
+            }
+
+            int i = 0;  //counter for ID (if more than one groundSurface, ID gets counter suffix: "_i")
 
             foreach (var groundSurface in groundSurfaces)
             {
                 //try
                 //{
+
+                List<CurveLoop> loopList = new List<CurveLoop>();
+
+                //exterior Ring
+
                 var polyGround = groundSurface.ExteriorPts;
 
                 C2BPoint normalizedVc = new C2BPoint(0, 0, 0);
                 var poly = CalcPlanarFace(groundSurface.ExteriorPts, ref normalizedVc);
 
-                List<CurveLoop> loopList = new List<CurveLoop>();
                 List<Curve> edges = new List<Curve>();
 
                 for (var c = 1; c < poly.Count; c++)
@@ -245,9 +260,41 @@ namespace City2BIM.RevitBuilder
                 CurveLoop baseLoop = CurveLoop.Create(edges);
                 loopList.Add(baseLoop);
 
-                var extrHeight = height * 3.28084;
+                //-------------------
 
-                XYZ normalRev = new XYZ(normalizedVc.X, normalizedVc.Y, normalizedVc.Z);
+                // interior rings
+                if (groundSurface.InteriorPts != null)
+                {
+                    var polyGroundInts = groundSurface.InteriorPts;
+
+                    foreach (var polyInt in polyGroundInts)
+                    {
+                        C2BPoint normalizedVcI = new C2BPoint(0, 0, 0);
+                        var polyI = CalcPlanarFace(polyInt, ref normalizedVc);
+
+                        List<Curve> edgesI = new List<Curve>();
+
+                        for (var c = 1; c < polyI.Count; c++)
+                        {
+                            Line edge = Line.CreateBound(polyI[c - 1], polyI[c]);
+
+                            edges.Add(edge);
+                        }
+
+                        CurveLoop interiorLoop = CurveLoop.Create(edges);
+                        loopList.Add(interiorLoop);
+                    }
+                }
+                //-------------------
+
+                if (groundSurface.Facetype == GmlSurface.FaceType.outerCeiling)
+                {
+                    height = ordByHeight.LastOrDefault() - groundSurface.ExteriorPts.First().Z;     //other height than groundSurface because OuterCeiling - ground face is upper than GroundSurface
+                }
+
+                var extrHeight = height / Prop.feetToM;
+
+                XYZ normalRev = new XYZ(-normalizedVc.X, -normalizedVc.Y, -normalizedVc.Z);     //negative vector because ground normal points downward
 
                 Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normalRev, extrHeight);
 
@@ -264,7 +311,16 @@ namespace City2BIM.RevitBuilder
                         ds = SetAttributeValues(ds, partAttributes);
                     ds.Pinned = true;
 
-                    SetRevitInternalParameters(internalID, "LOD1 (Fallback from LOD2)", ds);
+                    string id = "";
+
+                    if (groundSurfaces.Count > 1)
+                    {
+                        id = internalID + "_" + i;
+                    }
+                    else
+                        id = internalID;
+
+                    SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
 
                     t.Commit();
                 }
@@ -275,6 +331,8 @@ namespace City2BIM.RevitBuilder
                 //    WriteRevitBuildErrorsToLog(results, exx.Message, "fatal" + bldg.BldgId);
                 //    continue;
                 //}
+
+                i++;
             }
         }
 

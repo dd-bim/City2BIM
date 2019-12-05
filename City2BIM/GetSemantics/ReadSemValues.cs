@@ -9,7 +9,7 @@ namespace City2BIM.GetSemantics
     {
         public Dictionary<XmlAttribute, string> ReadAttributeValuesBldg(XElement bldgEl, HashSet<XmlAttribute> attributes, Dictionary<string, XNamespace> nsp)
         {
-            var bldgAttributes = attributes.Where(a => a.Reference == XmlAttribute.AttrHierarchy.bldg);
+            var bldgAttributes = attributes.Where(a => a.Reference == XmlAttribute.AttrHierarchy.bldgCity);
 
             var bldgParts = bldgEl.Elements(nsp["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);

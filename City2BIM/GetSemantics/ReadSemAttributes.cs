@@ -29,7 +29,7 @@ namespace City2BIM.GetSemantics
                 {
                     var genAttr = val.Parent;       //parent tag contains the attribute name and its type
 
-                    var attr = new XmlAttribute(XmlAttribute.AttrNsp.gen, genAttr.Attribute("name").Value, XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldg);
+                    var attr = new XmlAttribute(XmlAttribute.AttrNsp.gen, genAttr.Attribute("name").Value, XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldgCity);
 
                     var wallGen = genAttr.Ancestors(nsp["bldg"] + "WallSurface");
                     if(wallGen.Any())
@@ -96,7 +96,7 @@ namespace City2BIM.GetSemantics
 
             //gml:name
 
-            regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.gml, "name", XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldg));
+            regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.gml, "name", XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldgCity));
 
             //-------------
 
@@ -120,7 +120,7 @@ namespace City2BIM.GetSemantics
 
             foreach(var bldg in bldgNames)
             {
-                regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.bldg, bldg.Key, bldg.Value, XmlAttribute.AttrHierarchy.bldg));
+                regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.bldg, bldg.Key, bldg.Value, XmlAttribute.AttrHierarchy.bldgCity));
             }
 
             //----------------------
@@ -141,7 +141,7 @@ namespace City2BIM.GetSemantics
 
             foreach(var entry in xalNames)
             {
-                regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.xal, entry, XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldg));
+                regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.xal, entry, XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldgCity));
             }
 
             //-----------------
@@ -159,7 +159,7 @@ namespace City2BIM.GetSemantics
 
             foreach(var core in coreNames)
             {
-                regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.core, core.Key, core.Value, XmlAttribute.AttrHierarchy.bldg));
+                regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.core, core.Key, core.Value, XmlAttribute.AttrHierarchy.bldgCity));
             }
 
             return regAttr;

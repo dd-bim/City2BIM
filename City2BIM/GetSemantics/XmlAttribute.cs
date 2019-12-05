@@ -94,10 +94,14 @@
 
         /// <summary>
         /// Enum for possible attribute namespaces
-        /// Shortcuts for namespaces as saved in CityGML files
+        /// Shortcuts for namespaces as saved in CityGML (+ Alkis) files
         /// </summary>
         public enum AttrNsp { gml, core, xal, bldg, gen, alkis }
 
-        public enum AttrHierarchy { bldg, surface, wall, ground, roof, closure, outerCeiling, outerFloor, parcel, usage }
+        /// <summary>
+        /// Enum for possible attribute namespaces
+        /// Shortcuts for namespaces as saved in CityGML (+ Alkis) files
+        /// </summary>
+        public enum AttrHierarchy { bldgCity, surface, wall, ground, roof, closure, outerCeiling, outerFloor, parcel, usage, bldgAlkis }
     }
 }

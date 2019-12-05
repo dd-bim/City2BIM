@@ -5,9 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using static City2BIM._NAS_Soeren.AX_Object;
 
-namespace City2BIM._NAS_Soeren
+namespace City2BIM.Alkis
 {
     public static class Alkis_Semantic
     {

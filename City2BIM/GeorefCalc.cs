@@ -14,7 +14,7 @@ namespace City2BIM
         /// </summary>
         /// <param name="localPt">point coordinate (local, if global offset specified)</param>
         /// <param name="isGeodetic">coordinate order of input (t=YXZ, f=XYZ)</param>
-        /// <param name="globalPt">global coordinate offset if specified</param>
+        /// <param name="globalPt">global coordinate offset if specified for mathematical calculations</param>
         /// <returns>Unprojected (scale = 1.0) point for CAD/BIM representation</returns>
         public C2BPoint CalcUnprojectedPoint(C2BPoint localPt, bool isGeodetic, C2BPoint globalPt = null)
         {

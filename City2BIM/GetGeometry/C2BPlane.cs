@@ -10,7 +10,6 @@ namespace City2BIM.GetGeometry
         private List<int[]> innerVertices;
         private C2BPoint normal;
         private C2BPoint centroid;
-        private List<C2BPoint> polygonPts;
         private List<C2BEdge> edges;
 
         public C2BPlane(string id)
@@ -93,6 +92,6 @@ namespace City2BIM.GetGeometry
             }
         }
 
-        internal List<C2BEdge> Edges { get => edges; set => edges = value; }
+        public List<C2BEdge> Edges { get => edges; set => edges = value; }
     }
 }

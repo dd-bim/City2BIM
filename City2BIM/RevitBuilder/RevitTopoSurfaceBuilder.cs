@@ -2,12 +2,13 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using City2BIM.GetGeometry;
+using City2BIM.RevitCommands;
 
 namespace City2BIM.RevitBuilder
 {
     internal class RevitTopoSurfaceBuilder
     {
-        private Transform trafoPBP = RevitGeorefSetter.TrafoPBP;
+        private Transform trafoPBP = Revit_Prop.TrafoPBP;
         private Document doc;
 
         public RevitTopoSurfaceBuilder(Document doc)
@@ -41,6 +42,7 @@ namespace City2BIM.RevitBuilder
                 t.Start();
 
                 var surface = TopographySurface.Create(doc, revDTMpts);
+                Revit_Prop.TerrainId = surface.Id;
 
                 surface.Pinned = true;
 
