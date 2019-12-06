@@ -22,39 +22,8 @@ namespace City2BIM.RevitBuilder
             this.colors = CreateColorAsMaterial();
         }
 
-        private List<XYZ> GetRevPts(List<C2BPoint> rawPts)
-        {
-            List<XYZ> revPts = new List<XYZ>();
-
-            foreach (var pt in rawPts)
-            {
-                revPts.Add(GetRevPt(pt));
-            }
-
-            return revPts;
-        }
-
-        private XYZ GetRevPt(C2BPoint rawPt)
-        {
-            //Transformation for revit
-            var ptCalc = new GeorefCalc();
-            var unprojectedPt = ptCalc.CalcUnprojectedPoint(rawPt, true);
-
-            var revitPt = unprojectedPt / Prop.feetToM;
-
-            //Creation of Revit point
-            var revitXYZ = new XYZ(revitPt.Y, revitPt.X, revitPt.Z);
-
-            //Transform global coordinate to Revit project coordinate system (system of project base point)
-            var revTransXYZ = trafoPBP.OfPoint(revitXYZ);
-
-            return revTransXYZ;
-        }
-
         public void CreateTopo(List<AX_Object> topoObjs)
         {
-
-
             FilteredElementCollector collector0 = new FilteredElementCollector(doc);
             IList<Element> topos = collector0.OfClass(typeof(TopographySurface)).ToElements();
 
@@ -102,7 +71,14 @@ namespace City2BIM.RevitBuilder
                 bBox.Add(uppR);
                 bBox.Add(new C2BPoint(uppR.X, lowL.Y, 0.0));
 
-                var revPts = GetRevPts(bBox);
+                var revPts = new List<XYZ>();
+
+                foreach (var pt in bBox)
+                {
+                    var unprojectedPt = GeorefCalc.CalcUnprojectedPoint(pt, true);
+
+                    revPts.Add(Revit_Build.GetRevPt(unprojectedPt));
+                }
 
                 double zOffset = 0;
 
@@ -175,6 +151,8 @@ namespace City2BIM.RevitBuilder
                         commAttr.Set("Reference plane for " + topoGr.Key);
                         topoId = topoRef.Id;
 
+                        topoRef.Pinned = true;
+
                     }
                     catch
                     {
@@ -188,48 +166,23 @@ namespace City2BIM.RevitBuilder
 
                     try
                     {
-                        List<CurveLoop> loopList = new List<CurveLoop>();
+                        List<C2BPoint> polyExt = obj.Segments.Select(j => j[0]).ToList();
+                        polyExt.Add(obj.Segments[0][0]);                                    //convert Segments to LinearRing
 
-                        //exterior Ring
-
-                        List<Curve> edges = new List<Curve>();
-
-                        for (var c = 0; c < obj.Segments.Count; c++)
-                        {
-                            var pStart = new C2BPoint(obj.Segments[c][0].X, obj.Segments[c][0].Y, zOffset);
-                            var pEnd = new C2BPoint(obj.Segments[c][1].X, obj.Segments[c][1].Y, zOffset);
-
-                            Line edge = Line.CreateBound(GetRevPt(pStart), GetRevPt(pEnd));
-
-                            edges.Add(edge);
-                        }
-
-                        CurveLoop baseLoop = CurveLoop.Create(edges);
-                        loopList.Add(baseLoop);
-
-                        //-------
-
-                        //interior Rings
+                        List<List<C2BPoint>> polysInt = new List<List<C2BPoint>>();
 
                         if (obj.InnerSegments != null)
                         {
-                            foreach (var intLoop in obj.InnerSegments)
+
+                            foreach (var segInt in obj.InnerSegments)
                             {
-                                List<Curve> innerEdges = new List<Curve>();
+                                List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
+                                polyInt.Add(segInt[0][0]);                                    //convert Segments to LinearRing
 
-                                for (var c = 0; c < intLoop.Count; c++)
-                                {
-                                    var pStart = new C2BPoint(intLoop[c][0].X, intLoop[c][0].Y, zOffset);
-                                    var pEnd = new C2BPoint(intLoop[c][1].X, intLoop[c][1].Y, zOffset);
-
-                                    Line edge = Line.CreateBound(GetRevPt(pStart), GetRevPt(pEnd));
-
-                                    innerEdges.Add(edge);
-                                }
-                                CurveLoop innerLoop = CurveLoop.Create(innerEdges);
-                                loopList.Add(innerLoop);
+                                polysInt.Add(polyInt);
                             }
                         }
+                        List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(polyExt, polysInt, out XYZ normal);
 
                         Transaction subTrans = new Transaction(doc, "Create " + obj.UsageType);
                         {
@@ -254,6 +207,8 @@ namespace City2BIM.RevitBuilder
                                 string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
                                 Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
                                 commAttr.Set("ALKIS: " + obj.UsageType);
+
+                                siteSubRegion.TopographySurface.Pinned = true;
 
                             }
                             catch
@@ -301,31 +256,6 @@ namespace City2BIM.RevitBuilder
                 return FailureProcessingResult.Continue;
             }
         }
-
-
-        ////Gesamt-Topos --> Lesen der BBox
-
-        //XYZ origin = new XYZ(0, 0, 0);
-        //XYZ normal = new XYZ(0, 0, 1 /*feetToMeter*/);
-        //Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
-
-        //ElementId elementIdFlst = default(ElementId);
-
-        //Transaction topoTransaction = new Transaction(doc, "Create Topography Gesamt Flurstücke");
-        //{
-        //    FailureHandlingOptions options = topoTransaction.GetFailureHandlingOptions();
-        //    options.SetFailuresPreprocessor(new AxesFailure());
-        //    topoTransaction.SetFailureHandlingOptions(options);
-
-        //    topoTransaction.Start();
-        //    SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-        //    TopographySurface flst = TopographySurface.Create(doc, pointsFlst);
-        //    Parameter gesamt = flst.LookupParameter("Kommentare");
-        //    gesamt.Set("TopoGesamt");
-        //    elementIdFlst = flst.Id;
-        //}
-        //topoTransaction.Commit();
-
 
         private SiteSubRegion SetAttributeValues(SiteSubRegion ds, Dictionary<XmlAttribute, string> attributes)
         {
@@ -576,7 +506,6 @@ namespace City2BIM.RevitBuilder
                     usageType == "AX_UnlandVegetationsloseFlaeche")
             { return ColorType.vegetation; }
 
-            //group "Gewaesser"
             else if (usageType == "AX_Fliessgewaesser" ||
                     usageType == "AX_Hafenbecken" ||
                     usageType == "AX_StehendesGewaesser" ||

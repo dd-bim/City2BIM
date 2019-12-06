@@ -23,18 +23,9 @@ namespace City2BIM.RevitBuilder
             foreach(var pt in terrainPoints)
             {
                 //Transformation for revit
-                var ptCalc = new GeorefCalc();
-                var unprojectedPt = ptCalc.CalcUnprojectedPoint(pt, true);
+                var unprojectedPt = GeorefCalc.CalcUnprojectedPoint(pt, true);
 
-                var revitPt = unprojectedPt / Prop.feetToM;
-
-                //Creation of Revit point
-                var revitXYZ = new XYZ(revitPt.Y, revitPt.X, revitPt.Z);
-
-                //Transform global coordinate to Revit project coordinate system (system of project base point)
-                var revTransXYZ = trafoPBP.OfPoint(revitXYZ);
-
-                revDTMpts.Add(revTransXYZ);
+                revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));
             }
 
             using(Transaction t = new Transaction(doc, "Create TopoSurface"))

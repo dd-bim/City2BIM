@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace City2BIM
 {
-    public class GeorefCalc
+    public static class GeorefCalc
     {
         /// <summary>
         /// Calculates unscaled Point out of Scale and adds global coordinate offset (if specified before)
@@ -16,7 +16,7 @@ namespace City2BIM
         /// <param name="isGeodetic">coordinate order of input (t=YXZ, f=XYZ)</param>
         /// <param name="globalPt">global coordinate offset if specified for mathematical calculations</param>
         /// <returns>Unprojected (scale = 1.0) point for CAD/BIM representation</returns>
-        public C2BPoint CalcUnprojectedPoint(C2BPoint localPt, bool isGeodetic, C2BPoint globalPt = null)
+        public static C2BPoint CalcUnprojectedPoint(C2BPoint localPt, bool isGeodetic, C2BPoint globalPt = null)
         {
             if (globalPt == null)
                 globalPt = new C2BPoint(0, 0, 0);

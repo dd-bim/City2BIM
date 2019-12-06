@@ -125,7 +125,7 @@
     </Compile>
     <Compile Include="ReadCityGML.cs" />
     <Compile Include="RevitBuilder\RevitAlkisBuilder.cs" />
-    <Compile Include="RevitBuilder\RevitBuilder.cs" />
+    <Compile Include="RevitBuilder\Revit_Build.cs" />
     <Compile Include="RevitBuilder\Revit_Prop.cs" />
     <Compile Include="RevitBuilder\RevitTopoSurfaceBuilder.cs" />
     <Compile Include="RevitCommands\City2BIM\City2BIM_prop.cs" />

@@ -14,13 +14,12 @@ namespace City2BIM.RevitBuilder
     {
         private City2BIM.GetGeometry.C2BPoint gmlCorner;
         private Document doc;
-        private Transform trafo = Revit_Prop.TrafoPBP;
 
         private List<GmlRep.GmlBldg> buildings;
         private Dictionary<GmlRep.GmlSurface.FaceType, ElementId> colors;
 
 
-        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner/*, bool swapNE*/)
+        public RevitGeometryBuilder(Document doc, List<GmlRep.GmlBldg> buildings, GetGeometry.C2BPoint gmlCorner)
         {
             this.doc = doc;
             this.buildings = buildings;
@@ -213,127 +212,91 @@ namespace City2BIM.RevitBuilder
 
         private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> attributes, Dictionary<XmlAttribute, string> partAttributes = null)
         {
-            var ordByHeight = from v in solid.Vertices
-                              orderby v.Position.Z
-                              select v.Position.Z;
-
-            var height = ordByHeight.LastOrDefault() - ordByHeight.FirstOrDefault();
-
-            var groundSurfaces = (from p in surfaces
-                                 where p.Facetype == GmlSurface.FaceType.ground
-                                 select p).ToList();
-
-            var outerCeilingSurfaces = (from p in surfaces
-                                       where p.Facetype == GmlSurface.FaceType.outerCeiling
-                                       select p).ToList();
-
-            if (outerCeilingSurfaces.Count > 0)
+            try
             {
-                groundSurfaces.AddRange(outerCeilingSurfaces);
-            }
+                var ordByHeight = from v in solid.Vertices
+                                  where v.Position != null
+                                  orderby v.Position.Z
+                                  select v.Position.Z;
 
-            int i = 0;  //counter for ID (if more than one groundSurface, ID gets counter suffix: "_i")
+                var height = ordByHeight.LastOrDefault() - ordByHeight.FirstOrDefault();
 
-            foreach (var groundSurface in groundSurfaces)
-            {
-                //try
-                //{
+                var groundSurfaces = (from p in surfaces
+                                      where p.Facetype == GmlSurface.FaceType.ground
+                                      select p).ToList();
 
-                List<CurveLoop> loopList = new List<CurveLoop>();
+                var outerCeilingSurfaces = (from p in surfaces
+                                            where p.Facetype == GmlSurface.FaceType.outerCeiling
+                                            select p).ToList();
 
-                //exterior Ring
-
-                var polyGround = groundSurface.ExteriorPts;
-
-                C2BPoint normalizedVc = new C2BPoint(0, 0, 0);
-                var poly = CalcPlanarFace(groundSurface.ExteriorPts, ref normalizedVc);
-
-                List<Curve> edges = new List<Curve>();
-
-                for (var c = 1; c < poly.Count; c++)
+                if (outerCeilingSurfaces.Count > 0)
                 {
-                    Line edge = Line.CreateBound(poly[c - 1], poly[c]);
-
-                    edges.Add(edge);
+                    groundSurfaces.AddRange(outerCeilingSurfaces);
                 }
 
-                CurveLoop baseLoop = CurveLoop.Create(edges);
-                loopList.Add(baseLoop);
+                int i = 0;  //counter for ID (if more than one groundSurface, ID gets counter suffix: "_i")
+                int j = 0;
 
-                //-------------------
-
-                // interior rings
-                if (groundSurface.InteriorPts != null)
+                foreach (var groundSurface in groundSurfaces)
                 {
-                    var polyGroundInts = groundSurface.InteriorPts;
-
-                    foreach (var polyInt in polyGroundInts)
+                    try
                     {
-                        C2BPoint normalizedVcI = new C2BPoint(0, 0, 0);
-                        var polyI = CalcPlanarFace(polyInt, ref normalizedVc);
+                        List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(groundSurface.ExteriorPts, groundSurface.InteriorPts, out XYZ normal, gmlCorner);
 
-                        List<Curve> edgesI = new List<Curve>();
-
-                        for (var c = 1; c < polyI.Count; c++)
+                        if (groundSurface.Facetype == GmlSurface.FaceType.outerCeiling)
                         {
-                            Line edge = Line.CreateBound(polyI[c - 1], polyI[c]);
-
-                            edges.Add(edge);
+                            height = ordByHeight.LastOrDefault() - groundSurface.ExteriorPts.First().Z;     //other height than groundSurface because OuterCeiling - ground face is upper than GroundSurface
                         }
 
-                        CurveLoop interiorLoop = CurveLoop.Create(edges);
-                        loopList.Add(interiorLoop);
+                        var extrHeight = height / Prop.feetToM;
+
+                        Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, -normal, extrHeight);
+
+                        using (Transaction t = new Transaction(doc, "Create lod1 extrusion"))
+                        {
+                            t.Start();
+                            // create direct shape and assign the sphere shape
+                            DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+
+                            ds.SetShape(new GeometryObject[] { lod1bldg });
+
+                            ds = SetAttributeValues(ds, attributes);
+                            if (partAttributes != null)
+                                ds = SetAttributeValues(ds, partAttributes);
+                            ds.Pinned = true;
+
+                            string id = "";
+
+                            if (groundSurfaces.Count > 1)
+                            {
+                                id = internalID + "_" + i;
+                            }
+                            else
+                                id = internalID;
+
+                            SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
+
+                            t.Commit();
+                        }
                     }
-                }
-                //-------------------
-
-                if (groundSurface.Facetype == GmlSurface.FaceType.outerCeiling)
-                {
-                    height = ordByHeight.LastOrDefault() - groundSurface.ExteriorPts.First().Z;     //other height than groundSurface because OuterCeiling - ground face is upper than GroundSurface
-                }
-
-                var extrHeight = height / Prop.feetToM;
-
-                XYZ normalRev = new XYZ(-normalizedVc.X, -normalizedVc.Y, -normalizedVc.Z);     //negative vector because ground normal points downward
-
-                Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normalRev, extrHeight);
-
-                using (Transaction t = new Transaction(doc, "Create lod1 extrusion"))
-                {
-                    t.Start();
-                    // create direct shape and assign the sphere shape
-                    DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-
-                    ds.SetShape(new GeometryObject[] { lod1bldg });
-
-                    ds = SetAttributeValues(ds, attributes);
-                    if (partAttributes != null)
-                        ds = SetAttributeValues(ds, partAttributes);
-                    ds.Pinned = true;
-
-                    string id = "";
-
-                    if (groundSurfaces.Count > 1)
+                    catch (Exception ex)
                     {
-                        id = internalID + "_" + i;
+                        j++;
+                        continue;
                     }
-                    else
-                        id = internalID;
 
-                    SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
+                    i++;
 
-                    t.Commit();
+
                 }
-                //}
-                //catch (Exception ex)
-                //{
-                //    fatalError++;
-                //    WriteRevitBuildErrorsToLog(results, exx.Message, "fatal" + bldg.BldgId);
-                //    continue;
-                //}
 
-                i++;
+                Log.Error("LOD1 error = " + j);
+
             }
+            catch (Exception ex)
+            {
+     
+           }
         }
 
         private List<TessellatedFace> CreateRevitFaceList(C2BSolid solid, List<GmlSurface> surfaces)
@@ -393,18 +356,11 @@ namespace City2BIM.RevitBuilder
                 if (verticesXYZ.Contains(verticesXYZ[vid]))
                 {
                     //Transformation for revit
-                    var ptCalc = new GeorefCalc();
-                    var unprojectedPt = ptCalc.CalcUnprojectedPoint(verticesXYZ[vid].Position, City2BIM_prop.IsGeodeticSystem, gmlCorner);
+                    var unprojectedPt = GeorefCalc.CalcUnprojectedPoint(verticesXYZ[vid].Position, City2BIM_prop.IsGeodeticSystem, gmlCorner);
 
-                    var revitPt = unprojectedPt / Prop.feetToM;
+                    var revPt = Revit_Build.GetRevPt(unprojectedPt);
 
-                    //Creation of Revit point
-                    var revitXYZ = new XYZ(revitPt.Y, revitPt.X, revitPt.Z);
-
-                    //Transform global coordinate to Revit project coordinate system (system of project base point)
-                    var revTransXYZ = trafo.OfPoint(revitXYZ);
-
-                    facePoints.Add(revTransXYZ);
+                    facePoints.Add(revPt);
                 }
                 else
                 {
@@ -477,70 +433,11 @@ namespace City2BIM.RevitBuilder
 
         }
 
-        private List<XYZ> CalcPlanarFace(List<C2BPoint> pts, ref C2BPoint normalizedVc)
-        {
-            C2BPoint centroidPl = new C2BPoint(0, 0, 0);
-            C2BPoint normalVc = new C2BPoint(0, 0, 0);
-
-            for (var c = 1; c < pts.Count; c++)
-            {
-                normalVc += C2BPoint.CrossProduct(pts[c - 1], pts[c]);
-
-                centroidPl += pts[c];
-            }
-
-            var centroid = centroidPl / (pts.Count - 1);
-            normalizedVc = C2BPoint.Normalized(normalVc);
-
-            var projectedVerts = new List<XYZ>();
-
-            foreach (var pt in pts)
-            {
-                var vecPtCent = pt - centroid;
-                var d = C2BPoint.ScalarProduct(vecPtCent, normalizedVc);
-
-                var vecLotCent = new C2BPoint(d * normalizedVc.X, d * normalizedVc.Y, d * normalizedVc.Z);
-                var vertNew = pt - vecLotCent;
-
-                var ptCalc = new GeorefCalc();
-                var unprojectedPt = ptCalc.CalcUnprojectedPoint(vertNew, City2BIM_prop.IsGeodeticSystem, gmlCorner);
-
-                var revitPt = unprojectedPt / Prop.feetToM;
-
-                //Creation of Revit point
-                var revitXYZ = new XYZ(revitPt.Y, revitPt.X, revitPt.Z);
-
-                //Transform global coordinate to Revit project coordinate system (system of project base point)
-                var vertRevXYZ = trafo.OfPoint(revitXYZ);
-
-                projectedVerts.Add(vertRevXYZ);
-            }
-
-            return projectedVerts;
-        }
-
         private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<XmlAttribute, string> bldgAttributes, string lod, Dictionary<XmlAttribute, string> partAttributes = null)
         {
-            C2BPoint normalizedVc = new C2BPoint(0, 0, 0);
+            List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(surface.ExteriorPts, surface.InteriorPts, out XYZ normal, gmlCorner);
 
-            var projectedVerts = CalcPlanarFace(surface.ExteriorPts, ref normalizedVc);
-
-            List<CurveLoop> loopList = new List<CurveLoop>();
-            List<Curve> edges = new List<Curve>();
-
-            for (var c = 1; c < projectedVerts.Count; c++)
-            {
-                Line edge = Line.CreateBound(projectedVerts[c - 1], projectedVerts[c]);
-
-                edges.Add(edge);
-            }
-
-            CurveLoop baseLoop = CurveLoop.Create(edges);
-            loopList.Add(baseLoop);
-
-            double height = 0.01 * 3.28084;
-
-            XYZ normal = new XYZ(normalizedVc.X, normalizedVc.Y, normalizedVc.Z);
+            double height = 0.01 / Prop.feetToM;
 
             SolidOptions opt = new SolidOptions(colors[surface.Facetype], ElementId.InvalidElementId);
 
