@@ -295,8 +295,8 @@ namespace City2BIM.RevitBuilder
             }
             catch (Exception ex)
             {
-     
-           }
+
+            }
         }
 
         private List<TessellatedFace> CreateRevitFaceList(C2BSolid solid, List<GmlSurface> surfaces)
@@ -529,6 +529,10 @@ namespace City2BIM.RevitBuilder
                                 p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
                                 break;
 
+                            case (XmlAttribute.AttrType.stringAttribute):
+                                p.Set(CheckForCodeTranslation(aName.Name, val, City2BIM_prop.CodelistName));
+                                break;
+
                             default:
                                 p.Set(val);
                                 break;
@@ -543,6 +547,89 @@ namespace City2BIM.RevitBuilder
             }
 
             return ds;
+        }
+
+        private string CheckForCodeTranslation(string gmlAttr, string rawValue, Codelist codeType)
+        {
+            if (codeType == Codelist.none)
+                return rawValue;
+
+            if (codeType == Codelist.adv)
+            {
+                if (gmlAttr != "function" &&
+                    gmlAttr != "roofType" &&
+                    gmlAttr != "DatenquelleDachhoehe" &&
+                    gmlAttr != "DatenquelleLage" &&
+                    gmlAttr != "DatenquelleBodenhoehe" &&
+                    gmlAttr != "BezugspunktDach")
+                {
+                    return rawValue;
+                }
+                else
+                {
+                    Dictionary<string, string> dict = new Dictionary<string, string>();
+
+                    if (gmlAttr == "function")
+                        dict = GmlCodelist.adv_function;
+
+                    if (gmlAttr == "roofType")
+                        dict = GmlCodelist.adv_roofType;
+
+                    if (gmlAttr == "DatenquelleDachhoehe")
+                        dict = GmlCodelist.adv_dataRoof;
+
+                    if (gmlAttr == "DatenquelleLage")
+                        dict = GmlCodelist.adv_dataLocation;
+
+                    if (gmlAttr == "DatenquelleBodenhoehe")
+                        dict = GmlCodelist.adv_dataHeightGround;
+
+                    if (gmlAttr == "BezugspunktDach")
+                        dict = GmlCodelist.adv_refPointHeightRoof;
+
+                    dict.TryGetValue(rawValue, out string transValue);
+
+                    if (transValue == "")
+                        return rawValue;
+                    else
+                        return transValue;
+                }
+            }
+
+            if (codeType == Codelist.sig3d)
+            {
+                if (gmlAttr != "function" &&
+                    gmlAttr != "roofType" &&
+                    gmlAttr != "class" &&
+                    gmlAttr != "usage")
+                {
+                    return rawValue;
+                }
+                else
+                {
+                    Dictionary<string, string> dict = new Dictionary<string, string>();
+
+                    if (gmlAttr == "function")
+                        dict = GmlCodelist.sig3d_function;
+
+                    if (gmlAttr == "roofType")
+                        dict = GmlCodelist.sig3d_roofType;
+
+                    if (gmlAttr == "usage")
+                        dict = GmlCodelist.sig3d_usage;
+
+                    if (gmlAttr == "class")
+                        dict = GmlCodelist.sig3d_class;
+
+                    dict.TryGetValue(rawValue, out string transValue);
+
+                    if (transValue == "")
+                        return rawValue;
+                    else
+                        return transValue;
+                }
+            }
+            return rawValue;
         }
 
         private Dictionary<GmlRep.GmlSurface.FaceType, ElementId> CreateColorAsMaterial()

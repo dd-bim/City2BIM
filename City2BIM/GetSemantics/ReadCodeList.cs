@@ -37,7 +37,7 @@ namespace City2BIM.GetSemantics
 
                 string code = "", desc = "";
 
-                if(gmlDescs.Count() == 0 && gmlNames.Count() > 1) //spezielle Implementierung für AdV-Codeliste
+                if(gmlNames.Count() > 1) //spezielle Implementierung für AdV-Codeliste
                 {
                     code = gmlNames.Where(c => c.HasAttributes).Select(c => c.Value).SingleOrDefault(); //Tag mit Attributen = Code
                     desc = gmlNames.Where(c => !c.HasAttributes).Select(c => c.Value).SingleOrDefault();    //Tag ohne Attribute = Description
@@ -51,6 +51,9 @@ namespace City2BIM.GetSemantics
                 {
                     Log.Error("Could not read Codelist. Please specify a new one!");
                 }
+
+                if (kvpCodes.ContainsKey(code))
+                    code = code + "_DUPLICATE";
 
                 kvpCodes.Add(code, desc);
             }

@@ -5,6 +5,7 @@
         //user-defined decision properties        
         private static bool isServerRequest = true;         //default value: true, Server will be called
         private static bool isGeodeticSystem = true;        //default value: true, YXZ coordinate order in geodata preferred
+        private static Codelist codelistName = Codelist.none;
 
         //user-defined source properties   
         private static string fileUrl = "";
@@ -20,5 +21,8 @@
         public static string FileUrl { get => fileUrl; set => fileUrl = value; }
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
         public static double[] ServerCoord { get => serverCoord; set => serverCoord = value; }
+        public static Codelist CodelistName { get => codelistName; set => codelistName = value; }
     }
+
+    public enum Codelist { none, adv, sig3d};
 }

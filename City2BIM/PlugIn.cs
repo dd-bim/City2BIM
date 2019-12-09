@@ -21,17 +21,6 @@ namespace City2BIM
             string tabName = "City2BIM";
             application.CreateRibbonTab(tabName);
 
-            #region Settings panel
-
-            // Add a new ribbon panel
-            RibbonPanel panel1 = application.CreateRibbonPanel(tabName, "Settings");
-
-            PushButton btSettings =
-                panel1.AddItem(new PushButtonData("Create info table", "Import settings", thisAssemblyPath, "City2BIM.ImportSource")) as PushButton;
-            btSettings.ToolTip = "Test window appearing";
-
-            #endregion Settings panel
-
             #region Georef panel
 
             RibbonPanel panel2 = application.CreateRibbonPanel(tabName, "Georeferencing");
@@ -77,23 +66,6 @@ namespace City2BIM
             PushButton btCitySettings = panel3.AddItem(new PushButtonData("OpenCityGMLSettings", "Settings",
             thisAssemblyPath, "City2BIM.OpenSettings")) as PushButton;
             btCitySettings.ToolTip = "Import settings for city model.";
-
-            //PushButton buttonCode = panel3.AddItem(new PushButtonData("Get CityGML Code Description", "Get Code Decription",
-            //thisAssemblyPath, "City2BIM.ReadCode")) as PushButton;
-            //buttonCode.ToolTip = "Import functionality for CityGML data";
-
-            //RadioButtonGroupData radioGeom = new RadioButtonGroupData("RadioGmlGeom");
-            //RadioButtonGroup radioGeomGroup = panel3.AddItem(radioGeom) as RadioButtonGroup;
-
-            //// create toggle buttons and add to radio button group
-            //ToggleButtonData tbFaces = new ToggleButtonData("toggleButton1", "Import Surfaces");
-            //tbFaces.ToolTip = "CityGML geometry will be imported as Surfaces in Wall/Roof/Slab category.";
-
-            //ToggleButtonData tbSolids = new ToggleButtonData("toggleButton2", "Green");
-            //tbSolids.ToolTip = "CityGML geometry will be imported as Solids in Entourage category.";
-
-            //radioGeomGroup.AddItem(tbFaces);
-            //radioGeomGroup.AddItem(tbSolids);
 
             //-------------------------------------------------------------------------------------------------
 

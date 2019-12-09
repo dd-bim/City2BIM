@@ -113,6 +113,7 @@
     <Compile Include="GetSemantics\ReadSemValues.cs" />
     <Compile Include="GmlRep\GmlBldg.cs" />
     <Compile Include="GmlRep\GmlBldgPart.cs" />
+    <Compile Include="GmlRep\GmlCodelist.cs" />
     <Compile Include="GmlRep\GmlSurface.cs" />
     <Compile Include="ImportSource.cs" />
     <Compile Include="PlugIn.cs" />
@@ -137,7 +138,6 @@
     <Compile Include="RevitCommands\City2BIM\ReadCityGMLSolids.cs" />
     <Compile Include="RevitCommands\City2BIM\ReadCityGMLFaces.cs" />
     <Compile Include="ReadTerrain.cs" />
-    <Compile Include="ReadCode.cs" />
     <Compile Include="RevitBuilder\RevitGeometryBuilder.cs" />
     <Compile Include="RevitBuilder\RevitSemanticBuilder.cs" />
     <Compile Include="RevitCommands\DTM2BIM\ReadTerrainXYZ.cs" />

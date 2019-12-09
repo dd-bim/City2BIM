@@ -7,6 +7,9 @@ namespace City2BIM.RevitCommands.City2BIM
     /// </summary>
     public partial class CityGML_settings : Window
     {
+        private string[] codelistTypes = new string[] { "AdV (Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der BRD)", 
+                                                        "SIG3D (Special Interest Group 3D)" };
+
         public CityGML_settings()
         {
             InitializeComponent();
@@ -26,6 +29,11 @@ namespace City2BIM.RevitCommands.City2BIM
                 rb_YXZ.IsChecked = true;
             else
                 rb_XYZ.IsChecked = true;
+
+            foreach (var item in codelistTypes)
+            {
+                cb_Codelist.Items.Add(item);
+            }
 
         }
 
@@ -85,7 +93,19 @@ namespace City2BIM.RevitCommands.City2BIM
             else
                 City2BIM_prop.IsGeodeticSystem = false;
 
+            if (check_applyCode.IsChecked == false)
+                City2BIM_prop.CodelistName = Codelist.none;
+            else
+            {
+                var item = cb_Codelist.SelectedItem;
 
+                if (item.ToString().Equals("AdV (Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der BRD)"))
+                    City2BIM_prop.CodelistName = Codelist.adv;
+                else if (item.ToString().Equals("SIG3D (Special Interest Group 3D)"))
+                    City2BIM_prop.CodelistName = Codelist.sig3d;
+                else
+                    City2BIM_prop.CodelistName = Codelist.none;
+            }
             this.Close();
         }
 
