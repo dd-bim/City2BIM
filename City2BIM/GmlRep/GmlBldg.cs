@@ -12,6 +12,7 @@ namespace City2BIM.GmlRep
         private List<GmlSurface> bldgSurfaces;
         private C2BSolid bldgSolid;
         private string lod;
+        private List<string> logEntries;
 
         public string BldgId
         {
@@ -79,6 +80,7 @@ namespace City2BIM.GmlRep
         }
 
         public string Lod { get => lod; set => lod = value; }
+        public List<string> LogEntries { get => logEntries; set => logEntries = value; }
 
         public enum LodRep { LOD1, LOD2, LOD1_Fallback, LOD2_Fallback, unknown }
 

@@ -13,6 +13,7 @@ namespace City2BIM.GetGeometry
         private Dictionary<string, C2BPlane> _planes = new Dictionary<string, C2BPlane>();
         private List<C2BVertex> _vertices = new List<C2BVertex>();
         private List<C2BEdge> _edges = new List<C2BEdge>();
+        private List<string> logEntries = new List<string>();
 
         public List<C2BVertex> Vertices
         {
@@ -32,11 +33,14 @@ namespace City2BIM.GetGeometry
         public List<C2BEdge> Edges { get => _edges; set => _edges = value; }
 
         public Guid InternalID { get => internalID; }
+        public List<string> LogEntries { get => logEntries; set => logEntries = value; }
 
         public C2BSolid(string gmlID)
         {
             this.internalID = Guid.NewGuid();
             this.gmlID = gmlID;
+            this.logEntries = new List<string>();
+            this.logEntries.Add("Results of Solid calculation:");
         }
 
         public void AddPlane(string id, List<C2BPoint> polygon, List<List<C2BPoint>> innerPolygons = null)
@@ -158,10 +162,14 @@ namespace City2BIM.GetGeometry
 
             if (Edges.Count > 0)
             {
+                int ctSimPlanes = 0;
+
                 while (similarPlanes)
                 {
-                    AggregatePlanes(ref similarPlanes);
+                    AggregatePlanes(ref similarPlanes, ref ctSimPlanes);
                 }
+
+                logEntries.Add("- Number of Combined Planes = " + ctSimPlanes);
             }
 
             RemoveNoCornerVertices();
@@ -172,7 +180,7 @@ namespace City2BIM.GetGeometry
         /// Aggregates polygon planes which are (almost) the same plane
         /// </summary>
         /// <param name="simPlanes">bool for loop break control</param>
-        private void AggregatePlanes(ref bool simPlanes)
+        private void AggregatePlanes(ref bool simPlanes, ref int ctSimPlanes)
         {
             //defined tolerance for same planes (distance between ends of normalized plane vector)
             double locDistolsq = 0.0025; //== 5 cm
@@ -274,16 +282,10 @@ namespace City2BIM.GetGeometry
                                 Planes.Remove(plane2.ID);
                                 Planes.Add(newID, new C2BPlane(newID, newVerts, innerVerts, planeNormal, planeCentroid, cpdEdgeList));
 
-                                Log.Information("Match Plane 1: " + plane1.ID);
-                                Log.Information("Match Plane 2: " + plane2.ID);
-
-                                Log.Information("United Plane:  " + newID);
-
+                                ctSimPlanes++;
                             }
                             else
                             {
-                                Log.Information("Match at unified Plane: " + plane1.ID);
-
                                 var uniPlane = plane1;
 
                                 var vs = uniPlane.Vertices.GroupBy(vtx => vtx);
@@ -400,8 +402,8 @@ namespace City2BIM.GetGeometry
 
         public void CalculatePositions()
         {
-
-            Log.Debug("START Vertext-Calculation at: " + gmlID + "----------------------------------------------");
+            int ctLevelCuts = 0;
+            List<double> maxDevLevelCut = new List<double>();
 
             Dictionary<string, List<int>> PlanesToSplit = new Dictionary<string, List<int>>();
 
@@ -417,8 +419,15 @@ namespace City2BIM.GetGeometry
                         C2BPoint vertex = new C2BPoint(0, 0, 0);
 
                         string[] vPlanes = Vertices[v].Planes.ToArray<string>();
+                        C2BPoint oldPos = Vertices[v].Position;
 
                         Vertices[v].Position = CalculateLevelCut(Planes[vPlanes[0]], Planes[vPlanes[1]], Planes[vPlanes[2]]);
+
+                        C2BPoint newPos = Vertices[v].Position;
+
+                        maxDevLevelCut.Add(C2BPoint.DistanceSq(oldPos, newPos));
+
+                       ctLevelCuts++;
                     }
 
                     #endregion Level Cut (3 planes - unambiguous)
@@ -427,142 +436,84 @@ namespace City2BIM.GetGeometry
 
                     if (Vertices[v].Planes.Count > 3)
                     {
-                        Log.Debug("LEVEL CUT ambiguous: more than 3 Vertices at " + v + "---------------------");
-
                         string[] vPlanes = Vertices[v].Planes.ToArray<string>();
+
+                        //sorting of planes as preparation of level cut / splitting
+
+                        List<string> plConcaveAtCurrentVertex = new List<string>();
+                        List<string> plConcaveAtAnyVertex = new List<string>();
+                        List<string> plConvexOrSplittable = new List<string>();
+                        List<string> plQuads = new List<string>();
+                        List<string> plTriangles = new List<string>();
+
+                        foreach (var plane in vPlanes.ToList())
+                        {
+                            C2BPlane adjacPlane = Planes[plane];
+                            int[] verts = adjacPlane.Vertices;
+
+                            if (verts.Length == 3)
+                            {
+                                plTriangles.Add(plane);
+                                continue;
+                            }
+
+                            if (verts.Length == 4)
+                            {
+                                plQuads.Add(plane);
+                                continue;
+                            }
+
+                            //investgate planes with more than 4 corners regarding concave corners
+                            //check for every corner with adjacent vertices, which build the local triangle
+
+                            bool concaveAny = false;
+                            bool concaveCurrent = false;
+
+                            for (int vtx = 0; vtx < verts.Length; vtx++)
+                            {
+                                FindAdjacentIndices(verts, verts[vtx], out int vBef, out int vNext, out int vOpp);
+
+                                bool ccwAngle = C2BPoint.CCW(Vertices[vBef].Position, Vertices[vtx].Position, Vertices[vNext].Position, adjacPlane.Normal);
+
+                                if (!ccwAngle)
+                                {
+                                    concaveAny = true;
+                                    if (v == vtx)
+                                        concaveCurrent = true;
+                                }
+                            }
+
+                            if (concaveCurrent)
+                                plConcaveAtCurrentVertex.Add(plane);
+
+                            if (concaveAny && !concaveCurrent)
+                                plConcaveAtAnyVertex.Add(plane);
+
+                            if (!concaveAny && !concaveCurrent)
+                                plConvexOrSplittable.Add(plane);
+                        }
+
                         string[] splitPlanes = new string[vPlanes.Count() - 3];
 
                         double d = 100;
                         C2BPoint origPos = Vertices[v].Position;
                         C2BPoint calcPos = origPos;
-
+                                              
+                        //combine them in one ordered list
                         List<string> ordPlanes = new List<string>();
-                        List<string> unordPlanes = new List<string>();
 
-                        List<string> convexPl = new List<string>();
-                        int ctConcave = 0;
+                        //most forced planes for cut are the planes with an concave corner at current vertex
+                        ordPlanes.AddRange(plConcaveAtCurrentVertex);
+                        int ctCurrV = plConcaveAtCurrentVertex.Count; 
 
-                        #region Test - Selection of cutted planes regarding concaveness 
+                        //second most forced planes for cut are the planes with an concave corner at any other vertex
+                        //order them ascending because probality for failed split is higher the less corners the plane has
+                        ordPlanes.AddRange(plConcaveAtAnyVertex.OrderBy(p => Planes[p].Vertices.Count()));
+                        int ctAnyV = plConcaveAtAnyVertex.Count;
 
-                        //foreach (string pId in vPlanes)
-                        //{
-                        //    var sPlane = Planes[pId];
-                        //    var sVerts = sPlane.Vertices;
-                        //    int vertCt = sVerts.Count();
-
-                        //    int v1 = 0;
-                        //    int v3 = 0;
-                        //    int v4 = 0;
-
-                        //    FindAdjacentIndices(sVerts, v, out v1, out v3, out v4);
-
-                        //    bool divisible = true;
-
-                        //    //CCW test for plane at vertex where cut of more than 3 planes applied
-                        //    bool ccw = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[v3].Position, sPlane.Normal);
-
-                        //    //CCW test with possibly new edge and other polygon vertices to avoid false split generation
-
-                        //    int[] vRest = sVerts.Where(vtx => vtx != v1 && vtx != v && vtx != v3).ToArray();
-
-                        //    if (ccw)
-                        //    {
-                        //        foreach (int vtx in vRest)
-                        //        {
-                        //            bool ccwPlane = C2BPoint.CCW(Vertices[v1].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
-
-                        //            if (!ccwPlane)
-                        //            {
-                        //                bool ccwPlane2 = C2BPoint.CCW(Vertices[v1].Position, Vertices[v].Position, Vertices[vtx].Position, sPlane.Normal);
-                        //                bool ccwPlane3 = C2BPoint.CCW(Vertices[v].Position, Vertices[v3].Position, Vertices[vtx].Position, sPlane.Normal);
-
-                        //                if (ccwPlane2 && ccwPlane3)
-                        //                {
-                        //                    divisible = false;
-                        //                    break;
-                        //                }
-                        //            }
-                        //        }
-                        //    }
-                        //    else
-                        //        divisible = false;
-
-                        //    //if CCW gets false there is an concave angle at vertex for the investigated plane 
-                        //    //if CCW gets an value next to 0 there is an collinear situation at vertex for the investigated plane (also false result)
-                        //    //for both of this situations a splitting of the planes later on could lead to a wrong solid calculation
-                        //    //therefore this planes should be part in the level cut (so they not have to be splitted)
-                        //    //exeptional cases are ih the concave plane has 4 vertices --> then a splitting with the opposite vertex is also possible 
-
-
-
-                        //    if (!divisible && vertCt > 4)
-                        //    {
-                        //        ordPlanes.Add(pId);
-                        //        ctConcave++;
-                        //    }
-                        //    else
-                        //        unordPlanes.Add(pId);
-                        //}
-
-                        unordPlanes = vPlanes.ToList();
-
-                        int ctNoConvex = 0;
-                        List<string> unordPlanes1 = new List<string>();
-                        List<string> unordPlanes2 = new List<string>();
-
-                        foreach (var plane in unordPlanes)
-                        {
-                            bool convex = true;
-
-                            var adjacPlane = Planes[plane];
-                            var verts = adjacPlane.Vertices;
-
-                            bool ccwAngleStart = C2BPoint.CCW(Vertices[verts.Length - 1].Position, Vertices[verts[0]].Position, Vertices[verts[1]].Position, adjacPlane.Normal);
-                            bool ccwAngleEnd = C2BPoint.CCW(Vertices[verts.Length - 2].Position, Vertices[verts.Length - 1].Position, Vertices[verts[0]].Position, adjacPlane.Normal);
-
-                            if (!ccwAngleStart || !ccwAngleEnd)
-                            {
-                                convex = false;
-                            }
-
-                            for (int vtx = 1; vtx < verts.Length - 1; vtx++)
-                            {
-                                bool ccwAngle = C2BPoint.CCW(Vertices[vtx - 1].Position, Vertices[vtx].Position, Vertices[vtx + 1].Position, adjacPlane.Normal);
-
-                                if (!ccwAngle)
-                                {
-                                    convex = false;
-                                }
-                            }
-
-                            if (!convex && verts.Length > 4)
-                            {
-                                unordPlanes1.Add(plane);
-                                ctNoConvex++;
-                            }
-                            else
-                            {
-                                unordPlanes2.Add(plane);
-                            }
-
-                        }
-
-                        ordPlanes.AddRange(unordPlanes1.OrderByDescending(p => Planes[p].Vertices.Count()));
-                        ordPlanes.AddRange(unordPlanes2.OrderByDescending(p => Planes[p].Vertices.Count()));
-
-                        Log.Debug("RESULT of Selection:");
-                        Log.Debug("...forced PlanesA: " + ctConcave);
-                        Log.Debug("...forced PlanesB: " + ctNoConvex);
-                        Log.Debug("Cut1: " + Planes[ordPlanes[0]].Vertices.Count());
-                        Log.Debug("Cut2: " + Planes[ordPlanes[1]].Vertices.Count());
-                        Log.Debug("Cut3: " + Planes[ordPlanes[2]].Vertices.Count());
-
-                        for (int i = 3; i < ordPlanes.Count; i++)
-                        {
-                            Log.Debug("Split" + (i + 1) + ": " + Planes[ordPlanes[i]].Vertices.Count());
-                        }
-
-                        Log.Debug("------------------------------------");
+                        ordPlanes.AddRange(plConvexOrSplittable);
+                        ordPlanes.AddRange(plQuads);
+                        ordPlanes.AddRange(plTriangles);
 
                         for (var i = 0; i < ordPlanes.Count - 2; i++)
                         {
@@ -584,33 +535,29 @@ namespace City2BIM.GetGeometry
 
                                         //not at level cut involved planes --> those ones must be splitted if they have more than 3 vertices for planarity
                                         splitPlanes = ordPlanes.Where(w => w != ordPlanes[i] && w != ordPlanes[j] && w != ordPlanes[k]).ToArray();
-
                                     }
 
-                                    if ((ctConcave+ctNoConvex) > 2)
+                                    if ((ctCurrV + ctAnyV) > 2)
                                         break;
 
                                     if (d < 0.05)
                                         break;
                                 }
 
-                                if ((ctConcave + ctNoConvex) == 2)
+                                if ((ctCurrV + ctAnyV) == 2)
                                     break;
 
                                 if (d < 0.05)
                                     break;
                             }
-                            if ((ctConcave + ctNoConvex) == 1)
+                            if ((ctCurrV + ctAnyV) == 1)
                                 break;
 
                             if (d < 0.05)
                                 break;
                         }
 
-                        Log.Debug("RESULT of Level Cut = " + d);
-                        Log.Debug("------------------------------------");
-
-                        #endregion Test - Selection of cutted planes regarding concaveness
+                        
 
                         Vertices[v].Position = calcPos;
 
@@ -621,9 +568,13 @@ namespace City2BIM.GetGeometry
                             else
                                 PlanesToSplit.Add(pl, new List<int> { v });
                         }
+                        ctLevelCuts++;
+                        maxDevLevelCut.Add(d);
                     }
 
                     #endregion Level Cut (> 3 planes - ambiguous, further calculations)
+
+
                 }
                 catch (Exception ex)
                 {
@@ -633,16 +584,23 @@ namespace City2BIM.GetGeometry
 
             }
 
+            logEntries.Add("- Number of Level Cuts = " + ctLevelCuts);
+
+            double dMax = 0.0;
+
+            if (maxDevLevelCut.Count > 0)
+                dMax = Math.Sqrt(maxDevLevelCut.Max());
+
+            logEntries.Add("- Max deviation of original GML point = " + Math.Round(dMax, 3));
+
             #region Split Planes which were not inclued in level cut
 
-            Log.Debug("RESULT of Splits: ");
-            Log.Debug("------------------------------------");
+            int ctSplits = 0;
 
             foreach (var vPl in PlanesToSplit)
             {
                 try
                 {
-
                     //Info: each plane consists of its ID as Key and a List of integers which represent the vertices where a split is neccessary
 
                     //List of integer-Arrays which represent the Vertex-Lists of the new planes                
@@ -702,6 +660,8 @@ namespace City2BIM.GetGeometry
 
                         newPlaneVertices.Add(triangleS1);
                         newPlaneVertices.Add(triangleS2);
+
+                        ctSplits++;
                     }
                     //if plane has more than 4 corners, we must differentiate regarding the number vertices where a split should apply 
                     else
@@ -718,6 +678,8 @@ namespace City2BIM.GetGeometry
 
                             newPlaneVertices.Add(triangleS1);
                             newPlaneVertices.Add(polygonS2);
+
+                            ctSplits++;
                         }
                         //if more than one split apply, there is a complicated division regarding the order of the relevant vertices in original polygon
                         //NOTE: this could be fail, if 
@@ -745,6 +707,8 @@ namespace City2BIM.GetGeometry
 
                             //add the new Vertex to Solid.Vertices-List
                             Vertices.Add(vCen);
+
+                            ctSplits = ctSplits + indvCen;
                         }
                     }
 
@@ -766,7 +730,6 @@ namespace City2BIM.GetGeometry
                             Vertices[v].AddPlane(splitId);
                         }
                     }
-
                     #endregion Split Planes which were not inclued in level cut
 
                 }
@@ -778,19 +741,13 @@ namespace City2BIM.GetGeometry
 
             }
 
-            Log.Debug("END Vertext-Calculation at: " + gmlID + "----------------------------------------------");
-            Log.Debug("---------------------------------------------------------------------------------------");
-            Log.Debug("---------------------------------------------------------------------------------------");
-            Log.Debug("---------------------------------------------------------------------------------------");
+            logEntries.Add("- Number of Split of original Surfaces = " + ctSplits);
+
         }
 
         private void FindAdjacentIndices(int[] plVertices, int vertex, out int vBefore, out int vNext, out int vOpp)
         {
             int index = Array.IndexOf(plVertices, vertex);
-
-            vBefore = 0;
-            vNext = 0;
-            vOpp = 0;
 
             if (index == 0)
             {

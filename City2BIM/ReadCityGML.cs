@@ -72,17 +72,6 @@ namespace City2BIM
 
             }
 
-
-            ////Import via Dialog:
-            //FileDialog imp = new FileDialog();
-            //var path = imp.ImportPathCityGML();
-
-            //if (path == "")
-            //    throw new Exception("No file choosened!");
-            //-------------------------------
-            Log.Information("File: " + path);
-
-
             //-----------------------------------------
 
             #region Namespaces
@@ -559,8 +548,8 @@ namespace City2BIM
 
             double axis0 = Double.Parse(xyzString[0], CultureInfo.InvariantCulture);
             double axis1 = Double.Parse(xyzString[1], CultureInfo.InvariantCulture);
-          
-                return new C2BPoint(axis0 - lowerCorner.X, axis1 - lowerCorner.Y, z);
+
+            return new C2BPoint(axis0 - lowerCorner.X, axis1 - lowerCorner.Y, z);
         }
 
         private List<GmlSurface> ReadSurfaces(XElement bldgEl, HashSet<XmlAttribute> attributes, out GmlBldg.LodRep lod)
@@ -1017,6 +1006,9 @@ namespace City2BIM
                 //use gml_id as id for building
                 gmlBldg.BldgId = bldg.Attribute(allns["gml"] + "id").Value;
 
+                gmlBldg.LogEntries = new List<string>();
+                gmlBldg.LogEntries.Add("CityGML-Building_ID: " + gmlBldg.BldgId);
+
                 //read attributes for building (first level, no parts are handled internally in method)
                 gmlBldg.BldgAttributes = new ReadSemValues().ReadAttributeValuesBldg(bldg, attributes, allns);
 
@@ -1074,9 +1066,18 @@ namespace City2BIM
 
                 var surfaces = bldg.BldgSurfaces;
 
-                foreach (var surface in surfaces)
+                if (surfaces.Count > 0)
                 {
-                    bldg.BldgSolid.AddPlane(surface.InternalID.ToString(), surface.ExteriorPts, surface.InteriorPts);
+                    foreach (var surface in surfaces)
+                    {
+                        bldg.BldgSolid.AddPlane(surface.InternalID.ToString(), surface.ExteriorPts, surface.InteriorPts);
+                    }
+
+                    bldg.BldgSolid.IdentifySimilarPlanes();
+
+                    bldg.BldgSolid.CalculatePositions();
+
+                    bldg.LogEntries.AddRange(bldg.BldgSolid.LogEntries);
                 }
 
                 var parts = bldg.Parts;
@@ -1097,6 +1098,10 @@ namespace City2BIM
 
                     partSolid.CalculatePositions();
 
+                    bldg.LogEntries.Add("CityGML-BuildingPart_ID: " + part.BldgPartId);
+
+                    bldg.LogEntries.AddRange(partSolid.LogEntries);
+
                     newPart.PartSolid = partSolid;
 
                     newParts.Add(newPart);
@@ -1104,9 +1109,7 @@ namespace City2BIM
 
                 bldg.Parts = newParts;
 
-                bldg.BldgSolid.IdentifySimilarPlanes();
 
-                bldg.BldgSolid.CalculatePositions();
 
                 newBldgs.Add(bldg);
             }

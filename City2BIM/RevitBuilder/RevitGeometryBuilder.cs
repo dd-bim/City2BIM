@@ -43,6 +43,11 @@ namespace City2BIM.RevitBuilder
                .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitErrors_Solids.txt", rollingInterval: RollingInterval.Hour)
                .CreateLogger();
 
+            var infos = new LoggerConfiguration()
+               //.MinimumLevel.Debug()
+               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitInfos_Solids.txt", rollingInterval: RollingInterval.Minute)
+               .CreateLogger();
+
             double all = 0.0;
 
             foreach (var bldg in buildings)
@@ -75,6 +80,8 @@ namespace City2BIM.RevitBuilder
                             }
                         }
                     }
+
+
                 }
 
                 if (bldg.BldgSolid.Planes.Count > 0)
@@ -104,6 +111,11 @@ namespace City2BIM.RevitBuilder
                         continue;
                     }
                 }
+
+                foreach (var entry in bldg.LogEntries)
+                {
+                    infos.Information(entry);
+                }
             }
 
             //-------internal statistic file------------------------
@@ -111,6 +123,23 @@ namespace City2BIM.RevitBuilder
             WriteStatisticToLog(all, success, error, fatalError);
 
             //-------internal statistic file------------------------
+        }
+
+        private void WriteInfosToLog(Serilog.Core.Logger results, string ex, string buildingID, string partID = null, string surfaceID = null, string surfaceType = null)
+        {
+            if (partID != null)
+                results.Error("At buildingPart: " + ex);
+            else
+                results.Error("At building: " + ex);
+
+            results.Error(buildingID);
+            if (partID != null)
+                results.Error(partID);
+            if (surfaceID != null)
+                results.Error(surfaceID);
+            if (surfaceType != null)
+                results.Error(surfaceType);
+            results.Error("--------------------------------------------------");
         }
 
         private void WriteRevitBuildErrorsToLog(Serilog.Core.Logger results, string ex, string buildingID, string partID = null, string surfaceID = null, string surfaceType = null)
