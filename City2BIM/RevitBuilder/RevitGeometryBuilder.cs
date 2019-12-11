@@ -3,7 +3,6 @@ using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
 using City2BIM.RevitCommands.City2BIM;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,19 +35,11 @@ namespace City2BIM.RevitBuilder
         {
             double success = 0.0;
             double error = 0.0;
+            double errorLod1 = 0.0;
             double fatalError = 0.0;
-
-            var results = new LoggerConfiguration()
-               //.MinimumLevel.Debug()
-               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitErrors_Solids.txt", rollingInterval: RollingInterval.Hour)
-               .CreateLogger();
-
-            var infos = new LoggerConfiguration()
-               //.MinimumLevel.Debug()
-               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitInfos_Solids.txt", rollingInterval: RollingInterval.Minute)
-               .CreateLogger();
-
             double all = 0.0;
+
+            List<BldgLog> allLogs = new List<BldgLog>();
 
             foreach (var bldg in buildings)
             {
@@ -65,23 +56,28 @@ namespace City2BIM.RevitBuilder
                         }
                         catch (System.Exception ex)
                         {
-                            error++;
-                            WriteRevitBuildErrorsToLog(results, ex.Message, bldg.BldgId, part.BldgPartId);
+                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, "LOD2-Calculation not successful."));
+                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, ex.Message));
 
                             try
                             {
-                                CreateLOD1Building(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, part.BldgPartAttributes);
+                                List<BldgLog> lod1Messages = new List<BldgLog>();
+
+                                CreateLOD1Building(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, ref lod1Messages, ref error, ref errorLod1, part.BldgPartAttributes);
+                                bldg.LogEntries.AddRange(lod1Messages);
+                                bldg.LogEntries.Add(new BldgLog(Logging.LogType.info, "LOD1-Representation used."));
                             }
                             catch (Exception exx)
                             {
+                                bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, "Fatal error: could not calculate LOD1-representation. No geometry transfered."));
+                                bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, exx.Message));
+
                                 fatalError++;
-                                WriteRevitBuildErrorsToLog(results, exx.Message, "fatal" + bldg.BldgId, part.BldgPartId);
+
                                 continue;
                             }
                         }
                     }
-
-
                 }
 
                 if (bldg.BldgSolid.Planes.Count > 0)
@@ -95,94 +91,31 @@ namespace City2BIM.RevitBuilder
 
                     catch (System.Exception ex)
                     {
-                        error++;
-                        WriteRevitBuildErrorsToLog(results, ex.Message, bldg.BldgId);
+                        bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, "LOD2-Calculation not successful."));
+                        bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, ex.Message));
 
                         try
                         {
-                            CreateLOD1Building(bldg.BldgSolid.InternalID.ToString(), bldg.BldgSolid, bldg.BldgSurfaces, bldg.BldgAttributes);
+                            List<BldgLog> lod1Messages = new List<BldgLog>();
+
+                            CreateLOD1Building(bldg.BldgSolid.InternalID.ToString(), bldg.BldgSolid, bldg.BldgSurfaces, bldg.BldgAttributes, ref lod1Messages, ref error, ref errorLod1);
+                            bldg.LogEntries.AddRange(lod1Messages);
+                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.info, "LOD1-Representation used."));
                         }
                         catch (Exception exx)
                         {
+                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, "Fatal error: could not calculate LOD1-representation. No geometry transfered."));
+                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, exx.Message));
+
                             fatalError++;
-                            WriteRevitBuildErrorsToLog(results, exx.Message, "fatal" + bldg.BldgId);
+
                             continue;
                         }
-                        continue;
                     }
-                }
-
-                foreach (var entry in bldg.LogEntries)
-                {
-                    infos.Information(entry);
+                    allLogs.AddRange(bldg.LogEntries);
                 }
             }
-
-            //-------internal statistic file------------------------
-
-            WriteStatisticToLog(all, success, error, fatalError);
-
-            //-------internal statistic file------------------------
-        }
-
-        private void WriteInfosToLog(Serilog.Core.Logger results, string ex, string buildingID, string partID = null, string surfaceID = null, string surfaceType = null)
-        {
-            if (partID != null)
-                results.Error("At buildingPart: " + ex);
-            else
-                results.Error("At building: " + ex);
-
-            results.Error(buildingID);
-            if (partID != null)
-                results.Error(partID);
-            if (surfaceID != null)
-                results.Error(surfaceID);
-            if (surfaceType != null)
-                results.Error(surfaceType);
-            results.Error("--------------------------------------------------");
-        }
-
-        private void WriteRevitBuildErrorsToLog(Serilog.Core.Logger results, string ex, string buildingID, string partID = null, string surfaceID = null, string surfaceType = null)
-        {
-            if (partID != null)
-                results.Error("At buildingPart: " + ex);
-            else
-                results.Error("At building: " + ex);
-
-            results.Error(buildingID);
-            if (partID != null)
-                results.Error(partID);
-            if (surfaceID != null)
-                results.Error(surfaceID);
-            if (surfaceType != null)
-                results.Error(surfaceType);
-            results.Error("--------------------------------------------------");
-        }
-
-        private void WriteStatisticToLog(double all, double success, double? error, double? fatalError)
-        {
-            var results = new LoggerConfiguration()
-               //.MinimumLevel.Debug()
-               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\Statistic.txt"/*, rollingInterval: RollingInterval.Day*/)
-               .CreateLogger();
-
-            double statSucc = success / all * 100;
-
-            results.Information("Amount of Solids or Surfaces: " + all);
-            results.Information("Success rate = " + statSucc + " procent = " + success + " objects");
-
-            if (error.HasValue)
-            {
-                double statErr = (double)error / all * 100;
-                results.Warning("Failure rate (LOD1 Fallback) = " + statErr + " procent = " + error + " objects");
-            }
-
-            if (fatalError.HasValue)
-            {
-                double fatStatErr = (double)fatalError / all * 100;
-                results.Error("Fatal error: no geometry at = " + fatStatErr + " procent = " + fatalError + " objects");
-            }
-            results.Information("------------------------------------------------------------------");
+            Logging.WriteLogFile(allLogs, all, success, error, errorLod1, fatalError);          
         }
 
         private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> bldgAttributes, string lod, Dictionary<XmlAttribute, string> partAttributes = null)
@@ -239,92 +172,133 @@ namespace City2BIM.RevitBuilder
             idAttr.Set(guid);
         }
 
-        private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> attributes, Dictionary<XmlAttribute, string> partAttributes = null)
+        private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> attributes, ref List<BldgLog> logEntries, ref double error, ref double errorLod1, Dictionary<XmlAttribute, string> partAttributes = null)
         {
-            try
+            var ordByHeight = from v in solid.Vertices
+                              where v.Position != null
+                              orderby v.Position.Z
+                              select v.Position.Z;
+
+            var height = ordByHeight.LastOrDefault() - ordByHeight.FirstOrDefault();
+
+            var groundSurfaces = (from p in surfaces
+                                  where p.Facetype == GmlSurface.FaceType.ground
+                                  select p).ToList();
+
+            var outerCeilingSurfaces = (from p in surfaces
+                                        where p.Facetype == GmlSurface.FaceType.outerCeiling
+                                        select p).ToList();
+
+            if (outerCeilingSurfaces.Count > 0)
             {
-                var ordByHeight = from v in solid.Vertices
-                                  where v.Position != null
-                                  orderby v.Position.Z
-                                  select v.Position.Z;
-
-                var height = ordByHeight.LastOrDefault() - ordByHeight.FirstOrDefault();
-
-                var groundSurfaces = (from p in surfaces
-                                      where p.Facetype == GmlSurface.FaceType.ground
-                                      select p).ToList();
-
-                var outerCeilingSurfaces = (from p in surfaces
-                                            where p.Facetype == GmlSurface.FaceType.outerCeiling
-                                            select p).ToList();
-
-                if (outerCeilingSurfaces.Count > 0)
-                {
-                    groundSurfaces.AddRange(outerCeilingSurfaces);
-                }
-
-                int i = 0;  //counter for ID (if more than one groundSurface, ID gets counter suffix: "_i")
-                int j = 0;
-
-                foreach (var groundSurface in groundSurfaces)
-                {
-                    try
-                    {
-                        List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(groundSurface.ExteriorPts, groundSurface.InteriorPts, out XYZ normal, gmlCorner);
-
-                        if (groundSurface.Facetype == GmlSurface.FaceType.outerCeiling)
-                        {
-                            height = ordByHeight.LastOrDefault() - groundSurface.ExteriorPts.First().Z;     //other height than groundSurface because OuterCeiling - ground face is upper than GroundSurface
-                        }
-
-                        var extrHeight = height / Prop.feetToM;
-
-                        Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, -normal, extrHeight);
-
-                        using (Transaction t = new Transaction(doc, "Create lod1 extrusion"))
-                        {
-                            t.Start();
-                            // create direct shape and assign the sphere shape
-                            DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-
-                            ds.SetShape(new GeometryObject[] { lod1bldg });
-
-                            ds = SetAttributeValues(ds, attributes);
-                            if (partAttributes != null)
-                                ds = SetAttributeValues(ds, partAttributes);
-                            ds.Pinned = true;
-
-                            string id = "";
-
-                            if (groundSurfaces.Count > 1)
-                            {
-                                id = internalID + "_" + i;
-                            }
-                            else
-                                id = internalID;
-
-                            SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
-
-                            t.Commit();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        j++;
-                        continue;
-                    }
-
-                    i++;
-
-
-                }
-
-                Log.Error("LOD1 error = " + j);
-
+                groundSurfaces.AddRange(outerCeilingSurfaces);
             }
-            catch (Exception ex)
-            {
 
+            int i = 0;  //counter for ID (if more than one groundSurface, ID gets counter suffix: "_i")
+
+            foreach (var groundSurface in groundSurfaces)
+            {
+                string id = "";
+
+                if (groundSurfaces.Count > 1)
+                {
+                    id = internalID + "_" + i;
+                }
+                else
+                    id = internalID;
+
+                List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(groundSurface.ExteriorPts, groundSurface.InteriorPts, out XYZ normal, gmlCorner);
+
+                if (groundSurface.Facetype == GmlSurface.FaceType.outerCeiling)
+                {
+                    height = ordByHeight.LastOrDefault() - groundSurface.ExteriorPts.First().Z;     //other height than groundSurface because OuterCeiling - ground face is upper than GroundSurface
+                }
+
+                var extrHeight = height / Prop.feetToM;
+
+                try
+                {
+                    Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, -normal, extrHeight);
+
+                    using (Transaction t = new Transaction(doc, "Create lod1 extrusion"))
+                    {
+                        t.Start();
+                        // create direct shape and assign the sphere shape
+                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+
+                        ds.SetShape(new GeometryObject[] { lod1bldg });
+
+                        ds = SetAttributeValues(ds, attributes);
+                        if (partAttributes != null)
+                            ds = SetAttributeValues(ds, partAttributes);
+                        ds.Pinned = true;
+
+                        SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
+
+                        t.Commit();
+                    }
+
+                    error++;
+                }
+                catch (Exception ex)
+                {
+                    logEntries.Add(new BldgLog(Logging.LogType.warning, "Could not calculate LOD1-representation with GroundSurface. Try to calculate Convex Hull instead."));
+                    logEntries.Add(new BldgLog(Logging.LogType.warning, ex.Message));
+
+
+                    //if calculation failed the looplist does not fullfil the requirements for a polygon
+                    //the reason is a wrong stored GroundSurface in the CityGml data
+                    //this is often the case when inner rings are not stored as inner rings but as part of exterior rings with one or more same edges
+                    //in this case the fallback here is to compute the convex hull as an rough approximation of the polygon extent
+
+                    var origExtPts = groundSurface.ExteriorPts;
+
+                    var ptList = new List<Point>();
+
+                    foreach (var pt in origExtPts)
+                    {
+                        var p = new Point(pt.X, pt.Y);
+                        ptList.Add(p);
+                    }
+
+                    var groundHeight = origExtPts.First().Z;
+
+                    var convexHull = ConvexHull.MakeHull(ptList);
+
+                    var exteriorHull = new List<C2BPoint>();
+                    var interiorHull = new List<List<C2BPoint>>();
+
+                    foreach (var vtx in convexHull)
+                    {
+                        exteriorHull.Add(new C2BPoint(vtx.x, vtx.y, groundHeight));
+                    }
+                    exteriorHull.Add(new C2BPoint(convexHull.First().x, convexHull.First().y, groundHeight)); //for closed ring
+
+                    List<CurveLoop> loopListHull = Revit_Build.CreateCurveLoopList(exteriorHull, interiorHull, out XYZ normalHull, gmlCorner);
+
+                    Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopListHull, -normalHull, extrHeight);
+
+                    using (Transaction t = new Transaction(doc, "Create convex hull extrusion"))
+                    {
+                        t.Start();
+                        // create direct shape and assign the sphere shape
+                        DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
+
+                        ds.SetShape(new GeometryObject[] { lod1bldg });
+
+                        ds = SetAttributeValues(ds, attributes);
+                        if (partAttributes != null)
+                            ds = SetAttributeValues(ds, partAttributes);
+                        ds.Pinned = true;
+
+                        SetRevitInternalParameters(internalID, "LOD1 Convex Hull (Fallback from LOD1)", ds);
+
+                        t.Commit();
+                    }
+
+                    errorLod1++;
+                }
+                i++;
             }
         }
 
@@ -391,10 +365,6 @@ namespace City2BIM.RevitBuilder
 
                     facePoints.Add(revPt);
                 }
-                else
-                {
-                    Log.Error("id nicht vorhanden");
-                }
             }
 
             return facePoints;
@@ -408,11 +378,6 @@ namespace City2BIM.RevitBuilder
             double success = 0.0;
             double error = 0.0;
             double all = 0.0;
-
-            var results = new LoggerConfiguration()
-               //.MinimumLevel.Debug()
-               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitErrors.txt", rollingInterval: RollingInterval.Hour)
-               .CreateLogger();
 
             foreach (var building in buildings)
             {
@@ -431,7 +396,7 @@ namespace City2BIM.RevitBuilder
                         catch (Exception ex)
                         {
                             error++;
-                            WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, part.BldgPartId, surface.SurfaceId, surface.Facetype.ToString());
+                            //WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, part.BldgPartId, surface.SurfaceId, surface.Facetype.ToString());
                             continue;
                         }
                     }
@@ -449,14 +414,14 @@ namespace City2BIM.RevitBuilder
                     catch (Exception ex)
                     {
                         error++;
-                        WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, null, surface.SurfaceId, surface.Facetype.ToString());
+                        //WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, null, surface.SurfaceId, surface.Facetype.ToString());
                         continue;
                     }
                 }
             }
             //-------------------
 
-            WriteStatisticToLog(all, success, null, error);
+            //WriteStatisticToLog(all, success, null, error);
 
             //-----------------------
 
@@ -570,7 +535,7 @@ namespace City2BIM.RevitBuilder
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Semantik-Fehler bei " + aName.Name + " Error: " + ex.Message);
+                    //Log.Error("Semantik-Fehler bei " + aName.Name + " Error: " + ex.Message);
                     continue;
                 }
             }

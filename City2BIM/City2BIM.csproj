@@ -100,6 +100,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConvexHull.cs" />
     <Compile Include="FileDialog.cs" />
     <Compile Include="GeorefCalc.cs" />
     <Compile Include="GetGeometry\C2BEdge.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="GmlRep\GmlCodelist.cs" />
     <Compile Include="GmlRep\GmlSurface.cs" />
     <Compile Include="ImportSource.cs" />
+    <Compile Include="Logging.cs" />
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -184,6 +186,7 @@
     <Content Include="img\icon_georef10.png" />
     <Content Include="img\icon_georef20.png" />
     <Content Include="img\icon_georef50.png" />
+    <Content Include="MIConvexHull.xml" />
     <Content Include="NETGeographic.dll" />
   </ItemGroup>
   <ItemGroup>

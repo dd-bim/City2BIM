@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Globalization;
+using System.Windows;
 
 namespace City2BIM.RevitCommands.City2BIM
 {
@@ -72,8 +74,8 @@ namespace City2BIM.RevitCommands.City2BIM
             }
             else
             {
-                bool vLat = double.TryParse(tb_lat.Text, out var lat);
-                bool vLon = double.TryParse(tb_lon.Text, out var lon);
+                bool vLat = double.TryParse(tb_lat.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var lat);
+                bool vLon = double.TryParse(tb_lon.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var lon);
 
                 if (vLat && vLon)
                 {
@@ -106,6 +108,12 @@ namespace City2BIM.RevitCommands.City2BIM
                 else
                     City2BIM_prop.CodelistName = Codelist.none;
             }
+
+            if (check_saveResponse.IsChecked == true)
+                City2BIM_prop.SaveServerResponse = true;
+            else
+                City2BIM_prop.SaveServerResponse = false;
+
             this.Close();
         }
 
@@ -113,6 +121,26 @@ namespace City2BIM.RevitCommands.City2BIM
         {
             tb_lat.IsEnabled = true;
             tb_lon.IsEnabled = true;
+        }
+
+        private void bt_saveResponse_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                //Log.Information("Start of changing directory. Dialogue opened.");
+
+                fbd.RootFolder = Environment.SpecialFolder.Desktop;
+                fbd.Description = "Select folder for CityGML file";
+
+                fbd.ShowNewFolderButton = true;
+
+                var result = fbd.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                   City2BIM_prop.PathResponse = fbd.SelectedPath;
+                }
+            }
         }
     }
 }

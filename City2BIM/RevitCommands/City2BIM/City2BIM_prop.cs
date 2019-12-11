@@ -6,10 +6,12 @@
         private static bool isServerRequest = true;         //default value: true, Server will be called
         private static bool isGeodeticSystem = true;        //default value: true, YXZ coordinate order in geodata preferred
         private static Codelist codelistName = Codelist.none;
+        private static bool saveServerResponse = false;
 
         //user-defined source properties   
         private static string fileUrl = "";
         private static string serverUrl = "https://hosting.virtualcitywfs.de/deutschland_viewer/wfs";
+        private static string pathResponse = System.Environment.CurrentDirectory;
 
         //user-defined extent properties
         private static double extent = 300.0;
@@ -22,6 +24,8 @@
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
         public static double[] ServerCoord { get => serverCoord; set => serverCoord = value; }
         public static Codelist CodelistName { get => codelistName; set => codelistName = value; }
+        public static bool SaveServerResponse { get => saveServerResponse; set => saveServerResponse = value; }
+        public static string PathResponse { get => pathResponse; set => pathResponse = value; }
     }
 
     public enum Codelist { none, adv, sig3d};

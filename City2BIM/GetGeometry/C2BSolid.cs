@@ -13,7 +13,7 @@ namespace City2BIM.GetGeometry
         private Dictionary<string, C2BPlane> _planes = new Dictionary<string, C2BPlane>();
         private List<C2BVertex> _vertices = new List<C2BVertex>();
         private List<C2BEdge> _edges = new List<C2BEdge>();
-        private List<string> logEntries = new List<string>();
+        private List<GmlRep.BldgLog> logEntries;
 
         public List<C2BVertex> Vertices
         {
@@ -33,14 +33,14 @@ namespace City2BIM.GetGeometry
         public List<C2BEdge> Edges { get => _edges; set => _edges = value; }
 
         public Guid InternalID { get => internalID; }
-        public List<string> LogEntries { get => logEntries; set => logEntries = value; }
+        public List<GmlRep.BldgLog> LogEntries { get => logEntries; set => logEntries = value; }
 
         public C2BSolid(string gmlID)
         {
             this.internalID = Guid.NewGuid();
             this.gmlID = gmlID;
-            this.logEntries = new List<string>();
-            this.logEntries.Add("Results of Solid calculation:");
+            this.logEntries = new List<GmlRep.BldgLog>();
+            this.logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "Results of Solid calculation:"));
         }
 
         public void AddPlane(string id, List<C2BPoint> polygon, List<List<C2BPoint>> innerPolygons = null)
@@ -169,7 +169,7 @@ namespace City2BIM.GetGeometry
                     AggregatePlanes(ref similarPlanes, ref ctSimPlanes);
                 }
 
-                logEntries.Add("- Number of Combined Planes = " + ctSimPlanes);
+                logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Number of Combined Planes = " + ctSimPlanes));
             }
 
             RemoveNoCornerVertices();
@@ -584,14 +584,14 @@ namespace City2BIM.GetGeometry
 
             }
 
-            logEntries.Add("- Number of Level Cuts = " + ctLevelCuts);
+            logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Number of Level Cuts = " + ctLevelCuts));
 
             double dMax = 0.0;
 
             if (maxDevLevelCut.Count > 0)
                 dMax = Math.Sqrt(maxDevLevelCut.Max());
 
-            logEntries.Add("- Max deviation of original GML point = " + Math.Round(dMax, 3));
+            logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Max deviation of original GML point = " + Math.Round(dMax, 3)));
 
             #region Split Planes which were not inclued in level cut
 
@@ -741,7 +741,7 @@ namespace City2BIM.GetGeometry
 
             }
 
-            logEntries.Add("- Number of Split of original Surfaces = " + ctSplits);
+            logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Number of Split of original Surfaces = " + ctSplits));
 
         }
 

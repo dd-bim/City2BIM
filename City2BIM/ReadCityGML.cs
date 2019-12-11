@@ -57,10 +57,10 @@ namespace City2BIM
 
                 gmlDoc = client.getFeaturesCircle(City2BIM_prop.ServerCoord[0], City2BIM_prop.ServerCoord[1], City2BIM_prop.Extent, 500, GeoRefSettings.Epsg);
 
-                //Test-Export --> may implement possibility to store CityGML-response from server
-                gmlDoc.Save(@"C:\Users\goerne\Desktop\logs_revit_plugin\server_gmls\" + Math.Round(GeoRefSettings.WgsCoord[0], 3) + "_" + Math.Round(GeoRefSettings.WgsCoord[1], 3) + ".gml");
-
-
+                if (City2BIM_prop.SaveServerResponse)
+                {
+                    gmlDoc.Save(City2BIM_prop.PathResponse + "\\" + Math.Round(City2BIM_prop.ServerCoord[1], 4) + "_" + Math.Round(City2BIM_prop.ServerCoord[0], 4) + ".gml");
+                }
             }
             else
             {
@@ -1006,8 +1006,8 @@ namespace City2BIM
                 //use gml_id as id for building
                 gmlBldg.BldgId = bldg.Attribute(allns["gml"] + "id").Value;
 
-                gmlBldg.LogEntries = new List<string>();
-                gmlBldg.LogEntries.Add("CityGML-Building_ID: " + gmlBldg.BldgId);
+                gmlBldg.LogEntries = new List<BldgLog>();
+                gmlBldg.LogEntries.Add(new BldgLog(Logging.LogType.info, "CityGML-Building_ID: " + gmlBldg.BldgId));
 
                 //read attributes for building (first level, no parts are handled internally in method)
                 gmlBldg.BldgAttributes = new ReadSemValues().ReadAttributeValuesBldg(bldg, attributes, allns);
@@ -1098,7 +1098,7 @@ namespace City2BIM
 
                     partSolid.CalculatePositions();
 
-                    bldg.LogEntries.Add("CityGML-BuildingPart_ID: " + part.BldgPartId);
+                    bldg.LogEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "CityGML-BuildingPart_ID: " + part.BldgPartId));
 
                     bldg.LogEntries.AddRange(partSolid.LogEntries);
 
