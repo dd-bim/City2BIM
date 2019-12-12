@@ -12,11 +12,6 @@ namespace City2BIM.GetGeometry
         private C2BPoint centroid;
         private List<C2BEdge> edges;
 
-        public C2BPlane(string id)
-        {
-            this.id = id;
-        }
-
         public C2BPlane(string id, List<int> vertices, List<List<int>> innerVertices, C2BPoint normal, C2BPoint centroid, List<C2BEdge> edges)
         {
             this.id = id;
@@ -45,7 +40,6 @@ namespace City2BIM.GetGeometry
             this.centroid = _centroid;
             this.edges = _edges;
         }
-
 
         public int[] Vertices
         {

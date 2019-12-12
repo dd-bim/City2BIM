@@ -2,14 +2,15 @@
 using Autodesk.Revit.UI;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
+using City2BIM.Logging;
 using City2BIM.RevitBuilder;
 using City2BIM.RevitCommands.City2BIM;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
+using static City2BIM.LogWriter;
 using C2BPoint = City2BIM.GetGeometry.C2BPoint;
 using C2BSolid = City2BIM.GetGeometry.C2BSolid;
 using XmlAttribute = City2BIM.GetSemantics.XmlAttribute;
@@ -25,11 +26,6 @@ namespace City2BIM
         // The main Execute method (inherited from IExternalCommand) must be public
         public ReadCityGML(Document doc, bool solid)
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\log_plugin" + DateTime.UtcNow.ToFileTimeUtc() + ".txt"/*, rollingInterval: RollingInterval.Day*/)
-                .CreateLogger();
-
             string path = "";
 
             XDocument gmlDoc;
@@ -72,11 +68,8 @@ namespace City2BIM
 
             }
 
-            //-----------------------------------------
-
             #region Namespaces
 
-            Log.Debug("Read all namespaces in CityGML document...");
             //Save all namespaces in Dictionary with shortenings
             this.allns = gmlDoc.Root.Attributes().
                 Where(a => a.IsNamespaceDeclaration).
@@ -87,14 +80,8 @@ namespace City2BIM
             if (this.allns.ContainsKey(""))
             {
                 if (!this.allns.ContainsKey("core"))
-                {
                     this.allns.Add("core", this.allns[""]);     //if namespace has no shortener --> core namespace is used
-
-                    Log.Debug("Replace empty namespace shorterner with core namespace");
-                }
             }
-
-            //------------------------------------------------------------------------------------------------------------------------
 
             #endregion Namespaces
 
@@ -417,7 +404,6 @@ namespace City2BIM
                     continue;
 
                 duplPts.Add(redPolygon[i]);
-                Log.Warning("DUPLICATES: Polygon does have duplicate points. One occurence will be removed.");
             }
             foreach (var dupl in duplPts)
             {
@@ -525,11 +511,6 @@ namespace City2BIM
 
                 if (d13 < 0.001 || d12 < 0.001 || d23 < 0.001)
                     continue;
-
-                Log.Debug(d13.ToString());
-                Log.Debug(d12.ToString());
-                Log.Debug(d23.ToString());
-
 
                 var delPts = from r in rawPolygonSE
                              where (r.X == next.X && r.Y == next.Y && r.Z == next.Z)
@@ -695,11 +676,7 @@ namespace City2BIM
                 #endregion lod1Surfaces
             }
             else
-            {
                 lod = GmlBldg.LodRep.unknown;
-                Log.Error("No lod2 or lod1 detected. No support yet.");
-            }
-
 
             return surfaces;
         }
@@ -769,21 +746,10 @@ namespace City2BIM
 
             //-------------------Check section-----------------------
 
-            //bool extentCheck = false;
-
-            ////Check if within user-defined extent
-            //bool outOfExtent = ptList.Where(c => c.X > ImportSettings.Extent || c.Y > ImportSettings.Extent).Any();
-
-            //if (outOfExtent)
-            //    return null;
-
             //Start = End
 
             if (!CheckSameStartEnd(ptList))
-            {
                 ptList.Add(ptList[0]);
-                Log.Warning("NOT CLOSED: Polygon does not have the same start and end point. The first point will be added at the end. " + surface.SurfaceId);
-            }
 
             List<C2BPoint> pointsRed = ptList;
             //-------------
@@ -792,14 +758,6 @@ namespace City2BIM
 
             if (deletionXY.Count > 0)
             {
-                Log.Warning("INTERSECTION: Dead ends at z Axis plane =  " + deletionXY.Count + " at " + surface.SurfaceId);
-
-                Log.Debug("Pts before deletion XY:");
-                foreach (var pt in pointsRed)
-                {
-                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
-                }
-
                 bool addNewStart = false;
 
                 if (deletionXY.Where(p => p.X == pointsRed[0].X && p.Y == pointsRed[0].Y && p.Z == pointsRed[0].Z).Any())
@@ -807,35 +765,14 @@ namespace City2BIM
 
                 pointsRed = pointsRed.Except(deletionXY).ToList();
 
-                Log.Debug("CT deletion pts= " + deletionXY.Count);
-
                 if (addNewStart)
-                {
                     pointsRed.Add(pointsRed[0]);
-                    Log.Warning("Added new Start point! " + surface.SurfaceId);
-                }
-
-                Log.Debug("Pts after deletion XY:");
-                foreach (var pt in pointsRed)
-                {
-                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
-                }
-
-                Log.Information("----------");
             }
 
             var deletionXZ = CheckForDeadEndAtAxisPlane(pointsRed, 'y');
 
             if (deletionXZ.Count > 0)
             {
-                Log.Warning("INTERSECTION: Dead ends at y Axis plane =  " + deletionXZ.Count + " at " + surface.SurfaceId);
-
-                Log.Debug("Pts before deletion XZ:");
-                foreach (var pt in pointsRed)
-                {
-                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
-                }
-
                 bool addNewStart = false;
 
                 if (deletionXZ.Where(p => p.X == pointsRed[0].X && p.Y == pointsRed[0].Y && p.Z == pointsRed[0].Z).Any())
@@ -843,35 +780,14 @@ namespace City2BIM
 
                 pointsRed = pointsRed.Except(deletionXZ).ToList();
 
-                Log.Debug("CT deletion pts= " + deletionXZ.Count);
-
                 if (addNewStart)
-                {
                     pointsRed.Add(pointsRed[0]);
-                    Log.Warning("Added new Start point! " + surface.SurfaceId);
-                }
-
-                Log.Debug("Pts after deletion XZ:");
-                foreach (var pt in pointsRed)
-                {
-                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
-                }
-
-                Log.Information("----------");
             }
 
             var deletionYZ = CheckForDeadEndAtAxisPlane(pointsRed, 'x');
 
             if (deletionYZ.Count > 0)
             {
-                Log.Warning("INTERSECTION: Dead ends at x Axis plane =  " + deletionYZ.Count + " at " + surface.SurfaceId);
-
-                Log.Debug("Pts before deletion YZ:");
-                foreach (var pt in pointsRed)
-                {
-                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
-                }
-
                 bool addNewStart = false;
 
                 if (deletionYZ.Where(p => p.X == pointsRed[0].X && p.Y == pointsRed[0].Y && p.Z == pointsRed[0].Z).Any())
@@ -879,21 +795,8 @@ namespace City2BIM
 
                 pointsRed = pointsRed.Except(deletionYZ).ToList();
 
-                Log.Debug("CT deletion pts= " + deletionYZ.Count);
-
                 if (addNewStart)
-                {
                     pointsRed.Add(pointsRed[0]);
-                    Log.Warning("Added new Start point! " + surface.SurfaceId);
-                }
-
-                Log.Debug("Pts after deletion YZ:");
-                foreach (var pt in pointsRed)
-                {
-                    Log.Debug(pt.X + " / " + pt.Y + " / " + pt.Z);
-                }
-
-                Log.Information("----------");
             }
 
             //--------------
@@ -902,12 +805,8 @@ namespace City2BIM
             pointsRed = CheckDuplicates(pointsRed);
 
             //Too few points (possibly reduced point list will be investigated because dead end could be removed)
-
             if (!CheckNumberOfPoints(pointsRed))
-            {
                 ptList.Clear();
-                Log.Error("TOO FEW POINTS: Polygon does not have enough points. The Polygon will be ignored at " + surface.SurfaceId);
-            }
 
             //-----------------------------------------------------------
 
@@ -1006,8 +905,8 @@ namespace City2BIM
                 //use gml_id as id for building
                 gmlBldg.BldgId = bldg.Attribute(allns["gml"] + "id").Value;
 
-                gmlBldg.LogEntries = new List<BldgLog>();
-                gmlBldg.LogEntries.Add(new BldgLog(Logging.LogType.info, "CityGML-Building_ID: " + gmlBldg.BldgId));
+                gmlBldg.LogEntries = new List<LogPair>();
+                gmlBldg.LogEntries.Add(new LogPair(LogType.info, "CityGML-Building_ID: " + gmlBldg.BldgId));
 
                 //read attributes for building (first level, no parts are handled internally in method)
                 gmlBldg.BldgAttributes = new ReadSemValues().ReadAttributeValuesBldg(bldg, attributes, allns);
@@ -1098,7 +997,7 @@ namespace City2BIM
 
                     partSolid.CalculatePositions();
 
-                    bldg.LogEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "CityGML-BuildingPart_ID: " + part.BldgPartId));
+                    bldg.LogEntries.Add(new LogPair(LogType.info, "CityGML-BuildingPart_ID: " + part.BldgPartId));
 
                     bldg.LogEntries.AddRange(partSolid.LogEntries);
 
@@ -1108,8 +1007,6 @@ namespace City2BIM
                 }
 
                 bldg.Parts = newParts;
-
-
 
                 newBldgs.Add(bldg);
             }

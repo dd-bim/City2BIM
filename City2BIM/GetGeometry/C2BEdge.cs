@@ -25,6 +25,5 @@ namespace City2BIM.GetGeometry
             this.PlaneId = id;
             this.PlaneNormal = normal;
         }
-
     }
 }

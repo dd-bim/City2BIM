@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Serilog;
 
 namespace City2BIM.GetSemantics
 {
@@ -32,8 +31,8 @@ namespace City2BIM.GetSemantics
 
             foreach(var en in entries)
             {
-                var gmlNames = en.Descendants(allns["gml"] + "name");//.SingleOrDefault();
-                var gmlDescs = en.Descendants(allns["gml"] + "description");//.SingleOrDefault();
+                var gmlNames = en.Descendants(allns["gml"] + "name");
+                var gmlDescs = en.Descendants(allns["gml"] + "description");;
 
                 string code = "", desc = "";
 
@@ -47,17 +46,9 @@ namespace City2BIM.GetSemantics
                     code = gmlNames.SingleOrDefault().Value;
                     desc = gmlDescs.SingleOrDefault().Value;
                 }
-                else //andere Fälle?
-                {
-                    Log.Error("Could not read Codelist. Please specify a new one!");
-                }
-
-                if (kvpCodes.ContainsKey(code))
-                    code = code + "_DUPLICATE";
 
                 kvpCodes.Add(code, desc);
             }
-
             return kvpCodes;
         }
     }

@@ -40,13 +40,5 @@ namespace City2BIM.GetGeometry
         {
             get { return planes; }
         }
-
-        public C2BSolid Solid
-        {
-            get => default(C2BSolid);
-            set
-            {
-            }
-        }
     }
 }

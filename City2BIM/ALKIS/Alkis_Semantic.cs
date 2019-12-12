@@ -1,10 +1,5 @@
 ﻿using City2BIM.GetSemantics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace City2BIM.Alkis
 {

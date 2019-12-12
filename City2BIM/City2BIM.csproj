@@ -117,7 +117,8 @@
     <Compile Include="GmlRep\GmlCodelist.cs" />
     <Compile Include="GmlRep\GmlSurface.cs" />
     <Compile Include="ImportSource.cs" />
-    <Compile Include="Logging.cs" />
+    <Compile Include="Logging\LogWriter.cs" />
+    <Compile Include="Logging\LogPair.cs" />
     <Compile Include="PlugIn.cs" />
     <Compile Include="Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

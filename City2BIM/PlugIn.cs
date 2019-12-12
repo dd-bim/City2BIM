@@ -63,9 +63,15 @@ namespace City2BIM
             btCityGml.AddPushButton(btSurfaces);
             btCityGml.AddPushButton(btSolid);
 
+            var citygmlsetPath =
+                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "citygml_set_32px.png");
+            Uri uriImageCSet = new Uri(citygmlsetPath);
+            BitmapImage largeImageCSet = new BitmapImage(uriImageCSet);
+
             PushButton btCitySettings = panel3.AddItem(new PushButtonData("OpenCityGMLSettings", "Settings",
             thisAssemblyPath, "City2BIM.OpenSettings")) as PushButton;
             btCitySettings.ToolTip = "Import settings for city model.";
+            btCitySettings.LargeImage = largeImageCSet;
 
             //-------------------------------------------------------------------------------------------------
 
@@ -84,6 +90,16 @@ namespace City2BIM
             thisAssemblyPath, "City2BIM.ReadALKIS")) as PushButton;
             buttonAlkis.ToolTip = "Import functionality ALKIS data from NAS-XML files.)";
             buttonAlkis.LargeImage = largeImageA;
+
+            var alkisxmlsetPath =
+                 System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "ALKISset_32px.png");
+            Uri uriImageCAlk = new Uri(alkisxmlsetPath);
+            BitmapImage largeImageCAlk = new BitmapImage(uriImageCAlk);
+
+            PushButton btAlkisSettings = panel4.AddItem(new PushButtonData("OpenALKISSettings", "Settings",
+            thisAssemblyPath, "City2BIM.OpenSettings")) as PushButton;
+            btAlkisSettings.ToolTip = "Import settings for ALKIS data.";
+            btAlkisSettings.LargeImage = largeImageCAlk;
 
             #endregion ALKIS panel
 

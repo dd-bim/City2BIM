@@ -2,10 +2,12 @@
 using City2BIM.GetGeometry;
 using City2BIM.GetSemantics;
 using City2BIM.GmlRep;
+using City2BIM.Logging;
 using City2BIM.RevitCommands.City2BIM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static City2BIM.LogWriter;
 
 namespace City2BIM.RevitBuilder
 {
@@ -39,7 +41,7 @@ namespace City2BIM.RevitBuilder
             double fatalError = 0.0;
             double all = 0.0;
 
-            List<BldgLog> allLogs = new List<BldgLog>();
+            List<LogPair> allLogs = new List<LogPair>();
 
             foreach (var bldg in buildings)
             {
@@ -56,21 +58,21 @@ namespace City2BIM.RevitBuilder
                         }
                         catch (System.Exception ex)
                         {
-                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, "LOD2-Calculation not successful."));
-                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, ex.Message));
+                            bldg.LogEntries.Add(new LogPair(LogType.warning, "LOD2-Calculation not successful."));
+                            bldg.LogEntries.Add(new LogPair(LogType.warning, ex.Message));
 
                             try
                             {
-                                List<BldgLog> lod1Messages = new List<BldgLog>();
+                                List<LogPair> lod1Messages = new List<LogPair>();
 
                                 CreateLOD1Building(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, ref lod1Messages, ref error, ref errorLod1, part.BldgPartAttributes);
                                 bldg.LogEntries.AddRange(lod1Messages);
-                                bldg.LogEntries.Add(new BldgLog(Logging.LogType.info, "LOD1-Representation used."));
+                                bldg.LogEntries.Add(new LogPair(LogType.info, "LOD1-Representation used."));
                             }
                             catch (Exception exx)
                             {
-                                bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, "Fatal error: could not calculate LOD1-representation. No geometry transfered."));
-                                bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, exx.Message));
+                                bldg.LogEntries.Add(new LogPair(LogType.error, "Fatal error: could not calculate LOD1-representation. No geometry transfered."));
+                                bldg.LogEntries.Add(new LogPair(LogType.error, exx.Message));
 
                                 fatalError++;
 
@@ -91,31 +93,31 @@ namespace City2BIM.RevitBuilder
 
                     catch (System.Exception ex)
                     {
-                        bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, "LOD2-Calculation not successful."));
-                        bldg.LogEntries.Add(new BldgLog(Logging.LogType.warning, ex.Message));
+                        bldg.LogEntries.Add(new LogPair(LogType.warning, "LOD2-Calculation not successful."));
+                        bldg.LogEntries.Add(new LogPair(LogType.warning, ex.Message));
 
                         try
                         {
-                            List<BldgLog> lod1Messages = new List<BldgLog>();
+                            List<LogPair> lod1Messages = new List<LogPair>();
 
                             CreateLOD1Building(bldg.BldgSolid.InternalID.ToString(), bldg.BldgSolid, bldg.BldgSurfaces, bldg.BldgAttributes, ref lod1Messages, ref error, ref errorLod1);
                             bldg.LogEntries.AddRange(lod1Messages);
-                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.info, "LOD1-Representation used."));
+                            bldg.LogEntries.Add(new LogPair(LogType.info, "LOD1-Representation used."));
                         }
                         catch (Exception exx)
                         {
-                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, "Fatal error: could not calculate LOD1-representation. No geometry transfered."));
-                            bldg.LogEntries.Add(new BldgLog(Logging.LogType.error, exx.Message));
+                            bldg.LogEntries.Add(new LogPair(LogType.error, "Fatal error: could not calculate LOD1-representation. No geometry transfered."));
+                            bldg.LogEntries.Add(new LogPair(LogType.error, exx.Message));
 
                             fatalError++;
 
                             continue;
                         }
                     }
-                    allLogs.AddRange(bldg.LogEntries);
                 }
+                allLogs.AddRange(bldg.LogEntries);
             }
-            Logging.WriteLogFile(allLogs, all, success, error, errorLod1, fatalError);          
+            WriteLogFile(allLogs, all, success, error, errorLod1, fatalError);          
         }
 
         private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> bldgAttributes, string lod, Dictionary<XmlAttribute, string> partAttributes = null)
@@ -172,7 +174,7 @@ namespace City2BIM.RevitBuilder
             idAttr.Set(guid);
         }
 
-        private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> attributes, ref List<BldgLog> logEntries, ref double error, ref double errorLod1, Dictionary<XmlAttribute, string> partAttributes = null)
+        private void CreateLOD1Building(string internalID, C2BSolid solid, List<GmlSurface> surfaces, Dictionary<XmlAttribute, string> attributes, ref List<LogPair> logEntries, ref double error, ref double errorLod1, Dictionary<XmlAttribute, string> partAttributes = null)
         {
             var ordByHeight = from v in solid.Vertices
                               where v.Position != null
@@ -242,8 +244,8 @@ namespace City2BIM.RevitBuilder
                 }
                 catch (Exception ex)
                 {
-                    logEntries.Add(new BldgLog(Logging.LogType.warning, "Could not calculate LOD1-representation with GroundSurface. Try to calculate Convex Hull instead."));
-                    logEntries.Add(new BldgLog(Logging.LogType.warning, ex.Message));
+                    logEntries.Add(new LogPair(LogType.warning, "Could not calculate LOD1-representation with GroundSurface. Try to calculate Convex Hull instead."));
+                    logEntries.Add(new LogPair(LogType.warning, ex.Message));
 
 
                     //if calculation failed the looplist does not fullfil the requirements for a polygon
@@ -379,6 +381,8 @@ namespace City2BIM.RevitBuilder
             double error = 0.0;
             double all = 0.0;
 
+            List<LogPair> allLogs = new List<LogPair>();
+
             foreach (var building in buildings)
             {
                 foreach (var part in building.Parts)
@@ -396,7 +400,9 @@ namespace City2BIM.RevitBuilder
                         catch (Exception ex)
                         {
                             error++;
-                            //WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, part.BldgPartId, surface.SurfaceId, surface.Facetype.ToString());
+                            building.LogEntries.Add(new LogPair(LogType.error, "Surface transfer not successful at Building Part" +  part.BldgPartId));
+                            building.LogEntries.Add(new LogPair(LogType.error, "Surface info: Id = "  + surface.SurfaceId + ", Type = " + surface.Facetype));
+                            building.LogEntries.Add(new LogPair(LogType.error, "Error message: = " + ex.Message));
                             continue;
                         }
                     }
@@ -414,17 +420,14 @@ namespace City2BIM.RevitBuilder
                     catch (Exception ex)
                     {
                         error++;
-                        //WriteRevitBuildErrorsToLog(results, ex.Message, building.BldgId, null, surface.SurfaceId, surface.Facetype.ToString());
+                        building.LogEntries.Add(new LogPair(LogType.error, "Surface info: Id = " + surface.SurfaceId + ", Type = " + surface.Facetype));
+                        building.LogEntries.Add(new LogPair(LogType.error, "Error message: = " + ex.Message));
                         continue;
                     }
                 }
+                allLogs.AddRange(building.LogEntries);
             }
-            //-------------------
-
-            //WriteStatisticToLog(all, success, null, error);
-
-            //-----------------------
-
+            WriteLogFile(allLogs, all, success, null, null, error);
         }
 
         private void CreateRevitFaceRepresentation(GmlSurface surface, Dictionary<XmlAttribute, string> bldgAttributes, string lod, Dictionary<XmlAttribute, string> partAttributes = null)
@@ -533,9 +536,8 @@ namespace City2BIM.RevitBuilder
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    //Log.Error("Semantik-Fehler bei " + aName.Name + " Error: " + ex.Message);
                     continue;
                 }
             }

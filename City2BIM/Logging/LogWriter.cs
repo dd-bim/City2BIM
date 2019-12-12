@@ -1,16 +1,25 @@
 ﻿using Serilog;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace City2BIM
 {
-    public static class Logging
+    public static class LogWriter
     {
-        public static void WriteLogFile(List<GmlRep.BldgLog> messages, double all, double success, double? error, double? errorLod1, double? fatalError)
+        //public static string LogPath = System.Environment.SpecialFolder.LocalApplicationData.ToString();
+
+        public static void WriteLogFile(List<Logging.LogPair> messages, double all, double success, double? error, double? errorLod1, double? fatalError)
         {
-            Serilog.Core.Logger results = new LoggerConfiguration()
-               //.MinimumLevel.Debug()
-               .WriteTo.File(@"C:\Users\goerne\Desktop\logs_revit_plugin\\RevitInfos_Solids.txt", rollingInterval: RollingInterval.Minute)
-               .CreateLogger();
+            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
+            string name = "Log_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".txt";
+
+            string path = Path.Combine(folder, name);
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            Serilog.Core.Logger results = new LoggerConfiguration().WriteTo.File(path).CreateLogger();
 
             results.Information("Log-Protocol for CityGML-Import to Revit");
             results.Information("--------------------------------------------------");
@@ -30,7 +39,7 @@ namespace City2BIM
 
             if (errorLod1.HasValue)
             {
-                double statErr = (double)error / all * 100;
+                double statErr = (double)errorLod1 / all * 100;
                 results.Warning("Failure rate (LOD1 Fallback, convex hull contour) = " + statErr + " procent = " + errorLod1 + " objects");
             }
 
@@ -68,8 +77,6 @@ namespace City2BIM
                 }
             }
         }
-
         public enum LogType { error, info, warning }
-
     }
 }

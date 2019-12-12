@@ -93,9 +93,6 @@ namespace City2BIM.GetSemantics
         public HashSet<XmlAttribute> GetSchemaAttributes()
         {
             var regAttr = new HashSet<XmlAttribute>();
-
-            //gml:name
-
             regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.gml, "name", XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldgCity));
 
             //-------------
@@ -143,7 +140,6 @@ namespace City2BIM.GetSemantics
             {
                 regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.xal, entry, XmlAttribute.AttrType.stringAttribute, XmlAttribute.AttrHierarchy.bldgCity));
             }
-
             //-----------------
             //core-Modul
 
@@ -161,7 +157,6 @@ namespace City2BIM.GetSemantics
             {
                 regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.core, core.Key, core.Value, XmlAttribute.AttrHierarchy.bldgCity));
             }
-
             return regAttr;
         }
     }

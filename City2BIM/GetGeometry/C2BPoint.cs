@@ -1,9 +1,7 @@
-﻿using Serilog;
-using System;
+﻿using System;
 
 namespace City2BIM.GetGeometry
 {
-
     public class C2BPoint
     {
         public double X, Y, Z;
@@ -65,12 +63,9 @@ namespace City2BIM.GetGeometry
             normal += C2BPoint.CrossProduct(p2, p3);
             normal += C2BPoint.CrossProduct(p3, p1);
 
-            var vecTri = C2BPoint.Normalized(normal);
+            C2BPoint vecTri = C2BPoint.Normalized(normal);
 
-            var diffVec = vecTri - vecNormal;
-
-            //Log.Debug("Plane-Normal:    " + vecNormal.X + " / " + vecNormal.Y + " / " + vecNormal.Z);
-            //Log.Debug("Triangle-Normal: " + vecTri.X + " / " + vecTri.Y + " / " + vecTri.Z);
+            C2BPoint diffVec = vecTri - vecNormal;
 
             if (diffVec.X < 0.2 && diffVec.Y < 0.2 && diffVec.Z < 0.2)
             {
@@ -83,6 +78,5 @@ namespace City2BIM.GetGeometry
         {
             return MagnitudeSq(a - b);
         }
-
     }
 }

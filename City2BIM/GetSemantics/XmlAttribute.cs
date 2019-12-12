@@ -10,7 +10,6 @@
         private AttrHierarchy reference;
 
         private string name;
-        private string description;
 
         public string Name
         {
@@ -61,19 +60,6 @@
             set
             {
                 this.xmlNamespace = value;
-            }
-        }
-
-        public string Description
-        {
-            get
-            {
-                return this.description;
-            }
-
-            set
-            {
-                this.description = value;
             }
         }
 

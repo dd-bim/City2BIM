@@ -1,7 +1,8 @@
-﻿using Serilog;
+﻿using City2BIM.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static City2BIM.LogWriter;
 using static City2BIM.Prop;
 
 namespace City2BIM.GetGeometry
@@ -13,7 +14,7 @@ namespace City2BIM.GetGeometry
         private Dictionary<string, C2BPlane> _planes = new Dictionary<string, C2BPlane>();
         private List<C2BVertex> _vertices = new List<C2BVertex>();
         private List<C2BEdge> _edges = new List<C2BEdge>();
-        private List<GmlRep.BldgLog> logEntries;
+        private List<Logging.LogPair> logEntries;
 
         public List<C2BVertex> Vertices
         {
@@ -27,20 +28,19 @@ namespace City2BIM.GetGeometry
         public Dictionary<string, C2BPlane> Planes
         {
             get { return _planes; }
-
         }
 
         public List<C2BEdge> Edges { get => _edges; set => _edges = value; }
 
         public Guid InternalID { get => internalID; }
-        public List<GmlRep.BldgLog> LogEntries { get => logEntries; set => logEntries = value; }
+        public List<Logging.LogPair> LogEntries { get => logEntries; set => logEntries = value; }
 
         public C2BSolid(string gmlID)
         {
             this.internalID = Guid.NewGuid();
             this.gmlID = gmlID;
-            this.logEntries = new List<GmlRep.BldgLog>();
-            this.logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "Results of Solid calculation:"));
+            this.logEntries = new List<Logging.LogPair>();
+            this.logEntries.Add(new Logging.LogPair(LogType.info, "Results of Solid calculation:"));
         }
 
         public void AddPlane(string id, List<C2BPoint> polygon, List<List<C2BPoint>> innerPolygons = null)
@@ -146,7 +146,6 @@ namespace City2BIM.GetGeometry
                     centroid += polygon[i];
                 }
             }
-
             return verts;
         }
 
@@ -168,13 +167,10 @@ namespace City2BIM.GetGeometry
                 {
                     AggregatePlanes(ref similarPlanes, ref ctSimPlanes);
                 }
-
-                logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Number of Combined Planes = " + ctSimPlanes));
+                logEntries.Add(new LogPair(LogType.info, "- Number of Combined Planes = " + ctSimPlanes));
             }
-
             RemoveNoCornerVertices();
         }
-
 
         /// <summary>
         /// Aggregates polygon planes which are (almost) the same plane
@@ -256,12 +252,8 @@ namespace City2BIM.GetGeometry
 
                                 foreach (var e in Edges)
                                 {
-                                    //logPlanes.Information(e.PlaneId);
-
                                     if (e.PlaneId == currentID1 || e.PlaneId == currentID2)
-                                    {
                                         e.PlaneId = newID;
-                                    }
                                 }
 
                                 Edges[i].PlaneId = null;
@@ -319,13 +311,10 @@ namespace City2BIM.GetGeometry
                                 Planes[plane1.ID].Centroid = pCentr;
                                 Planes[plane1.ID].Normal = pNormal;
                                 Planes[plane1.ID].Vertices = verts.ToArray();
-
                             }
-
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            Log.Error(ex.Message);
                             continue;
                         }
                         break;
@@ -338,7 +327,6 @@ namespace City2BIM.GetGeometry
                 }
             }
         }
-
         private void UpdatePlaneParameters(string planeID, List<int> newVerts, ref C2BPoint planeNormal, ref C2BPoint planeCentroid)
         {
             C2BPoint norm = new C2BPoint(0, 0, 0);
@@ -411,7 +399,6 @@ namespace City2BIM.GetGeometry
             {
                 try
                 {
-
                     #region Level Cut (3 planes - unambiguous)
 
                     if (Vertices[v].Planes.Count == 3)    //optimal wished case --> no danger of non planar curve loops
@@ -557,8 +544,6 @@ namespace City2BIM.GetGeometry
                                 break;
                         }
 
-                        
-
                         Vertices[v].Position = calcPos;
 
                         foreach (string pl in splitPlanes)
@@ -573,25 +558,22 @@ namespace City2BIM.GetGeometry
                     }
 
                     #endregion Level Cut (> 3 planes - ambiguous, further calculations)
-
-
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Log.Error(ex.Message);
                     continue;
                 }
 
             }
 
-            logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Number of Level Cuts = " + ctLevelCuts));
+            logEntries.Add(new LogPair(LogType.info, "- Number of Level Cuts = " + ctLevelCuts));
 
             double dMax = 0.0;
 
             if (maxDevLevelCut.Count > 0)
                 dMax = Math.Sqrt(maxDevLevelCut.Max());
 
-            logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Max deviation of original GML point = " + Math.Round(dMax, 3)));
+            logEntries.Add(new LogPair(LogType.info, "- Max deviation of original GML point = " + Math.Round(dMax, 3)));
 
             #region Split Planes which were not inclued in level cut
 
@@ -613,10 +595,7 @@ namespace City2BIM.GetGeometry
 
                     //in case of triangle, no split is neccessary (3 vertices define unambiguously a plane) 
                     if (ctVerts == 3)
-                    {
-                        Log.Debug("NO SPLIT: Plane is Triangle");
                         continue;
-                    }
 
                     //no matter of number of vertices, at first the first Vertex will be investigated
                     int vtx = vPl.Value.First();
@@ -633,8 +612,6 @@ namespace City2BIM.GetGeometry
                     //no matter of number of vertices where a split should apply: if plane has 4 corners, it could be split like the follow (result 2 triangles)
                     if (ctVerts == 4)
                     {
-                        Log.Debug("SIMPLE, 2 Triangles, at " + gmlID + "_" + sPlane.ID);
-
                         triangleS1[2] = vertOpp;
 
                         int[] triangleS2 = new int[3] { vtx, vertNext, vertOpp };
@@ -653,8 +630,6 @@ namespace City2BIM.GetGeometry
                                 triangleS2[0] = vertBefore;
                                 triangleS2[1] = vertNext;
                                 triangleS2[2] = vertOpp;
-
-                                Log.Information("Split with 2 Trinagles changed!");
                             }
                         }
 
@@ -669,8 +644,6 @@ namespace City2BIM.GetGeometry
                         //if only one split apply, there is a simple division into a triangle and a polygon with n vertices
                         if (vPl.Value.Count == 1)
                         {
-                            Log.Debug("SIMPLE, 1 Triangle, 1 nPolygon, at " + gmlID + "_" + sPlane.ID);
-
                             triangleS1[2] = vertNext;
 
                             int[] polygonS2 = sVerts.Where(s => s != vtx).ToArray();
@@ -687,8 +660,6 @@ namespace City2BIM.GetGeometry
                         //...centroid is outside of polygon
                         else
                         {
-                            Log.Debug("COMPLICATED, nTriangles at centroid, at " + gmlID + "_" + sPlane.ID);
-
                             //new index at end of vertex-list for centroid
                             int indvCen = Vertices.Count;
 
@@ -731,18 +702,13 @@ namespace City2BIM.GetGeometry
                         }
                     }
                     #endregion Split Planes which were not inclued in level cut
-
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Log.Error(ex.Message);
                     continue;
                 }
-
             }
-
-            logEntries.Add(new GmlRep.BldgLog(Logging.LogType.info, "- Number of Split of original Surfaces = " + ctSplits));
-
+            logEntries.Add(new LogPair(LogType.info, "- Number of Split of original Surfaces = " + ctSplits));
         }
 
         private void FindAdjacentIndices(int[] plVertices, int vertex, out int vBefore, out int vNext, out int vOpp)
@@ -793,7 +759,6 @@ namespace City2BIM.GetGeometry
 
             planeNormal = C2BPoint.Normalized(normal);
             center = centroid / verts.Count;
-
         }
 
         private C2BPoint CalculateLevelCut(C2BPlane plane1, C2BPlane plane2, C2BPlane plane3)

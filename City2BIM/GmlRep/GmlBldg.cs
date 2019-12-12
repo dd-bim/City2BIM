@@ -12,7 +12,7 @@ namespace City2BIM.GmlRep
         private List<GmlSurface> bldgSurfaces;
         private C2BSolid bldgSolid;
         private string lod;
-        private List<BldgLog> logEntries;
+        private List<Logging.LogPair> logEntries;
 
         public string BldgId
         {
@@ -80,23 +80,10 @@ namespace City2BIM.GmlRep
         }
 
         public string Lod { get => lod; set => lod = value; }
-        public List<BldgLog> LogEntries { get => logEntries; set => logEntries = value; }
+        public List<Logging.LogPair> LogEntries { get => logEntries; set => logEntries = value; }
         public enum LodRep { LOD1, LOD2, LOD1_Fallback, LOD2_Fallback, unknown }
     }
 
-    public class BldgLog
-    {
-        private Logging.LogType type;
-        private string message;
 
-        public Logging.LogType Type { get => type; set => type = value; }
-        public string Message { get => message; set => message = value; }
-
-        public BldgLog(Logging.LogType type, string message)
-        {
-            this.type = type;
-            this.message = message;
-        }
-    }
     
 }
