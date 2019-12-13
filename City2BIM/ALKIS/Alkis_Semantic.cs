@@ -5,41 +5,41 @@ namespace City2BIM.Alkis
 {
     public static class Alkis_Semantic
     {
-        public static HashSet<XmlAttribute> GetParcelAttributes()
+        public static HashSet<Xml_AttrRep> GetParcelAttributes()
         {
-            var regAttr = new HashSet<XmlAttribute>();
+            var regAttr = new HashSet<Xml_AttrRep>();
 
-            var parcelData = new Dictionary<string, XmlAttribute.AttrType>
+            var parcelData = new Dictionary<string, Xml_AttrRep.AttrType>
             {
-                {"Gemarkung_Land", XmlAttribute.AttrType.stringAttribute },
-                {"Gemarkung_Nummer", XmlAttribute.AttrType.stringAttribute },
-                {"Flurstuecksnummer", XmlAttribute.AttrType.stringAttribute },
-                {"Flurstueckskennzeichen", XmlAttribute.AttrType.stringAttribute },
-                {"Amtliche_Flaeche", XmlAttribute.AttrType.areaAttribute },
-                {"Flurnummer", XmlAttribute.AttrType.intAttribute },
-                {"Flurstuecksfolge", XmlAttribute.AttrType.stringAttribute },
-                {"Abweichender_Rechtszustand", XmlAttribute.AttrType.boolAttribute },
-                {"Zweifelhafter_Flurstuecksnachweis", XmlAttribute.AttrType.boolAttribute },
-                {"Rechtsbehelfsverfahren", XmlAttribute.AttrType.boolAttribute },
-                {"Zeitpunkt_der_Entstehung", XmlAttribute.AttrType.stringAttribute },
-                {"Gemeinde_Land", XmlAttribute.AttrType.stringAttribute },
-                {"Gemeinde_Bezirk", XmlAttribute.AttrType.stringAttribute },
-                {"Gemeinde_Kreis", XmlAttribute.AttrType.stringAttribute },
-                {"Gemeinde", XmlAttribute.AttrType.stringAttribute },
-                {"Gemeindeteil", XmlAttribute.AttrType.stringAttribute },
-                {"Zustaendige_Stelle_Land", XmlAttribute.AttrType.stringAttribute },
-                {"Zustaendige_Stelle", XmlAttribute.AttrType.stringAttribute },
-                {"Eigentuemer_Name_Firma", XmlAttribute.AttrType.stringAttribute },
-                {"Eigentuemer_Vorname", XmlAttribute.AttrType.stringAttribute },
-                {"Eigentuemer_Ort", XmlAttribute.AttrType.stringAttribute },
-                {"Eigentuemer_Plz", XmlAttribute.AttrType.stringAttribute },
-                {"Eigentuemer_Strasse", XmlAttribute.AttrType.stringAttribute },
-                {"Eigentuemer_Hausnummer", XmlAttribute.AttrType.stringAttribute }
+                {"Gemarkung_Land", Xml_AttrRep.AttrType.stringAttribute },
+                {"Gemarkung_Nummer", Xml_AttrRep.AttrType.stringAttribute },
+                {"Flurstuecksnummer", Xml_AttrRep.AttrType.stringAttribute },
+                {"Flurstueckskennzeichen", Xml_AttrRep.AttrType.stringAttribute },
+                {"Amtliche_Flaeche", Xml_AttrRep.AttrType.areaAttribute },
+                {"Flurnummer", Xml_AttrRep.AttrType.intAttribute },
+                {"Flurstuecksfolge", Xml_AttrRep.AttrType.stringAttribute },
+                {"Abweichender_Rechtszustand", Xml_AttrRep.AttrType.boolAttribute },
+                {"Zweifelhafter_Flurstuecksnachweis", Xml_AttrRep.AttrType.boolAttribute },
+                {"Rechtsbehelfsverfahren", Xml_AttrRep.AttrType.boolAttribute },
+                {"Zeitpunkt_der_Entstehung", Xml_AttrRep.AttrType.stringAttribute },
+                {"Gemeinde_Land", Xml_AttrRep.AttrType.stringAttribute },
+                {"Gemeinde_Bezirk", Xml_AttrRep.AttrType.stringAttribute },
+                {"Gemeinde_Kreis", Xml_AttrRep.AttrType.stringAttribute },
+                {"Gemeinde", Xml_AttrRep.AttrType.stringAttribute },
+                {"Gemeindeteil", Xml_AttrRep.AttrType.stringAttribute },
+                {"Zustaendige_Stelle_Land", Xml_AttrRep.AttrType.stringAttribute },
+                {"Zustaendige_Stelle", Xml_AttrRep.AttrType.stringAttribute },
+                {"Eigentuemer_Name_Firma", Xml_AttrRep.AttrType.stringAttribute },
+                {"Eigentuemer_Vorname", Xml_AttrRep.AttrType.stringAttribute },
+                {"Eigentuemer_Ort", Xml_AttrRep.AttrType.stringAttribute },
+                {"Eigentuemer_Plz", Xml_AttrRep.AttrType.stringAttribute },
+                {"Eigentuemer_Strasse", Xml_AttrRep.AttrType.stringAttribute },
+                {"Eigentuemer_Hausnummer", Xml_AttrRep.AttrType.stringAttribute }
             };
 
             foreach (var parcel in parcelData)
             {
-                regAttr.Add(new XmlAttribute(XmlAttribute.AttrNsp.alkis, parcel.Key, parcel.Value, XmlAttribute.AttrHierarchy.parcel));
+                regAttr.Add(new Xml_AttrRep(Xml_AttrRep.AttrNsp.alkis, parcel.Key, parcel.Value, Xml_AttrRep.AttrHierarchy.parcel));
             }
 
             return regAttr;

@@ -15,12 +15,12 @@ namespace City2BIM.Alkis
         private List<C2BPoint[]> segments;
         private List<List<C2BPoint[]>> innerSegments;
         private AXGroup group;
-        private Dictionary<XmlAttribute, string> attributes;
+        private Dictionary<Xml_AttrRep, string> attributes;
 
         public string UsageType { get => usageType; set => usageType = value; }
         public List<C2BPoint[]> Segments { get => segments; set => segments = value; }
         public AXGroup Group { get => group; set => group = value; }
-        public Dictionary<XmlAttribute, string> Attributes { get => attributes; set => attributes = value; }
+        public Dictionary<Xml_AttrRep, string> Attributes { get => attributes; set => attributes = value; }
         public List<List<C2BPoint[]>> InnerSegments { get => innerSegments; set => innerSegments = value; }
     }
 }

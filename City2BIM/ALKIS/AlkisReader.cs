@@ -2,6 +2,7 @@
 using Autodesk.Revit.UI;
 using City2BIM.GetGeometry;
 using City2BIM.RevitBuilder;
+using City2BIM.RevitCommands.NAS2BIM;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,35 +15,6 @@ namespace City2BIM.Alkis
     public class AlkisReader
 
     {
-        public ICollection<Element> SelectAllElements(UIDocument uidoc, Document doc)
-        {
-            FilteredElementCollector allTopos = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
-            ICollection<Element> allToposList = allTopos.ToElements();
-            return allToposList;
-        }
-
-        private double ConvertToRevit(string rawValue)
-        {
-            double val = double.Parse(rawValue, CultureInfo.InvariantCulture);
-            double valUnproj = val / GeoRefSettings.ProjScale;
-            double valUnprojFt = valUnproj * Prop.feetToM;
-
-            return valUnprojFt;
-        }
-
-        private double[] ReadTopoGeom(string[] ssizeTopo)
-        {
-            double[] sizeTopo = new double[4];
-
-            sizeTopo[0] = ConvertToRevit(ssizeTopo[0]);
-            sizeTopo[1] = ConvertToRevit(ssizeTopo[1]);
-
-            sizeTopo[2] = ConvertToRevit(ssizeTopo[2]);
-            sizeTopo[3] = ConvertToRevit(ssizeTopo[3]);
-
-            return sizeTopo;
-        }
-
         public Dictionary<string, XNamespace> allns;
 
         private List<C2BPoint[]> ReadSegments(XElement surfaceExt)
@@ -98,12 +70,12 @@ namespace City2BIM.Alkis
             return segments;
         }
 
-
         public List<string> parcelTypes = new List<string>
         {
             "AX_Flurstueck"
         };
 
+        //may enhance with "AX_Bauteil" --> check before which kind of geometry is transfered (possible overlapping with buildings?)
         public List<string> buildingTypes = new List<string>
         {
             "AX_Gebaeude"
@@ -148,9 +120,8 @@ namespace City2BIM.Alkis
 
         public AlkisReader(Document doc)
         {
-            var import = new City2BIM.FileDialog();
-            string path = import.ImportPath(City2BIM.FileDialog.Data.ALKIS);
-            List<AX_Object> axObjects = new List<AX_Object>();
+            //local file path
+            string path = NAS2BIM_prop.FileUrl;
 
             XDocument xDoc = XDocument.Load(path);
 
@@ -160,6 +131,7 @@ namespace City2BIM.Alkis
                     ToDictionary(g => g.Key, g => g.First());
 
             //read all parcelTypes objects
+            List<AX_Object> axObjects = new List<AX_Object>();
 
             foreach (string axObject in parcelTypes)
             {
@@ -167,8 +139,10 @@ namespace City2BIM.Alkis
 
                 foreach (XElement xmlObj in xmlObjType)
                 {
-                    AX_Object axObj = new AX_Object();
-                    axObj.UsageType = axObject;
+                    AX_Object axObj = new AX_Object
+                    {
+                        UsageType = axObject
+                    };
 
                     XElement extSeg = xmlObj.Descendants(allns["gml"] + "exterior").SingleOrDefault();
                     axObj.Segments = ReadSegments(extSeg);
@@ -194,8 +168,10 @@ namespace City2BIM.Alkis
 
                 foreach (XElement xmlObj in xmlObjType)
                 {
-                    AX_Object axObj = new AX_Object();
-                    axObj.UsageType = axObject;
+                    AX_Object axObj = new AX_Object
+                    {
+                        UsageType = axObject
+                    };
 
                     XElement extSeg = xmlObj.Descendants(allns["gml"] + "exterior").SingleOrDefault();
                     axObj.Segments = ReadSegments(extSeg);
@@ -220,8 +196,10 @@ namespace City2BIM.Alkis
 
                 foreach (XElement xmlObj in xmlObjType)
                 {
-                    AX_Object axObj = new AX_Object();
-                    axObj.UsageType = axObject;
+                    AX_Object axObj = new AX_Object
+                    {
+                        UsageType = axObject
+                    };
 
                     XElement extSeg = xmlObj.Descendants(allns["gml"] + "exterior").SingleOrDefault();
                     axObj.Segments = ReadSegments(extSeg);
@@ -238,8 +216,8 @@ namespace City2BIM.Alkis
 
             //---------------
 
-            var semBuilder = new RevitSemanticBuilder(doc);
-            semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes(), City2BIM.FileDialog.Data.ALKIS);
+            var semBuilder = new Revit_Semantic(doc);
+            semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());
 
             var geomBuilder = new RevitAlkisBuilder(doc);
             geomBuilder.CreateTopo(axObjects);

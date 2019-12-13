@@ -28,9 +28,9 @@ namespace City2BIM.Alkis
             return child.Value;
         }
 
-        private XDocument xDoc;
-        private XElement Dienststelle;
-        private Dictionary<string, XNamespace> nsp;
+        private readonly XDocument xDoc;
+        private readonly XElement Dienststelle;
+        private readonly Dictionary<string, XNamespace> nsp;
 
         public Alkis_Sem_Reader(XDocument xDoc, Dictionary<string, XNamespace> allns)
         {
@@ -45,9 +45,9 @@ namespace City2BIM.Alkis
             }
         }
 
-        public Dictionary<XmlAttribute, string> ReadAttributeValuesParcel(XElement p, HashSet<XmlAttribute> attributes)
+        public Dictionary<Xml_AttrRep, string> ReadAttributeValuesParcel(XElement p, HashSet<Xml_AttrRep> attributes)
         {
-            var kvp = new Dictionary<XmlAttribute, string>();
+            var kvp = new Dictionary<Xml_AttrRep, string>();
 
             //Gemarkung
 

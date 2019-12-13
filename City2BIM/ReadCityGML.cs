@@ -13,15 +13,15 @@ using System.Xml.Linq;
 using static City2BIM.LogWriter;
 using C2BPoint = City2BIM.GetGeometry.C2BPoint;
 using C2BSolid = City2BIM.GetGeometry.C2BSolid;
-using XmlAttribute = City2BIM.GetSemantics.XmlAttribute;
+using Xml_AttrRep = City2BIM.GetSemantics.Xml_AttrRep;
 
 namespace City2BIM
 {
     public class ReadCityGML
     {
         private C2BPoint lowerCornerPt;
-        private Dictionary<string, XNamespace> allns;
-        private HashSet<XmlAttribute> attributes = new HashSet<XmlAttribute>();
+        private readonly Dictionary<string, XNamespace> allns;
+        private HashSet<Xml_AttrRep> attributes = new HashSet<Xml_AttrRep>();
 
         // The main Execute method (inherited from IExternalCommand) must be public
         public ReadCityGML(Document doc, bool solid)
@@ -92,30 +92,33 @@ namespace City2BIM
 
             if (!sameXY || !sameHeight)
             {
-                TaskDialog crsDialog = new TaskDialog("Warning");
-                crsDialog.AllowCancellation = true;
+                using (TaskDialog crsDialog = new TaskDialog("Warning")
+                {
+                    AllowCancellation = true,
 
-                crsDialog.MainInstruction = "Different CRS in input file and Georef settings detected!";
+                    MainInstruction = "Different CRS in input file and Georef settings detected!"
+                })
+                {
+                    string messageXY = "There are different CRS for the XY-plane.";
+                    string messageHeight = "There are different CRS for the Elevation";
+                    string messageDecision = "Press OK to ignore and continue Import or cancel for checking Georef settings.";
 
-                string messageXY = "There are different CRS for the XY-plane.";
-                string messageHeight = "There are different CRS for the Elevation";
-                string messageDecision = "Press OK to ignore and continue Import or cancel for checking Georef settings.";
+                    if (!sameXY && !sameHeight)
+                        crsDialog.MainContent = messageXY + "\r\n" + messageHeight + "\r\n" + messageDecision;
 
-                if (!sameXY && !sameHeight)
-                    crsDialog.MainContent = messageXY + "\r\n" + messageHeight + "\r\n" + messageDecision;
+                    if (!sameXY && sameHeight)
+                        crsDialog.MainContent = messageXY + "\r\n" + messageDecision;
 
-                if (!sameXY && sameHeight)
-                    crsDialog.MainContent = messageXY + "\r\n" + messageDecision;
+                    if (sameXY && !sameHeight)
+                        crsDialog.MainContent = messageHeight + "\r\n" + messageDecision;
 
-                if (sameXY && !sameHeight)
-                    crsDialog.MainContent = messageHeight + "\r\n" + messageDecision;
+                    crsDialog.CommonButtons = TaskDialogCommonButtons.Ok | TaskDialogCommonButtons.Cancel;
 
-                crsDialog.CommonButtons = TaskDialogCommonButtons.Ok | TaskDialogCommonButtons.Cancel;
+                    var result = crsDialog.Show();
 
-                var result = crsDialog.Show();
-
-                if (result == TaskDialogResult.Cancel)
-                    continueImport = false;
+                    if (result == TaskDialogResult.Cancel)
+                        continueImport = false;
+                }
             }
 
             if (continueImport)
@@ -128,7 +131,7 @@ namespace City2BIM
                     gmlBuildings = CalculateSolids(gmlBuildings);
                 }
                 //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-                RevitGeometryBuilder cityModel = new RevitGeometryBuilder(doc, gmlBuildings, this.lowerCornerPt/*, swapNE*/);
+                RevitCityBuilder cityModel = new RevitCityBuilder(doc, gmlBuildings, this.lowerCornerPt/*, swapNE*/);
 
                 //Parameter für Revit-Kategorie erstellen
                 //nach ausgewählter Methode (Solids oder Flächen) Parameter an zugehörige Kategorien übergeben
@@ -136,9 +139,9 @@ namespace City2BIM
                 // TO DO: Logik für Parameter File -Auswahl oder Location
 
                 //erstellt Revit-seitig die Attribute (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-                RevitSemanticBuilder citySem = new RevitSemanticBuilder(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
+                Revit_Semantic citySem = new Revit_Semantic(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
 
-                citySem.CreateParameters(attributes, FileDialog.Data.CityGML); //erstellt Shared Parameters für Kategorie Umgebung
+                citySem.CreateParameters(attributes); //erstellt Shared Parameters für Kategorie Umgebung
 
                 if (solid)
                 {
@@ -163,7 +166,6 @@ namespace City2BIM
         {
             var envelope = gmlDoc.Descendants(this.allns["gml"] + "Envelope").FirstOrDefault();
 
-            var attr = envelope.Attributes();
             var srsName = envelope.Attribute("srsName");
             string gmlCRS = srsName.Value;
 
@@ -343,7 +345,7 @@ namespace City2BIM
             var pointsSeperated = pointString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var polygonVertices = new List<C2BPoint>();
 
-            for (int i = 0; i < pointsSeperated.Length; i = i + 3)
+            for (int i = 0; i < pointsSeperated.Length; i += 3)
             {
                 var coord = SplitCoordinate(new string[] { pointsSeperated[i], pointsSeperated[i + 1], pointsSeperated[i + 2] }, lowerCorner);
 
@@ -533,18 +535,18 @@ namespace City2BIM
             return new C2BPoint(axis0 - lowerCorner.X, axis1 - lowerCorner.Y, z);
         }
 
-        private List<GmlSurface> ReadSurfaces(XElement bldgEl, HashSet<XmlAttribute> attributes, out GmlBldg.LodRep lod)
+        private List<CityGml_Surface> ReadSurfaces(XElement bldgEl, HashSet<Xml_AttrRep> attributes, out CityGml_Bldg.LodRep lod)
         {
             var bldgParts = bldgEl.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
 
-            var surfaces = new List<GmlSurface>();
+            var surfaces = new List<CityGml_Surface>();
 
             bool poly = bldg.Descendants().Where(l => l.Name.LocalName.Contains("Polygon")).Any();
 
             if (!poly)                  //no polygons --> directly return (e.g. Buildings with Parts but no geometry at building level)
             {
-                lod = GmlBldg.LodRep.unknown;
+                lod = CityGml_Bldg.LodRep.unknown;
                 return surfaces;
             }
             bool lod2 = bldg.DescendantsAndSelf().Where(l => l.Name.LocalName.Contains("lod2")).Count() > 0;
@@ -552,7 +554,7 @@ namespace City2BIM
 
             if (lod2)
             {
-                lod = GmlBldg.LodRep.LOD2;
+                lod = CityGml_Bldg.LodRep.LOD2;
 
                 #region WallSurfaces
 
@@ -560,7 +562,7 @@ namespace City2BIM
 
                 foreach (var wall in lod2Walls)
                 {
-                    List<GmlSurface> wallSurface = ReadSurfaceType(bldgEl, wall, GmlSurface.FaceType.wall);
+                    List<CityGml_Surface> wallSurface = ReadSurfaceType(wall, CityGml_Surface.FaceType.wall);
                     if (wallSurface == null)
                         return null;
 
@@ -575,7 +577,7 @@ namespace City2BIM
 
                 foreach (var roof in lod2Roofs)
                 {
-                    List<GmlSurface> roofSurface = ReadSurfaceType(bldgEl, roof, GmlSurface.FaceType.roof);
+                    List<CityGml_Surface> roofSurface = ReadSurfaceType(roof, CityGml_Surface.FaceType.roof);
                     surfaces.AddRange(roofSurface);
                 }
 
@@ -587,7 +589,7 @@ namespace City2BIM
 
                 foreach (var ground in lod2Grounds)
                 {
-                    List<GmlSurface> groundSurface = ReadSurfaceType(bldgEl, ground, GmlSurface.FaceType.ground);
+                    List<CityGml_Surface> groundSurface = ReadSurfaceType(ground, CityGml_Surface.FaceType.ground);
                     surfaces.AddRange(groundSurface);
                 }
 
@@ -599,7 +601,7 @@ namespace City2BIM
 
                 foreach (var closure in lod2Closures)
                 {
-                    List<GmlSurface> closureSurface = ReadSurfaceType(bldgEl, closure, GmlSurface.FaceType.closure);
+                    List<CityGml_Surface> closureSurface = ReadSurfaceType(closure, CityGml_Surface.FaceType.closure);
                     surfaces.AddRange(closureSurface);
                 }
 
@@ -611,7 +613,7 @@ namespace City2BIM
 
                 foreach (var ceiling in lod2OuterCeiling)
                 {
-                    List<GmlSurface> outerCeilingSurface = ReadSurfaceType(bldgEl, ceiling, GmlSurface.FaceType.outerCeiling);
+                    List<CityGml_Surface> outerCeilingSurface = ReadSurfaceType(ceiling, CityGml_Surface.FaceType.outerCeiling);
                     surfaces.AddRange(outerCeilingSurface);
                 }
 
@@ -623,7 +625,7 @@ namespace City2BIM
 
                 foreach (var floor in lod2OuterFloor)
                 {
-                    List<GmlSurface> outerFloorSurface = ReadSurfaceType(bldgEl, floor, GmlSurface.FaceType.outerFloor);
+                    List<CityGml_Surface> outerFloorSurface = ReadSurfaceType(floor, CityGml_Surface.FaceType.outerFloor);
                     surfaces.AddRange(outerFloorSurface);
                 }
 
@@ -633,7 +635,7 @@ namespace City2BIM
             {
                 #region lod1Surfaces
 
-                lod = GmlBldg.LodRep.LOD1;
+                lod = CityGml_Bldg.LodRep.LOD1;
 
                 //one occurence per building
                 var lod1Rep = bldg.DescendantsAndSelf(this.allns["bldg"] + "lod1Solid").FirstOrDefault();
@@ -648,7 +650,7 @@ namespace City2BIM
 
                     for (var i = 0; i < polys.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
                     {
-                        var surface = new GmlSurface();
+                        var surface = new CityGml_Surface();
 
                         var faceID = polys[i].Attribute(allns["gml"] + "id").Value;
 
@@ -664,8 +666,8 @@ namespace City2BIM
                             }
                         }
 
-                        surface.Facetype = GmlSurface.FaceType.unknown;
-                        surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(polys[i], attributes, GmlSurface.FaceType.unknown);
+                        surface.Facetype = CityGml_Surface.FaceType.unknown;
+                        surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(polys[i], attributes, CityGml_Surface.FaceType.unknown);
 
                         var surfacePl = ReadSurfaceData(polys[i], surface);
 
@@ -676,20 +678,20 @@ namespace City2BIM
                 #endregion lod1Surfaces
             }
             else
-                lod = GmlBldg.LodRep.unknown;
+                lod = CityGml_Bldg.LodRep.unknown;
 
             return surfaces;
         }
 
-        private List<GmlSurface> ReadSurfaceType(XElement bldg, XElement gmlSurface, GmlSurface.FaceType type)
+        private List<CityGml_Surface> ReadSurfaceType(XElement gmlSurface, CityGml_Surface.FaceType type)
         {
-            List<GmlSurface> polyList = new List<GmlSurface>();
+            List<CityGml_Surface> polyList = new List<CityGml_Surface>();
 
             var polysR = gmlSurface.Descendants(this.allns["gml"] + "Polygon").ToList();
 
             for (var i = 0; i < polysR.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
             {
-                var surface = new GmlSurface();
+                var surface = new CityGml_Surface();
 
                 var faceID = polysR[i].Attribute(allns["gml"] + "id");
 
@@ -713,12 +715,14 @@ namespace City2BIM
         /// </summary>
         /// <param name="poly">GML Polygon element</param>
         /// <returns></returns>
-        private GmlSurface ReadSurfaceData(XElement poly, GmlSurface rawFace)
+        private CityGml_Surface ReadSurfaceData(XElement poly, CityGml_Surface rawFace)
         {
-            var surface = new GmlSurface();
-            surface.SurfaceId = rawFace.SurfaceId;
-            surface.SurfaceAttributes = rawFace.SurfaceAttributes;
-            surface.Facetype = rawFace.Facetype;
+            var surface = new CityGml_Surface
+            {
+                SurfaceId = rawFace.SurfaceId,
+                SurfaceAttributes = rawFace.SurfaceAttributes,
+                Facetype = rawFace.Facetype
+            };
 
             #region ExteriorPolygon
 
@@ -861,7 +865,7 @@ namespace City2BIM
             return surface;
         }
 
-        public List<GmlBldg> ReadGmlData(XDocument gmlDoc/*, DxfVisualizer dxf*/)
+        public List<CityGml_Bldg> ReadGmlData(XDocument gmlDoc/*, DxfVisualizer dxf*/)
         {
             #region LowerCorner
 
@@ -879,13 +883,11 @@ namespace City2BIM
 
             //Read all semantic attributes first:
             //Loop over all buildings, parameter list in Revit needs consistent parameters for object types
-            var sem = new ReadSemAttributes();
-
             //first of all regular schema attributes (inherited by parsing of XML schema for core and bldg, standard specific)
-            this.attributes = sem.GetSchemaAttributes();
+            this.attributes = City_Semantic.GetSchemaAttributes();
 
             //secondly add generic attributes (file specific)
-            var genAttr = sem.ReadGenericAttributes(gmlBuildings, this.allns);
+            var genAttr = City_Semantic.ReadGenericAttributes(gmlBuildings, this.allns);
 
             //union for consistent attribute list
             this.attributes.UnionWith(genAttr);
@@ -896,22 +898,24 @@ namespace City2BIM
             #region BuildingInstances
 
             //set up of individual building elements for overall list
-            var gmlBldgs = new List<GmlBldg>();
+            var gmlBldgs = new List<CityGml_Bldg>();
 
             foreach (var bldg in gmlBuildings)
             {
                 //create instance of GmlBldg
-                var gmlBldg = new GmlBldg();
-                //use gml_id as id for building
-                gmlBldg.BldgId = bldg.Attribute(allns["gml"] + "id").Value;
+                var gmlBldg = new CityGml_Bldg
+                {
+                    //use gml_id as id for building
+                    BldgId = bldg.Attribute(allns["gml"] + "id").Value,
 
-                gmlBldg.LogEntries = new List<LogPair>();
+                    LogEntries = new List<LogPair>()
+                };
                 gmlBldg.LogEntries.Add(new LogPair(LogType.info, "CityGML-Building_ID: " + gmlBldg.BldgId));
 
                 //read attributes for building (first level, no parts are handled internally in method)
                 gmlBldg.BldgAttributes = new ReadSemValues().ReadAttributeValuesBldg(bldg, attributes, allns);
 
-                var surfaces = new List<GmlSurface>();
+                var surfaces = new List<CityGml_Surface>();
 
                 surfaces = ReadSurfaces(bldg, attributes, out var lod);
 
@@ -921,20 +925,21 @@ namespace City2BIM
                 //investigation of building parts
                 var gmlBuildingParts = bldg.Descendants(this.allns["bldg"] + "BuildingPart");    //in LOD1 und LOD2 possible
 
-                var parts = new List<GmlBldgPart>();
+                var parts = new List<CityGml_BldgPart>();
 
                 foreach (var part in gmlBuildingParts)
                 {
                     //create instace for building part
-                    var gmlBldgPart = new GmlBldgPart();
+                    var gmlBldgPart = new CityGml_BldgPart
+                    {
+                        //use gml_id for building part
+                        BldgPartId = part.Attribute(allns["gml"] + "id").Value,
 
-                    //use gml_id for building part
-                    gmlBldgPart.BldgPartId = part.Attribute(allns["gml"] + "id").Value;
+                        //read attributes for building part
+                        BldgPartAttributes = new ReadSemValues().ReadAttributeValuesBldg(part, attributes, allns)
+                    };
 
-                    //read attributes for building part
-                    gmlBldgPart.BldgPartAttributes = new ReadSemValues().ReadAttributeValuesBldg(part, attributes, allns);
-
-                    var partSurfaces = new List<GmlSurface>();
+                    var partSurfaces = new List<CityGml_Surface>();
 
                     partSurfaces = ReadSurfaces(part, attributes, out var lodP);
 
@@ -955,9 +960,9 @@ namespace City2BIM
             return gmlBldgs;
         }
 
-        public List<GmlBldg> CalculateSolids(List<GmlBldg> bldgs)
+        public List<CityGml_Bldg> CalculateSolids(List<CityGml_Bldg> bldgs)
         {
-            var newBldgs = new List<GmlBldg>();
+            var newBldgs = new List<CityGml_Bldg>();
 
             foreach (var bldg in bldgs)
             {
@@ -981,7 +986,7 @@ namespace City2BIM
 
                 var parts = bldg.Parts;
 
-                var newParts = new List<GmlBldgPart>();
+                var newParts = new List<CityGml_BldgPart>();
 
                 foreach (var part in parts)
                 {

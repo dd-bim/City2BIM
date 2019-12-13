@@ -1,5 +1,5 @@
 ﻿using Autodesk.Revit.DB;
-
+using City2BIM.RevitBuilder;
 
 namespace City2BIM
 {
@@ -33,16 +33,16 @@ namespace City2BIM
 
 
             //Site location
-            WgsCoord[0] = siteLoc.Latitude * Prop.radToDeg;
-            WgsCoord[1] = siteLoc.Longitude * Prop.radToDeg;
+            WgsCoord[0] = siteLoc.Latitude * Revit_Prop.radToDeg;
+            WgsCoord[1] = siteLoc.Longitude * Revit_Prop.radToDeg;
 
             //project location
-            ProjCoord[1] = pbpLoc.EastWest * Prop.feetToM;
-            ProjCoord[0] = pbpLoc.NorthSouth * Prop.feetToM;
-            ProjElevation = pbpLoc.Elevation * Prop.feetToM;
+            ProjCoord[1] = pbpLoc.EastWest * Revit_Prop.feetToM;
+            ProjCoord[0] = pbpLoc.NorthSouth * Revit_Prop.feetToM;
+            ProjElevation = pbpLoc.Elevation * Revit_Prop.feetToM;
 
             //True North
-            ProjAngle = pbpLoc.Angle * Prop.radToDeg;
+            ProjAngle = pbpLoc.Angle * Revit_Prop.radToDeg;
 
             var scale = geoInfo.LookupParameter("Scale");
             if (scale != null)
