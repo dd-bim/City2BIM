@@ -1,4 +1,4 @@
-﻿using City2BIM.GetSemantics;
+﻿using City2BIM.Semantic;
 using System.Collections.Generic;
 
 namespace City2BIM.Alkis

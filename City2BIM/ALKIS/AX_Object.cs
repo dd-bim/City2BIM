@@ -1,5 +1,5 @@
-﻿using City2BIM.GetGeometry;
-using City2BIM.GetSemantics;
+﻿using City2BIM.Geometry;
+using City2BIM.Semantic;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>City2RVT</RootNamespace>
+    <AssemblyName>City2RVT</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="City2BIM, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>obj\Debug\City2BIM.dll</HintPath>
+    </Reference>
+    <Reference Include="GeoJSON.Net">
+      <HintPath>..\City2BIM\bin\Release\GeoJSON.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\City2BIM\bin\Release\NETGeographic.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RevitAPI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\City2BIM\bin\Release\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Calc\ConvexHull.cs" />
+    <Compile Include="Calc\GeorefCalc.cs" />
+    <Compile Include="Calc\UTMcalc.cs" />
+    <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
+    <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
+    <Compile Include="Reader\ReadALKIS.cs" />
+    <Compile Include="Reader\ReadCityGML.cs" />
+    <Compile Include="Reader\FileDialog.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reader\ReadTerrain.cs" />
+    <Compile Include="Builder\RevitAlkisBuilder.cs" />
+    <Compile Include="Builder\RevitCityBuilder.cs" />
+    <Compile Include="Builder\RevitTopoSurfaceBuilder.cs" />
+    <Compile Include="Builder\Revit_Build.cs" />
+    <Compile Include="Prop_Revit.cs" />
+    <Compile Include="Builder\Revit_Semantic.cs" />
+    <Compile Include="GUI\City2BIM\Wpf_CityGML_settings.xaml.cs">
+      <DependentUpon>Wpf_CityGML_settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\City2BIM\Cmd_OpenSettings.cs" />
+    <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLFaces.cs" />
+    <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLSolids.cs" />
+    <Compile Include="GUI\DTM2BIM\Cmd_ReadTerrainXYZ.cs" />
+    <Compile Include="GUI\Georeferencing\Cmd_GeoRefUI.cs" />
+    <Compile Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml.cs">
+      <DependentUpon>Wpf_GeoRef_Form.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\IFCExport\Cmd_ExportIFC.cs" />
+    <Compile Include="GUI\NAS2BIM\Prop_NAS_settings.cs" />
+    <Compile Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml.cs">
+      <DependentUpon>Wpf_NAS_settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NAS2BIM\Cmd_OpenALKISSettings.cs" />
+    <Compile Include="GUI\NAS2BIM\Cmd_ReadALKIS.cs" />
+    <Compile Include="GUI\UI_PlugIn.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GUI\BIM2City\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Geographic.dll" />
+    <Content Include="GUI\Georeferencing\img\Georef_96dpi.png" />
+    <Content Include="GUI\Georeferencing\img\icon_georef10.png" />
+    <Content Include="GUI\Georeferencing\img\icon_georef20.png" />
+    <Content Include="GUI\Georeferencing\img\icon_georef50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="egm2008.egm" />
+    <None Include="egm2008.egm.cof" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

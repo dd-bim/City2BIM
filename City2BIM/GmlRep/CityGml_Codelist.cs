@@ -1101,5 +1101,8 @@ namespace City2BIM.GmlRep
             { "5000", "Mischform" },
             { "9999", "Sonstiges" }
         };
+
+        public enum Codelist { none, adv, sig3d };
+
     }
 }

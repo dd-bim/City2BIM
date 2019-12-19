@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using City2BIM.GetGeometry;
-using City2BIM.GetSemantics;
+using City2BIM.Geometry;
+using City2BIM.Semantic;
 
 namespace City2BIM.GmlRep
 {

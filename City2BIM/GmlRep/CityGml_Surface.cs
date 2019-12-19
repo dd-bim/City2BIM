@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using City2BIM.GetGeometry;
-using City2BIM.GetSemantics;
+using City2BIM.Geometry;
+using City2BIM.Semantic;
 
 namespace City2BIM.GmlRep
 {

@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("City2BIM")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Library for importing CityGML and Alkis data for the use for BIM plugins for Revit or for IFC")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Dresden, Faculty of Applied Sciences")]
 [assembly: AssemblyProduct("City2BIM")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]

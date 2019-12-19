@@ -1,11 +1,9 @@
 ﻿using City2BIM.Logging;
-using City2BIM.RevitCommands.City2BIM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static City2BIM.LogWriter;
 
-namespace City2BIM.GetGeometry
+namespace City2BIM.Geometry
 {
     public class C2BSolid
     {
@@ -39,8 +37,10 @@ namespace City2BIM.GetGeometry
         {
             this.internalID = Guid.NewGuid();
             this.gmlID = gmlID;
-            this.logEntries = new List<Logging.LogPair>();
-            this.logEntries.Add(new Logging.LogPair(LogType.info, "Results of Solid calculation:"));
+            this.logEntries = new List<Logging.LogPair>
+            {
+                new Logging.LogPair(LogType.info, "Results of Solid calculation:")
+            };
         }
 
         public void AddPlane(string id, List<C2BPoint> polygon, List<List<C2BPoint>> innerPolygons = null)
@@ -63,7 +63,7 @@ namespace City2BIM.GetGeometry
 
             for (var v = 0; v < extVerts.Count; v++)
             {
-                int beforeInt = 0;
+                int beforeInt;
 
                 if (v == 0)
                     beforeInt = extVerts.Last();
@@ -689,7 +689,7 @@ namespace City2BIM.GetGeometry
                             //add the new Vertex to Solid.Vertices-List
                             Vertices.Add(vCen);
 
-                            ctSplits = ctSplits + indvCen;
+                            ctSplits += indvCen;
                         }
                     }
 
@@ -773,7 +773,7 @@ namespace City2BIM.GetGeometry
 
         private C2BPoint CalculateLevelCut(C2BPlane plane1, C2BPlane plane2, C2BPlane plane3)
         {
-            double determinant = 0;
+            double determinant;
             determinant = C2BPoint.ScalarProduct(plane1.Normal, C2BPoint.CrossProduct(plane2.Normal, plane3.Normal));
 
             if (Math.Abs(determinant) > 1.0E-8)

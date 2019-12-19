@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using City2BIM.GetGeometry;
-using City2BIM.GetSemantics;
+using City2BIM.Geometry;
+using City2BIM.Semantic;
 
 namespace City2BIM.GmlRep
 {
@@ -53,7 +53,7 @@ namespace City2BIM.GmlRep
 
         public string Lod { get => lod; set => lod = value; }
 
-        internal List<CityGml_Surface> PartSurfaces
+        public List<CityGml_Surface> PartSurfaces
         {
             get
             {

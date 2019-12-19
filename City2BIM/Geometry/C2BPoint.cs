@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace City2BIM.GetGeometry
+namespace City2BIM.Geometry
 {
     public class C2BPoint
     {

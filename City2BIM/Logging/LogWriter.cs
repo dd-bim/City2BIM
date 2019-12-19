@@ -3,13 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace City2BIM
+namespace City2BIM.Logging
 {
     public static class LogWriter
     {
-        //public static string LogPath = System.Environment.SpecialFolder.LocalApplicationData.ToString();
-
-        public static void WriteLogFile(List<Logging.LogPair> messages, double all, double success, double? error, double? errorLod1, double? fatalError)
+        public static void WriteLogFile(List<LogPair> messages, double all, double success, double? error, double? errorLod1, double? fatalError)
         {
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
             string name = "Log_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".txt";
@@ -77,6 +75,6 @@ namespace City2BIM
                 }
             }
         }
-        public enum LogType { error, info, warning }
+
     }
 }

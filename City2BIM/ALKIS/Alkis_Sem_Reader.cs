@@ -1,13 +1,29 @@
-﻿using City2BIM.GetSemantics;
+﻿using City2BIM.Semantic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-
 
 namespace City2BIM.Alkis
 {
     public class Alkis_Sem_Reader
     {
+        private readonly XDocument xDoc;
+        private readonly XElement Dienststelle;
+        private readonly Dictionary<string, XNamespace> nsp;
+
+        public Alkis_Sem_Reader(XDocument xDoc, Dictionary<string, XNamespace> allns)
+        {
+            this.xDoc = xDoc;
+            this.nsp = allns;
+
+            XElement dienstParent = xDoc.Descendants(nsp[""] + "AX_Dienststelle").FirstOrDefault();
+
+            if (dienstParent != null)
+            {
+                this.Dienststelle = dienstParent.Descendants(nsp[""] + "AX_Dienststelle_Schluessel").FirstOrDefault();
+            }
+        }
+
         private XElement GetXmlParent(XElement parcel, string tagName)
         {
             var child = parcel.Descendants(nsp[""] + tagName).FirstOrDefault();
@@ -26,23 +42,6 @@ namespace City2BIM.Alkis
                 return "";
 
             return child.Value;
-        }
-
-        private readonly XDocument xDoc;
-        private readonly XElement Dienststelle;
-        private readonly Dictionary<string, XNamespace> nsp;
-
-        public Alkis_Sem_Reader(XDocument xDoc, Dictionary<string, XNamespace> allns)
-        {
-            this.xDoc = xDoc;
-            this.nsp = allns;
-
-            XElement dienstParent = xDoc.Descendants(nsp[""] + "AX_Dienststelle").FirstOrDefault();
-
-            if (dienstParent != null)
-            {
-                this.Dienststelle = dienstParent.Descendants(nsp[""] + "AX_Dienststelle_Schluessel").FirstOrDefault();
-            }
         }
 
         public Dictionary<Xml_AttrRep, string> ReadAttributeValuesParcel(XElement p, HashSet<Xml_AttrRep> attributes)
