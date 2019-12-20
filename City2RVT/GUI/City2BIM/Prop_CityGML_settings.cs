@@ -1,4 +1,6 @@
 ﻿using City2BIM.GmlRep;
+using System;
+using System.IO;
 
 namespace City2RVT.GUI
 {
@@ -13,7 +15,7 @@ namespace City2RVT.GUI
         //user-defined source properties   
         private static string fileUrl = "";
         private static string serverUrl = "https://hosting.virtualcitywfs.de/deutschland_viewer/wfs";
-        private static string pathResponse = System.Environment.CurrentDirectory;
+        private static string pathResponse = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
 
         //user-defined extent properties
         private static double extent = 300.0;

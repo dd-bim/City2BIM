@@ -21,8 +21,8 @@ namespace City2RVT.Builder
             this.userDefinedParameterFile = doc.Application.SharedParametersFilename;
 
             //create shared parameter file
-            string modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string paramFile = modulePath + "\\City2BIM_Parameters.txt";
+            string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
+            string paramFile = Path.Combine(modulePath, "City2BIM_Parameters.txt");
 
             if (!File.Exists(paramFile))
             {
@@ -359,7 +359,9 @@ namespace City2RVT.Builder
             BuiltInCategory.OST_Entourage,
             BuiltInCategory.OST_GenericModel }))
             {
-                string paramSetFile = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\City2BIM_ParameterSet.txt";
+                string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
+                string paramSetFile = Path.Combine(modulePath, "City2BIM_ParameterSet.txt");
+
                 string tab = "\t", pset = "PropertySet:", type = "T", newLine = Environment.NewLine;
 
                 using (FileStream fs = File.Open(paramSetFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))

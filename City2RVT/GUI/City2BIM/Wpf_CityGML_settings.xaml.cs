@@ -13,7 +13,6 @@ namespace City2RVT.GUI
     {
         private readonly string[] codelistTypes = new string[] { "AdV (Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der BRD)", 
                                                         "SIG3D (Special Interest Group 3D)" };
-
         public Wpf_CityGML_settings()
         {
             InitializeComponent();

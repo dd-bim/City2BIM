@@ -116,7 +116,7 @@ namespace City2RVT.Builder
                 }
                 allLogs.AddRange(bldg.LogEntries);
             }
-            LogWriter.WriteLogFile(allLogs, all, success, error, errorLod1, fatalError);          
+            LogWriter.WriteLogFile(allLogs, true, all, success, error, errorLod1, fatalError);          
         }
 
         private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<CityGml_Surface> surfaces, Dictionary<Xml_AttrRep, string> bldgAttributes, string lod, Dictionary<Xml_AttrRep, string> partAttributes = null)
@@ -430,7 +430,7 @@ namespace City2RVT.Builder
                 }
                 allLogs.AddRange(building.LogEntries);
             }
-            LogWriter.WriteLogFile(allLogs, all, success, null, null, error);
+            LogWriter.WriteLogFile(allLogs, false, all, success, null, null, error);
         }
 
         private void CreateRevitFaceRepresentation(CityGml_Surface surface, Dictionary<Xml_AttrRep, string> bldgAttributes, string lod, Dictionary<Xml_AttrRep, string> partAttributes = null)

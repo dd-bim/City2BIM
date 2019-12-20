@@ -4,11 +4,11 @@ using City2BIM.Geometry;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml.Linq;
+using City2BIM;
 
 namespace City2RVT.Reader
 {
     public class ReadALKIS
-
     {
         public Dictionary<string, XNamespace> allns;
 
@@ -18,14 +18,14 @@ namespace City2RVT.Reader
             string path = GUI.Prop_NAS_settings.FileUrl;
 
             //read all parcelTypes objects
-            List<AX_Object> axObjects = AlkisReader.GetALKISData(path);
+            var alkisRep = new AlkisReader(path);
 
 
             var semBuilder = new Builder.Revit_Semantic(doc);
             semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());
 
             var geomBuilder = new Builder.RevitAlkisBuilder(doc);
-            geomBuilder.CreateTopo(axObjects);
+            geomBuilder.CreateTopo(alkisRep.AlkisObjects);
         }
 
         private List<C2BPoint[]> ReadSegments(XElement surfaceExt)

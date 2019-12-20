@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using City2BIM.WFS;
-using City2BIM;
 
 namespace City2RVT.Reader
 {
@@ -57,9 +56,8 @@ namespace City2RVT.Reader
 
             }
 
-            var gmlRead = new GetCityGML(gmlDoc, solid); /*gmlDoc,*/ /*, user-defined calculation parameters may from extended GUI or from config file*/
+            var gmlRead = new City2BIM.CityGMLReader(gmlDoc, solid); /*gmlDoc,*/ /*, user-defined calculation parameters may from extended GUI or from config file*/
         
-
             
             string gmlCRS = gmlRead.GmlCRS;
 
@@ -260,7 +258,15 @@ namespace City2RVT.Reader
 
             #region Swap of North-East neccessary
 
-            Prop_CityGML_settings.IsGeodeticSystem = false;
+            if (gmlCRS.Contains("3043") ||
+                gmlCRS.Contains("3044") ||
+                gmlCRS.Contains("3045") ||
+                gmlCRS.Contains("5651") ||
+                gmlCRS.Contains("5652") ||
+                gmlCRS.Contains("5653"))
+            {
+                Prop_CityGML_settings.IsGeodeticSystem = false;
+            }
 
             #endregion Swap of North-East neccessary
         }

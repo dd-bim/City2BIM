@@ -7,7 +7,7 @@ namespace City2BIM.Logging
 {
     public static class LogWriter
     {
-        public static void WriteLogFile(List<LogPair> messages, double all, double success, double? error, double? errorLod1, double? fatalError)
+        public static void WriteLogFile(List<LogPair> messages, bool solid, double all, double success, double? error, double? errorLod1, double? fatalError)
         {
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
             string name = "Log_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".txt";
@@ -19,8 +19,25 @@ namespace City2BIM.Logging
 
             Serilog.Core.Logger results = new LoggerConfiguration().WriteTo.File(path).CreateLogger();
 
-            results.Information("Log-Protocol for CityGML-Import to Revit");
+            results.Information("Log-Protocol for CityGML-Import to BIM");
             results.Information("--------------------------------------------------");
+
+            if (solid)
+            {
+                results.Information("Kind of transfered geometry: Solids");
+                results.Information("Calculation parameters");
+                results.Information("----------------------");
+
+                results.Information("Equal Point distance = " + Math.Sqrt(City2BIM_prop.EqualPtSq) + " m.");
+                results.Information("Equal Planes normal distance (normal length 1m) = " + Math.Sqrt(City2BIM_prop.EqualPlSq) + " m.");
+                results.Information("Maximum deviation between calculated point and original point (if applicable) = " + Math.Sqrt(City2BIM_prop.MaxDevPlaneCutSq) + " m.");
+
+                results.Information("----------------------");
+                results.Information("----------------------");
+            }
+            else
+                results.Information("Kind of transfered geometry: Surfaces");
+
             results.Information("Statistic");
             results.Information("----------------------");
 

@@ -111,7 +111,6 @@ namespace City2BIM
             this.alkisObjects = axObjects;
 
         }
-
         private static List<C2BPoint[]> ReadSegments(XElement surfaceExt)
         {
             List<C2BPoint[]> segments = new List<C2BPoint[]>();
