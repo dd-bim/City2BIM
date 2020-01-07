@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace City2BIM.Alkis
 {
+    /// <summary>
+    /// Class for an ALKIS object (AX_Object like ALKIS schema)
+    /// </summary>
     public class AX_Object
     {
         public enum AXGroup { parcel, building, usage};
@@ -17,10 +20,29 @@ namespace City2BIM.Alkis
         private AXGroup group;
         private Dictionary<Xml_AttrRep, string> attributes;
 
+        /// <summary>
+        /// Stores object type ("AX_xy") for later differentation
+        /// </summary>
         public string UsageType { get => usageType; set => usageType = value; }
-        public List<C2BPoint[]> Segments { get => segments; set => segments = value; }
+
+        /// <summary>
+        /// Stores overall group (Parcel, Usage, Building)
+        /// </summary>
         public AXGroup Group { get => group; set => group = value; }
+
+        /// <summary>
+        /// Stores attributes (currently only for parcels)
+        /// </summary>
         public Dictionary<Xml_AttrRep, string> Attributes { get => attributes; set => attributes = value; }
+
+        /// <summary>
+        /// Stores exterior line segments
+        /// </summary>
+        public List<C2BPoint[]> Segments { get => segments; set => segments = value; }
+
+        /// <summary>
+        /// Stores interior line segments (if applicable, could bw 
+        /// </summary>
         public List<List<C2BPoint[]>> InnerSegments { get => innerSegments; set => innerSegments = value; }
     }
 }

@@ -348,16 +348,20 @@ namespace City2RVT.Builder
             return parList;
         }
 
+        //Following method was used to create ParameterSet File for mapping to IFC
+        //needs revision for later direct IFC export from PlugIn (currently only for naming of MapConversion and ProjectedCRS)
+
         public void CreateParameterSetFile()
         {
             using (CategorySet usedCategories = GetCategorySet(
                 new List<BuiltInCategory>(){
-            BuiltInCategory.OST_ProjectInformation,
-            BuiltInCategory.OST_Walls,
-            BuiltInCategory.OST_Roofs,
-            BuiltInCategory.OST_StructuralFoundation,
-            BuiltInCategory.OST_Entourage,
-            BuiltInCategory.OST_GenericModel }))
+            BuiltInCategory.OST_ProjectInformation//,
+            //BuiltInCategory.OST_Walls,
+            //BuiltInCategory.OST_Roofs,
+            //BuiltInCategory.OST_StructuralFoundation,
+            //BuiltInCategory.OST_Entourage,
+            //BuiltInCategory.OST_GenericModel 
+                }))
             {
                 string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
                 string paramSetFile = Path.Combine(modulePath, "City2BIM_ParameterSet.txt");
@@ -376,25 +380,25 @@ namespace City2RVT.Builder
                                 elementType = "IfcProject";
                                 break;
 
-                            case (int)BuiltInCategory.OST_GenericModel:
-                                elementType = "IfcBuildingElementProxy";
-                                break;
+                            //case (int)BuiltInCategory.OST_GenericModel:
+                            //    elementType = "IfcBuildingElementProxy";
+                            //    break;
 
-                            case (int)BuiltInCategory.OST_Walls:
-                                elementType = "IfcWall";
-                                break;
+                            //case (int)BuiltInCategory.OST_Walls:
+                            //    elementType = "IfcWall";
+                            //    break;
 
-                            case (int)BuiltInCategory.OST_Roofs:
-                                elementType = "IfcRoof";
-                                break;
+                            //case (int)BuiltInCategory.OST_Roofs:
+                            //    elementType = "IfcRoof";
+                            //    break;
 
-                            case (int)BuiltInCategory.OST_StructuralFoundation:
-                                elementType = "IfcSlab";
-                                break;
+                            //case (int)BuiltInCategory.OST_StructuralFoundation:
+                            //    elementType = "IfcSlab";
+                            //    break;
 
-                            case (int)BuiltInCategory.OST_Entourage:
-                                elementType = "IfcBuildingElementProxy";
-                                break;
+                            //case (int)BuiltInCategory.OST_Entourage:
+                            //    elementType = "IfcBuildingElementProxy";
+                            //    break;
                         }
 
                         var defAtCat = GetExistentCategoryParametersDef(category);
@@ -414,8 +418,6 @@ namespace City2RVT.Builder
 
                                     AddText(fs, newLine + tab + def.Name + tab + ifcParType);
                                 }
-
-
                             }
                         }
 

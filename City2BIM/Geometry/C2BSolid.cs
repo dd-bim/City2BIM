@@ -43,6 +43,12 @@ namespace City2BIM.Geometry
             };
         }
 
+        /// <summary>
+        /// Adds plane to solid with vertices
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="polygon">Exterior ring</param>
+        /// <param name="innerPolygons">Interior rings</param>
         public void AddPlane(string id, List<C2BPoint> polygon, List<List<C2BPoint>> innerPolygons = null)
         {
             C2BPoint normal = new C2BPoint(0, 0, 0);
@@ -85,6 +91,10 @@ namespace City2BIM.Geometry
 
         }
 
+        /// <summary>
+        /// Vertex indexing (dependent of EqualPtSq parameter)
+        /// </summary>
+        /// <returns>List of indices representing vertices</returns>
         private List<int> CalculateVertexCoords(string id, List<C2BPoint> polygon, bool exterior, ref C2BPoint normal, ref C2BPoint centroid)
         {
             //list for vertex-integers (size = polygon-points.Length)
@@ -149,7 +159,6 @@ namespace City2BIM.Geometry
             return verts;
         }
 
-
         public void IdentifySimilarPlanes()
         {
             //cases for similar Planes
@@ -175,7 +184,8 @@ namespace City2BIM.Geometry
         /// <summary>
         /// Aggregates polygon planes which are (almost) the same plane
         /// </summary>
-        /// <param name="simPlanes">bool for loop break control</param>
+        /// <param name="simPlanes">Bool for loop break control</param>
+        /// <param name="ctSimPlanes">Counter for report at logging</param>
         private void AggregatePlanes(ref bool simPlanes, ref int ctSimPlanes)
         {
             //loop over all edges at solid
@@ -324,34 +334,6 @@ namespace City2BIM.Geometry
                 }
             }
         }
-        private void UpdatePlaneParameters(string planeID, List<int> newVerts, ref C2BPoint planeNormal, ref C2BPoint planeCentroid)
-        {
-            C2BPoint norm = new C2BPoint(0, 0, 0);
-            C2BPoint centr = new C2BPoint(0, 0, 0);
-
-            for (var i = 0; i < newVerts.Count; i++)
-            {
-                int lastVert = newVerts.Last();
-
-                if (i != 0)
-                    lastVert = newVerts[i - 1];
-
-                int currVert = newVerts[i];
-
-                C2BPoint lastPt = Vertices[lastVert].Position;
-                C2BPoint thisPt = Vertices[currVert].Position;
-
-                centr += thisPt;
-
-                norm += C2BPoint.CrossProduct(lastPt, thisPt);
-
-                Vertices[newVerts[i]].Planes.Add(planeID);
-
-            }
-
-            planeNormal = C2BPoint.Normalized(norm);
-            planeCentroid = centr / (double)newVerts.Count;
-        }
 
         private void RemoveNoCornerVertices()
         {
@@ -385,6 +367,9 @@ namespace City2BIM.Geometry
             }
         }
 
+        /// <summary>
+        /// Calculates updated positions via plane cut
+        /// </summary>
         public void CalculatePositions()
         {
             int ctLevelCuts = 0;
@@ -769,6 +754,35 @@ namespace City2BIM.Geometry
 
             planeNormal = C2BPoint.Normalized(normal);
             center = centroid / verts.Count;
+        }
+
+        private void UpdatePlaneParameters(string planeID, List<int> newVerts, ref C2BPoint planeNormal, ref C2BPoint planeCentroid)
+        {
+            C2BPoint norm = new C2BPoint(0, 0, 0);
+            C2BPoint centr = new C2BPoint(0, 0, 0);
+
+            for (var i = 0; i < newVerts.Count; i++)
+            {
+                int lastVert = newVerts.Last();
+
+                if (i != 0)
+                    lastVert = newVerts[i - 1];
+
+                int currVert = newVerts[i];
+
+                C2BPoint lastPt = Vertices[lastVert].Position;
+                C2BPoint thisPt = Vertices[currVert].Position;
+
+                centr += thisPt;
+
+                norm += C2BPoint.CrossProduct(lastPt, thisPt);
+
+                Vertices[newVerts[i]].Planes.Add(planeID);
+
+            }
+
+            planeNormal = C2BPoint.Normalized(norm);
+            planeCentroid = centr / (double)newVerts.Count;
         }
 
         private C2BPoint CalculateLevelCut(C2BPlane plane1, C2BPlane plane2, C2BPlane plane3)

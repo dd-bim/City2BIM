@@ -3,8 +3,15 @@ using System.Collections.Generic;
 
 namespace City2BIM.Alkis
 {
+    /// <summary>
+    /// Class for set up of parcel attributes (source: ALKIS schema)
+    /// </summary>
     public static class Alkis_Semantic
     {
+        /// <summary>
+        /// Gets the ALKIS attributes (could be enhanced for other themes like usage...)
+        /// </summary>
+        /// <returns>HashSet with Xml-Attributes (namespace, name, type, theme)</returns>
         public static HashSet<Xml_AttrRep> GetParcelAttributes()
         {
             var regAttr = new HashSet<Xml_AttrRep>();

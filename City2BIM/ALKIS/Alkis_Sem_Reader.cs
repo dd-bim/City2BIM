@@ -5,6 +5,9 @@ using System.Xml.Linq;
 
 namespace City2BIM.Alkis
 {
+    /// <summary>
+    /// Class for reading of attribute values
+    /// </summary>
     public class Alkis_Sem_Reader
     {
         private readonly XDocument xDoc;
@@ -24,26 +27,12 @@ namespace City2BIM.Alkis
             }
         }
 
-        private XElement GetXmlParent(XElement parcel, string tagName)
-        {
-            var child = parcel.Descendants(nsp[""] + tagName).FirstOrDefault();
-
-            if (child == null)
-                return null;
-
-            return child;
-        }
-
-        private string GetXmlValue(XElement parentTag, string childName)
-        {
-            var child = parentTag.Elements(nsp[""] + childName).FirstOrDefault();
-
-            if (child == null)
-                return "";
-
-            return child.Value;
-        }
-
+        /// <summary>
+        /// Reads attribute values from defined (parcel) attributes
+        /// </summary>
+        /// <param name="p">Parcel xml object</param>
+        /// <param name="attributes">Predefined attributes</param>
+        /// <returns>Key-Value attribute, value</returns>
         public Dictionary<Xml_AttrRep, string> ReadAttributeValuesParcel(XElement p, HashSet<Xml_AttrRep> attributes)
         {
             var kvp = new Dictionary<Xml_AttrRep, string>();
@@ -218,6 +207,38 @@ namespace City2BIM.Alkis
             kvp.Add(attributes.Where(f => f.Name == "Eigentuemer_Hausnummer").Single(), hausNr);
 
             return kvp;
+        }
+
+        /// <summary>
+        /// Gets Xml element where searched value is stored in a child xml element
+        /// </summary>
+        /// <param name="parcel">Parcel element</param>
+        /// <param name="tagName">Name of element which has child element with value</param>
+        /// <returns></returns>
+        private XElement GetXmlParent(XElement parcel, string tagName)
+        {
+            var child = parcel.Descendants(nsp[""] + tagName).FirstOrDefault();
+
+            if (child == null)
+                return null;
+
+            return child;
+        }
+
+        /// <summary>
+        /// Gets the searched value for an attribute
+        /// </summary>
+        /// <param name="parentTag">Xml parent</param>
+        /// <param name="childName">Xml child</param>
+        /// <returns>Value as string</returns>
+        private string GetXmlValue(XElement parentTag, string childName)
+        {
+            var child = parentTag.Elements(nsp[""] + childName).FirstOrDefault();
+
+            if (child == null)
+                return "";
+
+            return child.Value;
         }
     }
 }
