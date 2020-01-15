@@ -17,8 +17,12 @@ namespace City2RVT.GUI
 
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            var alkis = new Reader.ReadALKIS(doc);
-
+            if (Prop_NAS_settings.FileUrl == "")
+                TaskDialog.Show("No file path set!", "Please enter a file path in the settings window first!");
+            else
+            {
+                var alkis = new Reader.ReadALKIS(doc);
+            }
             return Result.Succeeded;
 
         }
