@@ -19,9 +19,15 @@ Unterstützt wird:
 
 ## Installation
 
-- addin
-- link in addin
-- setup.exe
+Nach dem Download führen Sie die im Ordner befindliche Setup.exe aus. Das Plugin sollte automatisch installiert werden.
+
+Bei nächsten Start von Autodesk Revit 2019 sollte das Plugin vorhanden sein. Falls beim Öffnen gefragt wird, ob das Plugin geladen werden soll, bestätigen Sie dies bitte mit *Immer laden*.
+
+Sollte das Plugin nicht vorhanden sein, befindet sich Ihre Revit-Installation eventuell nicht im vom Setup angenommenen Ordner *[CommonAppDataFolder]\Autodesk\Revit\Addins\2019*.
+Der CommonAppDataFolder ist meistens *C:\ProgramData*.
+
+In diesem Fall muss manuell zum Addins-Ordner navigiert werden und dort die Datei *City2BIM.addin* sowie der Ordner *City2RVT* abgelegt werden.
+
 
 ### Entwicklungsumgebung
 
@@ -396,8 +402,15 @@ PlugIn for Autodesk Revit for integration of 3D-CityModels from CityGml, 2D-Surf
 
 ## Installation_eng
 
-- Download version you need (available are versions for 2018, 2019, 2020)
-- Install...
+After the download please start the setup.exe. The plugin should be installed automatically.
+
+By the next start of Autodesk Revit 2019 there should be the plugin available in the ribbon bar. If you will be asked whether plugin should be imported please click *Always load*.
+
+If there is no plugin available your Revit installation is maybe not in the assumed folder:
+*[CommonAppDataFolder]\Autodesk\Revit\Addins\2019*.
+CommonAppDataFolder is in the most cases *C:\ProgramData*.
+
+If so please navigate manually to the Addins folder of your installation and copy the addin-file *City2BIM.addin* and the folder *City2RVT* into the subfolder of version *2019*.
 
 ### Built With
 

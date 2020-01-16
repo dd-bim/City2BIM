@@ -1,3 +1,16 @@
+#### Download for **Autodesk Revit 2019** under *releases* (see bar above)
+
+[**Link to City2RVT (Plugin for Revit) Guide as HTML**](Doc_City2RVT.html)
+[**Link to City2RVT (Plugin for Revit) Guide as markdown**](Doc_City2RVT.md)
+
+
+**If you find any bugs please let us know via mail or create an issue at github.**
+
+**Sollten Sie Programmfehler entdecken, schreiben Sie uns bitte eine Mail oder erstellen Sie einen Issue hier auf github.**
+
+----------------------
+
+
 **Stand (07.01.2020):**
 
 #### Umfang Repo:

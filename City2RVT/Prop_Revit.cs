@@ -11,7 +11,7 @@ namespace City2RVT
         public const double feetToM = 0.3048;
 
         public static ElementId TerrainId { get => terrainId; set => terrainId = value; }
-        public static Transform TrafoPBP { get => trafoPBP; }
+        public static Transform TrafoPBP { get => SetRevitProjectTransformation() /*trafoPBP*/; }
 
         /// <summary>
         /// Creates a Revit Transform object
