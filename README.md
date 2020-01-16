@@ -1,7 +1,10 @@
 #### Download for **Autodesk Revit 2019** under *releases* (see bar above)
 
+Guide / Anleitung als HTML:
 [**Link to City2RVT (Plugin for Revit) Guide as HTML**](Doc_City2RVT.html)
 
+
+Guide / Anleitung als Markdown:
 [**Link to City2RVT (Plugin for Revit) Guide as markdown**](Doc_City2RVT.md)
 
 
