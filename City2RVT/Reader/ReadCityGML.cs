@@ -156,7 +156,7 @@ namespace City2RVT.Reader
 
             #region Input File - EPSG-srsName
 
-            if (gmlCRS.Contains("EPSG"))
+            if (gmlCRS.Contains("EPSG") || gmlCRS.Contains("epsg"))
             {
                 if (gmlCRS.Contains("25832") ||
                     gmlCRS.Contains("3044") ||
