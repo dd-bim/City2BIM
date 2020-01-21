@@ -127,6 +127,13 @@
     <Content Include="GUI\Georeferencing\img\icon_georef10.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef20.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef50.png" />
+    <Content Include="img\ALKISset_32px.png" />
+    <Content Include="img\ALKIS_32px_96dpi.png" />
+    <Content Include="img\citygml_32px_96dpi.png" />
+    <Content Include="img\citygml_set_32px.png" />
+    <Content Include="img\DTM_32px_96dpi.png" />
+    <Content Include="img\Georef_32px_96dpi.png" />
+    <Content Include="img\IFC_32px_96dpi.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="egm2008.egm" />

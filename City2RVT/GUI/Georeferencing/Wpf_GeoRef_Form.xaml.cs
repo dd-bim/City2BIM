@@ -39,17 +39,17 @@ namespace City2RVT.GUI
             //var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "GUI");
             //path = Path.Combine(path, "")
 
-            var path10 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "icon_georef10.png");
+            var path10 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef10.png");
             Uri uri10 = new Uri(path10);
             BitmapImage img10 = new BitmapImage(uri10);
             georef10_pic.Source = img10;
 
-            var path20 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "icon_georef20.png");
+            var path20 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef20.png");
             Uri uri20 = new Uri(path20);
             BitmapImage img20 = new BitmapImage(uri20);
             georef20_pic.Source = img20;
 
-            var path50 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "icon_georef50.png");
+            var path50 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef50.png");
             Uri uri50 = new Uri(path50);
             BitmapImage img50 = new BitmapImage(uri50);
             georef50_pic.Source = img50;

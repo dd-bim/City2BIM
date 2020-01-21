@@ -43,7 +43,7 @@ namespace City2RVT.GUI
             RibbonPanel panel3 = application.CreateRibbonPanel(tabName, "City2BIM");
 
             var citygmlPath =
-                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "citygml_32px_96dpi.png");
+                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "img\\citygml_32px_96dpi.png");
             Uri uriImageC = new Uri(citygmlPath);
             BitmapImage largeImageC = new BitmapImage(uriImageC);
 
@@ -67,7 +67,7 @@ namespace City2RVT.GUI
             btCityGml.AddPushButton(btSolid);
 
             var citygmlsetPath =
-                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "citygml_set_32px.png");
+                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "img\\citygml_set_32px.png");
             Uri uriImageCSet = new Uri(citygmlsetPath);
             BitmapImage largeImageCSet = new BitmapImage(uriImageCSet);
 
@@ -85,7 +85,7 @@ namespace City2RVT.GUI
             RibbonPanel panel4 = application.CreateRibbonPanel(tabName, "ALKIS2BIM");
 
             var alkisPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ALKIS_32px_96dpi.png");
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\ALKIS_32px_96dpi.png");
             Uri uriImageA = new Uri(alkisPath);
             BitmapImage largeImageA = new BitmapImage(uriImageA);
 
@@ -112,7 +112,7 @@ namespace City2RVT.GUI
             RibbonPanel panel5 = application.CreateRibbonPanel(tabName, "DTM2BIM");
 
             var terrainPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DTM_32px_96dpi.png");
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\DTM_32px_96dpi.png");
             Uri uriImageT = new Uri(terrainPath);
             BitmapImage largeImageT = new BitmapImage(uriImageT);
 
@@ -128,7 +128,7 @@ namespace City2RVT.GUI
             RibbonPanel panel6 = application.CreateRibbonPanel(tabName, "IFC Export");
 
             var ifcExportPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "IFC_32px_96dpi.png");
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\IFC_32px_96dpi.png");
             Uri uriImageIfc = new Uri(ifcExportPath);
             BitmapImage largeImageIfc = new BitmapImage(uriImageIfc);
 
