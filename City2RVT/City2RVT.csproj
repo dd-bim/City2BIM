@@ -34,14 +34,14 @@
   <ItemGroup>
     <Reference Include="City2BIM, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>obj\Debug\City2BIM.dll</HintPath>
+      <HintPath>..\..\city2bim-master\City2BIM\bin\Debug\City2BIM.dll</HintPath>
     </Reference>
     <Reference Include="GeoJSON.Net">
       <HintPath>..\City2BIM\bin\Release\GeoJSON.Net.dll</HintPath>
     </Reference>
     <Reference Include="NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\City2BIM\bin\Release\NETGeographic.dll</HintPath>
+      <HintPath>C:\Program Files\GeographicLib-1.50.1\bin\NETGeographic.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
