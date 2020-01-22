@@ -18,11 +18,16 @@ namespace City2RVT.GUI.XPlan2BIM
     /// <summary>
     /// Interaktionslogik für Wpf_XPlan.xaml
     /// </summary>
-    public partial class Wpf_XPlan : UserControl
+    public partial class Wpf_XPlan : Window
     {
         public Wpf_XPlan()
         {
             InitializeComponent();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

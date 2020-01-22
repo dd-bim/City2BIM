@@ -73,6 +73,9 @@
     <Compile Include="Calc\UTMcalc.cs" />
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
+    <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
+      <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Reader\ReadALKIS.cs" />
     <Compile Include="Reader\ReadCityGML.cs" />
     <Compile Include="Reader\FileDialog.cs" />
@@ -116,6 +119,10 @@
     <Page Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\XPlan2BIM\Wpf_XPlan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
