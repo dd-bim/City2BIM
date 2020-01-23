@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Content="Browse" HorizontalAlignment="Left" Margin="624,91,0,0" VerticalAlignment="Top" Width="75"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="161,91,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="408"/>
-        <Button Content="Import" HorizontalAlignment="Left" Margin="624,167,0,0" VerticalAlignment="Top" Width="75"/>
-        <Label Content="File" HorizontalAlignment="Left" Margin="88,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.243,-2.881"/>
+             d:DesignHeight="252.589" d:DesignWidth="662.67">
+    <Grid Margin="0,0,-8,19">
+        <Button Content="Browse" HorizontalAlignment="Left" Margin="555,64,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <TextBox Name="xplan_file" HorizontalAlignment="Left" Height="23" Margin="111,61,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="408"/>
+        <Button Content="Import" HorizontalAlignment="Left" Margin="555,112,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label Content="File" HorizontalAlignment="Left" Margin="40,57,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.243,-2.881"/>
 
     </Grid>
 </Window>

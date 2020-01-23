@@ -34,22 +34,22 @@
   <ItemGroup>
     <Reference Include="City2BIM, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\city2bim-master\City2BIM\bin\Debug\City2BIM.dll</HintPath>
+      <HintPath>..\City2BIM\bin\Debug\City2BIM.dll</HintPath>
     </Reference>
     <Reference Include="GeoJSON.Net">
       <HintPath>..\City2BIM\bin\Release\GeoJSON.Net.dll</HintPath>
     </Reference>
     <Reference Include="NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\GeographicLib-1.50.1\bin\NETGeographic.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\GeographicLib-1.50.1\bin\NETGeographic.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -73,6 +73,7 @@
     <Compile Include="Calc\UTMcalc.cs" />
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
+    <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
     <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
       <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
     </Compile>
@@ -145,6 +146,12 @@
   <ItemGroup>
     <None Include="egm2008.egm" />
     <None Include="egm2008.egm.cof" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\City2IFC\City2IFC.csproj">
+      <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
+      <Name>City2IFC</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

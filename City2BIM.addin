@@ -7,7 +7,7 @@
        <Text>City2BIM</Text> 
        <Description>PlugIn for integration 3D city models</Description>
        <VisibilityMode>AlwaysVisible</VisibilityMode>
-       <Assembly>D:\1_CityBIM\1_Programmierung\City2BIM\City2BIM_Revit\City2BIM\City2RVT\obj\Debug\City2RVT.dll</Assembly>
+       <Assembly>D:\Users\Gamer\Documents\LandBIM\AP 1\Plugin\City2BIM\City2RVT\bin\Debug\City2RVT.dll</Assembly>
        <AddInId>666b8cc1-fc58-4780-a728-bba30ffb0fed</AddInId>
 	   <VendorId>HTWDresden</VendorId>
 	   <VendorDescription>Faculty of Spatial Information</VendorDescription>
