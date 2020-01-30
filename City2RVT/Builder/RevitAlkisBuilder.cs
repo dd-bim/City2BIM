@@ -222,7 +222,9 @@ namespace City2RVT.Builder
             }
             foreach (var pt in convexHull)
             {
-                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(new C2BPoint(pt.x, pt.y, zOffset), true);
+                //var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(new C2BPoint(pt.x, pt.y, zOffset), true);
+                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(new C2BPoint(pt.x, pt.y, 0.0), true);
+
 
                 topoPts.Add(Revit_Build.GetRevPt(unprojectedPt));
             }

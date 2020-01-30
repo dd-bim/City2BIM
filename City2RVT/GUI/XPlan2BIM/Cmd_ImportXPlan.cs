@@ -14,14 +14,15 @@ namespace City2RVT.GUI
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Cmd_ImportXPlan : IExternalCommand
     {
+        //ExternalCommandData commandData;
         // The main Execute method (inherited from IExternalCommand) must be public
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             Document doc = revit.Application.ActiveUIDocument.Document;
 
-            Prop_GeoRefSettings.SetInitialSettings(doc);
+            Prop_GeoRefSettings.SetInitialSettings(doc);            
 
-            var process = new XPlan2BIM.Wpf_XPlan();
+            var process = new XPlan2BIM.Wpf_XPlan(revit);
             process.ShowDialog();
 
             return Result.Succeeded;
