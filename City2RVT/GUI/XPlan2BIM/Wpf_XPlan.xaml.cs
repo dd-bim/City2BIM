@@ -148,8 +148,8 @@ namespace City2RVT.GUI.XPlan2BIM
             XmlNodeList exteriorGesamt = xmlDoc.SelectNodes("//gml:exterior", nsmgr);
             XmlNodeList interiorGesamt = xmlDoc.SelectNodes("//gml:exterior", nsmgr);
 
-
-            XmlNodeList strasseExterior = xmlDoc.SelectNodes("//gml:exterior", nsmgr);
+            XmlNodeList strasseExterior = xmlDoc.SelectNodes("//gml:featureMember/xplan:BP_UeberbaubareGrundstuecksFlaeche/xplan:position/gml:Polygon/gml:exterior", nsmgr);
+            //XmlNodeList strasseExterior = xmlDoc.SelectNodes("//gml:exterior", nsmgr);
 
             //xplan:BP_StrassenVerkehrsFlaeche/xplan:position/gml:Polygon/
             //xplan:BP_UeberbaubareGrundstuecksFlaeche/xplan:position/gml:Polygon/
