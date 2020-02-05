@@ -67,7 +67,7 @@ namespace City2RVT.Builder
 
         private ParameterType GetParameterType(Xml_AttrRep.AttrType gmlType)
         {
-            ParameterType pType = default;
+            ParameterType pType = default(ParameterType);
 
             switch (gmlType)
             {
@@ -163,7 +163,7 @@ namespace City2RVT.Builder
 
                 Xml_AttrRep attribute = attributeGroup.First();
 
-                DefinitionGroup currentGroup = default;
+                DefinitionGroup currentGroup = default(DefinitionGroup);
 
                 switch (attribute.XmlNamespace)
                 {
