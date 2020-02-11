@@ -31,9 +31,13 @@ namespace City2RVT.GUI.XPlan2BIM
     {
         ExternalCommandData commandData;
         double feetToMeter = 1.0 / 0.3048;
+        //private readonly Dictionary<ColorType, ElementId> colors;
+
 
         public Wpf_XPlan(ExternalCommandData cData)
         {
+            //this.colors = CreateMaterial();
+
             commandData = cData;
 
             UIApplication app = commandData.Application;
@@ -93,47 +97,11 @@ namespace City2RVT.GUI.XPlan2BIM
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
-            //Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+            Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
 
-            var transparentMaterialId = default(ElementId);
-            var exteriorMaterialId = default(ElementId);
-            var interiorMaterialId = default(ElementId);
-
-
-            #region material
-            Transaction tMaterial = new Transaction(doc, "Creates Material");
-            {
-                FailureHandlingOptions options = tMaterial.GetFailureHandlingOptions();
-                options.SetFailuresPreprocessor(new AxesFailure());
-                tMaterial.SetFailureHandlingOptions(options);
-
-                tMaterial.Start();
-
-                transparentMaterialId = Material.Create(doc, "transparent");
-                Material referenceMaterial = doc.GetElement(transparentMaterialId) as Material;
-                referenceMaterial.Transparency = 100;
-
-                exteriorMaterialId = Material.Create(doc, "exterior");
-                Material exteriorMaterial = doc.GetElement(exteriorMaterialId) as Material;
-                exteriorMaterial.Color = new Color(132, 112, 255);
-
-                interiorMaterialId = Material.Create(doc, "interior");
-                Material interiorMaterial = doc.GetElement(interiorMaterialId) as Material;
-                interiorMaterial.Color = new Color(240, 230, 140);
-
-
-                ////Create a new property set that can be used by this material
-                //StructuralAsset strucAsset = new StructuralAsset("My Property Set", StructuralAssetClass.Concrete);
-                //strucAsset.Behavior = StructuralBehavior.Isotropic;
-                //strucAsset.Density = 232.0;
-
-                ////Assign the property set to the material.
-                //PropertySetElement pse = PropertySetElement.Create(doc, strucAsset);
-                //referenceMaterial.SetMaterialAspectByPropertySet(MaterialAspect.Structural, pse.Id);
-
-            }
-            tMaterial.Commit();
-            #endregion material
+            var colorList = new Dictionary<string, ElementId>();
+            var materialBuilder = new Builder.RevitXPlanBuilder(doc);
+            colorList = materialBuilder.CreateMaterial();
 
             #region Transformation und UTM-Reduktion
 
@@ -176,8 +144,7 @@ namespace City2RVT.GUI.XPlan2BIM
             XYZ normal = new XYZ(0, 0, feetToMeter);
             Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
 
-            //XmlDocument xmlDoc = new XmlDocument();
-            //xmlDoc.Load(xPlanGmlPath);
+
 
             #region namespaces
             var nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
@@ -188,100 +155,177 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion namespaces
 
-            //XmlNodeList strasseExterior = xmlDoc.SelectNodes("//gml:featureMember/xplan:BP_StrassenVerkehrsFlaeche/xplan:position/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList", nsmgr);
-            XmlNodeList exteriorGesamt = xmlDoc.SelectNodes("//gml:exterior", nsmgr);
-            XmlNodeList interiorGesamt = xmlDoc.SelectNodes("//gml:exterior", nsmgr);
+            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
 
-            //XmlNodeList strasseExterior = xmlDoc.SelectNodes("//gml:featureMember/xplan:BP_StrassenVerkehrsFlaeche/xplan:position/gml:Polygon/gml:exterior", nsmgr);
-            XmlNodeList strasseExterior = xmlDoc.SelectNodes("//gml:exterior", nsmgr);
 
-            //xplan:BP_StrassenVerkehrsFlaeche/xplan:position/gml:Polygon/
-            //xplan:BP_UeberbaubareGrundstuecksFlaeche/xplan:position/gml:Polygon/
+            #region parameter
 
-            XmlNodeList testExterior = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
+            Category category = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Topography);
+            CategorySet categorySet = app.Create.NewCategorySet();
+            categorySet.Insert(category);
 
-            //if (testExterior.)
+            string paramFile = @"D:\Daten\LandBIM\AP 1\Plugin\city2bim\SharedParameterFile.txt";
+            DefinitionFile defFile = app.OpenSharedParameterFile();
 
-            List<string> bpObjects = new List<string>();
-            foreach (XmlNode x in testExterior)
+
+            Transaction tCreateSpFile = new Transaction(doc, "Create Shared Parameter File");
+            {
+                tCreateSpFile.Start();
+
+                app.SharedParametersFilename = paramFile;
+
+                DefinitionGroup defGrp = defFile.Groups.get_Item("XPlanDaten");
+
+                ExternalDefinitionCreationOptions rechtsstandOption = new ExternalDefinitionCreationOptions("Rechtsstand", ParameterType.Text);
+
+                Definition rechtsstandDefinition = default(Definition);
+
+                if (defGrp == null)
+                {
+                    defGrp = defFile.Groups.Create("XPlanDaten");
+                    rechtsstandDefinition = defGrp.Definitions.Create(rechtsstandOption);
+                }
+
+                else if (defGrp != null)
+                {
+                    if (rechtsstandDefinition == null)
+                    {
+
+                    }
+                    else if (rechtsstandDefinition != null)
+                    {
+                        rechtsstandDefinition = defGrp.Definitions.get_Item("Rechtsstand");
+                    }
+                }
+                tCreateSpFile.Commit();
+
+                foreach (DefinitionGroup dg in defFile.Groups)
+                {
+                    if (dg.Name == "XPlanDaten")
+                    {
+                        ExternalDefinition rechtsstandExtDef = dg.Definitions.get_Item("Rechtsstand") as ExternalDefinition;
+
+                        Transaction tParam = new Transaction(doc, "Insert Parameter");
+                        {
+                            tParam.Start();
+                            InstanceBinding newIB = app.Create.NewInstanceBinding(categorySet);
+                            doc.ParameterBindings.Insert(rechtsstandExtDef, newIB, BuiltInParameterGroup.PG_DATA);
+                        }
+                        tParam.Commit();
+
+                        foreach (XmlNode xplanObjects in allXPlanObjects)
+                        {
+
+                            List<XmlNode> attributListe = new List<XmlNode>();
+                            List<string> attributWertListe = new List<string>();
+
+                            XmlNode rechtsstand = xplanObjects.SelectSingleNode("xplan:BP_StrassenVerkehrsFlaeche/xplan:rechtsstand", nsmgr);
+
+                            attributListe.Add(rechtsstand);
+
+                            for (int x = 0; x < attributListe.Count; x++)
+                            {
+                                try
+                                {
+                                    attributWertListe.Add(attributListe[x].InnerText);
+                                }
+                                catch
+                                {
+                                    attributWertListe.Add("-");
+                                }
+                            }
+
+
+
+                        }
+
+                    }
+
+                }
+
+
+
+
+
+
+
+            }
+
+
+
+            #endregion parameter
+
+
+
+            List<string> xPlanObjectList = new List<string>();
+            foreach (XmlNode x in allXPlanObjects)
             {
                 if (x.SelectNodes("//gml:exterior", nsmgr) != null)
                 {
-                    if (bpObjects.Contains(x.FirstChild.Name.ToString()) == false)
+                    if (xPlanObjectList.Contains(x.FirstChild.Name.ToString()) == false)
                     {
-                        bpObjects.Add(x.FirstChild.Name.ToString());
-                        //System.Windows.Forms.MessageBox.Show(x.FirstChild.Name.ToString());
-
+                        xPlanObjectList.Add(x.FirstChild.Name.ToString());
                     }
                 }                
             }
 
-            ElementId bpReferencePlaneId = default(ElementId);
-            foreach (var y in bpObjects)
-            {
-                XmlNodeList bpExterior = xmlDoc.SelectNodes("//gml:featureMember//gml:exterior", nsmgr);
-
-                //XmlNodeList bpExterior = xmlDoc.SelectNodes("//gml:featureMember/" + y + "//gml:exterior", nsmgr);
-                //XmlNodeList bpExterior = xmlDoc.SelectNodes("//gml:featureMember/" + y + "/xplan:position/gml:Polygon/gml:exterior", nsmgr);
+            ElementId xPlanReferencePlaneId = default(ElementId);
+            double zOffset = 0.0;
+            foreach (var xPlanObject in xPlanObjectList)
+            { 
+                XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//gml:exterior", nsmgr);
 
                 #region reference plane
-                Dictionary<string, XYZ[]> bpPointList = new Dictionary<string, XYZ[]>();
+                Dictionary<string, XYZ[]> xPlanPointDict = new Dictionary<string, XYZ[]>();
 
-                List<string> bpStrasseBezug = new List<String>();
-                int bpCountBezug = 0;
+                List<string> xPlanReference = new List<String>();
+                int xPlanCountReference = 0;
 
-                List<double> bpAllValues = new List<double>();
-                List<double> bpxValues = new List<double>();
-                List<double> bpyValues = new List<double>();
+                List<double> xPlanAllValues = new List<double>();
+                List<double> xPlanXValues = new List<double>();
+                List<double> xPlanYValues = new List<double>();
 
-                //foreach (XmlNode strasseNode in exteriorGesamt)
-                //foreach (XmlNode strasseNode in strasseExterior)
-
-                if (bpExterior.Count > 0)
+                if (xPlanExterior.Count > 0)
                 {
-                    foreach (XmlNode strasseNode in bpExterior)
+                    foreach (XmlNode exteriorNode in xPlanExterior)
                     {
-                        bpStrasseBezug.Add(strasseNode.InnerText);
-                        string[] koordWerteBezug = bpStrasseBezug[bpCountBezug].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        xPlanReference.Add(exteriorNode.InnerText);
+                        string[] coordsReference = xPlanReference[xPlanCountReference].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        foreach (var x in koordWerteBezug)
+                        foreach (var x in coordsReference)
                         {
                             double values_double = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
-                            bpAllValues.Add(values_double);
+                            xPlanAllValues.Add(values_double);
                         }
 
-                        for (int ix = 0; ix < bpAllValues.Count; ix += 2)
+                        for (int ix = 0; ix < xPlanAllValues.Count; ix += 2)
                         {
-                            bpxValues.Add(bpAllValues[ix]);
+                            xPlanXValues.Add(xPlanAllValues[ix]);
                         }
 
-                        for (int iy = 1; iy < bpAllValues.Count; iy += 2)
+                        for (int iy = 1; iy < xPlanAllValues.Count; iy += 2)
                         {
-                            bpyValues.Add(bpAllValues[iy]);
+                            xPlanYValues.Add(xPlanAllValues[iy]);
                         }
-
-                        bpCountBezug++;
+                        xPlanCountReference++;
                     }
 
-                    //System.Windows.Forms.MessageBox.Show(y.ToString());
-                    //System.Windows.Forms.MessageBox.Show(bpxValues.Min().ToString());
+                    double xPlanXMin = (xPlanXValues.Min() * feetToMeter) / R;
+                    double xPlanXMax = (xPlanXValues.Max() * feetToMeter) / R;
+                    double xPlanYMin = (xPlanYValues.Min() * feetToMeter) / R;
+                    double xPlanYMax = (xPlanYValues.Max() * feetToMeter) / R;
 
-                    double bpxMin = (bpxValues.Min() * feetToMeter) / R;
-                    double bpxMax = (bpxValues.Max() * feetToMeter) / R;
-                    double bpyMin = (bpyValues.Min() * feetToMeter) / R;
-                    double bpyMax = (bpyValues.Max() * feetToMeter) / R;
+                    XYZ[] pointsExteriorXPlan = new XYZ[4];
+                    pointsExteriorXPlan[0] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMin, zOffset));
+                    pointsExteriorXPlan[1] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMin, zOffset));
+                    pointsExteriorXPlan[2] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMax, zOffset));
+                    pointsExteriorXPlan[3] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMax, zOffset));
 
-                    XYZ[] bpPointsExterior = new XYZ[4];
-                    bpPointsExterior[0] = transf.OfPoint(new XYZ(bpxMin, bpyMin, 0.0));
-                    bpPointsExterior[1] = transf.OfPoint(new XYZ(bpxMax, bpyMin, 0.0));
-                    bpPointsExterior[2] = transf.OfPoint(new XYZ(bpxMax, bpyMax, 0.0));
-                    bpPointsExterior[3] = transf.OfPoint(new XYZ(bpxMin, bpyMax, 0.0));
+                    xPlanPointDict.Add(xPlanObject, pointsExteriorXPlan);
 
-                    bpPointList.Add(y, bpPointsExterior);
-
-                    foreach (var referencePoints in bpPointList)
+                    foreach (var referencePoints in xPlanPointDict)
                     {
-                        Transaction referencePlanes = new Transaction(doc, "Reference plane: " + referencePoints.Key);
+                        Transaction referencePlanes = new Transaction(doc, "Reference plane: " + (referencePoints.Key).Substring(6));
                         {
                             FailureHandlingOptions options = referencePlanes.GetFailureHandlingOptions();
                             options.SetFailuresPreprocessor(new AxesFailure());
@@ -292,67 +336,42 @@ namespace City2RVT.GUI.XPlan2BIM
 
                             TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
 
+                            ElementId farbeReference = colorList["transparent"];
+
                             Parameter materialParam = referencePlane.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-                            materialParam.Set(transparentMaterialId);
+                            materialParam.Set(farbeReference);
 
                             Parameter gesamt = referencePlane.LookupParameter("Kommentare");
-                            gesamt.Set("Reference plane: " + referencePoints.Key);
-                            bpReferencePlaneId = referencePlane.Id;
+                            gesamt.Set("Reference plane: " + (referencePoints.Key).Substring(6));
+                            xPlanReferencePlaneId = referencePlane.Id;
                         }
                         referencePlanes.Commit();
                     }
                 }
                 #endregion reference plane
 
-                XmlNodeList bpEinzelnExterior = xmlDoc.SelectNodes("//gml:featureMember/" + y + "//gml:exterior", nsmgr);
-
                 #region exterior
 
-                List<string> list = new List<String>();
+                XmlNodeList bpEinzelnExterior = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);
 
+                List<string> list = new List<String>();
                 int i = 0;
-                //foreach (XmlNode nodeExt in strasseExterior)
                 foreach (XmlNode nodeExt in bpEinzelnExterior)
                 {
                     List<CurveLoop> curveLoopStrasseList = new List<CurveLoop>();
                     CurveLoop curveLoopStrasse = new CurveLoop();
-
                     XmlNodeList strassenVerkehrExterior = nodeExt.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
+                    XmlNodeList strassenVerkehrExteriorRing = nodeExt.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
 
                     foreach (XmlNode nodePosExt in strassenVerkehrExterior)
                     {
                         list.Add(nodePosExt.InnerText);
-
                         string[] koordWerte = list[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                         if (koordWerte.Count() == 4)
                         {
-                            double xStart = Convert.ToDouble(koordWerte[0], System.Globalization.CultureInfo.InvariantCulture);
-                            double xStartMeter = xStart * feetToMeter;
-                            double xStartMeterRedu = xStartMeter / R;
-                            double yStart = Convert.ToDouble(koordWerte[1], System.Globalization.CultureInfo.InvariantCulture);
-                            double yStartMeter = yStart * feetToMeter;
-                            double yStartMeterRedu = yStartMeter / R;
-                            double zStart = 0.000;
-                            double zStartMeter = zStart * feetToMeter;
-
-                            double xEnd = Convert.ToDouble(koordWerte[2], System.Globalization.CultureInfo.InvariantCulture);
-                            double xEndMeter = xEnd * feetToMeter;
-                            double xEndMeterRedu = xEndMeter / R;
-                            double yEnd = Convert.ToDouble(koordWerte[3], System.Globalization.CultureInfo.InvariantCulture);
-                            double yEndMeter = yEnd * feetToMeter;
-                            double yEndMeterRedu = yEndMeter / R;
-                            double zEnd = 0.000;
-                            double zEndMeter = zEnd * feetToMeter;
-
-                            XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
-                            XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
-
-                            XYZ transfStartPoint = transf.OfPoint(startPoint);
-                            XYZ transfEndPoint = transf.OfPoint(endPoint);
-
-                            Line lineStrasse = Line.CreateBound(transfStartPoint, transfEndPoint);
-
+                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                            Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
                             curveLoopStrasse.Append(lineStrasse);
                         }
 
@@ -362,36 +381,42 @@ namespace City2RVT.GUI.XPlan2BIM
 
                             foreach (string split in koordWerte)
                             {
-                                double xStart = Convert.ToDouble(koordWerte[iSplit], System.Globalization.CultureInfo.InvariantCulture);
-                                double xStartMeter = xStart * feetToMeter;
-                                double xStartMeterRedu = xStartMeter / R;
-                                double yStart = Convert.ToDouble(koordWerte[iSplit + 1], System.Globalization.CultureInfo.InvariantCulture);
-                                double yStartMeter = yStart * feetToMeter;
-                                double yStartMeterRedu = yStartMeter / R;
-                                double zStart = 0.000;
-                                double zStartMeter = zStart * feetToMeter;
+                                var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, iSplit, zOffset);
+                                curveLoopStrasse.Append(lineClIndu);
 
-                                double xEnd = Convert.ToDouble(koordWerte[iSplit + 2], System.Globalization.CultureInfo.InvariantCulture);
-                                double xEndMeter = xEnd * feetToMeter;
-                                double xEndMeterRedu = xEndMeter / R;
-                                double yEnd = Convert.ToDouble(koordWerte[iSplit + 3], System.Globalization.CultureInfo.InvariantCulture);
-                                double yEndMeter = yEnd * feetToMeter;
-                                double yEndMeterRedu = yEndMeter / R;
-                                double zEnd = 0.000;
-                                double zEndMeter = zEnd * feetToMeter;
-
-                                XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
-                                XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
-
-                                XYZ tStartPoint = transf.OfPoint(startPoint);
-                                XYZ tEndPoint = transf.OfPoint(endPoint);
-
-                                if (tStartPoint.DistanceTo(tEndPoint) > 0)
+                                if ((iSplit + 3) == (koordWerte.Count() - 1))
                                 {
-                                    Line lineClIndu = Line.CreateBound(tStartPoint, tEndPoint);
-
-                                    curveLoopStrasse.Append(lineClIndu);
+                                    break;
                                 }
+
+                                iSplit += 2;
+                            }
+                        }
+                        i++;
+                    }
+
+                    foreach (XmlNode nodePosExt in strassenVerkehrExteriorRing)
+                    {
+                        list.Add(nodePosExt.InnerText);
+                        string[] koordWerte = list[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (koordWerte.Count() == 4)
+                        {
+                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                            Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
+                            curveLoopStrasse.Append(lineStrasse);
+                        }
+
+                        else if (koordWerte.Count() > 4)
+                        {
+                            int iSplit = 0;
+
+                            foreach (string split in koordWerte)
+                            {
+                                var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, iSplit, zOffset);
+                                curveLoopStrasse.Append(lineClIndu);
 
                                 if ((iSplit + 3) == (koordWerte.Count() - 1))
                                 {
@@ -407,7 +432,6 @@ namespace City2RVT.GUI.XPlan2BIM
                     if (curveLoopStrasse.GetExactLength() > 0)
                     {
                         curveLoopStrasseList.Add(curveLoopStrasse);
-                        //System.Windows.Forms.MessageBox.Show(curveLoopStrasse.Count().ToString());
 
                         Transaction topoTransaction = new Transaction(doc, "Strassen Exterior");
                         {
@@ -417,507 +441,138 @@ namespace City2RVT.GUI.XPlan2BIM
 
                             topoTransaction.Start();
                             SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
-                            SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopStrasseList, bpReferencePlaneId);
+                            SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopStrasseList, xPlanReferencePlaneId);
 
                             Parameter materialParamExterior = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-                            materialParamExterior.Set(exteriorMaterialId);
+
+                            ElementId farbe = default(ElementId);
+                            //System.Windows.Forms.MessageBox.Show(xPlanObject.Substring(6));
+                            if (colorList.ContainsKey(xPlanObject.Substring(6)))
+                            {
+                                farbe = colorList[xPlanObject.Substring(6)];
+                            }
+                            else
+                            {
+                                farbe = colorList["default"];
+                            }
+                            materialParamExterior.Set(farbe);
+
+                            Parameter exteriorName = siteSubRegion.TopographySurface.LookupParameter("Kommentare");
+                            exteriorName.Set(xPlanObject.Substring(6));
                         }
                         topoTransaction.Commit();
                     }
                 }
-
                 #endregion exterior
-            }
 
-            //XmlNodeList strasseInterior = xmlDoc.SelectNodes("//gml:featureMember/xplan:BP_StrassenVerkehrsFlaeche/xplan:position/gml:Polygon/gml:interior//gml:posList", nsmgr);
-            XmlNodeList strassenVerkehrsFlaeche = xmlDoc.SelectNodes("//xplan:BP_StrassenVerkehrsFlaeche/xplan:position/gml:Polygon/gml:interior", nsmgr);
+                #region interior
 
-            #region reference plane
-            //Dictionary<string,XYZ[]> pointList = new Dictionary<string,XYZ[]>();
+                XmlNodeList bpEinzelnInterior = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:interior", nsmgr);
 
+                List<string> strasseInteriorListe = new List<String>();
 
-            ////XYZ origin = new XYZ(0, 0, 0);
-            ////XYZ normal = new XYZ(0, 0, feetToMeter);
-            ////Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
+                int ii = 0;
 
-            //List<string> strasseBezug = new List<String>();
-            //int countBezug = 0;
-
-            //List<double> allValues = new List<double>();
-            //List<double> xValues = new List<double>();
-            //List<double> yValues = new List<double>();
-
-            ////foreach (XmlNode strasseNode in exteriorGesamt)
-            //foreach (XmlNode strasseNode in strasseExterior)
-            //{
-            //    strasseBezug.Add(strasseNode.InnerText);
-            //    string[] koordWerteBezug = strasseBezug[countBezug].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //    foreach (var x in koordWerteBezug)
-            //    {
-            //        double values_double = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
-            //        allValues.Add(values_double);
-            //    }
-
-            //    for (int ix = 0; ix < allValues.Count; ix += 2)
-            //    {
-            //        xValues.Add(allValues[ix]);
-            //    }
-
-            //    for (int iy = 1; iy < allValues.Count; iy += 2)
-            //    {
-            //        yValues.Add(allValues[iy]);
-            //    }
-
-            //    countBezug++;
-            //}
-
-            //double xMin = (xValues.Min() * feetToMeter) / R;
-            //double xMax = (xValues.Max() * feetToMeter) / R;
-            //double yMin = (yValues.Min() * feetToMeter) / R;
-            //double yMax = (yValues.Max() * feetToMeter) / R;
-
-            //XYZ[] pointsExterior = new XYZ[4];
-            //pointsExterior[0] = transf.OfPoint(new XYZ(xMin, yMin, 0.0));
-            //pointsExterior[1] = transf.OfPoint(new XYZ(xMax, yMin, 0.0));
-            //pointsExterior[2] = transf.OfPoint(new XYZ(xMax, yMax, 0.0));
-            //pointsExterior[3] = transf.OfPoint(new XYZ(xMin, yMax, 0.0));
-
-            //pointList.Add("BP_StrassenVerkehrsFlaeche", pointsExterior);
-
-
-            //ElementId referencePlaneId = default(ElementId);
-            //foreach (var referencePoints in pointList)
-            //{
-            //    Transaction referencePlanes = new Transaction(doc, "Reference plane for: " + referencePoints.Key);
-            //    {
-            //        FailureHandlingOptions options = referencePlanes.GetFailureHandlingOptions();
-            //        options.SetFailuresPreprocessor(new AxesFailure());
-            //        referencePlanes.SetFailureHandlingOptions(options);
-
-            //        referencePlanes.Start();
-            //        SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-
-            //        TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
-
-            //        Parameter materialParam = referencePlane.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-            //        materialParam.Set(transparentMaterialId);
-
-            //        Parameter gesamt = referencePlane.LookupParameter("Kommentare");
-            //        gesamt.Set("Reference plane test for: " + referencePoints.Key);
-            //        referencePlaneId = referencePlane.Id;
-
-
-            //    }
-            //    referencePlanes.Commit();
-            //}
-            #endregion reference plane
-
-            
-
-
-
-
-
-
-            #region TopoGesamtExterior            
-
-            //List<string> strasseBezug = new List<String>();
-            //int countBezug = 0;
-
-            //List<double> allValues = new List<double>();
-            //List<double> xValues = new List<double>();
-            //List<double> yValues = new List<double>();
-
-            //foreach (XmlNode strasseNode in exteriorGesamt)
-            //{
-            //    strasseBezug.Add(strasseNode.InnerText);
-            //    string[] koordWerteBezug = strasseBezug[countBezug].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //    foreach (var x in koordWerteBezug)
-            //    {
-            //        double values_double = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
-            //        allValues.Add(values_double);
-            //    }
-
-            //    for (int ix = 0; ix < allValues.Count; ix += 2)
-            //    {
-            //        xValues.Add(allValues[ix]);
-            //    }
-
-            //    for (int iy = 1; iy < allValues.Count; iy += 2)
-            //    {
-            //        yValues.Add(allValues[iy]);
-            //    }
-
-            //    countBezug++;
-            //}
-
-            //double xMin = (xValues.Min() * feetToMeter) / R;
-            //double xMax = (xValues.Max() * feetToMeter) / R;
-            //double yMin = (yValues.Min() * feetToMeter) / R;
-            //double yMax = (yValues.Max() * feetToMeter) / R;
-
-            //XYZ[] pointsExterior = new XYZ[4];
-            //pointsExterior[0] = transf.OfPoint(new XYZ(xMin, yMin, 0.0));
-            //pointsExterior[1] = transf.OfPoint(new XYZ(xMax, yMin, 0.0));
-            //pointsExterior[2] = transf.OfPoint(new XYZ(xMax, yMax, 0.0));
-            //pointsExterior[3] = transf.OfPoint(new XYZ(xMin, yMax, 0.0));
-
-            //XYZ origin = new XYZ(0, 0, 0);
-            //XYZ normal = new XYZ(0, 0, feetToMeter);
-            //Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
-
-            //ElementId elementId = default(ElementId);
-            //Transaction tTopoGes = new Transaction(doc, "Topo Gesamt Exterior");
-            //{
-            //    FailureHandlingOptions options = tTopoGes.GetFailureHandlingOptions();
-            //    options.SetFailuresPreprocessor(new AxesFailure());
-            //    tTopoGes.SetFailureHandlingOptions(options);
-
-            //    tTopoGes.Start();
-            //    SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-
-            //    TopographySurface strasseGesamt = TopographySurface.Create(doc, pointsExterior);
-
-            //    Parameter materialParam = strasseGesamt.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-            //    materialParam.Set(transparentMaterialId);
-
-            //    Parameter gesamt = strasseGesamt.LookupParameter("Kommentare");
-            //    gesamt.Set("strasseGesamt");
-            //    elementId = strasseGesamt.Id;
-            //}
-            //tTopoGes.Commit();
-
-            #endregion TopoGesamtExterior
-
-            #region TopoGesamtInterior            
-
-            List<string> strasseBezugInt = new List<String>();
-            int countBezugInt = 0;
-
-            List<double> allValuesInt = new List<double>();
-            List<double> xValuesInt = new List<double>();
-            List<double> yValuesInt = new List<double>();
-
-            foreach (XmlNode strasseNodeInt in interiorGesamt)
-            {
-                strasseBezugInt.Add(strasseNodeInt.InnerText);
-                string[] koordWerteBezugInt = strasseBezugInt[countBezugInt].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var x in koordWerteBezugInt)
+                foreach (XmlNode xn in bpEinzelnInterior)
                 {
-                    double values_doubleInt = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
-                    allValuesInt.Add(values_doubleInt);
-                }
+                    List<CurveLoop> curveLoopStrasseInteriorList = new List<CurveLoop>();
+                    CurveLoop curveLoopStrasseInterior = new CurveLoop();
+                    XmlNodeList strassenVerkehrInterior = xn.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
+                    XmlNodeList strassenVerkehrInteriorRing = xn.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
 
-                for (int ix = 0; ix < allValuesInt.Count; ix += 2)
-                {
-                    xValuesInt.Add(allValuesInt[ix]);
-                }
-
-                for (int iy = 1; iy < allValuesInt.Count; iy += 2)
-                {
-                    yValuesInt.Add(allValuesInt[iy]);
-                }
-
-                countBezugInt++;
-            }
-
-            double xMinInt = (xValuesInt.Min() * feetToMeter) / R;
-            double xMaxInt = (xValuesInt.Max() * feetToMeter) / R;
-            double yMinInt = (yValuesInt.Min() * feetToMeter) / R;
-            double yMaxInt = (yValuesInt.Max() * feetToMeter) / R;
-
-            XYZ[] pointsNutzInt = new XYZ[4];
-            pointsNutzInt[0] = transf.OfPoint(new XYZ(xMinInt, yMinInt, 0.0));
-            pointsNutzInt[1] = transf.OfPoint(new XYZ(xMaxInt, yMinInt, 0.0));
-            pointsNutzInt[2] = transf.OfPoint(new XYZ(xMaxInt, yMaxInt, 0.0));
-            pointsNutzInt[3] = transf.OfPoint(new XYZ(xMinInt, yMaxInt, 0.0));
-
-            //XYZ originInt = new XYZ(0, 0, 0);
-            //XYZ normalInt = new XYZ(0, 0, feetToMeter);
-            //Plane geomPlaneInt = Plane.CreateByNormalAndOrigin(normal, origin);
-
-            //ElementId elementIdInt = default(ElementId);
-            //Transaction tTopoGesInt = new Transaction(doc, "Topo Gesamt Interior");
-            //{
-            //    FailureHandlingOptions options = tTopoGes.GetFailureHandlingOptions();
-            //    options.SetFailuresPreprocessor(new AxesFailure());
-            //    tTopoGes.SetFailureHandlingOptions(options);
-
-            //    tTopoGesInt.Start();
-            //    SketchPlane sketch = SketchPlane.Create(doc, geomPlaneInt);
-
-
-            //    TopographySurface strasseGesamtInt = TopographySurface.Create(doc, pointsNutzInt);
-
-            //    //strasseGesamtInt.
-
-            //    Parameter materialParam = strasseGesamtInt.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-            //    materialParam.Set(transparentMaterialId);
-
-            //    Parameter gesamtInt = strasseGesamtInt.LookupParameter("Kommentare");
-            //    gesamtInt.Set("strasseGesamt");
-            //    elementIdInt = strasseGesamtInt.Id;
-            //}
-            //tTopoGesInt.Commit();
-
-            #endregion TopoGesamtInterior
-
-            #region interior
-
-            List<string> strasseInteriorListe = new List<String>();
-
-            int ii = 0;
-
-            foreach (XmlNode xn in strassenVerkehrsFlaeche)
-            {
-
-                List<CurveLoop> curveLoopStrasseInteriorList = new List<CurveLoop>();
-                CurveLoop curveLoopStrasseInterior = new CurveLoop();
-
-                XmlNodeList strassenVerkehrInterior = xn.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
-                //strassenVerkehrInterior = xn.SelectNodes("gml:LinearRing//gml:posList", nsmgr);
-                //System.Windows.Forms.MessageBox.Show(strassenVerkehrInterior.Count.ToString());
-
-                foreach (XmlNode xc in strassenVerkehrInterior)
-                {
-                    strasseInteriorListe.Add(xc.InnerText);
-
-                    string[] koordWerteInterior = strasseInteriorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (koordWerteInterior.Count() == 4)
+                    foreach (XmlNode xc in strassenVerkehrInterior)
                     {
-                        double xStart = Convert.ToDouble(koordWerteInterior[0], System.Globalization.CultureInfo.InvariantCulture);
-                        double xStartMeter = xStart * feetToMeter;
-                        double xStartMeterRedu = xStartMeter / R;
-                        double yStart = Convert.ToDouble(koordWerteInterior[1], System.Globalization.CultureInfo.InvariantCulture);
-                        double yStartMeter = yStart * feetToMeter;
-                        double yStartMeterRedu = yStartMeter / R;
-                        double zStart = 0.000;
-                        double zStartMeter = zStart * feetToMeter;
+                        strasseInteriorListe.Add(xc.InnerText);
+                        string[] koordWerteInterior = strasseInteriorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        double xEnd = Convert.ToDouble(koordWerteInterior[2], System.Globalization.CultureInfo.InvariantCulture);
-                        double xEndMeter = xEnd * feetToMeter;
-                        double xEndMeterRedu = xEndMeter / R;
-                        double yEnd = Convert.ToDouble(koordWerteInterior[3], System.Globalization.CultureInfo.InvariantCulture);
-                        double yEndMeter = yEnd * feetToMeter;
-                        double yEndMeterRedu = yEndMeter / R;
-                        double zEnd = 0.000;
-                        double zEndMeter = zEnd * feetToMeter;
-
-                        XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
-                        XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
-
-                        XYZ transfStartPoint = transf.OfPoint(startPoint);
-                        XYZ transfEndPoint = transf.OfPoint(endPoint);
-
-                        if (transfStartPoint.DistanceTo(transfEndPoint) > 0)
+                        if (koordWerteInterior.Count() == 4)
                         {
-                            Line lineStrasse = Line.CreateBound(transfStartPoint, transfEndPoint);
-
+                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                            Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
                             curveLoopStrasseInterior.Append(lineStrasse);
                         }
-                    }
 
-                    else if (koordWerteInterior.Count() > 4)
-                    {
-                        int iSplitInterior = 0;
-
-                        foreach (string split in koordWerteInterior)
+                        else if (koordWerteInterior.Count() > 4)
                         {
-                            double xStart = Convert.ToDouble(koordWerteInterior[iSplitInterior], System.Globalization.CultureInfo.InvariantCulture);
-                            double xStartMeter = xStart * feetToMeter;
-                            double xStartMeterRedu = xStartMeter / R;
-                            double yStart = Convert.ToDouble(koordWerteInterior[iSplitInterior + 1], System.Globalization.CultureInfo.InvariantCulture);
-                            double yStartMeter = yStart * feetToMeter;
-                            double yStartMeterRedu = yStartMeter / R;
-                            double zStart = 0.000;
-                            double zStartMeter = zStart * feetToMeter;
+                            int iSplit = 0;
 
-                            double xEnd = Convert.ToDouble(koordWerteInterior[iSplitInterior + 2], System.Globalization.CultureInfo.InvariantCulture);
-                            double xEndMeter = xEnd * feetToMeter;
-                            double xEndMeterRedu = xEndMeter / R;
-                            double yEnd = Convert.ToDouble(koordWerteInterior[iSplitInterior + 3], System.Globalization.CultureInfo.InvariantCulture);
-                            double yEndMeter = yEnd * feetToMeter;
-                            double yEndMeterRedu = yEndMeter / R;
-                            double zEnd = 0.000;
-                            double zEndMeter = zEnd * feetToMeter;
-
-                            XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
-                            XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
-
-                            XYZ tStartPoint = transf.OfPoint(startPoint);
-                            XYZ tEndPoint = transf.OfPoint(endPoint);
-
-                            if (tStartPoint.DistanceTo(tEndPoint) > 0)
+                            foreach (string split in koordWerteInterior)
                             {
-                                Line lineClIndu = Line.CreateBound(tStartPoint, tEndPoint);
-
+                                var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
                                 curveLoopStrasseInterior.Append(lineClIndu);
-                            }
 
-                            if ((iSplitInterior + 3) == (koordWerteInterior.Count() - 1))
-                            {
-                                break;
-                            }
-
-                            iSplitInterior += 2;
+                                if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
+                                {
+                                    break;
+                                }
+                                iSplit += 2;
+                            }                          
                         }
+                        ii++;
                     }
 
-                    ii++;
-                }
-
-                if (curveLoopStrasseInterior.GetExactLength() > 0)
-                {
-                    curveLoopStrasseInteriorList.Add(curveLoopStrasseInterior);
-
-                    if (curveLoopStrasseInteriorList.Count() > 0)
+                    foreach (XmlNode xc in strassenVerkehrInteriorRing)
                     {
-                        Transaction topoTransactionInterior = new Transaction(doc, "StrassenInterior");
+                        strasseInteriorListe.Add(xc.InnerText);
+                        string[] koordWerteInterior = strasseInteriorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (koordWerteInterior.Count() == 4)
                         {
-                            //FailureHandlingOptions options = topoTransaction.GetFailureHandlingOptions();
-                            //options.SetFailuresPreprocessor(new AxesFailure());
-                            //topoTransaction.SetFailureHandlingOptions(options);
-
-                            topoTransactionInterior.Start();
-                            SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-                            SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopStrasseInteriorList, bpReferencePlaneId);
-
-                            Parameter materialParam = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-                            materialParam.Set(interiorMaterialId);
+                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                            Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
+                            curveLoopStrasseInterior.Append(lineStrasse);
                         }
-                        topoTransactionInterior.Commit();
+
+                        else if (koordWerteInterior.Count() > 4)
+                        {
+                            int iSplit = 0;
+                            foreach (string split in koordWerteInterior)
+                            {
+                                var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
+                                curveLoopStrasseInterior.Append(lineClIndu);
+
+                                if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
+                                {
+                                    break;
+                                }
+
+                                iSplit += 2;
+                            }
+                        }
+                        ii++;
+                    }
+
+                    if (curveLoopStrasseInterior.GetExactLength() > 0)
+                    {
+                        curveLoopStrasseInteriorList.Add(curveLoopStrasseInterior);
+
+                        if (curveLoopStrasseInteriorList.Count() > 0)
+                        {
+                            Transaction topoTransactionInterior = new Transaction(doc, "Interior");
+                            {
+                                FailureHandlingOptions optionsInt = topoTransactionInterior.GetFailureHandlingOptions();
+                                optionsInt.SetFailuresPreprocessor(new AxesFailure());
+                                topoTransactionInterior.SetFailureHandlingOptions(optionsInt);
+
+                                topoTransactionInterior.Start();
+                                SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
+                                SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopStrasseInteriorList, xPlanReferencePlaneId);
+
+                                ElementId farbeInterior = colorList["interior"];
+                                Parameter materialParam = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
+                                materialParam.Set(farbeInterior);
+                            }
+                            topoTransactionInterior.Commit();
+                        }
                     }
                 }
+                #endregion interior
 
-                
+                //System.Windows.Forms.MessageBox.Show(zOffset.ToString());
+                zOffset += 10.0;
             }
-
-            #endregion interior
-
-            #region exterior
-
-            //List<string> list = new List<String>();
-
-            //int i = 0;
-            //foreach (XmlNode nodeExt in strasseExterior)
-            //{
-            //    List<CurveLoop> curveLoopStrasseList = new List<CurveLoop>();
-            //    CurveLoop curveLoopStrasse = new CurveLoop();
-
-            //    XmlNodeList strassenVerkehrExterior = nodeExt.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
-
-            //    foreach (XmlNode nodePosExt in strassenVerkehrExterior)
-            //    {
-            //        list.Add(nodePosExt.InnerText);
-
-            //        string[] koordWerte = list[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //        if (koordWerte.Count() == 4)
-            //        {
-            //            double xStart = Convert.ToDouble(koordWerte[0], System.Globalization.CultureInfo.InvariantCulture);
-            //            double xStartMeter = xStart * feetToMeter;
-            //            double xStartMeterRedu = xStartMeter / R;
-            //            double yStart = Convert.ToDouble(koordWerte[1], System.Globalization.CultureInfo.InvariantCulture);
-            //            double yStartMeter = yStart * feetToMeter;
-            //            double yStartMeterRedu = yStartMeter / R;
-            //            double zStart = 0.000;
-            //            double zStartMeter = zStart * feetToMeter;
-
-            //            double xEnd = Convert.ToDouble(koordWerte[2], System.Globalization.CultureInfo.InvariantCulture);
-            //            double xEndMeter = xEnd * feetToMeter;
-            //            double xEndMeterRedu = xEndMeter / R;
-            //            double yEnd = Convert.ToDouble(koordWerte[3], System.Globalization.CultureInfo.InvariantCulture);
-            //            double yEndMeter = yEnd * feetToMeter;
-            //            double yEndMeterRedu = yEndMeter / R;
-            //            double zEnd = 0.000;
-            //            double zEndMeter = zEnd * feetToMeter;
-
-            //            XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
-            //            XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
-
-            //            XYZ transfStartPoint = transf.OfPoint(startPoint);
-            //            XYZ transfEndPoint = transf.OfPoint(endPoint);
-
-            //            Line lineStrasse = Line.CreateBound(transfStartPoint, transfEndPoint);
-
-            //            curveLoopStrasse.Append(lineStrasse);
-            //        }
-
-            //        else if (koordWerte.Count() > 4)
-            //        {
-            //            int iSplit = 0;
-
-            //            foreach (string split in koordWerte)
-            //            {
-            //                double xStart = Convert.ToDouble(koordWerte[iSplit], System.Globalization.CultureInfo.InvariantCulture);
-            //                double xStartMeter = xStart * feetToMeter;
-            //                double xStartMeterRedu = xStartMeter / R;
-            //                double yStart = Convert.ToDouble(koordWerte[iSplit + 1], System.Globalization.CultureInfo.InvariantCulture);
-            //                double yStartMeter = yStart * feetToMeter;
-            //                double yStartMeterRedu = yStartMeter / R;
-            //                double zStart = 0.000;
-            //                double zStartMeter = zStart * feetToMeter;
-
-            //                double xEnd = Convert.ToDouble(koordWerte[iSplit + 2], System.Globalization.CultureInfo.InvariantCulture);
-            //                double xEndMeter = xEnd * feetToMeter;
-            //                double xEndMeterRedu = xEndMeter / R;
-            //                double yEnd = Convert.ToDouble(koordWerte[iSplit + 3], System.Globalization.CultureInfo.InvariantCulture);
-            //                double yEndMeter = yEnd * feetToMeter;
-            //                double yEndMeterRedu = yEndMeter / R;
-            //                double zEnd = 0.000;
-            //                double zEndMeter = zEnd * feetToMeter;
-
-            //                XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
-            //                XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
-
-            //                XYZ tStartPoint = transf.OfPoint(startPoint);
-            //                XYZ tEndPoint = transf.OfPoint(endPoint);
-
-            //                if (tStartPoint.DistanceTo(tEndPoint) > 0)
-            //                {
-            //                    Line lineClIndu = Line.CreateBound(tStartPoint, tEndPoint);
-
-            //                    curveLoopStrasse.Append(lineClIndu);
-            //                }
-
-            //                if ((iSplit + 3) == (koordWerte.Count() - 1))
-            //                {
-            //                    break;
-            //                }
-
-            //                iSplit += 2;
-            //            }
-            //        }
-            //        i++;
-            //    }
-
-            //    if (curveLoopStrasse.GetExactLength() > 0)
-            //    {
-            //        curveLoopStrasseList.Add(curveLoopStrasse);
-            //        //System.Windows.Forms.MessageBox.Show(curveLoopStrasse.Count().ToString());
-
-            //        Transaction topoTransaction = new Transaction(doc, "Strassen Exterior");
-            //        {
-            //            FailureHandlingOptions options = topoTransaction.GetFailureHandlingOptions();
-            //            options.SetFailuresPreprocessor(new AxesFailure());
-            //            topoTransaction.SetFailureHandlingOptions(options);
-
-            //            topoTransaction.Start();
-            //            SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-            //            SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopStrasseList, referencePlaneId);
-
-            //            Parameter materialParam = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-            //            materialParam.Set(exteriorMaterialId);
-            //        }
-            //        topoTransaction.Commit();
-            //    }
-            //}            
-
-            #endregion exterior
         }
     }
 }

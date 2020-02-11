@@ -23,6 +23,7 @@ namespace City2RVT.Builder
             //create shared parameter file
             string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
             string paramFile = Path.Combine(modulePath, "City2BIM_Parameters.txt");
+            //System.Windows.Forms.MessageBox.Show(paramFile);
 
             if (!File.Exists(paramFile))
             {
