@@ -144,19 +144,15 @@ namespace City2RVT.GUI.XPlan2BIM
             XYZ normal = new XYZ(0, 0, feetToMeter);
             Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
 
-
-
             #region namespaces
-            var nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
             nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
             nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
             nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
             nsmgr.AddNamespace("xplan", "http://www.xplanung.de/xplangml/5/2");
-
             #endregion namespaces
 
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
-
 
             #region parameter
 
@@ -165,97 +161,10 @@ namespace City2RVT.GUI.XPlan2BIM
             categorySet.Insert(category);
 
             string paramFile = @"D:\Daten\LandBIM\AP 1\Plugin\city2bim\SharedParameterFile.txt";
-            DefinitionFile defFile = app.OpenSharedParameterFile();
-
-
-            Transaction tCreateSpFile = new Transaction(doc, "Create Shared Parameter File");
-            {
-                tCreateSpFile.Start();
-
-                app.SharedParametersFilename = paramFile;
-
-                DefinitionGroup defGrp = defFile.Groups.get_Item("XPlanDaten");
-
-                ExternalDefinitionCreationOptions rechtsstandOption = new ExternalDefinitionCreationOptions("Rechtsstand", ParameterType.Text);
-
-                Definition rechtsstandDefinition = default(Definition);
-
-                if (defGrp == null)
-                {
-                    defGrp = defFile.Groups.Create("XPlanDaten");
-                    rechtsstandDefinition = defGrp.Definitions.Create(rechtsstandOption);
-                }
-
-                else if (defGrp != null)
-                {
-                    if (rechtsstandDefinition == null)
-                    {
-
-                    }
-                    else if (rechtsstandDefinition != null)
-                    {
-                        rechtsstandDefinition = defGrp.Definitions.get_Item("Rechtsstand");
-                    }
-                }
-                tCreateSpFile.Commit();
-
-                foreach (DefinitionGroup dg in defFile.Groups)
-                {
-                    if (dg.Name == "XPlanDaten")
-                    {
-                        ExternalDefinition rechtsstandExtDef = dg.Definitions.get_Item("Rechtsstand") as ExternalDefinition;
-
-                        Transaction tParam = new Transaction(doc, "Insert Parameter");
-                        {
-                            tParam.Start();
-                            InstanceBinding newIB = app.Create.NewInstanceBinding(categorySet);
-                            doc.ParameterBindings.Insert(rechtsstandExtDef, newIB, BuiltInParameterGroup.PG_DATA);
-                        }
-                        tParam.Commit();
-
-                        foreach (XmlNode xplanObjects in allXPlanObjects)
-                        {
-
-                            List<XmlNode> attributListe = new List<XmlNode>();
-                            List<string> attributWertListe = new List<string>();
-
-                            XmlNode rechtsstand = xplanObjects.SelectSingleNode("xplan:BP_StrassenVerkehrsFlaeche/xplan:rechtsstand", nsmgr);
-
-                            attributListe.Add(rechtsstand);
-
-                            for (int x = 0; x < attributListe.Count; x++)
-                            {
-                                try
-                                {
-                                    attributWertListe.Add(attributListe[x].InnerText);
-                                }
-                                catch
-                                {
-                                    attributWertListe.Add("-");
-                                }
-                            }
-
-
-
-                        }
-
-                    }
-
-                }
-
-
-
-
-
-
-
-            }
-
-
+            var parameter = new XPlan2BIM.XPlan_Parameter();
+            DefinitionFile defFile = parameter.CreateDefinitionFile(paramFile, app, doc);
 
             #endregion parameter
-
-
 
             List<string> xPlanObjectList = new List<string>();
             foreach (XmlNode x in allXPlanObjects)
@@ -389,7 +298,6 @@ namespace City2RVT.GUI.XPlan2BIM
                                 {
                                     break;
                                 }
-
                                 iSplit += 2;
                             }
                         }
@@ -429,11 +337,50 @@ namespace City2RVT.GUI.XPlan2BIM
                         i++;
                     }
 
+                    #region parameter
+                    string rechtsstandString = default;
+                    string ebeneString = default;
+                    string rechtscharakterString = default;
+                    string flaechenschlussString = default;
+                    string nutzungsformString = default;
+
+                    foreach (DefinitionGroup dg in defFile.Groups)
+                    {
+                        if (dg.Name == "XPlanDaten")
+                        {
+                            ExternalDefinition rechtsstandExtDef = dg.Definitions.get_Item("Rechtsstand") as ExternalDefinition;
+                            ExternalDefinition ebeneExtDef = dg.Definitions.get_Item("Ebene") as ExternalDefinition;
+                            ExternalDefinition rechtscharakterExtDef = dg.Definitions.get_Item("Rechtscharakter") as ExternalDefinition;
+                            ExternalDefinition flaechenschlussExtDef = dg.Definitions.get_Item("Flaechenschluss") as ExternalDefinition;
+                            ExternalDefinition nutzungsformExtDef = dg.Definitions.get_Item("Nutzungsform") as ExternalDefinition;
+
+                            var getNodeText = new XPlan2BIM.XPlan_Parameter();
+                            rechtsstandString = getNodeText.getNodeText(nodeExt, nsmgr, xPlanObject, "rechtsstand");
+                            ebeneString = getNodeText.getNodeText(nodeExt, nsmgr, xPlanObject, "ebene");
+                            rechtscharakterString = getNodeText.getNodeText(nodeExt, nsmgr, xPlanObject, "rechtscharakter");
+                            flaechenschlussString = getNodeText.getNodeText(nodeExt, nsmgr, xPlanObject, "flaechenschluss");
+                            nutzungsformString = getNodeText.getNodeText(nodeExt, nsmgr, xPlanObject, "nutzungsform");
+
+                            Transaction tParam = new Transaction(doc, "Insert Parameter");
+                            {
+                                tParam.Start();
+                                InstanceBinding newIB = app.Create.NewInstanceBinding(categorySet);
+                                doc.ParameterBindings.Insert(rechtsstandExtDef, newIB, BuiltInParameterGroup.PG_DATA);
+                                doc.ParameterBindings.Insert(ebeneExtDef, newIB, BuiltInParameterGroup.PG_DATA);
+                                doc.ParameterBindings.Insert(rechtscharakterExtDef, newIB, BuiltInParameterGroup.PG_DATA);
+                                doc.ParameterBindings.Insert(flaechenschlussExtDef, newIB, BuiltInParameterGroup.PG_DATA);
+                                doc.ParameterBindings.Insert(nutzungsformExtDef, newIB, BuiltInParameterGroup.PG_DATA);
+                            }
+                            tParam.Commit();                        
+                        }
+                    }
+                    #endregion parameter
+
                     if (curveLoopStrasse.GetExactLength() > 0)
                     {
                         curveLoopStrasseList.Add(curveLoopStrasse);
 
-                        Transaction topoTransaction = new Transaction(doc, "Strassen Exterior");
+                        Transaction topoTransaction = new Transaction(doc, "Exterior");
                         {
                             FailureHandlingOptions optionsExterior = topoTransaction.GetFailureHandlingOptions();
                             optionsExterior.SetFailuresPreprocessor(new AxesFailure());
@@ -446,7 +393,6 @@ namespace City2RVT.GUI.XPlan2BIM
                             Parameter materialParamExterior = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
 
                             ElementId farbe = default(ElementId);
-                            //System.Windows.Forms.MessageBox.Show(xPlanObject.Substring(6));
                             if (colorList.ContainsKey(xPlanObject.Substring(6)))
                             {
                                 farbe = colorList[xPlanObject.Substring(6)];
@@ -456,6 +402,17 @@ namespace City2RVT.GUI.XPlan2BIM
                                 farbe = colorList["default"];
                             }
                             materialParamExterior.Set(farbe);
+
+                            Parameter rechtsstandParameter = siteSubRegion.TopographySurface.LookupParameter("Rechtsstand");
+                            rechtsstandParameter.Set(rechtsstandString);
+                            Parameter ebeneParameter = siteSubRegion.TopographySurface.LookupParameter("Ebene");
+                            ebeneParameter.Set(ebeneString);
+                            Parameter rechtscharakterParameter = siteSubRegion.TopographySurface.LookupParameter("Rechtscharakter");
+                            rechtscharakterParameter.Set(rechtscharakterString);
+                            Parameter flaechenschlussParameter = siteSubRegion.TopographySurface.LookupParameter("Flaechenschluss");
+                            flaechenschlussParameter.Set(flaechenschlussString);
+                            Parameter nutzungsformParameter = siteSubRegion.TopographySurface.LookupParameter("Nutzungsform");
+                            nutzungsformParameter.Set(nutzungsformString);
 
                             Parameter exteriorName = siteSubRegion.TopographySurface.LookupParameter("Kommentare");
                             exteriorName.Set(xPlanObject.Substring(6));
@@ -570,7 +527,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 }
                 #endregion interior
 
-                //System.Windows.Forms.MessageBox.Show(zOffset.ToString());
                 zOffset += 10.0;
             }
         }

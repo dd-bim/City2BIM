@@ -4,13 +4,10 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using City2BIM.Alkis;
 using City2BIM.Geometry;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Xml.Linq;
 using City2BIM;
 using System.Xml;
-
-using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;

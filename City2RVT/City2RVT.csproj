@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder\RevitXPlanBuilder.cs" />
+    <Compile Include="Builder\XPlan_Semantics.cs" />
     <Compile Include="Calc\ConvexHull.cs" />
     <Compile Include="Calc\GeorefCalc.cs" />
     <Compile Include="Calc\UTMcalc.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
       <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\XPlan2BIM\XPlan_Inhalt.cs" />
+    <Compile Include="GUI\XPlan2BIM\XPlan_Parameter.cs" />
     <Compile Include="Reader\ReadALKIS.cs" />
     <Compile Include="Reader\ReadCityGML.cs" />
     <Compile Include="Reader\FileDialog.cs" />
