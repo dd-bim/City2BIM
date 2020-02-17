@@ -420,9 +420,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                     }
                                     tParam.Commit();
                                 }
-                            }
-                                
-
+                            }   
                         }
                     }
                     #endregion parameter
