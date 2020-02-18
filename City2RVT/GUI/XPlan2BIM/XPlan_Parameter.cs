@@ -38,6 +38,8 @@ namespace City2RVT.GUI.XPlan2BIM
                 }
 
                 DefinitionGroup defGrp = defFile.Groups.get_Item("XPlanDaten");
+                //DefinitionGroup defGrp = defFile.Groups.get_Item(defGroupName.Substring(defGroupName.LastIndexOf(':') + 1));
+                //DefinitionGroup defGrp = defFile.Groups.get_Item(defGroupName);
 
                 ExternalDefinitionCreationOptions externalDefinitionOption = new ExternalDefinitionCreationOptions(paramName, ParameterType.Text);
                 Definition definition = default(Definition);
@@ -45,7 +47,9 @@ namespace City2RVT.GUI.XPlan2BIM
                 if (defGrp == null)
                 {
                     defGrp = defFile.Groups.Create("XPlanDaten");
-                    definition = defGrp.Definitions.Create(externalDefinitionOption);
+                    //defGrp = defFile.Groups.Create(defGroupName);
+                    //defGrp = defFile.Groups.Create(defGroupName.Substring(defGroupName.LastIndexOf(':') + 1));
+                   definition = defGrp.Definitions.Create(externalDefinitionOption);
                 }
 
                 else if (defGrp != null)
