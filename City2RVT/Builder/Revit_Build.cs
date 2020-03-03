@@ -11,11 +11,11 @@ namespace City2RVT.Builder
         /// Creates List of CurveLoops with exterior ring and may interior rings
         /// </summary>
         /// <returns>List of CurveLoops for Revit geometry builder e.g. extrusion profile</returns>
-        public static List<CurveLoop> CreateCurveLoopList(List<C2BPoint> exteriorRing, List<List<C2BPoint>> interiorRings, out XYZ planeNormal, C2BPoint calcOffset = null)
+        public static List<CurveLoop> CreateExteriorCurveLoopList(List<C2BPoint> exteriorRing/*, List<List<C2BPoint>> interiorRings*/, out XYZ planeNormal, C2BPoint calcOffset = null)
         {
             List<CurveLoop> rvtPoly = new List<CurveLoop>();        //return variable --> extrusion profile (1 x exterior ring, n x interior rings)
 
-            planeNormal = CalcPlanarFace(exteriorRing, interiorRings, out List<C2BPoint> extPlane, out List<List<C2BPoint>> intPlaneLi);   //calculation of normal pointing
+            planeNormal = CalcExteriorFace(exteriorRing/*, interiorRings*/, out List<C2BPoint> extPlane/*, out List<List<C2BPoint>> intPlaneLi*/);   //calculation of normal pointing
 
             //map to revit and reverse calculation of projection - exterior
 
@@ -28,6 +28,29 @@ namespace City2RVT.Builder
 
                 rvtExteriorXYZ.Add(revPt);
             }
+
+            //create CurveLoops - exterior
+
+            List<Curve> edgesExt = new List<Curve>();
+
+            for (var c = 1; c < rvtExteriorXYZ.Count; c++)
+            {
+                Line edgeEx = Line.CreateBound(rvtExteriorXYZ[c - 1], rvtExteriorXYZ[c]);
+
+                edgesExt.Add(edgeEx);
+            }
+
+            CurveLoop outerLoop = CurveLoop.Create(edgesExt);
+            rvtPoly.Add(outerLoop);
+
+            return rvtPoly;
+        }
+
+        public static List<CurveLoop> CreateInteriorCurveLoopList(/*List<C2BPoint> exteriorRing,*/ List<List<C2BPoint>> interiorRings, out XYZ planeNormal, C2BPoint calcOffset = null)
+        {
+            List<CurveLoop> rvtPoly = new List<CurveLoop>();        //return variable --> extrusion profile (1 x exterior ring, n x interior rings)
+
+            planeNormal = CalcInteriorFace(interiorRings, out List<List<C2BPoint>> intPlaneLi);   //calculation of normal pointing
 
             //map to revit and reverse calculation of projection - interior
 
@@ -47,22 +70,7 @@ namespace City2RVT.Builder
                 rvtInteriorXYZList.Add(rvtInteriorXYZ);
             }
 
-            //create CurveLoops - exterior
-
-            List<Curve> edgesExt = new List<Curve>();
-
-            for (var c = 1; c < rvtExteriorXYZ.Count; c++)
-            {
-                Line edgeEx = Line.CreateBound(rvtExteriorXYZ[c - 1], rvtExteriorXYZ[c]);
-
-                edgesExt.Add(edgeEx);
-            }
-
-            CurveLoop outerLoop = CurveLoop.Create(edgesExt);
-            rvtPoly.Add(outerLoop);
-
             //create CurveLoops - interior
-
             foreach (var rvtInteriorXYZ in rvtInteriorXYZList)
             {
                 List<Curve> edgesInt = new List<Curve>();
@@ -86,10 +94,10 @@ namespace City2RVT.Builder
         /// <param name="extPts">exteriorRing</param>
         /// <param name="intPtsL">interiorRings</param>
         /// <returns>equalizedNormal</returns>
-        private static XYZ CalcPlanarFace(List<C2BPoint> extPts, List<List<C2BPoint>> intPtsL, out List<C2BPoint> extPtsPl, out List<List<C2BPoint>> intPtsLPl)
+        private static XYZ CalcExteriorFace(List<C2BPoint> extPts, out List<C2BPoint> extPtsPl)
         {
             extPtsPl = new List<C2BPoint>();
-            intPtsLPl = new List<List<C2BPoint>>();
+            //intPtsLPl = new List<List<C2BPoint>>();
 
             //plane polygon needs one normal (balanced out of all segments) for further calculations
 
@@ -105,17 +113,6 @@ namespace City2RVT.Builder
                 normalVc += C2BPoint.CrossProduct(extPts[c - 1], extPts[c]);
 
                 centroidExt += extPts[c];
-            }
-
-            //interior points for normal (not for centroid)
-            foreach (var intPts in intPtsL)
-            {
-                for (var c = 1; c < intPts.Count; c++)
-                {
-                    var intNormalVc = C2BPoint.CrossProduct(intPts[c - 1], intPts[c]);
-
-                    normalVc += new C2BPoint(-intNormalVc.X, -intNormalVc.Y, -intNormalVc.Z); //turn sign because interior polygon is CW
-                }
             }
 
             C2BPoint normalizedVc = C2BPoint.Normalized(normalVc);
@@ -134,6 +131,36 @@ namespace City2RVT.Builder
                 C2BPoint vecLotCent = new C2BPoint(d * normalizedVc.X, d * normalizedVc.Y, d * normalizedVc.Z);
                 extPtsPl.Add(pt - vecLotCent);
             }
+         
+            return new XYZ(normalizedVc.X, normalizedVc.Y, normalizedVc.Z);
+        }
+
+        private static XYZ CalcInteriorFace(List<List<C2BPoint>> intPtsL, /*out List<C2BPoint> extPtsPl,*/ out List<List<C2BPoint>> intPtsLPl)
+        {
+            intPtsLPl = new List<List<C2BPoint>>();
+
+            //plane polygon needs one normal (balanced out of all segments) for further calculations
+
+            C2BPoint centroidExt = new C2BPoint(0, 0, 0);   //needed later, but can be calculated in first loop
+
+            //Normal calculation
+            //------------------
+
+            C2BPoint normalVc = new C2BPoint(0, 0, 0);
+
+            //interior points for normal (not for centroid)
+            foreach (var intPts in intPtsL)
+            {
+                for (var c = 1; c < intPts.Count; c++)
+                {
+                    var intNormalVc = C2BPoint.CrossProduct(intPts[c - 1], intPts[c]);
+
+                    normalVc += new C2BPoint(-intNormalVc.X, -intNormalVc.Y, -intNormalVc.Z); //turn sign because interior polygon is CW
+                }
+            }
+
+            C2BPoint normalizedVc = C2BPoint.Normalized(normalVc);
+            C2BPoint normalizedVcCW = new C2BPoint(-normalizedVc.X, -normalizedVc.Y, -normalizedVc.Z);
 
             foreach (var intPts in intPtsL)
             {

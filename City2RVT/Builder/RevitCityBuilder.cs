@@ -211,7 +211,7 @@ namespace City2RVT.Builder
                 else
                     id = internalID;
 
-                List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(groundSurface.ExteriorPts, groundSurface.InteriorPts, out XYZ normal, gmlCorner);
+                List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(groundSurface.ExteriorPts/*, groundSurface.InteriorPts*/, out XYZ normal, gmlCorner);
 
                 if (groundSurface.Facetype == CityGml_Surface.FaceType.outerCeiling)
                 {
@@ -279,7 +279,7 @@ namespace City2RVT.Builder
                     }
                     exteriorHull.Add(new C2BPoint(convexHull.First().x, convexHull.First().y, groundHeight)); //for closed ring
 
-                    List<CurveLoop> loopListHull = Revit_Build.CreateCurveLoopList(exteriorHull, interiorHull, out XYZ normalHull, gmlCorner);
+                    List<CurveLoop> loopListHull = Revit_Build.CreateExteriorCurveLoopList(exteriorHull/*, interiorHull*/, out XYZ normalHull, gmlCorner);
 
                     Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopListHull, -normalHull, extrHeight);
 
@@ -435,7 +435,7 @@ namespace City2RVT.Builder
 
         private void CreateRevitFaceRepresentation(CityGml_Surface surface, Dictionary<Xml_AttrRep, string> bldgAttributes, string lod, Dictionary<Xml_AttrRep, string> partAttributes = null)
         {
-            List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(surface.ExteriorPts, surface.InteriorPts, out XYZ normal, gmlCorner);
+            List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(surface.ExteriorPts/*, surface.InteriorPts*/, out XYZ normal, gmlCorner);
 
             double height = 0.01 / Prop_Revit.feetToM;
 

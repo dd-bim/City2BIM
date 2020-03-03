@@ -155,7 +155,7 @@ namespace City2RVT.GUI
             #endregion IFC Export panel
 
             #region XPlanung panel
-            RibbonPanel panel7 = application.CreateRibbonPanel(tabName, "XPlanung Import");
+            RibbonPanel panel7 = application.CreateRibbonPanel(tabName, "XPlanung");
 
             var xPlanPath =
             System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
@@ -168,6 +168,18 @@ namespace City2RVT.GUI
             thisAssemblyPath, "City2RVT.GUI.Cmd_ImportXPlan")) as PushButton;
             buttonXPlan.ToolTip = "Import functionality for XPlanung files.";
             buttonXPlan.LargeImage = largeImageXPLan;
+
+            var xPlan2IFCPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var xPlan2IFCRootPath = Path.Combine(xPlan2IFCPath, "..", "..");
+            var xPlan2IFCSetPath = Path.Combine(xPlan2IFCRootPath, "img", "IFC_32px_96dpi.png");
+            Uri uriImageXPlan2IFC = new Uri(xPlan2IFCSetPath);
+            BitmapImage largeImageXPLan2IFC = new BitmapImage(uriImageXPlan2IFC);
+
+            PushButton buttonXPlan2IFC = panel7.AddItem(new PushButtonData("XPlanung2IFC", "Exports XPlanung to IFC",
+            thisAssemblyPath, "City2RVT.GUI.XPlan2BIM.Cmd_ExportXPlan2IFC")) as PushButton;
+            buttonXPlan2IFC.ToolTip = "IFC Export functionality for XPlanung files.";
+            buttonXPlan2IFC.LargeImage = largeImageXPLan2IFC;
 
 
             #endregion XPlanung panel

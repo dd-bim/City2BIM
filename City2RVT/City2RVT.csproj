@@ -61,6 +61,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -83,9 +84,13 @@
     <Compile Include="Calc\UTMcalc.cs" />
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
+    <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
     <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
       <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\XPlan2BIM\Wpf_XPlan2IFC.xaml.cs">
+      <DependentUpon>Wpf_XPlan2IFC.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\XPlan_Inhalt.cs" />
     <Compile Include="GUI\XPlan2BIM\XPlan_Parameter.cs" />
@@ -135,6 +140,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\XPlan2BIM\Wpf_XPlan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\XPlan2BIM\Wpf_XPlan2IFC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
