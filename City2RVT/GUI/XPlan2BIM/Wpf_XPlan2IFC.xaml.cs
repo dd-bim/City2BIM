@@ -25,6 +25,9 @@ using NLog;
 using NLog.Targets;
 using NLog.Config;
 
+//using Xbim.Ifc;
+//https://forums.autodesk.com/t5/revit-api-forum/revit-api-s-integration-with-xbim-geometry-microsoft-extensions/td-p/9270358
+
 namespace City2RVT.GUI.XPlan2BIM
 {
     /// <summary>
@@ -49,6 +52,23 @@ namespace City2RVT.GUI.XPlan2BIM
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        //string locationFolder;
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var dlg = new FolderBrowserDialog();
+            DialogResult folder = dlg.ShowDialog();
+            string locationFolder = dlg.SelectedPath;
+            System.Windows.Forms.MessageBox.Show(locationFolder.ToString());
+            ifc_Location.Text = locationFolder;
+            //Reader.FileDialog ifcLocation = new Reader.FileDialog();
+            //ifc_Location.Text = ifcLocation.ImportPath(Reader.FileDialog.Data.XPlanGML);
+        }
+
+        private void ifc_Location_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
         }
     }
 }

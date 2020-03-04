@@ -565,5 +565,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 zOffset += 10.0;
             }
         }
+
+        private void Xplan_file_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
