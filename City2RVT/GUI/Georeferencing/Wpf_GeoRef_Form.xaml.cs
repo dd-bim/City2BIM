@@ -39,19 +39,43 @@ namespace City2RVT.GUI
             //var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "GUI");
             //path = Path.Combine(path, "")
 
-            var path10 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef10.png");
+            /*var path10 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef10.png");
             Uri uri10 = new Uri(path10);
-            BitmapImage img10 = new BitmapImage(uri10);
+            BitmapImage img10 = new BitmapImage(uri10);*/
+            System.IO.MemoryStream ms10 = new System.IO.MemoryStream();
+            var bitmap10 = ResourcePictures.Georef_32px_96dpi;
+            bitmap10.Save(ms10, System.Drawing.Imaging.ImageFormat.Bmp);
+            BitmapImage img10 = new BitmapImage();
+            ms10.Position = 0;
+            img10.BeginInit();
+            img10.StreamSource = ms10;
+            img10.EndInit();
             georef10_pic.Source = img10;
 
-            var path20 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef20.png");
+            /*var path20 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef20.png");
             Uri uri20 = new Uri(path20);
-            BitmapImage img20 = new BitmapImage(uri20);
+            BitmapImage img20 = new BitmapImage(uri20);*/
+            System.IO.MemoryStream ms20 = new System.IO.MemoryStream();
+            var bitmap20 = ResourcePictures.Georef_32px_96dpi;
+            bitmap20.Save(ms20, System.Drawing.Imaging.ImageFormat.Bmp);
+            BitmapImage img20 = new BitmapImage();
+            ms20.Position = 0;
+            img20.BeginInit();
+            img20.StreamSource = ms20;
+            img20.EndInit();
             georef20_pic.Source = img20;
 
-            var path50 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef50.png");
+            /*var path50 = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\icon_georef50.png");
             Uri uri50 = new Uri(path50);
-            BitmapImage img50 = new BitmapImage(uri50);
+            BitmapImage img50 = new BitmapImage(uri50);*/
+            System.IO.MemoryStream ms50 = new System.IO.MemoryStream();
+            var bitmap50 = ResourcePictures.Georef_32px_96dpi;
+            bitmap50.Save(ms50, System.Drawing.Imaging.ImageFormat.Bmp);
+            BitmapImage img50 = new BitmapImage();
+            ms50.Position = 0;
+            img50.BeginInit();
+            img50.StreamSource = ms50;
+            img50.EndInit();
             georef50_pic.Source = img50;
 
             foreach (var item in epsgList)
