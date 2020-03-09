@@ -5,6 +5,8 @@ using City2BIM.Geometry;
 using City2BIM.Semantic;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using System.Windows.Forms;
 
 namespace City2RVT.Builder
 {
@@ -99,20 +101,7 @@ namespace City2RVT.Builder
                         List<C2BPoint> polyExt = obj.Segments.Select(j => j[0]).ToList();
                         polyExt.Add(obj.Segments[0][0]);                                    //convert Segments to LinearRing
 
-                        List<List<C2BPoint>> polysInt = new List<List<C2BPoint>>();
-
-                        if (obj.InnerSegments != null)
-                        {
-
-                            foreach (var segInt in obj.InnerSegments)
-                            {
-                                List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
-                                polyInt.Add(segInt[0][0]);                                    //convert Segments to LinearRing
-
-                                polysInt.Add(polyInt);
-                            }
-                        }
-                        List<CurveLoop> loopList = Revit_Build.CreateCurveLoopList(polyExt, polysInt, out XYZ normal);
+                        List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(polyExt, out XYZ normal);
 
                         using (Transaction subTrans = new Transaction(doc, "Create " + obj.UsageType))
                         {
@@ -144,39 +133,59 @@ namespace City2RVT.Builder
                     }
                 }
 
+                #region interior
+                foreach (var obj in topoGr)
+                {
+                    try
+                    {
+                        List<List<C2BPoint>> polysInt = new List<List<C2BPoint>>();
+
+                        if (obj.InnerSegments != null)
+                        {
+
+                            foreach (var segInt in obj.InnerSegments)
+                            {
+                                List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
+                                polyInt.Add(segInt[0][0]);                                    //convert Segments to LinearRing
+
+                                polysInt.Add(polyInt);
+                            }
+                        }
+                        List<CurveLoop> loopList = Revit_Build.CreateInteriorCurveLoopList(polysInt, out XYZ normal);
+
+                        using (Transaction interiorTrans = new Transaction(doc, "Create Interior" + obj.UsageType))
+                        {
+                            {
+                                FailureHandlingOptions options = interiorTrans.GetFailureHandlingOptions();
+                                options.SetFailuresPreprocessor(new AxesFailure());
+                                interiorTrans.SetFailureHandlingOptions(options);
+
+                                interiorTrans.Start();
+
+                                SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
+                                siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
+
+                                if (obj.Attributes != null)
+                                    siteSubRegion = SetAttributeValues(siteSubRegion, obj.Attributes);
+
+                                string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+                                Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
+
+                                commAttr.Set("ALKIS Interior: " + obj.UsageType);
+
+                                //siteSubRegion.TopographySurface.Pinned = true;
+                            }
+                            interiorTrans.Commit();
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                #endregion interior
             }
         }
-
-        //var fPt = allPtArr.First().First()[0];
-        //C2BPoint uppR = new C2BPoint(fPt.X, fPt.Y, 0);
-        //C2BPoint lowL = new C2BPoint(fPt.X, fPt.Y, 0);
-
-        //foreach (var ptArr in allPtArr)
-        //{
-        //    foreach (var pt in ptArr)
-        //    {
-        //        foreach (var p in pt)
-        //        {
-        //            if (p.X > uppR.X)
-        //                uppR.X = p.X;
-
-        //            if (p.Y > uppR.Y)
-        //                uppR.Y = p.Y;
-
-        //            if (p.X < lowL.X)
-        //                lowL.X = p.X;
-
-        //            if (p.Y < lowL.Y)
-        //                lowL.Y = p.Y;
-        //        }
-        //    }
-        //}
-
-        //List<C2BPoint> bBox = new List<C2BPoint>();
-        //bBox.Add(lowL);
-        //bBox.Add(new C2BPoint(lowL.X, uppR.Y, 0.0));
-        //bBox.Add(uppR);
-        //bBox.Add(new C2BPoint(uppR.X, lowL.Y, 0.0));
 
         private List<XYZ> GetTopoPts(IEnumerable<List<C2BPoint[]>> segments, AX_Object.AXGroup axGroup, out double zOffset)
         {
@@ -198,7 +207,9 @@ namespace City2RVT.Builder
 
             var convexHull = Calc.ConvexHull.MakeHull(ptList);
 
-            zOffset = 0.0;
+            //zOffset = 0.0;
+            zOffset = default(double);
+
 
             switch (axGroup)
             {
@@ -223,6 +234,7 @@ namespace City2RVT.Builder
             foreach (var pt in convexHull)
             {
                 var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(new C2BPoint(pt.x, pt.y, zOffset), true);
+                //var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(new C2BPoint(pt.x, pt.y, 0.0), true);
 
                 topoPts.Add(Revit_Build.GetRevPt(unprojectedPt));
             }
@@ -363,7 +375,6 @@ namespace City2RVT.Builder
             return ds;
         }
 
-
         private Dictionary<ColorType, ElementId> CreateColorAsMaterial()
         {
             ElementId parcelMat = ElementId.InvalidElementId;
@@ -445,7 +456,6 @@ namespace City2RVT.Builder
                 else
                     trafficMat = trafficMats.First();
 
-
                 //Vegetation
 
                 var vegetMats
@@ -461,7 +471,6 @@ namespace City2RVT.Builder
                 }
                 else
                     vegetMat = vegetMats.First();
-
 
                 //Waters
 

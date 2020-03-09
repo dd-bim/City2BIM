@@ -4,7 +4,7 @@ namespace City2RVT.Reader
 {
     internal class FileDialog
     {
-        public enum Data { CityGML, ALKIS, DGM };
+        public enum Data { CityGML, ALKIS, DGM, XPlanGML };
 
         public string ImportPath(Data geodata)
         {
@@ -28,6 +28,12 @@ namespace City2RVT.Reader
                     {
                         ofd.Title = "Select Grid terrain file.";
                         ofd.Filter = "DGM - XYZ coordinates (*.txt) | *.txt| DGM - XYZ coordinates (*.csv) | *.csv| All Files (*.*) | *.*";
+                        break;
+                    }
+                case (Data.XPlanGML):
+                    {
+                        ofd.Title = "Select XPlanung file.";
+                        ofd.Filter = "XPlanGML (*.gml) | *.gml| All Files (*.*) | *.*";
                         break;
                     }
                 default:

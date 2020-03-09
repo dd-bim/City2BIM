@@ -137,6 +137,11 @@ namespace City2RVT.GUI
             this.Close();
         }
 
+        private void Tb_file_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
+
         //private void rb_custom_Checked(object sender, RoutedEventArgs e)
         //{
         //    tb_lat.IsEnabled = true;

@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.DB;
+using System.Windows.Forms;
 
 namespace City2RVT
 {
@@ -22,6 +23,10 @@ namespace City2RVT
         {
             XYZ vectorPBP =
             new XYZ(GUI.Prop_GeoRefSettings.ProjCoord[1] / feetToM, GUI.Prop_GeoRefSettings.ProjCoord[0] / feetToM, GUI.Prop_GeoRefSettings.ProjElevation / feetToM);
+
+            //MessageBox.Show((GUI.Prop_GeoRefSettings.ProjCoord[1] / feetToM).ToString());
+            //MessageBox.Show((GUI.Prop_GeoRefSettings.ProjCoord[0] / feetToM).ToString());
+
 
             double angle = GUI.Prop_GeoRefSettings.ProjAngle / Prop_Revit.radToDeg;
 

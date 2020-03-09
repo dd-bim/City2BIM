@@ -23,6 +23,7 @@ namespace City2RVT.Builder
             //create shared parameter file
             string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
             string paramFile = Path.Combine(modulePath, "City2BIM_Parameters.txt");
+            //System.Windows.Forms.MessageBox.Show(paramFile);
 
             if (!File.Exists(paramFile))
             {
@@ -67,7 +68,7 @@ namespace City2RVT.Builder
 
         private ParameterType GetParameterType(Xml_AttrRep.AttrType gmlType)
         {
-            ParameterType pType = default;
+            ParameterType pType = default(ParameterType);
 
             switch (gmlType)
             {
@@ -163,7 +164,7 @@ namespace City2RVT.Builder
 
                 Xml_AttrRep attribute = attributeGroup.First();
 
-                DefinitionGroup currentGroup = default;
+                DefinitionGroup currentGroup = default(DefinitionGroup);
 
                 switch (attribute.XmlNamespace)
                 {

@@ -64,6 +64,8 @@ namespace City2BIM.GmlRep
         }
 
         public List<List<C2BPoint>> InteriorPts { get => interiorPts; set => interiorPts = value; }
+        //public List<List<C2BPoint>> InteriorPts { get => interiorPts; set => interiorPts = null; }
+
         public List<C2BPoint> ExteriorPts { get => exteriorPts; set => exteriorPts = value; }
 
         public enum FaceType { roof, wall, ground, closure, outerCeiling, outerFloor, unknown }
