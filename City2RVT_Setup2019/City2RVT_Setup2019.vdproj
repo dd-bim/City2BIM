@@ -4,15 +4,21 @@
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
 "ProjectName" = "8:City2RVT_Setup2019"
-"LanguageId" = "3:1031"
+"LanguageId" = "3:1033"
 "CodePage" = "3:1252"
-"UILanguageId" = "3:1031"
+"UILanguageId" = "3:1033"
 "SccProjectName" = "8:"
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
 "SccProvider" = "8:"
     "Hierarchy"
     {
+        "Entry"
+        {
+        "MsmKey" = "8:_03F830F0298D41AEA0C38AABBDE899CD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
         "Entry"
         {
         "MsmKey" = "8:_07820726CD296FECC0AB105DD87E64F1"
@@ -663,14 +669,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3CC7B5B45C3753AEF3E7C182E3E2D3AC"
-        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
+        "MsmKey" = "8:_2F4FFD63923D488FAF703194F3378952"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_3CC7B5B45C3753AEF3E7C182E3E2D3AC"
-        "OwnerKey" = "8:_859D6649F025B0D1BF72C7D7B0A010C7"
+        "OwnerKey" = "8:_90B8022B5146602096FBD91085C62217"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3CC7B5B45C3753AEF3E7C182E3E2D3AC"
+        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -688,7 +700,13 @@
         "Entry"
         {
         "MsmKey" = "8:_46433E71E5BCA9D88FE780F0A643014C"
-        "OwnerKey" = "8:_859D6649F025B0D1BF72C7D7B0A010C7"
+        "OwnerKey" = "8:_90B8022B5146602096FBD91085C62217"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_46433E71E5BCA9D88FE780F0A643014C"
+        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -699,8 +717,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_46433E71E5BCA9D88FE780F0A643014C"
-        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
+        "MsmKey" = "8:_486240C9D51B4E5BBD24FA01B83595E4"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -777,6 +795,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_64BCB3C545C34C59963D1E47C431A721"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6700AB7ED1307F66383D626027BF7EB8"
         "OwnerKey" = "8:_A5CDE727662B3B00FD4C3387F55FBD0D"
         "MsmSig" = "8:_UNDEFINED"
@@ -785,6 +809,12 @@
         {
         "MsmKey" = "8:_6700AB7ED1307F66383D626027BF7EB8"
         "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6FA83AF796284B29A596F714999C608C"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1035,12 +1065,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_859D6649F025B0D1BF72C7D7B0A010C7"
-        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_86DE38D40632334E56BFB4159B859DA6"
         "OwnerKey" = "8:_A5CDE727662B3B00FD4C3387F55FBD0D"
         "MsmSig" = "8:_UNDEFINED"
@@ -1102,6 +1126,12 @@
         "Entry"
         {
         "MsmKey" = "8:_8F3B45AF86BFC1C9E0DFB267CC787662"
+        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_90B8022B5146602096FBD91085C62217"
         "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1383,12 +1413,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9A8A49B7C74F639537BF274844DE9986"
-        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A0853B0D701C35F89BC8784B90A72A6A"
         "OwnerKey" = "8:_8408A0EFA598C8080DB0342C0D95F9ED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1457,6 +1481,12 @@
         {
         "MsmKey" = "8:_A5CDE727662B3B00FD4C3387F55FBD0D"
         "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A6148D1C5F6848728FE6FBF7ACE98B26"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1635,6 +1665,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_ED5D0417AC0F4C378E1C3CF90D8505AE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F27FCB1B2A96D1DC74FFAC701F1F0767"
         "OwnerKey" = "8:_A5CDE727662B3B00FD4C3387F55FBD0D"
         "MsmSig" = "8:_UNDEFINED"
@@ -1809,20 +1845,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E04F1DC4DD1AAE9AFD17343690282C49"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_859D6649F025B0D1BF72C7D7B0A010C7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_46433E71E5BCA9D88FE780F0A643014C"
+        "MsmKey" = "8:_FD099A821A95C601067298E3C7EF4F55"
+        "OwnerKey" = "8:_92DE8DA486044BD48924DEFDC702117E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1834,7 +1858,43 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9A8A49B7C74F639537BF274844DE9986"
+        "OwnerKey" = "8:_03F830F0298D41AEA0C38AABBDE899CD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_64BCB3C545C34C59963D1E47C431A721"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A6148D1C5F6848728FE6FBF7ACE98B26"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_90B8022B5146602096FBD91085C62217"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6FA83AF796284B29A596F714999C608C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_D5E87779F08FFD78787A6BA16027E7F2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_FD099A821A95C601067298E3C7EF4F55"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1846,7 +1906,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D5E87779F08FFD78787A6BA16027E7F2"
+        "OwnerKey" = "8:_46433E71E5BCA9D88FE780F0A643014C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2155,6 +2215,12 @@
         "OwnerKey" = "8:_921299E9A423B493D85E6649603EC42C"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_E04F1DC4DD1AAE9AFD17343690282C49"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -2173,6 +2239,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -2189,6 +2271,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -2218,6 +2316,37 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_03F830F0298D41AEA0C38AABBDE899CD"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_03F830F0298D41AEA0C38AABBDE899CD"
+                    {
+                    "Name" = "8:Serilog.Sinks.File.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\packages\\Serilog.Sinks.File.4.1.0\\lib\\net45\\Serilog.Sinks.File.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_07820726CD296FECC0AB105DD87E64F1"
             {
             "AssemblyRegister" = "3:1"
@@ -2621,6 +2750,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2F4FFD63923D488FAF703194F3378952"
+            {
+            "SourcePath" = "8:..\\City2RVT\\egm2008.egm.cof"
+            "TargetName" = "8:egm2008.egm.cof"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3CC7B5B45C3753AEF3E7C182E3E2D3AC"
             {
             "AssemblyRegister" = "3:1"
@@ -2712,6 +2861,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_486240C9D51B4E5BBD24FA01B83595E4"
+            {
+            "SourcePath" = "8:..\\City2RVT\\Geographic.dll"
+            "TargetName" = "8:Geographic.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4A2C88FAEE8E08FDD00494980E05CCBA"
@@ -2900,6 +3069,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_64BCB3C545C34C59963D1E47C431A721"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_64BCB3C545C34C59963D1E47C431A721"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\packages\\Newtonsoft.Json.10.0.2\\lib\\net45\\Newtonsoft.Json.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6700AB7ED1307F66383D626027BF7EB8"
             {
             "AssemblyRegister" = "3:1"
@@ -2929,6 +3129,37 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6FA83AF796284B29A596F714999C608C"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_6FA83AF796284B29A596F714999C608C"
+                    {
+                    "Name" = "8:NETGeographic.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\GeographicLib\\NETGeographic.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_75A588D487EDC56F78BC40C267B1FB1A"
@@ -3083,37 +3314,6 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_859D6649F025B0D1BF72C7D7B0A010C7"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:City2BIM, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
-                "ScatterAssemblies"
-                {
-                    "_859D6649F025B0D1BF72C7D7B0A010C7"
-                    {
-                    "Name" = "8:City2BIM.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:City2BIM.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -3272,6 +3472,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_90B8022B5146602096FBD91085C62217"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:City2BIM, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_90B8022B5146602096FBD91085C62217"
+                    {
+                    "Name" = "8:City2BIM.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:City2BIM.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_921299E9A423B493D85E6649603EC42C"
             {
             "AssemblyRegister" = "3:1"
@@ -3416,37 +3647,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9A8A49B7C74F639537BF274844DE9986"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64"
-                "ScatterAssemblies"
-                {
-                    "_9A8A49B7C74F639537BF274844DE9986"
-                    {
-                    "Name" = "8:NETGeographic.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:NETGeographic.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A0853B0D701C35F89BC8784B90A72A6A"
             {
             "AssemblyRegister" = "3:1"
@@ -3507,6 +3707,37 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A6148D1C5F6848728FE6FBF7ACE98B26"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:GeoJSON.Net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=42c00ea87f5f14d4, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A6148D1C5F6848728FE6FBF7ACE98B26"
+                    {
+                    "Name" = "8:GeoJSON.Net.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\packages\\GeoJSON.Net.1.2.15\\lib\\net45\\GeoJSON.Net.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B17B59FA221B7B51A8BBA70311189FEF"
@@ -3881,6 +4112,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ED5D0417AC0F4C378E1C3CF90D8505AE"
+            {
+            "SourcePath" = "8:..\\City2RVT\\egm2008.egm"
+            "TargetName" = "8:egm2008.egm"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F27FCB1B2A96D1DC74FFAC701F1F0767"
             {
             "AssemblyRegister" = "3:1"
@@ -4005,6 +4256,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FD099A821A95C601067298E3C7EF4F55"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_FD099A821A95C601067298E3C7EF4F55"
+                    {
+                    "Name" = "8:NETGeographic.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:NETGeographic.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -4089,15 +4371,15 @@
         }
         "MsiBootstrapper"
         {
-        "LangId" = "3:1031"
+        "LangId" = "3:1033"
         "RequiresElevation" = "11:FALSE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:City2RVT_Setup2019"
+        "ProductName" = "8:City2RVT_Setup"
         "ProductCode" = "8:{AE8620FA-8933-4E9D-AEDE-8CCBA1EFFB36}"
-        "PackageCode" = "8:{DFD48302-40A7-4457-8604-AF7E4E360569}"
+        "PackageCode" = "8:{37DDB0D5-9DCC-479E-AFE0-B4ACE4840189}"
         "UpgradeCode" = "8:{72865C19-109C-4129-8813-CCA9240572C1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -4108,7 +4390,7 @@
         "Manufacturer" = "8:HTW Dresden, Faculty of Spatial Information"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:City2RVT_Setup2019"
+        "Title" = "8:City2RVT_Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Hendrik Goerne"
         "Keywords" = "8:"
@@ -4618,7 +4900,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92DE8DA486044BD48924DEFDC702117E"
             {
-            "SourcePath" = "8:..\\City2RVT\\obj\\x64\\Debug\\City2RVT.dll"
+            "SourcePath" = "8:..\\City2RVT\\obj\\x64\\Release\\City2RVT.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_073FA3B7CA9D450E914089AF7FF6381A"
