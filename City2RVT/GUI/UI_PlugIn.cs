@@ -26,10 +26,11 @@ namespace City2RVT.GUI
 
             /*var globePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Georef_32px_96dpi.png");           
             Uri uriImage = new Uri(globePath);
-            BitmapImage largeImage = new BitmapImage(uriImage);*/            
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            BitmapImage largeImage = new BitmapImage(uriImage);*/
+            //System.IO.MemoryStream ms = new System.IO.MemoryStream();
             var bitmap = ResourcePictures.Georef_32px_96dpi;
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImage = new BitmapImage();
             ms.Position = 0;
             largeImage.BeginInit();
@@ -39,7 +40,7 @@ namespace City2RVT.GUI
             PushButton buttonGeoRef = panel2.AddItem(new PushButtonData("Show Georef information", "Level of Georef",
             thisAssemblyPath, "City2RVT.GUI.Cmd_GeoRefUI")) as PushButton;
             buttonGeoRef.ToolTip = "Show georef information for current project.";
-            buttonGeoRef.LargeImage = largeImage;
+            buttonGeoRef.LargeImage = largeImage; 
 
             #endregion Georef panel
 
@@ -55,7 +56,7 @@ namespace City2RVT.GUI
             BitmapImage largeImageC = new BitmapImage(uriImageC);*/
             System.IO.MemoryStream msC = new System.IO.MemoryStream();
             var bitmapC = ResourcePictures.citygml_32px_96dpi;
-            bitmapC.Save(msC, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmapC.Save(msC, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImageC = new BitmapImage();
             msC.Position = 0;
             largeImageC.BeginInit();
@@ -87,7 +88,7 @@ namespace City2RVT.GUI
             BitmapImage largeImageCSet = new BitmapImage(uriImageCSet);*/
             System.IO.MemoryStream msCSet = new System.IO.MemoryStream();
             var bitmapCSet = ResourcePictures.citygml_set_32px;
-            bitmapCSet.Save(msCSet, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmapCSet.Save(msCSet, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImageCSet = new BitmapImage();
             msCSet.Position = 0;
             largeImageCSet.BeginInit();
@@ -113,7 +114,7 @@ namespace City2RVT.GUI
             BitmapImage largeImageA = new BitmapImage(uriImageA);*/
             System.IO.MemoryStream msA = new System.IO.MemoryStream();
             var bitmapA = ResourcePictures.ALKIS_32px_96dpi;
-            bitmapA.Save(msA, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmapA.Save(msA, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImageA = new BitmapImage();
             msA.Position = 0;
             largeImageA.BeginInit();
@@ -131,7 +132,7 @@ namespace City2RVT.GUI
             BitmapImage largeImageCAlk = new BitmapImage(uriImageCAlk);*/
             System.IO.MemoryStream msCAlk = new System.IO.MemoryStream();
             var bitmapCAlk = ResourcePictures.ALKISset_32px;
-            bitmapCAlk.Save(msCAlk, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmapCAlk.Save(msCAlk, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImageCAlk = new BitmapImage();
             msCAlk.Position = 0;
             largeImageCAlk.BeginInit();
@@ -156,7 +157,7 @@ namespace City2RVT.GUI
             BitmapImage largeImageT = new BitmapImage(uriImageT);*/
             System.IO.MemoryStream msT = new System.IO.MemoryStream();
             var bitmapT = ResourcePictures.DTM_32px_96dpi;
-            bitmapT.Save(msT, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmapT.Save(msT, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImageT = new BitmapImage();
             msT.Position = 0;
             largeImageT.BeginInit();
@@ -180,7 +181,7 @@ namespace City2RVT.GUI
             BitmapImage largeImageIfc = new BitmapImage(uriImageIfc);*/
             System.IO.MemoryStream msIfc = new System.IO.MemoryStream();
             var bitmapIfc = ResourcePictures.IFC_32px_96dpi;
-            bitmapIfc.Save(msIfc, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmapIfc.Save(msIfc, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImageIfc = new BitmapImage();
             msIfc.Position = 0;
             largeImageIfc.BeginInit();

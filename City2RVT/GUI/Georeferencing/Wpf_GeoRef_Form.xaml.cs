@@ -43,8 +43,8 @@ namespace City2RVT.GUI
             Uri uri10 = new Uri(path10);
             BitmapImage img10 = new BitmapImage(uri10);*/
             System.IO.MemoryStream ms10 = new System.IO.MemoryStream();
-            var bitmap10 = ResourcePictures.Georef_32px_96dpi;
-            bitmap10.Save(ms10, System.Drawing.Imaging.ImageFormat.Bmp);
+            var bitmap10 = ResourcePictures.icon_georef10;
+            bitmap10.Save(ms10, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage img10 = new BitmapImage();
             ms10.Position = 0;
             img10.BeginInit();
@@ -56,8 +56,8 @@ namespace City2RVT.GUI
             Uri uri20 = new Uri(path20);
             BitmapImage img20 = new BitmapImage(uri20);*/
             System.IO.MemoryStream ms20 = new System.IO.MemoryStream();
-            var bitmap20 = ResourcePictures.Georef_32px_96dpi;
-            bitmap20.Save(ms20, System.Drawing.Imaging.ImageFormat.Bmp);
+            var bitmap20 = ResourcePictures.icon_georef20;
+            bitmap20.Save(ms20, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage img20 = new BitmapImage();
             ms20.Position = 0;
             img20.BeginInit();
@@ -69,8 +69,8 @@ namespace City2RVT.GUI
             Uri uri50 = new Uri(path50);
             BitmapImage img50 = new BitmapImage(uri50);*/
             System.IO.MemoryStream ms50 = new System.IO.MemoryStream();
-            var bitmap50 = ResourcePictures.Georef_32px_96dpi;
-            bitmap50.Save(ms50, System.Drawing.Imaging.ImageFormat.Bmp);
+            var bitmap50 = ResourcePictures.icon_georef50;
+            bitmap50.Save(ms50, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage img50 = new BitmapImage();
             ms50.Position = 0;
             img50.BeginInit();
