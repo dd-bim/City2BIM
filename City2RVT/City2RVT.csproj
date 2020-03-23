@@ -60,6 +60,9 @@
     <Reference Include="NETGeographic">
       <HintPath>..\GeographicLib\NETGeographic.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI">
@@ -158,6 +161,7 @@
     <Content Include="img\DTM_32px_96dpi.png" />
     <Content Include="img\Georef_32px_96dpi.png" />
     <Content Include="img\IFC_32px_96dpi.png" />
+    <None Include="app.config" />
     <None Include="img\XPlanung_logo.PNG" />
     <None Include="img\XPlan_32px.png" />
   </ItemGroup>
