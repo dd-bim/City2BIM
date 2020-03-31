@@ -36,10 +36,9 @@ using System.Xml;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
-
     public class IfcXBim
     {
-        public static IfcStore CreateandInitModel(string projectName)
+        public static IfcStore CreateandInitModel(string projectName, Document doc)
         {
             //first we need to set up some credentials for ownership of data in the new model
             var credentials = new XbimEditorCredentials
@@ -57,6 +56,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
             var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc4, Xbim.IO.XbimStoreType.InMemoryModel);
 
+            //Parameter myParam = doc.ProjectInformation.LookupParameter("Testproperty");
+            //string para = myParam.AsString();
+            //System.Windows.Forms.MessageBox.Show(para);
+
             //Begin a transaction as all changes to a model are ACID
             using (var txn = model.BeginTransaction("Initialise Model"))
             {
@@ -73,17 +76,81 @@ namespace City2RVT.GUI.XPlan2BIM
                     rel.RelatedObjects.Add(project);
                     rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
                     {
-                        pset.Name = "IfcExportTopographie";
+                        pset.Name = "BauantragAllgemein";
 
                         pset.HasProperties.AddRange(new[]
                         {
                             model.Instances.New<IfcPropertySingleValue>(p =>
                                 {
+                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bezeichnung des Bauvorhabens");
+                                    string projInfoParamValue = projInfoParam.AsString();
                                     string rfaNameAttri = "Bezeichnung des Bauvorhabens";
                                     p.Name = rfaNameAttri;
-                                    p.NominalValue = new IfcLabel("LandBIM Bauvorhaben");
+                                    p.NominalValue = new IfcLabel(projInfoParamValue);
                                 }),
-                        });                        
+                        });
+                        pset.HasProperties.AddRange(new[]
+                        {
+                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
+                                {
+                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art der Maßnahme");
+                                    string projInfoParamValue = projInfoParam.AsString();
+                                    string rfaNameAttri = "Art der Maßnahme";
+                                    p.Name = rfaNameAttri;
+                                    p.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
+                                    //p.EnumerationValues.Add(new IfcLabel("ERRICHTUNG"));
+                                    //p.EnumerationValues.Add(new IfcLabel("AENDERUNG"));
+                                    //p.EnumerationValues.Add(new IfcLabel("NUTZUNGSAENDERUNG_OHNE_BAULICHE_AENDERUNG"));
+                                    //p.EnumerationValues.Add(new IfcLabel("NUTZUNGSAENDERUNG_MIT_BAULICHER_AENDERUNG"));
+                                    //p.EnumerationValues.Add(new IfcLabel("BESEITIGUNG"));
+
+                                }),
+                        });
+                        pset.HasProperties.AddRange(new[]
+                        {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art des Gebäudes");
+                                    string projInfoParamValue = projInfoParam.AsString();
+                                    string rfaNameAttri = "Art des Gebäudes";
+                                    p.Name = rfaNameAttri;
+                                    p.NominalValue = new IfcLabel(projInfoParamValue);
+                                }),
+                        });
+                        pset.HasProperties.AddRange(new[]
+                        {
+                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
+                                {
+                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Gebäudeklasse");
+                                    string projInfoParamValue = projInfoParam.AsString();
+                                    string rfaNameAttri = "Gebäudeklasse";
+                                    p.Name = rfaNameAttri;
+                                    p.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
+                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_1"));
+                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_2"));
+                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_3"));
+                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_4"));
+                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_5"));
+
+                                }),
+                        });
+                        pset.HasProperties.AddRange(new[]
+                        {
+                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
+                                {
+                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bauweise");
+                                    string projInfoParamValue = projInfoParam.AsString();
+                                    string rfaNameAttri = "Bauweise";
+                                    p.Name = rfaNameAttri;
+                                    p.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
+                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_EINZELHAUS"));
+                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_DOPPELHAUS"));
+                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_HAUSGRUPPE"));
+                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_GESCHOSSBAU"));
+                                    //p.EnumerationValues.Add(new IfcLabel("GESCHLOSSENE_BAUWEISE"));
+                                    //p.EnumerationValues.Add(new IfcLabel("ABWEICHENDE_BAUWEISE"));
+                                }),
+                        });
                     });
                 });
 
@@ -110,7 +177,7 @@ namespace City2RVT.GUI.XPlan2BIM
             return colorList;
         }
 
-        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, Transform transf, ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf)
+        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, /*Transform transf, */ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf)
         {
             double feetToMeter = 1.0 / 0.3048;
 
@@ -128,7 +195,8 @@ namespace City2RVT.GUI.XPlan2BIM
                 int i = 0;
                 foreach (var x in topoPoints)
                 {
-                    XYZ transPoint = transf.OfPoint(new XYZ(topoPoints[i].X, topoPoints[i].Y, topoPoints[i].Z));
+                    //XYZ transPoint = transf.OfPoint(new XYZ(topoPoints[i].X, topoPoints[i].Y, topoPoints[i].Z));
+                    XYZ transPoint = new XYZ(topoPoints[i].X, topoPoints[i].Y, topoPoints[i].Z);
                     var cartPoint = model.Instances.New<IfcCartesianPoint>();
                     cartPoint.SetXYZ(Convert.ToDouble(transPoint.X, System.Globalization.CultureInfo.InvariantCulture)/feetToMeter,
                         Convert.ToDouble(transPoint.Y, System.Globalization.CultureInfo.InvariantCulture) / feetToMeter,
@@ -154,6 +222,9 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var connFaceSet = model.Instances.New<IfcConnectedFaceSet>();
                 connFaceSet.CfsFaces.Add(face);
+
+                var material = model.Instances.New<IfcMaterial>();
+                material.Name = "transparent";
 
                 var colorList = new Dictionary<string, string>();
                 var bezeichner = new IfcXBim();
@@ -186,6 +257,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var surfaceStyle = model.Instances.New<IfcSurfaceStyle>();
                 surfaceStyle.Styles.Add(surfaceStyleRendering);
+                surfaceStyle.Name = "ueberbaubareGrundstuecksFlaeche";
 
                 var presentation = model.Instances.New<IfcPresentationStyleAssignment>();
                 presentation.Styles.Add(surfaceStyle);
@@ -197,6 +269,16 @@ namespace City2RVT.GUI.XPlan2BIM
                 style.Item = curveSetFace;
                 style.Styles.Add(presentation);
                 curveSetFace.StyledByItem.Append(style);
+
+                var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
+                styledRepresentation.Items.Add(style);
+                //style.Item.re
+
+                var materialDefRepresentation = model.Instances.New<IfcMaterialDefinitionRepresentation>();
+                materialDefRepresentation.Representations.Add(styledRepresentation);
+
+                material.HasRepresentation.Append(materialDefRepresentation);
+
 
                 //shape definition 1
                 var umringShape = model.Instances.New<IfcShapeRepresentation>();

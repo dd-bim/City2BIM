@@ -122,14 +122,40 @@ namespace City2RVT.GUI.XPlan2BIM
             Transform transf = trot.Multiply(ttrans);
             #endregion Transformation und UTM-Reduktion  
 
-            var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen");
+            var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc);
 
+            //Parameter myParam = doc.ProjectInformation.LookupParameter("Testproperty");
+            //string para = myParam.AsString();
+            //System.Windows.Forms.MessageBox.Show(para);
 
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
             //System.Windows.Forms.MessageBox.Show(topoCollector.Count().ToString());
 
             foreach (var t in topoCollector)
             {
+                ////Create an instance of IFCExportOptions
+                //IFCExportOptions IFCOptions = new IFCExportOptions();
+
+                ////Get an instance of IFCExportConfiguration
+                //IFCExportConfiguration selectedConfig = modelSelection.Configuration;
+
+                ////Get the current view Id, or -1 if you want to export the entire model
+                //ElementId activeViewId = GenerateActiveViewIdFromDocument(doc);
+                //selectedConfig.ActiveViewId =
+                //        selectedConfig.UseActiveViewGeometry ? activeViewId.IntegerValue : -1;
+
+                ////Update the IFCExportOptions
+                //selectedConfig.UpdateOptions(IFCOptions, activeViewId);
+
+                //string folder = "A path to a folder where you want to save your IFC file";
+                //string name = "the name of your IFC file";
+
+                ////Export the model to IFC
+                //doc.Export(folder, name, IFCOptions);
+
+                //ExportToIfc(doc);
+
+
                 TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
                 IList<XYZ> topoPoints = topoSurf.GetPoints();
                 ParameterSet topoParams = topoSurf.Parameters;
@@ -150,10 +176,9 @@ namespace City2RVT.GUI.XPlan2BIM
                 // nur für die Darstellung in Revit notwendig sind, nicht nach IFC exportiert werden.
                 if (bezeichnung.StartsWith("Reference plane") == false)
                 {
-                    IfcXBim.CreateSite(model, topoPoints, transf, topoParams, bezeichnung, topoSurf);
+                    IfcXBim.CreateSite(model, topoPoints, /*transf, */topoParams, bezeichnung, topoSurf);
                 }
             }
-
 
             string save = @"D:\Daten\\revit2ifc.ifc";
             model.SaveAs(@save);

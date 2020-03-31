@@ -137,8 +137,9 @@ namespace City2RVT.GUI.XPlan2BIM
             Transform transf = trot.Multiply(ttrans);
             #endregion Transformation und UTM-Reduktion  
 
-            List<double> xList = new List<double>();
-            List<double> yList = new List<double>();
+
+
+
 
             string xPlanGmlPath = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
@@ -163,28 +164,82 @@ namespace City2RVT.GUI.XPlan2BIM
             nsmgr.AddNamespace("xplan", "http://www.xplanung.de/xplangml/5/2");
             #endregion namespaces
 
-            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
-
             #region parameter
 
             Category category = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Topography);
+            Category projCategory = doc.Settings.Categories.get_Item(BuiltInCategory.OST_ProjectInformation);
             CategorySet categorySet = app.Create.NewCategorySet();
+            CategorySet projCategorySet = app.Create.NewCategorySet();
             categorySet.Insert(category);
+            projCategorySet.Insert(projCategory);
 
             string paramFile = @"D:\Daten\LandBIM\AP 1\Plugin\city2bim\SharedParameterFile.txt";
-            var parameter = new XPlan2BIM.XPlan_Parameter();
+            var parameter = new XPlan_Parameter();
             DefinitionFile defFile = default(DefinitionFile);
 
-            #endregion parameter
+            #endregion parameter  
+
+            #region project_information
+
+            List<string> projectInformationList = new List<string>();
+            projectInformationList.Add("Bezeichnung des Bauvorhabens");
+            projectInformationList.Add("Art der Maßnahme");
+            projectInformationList.Add("Art des Gebäudes");
+            projectInformationList.Add("Gebäudeklasse");
+            projectInformationList.Add("Bauweise");
+
+            foreach (var p in projectInformationList)
+            {
+                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, p, "ProjectInformation");
+            }
+
+            foreach (DefinitionGroup dg in defFile.Groups)
+            {
+                foreach (var projInfoName in projectInformationList)
+                {
+                    if (dg.Name == "ProjectInformation")
+                    {
+                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
+
+                        Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
+                        {
+                            tProjectInfo.Start();
+                            ProjectInfo projectInfo = doc.ProjectInformation;
+                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
+                            if (externalDefinition != null)
+                            {
+                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_GENERAL);
+                            }
+                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
+                        }
+                        tProjectInfo.Commit();
+                    }                    
+                }
+            }
+
+            #endregion project_information
 
             List<string> xPlanObjectList = new List<string>();
+            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
+
             foreach (XmlNode x in allXPlanObjects)
             {
-                if (x.SelectNodes("//gml:exterior", nsmgr) != null)
+                if (x.FirstChild.SelectNodes(".//gml:exterior", nsmgr) != null)
                 {
                     if (xPlanObjectList.Contains(x.FirstChild.Name.ToString()) == false)
                     {
-                        xPlanObjectList.Add(x.FirstChild.Name.ToString());
+                        if (x.FirstChild.Name.ToString() == "xplan:BP_Bereich")
+                        {
+                            xPlanObjectList.Insert(0, x.FirstChild.Name.ToString());
+                        }
+                        else if (x.FirstChild.Name.ToString() == "xplan:BP_Plan")
+                        {
+                            xPlanObjectList.Insert(0, x.FirstChild.Name.ToString());
+                        }
+                        else
+                        {
+                            xPlanObjectList.Add(x.FirstChild.Name.ToString());
+                        }
                     }
                 } 
             }
@@ -193,6 +248,7 @@ namespace City2RVT.GUI.XPlan2BIM
             double zOffset = 0.0;
             foreach (var xPlanObject in xPlanObjectList)
             {
+                //System.Windows.Forms.MessageBox.Show(xPlanObject.ToString());
                 #region reference plane
                 XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//gml:exterior", nsmgr);
                 Dictionary<string, XYZ[]> xPlanPointDict = new Dictionary<string, XYZ[]>();
@@ -277,17 +333,100 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 List<string> positionList = new List<String>();
                 List<string> paramList = new List<String>();
+                List<string> interiorListe = new List<String>();
                 int i = 0;
                 foreach (XmlNode nodeExt in bpEinzelnExterior)
                 {
-                    List<CurveLoop> curveLoopStrasseList = new List<CurveLoop>();
-                    CurveLoop curveLoopStrasse = new CurveLoop();
+                    List<CurveLoop> curveLoopExteriorList = new List<CurveLoop>();
+                    CurveLoop curveLoopExterior = new CurveLoop();
+                    int ii = 0;
+                    foreach (XmlNode intNode in nodeExt.ParentNode.ChildNodes)
+                    {
+                        CurveLoop curveLoopInterior = new CurveLoop();
+                        if (intNode.Name == "gml:interior")
+                        {
+                            XmlNodeList interiorNodeList = intNode.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
+                            XmlNodeList interiorRingNodeList = intNode.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
+
+                            foreach (XmlNode xc in interiorNodeList)
+                            {
+                                interiorListe.Add(xc.InnerText);
+                                string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                                if (koordWerteInterior.Count() == 4)
+                                {
+                                    var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                    Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
+                                    curveLoopInterior.Append(lineStrasse);
+                                }
+
+                                else if (koordWerteInterior.Count() > 4)
+                                {
+                                    int iSplit = 0;
+
+                                    foreach (string split in koordWerteInterior)
+                                    {
+                                        var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
+                                        curveLoopInterior.Append(lineClIndu);
+
+                                        if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
+                                        {
+                                            break;
+                                        }
+                                        iSplit += 2;
+                                    }
+                                }
+                                ii++;
+                            }
+
+                            foreach (XmlNode xc in interiorRingNodeList)
+                            {
+                                interiorListe.Add(xc.InnerText);
+                                string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                                if (koordWerteInterior.Count() == 4)
+                                {
+                                    var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                    Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
+                                    curveLoopInterior.Append(lineStrasse);
+                                }
+
+                                else if (koordWerteInterior.Count() > 4)
+                                {
+                                    int iSplit = 0;
+                                    foreach (string split in koordWerteInterior)
+                                    {
+                                        var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
+                                        curveLoopInterior.Append(lineClIndu);
+
+                                        if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
+                                        {
+                                            break;
+                                        }
+
+                                        iSplit += 2;
+                                    }
+                                }
+                                ii++;
+                            }
+
+
+                        }
+                        if (curveLoopInterior.GetExactLength() > 0)
+                        {
+                            curveLoopExteriorList.Add(curveLoopInterior);
+                        }
+                    }
+
+
                     XmlNodeList exterior = nodeExt.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
                     XmlNodeList exteriorRing = nodeExt.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
 
                     foreach (XmlNode child in nodeExt.ParentNode.ParentNode.ParentNode)
                     {
-                        defFile = parameter.CreateDefinitionFile(paramFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1));
+                        defFile = parameter.CreateDefinitionFile(paramFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1), "XPlanDaten");
                         if (child.Name != "#comment")
                         {
                             paramList.Add(child.Name);
@@ -303,7 +442,7 @@ namespace City2RVT.GUI.XPlan2BIM
                         {
                             var geomBuilder = new Builder.RevitXPlanBuilder(doc);
                             Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
-                            curveLoopStrasse.Append(lineStrasse);
+                            curveLoopExterior.Append(lineStrasse);
                         }
 
                         else if (koordWerte.Count() > 4)
@@ -314,7 +453,7 @@ namespace City2RVT.GUI.XPlan2BIM
                             {
                                 var geomBuilder = new Builder.RevitXPlanBuilder(doc);
                                 Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, iSplit, zOffset);
-                                curveLoopStrasse.Append(lineClIndu);
+                                curveLoopExterior.Append(lineClIndu);
 
                                 if ((iSplit + 3) == (koordWerte.Count() - 1))
                                 {
@@ -335,7 +474,7 @@ namespace City2RVT.GUI.XPlan2BIM
                         {
                             var geomBuilder = new Builder.RevitXPlanBuilder(doc);
                             Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
-                            curveLoopStrasse.Append(lineStrasse);
+                            curveLoopExterior.Append(lineStrasse);
                         }
 
                         else if (koordWerte.Count() > 4)
@@ -346,7 +485,7 @@ namespace City2RVT.GUI.XPlan2BIM
                             {
                                 var geomBuilder = new Builder.RevitXPlanBuilder(doc);
                                 Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, iSplit, zOffset);
-                                curveLoopStrasse.Append(lineClIndu);
+                                curveLoopExterior.Append(lineClIndu);
 
                                 if ((iSplit + 3) == (koordWerte.Count() - 1))
                                 {
@@ -368,7 +507,6 @@ namespace City2RVT.GUI.XPlan2BIM
                         foreach (var paramName in paramList)
                         {
                             if (dg.Name == "XPlanDaten")
-                            //if (dg.Name == xPlanObject)
                             {
                                 XmlNode objektBezeichnung = nodeExt.ParentNode.ParentNode.ParentNode;
                                 var parameterBezeichnung = objektBezeichnung.SelectNodes(paramName, nsmgr);
@@ -397,16 +535,16 @@ namespace City2RVT.GUI.XPlan2BIM
                                     }
                                     tParam.Commit();
                                 }
-                            }   
+                            } 
                         }
                         paramList.Clear();
 
                     }
                     #endregion parameter
 
-                    if (curveLoopStrasse.GetExactLength() > 0)
+                    if (curveLoopExterior.GetExactLength() > 0)
                     {
-                        curveLoopStrasseList.Add(curveLoopStrasse);
+                        curveLoopExteriorList.Add(curveLoopExterior);
 
                         Transaction topoTransaction = new Transaction(doc, "Exterior");
                         {
@@ -416,7 +554,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                             topoTransaction.Start();
                             SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
-                            SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopStrasseList, xPlanReferencePlaneId);
+                            SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopExteriorList, xPlanReferencePlaneId);
 
                             Parameter materialParamExterior = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
 
@@ -453,114 +591,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     }
                     paramDict.Clear();
                 }
-                #endregion exterior
-
-                #region interior
-
-                XmlNodeList bpEinzelnInterior = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:interior", nsmgr);
-
-                List<string> strasseInteriorListe = new List<String>();
-
-                int ii = 0;
-
-                foreach (XmlNode xn in bpEinzelnInterior)
-                {
-                    List<CurveLoop> curveLoopStrasseInteriorList = new List<CurveLoop>();
-                    CurveLoop curveLoopStrasseInterior = new CurveLoop();
-                    XmlNodeList strassenVerkehrInterior = xn.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
-                    XmlNodeList strassenVerkehrInteriorRing = xn.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
-
-                    foreach (XmlNode xc in strassenVerkehrInterior)
-                    {
-                        strasseInteriorListe.Add(xc.InnerText);
-                        string[] koordWerteInterior = strasseInteriorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (koordWerteInterior.Count() == 4)
-                        {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                            Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
-                            curveLoopStrasseInterior.Append(lineStrasse);
-                        }
-
-                        else if (koordWerteInterior.Count() > 4)
-                        {
-                            int iSplit = 0;
-
-                            foreach (string split in koordWerteInterior)
-                            {
-                                var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
-                                curveLoopStrasseInterior.Append(lineClIndu);
-
-                                if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
-                                {
-                                    break;
-                                }
-                                iSplit += 2;
-                            }                          
-                        }
-                        ii++;
-                    }
-
-                    foreach (XmlNode xc in strassenVerkehrInteriorRing)
-                    {
-                        strasseInteriorListe.Add(xc.InnerText);
-                        string[] koordWerteInterior = strasseInteriorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (koordWerteInterior.Count() == 4)
-                        {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                            Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
-                            curveLoopStrasseInterior.Append(lineStrasse);
-                        }
-
-                        else if (koordWerteInterior.Count() > 4)
-                        {
-                            int iSplit = 0;
-                            foreach (string split in koordWerteInterior)
-                            {
-                                var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
-                                curveLoopStrasseInterior.Append(lineClIndu);
-
-                                if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
-                                {
-                                    break;
-                                }
-
-                                iSplit += 2;
-                            }
-                        }
-                        ii++;
-                    }
-
-                    if (curveLoopStrasseInterior.GetExactLength() > 0)
-                    {
-                        curveLoopStrasseInteriorList.Add(curveLoopStrasseInterior);
-
-                        if (curveLoopStrasseInteriorList.Count() > 0)
-                        {
-                            Transaction topoTransactionInterior = new Transaction(doc, "Interior");
-                            {
-                                FailureHandlingOptions optionsInt = topoTransactionInterior.GetFailureHandlingOptions();
-                                optionsInt.SetFailuresPreprocessor(new AxesFailure());
-                                topoTransactionInterior.SetFailureHandlingOptions(optionsInt);
-
-                                topoTransactionInterior.Start();
-                                SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-                                SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopStrasseInteriorList, xPlanReferencePlaneId);
-
-                                ElementId farbeInterior = colorList["interior"];
-                                Parameter materialParam = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-                                materialParam.Set(farbeInterior);
-
-                                logger.Info("Created sitesubregion for '" + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1) + "' (Interior). ");
-                            }
-                            topoTransactionInterior.Commit();
-                        }
-                    }
-                }
-                #endregion interior
+                #endregion exterior               
 
                 zOffset += 10.0;
             }
