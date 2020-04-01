@@ -44,6 +44,8 @@ namespace City2RVT.GUI.XPlan2BIM
             Document doc = uidoc.Document;
 
             InitializeComponent();
+
+            xplan_file.Text = Prop_XPLAN_settings.FileUrl;
         }
 
         public class AxesFailure : IFailuresPreprocessor
@@ -136,10 +138,6 @@ namespace City2RVT.GUI.XPlan2BIM
             Transform ttrans = Transform.CreateTranslation(-vectorRedu);
             Transform transf = trot.Multiply(ttrans);
             #endregion Transformation und UTM-Reduktion  
-
-
-
-
 
             string xPlanGmlPath = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
@@ -600,6 +598,105 @@ namespace City2RVT.GUI.XPlan2BIM
         private void Xplan_file_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            UIApplication uiapp = commandData.Application;
+            UIDocument uidoc = uiapp.ActiveUIDocument;
+            Document doc = uidoc.Document;
+            Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+
+            var chosen = categoryListbox.SelectedItems;
+
+            foreach (var c in chosen)
+            {
+                var collector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
+                .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + c.ToString()).Cast<Element>().ToList();
+
+                var collector2 = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
+                .Where(a => a.LookupParameter("Kommentare").AsString() == c.ToString()).Cast<Element>().ToList();
+
+
+                var hideIds = new List<ElementId>();
+
+                foreach (var id in collector)
+                {
+                    hideIds.Add(id.Id);
+                }
+
+                foreach (var id in collector2)
+                {
+                    hideIds.Add(id.Id);
+                }
+
+                using (var tran = new Transaction(doc, "Test"))
+                {
+                    tran.Start();
+                    var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+                    if (view != null)
+                    {
+                        view.HideElementsTemporary(hideIds);
+                    }
+                    tran.Commit();
+                }
+            }
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            string xPlanGmlPath = xplan_file.Text;
+            XmlReaderSettings readerSettings = new XmlReaderSettings();
+            readerSettings.IgnoreComments = true;
+            XmlDocument xmlDoc = new XmlDocument();
+
+            using (XmlReader reader = XmlReader.Create(xPlanGmlPath, readerSettings))
+            {
+                xmlDoc.Load(reader);
+                xmlDoc.Load(xPlanGmlPath);
+            }
+
+            #region namespaces
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+            nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
+            nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
+            nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
+            nsmgr.AddNamespace("xplan", "http://www.xplanung.de/xplangml/5/2");
+            #endregion namespaces
+
+            List<string> xPlanObjectList = new List<string>();
+            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
+
+            foreach (XmlNode x in allXPlanObjects)
+            {
+                if (x.FirstChild.SelectNodes(".//gml:exterior", nsmgr) != null)
+                {
+                    if (xPlanObjectList.Contains(x.FirstChild.Name.Substring((x.FirstChild.Name).LastIndexOf(':') + 1 )) == false)
+                    {
+                        xPlanObjectList.Add(x.FirstChild.Name.Substring((x.FirstChild.Name).LastIndexOf(':') + 1 ));
+                    }
+                }
+            }
+
+            xPlanObjectList.Sort();
+
+            int ix = 0;
+            foreach (string item in xPlanObjectList)
+            {
+                categoryListbox.Items.Add(xPlanObjectList[ix]);
+                ix++;
+            }
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            Prop_XPLAN_settings.FileUrl = xplan_file.Text;
+            this.Close();
         }
     }
 }
