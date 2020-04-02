@@ -33,8 +33,6 @@ namespace City2RVT.GUI.XPlan2BIM
     public partial class Hide_Layers : Window
     {
         ExternalCommandData commandData;
-        double feetToMeter = 1.0 / 0.3048;
-        string xPlanGmlPath;
 
         public Hide_Layers(ExternalCommandData cData)
         {
@@ -46,65 +44,50 @@ namespace City2RVT.GUI.XPlan2BIM
 
             InitializeComponent();
 
-            
-            if (Prop_XPLAN_settings.FileUrl == "")
-                TaskDialog.Show("No file path set!", "Please enter a file path in the settings window first!");
-                
-                //String selectedFormat = String.Empty;
-                //DialogResult result = DialogResult.OK;
-                //this.DialogResult = (result != DialogResult.Cancel ? DialogResult.OK : DialogResult.None);
-            else
+            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+            List<string> xPlanObjectList = new List<string>();
+
+            List<string> visibleElements = new List<string>();
+            foreach (var t in topoCollector)
             {
-                //TaskDialog.Show("Tag","Gutn");
-                xPlanGmlPath = City2RVT.GUI.XPlan2BIM.Prop_XPLAN_settings.FileUrl;
-                //TaskDialog.Show("Tag", importetPath);
+                TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
 
-                XmlReaderSettings readerSettings = new XmlReaderSettings();
-                readerSettings.IgnoreComments = true;
-                XmlDocument xmlDoc = new XmlDocument();
+                string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
 
-                using (XmlReader reader = XmlReader.Create(xPlanGmlPath, readerSettings))
+                if (bezeichnung.StartsWith("Reference plane") == false)
                 {
-                    xmlDoc.Load(reader);
-                    xmlDoc.Load(xPlanGmlPath);
+                    if (xPlanObjectList.Contains(bezeichnung) == false)
+                    {
+                        xPlanObjectList.Add(bezeichnung);
+                    }                    
                 }
 
-                #region namespaces
-                XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
-                nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
-                nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
-                nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
-                nsmgr.AddNamespace("xplan", "http://www.xplanung.de/xplangml/5/2");
-                #endregion namespaces
-
-                List<string> xPlanObjectList = new List<string>();
-                XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
-
-                foreach (XmlNode x in allXPlanObjects)
+                var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+                if (topoSurf.IsHidden(view) == false)
                 {
-                    if (x.FirstChild.SelectNodes(".//gml:exterior", nsmgr) != null)
+                    if (visibleElements.Contains(bezeichnung) == false)
                     {
-                        if (xPlanObjectList.Contains(x.FirstChild.Name.Substring((x.FirstChild.Name).LastIndexOf(':') + 1)) == false)
-                        {
-                            xPlanObjectList.Add(x.FirstChild.Name.Substring((x.FirstChild.Name).LastIndexOf(':') + 1));
-                        }
+                        visibleElements.Add(bezeichnung);
                     }
                 }
+            }
+            xPlanObjectList.Sort();
 
-                xPlanObjectList.Sort();
+            foreach (var elem in visibleElements)
+            {
+                categoryListBox.SelectedItems.Add(elem);
+            }
 
-                int ix = 0;
-                foreach (string item in xPlanObjectList)
-                {
-                    categoryListBox.Items.Add(xPlanObjectList[ix]);
-                    ix++;
-                }
+            int ix = 0;
+            foreach (string item in xPlanObjectList)
+            {
+                categoryListBox.Items.Add(xPlanObjectList[ix]);
+                ix++;
             }
         }
 
         private void categoryListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
+        {            
 
         }
 
@@ -114,6 +97,30 @@ namespace City2RVT.GUI.XPlan2BIM
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
             Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+
+            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+
+            var preHide = new List<ElementId>();
+
+            foreach (var id in topoCollector)
+            {
+                preHide.Add(id.Id);
+            }
+
+            foreach (var t in topoCollector)
+            {
+                using (var transHideAll = new Transaction(doc, "Test"))
+                {
+                    transHideAll.Start();
+                    var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+                    if (view != null)
+                    {
+                        view.HideElements(preHide);
+                    }
+                    transHideAll.Commit();
+                }
+            }
+
 
             var chosen = categoryListBox.SelectedItems;
 
@@ -144,7 +151,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
                     if (view != null)
                     {
-                        view.HideElementsTemporary(hideIds);
+                        view.UnhideElements(hideIds);
                     }
                     tran.Commit();
                 }

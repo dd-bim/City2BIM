@@ -6,17 +6,21 @@
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
              mc:Ignorable="d" 
              d:DesignHeight="132.087" d:DesignWidth="601.721"
-             Height="320" Width="634">
+             Height="360" Width="650">
     <Grid Margin="0,0,13,16">
-        <Button Content="Browse" HorizontalAlignment="Left" Margin="494,20,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <TextBox Name="xplan_file" HorizontalAlignment="Left" Height="23" Margin="59,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="408" TextChanged="Xplan_file_TextChanged"/>
-        <Button Content="Import" Margin="494,209,0,0" Click="Button_Click_1" HorizontalAlignment="Left" Width="75" Height="20" VerticalAlignment="Top"/>
-        <Label Content="File" HorizontalAlignment="Left" Margin="19,17,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.243,-2.881"/>
-        <Button Content="Hide" HorizontalAlignment="Left" Margin="494,98,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
-        <ListBox Name="categoryListbox" HorizontalAlignment="Left" Height="131" Margin="59,98,0,0" VerticalAlignment="Top" Width="343" 
+        <Button Content="Browse" HorizontalAlignment="Left" Margin="59,27,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <TextBox Name="xplan_file" HorizontalAlignment="Left" Height="23" Margin="59,52,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="408" TextChanged="Xplan_file_TextChanged"/>
+        <Button Content="Import" Margin="494,240,0,0" Click="Button_Click_1" HorizontalAlignment="Left" Width="75" Height="20" VerticalAlignment="Top"/>
+        <Label Content="File" HorizontalAlignment="Left" Margin="19,49,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.243,-2.881"/>
+        <Button Content="Clear Selection" HorizontalAlignment="Left" Margin="396,106,0,0" VerticalAlignment="Top" Width="86" Click="Button_Click_2"/>
+        <ListBox Name="categoryListbox" HorizontalAlignment="Left" Height="213" Margin="59,86,0,0" VerticalAlignment="Top" Width="319" 
                  SelectionChanged="ListBox_SelectionChanged" SelectionMode="Multiple"/>
         <Button Content="Apply" HorizontalAlignment="Left" Margin="494,55,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
-        <Button Content="Close" HorizontalAlignment="Left" Margin="494,248,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+        <Button Content="Close" HorizontalAlignment="Left" Margin="494,279,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+        <RadioButton Name="radioButton1" Content="Select all" HorizontalAlignment="Left" 
+                     Margin="397,86,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+        <CheckBox Name="checkBoxZOffset" Content="Z-Offset für Layer" HorizontalAlignment="Left" Margin="494,210,0,0" 
+                  VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

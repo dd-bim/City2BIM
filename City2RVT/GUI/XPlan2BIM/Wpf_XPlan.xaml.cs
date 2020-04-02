@@ -217,6 +217,15 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion project_information
 
+            #region hideElements
+
+            var chosen = categoryListbox.SelectedItems;
+
+            var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+
+
+            #endregion hideElements
+
             List<string> xPlanObjectList = new List<string>();
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
 
@@ -295,6 +304,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     pointsExteriorXPlan[3] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMax, zOffset));
 
                     xPlanPointDict.Add(xPlanObject, pointsExteriorXPlan);
+                    var hideReferencePlanes = new List<ElementId>();
 
                     foreach (var referencePoints in xPlanPointDict)
                     {
@@ -317,6 +327,17 @@ namespace City2RVT.GUI.XPlan2BIM
                             Parameter gesamt = referencePlane.LookupParameter("Kommentare");
                             gesamt.Set("Reference plane: " + (referencePoints.Key).Substring(6));
                             xPlanReferencePlaneId = referencePlane.Id;
+
+                            hideReferencePlanes.Add(referencePlane.Id);
+
+                            if (chosen.Contains((referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1)))
+                            {
+
+                            }
+                            else
+                            {
+                                view.HideElements(hideReferencePlanes);
+                            }
 
                             logger.Info("Reference plane: '" + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1) + "' created.");
                         }
@@ -543,8 +564,9 @@ namespace City2RVT.GUI.XPlan2BIM
                     if (curveLoopExterior.GetExactLength() > 0)
                     {
                         curveLoopExteriorList.Add(curveLoopExterior);
+                        var hideReferenceSitesubregions = new List<ElementId>();
 
-                        Transaction topoTransaction = new Transaction(doc, "Exterior");
+                        Transaction topoTransaction = new Transaction(doc, "Create Exterior");
                         {
                             FailureHandlingOptions optionsExterior = topoTransaction.GetFailureHandlingOptions();
                             optionsExterior.SetFailuresPreprocessor(new AxesFailure());
@@ -583,6 +605,17 @@ namespace City2RVT.GUI.XPlan2BIM
                             Parameter exteriorName = siteSubRegion.TopographySurface.LookupParameter("Kommentare");
                             exteriorName.Set(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
 
+                            hideReferenceSitesubregions.Add(siteSubRegion.TopographySurface.Id);
+
+                            if (chosen.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
+                            {
+
+                            }
+                            else
+                            {
+                                view.HideElements(hideReferenceSitesubregions);
+                            }
+
                             logger.Info("Created sitesubregion for '" + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1) + "' (Exterior). ");
                         }
                         topoTransaction.Commit();
@@ -591,7 +624,15 @@ namespace City2RVT.GUI.XPlan2BIM
                 }
                 #endregion exterior               
 
-                zOffset += 10.0;
+                if (checkBoxZOffset.IsChecked == true)
+                {
+                    zOffset += 10.0;
+                }
+                else
+                {
+                    zOffset += 0;
+                }
+                
             }
         }
 
@@ -602,45 +643,47 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            UIApplication uiapp = commandData.Application;
-            UIDocument uidoc = uiapp.ActiveUIDocument;
-            Document doc = uidoc.Document;
-            Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+            categoryListbox.UnselectAll();
+            radioButton1.IsChecked = false;
+            //UIApplication uiapp = commandData.Application;
+            //UIDocument uidoc = uiapp.ActiveUIDocument;
+            //Document doc = uidoc.Document;
+            //Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
 
-            var chosen = categoryListbox.SelectedItems;
+            //var chosen = categoryListbox.SelectedItems;
 
-            foreach (var c in chosen)
-            {
-                var collector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-                .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + c.ToString()).Cast<Element>().ToList();
+            //foreach (var c in chosen)
+            //{
+            //    var collector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
+            //    .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + c.ToString()).Cast<Element>().ToList();
 
-                var collector2 = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-                .Where(a => a.LookupParameter("Kommentare").AsString() == c.ToString()).Cast<Element>().ToList();
+            //    var collector2 = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
+            //    .Where(a => a.LookupParameter("Kommentare").AsString() == c.ToString()).Cast<Element>().ToList();
 
 
-                var hideIds = new List<ElementId>();
+            //    var hideIds = new List<ElementId>();
 
-                foreach (var id in collector)
-                {
-                    hideIds.Add(id.Id);
-                }
+            //    foreach (var id in collector)
+            //    {
+            //        hideIds.Add(id.Id);
+            //    }
 
-                foreach (var id in collector2)
-                {
-                    hideIds.Add(id.Id);
-                }
+            //    foreach (var id in collector2)
+            //    {
+            //        hideIds.Add(id.Id);
+            //    }
 
-                using (var tran = new Transaction(doc, "Test"))
-                {
-                    tran.Start();
-                    var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-                    if (view != null)
-                    {
-                        view.HideElementsTemporary(hideIds);
-                    }
-                    tran.Commit();
-                }
-            }
+            //    using (var tran = new Transaction(doc, "Test"))
+            //    {
+            //        tran.Start();
+            //        var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+            //        if (view != null)
+            //        {
+            //            view.HideElementsTemporary(hideIds);
+            //        }
+            //        tran.Commit();
+            //    }
+            //}
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -690,13 +733,31 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //string item = categoryListbox.SelectedItem.ToString();
 
+            if (categoryListbox.SelectedItems.Count < categoryListbox.Items.Count)
+            {
+                radioButton1.IsChecked = false;
+            }
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             Prop_XPLAN_settings.FileUrl = xplan_file.Text;
             this.Close();
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (radioButton1.IsChecked == true)
+            {
+                categoryListbox.SelectAll();
+            }
+            else
+            {
+                categoryListbox.UnselectAll();
+
+            }
         }
     }
 }
