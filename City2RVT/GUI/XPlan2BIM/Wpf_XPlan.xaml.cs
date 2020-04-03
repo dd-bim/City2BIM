@@ -645,45 +645,6 @@ namespace City2RVT.GUI.XPlan2BIM
         {
             categoryListbox.UnselectAll();
             radioButton1.IsChecked = false;
-            //UIApplication uiapp = commandData.Application;
-            //UIDocument uidoc = uiapp.ActiveUIDocument;
-            //Document doc = uidoc.Document;
-            //Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
-
-            //var chosen = categoryListbox.SelectedItems;
-
-            //foreach (var c in chosen)
-            //{
-            //    var collector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-            //    .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + c.ToString()).Cast<Element>().ToList();
-
-            //    var collector2 = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-            //    .Where(a => a.LookupParameter("Kommentare").AsString() == c.ToString()).Cast<Element>().ToList();
-
-
-            //    var hideIds = new List<ElementId>();
-
-            //    foreach (var id in collector)
-            //    {
-            //        hideIds.Add(id.Id);
-            //    }
-
-            //    foreach (var id in collector2)
-            //    {
-            //        hideIds.Add(id.Id);
-            //    }
-
-            //    using (var tran = new Transaction(doc, "Test"))
-            //    {
-            //        tran.Start();
-            //        var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-            //        if (view != null)
-            //        {
-            //            view.HideElementsTemporary(hideIds);
-            //        }
-            //        tran.Commit();
-            //    }
-            //}
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)

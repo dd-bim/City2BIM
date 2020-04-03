@@ -75,20 +75,23 @@ namespace City2RVT.GUI.XPlan2BIM
 
             foreach (var elem in visibleElements)
             {
-                categoryListBox.SelectedItems.Add(elem);
+                categoryListbox2.SelectedItems.Add(elem);
             }
 
             int ix = 0;
             foreach (string item in xPlanObjectList)
             {
-                categoryListBox.Items.Add(xPlanObjectList[ix]);
+                categoryListbox2.Items.Add(xPlanObjectList[ix]);
                 ix++;
             }
         }
 
         private void categoryListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {            
-
+        {
+            if (categoryListbox2.SelectedItems.Count < categoryListbox2.Items.Count)
+            {
+                radioButton1.IsChecked = false;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -122,7 +125,7 @@ namespace City2RVT.GUI.XPlan2BIM
             }
 
 
-            var chosen = categoryListBox.SelectedItems;
+            var chosen = categoryListbox2.SelectedItems;
 
             foreach (var c in chosen)
             {
@@ -161,6 +164,25 @@ namespace City2RVT.GUI.XPlan2BIM
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (radioButton1.IsChecked == true)
+            {
+                categoryListbox2.SelectAll();
+            }
+            else
+            {
+                categoryListbox2.UnselectAll();
+
+            }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            categoryListbox2.UnselectAll();
+            radioButton1.IsChecked = false;
         }
     }
 }
