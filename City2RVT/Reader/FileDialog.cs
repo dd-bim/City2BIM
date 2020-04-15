@@ -4,7 +4,7 @@ namespace City2RVT.Reader
 {
     internal class FileDialog
     {
-        public enum Data { CityGML, ALKIS, DGM, XPlanGML };
+        public enum Data { CityGML, ALKIS, DGM, XPlanGML, IFC };
 
         public string ImportPath(Data geodata)
         {
@@ -34,6 +34,12 @@ namespace City2RVT.Reader
                     {
                         ofd.Title = "Select XPlanung file.";
                         ofd.Filter = "XPlanGML (*.gml) | *.gml| All Files (*.*) | *.*";
+                        break;
+                    }
+                case (Data.IFC):
+                    {
+                        ofd.Title = "Select IFC file.";
+                        ofd.Filter = "IFC (*.ifc) | *.ifc| All Files (*.*) | *.*";
                         break;
                     }
                 default:

@@ -171,8 +171,16 @@ namespace City2RVT.GUI.XPlan2BIM
             categorySet.Insert(category);
             projCategorySet.Insert(projCategory);
 
-            string sharedParamFile = @"D:\Daten\LandBIM\AP 1\Plugin\city2bim\SharedParameterFile.txt";
+            //create shared parameter file
+            string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
+            System.Windows.Forms.MessageBox.Show(modulePath);
+            string sharedParamFile = Path.Combine(modulePath, "SharedParameterFile.txt");
 
+            if (!File.Exists(sharedParamFile))
+            {
+                FileStream fs = File.Create(sharedParamFile);
+                fs.Close();
+            }
 
             #endregion parameter  
 

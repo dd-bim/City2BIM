@@ -54,16 +54,7 @@ namespace City2RVT.GUI.XPlan2BIM
             //now we can create an IfcStore, it is in Ifc4 format and will be held in memory rather than in a database
             //database is normally better in performance terms if the model is large >50MB of Ifc or if robust transactions are required
 
-            //var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc4, Xbim.IO.XbimStoreType.InMemoryModel);
-
-            //Parameter myParam = doc.ProjectInformation.LookupParameter("Testproperty");
-            //string para = myParam.AsString();
-            //System.Windows.Forms.MessageBox.Show(para);
-
-            const string original = @"D:\Daten\\Bauwerksmodell.ifc";
-
             using (var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc4, Xbim.IO.XbimStoreType.InMemoryModel))
-            //using (var model = IfcStore.Open(original, credentials))
             {
                 //Begin a transaction as all changes to a model are ACID
                 using (var txn = model.BeginTransaction("Initialise Model"))
@@ -206,6 +197,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;
                 site.RefLatitude = new List<long> { 1, 2, 3, 4 };
                 site.GlobalId = Guid.NewGuid();
+                //site.SiteAddress = "TestAdresse";
 
                 var curveSet = model.Instances.New<IfcPolyline>();
                 var loop = model.Instances.New<IfcPolyLoop>();
@@ -276,7 +268,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var surfaceStyle = model.Instances.New<IfcSurfaceStyle>();
                 surfaceStyle.Styles.Add(surfaceStyleRendering);
-                surfaceStyle.Name = "ueberbaubareGrundstuecksFlaeche";
+                surfaceStyle.Name = bezeichnung;
 
                 var presentation = model.Instances.New<IfcPresentationStyleAssignment>();
                 presentation.Styles.Add(surfaceStyle);
@@ -348,6 +340,8 @@ namespace City2RVT.GUI.XPlan2BIM
                     {
                         string key = topoSurf.get_Parameter(new Guid(p.GUID.ToString())).Definition.Name;
                         string value = topoSurf.get_Parameter(new Guid(p.GUID.ToString())).AsString();
+                        //key.Trim(' ');
+                        //value.Trim(' ');
 
                         if (paramDict.ContainsKey(key) == false)
                         {
@@ -385,26 +379,57 @@ namespace City2RVT.GUI.XPlan2BIM
                     });
                 }
 
-                //model.Instances.New<IfcRelDefinesByProperties>(rel =>
-                //{
-                //    //rel.RelatedObjects.Add(project);
-                //    rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
-                //    {
-                //        pset.Name = "BauantragAllgemein";
+                foreach (var s in paramDict)
+                {
+                    //set a few basic properties
+                    model.Instances.New<IfcRelDefinesByProperties>(rel =>
+                    {
+                        rel.RelatedObjects.Add(site);
+                        rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
+                        {
+                            pset.Name = "BauantragGeokodierung";
 
-                //        pset.HasProperties.AddRange(new[]
-                //        {
-                //            model.Instances.New<IfcPropertySingleValue>(p =>
-                //                {
-                //                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bezeichnung des Bauvorhabens");
-                //                    string projInfoParamValue = projInfoParam.AsString();
-                //                    string rfaNameAttri = "Bezeichnung des Bauvorhabens";
-                //                    p.Name = rfaNameAttri;
-                //                    p.NominalValue = new IfcLabel(projInfoParamValue);
-                //                }),
-                //        });
-                //    });
-                //});
+                            string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
+                            string verortungTrim = verortung.Trim(' ');
+
+
+                            if (verortungTrim == "Gemarkung_Nummer" || verortungTrim == "Flure" || verortungTrim == "Flurstuecksnummer")
+                            {
+                                pset.HasProperties.AddRange(new[]
+                                {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        //System.Windows.Forms.MessageBox.Show(s.Key.Substring(s.Key.LastIndexOf(':') + 1));
+                                        //string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
+                                        //const string gemNummer = "Gemarkung_Nummer";
+                                        //string verortungTrim = verortung.Trim(' ');
+                                        //System.Windows.Forms.MessageBox.Show("ä" + verortungTrim);
+                                        switch (verortungTrim)
+                                        {
+                                            case "Gemarkung_Nummer":
+                                                //System.Windows.Forms.MessageBox.Show("switch");
+                                                p.Name = "Gemarkungen";
+                                                p.NominalValue = new IfcText(s.Value);
+                                                break;
+                                            case ("Flure"):
+                                                p.Name = "Flure";
+                                                p.NominalValue = new IfcText(s.Value);
+                                                break;
+                                            case ("Flurstuecksnummer"):
+                                                p.Name = "Flurstücke";
+                                                p.NominalValue = new IfcText(s.Value);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }),
+                                });
+                            }
+
+
+                        });
+                    });
+                }
 
                 txn.Commit();
                 return site;

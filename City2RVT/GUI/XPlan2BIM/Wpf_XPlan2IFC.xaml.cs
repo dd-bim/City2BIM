@@ -124,51 +124,18 @@ namespace City2RVT.GUI.XPlan2BIM
             Transform transf = trot.Multiply(ttrans);
             #endregion Transformation und UTM-Reduktion  
 
-            const string original = @"D:\Daten\\Bauwerksmodell_IFC4.ifc";
+            string original;
+            if (ifc_file_textbox.Text != null)
+            {
+                original = ifc_file_textbox.Text;
+            }
+            else
+            {
+                original = @"D:\Daten\\Bauwerksmodell_IFC4.ifc";
+            }
+            
 
-
-            //var model = IfcStore.Open(original);
-
-            //var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc);
-
-            //Parameter myParam = doc.ProjectInformation.LookupParameter("Testproperty");
-            //string para = myParam.AsString();
-            //System.Windows.Forms.MessageBox.Show(para);
-
-
-
-            ////Get an instance of IFCExportConfiguration
-            //IFCExportConfiguration selectedConfig = modelSelection.Configuration;
-
-            ////Get the current view Id, or -1 if you want to export the entire model
-            //ElementId activeViewId = GenerateActiveViewIdFromDocument(doc);
-            //selectedConfig.ActiveViewId =
-            //        selectedConfig.UseActiveViewGeometry ? activeViewId.IntegerValue : -1;
-
-            ////Update the IFCExportOptions
-            //selectedConfig.UpdateOptions(IFCOptions, activeViewId);
-
-            //////////var new_model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc);
-
-            //////////Transaction txnE = new Transaction(doc);
-            //////////txnE.Start("Standard Export");
-
-            //////////string folder = @"D:\Daten";
-            //////////string name = "defaultExport_IFC4";
-
-            ////////////Create an instance of IFCExportOptions
-            //////////IFCExportOptions IFCOptions = new IFCExportOptions();
-            //////////IFCOptions.FileVersion = IFCVersion.IFC4;
-
-            ////////////Export the model to IFC
-            //////////doc.Export(folder, name, IFCOptions);
-
-            //////////ExportToIfc(doc);
-
-            //////////txnE.Commit();
-
-
-
+            #region standardifcexport
             //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
             //{
             //    Transaction txnE = new Transaction(doc);
@@ -204,12 +171,10 @@ namespace City2RVT.GUI.XPlan2BIM
             //    //    txnE.Commit();
             //    //}
             //} 
-
-            
+            #endregion standardifcexport
 
 
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
-            //System.Windows.Forms.MessageBox.Show(topoCollector.Count().ToString());
 
             //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
             using (var model = IfcStore.Open(original))
@@ -240,40 +205,20 @@ namespace City2RVT.GUI.XPlan2BIM
                     }
                 }
 
-                var project = model.Instances.FirstOrDefault<IfcProject>(d => d.GlobalId == "1iMGscZQD1UuWMh2zmdLM4");
+                string save;
 
-                using (var txn = model.BeginTransaction("Project modification"))
+                if (string.IsNullOrWhiteSpace(ifc_name_textbox.Text))
+                {                    
+                    save = @"D:\Daten\revit2ifc.ifc";
+                }
+                else
                 {
-                    model.Instances.New<IfcRelDefinesByProperties>(rel =>
-                    {
-                        rel.RelatedObjects.Add(project);
-                        rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
-                        {
-                            pset.Name = "BauantragAllgemein";
-
-                            pset.HasProperties.AddRange(new[]
-                            {
-                                model.Instances.New<IfcPropertySingleValue>(p =>
-                                    {
-                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bezeichnung des Bauvorhabens");
-                                        string projInfoParamValue = projInfoParam.AsString();
-                                        string rfaNameAttri = "Bezeichnung des Bauvorhabens";
-                                        p.Name = rfaNameAttri;
-                                        p.NominalValue = new IfcLabel(projInfoParamValue);
-                                    }),
-                            });
-                        });
-                    });
+                    save = @"" + ifc_Location.Text + "\\" + ifc_name_textbox.Text + ".ifc";
+                    System.Windows.Forms.MessageBox.Show(save);
                 }
 
-
-                string save = @"D:\Daten\\revit2ifc.ifc";
                 model.SaveAs(@save);
-            }
-
-            
-
-
+            }  
         }
 
         //string locationFolder;
@@ -291,6 +236,17 @@ namespace City2RVT.GUI.XPlan2BIM
         private void ifc_Location_TextChanged(object sender, TextChangedEventArgs e)
         {
             
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Reader.FileDialog winexp = new Reader.FileDialog();
+            ifc_file_textbox.Text = winexp.ImportPath(Reader.FileDialog.Data.IFC);
+        }
+
+        private void ifc_name_textbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
