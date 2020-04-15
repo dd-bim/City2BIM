@@ -1,6 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
+using System.Xml;
+
+using City2BIM.Alkis;
+using City2BIM.Geometry;
+using System.Xml.Linq;
+using City2BIM;
+
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
+using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.Attributes;
 
 namespace City2RVT.GUI
 {
@@ -9,13 +24,20 @@ namespace City2RVT.GUI
     /// </summary>
     public partial class Wpf_NAS_settings : Window
     {
+        ExternalCommandData commandData;
         //copy from CityGML_settings, may enhance later for server request and/or code translation
 
         //private string[] codelistTypes = new string[] { "AdV (Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der BRD)", 
         //                                                "SIG3D (Special Interest Group 3D)" };
 
-        public Wpf_NAS_settings()
+        public Wpf_NAS_settings(ExternalCommandData cData)
         {
+            commandData = cData;
+
+            UIApplication app = commandData.Application;
+            UIDocument uidoc = app.ActiveUIDocument;
+            Document doc = uidoc.Document;
+
             InitializeComponent();
 
             //tb_lat.Text = GeoRefSettings.WgsCoord[0].ToString();
@@ -48,6 +70,13 @@ namespace City2RVT.GUI
                 check_drapeParcels.IsEnabled = false;
                 check_drapeUsage.IsEnabled = false;
             }
+
+
+        }
+
+        public System.Collections.IList ListBox
+        {
+            get { return AlkisCategoryListbox.SelectedItems; }
         }
 
         private void Bt_browse_Click(object sender, RoutedEventArgs e)
@@ -141,6 +170,84 @@ namespace City2RVT.GUI
         {
 
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string alkisXmlPath = tb_file.Text;
+            XmlReaderSettings readerSettings = new XmlReaderSettings();
+            readerSettings.IgnoreComments = true;
+            XmlDocument xmlDoc = new XmlDocument();
+
+            using (XmlReader reader = XmlReader.Create(alkisXmlPath, readerSettings))
+            {
+                xmlDoc.Load(reader);
+                xmlDoc.Load(alkisXmlPath);
+            }
+
+            #region namespaces
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+            nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
+            nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
+            nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
+            #endregion namespaces
+
+            List<string> xPlanObjectList = new List<string>();
+            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
+
+
+            foreach (XmlNode x in allXPlanObjects)
+            {
+                if (x.FirstChild.SelectSingleNode(".//gml:exterior", nsmgr) != null)
+                {
+                    if (xPlanObjectList.Contains(x.FirstChild.Name) == false)
+                    {
+                        xPlanObjectList.Add(x.FirstChild.Name);
+                    }
+                }
+            }
+
+            xPlanObjectList.Sort();
+
+            int ix = 0;
+            foreach (string item in xPlanObjectList)
+            {
+                AlkisCategoryListbox.Items.Add(xPlanObjectList[ix]);
+                ix++;
+            }
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (alkisRadioButton.IsChecked == true)
+            {
+                AlkisCategoryListbox.SelectAll();
+            }
+            else
+            {
+                AlkisCategoryListbox.UnselectAll();
+
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            AlkisCategoryListbox.UnselectAll();
+            alkisRadioButton.IsChecked = false;
+        }
+
+        private void AlkisCategoryListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AlkisCategoryListbox.SelectedItems.Count < AlkisCategoryListbox.Items.Count)
+            {
+                alkisRadioButton.IsChecked = false;
+            }            
+        }
+
+        public void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
 
         //private void rb_custom_Checked(object sender, RoutedEventArgs e)
         //{

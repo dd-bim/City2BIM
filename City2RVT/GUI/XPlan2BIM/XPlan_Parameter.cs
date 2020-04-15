@@ -18,7 +18,7 @@ namespace City2RVT.GUI.XPlan2BIM
 {
     public class XPlan_Parameter
     {
-        private readonly Document doc;
+        //private readonly Document doc;
 
         public DefinitionFile CreateDefinitionFile(string spFile, Autodesk.Revit.ApplicationServices.Application app, Document doc, string paramName, string defFileGroup)
         {

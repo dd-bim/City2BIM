@@ -66,6 +66,52 @@ namespace City2RVT.Builder
                 doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
         }
 
+        public void CreateProjectInformation(/*string paramFile*/ Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet, City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter, DefinitionFile defFile)
+        {
+            #region project_information
+
+
+            List<string> projectInformationList = new List<string>();
+            projectInformationList.Add("Bezeichnung des Bauvorhabens");
+            projectInformationList.Add("Art der Maßnahme");
+            projectInformationList.Add("Art des Gebäudes");
+            projectInformationList.Add("Gebäudeklasse");
+            projectInformationList.Add("Bauweise");
+
+            string paramFile = doc.Application.SharedParametersFilename;
+
+            foreach (var p in projectInformationList)
+            {
+                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, p, "ProjectInformation");
+            }
+
+            foreach (DefinitionGroup dg in defFile.Groups)
+            {
+                foreach (var projInfoName in projectInformationList)
+                {
+                    if (dg.Name == "ProjectInformation")
+                    {
+                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
+
+                        Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
+                        {
+                            tProjectInfo.Start();
+                            ProjectInfo projectInfo = doc.ProjectInformation;
+                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
+                            if (externalDefinition != null)
+                            {
+                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_GENERAL);
+                            }
+                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
+                        }
+                        tProjectInfo.Commit();
+                    }
+                }
+            }
+
+            #endregion project_information
+        }
+
         private ParameterType GetParameterType(Xml_AttrRep.AttrType gmlType)
         {
             ParameterType pType = default(ParameterType);

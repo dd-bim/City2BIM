@@ -1,4 +1,6 @@
-﻿namespace City2RVT.GUI
+﻿using System.Collections.Generic;
+
+namespace City2RVT.GUI
 {
     public static class Prop_NAS_settings
     {
@@ -30,6 +32,7 @@
         //public static bool IsServerRequest { get => isServerRequest; set => isServerRequest = value; }
         //public static string ServerUrl { get => serverUrl; set => serverUrl = value; }
         public static string FileUrl { get => fileUrl; set => fileUrl = value; }
+        public static System.Collections.IList LayerList { get => LayerList; set => LayerList = value; }
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
         public static bool DrapeBldgsOnTopo { get => drapeBldgsOnTopo; set => drapeBldgsOnTopo = value; }
         public static bool DrapeUsageOnTopo { get => drapeUsageOnTopo; set => drapeUsageOnTopo = value; }

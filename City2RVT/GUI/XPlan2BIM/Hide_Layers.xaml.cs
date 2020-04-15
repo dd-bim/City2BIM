@@ -175,7 +175,6 @@ namespace City2RVT.GUI.XPlan2BIM
             else
             {
                 categoryListbox2.UnselectAll();
-
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 using City2BIM.Alkis;
 using City2BIM.Geometry;
 using City2BIM.Semantic;
@@ -12,17 +13,24 @@ namespace City2RVT.Builder
 {
     class RevitAlkisBuilder
     {
+        ExternalCommandData commandData;
         private readonly Document doc;
         private readonly Dictionary<ColorType, ElementId> colors;
 
-        public RevitAlkisBuilder(Document doc)
+        public RevitAlkisBuilder(Document doc, ExternalCommandData cData)
         {
+            commandData = cData;
             this.doc = doc;
             this.colors = CreateColorAsMaterial();
         }
 
         public void CreateTopo(List<AX_Object> topoObjs)
         {
+            UIApplication uiapp = commandData.Application;
+            UIDocument uidoc = uiapp.ActiveUIDocument;
+            Document doc = uidoc.Document;
+            Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+
             //for safety, Revit-Topo-List must contain internal stored TopoId (which will be saved when DTM2BIM-Topo is imported)
 
             if (GUI.Prop_NAS_settings.DrapeBldgsOnTopo || GUI.Prop_NAS_settings.DrapeParcelsOnTopo || GUI.Prop_NAS_settings.DrapeUsageOnTopo)
@@ -40,6 +48,15 @@ namespace City2RVT.Builder
                 }
             }
             //----------------
+
+            //var form = new City2RVT.GUI.Wpf_NAS_settings(commandData);
+            //form.ShowDialog();
+
+            //var chosen = form.AlkisCategoryListbox.SelectedItems;
+            //System.Windows.Forms.MessageBox.Show(chosen.Count.ToString());
+
+            //var layerList = GUI.Prop_NAS_settings.LayerList;
+            //var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
             //each AX_Object will be represented as SubRegion
             //it is not allowed that subRegions overlap in Revit
@@ -88,12 +105,14 @@ namespace City2RVT.Builder
                                 topoId = topoRef.Id;
 
                                 topoRef.Pinned = true;
+
                             }
                         }
                         topoTransaction.Commit();
                     }
                 }
 
+                //var hideReferencePlanes = new List<ElementId>();
                 foreach (var obj in topoGr)
                 {
                     try
@@ -123,6 +142,17 @@ namespace City2RVT.Builder
                                 commAttr.Set("ALKIS: " + obj.UsageType);
 
                                 siteSubRegion.TopographySurface.Pinned = true;
+
+                                //hideReferencePlanes.Add(siteSubRegion.TopographySurface.Id);
+
+                                //if (chosen.Contains(obj.UsageType))
+                                //{
+
+                                //}
+                                //else
+                                //{
+                                //    view.HideElements(hideReferencePlanes);
+                                //}
                             }
                             subTrans.Commit();
                         }

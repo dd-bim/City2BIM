@@ -109,6 +109,8 @@ namespace City2RVT.GUI.XPlan2BIM
             double easting = position_data.EastWest;
             double northing = position_data.NorthSouth;
 
+            XYZ pbp = new XYZ(Math.Round((easting / feetToMeter),4), (Math.Round((northing / feetToMeter),4)), (Math.Round((elevation / feetToMeter),4)));
+
             // Der Ostwert des PBB wird als mittlerer Ostwert für die UTM Reduktion verwendet.
             double xSchwPktFt = easting;
             double xSchwPktKm = (double)((xSchwPktFt / feetToMeter) / 1000);
@@ -122,66 +124,156 @@ namespace City2RVT.GUI.XPlan2BIM
             Transform transf = trot.Multiply(ttrans);
             #endregion Transformation und UTM-Reduktion  
 
-            var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc);
+            const string original = @"D:\Daten\\Bauwerksmodell_IFC4.ifc";
+
+
+            //var model = IfcStore.Open(original);
+
+            //var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc);
 
             //Parameter myParam = doc.ProjectInformation.LookupParameter("Testproperty");
             //string para = myParam.AsString();
             //System.Windows.Forms.MessageBox.Show(para);
 
+
+
+            ////Get an instance of IFCExportConfiguration
+            //IFCExportConfiguration selectedConfig = modelSelection.Configuration;
+
+            ////Get the current view Id, or -1 if you want to export the entire model
+            //ElementId activeViewId = GenerateActiveViewIdFromDocument(doc);
+            //selectedConfig.ActiveViewId =
+            //        selectedConfig.UseActiveViewGeometry ? activeViewId.IntegerValue : -1;
+
+            ////Update the IFCExportOptions
+            //selectedConfig.UpdateOptions(IFCOptions, activeViewId);
+
+            //////////var new_model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc);
+
+            //////////Transaction txnE = new Transaction(doc);
+            //////////txnE.Start("Standard Export");
+
+            //////////string folder = @"D:\Daten";
+            //////////string name = "defaultExport_IFC4";
+
+            ////////////Create an instance of IFCExportOptions
+            //////////IFCExportOptions IFCOptions = new IFCExportOptions();
+            //////////IFCOptions.FileVersion = IFCVersion.IFC4;
+
+            ////////////Export the model to IFC
+            //////////doc.Export(folder, name, IFCOptions);
+
+            //////////ExportToIfc(doc);
+
+            //////////txnE.Commit();
+
+
+
+            //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
+            //{
+            //    Transaction txnE = new Transaction(doc);
+            //    txnE.Start("Standard Export");
+
+            //    string folder = @"D:\Daten";
+            //    string name = "defaultExport_IFC4";
+
+            //    //Create an instance of IFCExportOptions
+            //    IFCExportOptions IFCOptions = new IFCExportOptions();
+            //    IFCOptions.FileVersion = IFCVersion.IFC4;
+
+            //    //Export the model to IFC
+            //    doc.Export(folder, name, IFCOptions);
+
+            //    ExportToIfc(doc);
+
+            //    txnE.Commit();
+            //    //using (var txnE = model.BeginTransaction("Standard Export"))
+            //    //{
+            //    //    string folder = @"D:\Daten";
+            //    //    string name = "defaultExport_IFC4";
+
+            //    //    //Create an instance of IFCExportOptions
+            //    //    IFCExportOptions IFCOptions = new IFCExportOptions();
+            //    //    IFCOptions.FileVersion = IFCVersion.IFC4;
+
+            //    //    //Export the model to IFC
+            //    //    doc.Export(folder, name, IFCOptions);
+
+            //    //    ExportToIfc(doc);
+
+            //    //    txnE.Commit();
+            //    //}
+            //} 
+
+            
+
+
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
             //System.Windows.Forms.MessageBox.Show(topoCollector.Count().ToString());
 
-            foreach (var t in topoCollector)
+            //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
+            using (var model = IfcStore.Open(original))
             {
-                ////Create an instance of IFCExportOptions
-                //IFCExportOptions IFCOptions = new IFCExportOptions();
-
-                ////Get an instance of IFCExportConfiguration
-                //IFCExportConfiguration selectedConfig = modelSelection.Configuration;
-
-                ////Get the current view Id, or -1 if you want to export the entire model
-                //ElementId activeViewId = GenerateActiveViewIdFromDocument(doc);
-                //selectedConfig.ActiveViewId =
-                //        selectedConfig.UseActiveViewGeometry ? activeViewId.IntegerValue : -1;
-
-                ////Update the IFCExportOptions
-                //selectedConfig.UpdateOptions(IFCOptions, activeViewId);
-
-                //string folder = "A path to a folder where you want to save your IFC file";
-                //string name = "the name of your IFC file";
-
-                ////Export the model to IFC
-                //doc.Export(folder, name, IFCOptions);
-
-                //ExportToIfc(doc);
-
-
-                TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
-                IList<XYZ> topoPoints = topoSurf.GetPoints();
-                ParameterSet topoParams = topoSurf.Parameters;
-
-                string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
-                //string bezeichnung2 = default;
-
-                if (bezeichnung == null)
+                foreach (var t in topoCollector)
                 {
-                    bezeichnung = "-";                
-                }
-                else
-                {
-                    
+                    TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
+                    IList<XYZ> topoPoints = topoSurf.GetPoints();
+                    ParameterSet topoParams = topoSurf.Parameters;
+
+                    string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
+                    //string bezeichnung2 = default;
+
+                    if (bezeichnung == null)
+                    {
+                        bezeichnung = "-";
+                    }
+                    else
+                    {
+
+                    }
+
+                    // Diese IF-Anweisung bewirkt, dass die Referenzflächen, also die Boundingboxen, die "gedachte Flächen", d.h. keine existierenden Flächen sondern 
+                    // nur für die Darstellung in Revit notwendig sind, nicht nach IFC exportiert werden.
+                    if (bezeichnung.StartsWith("Reference plane") == false)
+                    {
+                        IfcXBim.CreateSite(model, topoPoints, /*transf, */topoParams, bezeichnung, topoSurf, pbp, doc);
+                    }
                 }
 
-                // Diese IF-Anweisung bewirkt, dass die Referenzflächen, also die Boundingboxen, die "gedachte Flächen", d.h. keine existierenden Flächen sondern 
-                // nur für die Darstellung in Revit notwendig sind, nicht nach IFC exportiert werden.
-                if (bezeichnung.StartsWith("Reference plane") == false)
+                var project = model.Instances.FirstOrDefault<IfcProject>(d => d.GlobalId == "1iMGscZQD1UuWMh2zmdLM4");
+
+                using (var txn = model.BeginTransaction("Project modification"))
                 {
-                    IfcXBim.CreateSite(model, topoPoints, /*transf, */topoParams, bezeichnung, topoSurf);
+                    model.Instances.New<IfcRelDefinesByProperties>(rel =>
+                    {
+                        rel.RelatedObjects.Add(project);
+                        rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
+                        {
+                            pset.Name = "BauantragAllgemein";
+
+                            pset.HasProperties.AddRange(new[]
+                            {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bezeichnung des Bauvorhabens");
+                                        string projInfoParamValue = projInfoParam.AsString();
+                                        string rfaNameAttri = "Bezeichnung des Bauvorhabens";
+                                        p.Name = rfaNameAttri;
+                                        p.NominalValue = new IfcLabel(projInfoParamValue);
+                                    }),
+                            });
+                        });
+                    });
                 }
+
+
+                string save = @"D:\Daten\\revit2ifc.ifc";
+                model.SaveAs(@save);
             }
 
-            string save = @"D:\Daten\\revit2ifc.ifc";
-            model.SaveAs(@save);
+            
+
+
         }
 
         //string locationFolder;

@@ -42,6 +42,9 @@
     <Reference Include="GeoJSON.Net">
       <HintPath>..\City2BIM\bin\Release\GeoJSON.Net.dll</HintPath>
     </Reference>
+    <Reference Include="IFCExportUI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2020\AddIns\IFCExporterUI\IFCExportUI.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
     </Reference>
@@ -147,10 +150,14 @@
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
+    <Compile Include="GUI\XPlan2BIM\Cmd_MergeIfc.cs" />
     <Compile Include="GUI\XPlan2BIM\Hide_Layers.xaml.cs">
       <DependentUpon>Hide_Layers.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\IfcXBim.cs" />
+    <Compile Include="GUI\XPlan2BIM\Merge_Ifc.xaml.cs">
+      <DependentUpon>Merge_Ifc.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XPlan2BIM\Prop_XPLAN_settings.cs" />
     <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
       <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
@@ -206,6 +213,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\XPlan2BIM\Hide_Layers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\XPlan2BIM\Merge_Ifc.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

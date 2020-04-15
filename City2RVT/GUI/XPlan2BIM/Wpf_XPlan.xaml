@@ -20,7 +20,7 @@
         <RadioButton Name="radioButton1" Content="Select all" HorizontalAlignment="Left" 
                      Margin="397,86,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
         <CheckBox Name="checkBoxZOffset" Content="Z-Offset für Layer" HorizontalAlignment="Left" Margin="494,210,0,0" 
-                  VerticalAlignment="Top"/>
+                  VerticalAlignment="Top" Checked="checkBoxZOffset_Checked"/>
 
     </Grid>
 </Window>

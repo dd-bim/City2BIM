@@ -12,10 +12,53 @@ namespace City2RVT.Builder
 {
     public class XPlan_Semantics
     {
-        private readonly Document doc;
-        private readonly DefinitionFile sharedParameterFile;
+        //private readonly Document doc;
+        //private readonly DefinitionFile sharedParameterFile;
 
-        public DefinitionGroup SetDefinitionGroupToParameterFile(string groupName)
+        public void CreateProjectInformation(string paramFile, Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet, City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter, DefinitionFile defFile)
+        {
+            #region project_information
+
+            List<string> projectInformationList = new List<string>();
+            projectInformationList.Add("Bezeichnung des Bauvorhabens");
+            projectInformationList.Add("Art der Maßnahme");
+            projectInformationList.Add("Art des Gebäudes");
+            projectInformationList.Add("Gebäudeklasse");
+            projectInformationList.Add("Bauweise");
+
+            foreach (var p in projectInformationList)
+            {
+                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, p, "ProjectInformation");
+            }
+
+            foreach (DefinitionGroup dg in defFile.Groups)
+            {
+                foreach (var projInfoName in projectInformationList)
+                {
+                    if (dg.Name == "ProjectInformation")
+                    {
+                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
+
+                        Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
+                        {
+                            tProjectInfo.Start();
+                            ProjectInfo projectInfo = doc.ProjectInformation;
+                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
+                            if (externalDefinition != null)
+                            {
+                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_GENERAL);
+                            }
+                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
+                        }
+                        tProjectInfo.Commit();
+                    }
+                }
+            }
+
+            #endregion project_information
+        }
+
+        public DefinitionGroup SetDefinitionGroupToParameterFile(string groupName, Document doc)
         {
             //if group already exists in file - set:
             DefinitionFile sharedParameterFile = doc.Application.OpenSharedParameterFile();
@@ -35,7 +78,7 @@ namespace City2RVT.Builder
             return paramGroup;
         }
 
-        public Definition SetDefinitionsToGroup(DefinitionGroup parGroup, string paramName, ParameterType pType)
+        public Definition SetDefinitionsToGroup(DefinitionGroup parGroup, string paramName, ParameterType pType, Document doc)
         {
             //if definition already exists in file - set:
             Definition paramDef = parGroup.Definitions.get_Item(paramName);
@@ -94,22 +137,22 @@ namespace City2RVT.Builder
             return pType;
         }
 
-        public void CreateParameters(IEnumerable<Xml_AttrRep> attributes)
-        {
-            var groupedAttributes = attributes.GroupBy(r => (r.XmlNamespace + ": " + r.Name));
+        //public void CreateParameters(IEnumerable<Xml_AttrRep> attributes)
+        //{
+        //    var groupedAttributes = attributes.GroupBy(r => (r.XmlNamespace + ": " + r.Name));
 
-            foreach (var attributeGroup in groupedAttributes)
-            {
-                string paramName = attributeGroup.Key;
+        //    foreach (var attributeGroup in groupedAttributes)
+        //    {
+        //        string paramName = attributeGroup.Key;
 
-                Xml_AttrRep attribute = attributeGroup.First();
+        //        Xml_AttrRep attribute = attributeGroup.First();
 
-                DefinitionGroup currentGroup = default(DefinitionGroup);
+        //        DefinitionGroup currentGroup = default(DefinitionGroup);
 
-                Definition paramDef = SetDefinitionsToGroup(currentGroup, paramName, GetParameterType(attribute.XmlType));
+        //        Definition paramDef = SetDefinitionsToGroup(currentGroup, paramName, GetParameterType(attribute.XmlType), doc);
 
-            }
-        }
+        //    }
+        //}
 
         public static HashSet<Xml_AttrRep> GetParcelAttributes()
         {

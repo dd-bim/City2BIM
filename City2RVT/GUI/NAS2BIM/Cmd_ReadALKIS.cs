@@ -14,15 +14,24 @@ namespace City2RVT.GUI
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             Document doc = revit.Application.ActiveUIDocument.Document;
+            UIApplication uiapp = revit.Application;
+            Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+
+            //UIApplication uiapp = revit.Application;
+            //UIDocument uidoc = uiapp.ActiveUIDocument;
+            //Document doc = uidoc.Document;
+            //Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
 
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            if (Prop_NAS_settings.FileUrl == "")
-                TaskDialog.Show("No file path set!", "Please enter a file path in the settings window first!");
-            else
-            {
-                var alkis = new Reader.ReadALKIS(doc);
-            }
+            var alkis = new Reader.ReadALKIS(doc, app, revit);
+
+            //if (Prop_NAS_settings.FileUrl == "")
+            //    TaskDialog.Show("No file path set!", "Please enter a file path in the settings window first!");
+            //else
+            //{
+            //    var alkis = new Reader.ReadALKIS(doc, app,revit);
+            //}
             return Result.Succeeded;
 
         }

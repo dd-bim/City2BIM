@@ -171,58 +171,25 @@ namespace City2RVT.GUI.XPlan2BIM
             categorySet.Insert(category);
             projCategorySet.Insert(projCategory);
 
-            string paramFile = @"D:\Daten\LandBIM\AP 1\Plugin\city2bim\SharedParameterFile.txt";
-            var parameter = new XPlan_Parameter();
-            DefinitionFile defFile = default(DefinitionFile);
+            string sharedParamFile = @"D:\Daten\LandBIM\AP 1\Plugin\city2bim\SharedParameterFile.txt";
+
 
             #endregion parameter  
 
             #region project_information
 
-            List<string> projectInformationList = new List<string>();
-            projectInformationList.Add("Bezeichnung des Bauvorhabens");
-            projectInformationList.Add("Art der Maßnahme");
-            projectInformationList.Add("Art des Gebäudes");
-            projectInformationList.Add("Gebäudeklasse");
-            projectInformationList.Add("Bauweise");
+            City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new XPlan_Parameter();
+            DefinitionFile defFile = default(DefinitionFile);
 
-            foreach (var p in projectInformationList)
-            {
-                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, p, "ProjectInformation");
-            }
-
-            foreach (DefinitionGroup dg in defFile.Groups)
-            {
-                foreach (var projInfoName in projectInformationList)
-                {
-                    if (dg.Name == "ProjectInformation")
-                    {
-                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
-
-                        Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
-                        {
-                            tProjectInfo.Start();
-                            ProjectInfo projectInfo = doc.ProjectInformation;
-                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
-                            if (externalDefinition != null)
-                            {
-                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_GENERAL);
-                            }
-                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
-                        }
-                        tProjectInfo.Commit();
-                    }                    
-                }
-            }
+            var projInformation = new City2RVT.Builder.XPlan_Semantics();
+            projInformation.CreateProjectInformation(sharedParamFile, app, doc, projCategorySet, parameter, defFile);            
 
             #endregion project_information
 
             #region hideElements
 
             var chosen = categoryListbox.SelectedItems;
-
             var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-
 
             #endregion hideElements
 
@@ -445,7 +412,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                     foreach (XmlNode child in nodeExt.ParentNode.ParentNode.ParentNode)
                     {
-                        defFile = parameter.CreateDefinitionFile(paramFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1), "XPlanDaten");
+                        defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1), "XPlanDaten");
                         if (child.Name != "#comment")
                         {
                             paramList.Add(child.Name);
@@ -719,6 +686,11 @@ namespace City2RVT.GUI.XPlan2BIM
                 categoryListbox.UnselectAll();
 
             }
+        }
+
+        private void checkBoxZOffset_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

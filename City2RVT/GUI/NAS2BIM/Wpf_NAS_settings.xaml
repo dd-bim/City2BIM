@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI"
              mc:Ignorable="d" 
-             Title="Settings" Height="290" Width="900">
+             Title="Settings" Height="650" Width="900">
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <!--<RowDefinition Height="210" />-->
@@ -22,7 +22,7 @@
                 <RadioButton x:Name="rb_file" Content="CityGML file" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="15,15,0,0"/>
             </StackPanel>
         </GroupBox>-->
-        <Button Content="Apply" Name="bt_applyGeoref" Margin="22,0,58,14" Height="30" Width="120" Click="Bt_apply_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" />
+        <Button Content="Apply" Name="bt_applyGeoref" Margin="22,0,58,-346" Height="30" Width="120" Click="Bt_apply_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1" />
         <!--<GroupBox Name="gr_server" Header="Server settings" HorizontalAlignment="Left" Height="180" Margin="10,16,0,15" VerticalAlignment="Center" Width="700" Grid.Row="0" Grid.ColumnSpan="2">
             <Grid Name="grid_server" HorizontalAlignment="Left" Height="150" Margin="20,0,0,0" VerticalAlignment="Top" Width="660">
                 <Grid.ColumnDefinitions>
@@ -83,7 +83,7 @@
                 <Label Content="use Codelist for translation" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="35,0,0,0"/>
                 <Label Content="  of codes into its meaning" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="35,10,0,0"/>
                 <ComboBox Name="cb_Codelist" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="270" Margin="51,9,-20,9" />-->
-            <!--</Grid>
+        <!--</Grid>
         </GroupBox>-->
         <!--<GroupBox Name="gr_code" Header="Codelist translation" HorizontalAlignment="Left" Height="70" Margin="10,11,0,10" VerticalAlignment="Center" Width="700" Grid.Row="2" Grid.ColumnSpan="2">
             <Grid Name="grid_code" HorizontalAlignment="Left" Height="40" Margin="20,0,0,0" VerticalAlignment="Top" Width="670">
@@ -104,7 +104,7 @@
                 <Label Content="File:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="71" Height="26" Margin="0,10,0,15" />-->
         <!--</Grid>
         </GroupBox>-->
-        <GroupBox Name="gr_drape" Header="Drape on terrain" HorizontalAlignment="Left" Height="70" Margin="10,11,0,10" VerticalAlignment="Center" Width="700" Grid.Row="2" Grid.ColumnSpan="2">
+        <GroupBox Name="gr_drape" Header="Drape on terrain" HorizontalAlignment="Left" Height="70" Margin="10,371,0,-350" VerticalAlignment="Center" Width="700" Grid.Row="1">
             <Grid Name="grid_drape" HorizontalAlignment="Left" Height="40" Margin="20,0,0,0" VerticalAlignment="Top" Width="670">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200" />
@@ -119,5 +119,11 @@
                 <Label Content="drape Building contours" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
             </Grid>
         </GroupBox>
+        <ListBox Name="AlkisCategoryListbox" HorizontalAlignment="Left" Height="299" Margin="31,47,0,-255" 
+                 Grid.Row="1" VerticalAlignment="Top" Width="445" SelectionMode="Multiple" SelectionChanged="AlkisCategoryListbox_SelectionChanged"/>
+        <Button Content="Show Layer" HorizontalAlignment="Left" Margin="31,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <RadioButton Name="alkisRadioButton" Content="Select all" HorizontalAlignment="Left" Margin="562,47,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+        <Button Content="Clear Selection" HorizontalAlignment="Left" Height="22" Margin="562,75,0,-6" Grid.Row="1" VerticalAlignment="Top" Width="85" Click="Button_Click_1"/>
+        <CheckBox Name="checkBoxZOffset" Content="Z-Offset für Layer" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="30,367,0,-295" Grid.Row="1" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
     </Grid>
 </Window>

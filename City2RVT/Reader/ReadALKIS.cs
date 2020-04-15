@@ -1,4 +1,6 @@
 ﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 using City2BIM.Alkis;
 using City2BIM.Geometry;
 using System.Collections.Generic;
@@ -12,7 +14,7 @@ namespace City2RVT.Reader
     {
         public Dictionary<string, XNamespace> allns;
 
-        public ReadALKIS(Document doc)
+        public ReadALKIS(Document doc, Autodesk.Revit.ApplicationServices.Application app, ExternalCommandData cData)
         {
             //local file path
             string path = GUI.Prop_NAS_settings.FileUrl;
@@ -20,11 +22,23 @@ namespace City2RVT.Reader
             //read all parcelTypes objects
             var alkisRep = new AlkisReader(path);
 
+            Category category = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Topography);
+            Category projCategory = doc.Settings.Categories.get_Item(BuiltInCategory.OST_ProjectInformation);
+            CategorySet categorySet = app.Create.NewCategorySet();
+            CategorySet projCategorySet = app.Create.NewCategorySet();
+            categorySet.Insert(category);
+            projCategorySet.Insert(projCategory);
+
+            City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new City2RVT.GUI.XPlan2BIM.XPlan_Parameter();
+            DefinitionFile defFile = default(DefinitionFile);
+
+            var projInformation = new City2RVT.Builder.Revit_Semantic(doc);
+            projInformation.CreateProjectInformation(app, doc, projCategorySet, parameter, defFile);
 
             var semBuilder = new Builder.Revit_Semantic(doc);
             semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());
 
-            var geomBuilder = new Builder.RevitAlkisBuilder(doc);
+            var geomBuilder = new Builder.RevitAlkisBuilder(doc, cData);
             geomBuilder.CreateTopo(alkisRep.AlkisObjects);
         }
 
