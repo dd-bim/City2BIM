@@ -89,11 +89,13 @@ namespace City2RVT.GUI.XPlan2BIM
                 tx.RollBack();
 
                 r = Result.Succeeded;
+
+                tx.Commit();
             }
             return r;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_StartIfcExport(object sender, RoutedEventArgs e)
         {
             UIApplication app = commandData.Application;
             UIDocument uidoc = app.ActiveUIDocument;
@@ -205,7 +207,85 @@ namespace City2RVT.GUI.XPlan2BIM
                     }
                 }
 
-                string save;
+                using (var txn = model.BeginTransaction("Create Project Information"))
+                {
+                    //var ifcproject = model.Instances.OfType<IfcProject>();
+                    var ifcproject = model.Instances.FirstOrDefault<IfcProject>();
+
+                    //set a few basic properties
+                    model.Instances.New<IfcRelDefinesByProperties>(rel =>
+                    {
+                        rel.RelatedObjects.Add(ifcproject);
+                        rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
+                        {
+                            pset.Name = "BauantragAllgemein";                            
+
+                            pset.HasProperties.AddRange(new[]
+                            {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bezeichnung des Bauvorhabens");
+                                        string projInfoParamValue = projInfoParam.AsString();
+                                        string rfaNameAttri = "Bezeichnung des Bauvorhabens";
+                                        p.Name = rfaNameAttri;
+                                        p.NominalValue = new IfcLabel(projInfoParamValue);
+                                    }),
+                            });
+
+                            pset.HasProperties.AddRange(new[]
+                            {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art der Maßnahme");
+                                        string projInfoParamValue = projInfoParam.AsString();
+                                        string rfaNameAttri = "Art der Maßnahme";
+                                        p.Name = rfaNameAttri;
+                                        p.NominalValue = new IfcLabel(projInfoParamValue);
+                                    }),
+                            });
+
+                            pset.HasProperties.AddRange(new[]
+                            {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art des Gebäudes");
+                                        string projInfoParamValue = projInfoParam.AsString();
+                                        string rfaNameAttri = "Art des Gebäudes";
+                                        p.Name = rfaNameAttri;
+                                        p.NominalValue = new IfcLabel(projInfoParamValue);
+                                    }),
+                            });
+
+                            pset.HasProperties.AddRange(new[]
+                            {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Gebäudeklasse");
+                                        string projInfoParamValue = projInfoParam.AsString();
+                                        string rfaNameAttri = "Gebäudeklasse";
+                                        p.Name = rfaNameAttri;
+                                        p.NominalValue = new IfcLabel(projInfoParamValue);
+                                    }),
+                            });
+
+                            pset.HasProperties.AddRange(new[]
+                            {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bauweise");
+                                        string projInfoParamValue = projInfoParam.AsString();
+                                        string rfaNameAttri = "Bauweise";
+                                        p.Name = rfaNameAttri;
+                                        p.NominalValue = new IfcLabel(projInfoParamValue);
+                                    }),
+                            });
+
+                        });
+                    });
+                    txn.Commit();
+                }
+
+                    string save;
 
                 if (string.IsNullOrWhiteSpace(ifc_name_textbox.Text))
                 {                    
@@ -222,7 +302,7 @@ namespace City2RVT.GUI.XPlan2BIM
         }
 
         //string locationFolder;
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_SetIfcLocation(object sender, RoutedEventArgs e)
         {
             var dlg = new FolderBrowserDialog();
             DialogResult folder = dlg.ShowDialog();
@@ -238,7 +318,7 @@ namespace City2RVT.GUI.XPlan2BIM
             
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_SetIfcFile(object sender, RoutedEventArgs e)
         {
             Reader.FileDialog winexp = new Reader.FileDialog();
             ifc_file_textbox.Text = winexp.ImportPath(Reader.FileDialog.Data.IFC);
@@ -247,6 +327,70 @@ namespace City2RVT.GUI.XPlan2BIM
         private void ifc_name_textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_OhneTopo(object sender, RoutedEventArgs e)
+        {
+            UIApplication app = commandData.Application;
+            UIDocument uidoc = app.ActiveUIDocument;
+            Document doc = uidoc.Document;
+
+            var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+
+
+            using (TransactionGroup transGroup = new TransactionGroup(doc))
+            {
+                transGroup.Start("Transaction Group");
+
+                using (Transaction firstTrans = new Transaction(doc))
+                {
+                    firstTrans.Start("First Transaction");
+
+                    FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+
+                    var preHide = new List<ElementId>();
+
+                    foreach (var id in topoCollector)
+                    {
+                        preHide.Add(id.Id);
+                    }
+
+                    if (view != null)
+                    {
+                        view.HideElements(preHide);
+                    }
+
+                    firstTrans.Commit();
+                }
+
+                using (Transaction secondTrans = new Transaction(doc))
+                {
+                    secondTrans.Start("Second Transaction");
+
+                    string folder = @"D:\Daten";
+                    string name = "defaultExport_IFC4";
+
+                    //Create an instance of IFCExportOptions
+                    IFCExportOptions IFCOptions = new IFCExportOptions();
+                    IFCOptions.FileVersion = IFCVersion.IFC4;
+                    IFCOptions.FilterViewId = view.Id;
+                    IFCOptions.AddOption("ActiveViedId", view.Id.ToString());
+                    IFCOptions.AddOption("ExportVisibleElementsInView", "true");
+                    IFCOptions.AddOption("VisibleElementsOfCurrentView", "true");
+                    IFCOptions.AddOption("ExportSchedulesAsPsets", "true");
+                    IFCOptions.AddOption("IncludeSiteElevation", "true");
+                    IFCOptions.AddOption("ExportPartsAsBuildingElements", "true");
+
+                    //Export the model to IFC
+                    doc.Export(folder, name, IFCOptions);
+
+                    secondTrans.Commit();
+
+                }
+
+                //transGroup.Assimilate();
+                transGroup.RollBack();
+            }            
         }
     }
 }

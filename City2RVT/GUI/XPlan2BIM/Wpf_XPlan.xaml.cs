@@ -80,14 +80,14 @@ namespace City2RVT.GUI.XPlan2BIM
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_SetXPlanFile(object sender, RoutedEventArgs e)
         {
             Reader.FileDialog winexp = new Reader.FileDialog();
             xplan_file.Text = winexp.ImportPath(Reader.FileDialog.Data.XPlanGML);
         }
 
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_StartXPlanImport(object sender, RoutedEventArgs e)
         {
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
@@ -616,13 +616,13 @@ namespace City2RVT.GUI.XPlan2BIM
 
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_ClearSelection(object sender, RoutedEventArgs e)
         {
             categoryListbox.UnselectAll();
             radioButton1.IsChecked = false;
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void Button_Click_ApplyXPlanFile(object sender, RoutedEventArgs e)
         {
             string xPlanGmlPath = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
@@ -677,7 +677,7 @@ namespace City2RVT.GUI.XPlan2BIM
             }
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
+        private void Button_Click_CloseXplanForm(object sender, RoutedEventArgs e)
         {
             Prop_XPLAN_settings.FileUrl = xplan_file.Text;
             this.Close();

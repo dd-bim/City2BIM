@@ -182,13 +182,6 @@ namespace City2RVT.GUI.XPlan2BIM
         {
             double feetToMeter = 1.0 / 0.3048;
 
-            const string original = @"D:\Daten\\Bauwerksmodell_IFC4.ifc";
-
-            //using (var model = IfcStore.Open(original, credentials))
-            //{
-
-            //}
-
             using (var txn = model.BeginTransaction("Create Ifc Export for topography"))
             {
                 var site = model.Instances.New<IfcSite>();
@@ -435,5 +428,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 return site;
             }
         }
+
+        //public static IfcProject UpdateProject()
+        //{
+
+        //}
     }
 }

@@ -8,16 +8,17 @@
              d:DesignHeight="350" d:DesignWidth="612.262"
              Height="296" Width="634">
     <Grid Margin="10,10,0,0">
-        <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="496,151,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="496,151,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_StartIfcExport"/>
         <TextBox Name="ifc_Location" HorizontalAlignment="Left" Height="23" Margin="141,111,0,0" 
                  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_Location_TextChanged"/>
-        <Button Content="File Location" HorizontalAlignment="Left" Margin="36,114,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-        <Button Content="IFC File" HorizontalAlignment="Left" Margin="36,66,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+        <Button Content="File Location" HorizontalAlignment="Left" Margin="36,114,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_SetIfcLocation"/>
+        <Button Content="IFC File" HorizontalAlignment="Left" Margin="36,66,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_SetIfcFile"/>
         <TextBox Name="ifc_file_textbox" HorizontalAlignment="Left" Height="23" 
                  Margin="141,66,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331"/>
         <TextBox Name="ifc_name_textbox" HorizontalAlignment="Left" Height="23" 
                  Margin="141,152,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_name_textbox_TextChanged"/>
         <Label Content="File name" HorizontalAlignment="Left" Margin="36,151,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Export ohne Topo" HorizontalAlignment="Left" Margin="36,25,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_OhneTopo"/>
 
     </Grid>
 </Window>
