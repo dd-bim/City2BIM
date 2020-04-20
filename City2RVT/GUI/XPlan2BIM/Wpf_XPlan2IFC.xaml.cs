@@ -93,7 +93,7 @@ namespace City2RVT.GUI.XPlan2BIM
             return r;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_IfcExport(object sender, RoutedEventArgs e)
         {
             UIApplication app = commandData.Application;
             UIDocument uidoc = app.ActiveUIDocument;
@@ -124,16 +124,70 @@ namespace City2RVT.GUI.XPlan2BIM
             Transform transf = trot.Multiply(ttrans);
             #endregion Transformation und UTM-Reduktion  
 
-            string original;
-            if (ifc_file_textbox.Text != null)
-            {
-                original = ifc_file_textbox.Text;
+            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+            var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+
+
+            string folder;
+            if (string.IsNullOrWhiteSpace(ifc_Location.Text))
+            {                
+                folder = @"D:\Daten";
             }
             else
             {
-                original = @"D:\Daten\\Bauwerksmodell_IFC4.ifc";
+                folder = ifc_Location.Text;
             }
-            
+            string name = "ifc_export_without_topography";
+
+
+            using (TransactionGroup transGroup = new TransactionGroup(doc))
+            {
+                transGroup.Start("Transaction Group");
+
+                using (Transaction firstTrans = new Transaction(doc))
+                {
+                    firstTrans.Start("First Transaction");
+
+                    var preHide = new List<ElementId>();
+
+                    foreach (var id in topoCollector)
+                    {
+                        preHide.Add(id.Id);
+                    }
+
+                    if (view != null)
+                    {
+                        view.HideElements(preHide);
+                    }
+                    firstTrans.Commit();
+                }
+
+                using (Transaction secondTrans = new Transaction(doc))
+                {
+                    secondTrans.Start("Second Transaction");
+                    IFCExportOptions IFCOptions = new IFCExportOptions();
+                    IFCOptions.FileVersion = IFCVersion.IFC4;
+                    IFCOptions.FilterViewId = view.Id;
+                    IFCOptions.AddOption("ActiveViewId", view.Id.ToString());
+                    IFCOptions.AddOption("ExportVisibleElementsInView", "true");
+                    IFCOptions.AddOption("VisibleElementsOfCurrentView", "true");
+                    IFCOptions.AddOption("ExportSchedulesAsPsets", "true");
+                    IFCOptions.AddOption("IncludeSiteElevation", "true");
+                    IFCOptions.AddOption("ExportPartsAsBuildingElements", "true");
+                    //Export the model to IFC
+                    doc.Export(folder, name, IFCOptions);
+
+                    secondTrans.Commit();
+                }
+
+                transGroup.RollBack();
+
+                
+            }
+
+
+
+            string original = folder + "\\" + name + ".ifc";        
 
             #region standardifcexport
             //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
@@ -171,10 +225,7 @@ namespace City2RVT.GUI.XPlan2BIM
             //    //    txnE.Commit();
             //    //}
             //} 
-            #endregion standardifcexport
-
-
-            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+            #endregion standardifcexport                    
 
             //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
             using (var model = IfcStore.Open(original))
@@ -214,7 +265,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 else
                 {
                     save = @"" + ifc_Location.Text + "\\" + ifc_name_textbox.Text + ".ifc";
-                    System.Windows.Forms.MessageBox.Show(save);
+                    //System.Windows.Forms.MessageBox.Show(save);
                 }
 
                 model.SaveAs(@save);
@@ -222,7 +273,7 @@ namespace City2RVT.GUI.XPlan2BIM
         }
 
         //string locationFolder;
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_FileLocation(object sender, RoutedEventArgs e)
         {
             var dlg = new FolderBrowserDialog();
             DialogResult folder = dlg.ShowDialog();
@@ -238,11 +289,6 @@ namespace City2RVT.GUI.XPlan2BIM
             
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            Reader.FileDialog winexp = new Reader.FileDialog();
-            ifc_file_textbox.Text = winexp.ImportPath(Reader.FileDialog.Data.IFC);
-        }
 
         private void ifc_name_textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
