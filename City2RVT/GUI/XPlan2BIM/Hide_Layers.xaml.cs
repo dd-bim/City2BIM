@@ -94,7 +94,7 @@ namespace City2RVT.GUI.XPlan2BIM
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_ShowSelectedLayer(object sender, RoutedEventArgs e)
         {
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
@@ -178,7 +178,7 @@ namespace City2RVT.GUI.XPlan2BIM
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_Unselect_All(object sender, RoutedEventArgs e)
         {
             categoryListbox2.UnselectAll();
             radioButton1.IsChecked = false;
