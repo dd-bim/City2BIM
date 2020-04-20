@@ -95,11 +95,8 @@ namespace City2RVT.GUI.XPlan2BIM
             return r;
         }
 
-<<<<<<< HEAD
+
         private void Button_Click_IfcExport(object sender, RoutedEventArgs e)
-=======
-        private void Button_Click_StartIfcExport(object sender, RoutedEventArgs e)
->>>>>>> 372cb7d4fa3223977a04f077749853b8c1ef220d
         {
             UIApplication app = commandData.Application;
             UIDocument uidoc = app.ActiveUIDocument;
@@ -356,12 +353,18 @@ namespace City2RVT.GUI.XPlan2BIM
             }  
         }
 
-        //string locationFolder;
-<<<<<<< HEAD
-        private void Button_Click_FileLocation(object sender, RoutedEventArgs e)
-=======
+        private void ifc_Location_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+        }
+
+
+        private void ifc_name_textbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
         private void Button_Click_SetIfcLocation(object sender, RoutedEventArgs e)
->>>>>>> 372cb7d4fa3223977a04f077749853b8c1ef220d
         {
             var dlg = new FolderBrowserDialog();
             DialogResult folder = dlg.ShowDialog();
@@ -372,87 +375,9 @@ namespace City2RVT.GUI.XPlan2BIM
             //ifc_Location.Text = ifcLocation.ImportPath(Reader.FileDialog.Data.XPlanGML);
         }
 
-        private void ifc_Location_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
-        }
-
-<<<<<<< HEAD
-=======
-        private void Button_Click_SetIfcFile(object sender, RoutedEventArgs e)
-        {
-            Reader.FileDialog winexp = new Reader.FileDialog();
-            ifc_file_textbox.Text = winexp.ImportPath(Reader.FileDialog.Data.IFC);
-        }
->>>>>>> 372cb7d4fa3223977a04f077749853b8c1ef220d
-
-        private void ifc_name_textbox_TextChanged(object sender, TextChangedEventArgs e)
+        private void ifc_file_textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
-        }
-
-        private void Button_Click_OhneTopo(object sender, RoutedEventArgs e)
-        {
-            UIApplication app = commandData.Application;
-            UIDocument uidoc = app.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-
-
-            using (TransactionGroup transGroup = new TransactionGroup(doc))
-            {
-                transGroup.Start("Transaction Group");
-
-                using (Transaction firstTrans = new Transaction(doc))
-                {
-                    firstTrans.Start("First Transaction");
-
-                    FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
-
-                    var preHide = new List<ElementId>();
-
-                    foreach (var id in topoCollector)
-                    {
-                        preHide.Add(id.Id);
-                    }
-
-                    if (view != null)
-                    {
-                        view.HideElements(preHide);
-                    }
-
-                    firstTrans.Commit();
-                }
-
-                using (Transaction secondTrans = new Transaction(doc))
-                {
-                    secondTrans.Start("Second Transaction");
-
-                    string folder = @"D:\Daten";
-                    string name = "defaultExport_IFC4";
-
-                    //Create an instance of IFCExportOptions
-                    IFCExportOptions IFCOptions = new IFCExportOptions();
-                    IFCOptions.FileVersion = IFCVersion.IFC4;
-                    IFCOptions.FilterViewId = view.Id;
-                    IFCOptions.AddOption("ActiveViedId", view.Id.ToString());
-                    IFCOptions.AddOption("ExportVisibleElementsInView", "true");
-                    IFCOptions.AddOption("VisibleElementsOfCurrentView", "true");
-                    IFCOptions.AddOption("ExportSchedulesAsPsets", "true");
-                    IFCOptions.AddOption("IncludeSiteElevation", "true");
-                    IFCOptions.AddOption("ExportPartsAsBuildingElements", "true");
-
-                    //Export the model to IFC
-                    doc.Export(folder, name, IFCOptions);
-
-                    secondTrans.Commit();
-
-                }
-
-                //transGroup.Assimilate();
-                transGroup.RollBack();
-            }            
         }
     }
 }
