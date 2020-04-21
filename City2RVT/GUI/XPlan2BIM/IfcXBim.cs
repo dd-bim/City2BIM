@@ -189,8 +189,36 @@ namespace City2RVT.GUI.XPlan2BIM
                 site.RefElevation = 0.0;
                 site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;
                 site.RefLatitude = new List<long> { 1, 2, 3, 4 };
+                
+
                 site.GlobalId = Guid.NewGuid();
-                //site.SiteAddress = "TestAdresse";
+
+                var ifcAddress = model.Instances.New<Xbim.Ifc4.ActorResource.IfcPostalAddress>(a =>
+                {
+                    a.Description = "Keine Addresse pro Flurstück/Nutzungfläche sondern für das Baugrundstück bzw. Bauobjekt. ";
+
+                    Parameter addressLineParam = doc.ProjectInformation.LookupParameter("Address Line");
+                    string addressLineParamValue = addressLineParam.AsString();
+                    a.AddressLines.Add(addressLineParamValue);
+
+                    Parameter postalCodeParam = doc.ProjectInformation.LookupParameter("Postal Code");
+                    string postalCodeParamValue = postalCodeParam.AsString();
+                    a.PostalCode = postalCodeParamValue;
+
+                    Parameter townParam = doc.ProjectInformation.LookupParameter("Town");
+                    string townParamValue = townParam.AsString();
+                    a.Town = townParamValue;
+
+                    Parameter regionParam = doc.ProjectInformation.LookupParameter("Region");
+                    string regionParamValue = regionParam.AsString();
+                    a.Region = regionParamValue;
+
+                    Parameter countryParam = doc.ProjectInformation.LookupParameter("Country");
+                    string countryParamValue = countryParam.AsString();
+                    a.Country = countryParamValue;
+
+                });
+                site.SiteAddress = ifcAddress;
 
                 var curveSet = model.Instances.New<IfcPolyline>();
                 var loop = model.Instances.New<IfcPolyLoop>();

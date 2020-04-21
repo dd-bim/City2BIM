@@ -17,8 +17,6 @@ namespace City2RVT.Builder
 
         public void CreateProjectInformation(string paramFile, Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet, City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter, DefinitionFile defFile)
         {
-            #region project_information
-
             List<string> projectInformationList = new List<string>();
             projectInformationList.Add("Bezeichnung des Bauvorhabens");
             projectInformationList.Add("Art der Maßnahme");
@@ -42,7 +40,6 @@ namespace City2RVT.Builder
                         Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
                         {
                             tProjectInfo.Start();
-                            ProjectInfo projectInfo = doc.ProjectInformation;
                             InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
                             if (externalDefinition != null)
                             {
@@ -55,7 +52,42 @@ namespace City2RVT.Builder
                 }
             }
 
-            #endregion project_information
+            List<string> projectAddressList = new List<string>();
+            projectAddressList.Add("Address Line");
+            projectAddressList.Add("Postal Code");
+            projectAddressList.Add("Town");
+            projectAddressList.Add("Region");
+            projectAddressList.Add("Country");
+
+            foreach (var a in projectAddressList)
+            {
+                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, a, "IfcSiteAddress");
+            }
+
+            foreach (DefinitionGroup dg in defFile.Groups)
+            {
+                foreach (var projInfoName in projectAddressList)
+                {
+                    if (dg.Name == "IfcSiteAddress")
+                    {
+                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
+
+                        Transaction tProjectInfo = new Transaction(doc, "Insert IfcSiteAddress");
+                        {
+                            tProjectInfo.Start();
+                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
+                            if (externalDefinition != null)
+                            {
+                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_DATA);
+                            }
+                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
+                        }
+                        tProjectInfo.Commit();
+                    }
+                }
+            }
+
+
         }
 
         public DefinitionGroup SetDefinitionGroupToParameterFile(string groupName, Document doc)
