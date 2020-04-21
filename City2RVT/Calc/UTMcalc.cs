@@ -12,9 +12,9 @@ namespace City2RVT.Calc
         public static readonly double UtmFalseEasting = 500000.0;
         public static readonly double UtmFalseNorthing = 10000000.0;
 
-        public static readonly Ellipsoid Grs80 = new Ellipsoid(NETGeographicLib.Constants.GRS80.MajorRadius, NETGeographicLib.Constants.GRS80.Flattening);
+        public static readonly Ellipsoid Grs80 = new Ellipsoid(NETGeographicLib.Constants.GRS80.EquatorialRadius, NETGeographicLib.Constants.GRS80.Flattening);
 
-        private static readonly TransverseMercator utmGrs80 = new TransverseMercator(Grs80.MajorRadius, Grs80.Flattening, UtmScale);
+        private static readonly TransverseMercator utmGrs80 = new TransverseMercator(Grs80.EquatorialRadius, Grs80.Flattening, UtmScale);
 
         private static readonly string egm2008Path =
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", "/");
