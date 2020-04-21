@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI;
@@ -25,17 +24,23 @@ namespace City2RVT.GUI
 
             RibbonPanel panel2 = application.CreateRibbonPanel(tabName, "Georeferencing");
 
-            var globePath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var georefRootPath = Path.Combine(globePath, "..", "..");
-            var imgGeorefPath = Path.Combine(georefRootPath, "img", "Georef_32px_96dpi.png");
-            Uri uriImage = new Uri(imgGeorefPath);
-            BitmapImage largeImage = new BitmapImage(uriImage);
+            /*var globePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Georef_32px_96dpi.png");           
+            Uri uriImage = new Uri(globePath);
+            BitmapImage largeImage = new BitmapImage(uriImage);*/
+            //System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            var bitmap = ResourcePictures.Georef_32px_96dpi;
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            BitmapImage largeImage = new BitmapImage();
+            ms.Position = 0;
+            largeImage.BeginInit();
+            largeImage.StreamSource = ms;
+            largeImage.EndInit();
 
             PushButton buttonGeoRef = panel2.AddItem(new PushButtonData("Show Georef information", "Level of Georef",
             thisAssemblyPath, "City2RVT.GUI.Cmd_GeoRefUI")) as PushButton;
             buttonGeoRef.ToolTip = "Show georef information for current project.";
-            buttonGeoRef.LargeImage = largeImage;
+            buttonGeoRef.LargeImage = largeImage; 
 
             #endregion Georef panel
 
@@ -45,12 +50,18 @@ namespace City2RVT.GUI
 
             RibbonPanel panel3 = application.CreateRibbonPanel(tabName, "City2BIM");
 
-            var citygmlPath =
-                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
-            var citygmlRootPath = Path.Combine(citygmlPath, "..", "..");
-            var imgCitygmlPath = Path.Combine(citygmlRootPath, "img", "citygml_32px_96dpi.png");
-            Uri uriImageC = new Uri(imgCitygmlPath);
-            BitmapImage largeImageC = new BitmapImage(uriImageC);
+            /*var citygmlPath =
+                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "img\\citygml_32px_96dpi.png");
+            Uri uriImageC = new Uri(citygmlPath);
+            BitmapImage largeImageC = new BitmapImage(uriImageC);*/
+            System.IO.MemoryStream msC = new System.IO.MemoryStream();
+            var bitmapC = ResourcePictures.citygml_32px_96dpi;
+            bitmapC.Save(msC, System.Drawing.Imaging.ImageFormat.Png);
+            BitmapImage largeImageC = new BitmapImage();
+            msC.Position = 0;
+            largeImageC.BeginInit();
+            largeImageC.StreamSource = msC;
+            largeImageC.EndInit();
 
             PulldownButton btCityGml = panel3.AddItem(new PulldownButtonData("LoadCityGML", "Import City Model...")) as PulldownButton;
             btCityGml.ToolTip = "Import functionality for CityGML data.";
@@ -71,12 +82,18 @@ namespace City2RVT.GUI
             btCityGml.AddPushButton(btSurfaces);
             btCityGml.AddPushButton(btSolid);
 
-            var citygmlsetPath =
-                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
-            var citygmlSetRootPath = Path.Combine(citygmlsetPath, "..", "..");
-            var imgCitygmlSetPath = Path.Combine(citygmlSetRootPath, "img", "citygml_set_32px.png");
-            Uri uriImageCSet = new Uri(imgCitygmlSetPath);
-            BitmapImage largeImageCSet = new BitmapImage(uriImageCSet);
+            /*var citygmlsetPath =
+                System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "img\\citygml_set_32px.png");
+            Uri uriImageCSet = new Uri(citygmlsetPath);
+            BitmapImage largeImageCSet = new BitmapImage(uriImageCSet);*/
+            System.IO.MemoryStream msCSet = new System.IO.MemoryStream();
+            var bitmapCSet = ResourcePictures.citygml_set_32px;
+            bitmapCSet.Save(msCSet, System.Drawing.Imaging.ImageFormat.Png);
+            BitmapImage largeImageCSet = new BitmapImage();
+            msCSet.Position = 0;
+            largeImageCSet.BeginInit();
+            largeImageCSet.StreamSource = msCSet;
+            largeImageCSet.EndInit();
 
             PushButton btCitySettings = panel3.AddItem(new PushButtonData("OpenCityGMLSettings", "Settings",
             thisAssemblyPath, "City2RVT.GUI.Cmd_OpenSettings")) as PushButton;
@@ -91,24 +108,36 @@ namespace City2RVT.GUI
 
             RibbonPanel panel4 = application.CreateRibbonPanel(tabName, "ALKIS2BIM");
 
-            var alkisPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var alkisRootPath = Path.Combine(alkisPath, "..", "..");
-            var alkisSetPath = Path.Combine(alkisRootPath, "img", "ALKIS_32px_96dpi.png");
-            Uri uriImageA = new Uri(alkisSetPath);
-            BitmapImage largeImageA = new BitmapImage(uriImageA);
+            /*var alkisPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\ALKIS_32px_96dpi.png");
+            Uri uriImageA = new Uri(alkisPath);
+            BitmapImage largeImageA = new BitmapImage(uriImageA);*/
+            System.IO.MemoryStream msA = new System.IO.MemoryStream();
+            var bitmapA = ResourcePictures.ALKIS_32px_96dpi;
+            bitmapA.Save(msA, System.Drawing.Imaging.ImageFormat.Png);
+            BitmapImage largeImageA = new BitmapImage();
+            msA.Position = 0;
+            largeImageA.BeginInit();
+            largeImageA.StreamSource = msA;
+            largeImageA.EndInit();
 
             PushButton buttonAlkis = panel4.AddItem(new PushButtonData("LoadALKIS", "Import ALKIS data",
             thisAssemblyPath, "City2RVT.GUI.Cmd_ReadALKIS")) as PushButton;
             buttonAlkis.ToolTip = "Import functionality ALKIS data from NAS-XML files.)";
             buttonAlkis.LargeImage = largeImageA;
 
-            var alkisxmlPath =
-                 System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
-            var alkisxmlsetRootPath = Path.Combine(alkisxmlPath, "..", "..");
-            var alkisxmlSetPath = Path.Combine(alkisxmlsetRootPath, "img", "ALKISset_32px.png");
-            Uri uriImageCAlk = new Uri(alkisxmlSetPath);
-            BitmapImage largeImageCAlk = new BitmapImage(uriImageCAlk);
+            /*var alkisxmlsetPath =
+                 System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "ALKISset_32px.png");
+            Uri uriImageCAlk = new Uri(alkisxmlsetPath);
+            BitmapImage largeImageCAlk = new BitmapImage(uriImageCAlk);*/
+            System.IO.MemoryStream msCAlk = new System.IO.MemoryStream();
+            var bitmapCAlk = ResourcePictures.ALKISset_32px;
+            bitmapCAlk.Save(msCAlk, System.Drawing.Imaging.ImageFormat.Png);
+            BitmapImage largeImageCAlk = new BitmapImage();
+            msCAlk.Position = 0;
+            largeImageCAlk.BeginInit();
+            largeImageCAlk.StreamSource = msCAlk;
+            largeImageCAlk.EndInit();
 
             PushButton btAlkisSettings = panel4.AddItem(new PushButtonData("OpenALKISSettings", "Settings",
             thisAssemblyPath, "City2RVT.GUI.Cmd_OpenALKISSettings")) as PushButton;
@@ -122,12 +151,18 @@ namespace City2RVT.GUI
 
             RibbonPanel panel5 = application.CreateRibbonPanel(tabName, "DTM2BIM");
 
-            var terrainPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var terrainRootPath = Path.Combine(terrainPath, "..", "..");
-            var terrainSetPath = Path.Combine(terrainRootPath, "img", "DTM_32px_96dpi.png");
-            Uri uriImageT = new Uri(terrainSetPath);
-            BitmapImage largeImageT = new BitmapImage(uriImageT);
+            /*var terrainPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\DTM_32px_96dpi.png");
+            Uri uriImageT = new Uri(terrainPath);
+            BitmapImage largeImageT = new BitmapImage(uriImageT);*/
+            System.IO.MemoryStream msT = new System.IO.MemoryStream();
+            var bitmapT = ResourcePictures.DTM_32px_96dpi;
+            bitmapT.Save(msT, System.Drawing.Imaging.ImageFormat.Png);
+            BitmapImage largeImageT = new BitmapImage();
+            msT.Position = 0;
+            largeImageT.BeginInit();
+            largeImageT.StreamSource = msT;
+            largeImageT.EndInit();
 
             PushButton buttonDTM = panel5.AddItem(new PushButtonData("DTM_Importer", "Get Terrain data",
             thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrainXYZ")) as PushButton;
@@ -140,12 +175,18 @@ namespace City2RVT.GUI
 
             RibbonPanel panel6 = application.CreateRibbonPanel(tabName, "IFC Export");
 
-            var ifcExportPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var ifcExportRootPath = Path.Combine(ifcExportPath, "..", "..");
-            var ifcExportSetPath = Path.Combine(ifcExportRootPath, "img", "IFC_32px_96dpi.png");
-            Uri uriImageIfc = new Uri(ifcExportSetPath);
-            BitmapImage largeImageIfc = new BitmapImage(uriImageIfc);
+            /*var ifcExportPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img\\IFC_32px_96dpi.png");
+            Uri uriImageIfc = new Uri(ifcExportPath);
+            BitmapImage largeImageIfc = new BitmapImage(uriImageIfc);*/
+            System.IO.MemoryStream msIfc = new System.IO.MemoryStream();
+            var bitmapIfc = ResourcePictures.IFC_32px_96dpi;
+            bitmapIfc.Save(msIfc, System.Drawing.Imaging.ImageFormat.Png);
+            BitmapImage largeImageIfc = new BitmapImage();
+            msIfc.Position = 0;
+            largeImageIfc.BeginInit();
+            largeImageIfc.StreamSource = msIfc;
+            largeImageIfc.EndInit();
 
             PushButton buttonIFC = panel6.AddItem(new PushButtonData("IFC_Exporter", "Export data to IFC-file",
             thisAssemblyPath, "City2RVT.GUI.Cmd_ExportIFC")) as PushButton;

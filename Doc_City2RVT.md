@@ -28,6 +28,9 @@ Der CommonAppDataFolder ist meistens *C:\ProgramData*.
 
 In diesem Fall muss manuell zum Addins-Ordner navigiert werden und dort die Datei *City2BIM.addin* sowie der Ordner *City2RVT* abgelegt werden.
 
+### ohne Administratorrechte
+
+[-> siehe hier](alternative_Installation.md)
 
 ### Entwicklungsumgebung
 

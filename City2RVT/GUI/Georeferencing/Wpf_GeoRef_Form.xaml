@@ -17,8 +17,8 @@
             <ColumnDefinition Width="720.5" />
             <ColumnDefinition Width="270" />
         </Grid.ColumnDefinitions>
-        <Button Content="Apply" Name="bt_applyGeoref" Margin="75,0,76,70" Height="30" Width="120" Click="Bt_applyGeoref_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="1" />
-        <Button Content="Close" Name="bt_quit" HorizontalAlignment="Center" Margin="75,0,76,20" VerticalAlignment="Bottom" Height="30" Width="120" Click="Bt_quit_Click" Grid.Column="1" Grid.Row="3" />
+        <Button Content="Apply" Name="bt_applyGeoref" Margin="74,0,76,70" Height="30" Width="120" Click="Bt_applyGeoref_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="1" />
+        <Button Content="Close" Name="bt_quit" HorizontalAlignment="Center" Margin="74,0,76,20" VerticalAlignment="Bottom" Height="30" Width="120" Click="Bt_quit_Click" Grid.Column="1" Grid.Row="3" />
         <GroupBox Name="group10" Header="Postal Address" HorizontalAlignment="Left" Height="220" Margin="10,0,0,0" VerticalAlignment="Top" Width="700" Grid.Row="0">
             <Grid Name="grid_ct10" HorizontalAlignment="Left" Height="200" Margin="90,0,0,0" VerticalAlignment="Top" Width="600">
                 <Grid.ColumnDefinitions>
@@ -117,8 +117,8 @@
                 <Button Content="Calculate" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,15,0,0" Height="30" Width="100" Click="Bt_calculate_Click" />
             </StackPanel>
         </GroupBox>
-        <Image x:Name="georef10_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="22,76,0,75" Width="75" Source="img/icon_georef10.png" Stretch="UniformToFill" Grid.Row="0" />
-        <Image x:Name="georef20_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="20,25,0,26" Width="75" Source="img/icon_georef20.png" Stretch="UniformToFill" Grid.Row="1" />
-        <Image x:Name="georef50_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="20,25,0,25" Width="75" Source="img/icon_georef50.png" Stretch="UniformToFill" Grid.Row="2" />
+        <Image x:Name="georef10_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="22,76,0,75" Width="75" Stretch="UniformToFill" Grid.Row="0" />
+        <Image x:Name="georef20_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="20,25,0,26" Width="75" Stretch="UniformToFill" Grid.Row="1" />
+        <Image x:Name="georef50_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="20,25,0,25" Width="75" Stretch="UniformToFill" Grid.Row="2" />
     </Grid>
 </Window>
