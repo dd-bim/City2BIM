@@ -167,6 +167,11 @@
     </Compile>
     <Compile Include="GUI\XPlan2BIM\XPlan_Inhalt.cs" />
     <Compile Include="GUI\XPlan2BIM\XPlan_Parameter.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Reader\ReadALKIS.cs" />
     <Compile Include="Reader\ReadCityGML.cs" />
     <Compile Include="Reader\FileDialog.cs" />
@@ -198,6 +203,11 @@
     <Compile Include="GUI\NAS2BIM\Cmd_ReadALKIS.cs" />
     <Compile Include="GUI\UI_PlugIn.cs" />
     <Compile Include="Reader\ReadXPlan.cs" />
+    <Compile Include="ResourcePictures.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourcePictures.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
@@ -233,6 +243,13 @@
     <Folder Include="GUI\BIM2City\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\Debug\ALKIS_32px_96dpi.png" />
+    <None Include="bin\Debug\ALKISset_32px.png" />
+    <None Include="bin\Debug\citygml_32px_96dpi.png" />
+    <None Include="bin\Debug\citygml_set_32px.png" />
+    <None Include="bin\Debug\DTM_32px_96dpi.png" />
+    <None Include="bin\Debug\Georef_32px_96dpi.png" />
+    <None Include="bin\Debug\IFC_32px_96dpi.png" />
     <Content Include="Geographic.dll" />
     <Content Include="GUI\Georeferencing\img\Georef_96dpi.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef10.png" />
@@ -245,6 +262,7 @@
     <Content Include="img\DTM_32px_96dpi.png" />
     <Content Include="img\Georef_32px_96dpi.png" />
     <Content Include="img\IFC_32px_96dpi.png" />
+    <None Include="Resources\Georef_32px_96dpi.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="egm2008.egm" />
@@ -263,5 +281,12 @@
       <Name>City2IFC</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ResourcePictures.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

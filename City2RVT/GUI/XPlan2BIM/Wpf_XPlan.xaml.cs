@@ -173,8 +173,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
             //create shared parameter file
             string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
-            System.Windows.Forms.MessageBox.Show(modulePath);
+            //System.Windows.Forms.MessageBox.Show(modulePath);
             string sharedParamFile = Path.Combine(modulePath, "SharedParameterFile.txt");
+
+            //System.Windows.Forms.MessageBox.Show(sharedParamFile);
 
             if (!File.Exists(sharedParamFile))
             {
@@ -423,6 +425,7 @@ namespace City2RVT.GUI.XPlan2BIM
                         defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1), "XPlanDaten");
                         if (child.Name != "#comment")
                         {
+                            //System.Windows.Forms.MessageBox.Show(child.Name);
                             paramList.Add(child.Name);
                         }
                     }
@@ -496,7 +499,16 @@ namespace City2RVT.GUI.XPlan2BIM
                     string nodeContent = default;
                     Dictionary<string, string> paramDict = new Dictionary<string, string>();
 
+                    //System.Windows.Forms.MessageBox.Show(defFile.Groups.Count().ToString());
+                    //var defList = defFile.Groups.ToList();
+                    //System.Windows.Forms.MessageBox.Show(defList[0].Name.ToString());
+                    //System.Windows.Forms.MessageBox.Show(defList[1].Name.ToString());
+                    //System.Windows.Forms.MessageBox.Show(defList[2].Name.ToString());
+
+
+
                     foreach (DefinitionGroup dg in defFile.Groups)
+                    //foreach (var dg in defList)
                     {
                         foreach (var paramName in paramList)
                         {
@@ -531,9 +543,10 @@ namespace City2RVT.GUI.XPlan2BIM
                                 }
                             } 
                         }
-                        paramList.Clear();
+                        
 
                     }
+                    paramList.Clear();
                     #endregion parameter
 
                     if (curveLoopExterior.GetExactLength() > 0)
