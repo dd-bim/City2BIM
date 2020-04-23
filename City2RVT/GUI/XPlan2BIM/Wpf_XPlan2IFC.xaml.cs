@@ -68,34 +68,6 @@ namespace City2RVT.GUI.XPlan2BIM
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Export current view to IFC
-        /// </summary>
-        static Result ExportToIfc(Document doc)
-        {
-            Result r = Result.Failed;
-
-            using (Transaction tx = new Transaction(doc))
-            {
-                tx.Start("Export IFC");
-
-                string desktop_path = Environment.GetFolderPath(
-                  Environment.SpecialFolder.Desktop);
-
-                IFCExportOptions opt = null;
-
-                doc.Export(desktop_path, doc.Title, opt);
-
-                tx.RollBack();
-
-                r = Result.Succeeded;
-
-                tx.Commit();
-            }
-            return r;
-        }
-
-
         private void Button_Click_IfcExport(object sender, RoutedEventArgs e)
         {
             UIApplication app = commandData.Application;
@@ -130,7 +102,6 @@ namespace City2RVT.GUI.XPlan2BIM
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
             var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
-
             string folder;
             if (string.IsNullOrWhiteSpace(ifc_Location.Text))
             {                
@@ -141,7 +112,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 folder = ifc_Location.Text;
             }
             string name = "ifc_export_without_topography";
-
 
             using (TransactionGroup transGroup = new TransactionGroup(doc))
             {
@@ -182,53 +152,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
                     secondTrans.Commit();
                 }
-
-                transGroup.RollBack();
-
-                
+                transGroup.RollBack();                
             }
 
-
-
-            string original = folder + "\\" + name + ".ifc";        
-
-            #region standardifcexport
-            //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
-            //{
-            //    Transaction txnE = new Transaction(doc);
-            //    txnE.Start("Standard Export");
-
-            //    string folder = @"D:\Daten";
-            //    string name = "defaultExport_IFC4";
-
-            //    //Create an instance of IFCExportOptions
-            //    IFCExportOptions IFCOptions = new IFCExportOptions();
-            //    IFCOptions.FileVersion = IFCVersion.IFC4;
-
-            //    //Export the model to IFC
-            //    doc.Export(folder, name, IFCOptions);
-
-            //    ExportToIfc(doc);
-
-            //    txnE.Commit();
-            //    //using (var txnE = model.BeginTransaction("Standard Export"))
-            //    //{
-            //    //    string folder = @"D:\Daten";
-            //    //    string name = "defaultExport_IFC4";
-
-            //    //    //Create an instance of IFCExportOptions
-            //    //    IFCExportOptions IFCOptions = new IFCExportOptions();
-            //    //    IFCOptions.FileVersion = IFCVersion.IFC4;
-
-            //    //    //Export the model to IFC
-            //    //    doc.Export(folder, name, IFCOptions);
-
-            //    //    ExportToIfc(doc);
-
-            //    //    txnE.Commit();
-            //    //}
-            //} 
-            #endregion standardifcexport                    
+            string original = folder + "\\" + name + ".ifc";                          
 
             //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
             using (var model = IfcStore.Open(original))
@@ -240,15 +167,9 @@ namespace City2RVT.GUI.XPlan2BIM
                     ParameterSet topoParams = topoSurf.Parameters;
 
                     string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
-                    //string bezeichnung2 = default;
-
                     if (bezeichnung == null)
                     {
                         bezeichnung = "-";
-                    }
-                    else
-                    {
-
                     }
 
                     // Diese IF-Anweisung bewirkt, dass die Referenzflächen, also die Boundingboxen, die "gedachte Flächen", d.h. keine existierenden Flächen sondern 
@@ -337,8 +258,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     txn.Commit();
                 }
 
-                    string save;
-
+                string save;
                 if (string.IsNullOrWhiteSpace(ifc_name_textbox.Text))
                 {                    
                     save = @"D:\Daten\revit2ifc.ifc";
@@ -346,7 +266,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 else
                 {
                     save = @"" + ifc_Location.Text + "\\" + ifc_name_textbox.Text + ".ifc";
-                    //System.Windows.Forms.MessageBox.Show(save);
                 }
 
                 model.SaveAs(@save);
@@ -369,15 +288,7 @@ namespace City2RVT.GUI.XPlan2BIM
             var dlg = new FolderBrowserDialog();
             DialogResult folder = dlg.ShowDialog();
             string locationFolder = dlg.SelectedPath;
-            System.Windows.Forms.MessageBox.Show(locationFolder.ToString());
             ifc_Location.Text = locationFolder;
-            //Reader.FileDialog ifcLocation = new Reader.FileDialog();
-            //ifc_Location.Text = ifcLocation.ImportPath(Reader.FileDialog.Data.XPlanGML);
-        }
-
-        private void ifc_file_textbox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
         }
     }
 }

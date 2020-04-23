@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Windows.Forms;
 using System.Reflection;
 using NETGeographicLib;
 
@@ -12,9 +13,9 @@ namespace City2RVT.Calc
         public static readonly double UtmFalseEasting = 500000.0;
         public static readonly double UtmFalseNorthing = 10000000.0;
 
-        public static readonly Ellipsoid Grs80 = new Ellipsoid(NETGeographicLib.Constants.GRS80.EquatorialRadius, NETGeographicLib.Constants.GRS80.Flattening);
+        public static readonly Ellipsoid Grs80 = new Ellipsoid(NETGeographicLib.Constants.GRS80.MajorRadius, NETGeographicLib.Constants.GRS80.Flattening);
 
-        private static readonly TransverseMercator utmGrs80 = new TransverseMercator(Grs80.EquatorialRadius, Grs80.Flattening, UtmScale);
+        private static readonly TransverseMercator utmGrs80 = new TransverseMercator(Grs80.MajorRadius, Grs80.Flattening, UtmScale);
 
         private static readonly string egm2008Path =
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", "/");
@@ -157,6 +158,22 @@ namespace City2RVT.Calc
             var lon0 = ZoneToLon0(zone);
             utmGrs80.Reverse(lon0, easting - UtmFalseEasting, isSouth ? northing - UtmFalseNorthing : northing, out lat,
                 out lon, out gamma, out scale);
+        }
+
+        public static long[] SplitSexagesimal(string geographyDegree)
+        {
+            long deg = long.Parse(geographyDegree.Substring(0, geographyDegree.IndexOf('°')));
+            int minFrom = geographyDegree.IndexOf("°") + 1;
+            int minTo = geographyDegree.LastIndexOf("'");
+            long min = long.Parse(geographyDegree.Substring(minFrom, minTo - minFrom));
+            int secFrom = geographyDegree.IndexOf("'") + 1;
+            int secTo = geographyDegree.LastIndexOf('"');
+            long sec = long.Parse(geographyDegree.Substring(secFrom, secTo - secFrom));
+            long frac = long.Parse(geographyDegree.Substring(geographyDegree.IndexOf('"') + 1));
+
+            long[] geograpgyDegreeSplit = new long[] { deg, min, sec, frac };
+
+            return geograpgyDegreeSplit;
         }
 
         public static double GeoidHeight(double lat, double lon) => egm2008.GeoidHeight(lat, lon);

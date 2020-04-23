@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 using Xml_AttrRep = City2BIM.Semantic.Xml_AttrRep;
 
 namespace City2RVT.Builder
@@ -66,11 +67,12 @@ namespace City2RVT.Builder
                 doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
         }
 
-        public void CreateProjectInformation(/*string paramFile*/ Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet, City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter, DefinitionFile defFile)
+
+        /// <summary>
+        /// Creates Project Information for the revit project where the data is imported to, like general data or postal address 
+        /// </summary>
+        public void CreateProjectInformation(Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet, City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter, DefinitionFile defFile)
         {
-            #region project_information
-
-
             List<string> projectInformationList = new List<string>();
             projectInformationList.Add("Bezeichnung des Bauvorhabens");
             projectInformationList.Add("Art der Maßnahme");
@@ -96,7 +98,6 @@ namespace City2RVT.Builder
                         Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
                         {
                             tProjectInfo.Start();
-                            ProjectInfo projectInfo = doc.ProjectInformation;
                             InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
                             if (externalDefinition != null)
                             {
@@ -109,7 +110,40 @@ namespace City2RVT.Builder
                 }
             }
 
-            #endregion project_information
+            List<string> projectAddressList = new List<string>();
+            projectAddressList.Add("Address Line");
+            projectAddressList.Add("Postal Code");
+            projectAddressList.Add("Town");
+            projectAddressList.Add("Region");
+            projectAddressList.Add("Country");
+
+            foreach (var a in projectAddressList)
+            {
+                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, a, "IfcSiteAddress");
+            }
+
+            foreach (DefinitionGroup dg in defFile.Groups)
+            {
+                foreach (var projInfoName in projectAddressList)
+                {
+                    if (dg.Name == "IfcSiteAddress")
+                    {
+                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
+
+                        Transaction tProjectInfo = new Transaction(doc, "Insert IfcSiteAddress");
+                        {
+                            tProjectInfo.Start();
+                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
+                            if (externalDefinition != null)
+                            {
+                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_DATA);
+                            }
+                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
+                        }
+                        tProjectInfo.Commit();
+                    }
+                }
+            }
         }
 
         private ParameterType GetParameterType(Xml_AttrRep.AttrType gmlType)
@@ -477,6 +511,22 @@ namespace City2RVT.Builder
         {
             byte[] info = new UTF8Encoding(true).GetBytes(value);
             fs.Write(info, 0, info.Length);
+        }
+
+        /// <summary>
+        /// Provides namespaces for XML and GML. 
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <returns></returns>
+        public XmlNamespaceManager GetNamespaces(XmlDocument xmlDoc)
+        {
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+            nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
+            nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
+            nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
+            nsmgr.AddNamespace("xplan", "http://www.xplanung.de/xplangml/5/2");
+
+            return nsmgr;
         }
     }
 }

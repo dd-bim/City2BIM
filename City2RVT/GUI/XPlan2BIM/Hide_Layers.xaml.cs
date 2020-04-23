@@ -1,29 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Xml;
+
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.Attributes;
 
-using NLog;
-using NLog.Targets;
-using NLog.Config;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -96,6 +82,9 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click_ShowSelectedLayer(object sender, RoutedEventArgs e)
         {
+            // this button hides all elements of type OST_Topography by default 
+            // and unhides alle elements that are selected by the user to be visible
+
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
@@ -103,11 +92,11 @@ namespace City2RVT.GUI.XPlan2BIM
 
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
 
-            var preHide = new List<ElementId>();
+            var topoIds = new List<ElementId>();
 
             foreach (var id in topoCollector)
             {
-                preHide.Add(id.Id);
+                topoIds.Add(id.Id);
             }
 
             foreach (var t in topoCollector)
@@ -118,34 +107,32 @@ namespace City2RVT.GUI.XPlan2BIM
                     var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
                     if (view != null)
                     {
-                        view.HideElements(preHide);
+                        view.HideElements(topoIds);
                     }
                     transHideAll.Commit();
                 }
             }
 
 
-            var chosen = categoryListbox2.SelectedItems;
-
-            foreach (var c in chosen)
+            var selectedLayer = categoryListbox2.SelectedItems;
+            foreach (var s in selectedLayer)
             {
-                var collector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-                .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + c.ToString()).Cast<Element>().ToList();
+                var hiddenTopoIds = new List<ElementId>();
 
-                var collector2 = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-                .Where(a => a.LookupParameter("Kommentare").AsString() == c.ToString()).Cast<Element>().ToList();
+                var collectorRefPlanes = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
+                .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + s.ToString()).Cast<Element>().ToList();
 
-
-                var hideIds = new List<ElementId>();
-
-                foreach (var id in collector)
+                foreach (var id in collectorRefPlanes)
                 {
-                    hideIds.Add(id.Id);
+                    hiddenTopoIds.Add(id.Id);
                 }
 
-                foreach (var id in collector2)
+                var collectorTopographies = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
+                .Where(a => a.LookupParameter("Kommentare").AsString() == s.ToString()).Cast<Element>().ToList();                
+
+                foreach (var id in collectorTopographies)
                 {
-                    hideIds.Add(id.Id);
+                    hiddenTopoIds.Add(id.Id);
                 }
 
                 using (var tran = new Transaction(doc, "Test"))
@@ -154,7 +141,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
                     if (view != null)
                     {
-                        view.UnhideElements(hideIds);
+                        view.UnhideElements(hiddenTopoIds);
                     }
                     tran.Commit();
                 }

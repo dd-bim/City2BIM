@@ -20,6 +20,9 @@ namespace City2RVT.GUI.XPlan2BIM
     {
         //private readonly Document doc;
 
+        /// <summary>
+        /// Creates Definition file for shared parameters. 
+        /// </summary>
         public DefinitionFile CreateDefinitionFile(string spFile, Autodesk.Revit.ApplicationServices.Application app, Document doc, string paramName, string defFileGroup)
         {
             DefinitionFile defFile = app.OpenSharedParameterFile();
@@ -38,8 +41,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 }
 
                 DefinitionGroup defGrp = defFile.Groups.get_Item(defFileGroup);
-                //DefinitionGroup defGrp = defFile.Groups.get_Item(defGroupName.Substring(defGroupName.LastIndexOf(':') + 1));
-                //DefinitionGroup defGrp = defFile.Groups.get_Item(defGroupName);
 
                 ExternalDefinitionCreationOptions externalDefinitionOption = new ExternalDefinitionCreationOptions(paramName, ParameterType.Text);
                 Definition definition = default(Definition);
@@ -47,8 +48,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 if (defGrp == null)
                 {
                     defGrp = defFile.Groups.Create(defFileGroup);
-                    //defGrp = defFile.Groups.Create(defGroupName);
-                    //defGrp = defFile.Groups.Create(defGroupName.Substring(defGroupName.LastIndexOf(':') + 1));
                    definition = defGrp.Definitions.Create(externalDefinitionOption);
                 }
 

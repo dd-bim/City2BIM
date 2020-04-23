@@ -47,6 +47,14 @@ namespace City2RVT.Builder
             topoTransaction.Commit();
         }
 
+        /// <summary>
+        /// Creates a line by start and end point of the XML/GML node. 
+        /// </summary>
+        /// <param name="koordWerte"></param>
+        /// <param name="R"></param>
+        /// <param name="transf"></param>
+        /// <param name="zOffset"></param>
+        /// <returns></returns>
         public Line CreateLineString(string[] koordWerte, double R, Transform transf, double zOffset)
         {
             double xStart = Convert.ToDouble(koordWerte[0], System.Globalization.CultureInfo.InvariantCulture);
@@ -78,6 +86,15 @@ namespace City2RVT.Builder
             return lineStrasse;
         }
 
+        /// <summary>
+        /// Creates a line by multiple curve points of XML/GML node. 
+        /// </summary>
+        /// <param name="koordWerte"></param>
+        /// <param name="R"></param>
+        /// <param name="transf"></param>
+        /// <param name="iSplit"></param>
+        /// <param name="zOffset"></param>
+        /// <returns></returns>
         public Line CreateLineRing(string[] koordWerte, double R, Transform transf, int iSplit, double zOffset)
         {
             double xStart = Convert.ToDouble(koordWerte[iSplit], System.Globalization.CultureInfo.InvariantCulture);
@@ -115,6 +132,10 @@ namespace City2RVT.Builder
             return lineClIndu;
         }
 
+        /// <summary>
+        /// Creates Material for the imported topographys.
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<string, ElementId> CreateMaterial()
         {
             #region material

@@ -75,11 +75,6 @@ namespace City2RVT.GUI.XPlan2BIM
             }
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void Button_Click_SetXPlanFile(object sender, RoutedEventArgs e)
         {
             Reader.FileDialog winexp = new Reader.FileDialog();
@@ -112,33 +107,18 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion logging
 
-            var colorList = new Dictionary<string, ElementId>();
+            var colorDict = new Dictionary<string, ElementId>();
             var materialBuilder = new Builder.RevitXPlanBuilder(doc);
-            colorList = materialBuilder.CreateMaterial();
+            colorDict = materialBuilder.CreateMaterial();
 
-            #region Transformation und UTM-Reduktion
+            // Transforms local coordinates to relative coordinates due to the fact that revit has a 20 miles limit for presentation of geometry. 
+            var transfClass = new City2RVT.Calc.Transformation();
+            Transform transf = transfClass.transform(doc);
 
-            //Zuerst wird die Position des Projektbasispunkts bestimmt
-            ProjectLocation projloc = doc.ActiveProjectLocation;
-            ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
-            double angle = position_data.Angle;
-            double elevation = position_data.Elevation;
-            double easting = position_data.EastWest;
-            double northing = position_data.NorthSouth;
-
-            // Der Ostwert des PBB wird als mittlerer Ostwert für die UTM Reduktion verwendet.
-            double xSchwPktFt = easting;
-            double xSchwPktKm = (double)((xSchwPktFt / feetToMeter) / 1000);
-            double xSchwPkt500 = xSchwPktKm - 500;
+            // No UTM reduction at the moment, factor R = 1
             double R = 1;
 
-            Transform trot = Transform.CreateRotation(XYZ.BasisZ, -angle);
-            XYZ vector = new XYZ(easting, northing, elevation);
-            XYZ vectorRedu = vector / R;
-            Transform ttrans = Transform.CreateTranslation(-vectorRedu);
-            Transform transf = trot.Multiply(ttrans);
-            #endregion Transformation und UTM-Reduktion  
-
+            //loads the selected GML file
             string xPlanGmlPath = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
@@ -154,13 +134,9 @@ namespace City2RVT.GUI.XPlan2BIM
             XYZ normal = new XYZ(0, 0, feetToMeter);
             Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
 
-            #region namespaces
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
-            nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
-            nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
-            nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
-            nsmgr.AddNamespace("xplan", "http://www.xplanung.de/xplangml/5/2");
-            #endregion namespaces
+            // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
+            var XmlNsmgr = new Builder.Revit_Semantic(doc);
+            XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
 
             #region parameter
 
@@ -173,10 +149,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
             //create shared parameter file
             string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
-            //System.Windows.Forms.MessageBox.Show(modulePath);
-            string sharedParamFile = Path.Combine(modulePath, "SharedParameterFile.txt");
-
-            //System.Windows.Forms.MessageBox.Show(sharedParamFile);
+            string sharedParamFile = Path.Combine(modulePath, "City2BIM_Parameters.txt");
 
             if (!File.Exists(sharedParamFile))
             {
@@ -186,26 +159,21 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion parameter  
 
-            #region project_information
-
+            // Creates Project Information for revit project like general data or postal address
             City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new XPlan_Parameter();
             DefinitionFile defFile = default(DefinitionFile);
+            var projInformation = new City2RVT.Builder.Revit_Semantic(doc);
+            projInformation.CreateProjectInformation(app, doc, projCategorySet, parameter, defFile);   
 
-            var projInformation = new City2RVT.Builder.XPlan_Semantics();
-            projInformation.CreateProjectInformation(sharedParamFile, app, doc, projCategorySet, parameter, defFile);            
-
-            #endregion project_information
-
-            #region hideElements
-
-            var chosen = categoryListbox.SelectedItems;
-            var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-
-            #endregion hideElements
+            // Selected Layer for beeing shown in revit view
+            var selectedLayers = categoryListbox.SelectedItems;
+            var revitView = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
             List<string> xPlanObjectList = new List<string>();
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
 
+            // The big surfaces of BP_Bereich and BP_Plan getting brought to the bottom so they do not overlap other surfaces in Revit
+            // Alternatively they could be represented as borders instead of areas 
             foreach (XmlNode x in allXPlanObjects)
             {
                 if (x.FirstChild.SelectNodes(".//gml:exterior", nsmgr) != null)
@@ -232,7 +200,6 @@ namespace City2RVT.GUI.XPlan2BIM
             double zOffset = 0.0;
             foreach (var xPlanObject in xPlanObjectList)
             {
-                //System.Windows.Forms.MessageBox.Show(xPlanObject.ToString());
                 #region reference plane
                 XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//gml:exterior", nsmgr);
                 Dictionary<string, XYZ[]> xPlanPointDict = new Dictionary<string, XYZ[]>();
@@ -296,7 +263,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                             TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
 
-                            ElementId farbeReference = colorList["transparent"];
+                            ElementId farbeReference = colorDict["transparent"];
 
                             Parameter materialParam = referencePlane.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
                             materialParam.Set(farbeReference);
@@ -307,13 +274,9 @@ namespace City2RVT.GUI.XPlan2BIM
 
                             hideReferencePlanes.Add(referencePlane.Id);
 
-                            if (chosen.Contains((referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1)))
+                            if (selectedLayers.Contains((referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1)) == false)
                             {
-
-                            }
-                            else
-                            {
-                                view.HideElements(hideReferencePlanes);
+                                revitView.HideElements(hideReferencePlanes);
                             }
 
                             logger.Info("Reference plane: '" + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1) + "' created.");
@@ -334,15 +297,15 @@ namespace City2RVT.GUI.XPlan2BIM
                 foreach (XmlNode nodeExt in bpEinzelnExterior)
                 {
                     List<CurveLoop> curveLoopExteriorList = new List<CurveLoop>();
-                    CurveLoop curveLoopExterior = new CurveLoop();
+                    CurveLoop curveLoop = new CurveLoop();
                     int ii = 0;
-                    foreach (XmlNode intNode in nodeExt.ParentNode.ChildNodes)
+                    foreach (XmlNode interiorNode in nodeExt.ParentNode.ChildNodes)
                     {
                         CurveLoop curveLoopInterior = new CurveLoop();
-                        if (intNode.Name == "gml:interior")
+                        if (interiorNode.Name == "gml:interior")
                         {
-                            XmlNodeList interiorNodeList = intNode.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
-                            XmlNodeList interiorRingNodeList = intNode.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
+                            XmlNodeList interiorNodeList = interiorNode.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
+                            XmlNodeList interiorRingNodeList = interiorNode.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
 
                             foreach (XmlNode xc in interiorNodeList)
                             {
@@ -358,19 +321,19 @@ namespace City2RVT.GUI.XPlan2BIM
 
                                 else if (koordWerteInterior.Count() > 4)
                                 {
-                                    int iSplit = 0;
+                                    int ia = 0;
 
                                     foreach (string split in koordWerteInterior)
                                     {
                                         var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
+                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ia, zOffset);
                                         curveLoopInterior.Append(lineClIndu);
 
-                                        if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
+                                        if ((ia + 3) == (koordWerteInterior.Count() - 1))
                                         {
                                             break;
                                         }
-                                        iSplit += 2;
+                                        ia += 2;
                                     }
                                 }
                                 ii++;
@@ -390,25 +353,23 @@ namespace City2RVT.GUI.XPlan2BIM
 
                                 else if (koordWerteInterior.Count() > 4)
                                 {
-                                    int iSplit = 0;
+                                    int ib = 0;
                                     foreach (string split in koordWerteInterior)
                                     {
                                         var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, iSplit, zOffset);
+                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ib, zOffset);
                                         curveLoopInterior.Append(lineClIndu);
 
-                                        if ((iSplit + 3) == (koordWerteInterior.Count() - 1))
+                                        if ((ib + 3) == (koordWerteInterior.Count() - 1))
                                         {
                                             break;
                                         }
 
-                                        iSplit += 2;
+                                        ib += 2;
                                     }
                                 }
                                 ii++;
                             }
-
-
                         }
                         if (curveLoopInterior.GetExactLength() > 0)
                         {
@@ -425,7 +386,6 @@ namespace City2RVT.GUI.XPlan2BIM
                         defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1), "XPlanDaten");
                         if (child.Name != "#comment")
                         {
-                            //System.Windows.Forms.MessageBox.Show(child.Name);
                             paramList.Add(child.Name);
                         }
                     }
@@ -439,24 +399,24 @@ namespace City2RVT.GUI.XPlan2BIM
                         {
                             var geomBuilder = new Builder.RevitXPlanBuilder(doc);
                             Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
-                            curveLoopExterior.Append(lineStrasse);
+                            curveLoop.Append(lineStrasse);
                         }
 
                         else if (koordWerte.Count() > 4)
                         {
-                            int iSplit = 0;
+                            int ic = 0;
 
                             foreach (string split in koordWerte)
                             {
                                 var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, iSplit, zOffset);
-                                curveLoopExterior.Append(lineClIndu);
+                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, ic, zOffset);
+                                curveLoop.Append(lineClIndu);
 
-                                if ((iSplit + 3) == (koordWerte.Count() - 1))
+                                if ((ic + 3) == (koordWerte.Count() - 1))
                                 {
                                     break;
                                 }
-                                iSplit += 2;
+                                ic += 2;
                             }
                         }
                         i++;
@@ -471,25 +431,25 @@ namespace City2RVT.GUI.XPlan2BIM
                         {
                             var geomBuilder = new Builder.RevitXPlanBuilder(doc);
                             Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
-                            curveLoopExterior.Append(lineStrasse);
+                            curveLoop.Append(lineStrasse);
                         }
 
                         else if (koordWerte.Count() > 4)
                         {
-                            int iSplit = 0;
+                            int ie = 0;
 
                             foreach (string split in koordWerte)
                             {
                                 var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, iSplit, zOffset);
-                                curveLoopExterior.Append(lineClIndu);
+                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, ie, zOffset);
+                                curveLoop.Append(lineClIndu);
 
-                                if ((iSplit + 3) == (koordWerte.Count() - 1))
+                                if ((ie + 3) == (koordWerte.Count() - 1))
                                 {
                                     break;
                                 }
 
-                                iSplit += 2;
+                                ie += 2;
                             }
                         }
                         i++;
@@ -499,16 +459,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     string nodeContent = default;
                     Dictionary<string, string> paramDict = new Dictionary<string, string>();
 
-                    //System.Windows.Forms.MessageBox.Show(defFile.Groups.Count().ToString());
-                    //var defList = defFile.Groups.ToList();
-                    //System.Windows.Forms.MessageBox.Show(defList[0].Name.ToString());
-                    //System.Windows.Forms.MessageBox.Show(defList[1].Name.ToString());
-                    //System.Windows.Forms.MessageBox.Show(defList[2].Name.ToString());
-
-
-
                     foreach (DefinitionGroup dg in defFile.Groups)
-                    //foreach (var dg in defList)
                     {
                         foreach (var paramName in paramList)
                         {
@@ -542,16 +493,14 @@ namespace City2RVT.GUI.XPlan2BIM
                                     tParam.Commit();
                                 }
                             } 
-                        }
-                        
-
+                        }   
                     }
                     paramList.Clear();
                     #endregion parameter
 
-                    if (curveLoopExterior.GetExactLength() > 0)
+                    if (curveLoop.GetExactLength() > 0)
                     {
-                        curveLoopExteriorList.Add(curveLoopExterior);
+                        curveLoopExteriorList.Add(curveLoop);
                         var hideReferenceSitesubregions = new List<ElementId>();
 
                         Transaction topoTransaction = new Transaction(doc, "Create Exterior");
@@ -567,13 +516,13 @@ namespace City2RVT.GUI.XPlan2BIM
                             Parameter materialParamExterior = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
 
                             ElementId farbe = default(ElementId);
-                            if (colorList.ContainsKey(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
+                            if (colorDict.ContainsKey(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
                             {
-                                farbe = colorList[xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)];
+                                farbe = colorDict[xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)];
                             }
                             else
                             {
-                                farbe = colorList["default"];
+                                farbe = colorDict["default"];
                             }
                             materialParamExterior.Set(farbe);
 
@@ -595,13 +544,9 @@ namespace City2RVT.GUI.XPlan2BIM
 
                             hideReferenceSitesubregions.Add(siteSubRegion.TopographySurface.Id);
 
-                            if (chosen.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
+                            if (selectedLayers.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)) == false)
                             {
-
-                            }
-                            else
-                            {
-                                view.HideElements(hideReferenceSitesubregions);
+                                revitView.HideElements(hideReferenceSitesubregions);
                             }
 
                             logger.Info("Created sitesubregion for '" + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1) + "' (Exterior). ");
@@ -619,8 +564,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 else
                 {
                     zOffset += 0;
-                }
-                
+                }                
             }
         }
 
@@ -637,6 +581,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click_ApplyXPlanFile(object sender, RoutedEventArgs e)
         {
+            UIApplication uiapp = commandData.Application;
+            UIDocument uidoc = uiapp.ActiveUIDocument;
+            Document doc = uidoc.Document;
+
             string xPlanGmlPath = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
@@ -648,13 +596,8 @@ namespace City2RVT.GUI.XPlan2BIM
                 xmlDoc.Load(xPlanGmlPath);
             }
 
-            #region namespaces
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
-            nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
-            nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
-            nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
-            nsmgr.AddNamespace("xplan", "http://www.xplanung.de/xplangml/5/2");
-            #endregion namespaces
+            var XmlNsmgr = new Builder.Revit_Semantic(doc);
+            XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
 
             List<string> xPlanObjectList = new List<string>();
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
@@ -682,8 +625,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //string item = categoryListbox.SelectedItem.ToString();
-
             if (categoryListbox.SelectedItems.Count < categoryListbox.Items.Count)
             {
                 radioButton1.IsChecked = false;

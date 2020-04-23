@@ -235,18 +235,6 @@ namespace City2RVT.GUI
             buttonHideLayer.ToolTip = "Hides Layers.";
             buttonHideLayer.LargeImage = largeImagehideLayer;
 
-            var mergeIfcPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var mergeIfcRootPath = Path.Combine(mergeIfcPath, "..", "..");
-            var mergeIfcSetPath = Path.Combine(mergeIfcRootPath, "img", "IFC_32px_96dpi.png");
-            Uri mergeIfcUriImage = new Uri(mergeIfcSetPath);
-            BitmapImage mergeIfcLargeImage = new BitmapImage(mergeIfcUriImage);
-
-            PushButton mergeIfcButton = panel7.AddItem(new PushButtonData("Merge Ifc", "Merge Ifc files",
-            thisAssemblyPath, "City2RVT.GUI.XPlan2BIM.Cmd_MergeIfc")) as PushButton;
-            mergeIfcButton.ToolTip = "Merge Ifc.";
-            mergeIfcButton.LargeImage = mergeIfcLargeImage;
-
 
             #endregion XPlanung panel
 

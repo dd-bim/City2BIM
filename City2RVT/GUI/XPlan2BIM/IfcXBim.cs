@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using NETGeographicLib;
 //using System.Windows.Media.Media3D;
 
 using Autodesk.Revit.DB;
@@ -34,10 +35,15 @@ using Xbim.Ifc4.ProfileResource;
 using Xbim.Ifc4.MaterialResource;
 using System.Xml;
 
+using City2RVT.Calc;
+
 namespace City2RVT.GUI.XPlan2BIM
 {
     public class IfcXBim
     {
+        /// <summary>
+        /// Initalizes a new IFC Model (currently not used, because topography is loaded to an already existing IFC file).  
+        /// </summary>
         public static IfcStore CreateandInitModel(string projectName, Document doc)
         {
             //first we need to set up some credentials for ownership of data in the new model
@@ -155,30 +161,34 @@ namespace City2RVT.GUI.XPlan2BIM
                     txn.Commit();
                 }
                 return model;
-            }
-
-
-            
+            }            
         }
 
-        public static Dictionary<string, string> CreateMaterial()
+        /// <summary>
+        /// Dictionary for rgb definition for different categories.  
+        /// </summary>
+        public static Dictionary<string, string> CreateColors()
         {
-            var colorList = new Dictionary<string, string>();
+            var colorDict = new Dictionary<string, string>();
 
-            colorList.Add("BP_StrassenVerkehrsFlaeche", "220/220/220");
-            colorList.Add("BP_GewaesserFlaeche", "100/149/237");
-            colorList.Add("BP_UeberbaubareGrundstuecksFlaeche", "160/082/045");
-            colorList.Add("BP_Bereich", "0/0/0");
-            colorList.Add("BP_Plan", "0/0/0");
-            colorList.Add("BP_BaugebietsTeilFlaeche", "233/150/122");
-            colorList.Add("BP_GemeinbedarfsFlaeche", "255/106/106");
-            colorList.Add("BP_KennzeichnungsFlaeche", "110/139/061");
-            colorList.Add("BP_ErhaltungsBereichFlaeche", "0/255/0");
+            colorDict.Add("BP_StrassenVerkehrsFlaeche", "220/220/220");
+            colorDict.Add("BP_GewaesserFlaeche", "100/149/237");
+            colorDict.Add("BP_UeberbaubareGrundstuecksFlaeche", "160/082/045");
+            colorDict.Add("BP_Bereich", "0/0/0");
+            colorDict.Add("BP_Plan", "0/0/0");
+            colorDict.Add("BP_BaugebietsTeilFlaeche", "233/150/122");
+            colorDict.Add("BP_GemeinbedarfsFlaeche", "255/106/106");
+            colorDict.Add("BP_KennzeichnungsFlaeche", "110/139/061");
+            colorDict.Add("BP_ErhaltungsBereichFlaeche", "0/255/0");
 
-            return colorList;
+            return colorDict;
         }
 
-        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, /*Transform transf, */ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf, XYZ pbp, Document doc)
+        /// <summary>
+        /// Creates an IFCSite which includes geometry and properties taken from revit project along with some basic predefined properties. 
+        /// </summary>
+        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf, 
+            XYZ pbp, Document doc)
         {
             double feetToMeter = 1.0 / 0.3048;
 
@@ -187,9 +197,17 @@ namespace City2RVT.GUI.XPlan2BIM
                 var site = model.Instances.New<IfcSite>();
                 site.Name = "Site for " + "Test";
                 site.RefElevation = 0.0;
-                site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;
-                site.RefLatitude = new List<long> { 1, 2, 3, 4 };
-                
+                site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;                
+
+                double lat, lon, gamma, scale;
+                UTMcalc.UtmGrs80Reverse(33, false, pbp.X, pbp.Y, out lat, out lon, out gamma, out scale);
+                var lat_geo = UTMcalc.DegToString(lat, true);
+                var lon_geo = UTMcalc.DegToString(lon, true);
+                var latSplit = UTMcalc.SplitSexagesimal(lat_geo);
+                var lonSplit = UTMcalc.SplitSexagesimal(lon_geo);
+
+                site.RefLatitude = new List<long> { latSplit[0], latSplit[1], latSplit[2], latSplit[3] };
+                site.RefLongitude = new List<long> { lonSplit[0], lonSplit[1], lonSplit[2], lonSplit[3] };
 
                 site.GlobalId = Guid.NewGuid();
 
@@ -242,7 +260,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 //projectBasePoint.SetXYZ(0, 0, 0);
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
 
-
                 var facebound = model.Instances.New<IfcFaceBound>();
                 facebound.Bound = loop;
 
@@ -260,7 +277,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var colorList = new Dictionary<string, string>();
                 var bezeichner = new IfcXBim();
-                colorList = CreateMaterial();
+                colorList = CreateColors();
 
                 double rot;
                 double gruen;
@@ -311,11 +328,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 material.HasRepresentation.Append(materialDefRepresentation);
 
-
                 //shape definition 1
                 var umringShape = model.Instances.New<IfcShapeRepresentation>();
-                var modelContextKrone = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-                umringShape.ContextOfItems = modelContextKrone;
+                var modelContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+                umringShape.ContextOfItems = modelContext;
                 umringShape.RepresentationIdentifier = "Body";
                 umringShape.RepresentationType = "SweptSolid";
                 umringShape.Items.Add(curveSetFace);
@@ -323,7 +339,9 @@ namespace City2RVT.GUI.XPlan2BIM
                 //shape definition 2
                 var umringShape2 = model.Instances.New<IfcShapeRepresentation>();
                 var modelContextKrone2 = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-                umringShape2.ContextOfItems = modelContextKrone;
+                umringShape2.ContextOfItems = modelContext;
+                modelContext.TrueNorth = model.Instances.New<IfcDirection>();
+                modelContext.TrueNorth.SetXYZ(0, 0, 0);
                 umringShape2.RepresentationIdentifier = "FootPrint";
                 umringShape2.RepresentationType = "Curve2D";
                 umringShape2.Items.Add(curveSet);
@@ -361,8 +379,6 @@ namespace City2RVT.GUI.XPlan2BIM
                     {
                         string key = topoSurf.get_Parameter(new Guid(p.GUID.ToString())).Definition.Name;
                         string value = topoSurf.get_Parameter(new Guid(p.GUID.ToString())).AsString();
-                        //key.Trim(' ');
-                        //value.Trim(' ');
 
                         if (paramDict.ContainsKey(key) == false)
                         {
@@ -420,15 +436,9 @@ namespace City2RVT.GUI.XPlan2BIM
                                 {
                                 model.Instances.New<IfcPropertySingleValue>(p =>
                                     {
-                                        //System.Windows.Forms.MessageBox.Show(s.Key.Substring(s.Key.LastIndexOf(':') + 1));
-                                        //string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
-                                        //const string gemNummer = "Gemarkung_Nummer";
-                                        //string verortungTrim = verortung.Trim(' ');
-                                        //System.Windows.Forms.MessageBox.Show("ä" + verortungTrim);
                                         switch (verortungTrim)
                                         {
                                             case "Gemarkung_Nummer":
-                                                //System.Windows.Forms.MessageBox.Show("switch");
                                                 p.Name = "Gemarkungen";
                                                 p.NominalValue = new IfcText(s.Value);
                                                 break;
@@ -456,10 +466,5 @@ namespace City2RVT.GUI.XPlan2BIM
                 return site;
             }
         }
-
-        //public static IfcProject UpdateProject()
-        //{
-
-        //}
     }
 }
