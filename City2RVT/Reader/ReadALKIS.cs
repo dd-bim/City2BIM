@@ -22,6 +22,8 @@ namespace City2RVT.Reader
             //read all parcelTypes objects
             var alkisRep = new AlkisReader(path);
 
+            var res = GUI.Prop_NAS_settings.SelectedLayer;
+
             Category category = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Topography);
             Category projCategory = doc.Settings.Categories.get_Item(BuiltInCategory.OST_ProjectInformation);
             CategorySet categorySet = app.Create.NewCategorySet();
@@ -39,7 +41,7 @@ namespace City2RVT.Reader
             semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());
 
             var geomBuilder = new Builder.RevitAlkisBuilder(doc, cData);
-            geomBuilder.CreateTopo(alkisRep.AlkisObjects);
+            geomBuilder.CreateTopo(alkisRep.AlkisObjects, res);
         }
 
         private List<C2BPoint[]> ReadSegments(XElement surfaceExt)

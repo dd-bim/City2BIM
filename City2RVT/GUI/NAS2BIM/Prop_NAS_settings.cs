@@ -19,6 +19,8 @@ namespace City2RVT.GUI
         //private static string serverUrl = "https://hosting.virtualcitywfs.de/deutschland_viewer/wfs"; //only CityGml, if enhanced --> change URL
         //private static string pathResponse = System.Environment.CurrentDirectory;
 
+        private static System.Collections.IList selectedLayer = default(System.Collections.IList);
+
         //user-defined extent properties
         //private static double extent = 300.0;
         //private static double[] serverCoord = new double[2] { GeoRefSettings.WgsCoord[1], GeoRefSettings.WgsCoord[0] };
@@ -32,7 +34,9 @@ namespace City2RVT.GUI
         //public static bool IsServerRequest { get => isServerRequest; set => isServerRequest = value; }
         //public static string ServerUrl { get => serverUrl; set => serverUrl = value; }
         public static string FileUrl { get => fileUrl; set => fileUrl = value; }
-        public static System.Collections.IList LayerList { get => LayerList; set => LayerList = value; }
+        //public static string SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
+        public static System.Collections.IList SelectedLayer { get => selectedLayer; set => selectedLayer = value; }
+
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
         public static bool DrapeBldgsOnTopo { get => drapeBldgsOnTopo; set => drapeBldgsOnTopo = value; }
         public static bool DrapeUsageOnTopo { get => drapeUsageOnTopo; set => drapeUsageOnTopo = value; }

@@ -200,371 +200,376 @@ namespace City2RVT.GUI.XPlan2BIM
             double zOffset = 0.0;
             foreach (var xPlanObject in xPlanObjectList)
             {
-                #region reference plane
-                XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//gml:exterior", nsmgr);
-                Dictionary<string, XYZ[]> xPlanPointDict = new Dictionary<string, XYZ[]>();
-
-                List<string> xPlanReference = new List<String>();
-                int xPlanCountReference = 0;
-
-                List<double> xPlanAllValues = new List<double>();
-                List<double> xPlanXValues = new List<double>();
-                List<double> xPlanYValues = new List<double>();
-
-                if (xPlanExterior.Count > 0)
+                if (selectedLayers.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
                 {
-                    foreach (XmlNode exteriorNode in xPlanExterior)
+                    #region reference plane
+                    XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//gml:exterior", nsmgr);
+                    Dictionary<string, XYZ[]> xPlanPointDict = new Dictionary<string, XYZ[]>();
+
+                    List<string> xPlanReference = new List<String>();
+                    int xPlanCountReference = 0;
+
+                    List<double> xPlanAllValues = new List<double>();
+                    List<double> xPlanXValues = new List<double>();
+                    List<double> xPlanYValues = new List<double>();
+
+                    if (xPlanExterior.Count > 0)
                     {
-                        xPlanReference.Add(exteriorNode.InnerText);
-                        string[] coordsReference = xPlanReference[xPlanCountReference].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        foreach (var x in coordsReference)
+                        foreach (XmlNode exteriorNode in xPlanExterior)
                         {
-                            double values_double = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
-                            xPlanAllValues.Add(values_double);
-                        }
+                            xPlanReference.Add(exteriorNode.InnerText);
+                            string[] coordsReference = xPlanReference[xPlanCountReference].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        for (int ix = 0; ix < xPlanAllValues.Count; ix += 2)
-                        {
-                            xPlanXValues.Add(xPlanAllValues[ix]);
-                        }
-
-                        for (int iy = 1; iy < xPlanAllValues.Count; iy += 2)
-                        {
-                            xPlanYValues.Add(xPlanAllValues[iy]);
-                        }
-                        xPlanCountReference++;
-                    }
-
-                    double xPlanXMin = (xPlanXValues.Min() * feetToMeter) / R;
-                    double xPlanXMax = (xPlanXValues.Max() * feetToMeter) / R;
-                    double xPlanYMin = (xPlanYValues.Min() * feetToMeter) / R;
-                    double xPlanYMax = (xPlanYValues.Max() * feetToMeter) / R;
-
-                    XYZ[] pointsExteriorXPlan = new XYZ[4];
-                    pointsExteriorXPlan[0] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMin, zOffset));
-                    pointsExteriorXPlan[1] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMin, zOffset));
-                    pointsExteriorXPlan[2] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMax, zOffset));
-                    pointsExteriorXPlan[3] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMax, zOffset));
-
-                    xPlanPointDict.Add(xPlanObject, pointsExteriorXPlan);
-                    var hideReferencePlanes = new List<ElementId>();
-
-                    foreach (var referencePoints in xPlanPointDict)
-                    {
-                        Transaction referencePlanes = new Transaction(doc, "Reference plane: " + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1));
-                        {
-                            FailureHandlingOptions options = referencePlanes.GetFailureHandlingOptions();
-                            options.SetFailuresPreprocessor(new AxesFailure());
-                            referencePlanes.SetFailureHandlingOptions(options);
-
-                            referencePlanes.Start();
-                            SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-
-                            TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
-
-                            ElementId farbeReference = colorDict["transparent"];
-
-                            Parameter materialParam = referencePlane.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-                            materialParam.Set(farbeReference);
-
-                            Parameter gesamt = referencePlane.LookupParameter("Kommentare");
-                            gesamt.Set("Reference plane: " + (referencePoints.Key).Substring(6));
-                            xPlanReferencePlaneId = referencePlane.Id;
-
-                            hideReferencePlanes.Add(referencePlane.Id);
-
-                            if (selectedLayers.Contains((referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1)) == false)
+                            foreach (var x in coordsReference)
                             {
-                                revitView.HideElements(hideReferencePlanes);
+                                double values_double = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
+                                xPlanAllValues.Add(values_double);
                             }
 
-                            logger.Info("Reference plane: '" + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1) + "' created.");
-                        }
-                        referencePlanes.Commit();
-                    }
-                }
-                #endregion reference plane
-
-                #region exterior
-
-                XmlNodeList bpEinzelnExterior = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);
-
-                List<string> positionList = new List<String>();
-                List<string> paramList = new List<String>();
-                List<string> interiorListe = new List<String>();
-                int i = 0;
-                foreach (XmlNode nodeExt in bpEinzelnExterior)
-                {
-                    List<CurveLoop> curveLoopExteriorList = new List<CurveLoop>();
-                    CurveLoop curveLoop = new CurveLoop();
-                    int ii = 0;
-                    foreach (XmlNode interiorNode in nodeExt.ParentNode.ChildNodes)
-                    {
-                        CurveLoop curveLoopInterior = new CurveLoop();
-                        if (interiorNode.Name == "gml:interior")
-                        {
-                            XmlNodeList interiorNodeList = interiorNode.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
-                            XmlNodeList interiorRingNodeList = interiorNode.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
-
-                            foreach (XmlNode xc in interiorNodeList)
+                            for (int ix = 0; ix < xPlanAllValues.Count; ix += 2)
                             {
-                                interiorListe.Add(xc.InnerText);
-                                string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                xPlanXValues.Add(xPlanAllValues[ix]);
+                            }
 
-                                if (koordWerteInterior.Count() == 4)
+                            for (int iy = 1; iy < xPlanAllValues.Count; iy += 2)
+                            {
+                                xPlanYValues.Add(xPlanAllValues[iy]);
+                            }
+                            xPlanCountReference++;
+                        }
+
+                        double xPlanXMin = (xPlanXValues.Min() * feetToMeter) / R;
+                        double xPlanXMax = (xPlanXValues.Max() * feetToMeter) / R;
+                        double xPlanYMin = (xPlanYValues.Min() * feetToMeter) / R;
+                        double xPlanYMax = (xPlanYValues.Max() * feetToMeter) / R;
+
+                        XYZ[] pointsExteriorXPlan = new XYZ[4];
+                        pointsExteriorXPlan[0] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMin, zOffset));
+                        pointsExteriorXPlan[1] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMin, zOffset));
+                        pointsExteriorXPlan[2] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMax, zOffset));
+                        pointsExteriorXPlan[3] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMax, zOffset));
+
+                        xPlanPointDict.Add(xPlanObject, pointsExteriorXPlan);
+                        var hideReferencePlanes = new List<ElementId>();
+
+                        foreach (var referencePoints in xPlanPointDict)
+                        {
+                            Transaction referencePlanes = new Transaction(doc, "Reference plane: " + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1));
+                            {
+                                FailureHandlingOptions options = referencePlanes.GetFailureHandlingOptions();
+                                options.SetFailuresPreprocessor(new AxesFailure());
+                                referencePlanes.SetFailureHandlingOptions(options);
+
+                                referencePlanes.Start();
+                                SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
+
+                                TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
+
+                                ElementId farbeReference = colorDict["transparent"];
+
+                                Parameter materialParam = referencePlane.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
+                                materialParam.Set(farbeReference);
+
+                                Parameter gesamt = referencePlane.LookupParameter("Kommentare");
+                                gesamt.Set("Reference plane: " + (referencePoints.Key).Substring(6));
+                                xPlanReferencePlaneId = referencePlane.Id;
+
+                                hideReferencePlanes.Add(referencePlane.Id);
+
+                                if (selectedLayers.Contains((referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1)) == false)
                                 {
-                                    var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                    Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
-                                    curveLoopInterior.Append(lineStrasse);
+                                    revitView.HideElements(hideReferencePlanes);
                                 }
 
-                                else if (koordWerteInterior.Count() > 4)
-                                {
-                                    int ia = 0;
+                                logger.Info("Reference plane: '" + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1) + "' created.");
+                            }
+                            referencePlanes.Commit();
+                        }
+                    }
+                    #endregion reference plane
 
-                                    foreach (string split in koordWerteInterior)
+                    #region exterior
+
+                    XmlNodeList bpEinzelnExterior = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);
+
+                    List<string> positionList = new List<String>();
+                    List<string> paramList = new List<String>();
+                    List<string> interiorListe = new List<String>();
+                    int i = 0;
+                    foreach (XmlNode nodeExt in bpEinzelnExterior)
+                    {
+                        List<CurveLoop> curveLoopExteriorList = new List<CurveLoop>();
+                        CurveLoop curveLoop = new CurveLoop();
+                        int ii = 0;
+                        foreach (XmlNode interiorNode in nodeExt.ParentNode.ChildNodes)
+                        {
+                            CurveLoop curveLoopInterior = new CurveLoop();
+                            if (interiorNode.Name == "gml:interior")
+                            {
+                                XmlNodeList interiorNodeList = interiorNode.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
+                                XmlNodeList interiorRingNodeList = interiorNode.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
+
+                                foreach (XmlNode xc in interiorNodeList)
+                                {
+                                    interiorListe.Add(xc.InnerText);
+                                    string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                                    if (koordWerteInterior.Count() == 4)
                                     {
                                         var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ia, zOffset);
-                                        curveLoopInterior.Append(lineClIndu);
-
-                                        if ((ia + 3) == (koordWerteInterior.Count() - 1))
-                                        {
-                                            break;
-                                        }
-                                        ia += 2;
+                                        Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
+                                        curveLoopInterior.Append(lineStrasse);
                                     }
+
+                                    else if (koordWerteInterior.Count() > 4)
+                                    {
+                                        int ia = 0;
+
+                                        foreach (string split in koordWerteInterior)
+                                        {
+                                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                            Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ia, zOffset);
+                                            curveLoopInterior.Append(lineClIndu);
+
+                                            if ((ia + 3) == (koordWerteInterior.Count() - 1))
+                                            {
+                                                break;
+                                            }
+                                            ia += 2;
+                                        }
+                                    }
+                                    ii++;
                                 }
-                                ii++;
-                            }
 
-                            foreach (XmlNode xc in interiorRingNodeList)
-                            {
-                                interiorListe.Add(xc.InnerText);
-                                string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                                if (koordWerteInterior.Count() == 4)
+                                foreach (XmlNode xc in interiorRingNodeList)
                                 {
-                                    var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                    Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
-                                    curveLoopInterior.Append(lineStrasse);
-                                }
+                                    interiorListe.Add(xc.InnerText);
+                                    string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                                else if (koordWerteInterior.Count() > 4)
-                                {
-                                    int ib = 0;
-                                    foreach (string split in koordWerteInterior)
+                                    if (koordWerteInterior.Count() == 4)
                                     {
                                         var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                        Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ib, zOffset);
-                                        curveLoopInterior.Append(lineClIndu);
-
-                                        if ((ib + 3) == (koordWerteInterior.Count() - 1))
-                                        {
-                                            break;
-                                        }
-
-                                        ib += 2;
+                                        Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
+                                        curveLoopInterior.Append(lineStrasse);
                                     }
+
+                                    else if (koordWerteInterior.Count() > 4)
+                                    {
+                                        int ib = 0;
+                                        foreach (string split in koordWerteInterior)
+                                        {
+                                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                            Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ib, zOffset);
+                                            curveLoopInterior.Append(lineClIndu);
+
+                                            if ((ib + 3) == (koordWerteInterior.Count() - 1))
+                                            {
+                                                break;
+                                            }
+
+                                            ib += 2;
+                                        }
+                                    }
+                                    ii++;
                                 }
-                                ii++;
+                            }
+                            if (curveLoopInterior.GetExactLength() > 0)
+                            {
+                                curveLoopExteriorList.Add(curveLoopInterior);
                             }
                         }
-                        if (curveLoopInterior.GetExactLength() > 0)
+
+
+                        XmlNodeList exterior = nodeExt.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
+                        XmlNodeList exteriorRing = nodeExt.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
+
+                        foreach (XmlNode child in nodeExt.ParentNode.ParentNode.ParentNode)
                         {
-                            curveLoopExteriorList.Add(curveLoopInterior);
-                        }
-                    }
-
-
-                    XmlNodeList exterior = nodeExt.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
-                    XmlNodeList exteriorRing = nodeExt.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
-
-                    foreach (XmlNode child in nodeExt.ParentNode.ParentNode.ParentNode)
-                    {
-                        defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1), "XPlanDaten");
-                        if (child.Name != "#comment")
-                        {
-                            paramList.Add(child.Name);
-                        }
-                    }
-
-                    foreach (XmlNode nodePosExt in exterior)
-                    {
-                        positionList.Add(nodePosExt.InnerText);
-                        string[] koordWerte = positionList[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (koordWerte.Count() == 4)
-                        {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                            Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
-                            curveLoop.Append(lineStrasse);
+                            defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child.Name.Substring(child.Name.LastIndexOf(':') + 1), "XPlanDaten");
+                            if (child.Name != "#comment")
+                            {
+                                paramList.Add(child.Name);
+                            }
                         }
 
-                        else if (koordWerte.Count() > 4)
+                        foreach (XmlNode nodePosExt in exterior)
                         {
-                            int ic = 0;
+                            positionList.Add(nodePosExt.InnerText);
+                            string[] koordWerte = positionList[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            foreach (string split in koordWerte)
+                            if (koordWerte.Count() == 4)
                             {
                                 var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, ic, zOffset);
-                                curveLoop.Append(lineClIndu);
-
-                                if ((ic + 3) == (koordWerte.Count() - 1))
-                                {
-                                    break;
-                                }
-                                ic += 2;
+                                Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
+                                curveLoop.Append(lineStrasse);
                             }
+
+                            else if (koordWerte.Count() > 4)
+                            {
+                                int ic = 0;
+
+                                foreach (string split in koordWerte)
+                                {
+                                    var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                    Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, ic, zOffset);
+                                    curveLoop.Append(lineClIndu);
+
+                                    if ((ic + 3) == (koordWerte.Count() - 1))
+                                    {
+                                        break;
+                                    }
+                                    ic += 2;
+                                }
+                            }
+                            i++;
                         }
-                        i++;
-                    }
 
-                    foreach (XmlNode nodePosExt in exteriorRing)
-                    {
-                        positionList.Add(nodePosExt.InnerText);
-                        string[] koordWerte = positionList[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (koordWerte.Count() == 4)
+                        foreach (XmlNode nodePosExt in exteriorRing)
                         {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                            Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
-                            curveLoop.Append(lineStrasse);
-                        }
+                            positionList.Add(nodePosExt.InnerText);
+                            string[] koordWerte = positionList[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        else if (koordWerte.Count() > 4)
-                        {
-                            int ie = 0;
-
-                            foreach (string split in koordWerte)
+                            if (koordWerte.Count() == 4)
                             {
                                 var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, ie, zOffset);
-                                curveLoop.Append(lineClIndu);
-
-                                if ((ie + 3) == (koordWerte.Count() - 1))
-                                {
-                                    break;
-                                }
-
-                                ie += 2;
+                                Line lineStrasse = geomBuilder.CreateLineString(koordWerte, R, transf, zOffset);
+                                curveLoop.Append(lineStrasse);
                             }
-                        }
-                        i++;
-                    }
 
-                    #region parameter
-                    string nodeContent = default;
-                    Dictionary<string, string> paramDict = new Dictionary<string, string>();
-
-                    foreach (DefinitionGroup dg in defFile.Groups)
-                    {
-                        foreach (var paramName in paramList)
-                        {
-                            if (dg.Name == "XPlanDaten")
+                            else if (koordWerte.Count() > 4)
                             {
-                                XmlNode objektBezeichnung = nodeExt.ParentNode.ParentNode.ParentNode;
-                                var parameterBezeichnung = objektBezeichnung.SelectNodes(paramName, nsmgr);
+                                int ie = 0;
 
-                                if (parameterBezeichnung != null)
+                                foreach (string split in koordWerte)
                                 {
-                                    ExternalDefinition externalDefinition = dg.Definitions.get_Item(paramName.Substring(paramName.LastIndexOf(':') + 1)) as ExternalDefinition;
+                                    var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                                    Line lineClIndu = geomBuilder.CreateLineRing(koordWerte, R, transf, ie, zOffset);
+                                    curveLoop.Append(lineClIndu);
 
-                                    var getNodeContent = new XPlan2BIM.XPlan_Parameter();
-                                    nodeContent = getNodeContent.getNodeText(nodeExt, nsmgr, xPlanObject, paramName.Substring(paramName.LastIndexOf(':') + 1));
-
-                                    if (paramDict.ContainsKey(paramName.Substring(paramName.LastIndexOf(':') + 1)) == false)
+                                    if ((ie + 3) == (koordWerte.Count() - 1))
                                     {
-                                        paramDict.Add(paramName.Substring(paramName.LastIndexOf(':') + 1), nodeContent);
-                                    }                                    
-
-                                    Transaction tParam = new Transaction(doc, "Insert Parameter");
-                                    {
-                                        tParam.Start();
-                                        InstanceBinding newIB = app.Create.NewInstanceBinding(categorySet);
-                                        if (externalDefinition != null)
-                                        {
-                                            doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_DATA);
-                                        }
-                                        logger.Info("Applied Parameters to '" + paramName.Substring(paramName.LastIndexOf(':') + 1) + "'. ");
+                                        break;
                                     }
-                                    tParam.Commit();
-                                }
-                            } 
-                        }   
-                    }
-                    paramList.Clear();
-                    #endregion parameter
 
-                    if (curveLoop.GetExactLength() > 0)
-                    {
-                        curveLoopExteriorList.Add(curveLoop);
-                        var hideReferenceSitesubregions = new List<ElementId>();
-
-                        Transaction topoTransaction = new Transaction(doc, "Create Exterior");
-                        {
-                            FailureHandlingOptions optionsExterior = topoTransaction.GetFailureHandlingOptions();
-                            optionsExterior.SetFailuresPreprocessor(new AxesFailure());
-                            topoTransaction.SetFailureHandlingOptions(optionsExterior);
-
-                            topoTransaction.Start();
-                            SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
-                            SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopExteriorList, xPlanReferencePlaneId);
-
-                            Parameter materialParamExterior = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
-
-                            ElementId farbe = default(ElementId);
-                            if (colorDict.ContainsKey(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
-                            {
-                                farbe = colorDict[xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)];
-                            }
-                            else
-                            {
-                                farbe = colorDict["default"];
-                            }
-                            materialParamExterior.Set(farbe);
-
-                            try
-                            {
-                                foreach (var x in paramDict)
-                                {
-                                    Parameter jederParameter = siteSubRegion.TopographySurface.LookupParameter(x.Key);
-                                    jederParameter.Set(x.Value);
+                                    ie += 2;
                                 }
                             }
-                            catch
-                            {
-
-                            }
-
-                            Parameter exteriorName = siteSubRegion.TopographySurface.LookupParameter("Kommentare");
-                            exteriorName.Set(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
-
-                            hideReferenceSitesubregions.Add(siteSubRegion.TopographySurface.Id);
-
-                            if (selectedLayers.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)) == false)
-                            {
-                                revitView.HideElements(hideReferenceSitesubregions);
-                            }
-
-                            logger.Info("Created sitesubregion for '" + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1) + "' (Exterior). ");
+                            i++;
                         }
-                        topoTransaction.Commit();
-                    }
-                    paramDict.Clear();
-                }
-                #endregion exterior               
 
-                if (checkBoxZOffset.IsChecked == true)
-                {
-                    zOffset += 10.0;
+                        #region parameter
+                        string nodeContent = default;
+                        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+
+                        foreach (DefinitionGroup dg in defFile.Groups)
+                        {
+                            foreach (var paramName in paramList)
+                            {
+                                if (dg.Name == "XPlanDaten")
+                                {
+                                    XmlNode objektBezeichnung = nodeExt.ParentNode.ParentNode.ParentNode;
+                                    var parameterBezeichnung = objektBezeichnung.SelectNodes(paramName, nsmgr);
+
+                                    if (parameterBezeichnung != null)
+                                    {
+                                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(paramName.Substring(paramName.LastIndexOf(':') + 1)) as ExternalDefinition;
+
+                                        var getNodeContent = new XPlan2BIM.XPlan_Parameter();
+                                        nodeContent = getNodeContent.getNodeText(nodeExt, nsmgr, xPlanObject, paramName.Substring(paramName.LastIndexOf(':') + 1));
+
+                                        if (paramDict.ContainsKey(paramName.Substring(paramName.LastIndexOf(':') + 1)) == false)
+                                        {
+                                            paramDict.Add(paramName.Substring(paramName.LastIndexOf(':') + 1), nodeContent);
+                                        }
+
+                                        Transaction tParam = new Transaction(doc, "Insert Parameter");
+                                        {
+                                            tParam.Start();
+                                            InstanceBinding newIB = app.Create.NewInstanceBinding(categorySet);
+                                            if (externalDefinition != null)
+                                            {
+                                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_DATA);
+                                            }
+                                            logger.Info("Applied Parameters to '" + paramName.Substring(paramName.LastIndexOf(':') + 1) + "'. ");
+                                        }
+                                        tParam.Commit();
+                                    }
+                                }
+                            }
+                        }
+                        paramList.Clear();
+                        #endregion parameter
+
+                        if (curveLoop.GetExactLength() > 0)
+                        {
+                            curveLoopExteriorList.Add(curveLoop);
+                            var hideReferenceSitesubregions = new List<ElementId>();
+
+                            Transaction topoTransaction = new Transaction(doc, "Create Exterior");
+                            {
+                                FailureHandlingOptions optionsExterior = topoTransaction.GetFailureHandlingOptions();
+                                optionsExterior.SetFailuresPreprocessor(new AxesFailure());
+                                topoTransaction.SetFailureHandlingOptions(optionsExterior);
+
+                                topoTransaction.Start();
+                                SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
+                                SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopExteriorList, xPlanReferencePlaneId);
+
+                                Parameter materialParamExterior = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
+
+                                ElementId farbe = default(ElementId);
+                                if (colorDict.ContainsKey(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
+                                {
+                                    farbe = colorDict[xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)];
+                                }
+                                else
+                                {
+                                    farbe = colorDict["default"];
+                                }
+                                materialParamExterior.Set(farbe);
+
+                                try
+                                {
+                                    foreach (var x in paramDict)
+                                    {
+                                        Parameter jederParameter = siteSubRegion.TopographySurface.LookupParameter(x.Key);
+                                        jederParameter.Set(x.Value);
+                                    }
+                                }
+                                catch
+                                {
+
+                                }
+
+                                Parameter exteriorName = siteSubRegion.TopographySurface.LookupParameter("Kommentare");
+                                exteriorName.Set(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
+
+                                hideReferenceSitesubregions.Add(siteSubRegion.TopographySurface.Id);
+
+                                if (selectedLayers.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)) == false)
+                                {
+                                    revitView.HideElements(hideReferenceSitesubregions);
+                                }
+
+                                logger.Info("Created sitesubregion for '" + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1) + "' (Exterior). ");
+                            }
+                            topoTransaction.Commit();
+                        }
+                        paramDict.Clear();
+                    }
+                    #endregion exterior               
+
+                    if (checkBoxZOffset.IsChecked == true)
+                    {
+                        zOffset += 10.0;
+                    }
+                    else
+                    {
+                        zOffset += 0;
+                    }
                 }
-                else
-                {
-                    zOffset += 0;
-                }                
+
+                
             }
         }
 

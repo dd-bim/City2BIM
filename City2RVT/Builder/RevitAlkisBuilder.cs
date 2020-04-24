@@ -24,7 +24,7 @@ namespace City2RVT.Builder
             this.colors = CreateColorAsMaterial();
         }
 
-        public void CreateTopo(List<AX_Object> topoObjs)
+        public void CreateTopo(List<AX_Object> topoObjs, System.Collections.IList selectedLayer)
         {
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
@@ -58,6 +58,20 @@ namespace City2RVT.Builder
             //var layerList = GUI.Prop_NAS_settings.LayerList;
             //var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
+            //var selectedLayers = City2RVT.GUI.Prop_NAS_settings.selectedLayer;
+
+            //City2RVT.GUI.Wpf_NAS_settings dialog = new GUI.Wpf_NAS_settings(commandData);
+
+            //var res = GUI.Wpf_NAS_settings.SelectedLayer;
+
+            //MessageBox.Show(res.ToString());
+
+            //foreach (var x in selectLayer)
+            //{
+            //    MessageBox.Show(x.ToString());
+            //}
+
+
             //each AX_Object will be represented as SubRegion
             //it is not allowed that subRegions overlap in Revit
             //therefore for each AX_Object.Group will be an separate topography object with the certain objects as subRegion
@@ -65,8 +79,11 @@ namespace City2RVT.Builder
 
             var groupedTopo = topoObjs.GroupBy(g => g.Group);
 
+            
+
             foreach (var topoGr in groupedTopo)
             {
+                //MessageBox.Show(topoGr.Key.ToString());
                 bool createTopoPlane = true;
 
                 if (topoGr.Key == AX_Object.AXGroup.building)
@@ -115,52 +132,56 @@ namespace City2RVT.Builder
                 //var hideReferencePlanes = new List<ElementId>();
                 foreach (var obj in topoGr)
                 {
-                    try
+                    //MessageBox.Show(obj.UsageType.ToString());
+                    if (selectedLayer.Contains(obj.UsageType))
                     {
-                        List<C2BPoint> polyExt = obj.Segments.Select(j => j[0]).ToList();
-                        polyExt.Add(obj.Segments[0][0]);                                    //convert Segments to LinearRing
-
-                        List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(polyExt, out XYZ normal);
-
-                        using (Transaction subTrans = new Transaction(doc, "Create " + obj.UsageType))
+                        try
                         {
+                            List<C2BPoint> polyExt = obj.Segments.Select(j => j[0]).ToList();
+                            polyExt.Add(obj.Segments[0][0]);                                    //convert Segments to LinearRing
+
+                            List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(polyExt, out XYZ normal);
+
+                            using (Transaction subTrans = new Transaction(doc, "Create " + obj.UsageType))
                             {
-                                FailureHandlingOptions options = subTrans.GetFailureHandlingOptions();
-                                options.SetFailuresPreprocessor(new AxesFailure());
-                                subTrans.SetFailureHandlingOptions(options);
+                                {
+                                    FailureHandlingOptions options = subTrans.GetFailureHandlingOptions();
+                                    options.SetFailuresPreprocessor(new AxesFailure());
+                                    subTrans.SetFailureHandlingOptions(options);
 
-                                subTrans.Start();
+                                    subTrans.Start();
 
-                                SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
-                                siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
+                                    SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
+                                    siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
 
-                                if (obj.Attributes != null)
-                                    siteSubRegion = SetAttributeValues(siteSubRegion, obj.Attributes);
+                                    if (obj.Attributes != null)
+                                        siteSubRegion = SetAttributeValues(siteSubRegion, obj.Attributes);
 
-                                string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-                                Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
-                                commAttr.Set("ALKIS: " + obj.UsageType);
+                                    string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+                                    Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
+                                    commAttr.Set("ALKIS: " + obj.UsageType);
 
-                                siteSubRegion.TopographySurface.Pinned = true;
+                                    siteSubRegion.TopographySurface.Pinned = true;
 
-                                //hideReferencePlanes.Add(siteSubRegion.TopographySurface.Id);
+                                    //hideReferencePlanes.Add(siteSubRegion.TopographySurface.Id);
 
-                                //if (chosen.Contains(obj.UsageType))
-                                //{
+                                    //if (chosen.Contains(obj.UsageType))
+                                    //{
 
-                                //}
-                                //else
-                                //{
-                                //    view.HideElements(hideReferencePlanes);
-                                //}
+                                    //}
+                                    //else
+                                    //{
+                                    //    view.HideElements(hideReferencePlanes);
+                                    //}
+                                }
+                                subTrans.Commit();
                             }
-                            subTrans.Commit();
                         }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
+                        catch
+                        {
+                            continue;
+                        }
+                    }                    
                 }
 
                 #region interior

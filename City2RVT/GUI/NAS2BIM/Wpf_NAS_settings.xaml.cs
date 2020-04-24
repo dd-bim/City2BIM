@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
+using System.Windows.Forms;
 
 using City2BIM.Alkis;
 using City2BIM.Geometry;
@@ -30,6 +31,11 @@ namespace City2RVT.GUI
         //private string[] codelistTypes = new string[] { "AdV (Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der BRD)", 
         //                                                "SIG3D (Special Interest Group 3D)" };
 
+        //public static System.Collections.IList SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
+        //public static string[] SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
+
+        //public static string SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
+
         public Wpf_NAS_settings(ExternalCommandData cData)
         {
             commandData = cData;
@@ -51,6 +57,8 @@ namespace City2RVT.GUI
             //else
             //    rb_file.IsChecked = true;
 
+            //AlkisCategoryListbox.SelectedItem = SelectedLayer;
+
             if (Prop_NAS_settings.IsGeodeticSystem)
                 rb_YXZ.IsChecked = true;
             else
@@ -70,8 +78,6 @@ namespace City2RVT.GUI
                 check_drapeParcels.IsEnabled = false;
                 check_drapeUsage.IsEnabled = false;
             }
-
-
         }
 
         public System.Collections.IList ListBox
@@ -93,6 +99,40 @@ namespace City2RVT.GUI
 
         private void Bt_apply_Click(object sender, RoutedEventArgs e)
         {
+            //Prop_NAS_settings.selectedLayer = AlkisCategoryListbox.SelectedItems;
+
+            //Prop_NAS_settings.selectedLayer = AlkisCategoryListbox.SelectedItems;
+
+            //List<string> selectedLayer = new List<string>();
+            //Prop_NAS_settings.selectedLayer = new List<string>();
+
+            //ListBox = AlkisCategoryListbox.SelectedItems;
+
+            GUI.Prop_NAS_settings.SelectedLayer = AlkisCategoryListbox.SelectedItems;
+            //System.Windows.Forms.MessageBox.Show(Prop_NAS_settings.SelectedLayer.Count.ToString());
+
+            //int i = 0;
+            //foreach (var sl in AlkisCategoryListbox.SelectedItems)
+            //{
+            //    GUI.Prop_NAS_settings.SelectedLayer = (AlkisCategoryListbox.SelectedItems.ToString());
+            //    i++;
+            //}
+
+            //Prop_NAS_settings.SelectedLayer = "hi";
+
+
+            //int i = 0;
+            //foreach (var sl in AlkisCategoryListbox.SelectedItems)
+            //{
+            //    Prop_NAS_settings.selectedLayer = (AlkisCategoryListbox.SelectedItem.ToString());
+            //    i++;
+            //}
+
+            //foreach (var x in layers)
+            //{
+            //    System.Windows.Forms.MessageBox.Show(x.ToString());
+            //}
+
             //read server / file url
             Prop_NAS_settings.FileUrl = tb_file.Text;
             //NAS2BIM_prop.ServerUrl = tb_server.Text;
@@ -173,6 +213,10 @@ namespace City2RVT.GUI
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            UIApplication app = commandData.Application;
+            UIDocument uidoc = app.ActiveUIDocument;
+            Document doc = uidoc.Document;
+
             string alkisXmlPath = tb_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
@@ -184,12 +228,9 @@ namespace City2RVT.GUI
                 xmlDoc.Load(alkisXmlPath);
             }
 
-            #region namespaces
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
-            nsmgr.AddNamespace("ns2", "http://www.adv-online.de/namespaces/adv/gid/6.0");
-            nsmgr.AddNamespace("gml", "http://www.opengis.net/gml/3.2");
-            nsmgr.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
-            #endregion namespaces
+            // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
+            var XmlNsmgr = new Builder.Revit_Semantic(doc);
+            XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
 
             List<string> xPlanObjectList = new List<string>();
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
