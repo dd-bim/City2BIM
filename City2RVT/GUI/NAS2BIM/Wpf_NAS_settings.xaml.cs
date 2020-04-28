@@ -99,39 +99,12 @@ namespace City2RVT.GUI
 
         private void Bt_apply_Click(object sender, RoutedEventArgs e)
         {
-            //Prop_NAS_settings.selectedLayer = AlkisCategoryListbox.SelectedItems;
-
-            //Prop_NAS_settings.selectedLayer = AlkisCategoryListbox.SelectedItems;
-
-            //List<string> selectedLayer = new List<string>();
-            //Prop_NAS_settings.selectedLayer = new List<string>();
-
-            //ListBox = AlkisCategoryListbox.SelectedItems;
-
             GUI.Prop_NAS_settings.SelectedLayer = AlkisCategoryListbox.SelectedItems;
-            //System.Windows.Forms.MessageBox.Show(Prop_NAS_settings.SelectedLayer.Count.ToString());
 
-            //int i = 0;
-            //foreach (var sl in AlkisCategoryListbox.SelectedItems)
-            //{
-            //    GUI.Prop_NAS_settings.SelectedLayer = (AlkisCategoryListbox.SelectedItems.ToString());
-            //    i++;
-            //}
-
-            //Prop_NAS_settings.SelectedLayer = "hi";
-
-
-            //int i = 0;
-            //foreach (var sl in AlkisCategoryListbox.SelectedItems)
-            //{
-            //    Prop_NAS_settings.selectedLayer = (AlkisCategoryListbox.SelectedItem.ToString());
-            //    i++;
-            //}
-
-            //foreach (var x in layers)
-            //{
-            //    System.Windows.Forms.MessageBox.Show(x.ToString());
-            //}
+            if ((bool)checkBoxZOffset.IsChecked)
+                Prop_NAS_settings.ZOffsetIsChecked = true;
+            else
+                Prop_NAS_settings.ZOffsetIsChecked = false;
 
             //read server / file url
             Prop_NAS_settings.FileUrl = tb_file.Text;

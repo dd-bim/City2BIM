@@ -29,6 +29,7 @@ namespace City2RVT.GUI
         private static bool drapeBldgsOnTopo = false;
         private static bool drapeUsageOnTopo = false;
         private static bool drapeParcelsOnTopo = false;
+        private static bool zOffsetIsChecked = false;
 
         //public static double Extent { get => extent; set => extent = value; }
         //public static bool IsServerRequest { get => isServerRequest; set => isServerRequest = value; }
@@ -36,6 +37,7 @@ namespace City2RVT.GUI
         public static string FileUrl { get => fileUrl; set => fileUrl = value; }
         //public static string SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
         public static System.Collections.IList SelectedLayer { get => selectedLayer; set => selectedLayer = value; }
+        public static bool ZOffsetIsChecked { get => zOffsetIsChecked; set => zOffsetIsChecked = value; }
 
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
         public static bool DrapeBldgsOnTopo { get => drapeBldgsOnTopo; set => drapeBldgsOnTopo = value; }

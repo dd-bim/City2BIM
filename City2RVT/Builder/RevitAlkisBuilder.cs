@@ -49,29 +49,6 @@ namespace City2RVT.Builder
             }
             //----------------
 
-            //var form = new City2RVT.GUI.Wpf_NAS_settings(commandData);
-            //form.ShowDialog();
-
-            //var chosen = form.AlkisCategoryListbox.SelectedItems;
-            //System.Windows.Forms.MessageBox.Show(chosen.Count.ToString());
-
-            //var layerList = GUI.Prop_NAS_settings.LayerList;
-            //var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-
-            //var selectedLayers = City2RVT.GUI.Prop_NAS_settings.selectedLayer;
-
-            //City2RVT.GUI.Wpf_NAS_settings dialog = new GUI.Wpf_NAS_settings(commandData);
-
-            //var res = GUI.Wpf_NAS_settings.SelectedLayer;
-
-            //MessageBox.Show(res.ToString());
-
-            //foreach (var x in selectLayer)
-            //{
-            //    MessageBox.Show(x.ToString());
-            //}
-
-
             //each AX_Object will be represented as SubRegion
             //it is not allowed that subRegions overlap in Revit
             //therefore for each AX_Object.Group will be an separate topography object with the certain objects as subRegion
@@ -83,7 +60,6 @@ namespace City2RVT.Builder
 
             foreach (var topoGr in groupedTopo)
             {
-                //MessageBox.Show(topoGr.Key.ToString());
                 bool createTopoPlane = true;
 
                 if (topoGr.Key == AX_Object.AXGroup.building)
@@ -129,10 +105,8 @@ namespace City2RVT.Builder
                     }
                 }
 
-                //var hideReferencePlanes = new List<ElementId>();
                 foreach (var obj in topoGr)
                 {
-                    //MessageBox.Show(obj.UsageType.ToString());
                     if (selectedLayer.Contains(obj.UsageType))
                     {
                         try
@@ -163,16 +137,6 @@ namespace City2RVT.Builder
 
                                     siteSubRegion.TopographySurface.Pinned = true;
 
-                                    //hideReferencePlanes.Add(siteSubRegion.TopographySurface.Id);
-
-                                    //if (chosen.Contains(obj.UsageType))
-                                    //{
-
-                                    //}
-                                    //else
-                                    //{
-                                    //    view.HideElements(hideReferencePlanes);
-                                    //}
                                 }
                                 subTrans.Commit();
                             }
@@ -258,30 +222,36 @@ namespace City2RVT.Builder
 
             var convexHull = Calc.ConvexHull.MakeHull(ptList);
 
-            //zOffset = 0.0;
             zOffset = default(double);
 
-
-            switch (axGroup)
+            if (GUI.Prop_NAS_settings.ZOffsetIsChecked)
             {
-                case (AX_Object.AXGroup.parcel):
-                    {
-                        zOffset = -300;
-                        break;
-                    }
+                switch (axGroup)
+                {
+                    case (AX_Object.AXGroup.parcel):
+                        {
+                            zOffset = -300;
+                            break;
+                        }
 
-                case (AX_Object.AXGroup.usage):
-                    {
-                        zOffset = -200;
-                        break;
-                    }
+                    case (AX_Object.AXGroup.usage):
+                        {
+                            zOffset = -200;
+                            break;
+                        }
 
-                case (AX_Object.AXGroup.building):
-                    {
-                        zOffset = -100;
-                        break;
-                    }
+                    case (AX_Object.AXGroup.building):
+                        {
+                            zOffset = -100;
+                            break;
+                        }
+                }
             }
+            else
+            {
+                zOffset = 0.0;
+            }
+
             foreach (var pt in convexHull)
             {
                 var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(new C2BPoint(pt.x, pt.y, zOffset), true);

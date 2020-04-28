@@ -17,21 +17,16 @@ namespace City2RVT.GUI
             UIApplication uiapp = revit.Application;
             Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
 
-            //UIApplication uiapp = revit.Application;
-            //UIDocument uidoc = uiapp.ActiveUIDocument;
-            //Document doc = uidoc.Document;
-            //Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
-
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            var alkis = new Reader.ReadALKIS(doc, app, revit);
+            //var alkis = new Reader.ReadALKIS(doc, app, revit);
 
-            //if (Prop_NAS_settings.FileUrl == "")
-            //    TaskDialog.Show("No file path set!", "Please enter a file path in the settings window first!");
-            //else
-            //{
-            //    var alkis = new Reader.ReadALKIS(doc, app,revit);
-            //}
+            if (Prop_NAS_settings.FileUrl == "")
+                TaskDialog.Show("No file path set!", "Please enter a file path in the settings window first!");
+            else
+            {
+                var alkis = new Reader.ReadALKIS(doc, app, revit);
+            }
             return Result.Succeeded;
 
         }

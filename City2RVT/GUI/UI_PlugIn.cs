@@ -226,7 +226,7 @@ namespace City2RVT.GUI
             var hideLayerPath =
             System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var hideLayerRootPath = Path.Combine(hideLayerPath, "..", "..");
-            var hideLayerSetPath = Path.Combine(hideLayerRootPath, "img", "IFC_32px_96dpi.png");
+            var hideLayerSetPath = Path.Combine(hideLayerRootPath, "img", "HideLayerIcon_32px_96dpi.png");
             Uri uriImagehideLayer = new Uri(hideLayerSetPath);
             BitmapImage largeImagehideLayer = new BitmapImage(uriImagehideLayer);
 
