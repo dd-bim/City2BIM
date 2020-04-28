@@ -20,6 +20,9 @@ namespace City2RVT.GUI
         //private static string pathResponse = System.Environment.CurrentDirectory;
 
         private static System.Collections.IList selectedLayer = default(System.Collections.IList);
+        private static List<string> paramList = default(List<string>);
+        private static System.Collections.IList selectedParams = default(System.Collections.IList);
+
 
         //user-defined extent properties
         //private static double extent = 300.0;
@@ -38,6 +41,8 @@ namespace City2RVT.GUI
         //public static string SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
         public static System.Collections.IList SelectedLayer { get => selectedLayer; set => selectedLayer = value; }
         public static bool ZOffsetIsChecked { get => zOffsetIsChecked; set => zOffsetIsChecked = value; }
+        public static List<string> ParamList { get => paramList; set => paramList = value; }
+        public static System.Collections.IList SelectedParams { get => selectedParams; set => selectedParams = value; }
 
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
         public static bool DrapeBldgsOnTopo { get => drapeBldgsOnTopo; set => drapeBldgsOnTopo = value; }

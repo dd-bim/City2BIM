@@ -231,7 +231,7 @@ namespace City2RVT.GUI
             BitmapImage largeImagehideLayer = new BitmapImage(uriImagehideLayer);
 
             PushButton buttonHideLayer = panel7.AddItem(new PushButtonData("Hide Layer", "Hides Layer in view",
-            thisAssemblyPath, "City2RVT.GUI.XPlan2BIM.Cmd_HideLayers")) as PushButton;
+            thisAssemblyPath, "City2RVT.GUI.Modify.Cmd_HideLayers")) as PushButton;
             buttonHideLayer.ToolTip = "Hides Layers.";
             buttonHideLayer.LargeImage = largeImagehideLayer;
 

@@ -11,7 +11,7 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 
 
-namespace City2RVT.GUI.XPlan2BIM
+namespace City2RVT.GUI.Modify
 {
     /// <summary>
     /// Interaktionslogik für Hide_Layers.xaml

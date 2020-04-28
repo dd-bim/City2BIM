@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
 
-namespace City2RVT.GUI.XPlan2BIM
+namespace City2RVT.GUI.Modify
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.
@@ -22,7 +22,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            var process = new XPlan2BIM.Hide_Layers(revit);
+            var process = new Modify.Hide_Layers(revit);
             process.ShowDialog();
 
             return Result.Succeeded;

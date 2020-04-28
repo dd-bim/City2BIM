@@ -169,10 +169,16 @@
     <Compile Include="Calc\UTMcalc.cs" />
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
+    <Compile Include="GUI\Modify\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Modify\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
-    <Compile Include="GUI\XPlan2BIM\Cmd_HideLayers.cs" />
+    <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
-    <Compile Include="GUI\XPlan2BIM\Hide_Layers.xaml.cs">
+    <Compile Include="GUI\Modify\Hide_Layers.xaml.cs">
       <DependentUpon>Hide_Layers.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\IfcXBim.cs" />
@@ -240,7 +246,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GUI\XPlan2BIM\Hide_Layers.xaml">
+    <Page Include="GUI\Modify\Hide_Layers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -296,6 +302,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GUI\Modify\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>

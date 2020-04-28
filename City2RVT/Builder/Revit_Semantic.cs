@@ -82,6 +82,8 @@ namespace City2RVT.Builder
 
             string paramFile = doc.Application.SharedParametersFilename;
 
+            var selectedParams = GUI.Prop_NAS_settings.SelectedParams;
+
             foreach (var p in projectInformationList)
             {
                 defFile = parameter.CreateDefinitionFile(paramFile, app, doc, p, "ProjectInformation");

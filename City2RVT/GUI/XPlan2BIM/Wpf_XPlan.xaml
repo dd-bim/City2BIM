@@ -23,6 +23,7 @@
                   VerticalAlignment="Top" Checked="checkBoxZOffset_Checked"/>
         <Label Content="Layer to be imported (please select): " 
                HorizontalAlignment="Left" Margin="59,84,0,0" VerticalAlignment="Top"/>
+        <Button Content="Modify parameters" HorizontalAlignment="Left" Margin="494,200,0,0" VerticalAlignment="Top" Width="106" Click="Button_Click"/>
 
     </Grid>
 </Window>
