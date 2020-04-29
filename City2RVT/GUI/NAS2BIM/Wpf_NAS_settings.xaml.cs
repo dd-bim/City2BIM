@@ -184,7 +184,7 @@ namespace City2RVT.GUI
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_ShowLayer(object sender, RoutedEventArgs e)
         {
             UIApplication app = commandData.Application;
             UIDocument uidoc = app.ActiveUIDocument;
@@ -228,6 +228,49 @@ namespace City2RVT.GUI
                 AlkisCategoryListbox.Items.Add(xPlanObjectList[ix]);
                 ix++;
             }
+
+            List<string> paramList = new List<string>();
+            paramList.Add("Gemarkung_Land");
+            paramList.Add("Gemarkung_Nummer");
+            paramList.Add("Flurstuecksnummer");
+            paramList.Add("Flurstueckskennzeichen");
+            paramList.Add("Amtliche_Flaeche");
+            paramList.Add("Flurnummer");
+            paramList.Add("Flurstuecksfolge");
+            paramList.Add("Abweichender_Rechtszustand");
+            paramList.Add("Zweifelhafter_Flurstuecksnachweis");
+            paramList.Add("Rechtsbehelfsverfahren");
+            paramList.Add("Zeitpunkt_der_Entstehung");
+            paramList.Add("Gemeinde_Land");
+            paramList.Add("Gemeinde_Bezirk");
+            paramList.Add("Gemeinde_Kreis");
+            paramList.Add("Gemeinde");
+            paramList.Add("Gemeindeteil");
+            paramList.Add("Zustaendige_Stelle_Land");
+            paramList.Add("Zustaendige_Stelle");
+            paramList.Add("Eigentuemer_Name_Firma");
+            paramList.Add("Eigentuemer_Vorname");
+            paramList.Add("Eigentuemer_Ort");
+            paramList.Add("Eigentuemer_Plz");
+            paramList.Add("Eigentuemer_Strasse");
+            paramList.Add("Eigentuemer_Hausnummer");
+
+
+            //XmlNodeList bpEinzelnExterior = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
+            //foreach (XmlNode nodeExt in bpEinzelnExterior)
+            //{
+            //    foreach (XmlNode child in nodeExt.FirstChild)
+            //    {
+            //        if (child.Name != "#comment")
+            //        {
+            //            if (paramList.Contains("alkis: " + child.Name) == false)
+            //            {
+            //                paramList.Add("alkis: " + child.Name);
+            //            }                        
+            //        }
+            //    }
+            //}
+            GUI.Prop_NAS_settings.ParamList = paramList;
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -260,6 +303,12 @@ namespace City2RVT.GUI
         public void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_ModifyParameter(object sender, RoutedEventArgs e)
+        {
+            Modify.ModifyParameterForm f1 = new Modify.ModifyParameterForm();
+            f1.ShowDialog();
         }
 
 

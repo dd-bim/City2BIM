@@ -121,9 +121,11 @@
         </GroupBox>
         <ListBox Name="AlkisCategoryListbox" HorizontalAlignment="Left" Height="299" Margin="31,47,0,-255" 
                  Grid.Row="1" VerticalAlignment="Top" Width="445" SelectionMode="Multiple" SelectionChanged="AlkisCategoryListbox_SelectionChanged"/>
-        <Button Content="Show Layer" HorizontalAlignment="Left" Margin="31,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button Content="Show Layer" HorizontalAlignment="Left" Margin="31,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Button_Click_ShowLayer"/>
         <RadioButton Name="alkisRadioButton" Content="Select all" HorizontalAlignment="Left" Margin="562,47,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
         <Button Content="Clear Selection" HorizontalAlignment="Left" Height="22" Margin="562,75,0,-6" Grid.Row="1" VerticalAlignment="Top" Width="85" Click="Button_Click_1"/>
         <CheckBox Name="checkBoxZOffset" Content="Z-Offset für Layer" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="30,367,0,-295" Grid.Row="1" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <Button Content="Modify Parameters
+                " HorizontalAlignment="Left" Height="30" Margin="22,316,0,-255" Grid.Row="1" VerticalAlignment="Top" Width="120" Grid.Column="1" Click="Button_Click_ModifyParameter"/>
     </Grid>
 </Window>

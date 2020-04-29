@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace City2RVT.GUI.Modify
 {
-    public partial class Form1 : Form
+    public partial class ModifyParameterForm : Form
     {
-        public Form1()
+        public ModifyParameterForm()
         {
             InitializeComponent();
         }

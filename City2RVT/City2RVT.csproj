@@ -169,11 +169,11 @@
     <Compile Include="Calc\UTMcalc.cs" />
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
-    <Compile Include="GUI\Modify\Form1.cs">
+    <Compile Include="GUI\Modify\ModifyParameterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Modify\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="GUI\Modify\ModifyParameterForm.Designer.cs">
+      <DependentUpon>ModifyParameterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
@@ -302,8 +302,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GUI\Modify\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Modify\ModifyParameterForm.resx">
+      <DependentUpon>ModifyParameterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
       <Generator>ResXFileCodeGenerator</Generator>

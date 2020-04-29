@@ -150,5 +150,16 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\City2IFC\City2IFC.csproj">
+      <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
+      <Name>City2IFC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\City2RVT\City2RVT.csproj">
+      <Project>{be8f677a-59a8-4ea5-89c8-706e6c6a07a4}</Project>
+      <Name>City2RVT</Name>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

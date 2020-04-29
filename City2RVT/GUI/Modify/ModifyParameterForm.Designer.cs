@@ -1,6 +1,6 @@
 ﻿namespace City2RVT.GUI.Modify
 {
-    partial class Form1
+    partial class ModifyParameterForm
     {
         /// <summary>
         /// Required designer variable.

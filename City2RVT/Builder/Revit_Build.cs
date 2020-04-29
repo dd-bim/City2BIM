@@ -11,7 +11,7 @@ namespace City2RVT.Builder
         /// Creates List of CurveLoops with exterior ring and may interior rings
         /// </summary>
         /// <returns>List of CurveLoops for Revit geometry builder e.g. extrusion profile</returns>
-        public static List<CurveLoop> CreateExteriorCurveLoopList(List<C2BPoint> exteriorRing/*, List<List<C2BPoint>> interiorRings*/, out XYZ planeNormal, C2BPoint calcOffset = null)
+        public static List<CurveLoop> CreateExteriorCurveLoopList(List<C2BPoint> exteriorRing, List<List<C2BPoint>> interiorRings, out XYZ planeNormal, C2BPoint calcOffset = null)
         {
             List<CurveLoop> rvtPoly = new List<CurveLoop>();        //return variable --> extrusion profile (1 x exterior ring, n x interior rings)
 

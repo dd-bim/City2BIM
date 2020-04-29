@@ -104,7 +104,7 @@ namespace City2RVT.Builder
                         topoTransaction.Commit();
                     }
                 }
-
+                
                 foreach (var obj in topoGr)
                 {
                     if (selectedLayer.Contains(obj.UsageType))
@@ -114,7 +114,21 @@ namespace City2RVT.Builder
                             List<C2BPoint> polyExt = obj.Segments.Select(j => j[0]).ToList();
                             polyExt.Add(obj.Segments[0][0]);                                    //convert Segments to LinearRing
 
-                            List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(polyExt, out XYZ normal);
+                            List<List<C2BPoint>> polysInt = new List<List<C2BPoint>>();
+
+                            if (obj.InnerSegments != null)
+                            {
+
+                                foreach (var segInt in obj.InnerSegments)
+                                {
+                                    List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
+                                    polyInt.Add(segInt[0][0]);                                    //convert Segments to LinearRing
+
+                                    polysInt.Add(polyInt);
+                                }
+                            }
+
+                            List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(polyExt, polysInt, out XYZ normal);
 
                             using (Transaction subTrans = new Transaction(doc, "Create " + obj.UsageType))
                             {
@@ -146,59 +160,7 @@ namespace City2RVT.Builder
                             continue;
                         }
                     }                    
-                }
-
-                #region interior
-                foreach (var obj in topoGr)
-                {
-                    try
-                    {
-                        List<List<C2BPoint>> polysInt = new List<List<C2BPoint>>();
-
-                        if (obj.InnerSegments != null)
-                        {
-
-                            foreach (var segInt in obj.InnerSegments)
-                            {
-                                List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
-                                polyInt.Add(segInt[0][0]);                                    //convert Segments to LinearRing
-
-                                polysInt.Add(polyInt);
-                            }
-                        }
-                        List<CurveLoop> loopList = Revit_Build.CreateInteriorCurveLoopList(polysInt, out XYZ normal);
-
-                        using (Transaction interiorTrans = new Transaction(doc, "Create Interior" + obj.UsageType))
-                        {
-                            {
-                                FailureHandlingOptions options = interiorTrans.GetFailureHandlingOptions();
-                                options.SetFailuresPreprocessor(new AxesFailure());
-                                interiorTrans.SetFailureHandlingOptions(options);
-
-                                interiorTrans.Start();
-
-                                SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
-                                siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
-
-                                if (obj.Attributes != null)
-                                    siteSubRegion = SetAttributeValues(siteSubRegion, obj.Attributes);
-
-                                string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-                                Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
-
-                                commAttr.Set("ALKIS Interior: " + obj.UsageType);
-
-                                //siteSubRegion.TopographySurface.Pinned = true;
-                            }
-                            interiorTrans.Commit();
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-                #endregion interior
+                } 
             }
         }
 
@@ -336,13 +298,13 @@ namespace City2RVT.Builder
             }
         }
 
-        private SiteSubRegion SetAttributeValues(SiteSubRegion ds, Dictionary<Xml_AttrRep, string> attributes)
+        private SiteSubRegion SetAttributeValues(SiteSubRegion siteSubRegion, Dictionary<Xml_AttrRep, string> attributes)
         {
             var attr = attributes.Keys;
 
             foreach (var aName in attr)
             {
-                var p = ds.TopographySurface.LookupParameter(aName.XmlNamespace + ": " + aName.Name);
+                var p = siteSubRegion.TopographySurface.LookupParameter(aName.XmlNamespace + ": " + aName.Name);
                 attributes.TryGetValue(aName, out var val);
 
                 try
@@ -392,8 +354,9 @@ namespace City2RVT.Builder
                     continue;
                 }
             }
+            
 
-            return ds;
+            return siteSubRegion;
         }
 
         private Dictionary<ColorType, ElementId> CreateColorAsMaterial()

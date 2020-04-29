@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.Windows.Forms;
 using Xml_AttrRep = City2BIM.Semantic.Xml_AttrRep;
 
 namespace City2RVT.Builder
@@ -44,22 +45,28 @@ namespace City2RVT.Builder
             Category projInfoCat = GetCategory(BuiltInCategory.OST_ProjectInformation);
 
             List<Definition> parProjInfoDef = GetExistentCategoryParametersDef(projInfoCat);
+            var selectedParams = GUI.Prop_NAS_settings.SelectedParams;
+
 
             var parProjInfo = parProjInfoDef.Select(p => p.Name);   //needed name for comparison
 
             foreach (var attribute in attributes)
             {
-                Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute.Key, GetParameterType(attribute.Value));
-
-                CategorySet assocCats = doc.Application.Create.NewCategorySet();
-
-                if (!parProjInfo.Contains(attribute.Key))
-                    assocCats.Insert(projInfoCat);
-
-                if (!assocCats.IsEmpty)
+                //MessageBox.Show(attribute.Key);
+                if (selectedParams.Contains(attribute.Key))
                 {
-                    BindParameterDefinitionToCategories(paramDef, assocCats);
-                }
+                    Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute.Key, GetParameterType(attribute.Value));
+
+                    CategorySet assocCats = doc.Application.Create.NewCategorySet();
+
+                    if (!parProjInfo.Contains(attribute.Key))
+                        assocCats.Insert(projInfoCat);
+
+                    if (!assocCats.IsEmpty)
+                    {
+                        BindParameterDefinitionToCategories(paramDef, assocCats);
+                    }
+                }                
             }
             //set SharedParameterFile back to user defined one (if applied)
 
@@ -325,7 +332,19 @@ namespace City2RVT.Builder
 
                 if (!assocCats.IsEmpty)
                 {
-                    BindParameterDefinitionToCategories(paramDef, assocCats);
+                    var selectedParams = GUI.Prop_NAS_settings.SelectedParams;
+
+                    if (selectedParams != null)
+                    {
+                        if (selectedParams.Contains(paramName.Substring(paramName.LastIndexOf(':') + 2)))
+                        {
+                            BindParameterDefinitionToCategories(paramDef, assocCats);
+                        }
+                    }                        
+                    else
+                    {
+                        BindParameterDefinitionToCategories(paramDef, assocCats);
+                    }
                 }
             }
 

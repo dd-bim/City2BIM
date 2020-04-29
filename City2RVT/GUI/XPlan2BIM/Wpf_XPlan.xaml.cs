@@ -691,7 +691,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Modify.Form1 f1 = new Modify.Form1();
+            Modify.ModifyParameterForm f1 = new Modify.ModifyParameterForm();
             f1.ShowDialog();
         }
     }
