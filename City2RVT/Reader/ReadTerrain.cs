@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -20,6 +21,10 @@ namespace City2RVT.Reader
             var path = imp.ImportPath(FileDialog.Data.DGM);
             //-------------------------------
             System.IO.StreamReader file = new System.IO.StreamReader(path);
+
+            int lastIndex = path.LastIndexOf("\\");
+            var dtmFileName = (path.Substring(lastIndex + 1)).Split('.').First();
+            GUI.Prop_NAS_settings.DtmFile = dtmFileName;
 
             var format = path.Split('.').Last();
 

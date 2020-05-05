@@ -47,13 +47,27 @@ namespace City2RVT.GUI.Modify
                         xPlanObjectList.Add(bezeichnung);
                     }                    
                 }
+                else if (bezeichnung.StartsWith("Reference plane") == true)
+                {
+                    if (xPlanObjectList.Contains(bezeichnung.Substring(bezeichnung.LastIndexOf(':') + 2)) == false)
+                    {
+                        xPlanObjectList.Add(bezeichnung.Substring(bezeichnung.LastIndexOf(':') + 2));
+                    }
+                }
 
                 var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
                 if (topoSurf.IsHidden(view) == false)
                 {
                     if (visibleElements.Contains(bezeichnung) == false)
                     {
-                        visibleElements.Add(bezeichnung);
+                        if (bezeichnung.StartsWith("Reference plan"))
+                        {
+                            visibleElements.Add(bezeichnung.Substring(bezeichnung.LastIndexOf(':') + 2));
+                        }
+                        else
+                        {
+                            visibleElements.Add(bezeichnung);
+                        }
                     }
                 }
             }

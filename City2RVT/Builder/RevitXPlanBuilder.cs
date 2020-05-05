@@ -141,7 +141,6 @@ namespace City2RVT.Builder
             #region material
             var transparentMaterialId = default(ElementId);
             var strassenVerkehrsFlaecheMaterialId = default(ElementId);
-            var interiorMaterialId = default(ElementId);
             var defaultMaterialId = default(ElementId);
             var ueberbaubareGrundstuecksFlaecheMaterialId = default(ElementId);
             var gewaesserFlaecheId = default(ElementId);
@@ -166,7 +165,6 @@ namespace City2RVT.Builder
                 strassenVerkehrsFlaecheMaterialId = Material.Create(doc, "strassenVerkehrsFlaeche");
                 Material strassenVerkehrsFlaecheMaterial = doc.GetElement(strassenVerkehrsFlaecheMaterialId) as Material;
                 strassenVerkehrsFlaecheMaterial.Color = new Color(240, 230, 140);
-                strassenVerkehrsFlaecheMaterial.Transparency = 75;
                 colorList.Add("BP_StrassenVerkehrsFlaeche", strassenVerkehrsFlaecheMaterialId);
 
                 gewaesserFlaecheId = Material.Create(doc, "gewaesserFlaeche");
@@ -177,15 +175,7 @@ namespace City2RVT.Builder
                 ueberbaubareGrundstuecksFlaecheMaterialId = Material.Create(doc, "ueberbaubareGrundstuecksFlaeche");
                 Material ueberbaubareGrundstuecksFlaecheMaterial = doc.GetElement(ueberbaubareGrundstuecksFlaecheMaterialId) as Material;
                 ueberbaubareGrundstuecksFlaecheMaterial.Color = new Color(160, 082, 045);
-                //ueberbaubareGrundstuecksFlaecheMaterial.SurfaceForegroundPatternId = new SurfaceForegroundPatternId
                 colorList.Add("BP_UeberbaubareGrundstuecksFlaeche", ueberbaubareGrundstuecksFlaecheMaterialId);
-
-                interiorMaterialId = Material.Create(doc, "interior");
-                Material interiorMaterial = doc.GetElement(interiorMaterialId) as Material;
-                //interiorMaterial.Color = new Color(240, 230, 140);
-                interiorMaterial.Transparency = 100;
-                colorList.Add("interior", interiorMaterialId);
-
 
                 defaultMaterialId = Material.Create(doc, "default");
                 Material defaultMaterial = doc.GetElement(defaultMaterialId) as Material;
@@ -215,13 +205,11 @@ namespace City2RVT.Builder
                 kennzeichnungsFlaecheMaterialId = Material.Create(doc, "KennzeichnungsFlaeche");
                 Material kennzeichnungsFlaecheMaterial = doc.GetElement(kennzeichnungsFlaecheMaterialId) as Material;
                 kennzeichnungsFlaecheMaterial.Color = new Color(110, 139, 061);
-                kennzeichnungsFlaecheMaterial.Transparency = 50;
                 colorList.Add("BP_KennzeichnungsFlaeche", kennzeichnungsFlaecheMaterialId);
 
                 erhaltungsBereichFlaecheMaterialId = Material.Create(doc, "ErhaltungsBereichFlaeche");
                 Material erhaltungsBereichFlaecheMaterial = doc.GetElement(erhaltungsBereichFlaecheMaterialId) as Material;
                 erhaltungsBereichFlaecheMaterial.Color = new Color(0, 255, 0);
-                //erhaltungsBereichFlaecheMaterial.Transparency = 50;
                 colorList.Add("BP_ErhaltungsBereichFlaeche", erhaltungsBereichFlaecheMaterialId);
 
                 ////Create a new property set that can be used by this material

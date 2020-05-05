@@ -19,6 +19,8 @@ namespace City2RVT.GUI
         //private static string serverUrl = "https://hosting.virtualcitywfs.de/deutschland_viewer/wfs"; //only CityGml, if enhanced --> change URL
         //private static string pathResponse = System.Environment.CurrentDirectory;
 
+        private static string dtmFile = "";
+
         private static System.Collections.IList selectedLayer = default(System.Collections.IList);
         private static List<string> paramList = default(List<string>);
         private static System.Collections.IList selectedParams = default(System.Collections.IList);
@@ -38,6 +40,7 @@ namespace City2RVT.GUI
         //public static bool IsServerRequest { get => isServerRequest; set => isServerRequest = value; }
         //public static string ServerUrl { get => serverUrl; set => serverUrl = value; }
         public static string FileUrl { get => fileUrl; set => fileUrl = value; }
+        public static string DtmFile { get => dtmFile; set => dtmFile = value; }
         //public static string SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
         public static System.Collections.IList SelectedLayer { get => selectedLayer; set => selectedLayer = value; }
         public static bool ZOffsetIsChecked { get => zOffsetIsChecked; set => zOffsetIsChecked = value; }

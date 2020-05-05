@@ -26,13 +26,18 @@ namespace City2RVT.Builder
                 revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));
             }
 
-            using(Transaction t = new Transaction(doc, "Create TopoSurface"))
+            var dtmFile = GUI.Prop_NAS_settings.DtmFile;
+
+            using (Transaction t = new Transaction(doc, "Create TopoSurface"))
             {
                 t.Start();
 
                 using (var surface = TopographySurface.Create(doc, revDTMpts))
                 {
                     Prop_Revit.TerrainId = surface.Id; //needed for draping of 2D data, e.g. ALKIS data
+
+                    Parameter kommentarParam = surface.LookupParameter("Kommentare");
+                    kommentarParam.Set(dtmFile);
 
                     surface.Pinned = true;
                 }

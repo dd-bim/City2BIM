@@ -159,6 +159,13 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion parameter  
 
+            #region drape
+
+            if (check_drape.IsChecked == true)
+                Prop_NAS_settings.DrapeUsageOnTopo = true;
+
+            #endregion drape
+
             // Creates Project Information for revit project like general data or postal address
             City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new XPlan_Parameter();
             DefinitionFile defFile = default(DefinitionFile);
@@ -178,7 +185,7 @@ namespace City2RVT.GUI.XPlan2BIM
             // Alternatively they could be represented as borders instead of areas 
             foreach (XmlNode x in allXPlanObjects)
             {
-                if (x.FirstChild.SelectNodes(".//gml:exterior", nsmgr) != null)
+                if (x.FirstChild.SelectNodes(".//xplan:position", nsmgr) != null)
                 {
                     if (xPlanObjectList.Contains(x.FirstChild.Name.ToString()) == false)
                     {
@@ -198,16 +205,27 @@ namespace City2RVT.GUI.XPlan2BIM
                 } 
             }
 
-            ElementId xPlanReferencePlaneId = default(ElementId);
+            ElementId refplaneId = Prop_Revit.TerrainId;
+            ElementId pickedId = Prop_Revit.PickedId;
             double zOffset = 0.0;
             if (selectedLayers.Count != 0)
             {
+                if (check_drape.IsChecked == true)
+                {
+                    this.Hide();
+                    Selection choices = uidoc.Selection;
+                    Reference hasPickOne = choices.PickObject(ObjectType.Element, "Please select the terrain where the surfaces got draped to. ");
+
+                    pickedId = hasPickOne.ElementId;
+                    this.Show();
+                }
+
                 foreach (var xPlanObject in xPlanObjectList)
                 {
                     if (selectedLayers.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
                     {
                         #region reference plane
-                        XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//gml:exterior", nsmgr);
+                        XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position", nsmgr);
                         Dictionary<string, XYZ[]> xPlanPointDict = new Dictionary<string, XYZ[]>();
 
                         List<string> xPlanReference = new List<String>();
@@ -218,76 +236,95 @@ namespace City2RVT.GUI.XPlan2BIM
                         List<double> xPlanYValues = new List<double>();
 
                         if (xPlanExterior.Count > 0)
-                        {
-                            foreach (XmlNode exteriorNode in xPlanExterior)
+                        { 
+                            if (check_drape.IsChecked == false)
                             {
-                                xPlanReference.Add(exteriorNode.InnerText);
-                                string[] coordsReference = xPlanReference[xPlanCountReference].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                                foreach (var x in coordsReference)
+                                foreach (XmlNode exteriorNode in xPlanExterior)
                                 {
-                                    double values_double = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
-                                    xPlanAllValues.Add(values_double);
+                                    xPlanReference.Add(exteriorNode.InnerText);
+                                    string[] coordsReference = xPlanReference[xPlanCountReference].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                                    foreach (var x in coordsReference)
+                                    {
+                                        double values_double = Convert.ToDouble(x, System.Globalization.CultureInfo.InvariantCulture);
+                                        xPlanAllValues.Add(values_double);
+                                    }
+
+                                    for (int ix = 0; ix < xPlanAllValues.Count; ix += 2)
+                                    {
+                                        xPlanXValues.Add(xPlanAllValues[ix]);
+                                    }
+
+                                    for (int iy = 1; iy < xPlanAllValues.Count; iy += 2)
+                                    {
+                                        xPlanYValues.Add(xPlanAllValues[iy]);
+                                    }
+                                    xPlanCountReference++;
                                 }
 
-                                for (int ix = 0; ix < xPlanAllValues.Count; ix += 2)
-                                {
-                                    xPlanXValues.Add(xPlanAllValues[ix]);
-                                }
+                                double xPlanXMin = (xPlanXValues.Min() * feetToMeter) / R;
+                                double xPlanXMax = (xPlanXValues.Max() * feetToMeter) / R;
+                                double xPlanYMin = (xPlanYValues.Min() * feetToMeter) / R;
+                                double xPlanYMax = (xPlanYValues.Max() * feetToMeter) / R;
 
-                                for (int iy = 1; iy < xPlanAllValues.Count; iy += 2)
+                                XYZ[] pointsExteriorXPlan = new XYZ[4];
+                                pointsExteriorXPlan[0] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMin, zOffset));
+                                pointsExteriorXPlan[1] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMin, zOffset));
+                                pointsExteriorXPlan[2] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMax, zOffset));
+                                pointsExteriorXPlan[3] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMax, zOffset));
+
+                                xPlanPointDict.Add(xPlanObject, pointsExteriorXPlan);
+
+                                foreach (var referencePoints in xPlanPointDict)
                                 {
-                                    xPlanYValues.Add(xPlanAllValues[iy]);
+                                    {
+                                        Transaction referencePlanes = new Transaction(doc, "Reference plane: " + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1));
+                                        {
+                                            FailureHandlingOptions options = referencePlanes.GetFailureHandlingOptions();
+                                            options.SetFailuresPreprocessor(new AxesFailure());
+                                            referencePlanes.SetFailureHandlingOptions(options);
+
+                                            referencePlanes.Start();
+                                            SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
+
+                                            TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
+
+                                            ElementId farbeReference = colorDict["transparent"];
+
+                                            Parameter materialParam = referencePlane.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
+                                            materialParam.Set(farbeReference);
+
+                                            Parameter kommentarParam = referencePlane.LookupParameter("Kommentare");
+                                            kommentarParam.Set("Reference plane: " + (referencePoints.Key).Substring(6));
+
+                                            refplaneId = referencePlane.Id;
+
+                                            logger.Info("Reference plane: '" + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1) + "' created.");
+                                            referencePlanes.Commit();
+                                        }
+                                    }
                                 }
-                                xPlanCountReference++;
                             }
-
-                            double xPlanXMin = (xPlanXValues.Min() * feetToMeter) / R;
-                            double xPlanXMax = (xPlanXValues.Max() * feetToMeter) / R;
-                            double xPlanYMin = (xPlanYValues.Min() * feetToMeter) / R;
-                            double xPlanYMax = (xPlanYValues.Max() * feetToMeter) / R;
-
-                            XYZ[] pointsExteriorXPlan = new XYZ[4];
-                            pointsExteriorXPlan[0] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMin, zOffset));
-                            pointsExteriorXPlan[1] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMin, zOffset));
-                            pointsExteriorXPlan[2] = transf.OfPoint(new XYZ(xPlanXMax, xPlanYMax, zOffset));
-                            pointsExteriorXPlan[3] = transf.OfPoint(new XYZ(xPlanXMin, xPlanYMax, zOffset));
-
-                            xPlanPointDict.Add(xPlanObject, pointsExteriorXPlan);
-                            var hideReferencePlanes = new List<ElementId>();
-
-                            foreach (var referencePoints in xPlanPointDict)
+                            else
                             {
-                                Transaction referencePlanes = new Transaction(doc, "Reference plane: " + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1));
+                                using (Transaction copyTrans = new Transaction(doc, "Copy DTM"))
                                 {
-                                    FailureHandlingOptions options = referencePlanes.GetFailureHandlingOptions();
-                                    options.SetFailuresPreprocessor(new AxesFailure());
-                                    referencePlanes.SetFailureHandlingOptions(options);
-
-                                    referencePlanes.Start();
-                                    SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-
-                                    TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
-
+                                    copyTrans.Start();
+                                    var eCopy = ElementTransformUtils.CopyElement(doc, pickedId, new XYZ(0, 0, zOffset));
+                                    ElementId copyElemId = eCopy.First();
+                                    Element copiedElement = doc.GetElement(copyElemId);
+                                    TopographySurface referencePlane = copiedElement as TopographySurface;
+                                    refplaneId = referencePlane.Id;
                                     ElementId farbeReference = colorDict["transparent"];
 
                                     Parameter materialParam = referencePlane.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
                                     materialParam.Set(farbeReference);
 
-                                    Parameter gesamt = referencePlane.LookupParameter("Kommentare");
-                                    gesamt.Set("Reference plane: " + (referencePoints.Key).Substring(6));
-                                    xPlanReferencePlaneId = referencePlane.Id;
+                                    Parameter kommentarParam = referencePlane.LookupParameter("Kommentare");
+                                    kommentarParam.Set("Reference plane: " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
 
-                                    hideReferencePlanes.Add(referencePlane.Id);
-
-                                    if (selectedLayers.Contains((referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1)) == false)
-                                    {
-                                        revitView.HideElements(hideReferencePlanes);
-                                    }
-
-                                    logger.Info("Reference plane: '" + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1) + "' created.");
+                                    copyTrans.Commit();
                                 }
-                                referencePlanes.Commit();
                             }
                         }
                         #endregion reference plane
@@ -474,7 +511,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                         XmlNode objektBezeichnung = nodeExt.ParentNode.ParentNode.ParentNode;
                                         var parameterBezeichnung = objektBezeichnung.SelectNodes(paramName, nsmgr);
 
-                                        if (selectedParams.Contains(paramName))
+                                        if (selectedParams == null ||selectedParams.Contains(paramName))
                                         {
                                             if (parameterBezeichnung != null)
                                             {
@@ -510,9 +547,8 @@ namespace City2RVT.GUI.XPlan2BIM
                             if (curveLoop.GetExactLength() > 0)
                             {
                                 curveLoopExteriorList.Add(curveLoop);
-                                var hideReferenceSitesubregions = new List<ElementId>();
 
-                                Transaction topoTransaction = new Transaction(doc, "Create Exterior");
+                                Transaction topoTransaction = new Transaction(doc, "Create Exterior: " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
                                 {
                                     FailureHandlingOptions optionsExterior = topoTransaction.GetFailureHandlingOptions();
                                     optionsExterior.SetFailuresPreprocessor(new AxesFailure());
@@ -520,7 +556,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                                     topoTransaction.Start();
                                     SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
-                                    SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopExteriorList, xPlanReferencePlaneId);
+                                    SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopExteriorList, refplaneId);
 
                                     Parameter materialParamExterior = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
 
@@ -545,18 +581,11 @@ namespace City2RVT.GUI.XPlan2BIM
                                     }
                                     catch
                                     {
-
+                                        System.Windows.Forms.MessageBox.Show("fehler");
                                     }
 
                                     Parameter exteriorName = siteSubRegion.TopographySurface.LookupParameter("Kommentare");
                                     exteriorName.Set(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
-
-                                    hideReferenceSitesubregions.Add(siteSubRegion.TopographySurface.Id);
-
-                                    if (selectedLayers.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)) == false)
-                                    {
-                                        revitView.HideElements(hideReferenceSitesubregions);
-                                    }
 
                                     logger.Info("Created sitesubregion for '" + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1) + "' (Exterior). ");
                                 }
@@ -564,7 +593,74 @@ namespace City2RVT.GUI.XPlan2BIM
                             }
                             paramDict.Clear();
                         }
-                        #endregion exterior             
+                        #endregion exterior   
+
+                        #region lines
+
+                        XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:LineString", nsmgr);
+
+                        List<string> lineList = new List<String>();
+                        int il = 0;
+                        foreach (XmlNode nodeLine in bpLines)
+                        {
+                            lineList.Add(nodeLine.InnerText);
+                            string[] koordWerteLine = lineList[il].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                            int ia = 0;
+
+                            foreach (string split in koordWerteLine)
+                            {
+                                var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+
+                                double xStart = Convert.ToDouble(koordWerteLine[ia], System.Globalization.CultureInfo.InvariantCulture);
+                                double xStartMeter = xStart * feetToMeter;
+                                double xStartMeterRedu = xStartMeter / R;
+                                double yStart = Convert.ToDouble(koordWerteLine[ia + 1], System.Globalization.CultureInfo.InvariantCulture);
+                                double yStartMeter = yStart * feetToMeter;
+                                double yStartMeterRedu = yStartMeter / R;
+                                double zStart = zOffset;
+                                double zStartMeter = zStart * feetToMeter;
+
+                                double xEnd = Convert.ToDouble(koordWerteLine[ia + 2], System.Globalization.CultureInfo.InvariantCulture);
+                                double xEndMeter = xEnd * feetToMeter;
+                                double xEndMeterRedu = xEndMeter / R;
+                                double yEnd = Convert.ToDouble(koordWerteLine[ia + 3], System.Globalization.CultureInfo.InvariantCulture);
+                                double yEndMeter = yEnd * feetToMeter;
+                                double yEndMeterRedu = yEndMeter / R;
+                                double zEnd = zOffset;
+                                double zEndMeter = zEnd * feetToMeter;
+
+                                XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
+                                XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
+
+                                XYZ tStartPoint = transf.OfPoint(startPoint);
+                                XYZ tEndPoint = transf.OfPoint(endPoint);
+
+                                Line lineString = Line.CreateBound(tStartPoint, tEndPoint);
+
+
+                                using (Transaction createLine = new Transaction(doc, "Create Line"))
+                                {
+                                    createLine.Start();
+
+                                    SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
+
+                                    ModelLine line1 = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
+                                    createLine.Commit();
+
+                                }
+
+                                if ((ia + 3) == (koordWerteLine.Count() - 1))
+                                {
+                                    break;
+                                }
+                                ia += 2;
+                            }
+                            il++;
+                        }
+
+
+                        #endregion lines
 
                         if (checkBoxZOffset.IsChecked == true)
                         {
@@ -581,7 +677,6 @@ namespace City2RVT.GUI.XPlan2BIM
             {
                 TaskDialog.Show("No layer selected", "You have to select at least one layer to start the import. ");
             }
-
         }
 
         private void Xplan_file_TextChanged(object sender, TextChangedEventArgs e)
@@ -642,8 +737,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 }
             }
 
-
-
             xPlanObjectList.Sort();
             allParamList.Sort();
 
@@ -693,6 +786,11 @@ namespace City2RVT.GUI.XPlan2BIM
         {
             Modify.ModifyParameterForm f1 = new Modify.ModifyParameterForm();
             f1.ShowDialog();
+        }
+
+        private void drape_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
