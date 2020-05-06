@@ -24,6 +24,7 @@ using Autodesk.Revit.Attributes;
 using NLog;
 using NLog.Targets;
 using NLog.Config;
+using City2RVT.Reader;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -107,9 +108,8 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion logging
 
-            var colorDict = new Dictionary<string, ElementId>();
             var materialBuilder = new Builder.RevitXPlanBuilder(doc);
-            colorDict = materialBuilder.CreateMaterial();
+            var colorDict = materialBuilder.CreateMaterial();
 
             // Transforms local coordinates to relative coordinates due to the fact that revit has a 20 miles limit for presentation of geometry. 
             var transfClass = new City2RVT.Calc.Transformation();
@@ -123,6 +123,8 @@ namespace City2RVT.GUI.XPlan2BIM
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
             XmlDocument xmlDoc = new XmlDocument();
+
+            ReadXPlan xPlanReader = new ReadXPlan();
 
             using (XmlReader reader = XmlReader.Create(xPlanGmlPath, readerSettings))
             {
@@ -159,13 +161,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion parameter  
 
-            #region drape
-
-            if (check_drape.IsChecked == true)
-                Prop_NAS_settings.DrapeUsageOnTopo = true;
-
-            #endregion drape
-
             // Creates Project Information for revit project like general data or postal address
             City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new XPlan_Parameter();
             DefinitionFile defFile = default(DefinitionFile);
@@ -174,36 +169,14 @@ namespace City2RVT.GUI.XPlan2BIM
 
             // Selected Layer for beeing shown in revit view
             var selectedLayers = categoryListbox.SelectedItems;
-            var revitView = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
+            // Selected Parameter for beeing shown in revit view
             var selectedParams = GUI.Prop_NAS_settings.SelectedParams;
-
-            List<string> xPlanObjectList = new List<string>();
-            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
 
             // The big surfaces of BP_Bereich and BP_Plan getting brought to the bottom so they do not overlap other surfaces in Revit
             // Alternatively they could be represented as borders instead of areas 
-            foreach (XmlNode x in allXPlanObjects)
-            {
-                if (x.FirstChild.SelectNodes(".//xplan:position", nsmgr) != null)
-                {
-                    if (xPlanObjectList.Contains(x.FirstChild.Name.ToString()) == false)
-                    {
-                        if (x.FirstChild.Name.ToString() == "xplan:BP_Bereich")
-                        {
-                            xPlanObjectList.Insert(0, x.FirstChild.Name.ToString());
-                        }
-                        else if (x.FirstChild.Name.ToString() == "xplan:BP_Plan")
-                        {
-                            xPlanObjectList.Insert(0, x.FirstChild.Name.ToString());
-                        }
-                        else
-                        {
-                            xPlanObjectList.Add(x.FirstChild.Name.ToString());
-                        }
-                    }
-                } 
-            }
+            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
+            List<string> xPlanObjectList = xPlanReader.getXPlanFeatureMembers(allXPlanObjects, nsmgr);
 
             ElementId refplaneId = Prop_Revit.TerrainId;
             ElementId pickedId = Prop_Revit.PickedId;
@@ -222,7 +195,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 foreach (var xPlanObject in xPlanObjectList)
                 {
-                    if (selectedLayers.Contains(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
+                    if (selectedLayers.Contains(xPlanObject))
                     {
                         #region reference plane
                         XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position", nsmgr);
@@ -347,6 +320,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                 CurveLoop curveLoopInterior = new CurveLoop();
                                 if (interiorNode.Name == "gml:interior")
                                 {
+                                    //curveLoopInterior = xPlanReader.getInterior(interiorNode, nsmgr, interiorListe, doc, transf, R, zOffset, ii);
                                     XmlNodeList interiorNodeList = interiorNode.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
                                     XmlNodeList interiorRingNodeList = interiorNode.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
 
@@ -358,8 +332,8 @@ namespace City2RVT.GUI.XPlan2BIM
                                         if (koordWerteInterior.Count() == 4)
                                         {
                                             var geomBuilder = new Builder.RevitXPlanBuilder(doc);
-                                            Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
-                                            curveLoopInterior.Append(lineStrasse);
+                                            Line lineExterior = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
+                                            curveLoopInterior.Append(lineExterior);
                                         }
 
                                         else if (koordWerteInterior.Count() > 4)
@@ -419,7 +393,6 @@ namespace City2RVT.GUI.XPlan2BIM
                                     curveLoopExteriorList.Add(curveLoopInterior);
                                 }
                             }
-
 
                             XmlNodeList exterior = nodeExt.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
                             XmlNodeList exteriorRing = nodeExt.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
@@ -597,7 +570,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                         #region lines
 
-                        XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:LineString", nsmgr);
+                        XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//xplan:position/gml:LineString", nsmgr);
 
                         List<string> lineList = new List<String>();
                         int il = 0;
@@ -639,13 +612,23 @@ namespace City2RVT.GUI.XPlan2BIM
                                 Line lineString = Line.CreateBound(tStartPoint, tEndPoint);
 
 
-                                using (Transaction createLine = new Transaction(doc, "Create Line"))
+                                using (Transaction createLine = new Transaction(doc, "Create Line for " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
                                 {
+                                    FailureHandlingOptions optionsExterior = createLine.GetFailureHandlingOptions();
+                                    optionsExterior.SetFailuresPreprocessor(new AxesFailure());
+                                    createLine.SetFailureHandlingOptions(optionsExterior);
+
                                     createLine.Start();
 
                                     SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
 
-                                    ModelLine line1 = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
+                                    ModelLine line = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
+
+                                    GraphicsStyle gs = line.LineStyle as GraphicsStyle;
+
+                                    gs.GraphicsStyleCategory.LineColor  = new Color(250, 10, 10);
+                                    gs.GraphicsStyleCategory.SetLineWeight(10, GraphicsStyleType.Projection);
+
                                     createLine.Commit();
 
                                 }
@@ -658,7 +641,6 @@ namespace City2RVT.GUI.XPlan2BIM
                             }
                             il++;
                         }
-
 
                         #endregion lines
 
@@ -710,32 +692,11 @@ namespace City2RVT.GUI.XPlan2BIM
             var XmlNsmgr = new Builder.Revit_Semantic(doc);
             XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
 
-            List<string> xPlanObjectList = new List<string>();
-            List<string> allParamList = new List<string>();
-
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
 
-            foreach (XmlNode xmlNode in allXPlanObjects)
-            {
-                if (xmlNode.FirstChild.SelectNodes(".//gml:exterior", nsmgr) != null)
-                {
-                    if (xPlanObjectList.Contains(xmlNode.FirstChild.Name.Substring((xmlNode.FirstChild.Name).LastIndexOf(':') + 1 )) == false)
-                    {
-                        xPlanObjectList.Add(xmlNode.FirstChild.Name.Substring((xmlNode.FirstChild.Name).LastIndexOf(':') + 1 ));
-                    }
-                }
-
-                foreach (XmlNode child in xmlNode.FirstChild)
-                {
-                    if (child.Name != "#comment")
-                    {
-                        if (allParamList.Contains(child.Name) == false)
-                        {
-                            allParamList.Add(child.Name);
-                        }                        
-                    }
-                }
-            }
+            ReadXPlan xPlanReader = new ReadXPlan();
+            List<string> xPlanObjectList = xPlanReader.getXPlanFeatureMembers(allXPlanObjects, nsmgr);
+            List<string> allParamList = xPlanReader.getXPlanParameter(allXPlanObjects);
 
             xPlanObjectList.Sort();
             allParamList.Sort();

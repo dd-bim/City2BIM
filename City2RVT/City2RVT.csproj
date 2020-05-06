@@ -54,10 +54,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="City2BIM, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\City2BIM\bin\Debug\City2BIM.dll</HintPath>
-    </Reference>
     <Reference Include="Esent.Interop, Version=1.9.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ManagedEsent.1.9.4\lib\net40\Esent.Interop.dll</HintPath>
     </Reference>
@@ -296,12 +292,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\City2IFC\City2IFC.csproj">
-      <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
-      <Name>City2IFC</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="GUI\Modify\ModifyParameterForm.resx">
       <DependentUpon>ModifyParameterForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -309,6 +299,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\City2BIM\City2BIM.csproj">
+      <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
+      <Name>City2BIM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\City2IFC\City2IFC.csproj">
+      <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
+      <Name>City2IFC</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

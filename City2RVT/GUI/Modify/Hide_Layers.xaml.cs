@@ -129,12 +129,12 @@ namespace City2RVT.GUI.Modify
 
 
             var selectedLayer = categoryListbox2.SelectedItems;
-            foreach (var s in selectedLayer)
+            foreach (var sl in selectedLayer)
             {
                 var hiddenTopoIds = new List<ElementId>();
 
                 var collectorRefPlanes = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-                .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + s.ToString()).Cast<Element>().ToList();
+                .Where(a => a.LookupParameter("Kommentare").AsString() == "Reference plane: " + sl.ToString()).Cast<Element>().ToList();
 
                 foreach (var id in collectorRefPlanes)
                 {
@@ -142,7 +142,7 @@ namespace City2RVT.GUI.Modify
                 }
 
                 var collectorTopographies = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography)
-                .Where(a => a.LookupParameter("Kommentare").AsString() == s.ToString()).Cast<Element>().ToList();                
+                .Where(a => a.LookupParameter("Kommentare").AsString() == sl.ToString()).Cast<Element>().ToList();                
 
                 foreach (var id in collectorTopographies)
                 {

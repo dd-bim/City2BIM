@@ -23,30 +23,6 @@ namespace City2RVT.Builder
             //this.colors = CreateColorAsMaterial();
         }
 
-        public void CreateStrasse(XYZ[] pointsFlst)
-        {
-            XYZ origin = new XYZ(0, 0, 0);
-            XYZ normal = new XYZ(0, 0, feetToMeter);
-            Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
-
-            ElementId elementIdFlst = default(ElementId);
-
-            Transaction topoTransaction = new Transaction(doc, "Strassen");
-            {
-                //FailureHandlingOptions options = topoTransaction.GetFailureHandlingOptions();
-                //options.SetFailuresPreprocessor(new AxesFailure());
-                //topoTransaction.SetFailureHandlingOptions(options);
-
-                topoTransaction.Start();
-                SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-                TopographySurface flst = TopographySurface.Create(doc, pointsFlst);
-                Parameter gesamt = flst.LookupParameter("Kommentare");
-                gesamt.Set("TopoGesamt");
-                elementIdFlst = flst.Id;
-            }
-            topoTransaction.Commit();
-        }
-
         /// <summary>
         /// Creates a line by start and end point of the XML/GML node. 
         /// </summary>
