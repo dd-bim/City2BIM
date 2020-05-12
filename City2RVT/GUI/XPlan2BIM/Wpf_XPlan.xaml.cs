@@ -46,6 +46,9 @@ namespace City2RVT.GUI.XPlan2BIM
 
             InitializeComponent();
 
+            Uri iconUri = new Uri("pack://application:,,,/City2RVT;component/img/XPlan_32px.ico", UriKind.RelativeOrAbsolute);
+            this.Icon = System.Windows.Media.Imaging.BitmapFrame.Create(iconUri);
+
             xplan_file.Text = Prop_XPLAN_settings.FileUrl;
         }
 
@@ -570,7 +573,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                         #region lines
 
-                        XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//xplan:position/gml:LineString", nsmgr);
+                        XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "/xplan:position/gml:LineString", nsmgr);
 
                         List<string> lineList = new List<String>();
                         int il = 0;
@@ -591,7 +594,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                 double yStart = Convert.ToDouble(koordWerteLine[ia + 1], System.Globalization.CultureInfo.InvariantCulture);
                                 double yStartMeter = yStart * feetToMeter;
                                 double yStartMeterRedu = yStartMeter / R;
-                                double zStart = zOffset;
+                                double zStart = 0;
                                 double zStartMeter = zStart * feetToMeter;
 
                                 double xEnd = Convert.ToDouble(koordWerteLine[ia + 2], System.Globalization.CultureInfo.InvariantCulture);
@@ -600,7 +603,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                 double yEnd = Convert.ToDouble(koordWerteLine[ia + 3], System.Globalization.CultureInfo.InvariantCulture);
                                 double yEndMeter = yEnd * feetToMeter;
                                 double yEndMeterRedu = yEndMeter / R;
-                                double zEnd = zOffset;
+                                double zEnd = 0;
                                 double zEndMeter = zEnd * feetToMeter;
 
                                 XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);

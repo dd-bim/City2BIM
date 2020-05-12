@@ -223,6 +223,13 @@ namespace City2RVT.GUI
             buttonXPlan2IFC.ToolTip = "IFC Export functionality for XPlanung files.";
             buttonXPlan2IFC.LargeImage = largeImageXPLan2IFC;
 
+
+
+            #endregion XPlanung panel
+
+            #region aendern panel
+            RibbonPanel panel8 = application.CreateRibbonPanel(tabName, "Modify");
+
             var hideLayerPath =
             System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var hideLayerRootPath = Path.Combine(hideLayerPath, "..", "..");
@@ -230,13 +237,11 @@ namespace City2RVT.GUI
             Uri uriImagehideLayer = new Uri(hideLayerSetPath);
             BitmapImage largeImagehideLayer = new BitmapImage(uriImagehideLayer);
 
-            PushButton buttonHideLayer = panel7.AddItem(new PushButtonData("Hide Layer", "Hides Layer in view",
+            PushButton buttonHideLayer = panel8.AddItem(new PushButtonData("Hide Layer", "Hides Layer in view",
             thisAssemblyPath, "City2RVT.GUI.Modify.Cmd_HideLayers")) as PushButton;
             buttonHideLayer.ToolTip = "Hides Layers.";
             buttonHideLayer.LargeImage = largeImagehideLayer;
-
-
-            #endregion XPlanung panel
+            #endregion aendern panel
 
             return Result.Succeeded;
         }

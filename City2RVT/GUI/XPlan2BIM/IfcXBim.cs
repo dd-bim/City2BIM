@@ -36,6 +36,7 @@ using Xbim.Ifc4.MaterialResource;
 using System.Xml;
 
 using City2RVT.Calc;
+using Xbim.Ifc4.ActorResource;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -185,6 +186,47 @@ namespace City2RVT.GUI.XPlan2BIM
         }
 
         /// <summary>
+        /// Get values for project properties from Revit project information and saves them to the ifc file. 
+        /// </summary>
+        public void getProjectProperties(IfcPropertySet pset, IfcStore model, Document doc, string name)
+        {
+            pset.HasProperties.AddRange(new[]
+                            {
+                                model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter(name);
+                                        string projInfoParamValue = projInfoParam.AsString();
+                                        string rfaNameAttri = name;
+                                        p.Name = rfaNameAttri;
+                                        p.NominalValue = new IfcLabel(projInfoParamValue);
+                                    }),
+                            });
+        }
+
+        /// <summary>
+        /// Get values for surface properties from Revit project information and saves them to the ifc file. 
+        /// </summary>
+        public void setSurfaceProperties(IfcPropertySet pset, IfcStore model, Document doc, KeyValuePair<string,string> topoParam)
+        {
+            pset.HasProperties.AddRange(new[]
+{
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    string rfaNameAttri = topoParam.Key.Substring(topoParam.Key.LastIndexOf(':') + 1);
+                                    p.Name = rfaNameAttri;
+                                    p.NominalValue = new IfcText(topoParam.Value);
+                                }),
+                            });
+        }
+
+        public void setAddressLine(Document doc, string address, IfcPostalAddress a)
+        {
+            Parameter addressLineParam = doc.ProjectInformation.LookupParameter(address);
+            string addressLineParamValue = addressLineParam.AsString();
+            a.AddressLines.Add(addressLineParamValue);
+        }
+
+        /// <summary>
         /// Creates an IFCSite which includes geometry and properties taken from revit project along with some basic predefined properties. 
         /// </summary>
         public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf, 
@@ -214,27 +256,12 @@ namespace City2RVT.GUI.XPlan2BIM
                 var ifcAddress = model.Instances.New<Xbim.Ifc4.ActorResource.IfcPostalAddress>(a =>
                 {
                     a.Description = "Keine Addresse pro Flurstück/Nutzungfläche sondern für das Baugrundstück bzw. Bauobjekt. ";
-
-                    Parameter addressLineParam = doc.ProjectInformation.LookupParameter("Address Line");
-                    string addressLineParamValue = addressLineParam.AsString();
-                    a.AddressLines.Add(addressLineParamValue);
-
-                    Parameter postalCodeParam = doc.ProjectInformation.LookupParameter("Postal Code");
-                    string postalCodeParamValue = postalCodeParam.AsString();
-                    a.PostalCode = postalCodeParamValue;
-
-                    Parameter townParam = doc.ProjectInformation.LookupParameter("Town");
-                    string townParamValue = townParam.AsString();
-                    a.Town = townParamValue;
-
-                    Parameter regionParam = doc.ProjectInformation.LookupParameter("Region");
-                    string regionParamValue = regionParam.AsString();
-                    a.Region = regionParamValue;
-
-                    Parameter countryParam = doc.ProjectInformation.LookupParameter("Country");
-                    string countryParamValue = countryParam.AsString();
-                    a.Country = countryParamValue;
-
+                    IfcXBim ifcXBim = new IfcXBim();
+                    ifcXBim.setAddressLine(doc, "Address Line", a);
+                    ifcXBim.setAddressLine(doc, "Postal Code", a);
+                    ifcXBim.setAddressLine(doc, "Town", a);
+                    ifcXBim.setAddressLine(doc, "Region", a);
+                    ifcXBim.setAddressLine(doc, "Country", a);
                 });
                 site.SiteAddress = ifcAddress;
 
@@ -243,12 +270,11 @@ namespace City2RVT.GUI.XPlan2BIM
                 int i = 0;
                 foreach (var x in topoPoints)
                 {
-                    //XYZ transPoint = transf.OfPoint(new XYZ(topoPoints[i].X, topoPoints[i].Y, topoPoints[i].Z));
-                    XYZ transPoint = new XYZ(topoPoints[i].X, topoPoints[i].Y, topoPoints[i].Z);
+                    XYZ topoPoint = new XYZ(topoPoints[i].X, topoPoints[i].Y, topoPoints[i].Z);
                     var cartPoint = model.Instances.New<IfcCartesianPoint>();
-                    cartPoint.SetXYZ(Convert.ToDouble(transPoint.X, System.Globalization.CultureInfo.InvariantCulture)/feetToMeter,
-                        Convert.ToDouble(transPoint.Y, System.Globalization.CultureInfo.InvariantCulture) / feetToMeter,
-                        Convert.ToDouble(transPoint.Z, System.Globalization.CultureInfo.InvariantCulture) / feetToMeter);
+                    cartPoint.SetXYZ(Convert.ToDouble(topoPoint.X, System.Globalization.CultureInfo.InvariantCulture)/feetToMeter,
+                        Convert.ToDouble(topoPoint.Y, System.Globalization.CultureInfo.InvariantCulture) / feetToMeter,
+                        Convert.ToDouble(topoPoint.Z, System.Globalization.CultureInfo.InvariantCulture) / feetToMeter);
 
                     curveSet.Points.Add(cartPoint);
                     loop.Polygon.Add(cartPoint);
@@ -257,7 +283,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 }
 
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
-                //projectBasePoint.SetXYZ(0, 0, 0);
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
 
                 var facebound = model.Instances.New<IfcFaceBound>();
@@ -275,18 +300,16 @@ namespace City2RVT.GUI.XPlan2BIM
                 var material = model.Instances.New<IfcMaterial>();
                 material.Name = "transparent";
 
-                var colorList = new Dictionary<string, string>();
+                var colorDict = new Dictionary<string, string>();
                 var bezeichner = new IfcXBim();
-                colorList = CreateColors();
+                colorDict = CreateColors();
 
-                double rot;
-                double gruen;
-                double blau;
-                if (colorList.ContainsKey(bezeichnung))
+                double rot,gruen,blau;
+                if (colorDict.ContainsKey(bezeichnung))
                 {
-                    rot = Convert.ToDouble(colorList[bezeichnung].Split('/')[0]);
-                    gruen = Convert.ToDouble(colorList[bezeichnung].Split('/')[1]);
-                    blau = Convert.ToDouble(colorList[bezeichnung].Split('/')[2]);
+                    rot = Convert.ToDouble(colorDict[bezeichnung].Split('/')[0]);
+                    gruen = Convert.ToDouble(colorDict[bezeichnung].Split('/')[1]);
+                    blau = Convert.ToDouble(colorDict[bezeichnung].Split('/')[2]);
                 }
                 else
                 {
@@ -321,7 +344,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
                 styledRepresentation.Items.Add(style);
-                //style.Item.re
 
                 var materialDefRepresentation = model.Instances.New<IfcMaterialDefinitionRepresentation>();
                 materialDefRepresentation.Representations.Add(styledRepresentation);
@@ -394,24 +416,17 @@ namespace City2RVT.GUI.XPlan2BIM
                     }
                 }
 
-                foreach (var s in paramDict)
+                foreach (var topoParam in paramDict)
                 {
                     //set a few basic properties
-                    model.Instances.New<IfcRelDefinesByProperties>(rel =>
+                    model.Instances.New<IfcRelDefinesByProperties>(relBasic =>
                     {
-                        rel.RelatedObjects.Add(site);
-                        rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
+                        relBasic.RelatedObjects.Add(site);
+                        relBasic.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetBasic =>
                         {
-                            pset.Name = "Basic set of properties";
-                            pset.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    string rfaNameAttri = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
-                                    p.Name = rfaNameAttri;
-                                    p.NominalValue = new IfcText(s.Value);
-                                }),
-                            });
+                            psetBasic.Name = "Surface properties";
+                            IfcXBim ifcXBim = new IfcXBim();
+                            ifcXBim.setSurfaceProperties(psetBasic, model, doc, topoParam);
                         });
                     });
                 }
@@ -419,20 +434,19 @@ namespace City2RVT.GUI.XPlan2BIM
                 foreach (var s in paramDict)
                 {
                     //set a few basic properties
-                    model.Instances.New<IfcRelDefinesByProperties>(rel =>
+                    model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
                     {
-                        rel.RelatedObjects.Add(site);
-                        rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
+                        relGeokod.RelatedObjects.Add(site);
+                        relGeokod.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetGeokod =>
                         {
-                            pset.Name = "BauantragGeokodierung";
+                            psetGeokod.Name = "BauantragGeokodierung";
 
                             string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
                             string verortungTrim = verortung.Trim(' ');
 
-
                             if (verortungTrim == "Gemarkung_Nummer" || verortungTrim == "Flure" || verortungTrim == "Flurstuecksnummer")
                             {
-                                pset.HasProperties.AddRange(new[]
+                                psetGeokod.HasProperties.AddRange(new[]
                                 {
                                 model.Instances.New<IfcPropertySingleValue>(p =>
                                     {
@@ -442,11 +456,11 @@ namespace City2RVT.GUI.XPlan2BIM
                                                 p.Name = "Gemarkungen";
                                                 p.NominalValue = new IfcText(s.Value);
                                                 break;
-                                            case ("Flure"):
+                                            case "Flure":
                                                 p.Name = "Flure";
                                                 p.NominalValue = new IfcText(s.Value);
                                                 break;
-                                            case ("Flurstuecksnummer"):
+                                            case "Flurstuecksnummer":
                                                 p.Name = "Flurstücke";
                                                 p.NominalValue = new IfcText(s.Value);
                                                 break;
@@ -456,8 +470,6 @@ namespace City2RVT.GUI.XPlan2BIM
                                     }),
                                 });
                             }
-
-
                         });
                     });
                 }

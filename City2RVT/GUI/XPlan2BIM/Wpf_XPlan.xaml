@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
              mc:Ignorable="d" 
              d:DesignHeight="132.087" d:DesignWidth="601.721"
-             Height="450" Width="650">
+             Height="450" Width="650" Title="Import XPlanung"
+        Icon="/City2RVT;component/img/XPlan_32px.ico">
     <Grid Margin="0,0,13,16">
         <Button Content="Browse" HorizontalAlignment="Left" Margin="59,27,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_SetXPlanFile"/>
         <TextBox Name="xplan_file" HorizontalAlignment="Left" Height="23" Margin="59,52,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="408" TextChanged="Xplan_file_TextChanged"/>

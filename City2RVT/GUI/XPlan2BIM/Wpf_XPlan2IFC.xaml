@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="612.262"
-             Height="250" Width="634">
+             Height="250" Width="634"
+        Title="Export to IFC" Icon="/City2RVT;component/img/IFC_32px_96dpi.ico">
     <Grid Margin="10,10,0,0">
         <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="493,94,0,0" 
                 VerticalAlignment="Top" Width="75" Click="Button_Click_IfcExport"/>

@@ -1,51 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Xml;
+
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.Attributes;
 
-using Xbim.Common;
-using Xbim.Common.Step21;
 using Xbim.Ifc;
-using Xbim.Ifc4.PresentationOrganizationResource;
-using Xbim.Ifc4.GeometricConstraintResource;
-using Xbim.Ifc4.GeometricModelResource;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.Interfaces;
 using Xbim.Ifc4.Kernel;
-using Xbim.Ifc4.ProductExtension;
-using Xbim.Ifc4.RepresentationResource;
-using Xbim.Ifc4.PresentationAppearanceResource;
-using Xbim.Ifc4.TopologyResource;
 using Xbim.Ifc4.MeasureResource;
 using Xbim.Ifc4.PropertyResource;
-using Xbim.Ifc4.SharedBldgElements;
-using Xbim.Ifc4.ProfileResource;
-using Xbim.Ifc4.MaterialResource;
-
-using NLog;
-using NLog.Targets;
-using NLog.Config;
-
-//using Xbim.Ifc;
-//https://forums.autodesk.com/t5/revit-api-forum/revit-api-s-integration-with-xbim-geometry-microsoft-extensions/td-p/9270358
+using System.IO;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -66,6 +34,10 @@ namespace City2RVT.GUI.XPlan2BIM
             Document doc = uidoc.Document;
 
             InitializeComponent();
+
+            // Set an icon using code
+            Uri iconUri = new Uri("pack://application:,,,/City2RVT;component/img/IFC_32px_96dpi.ico", UriKind.RelativeOrAbsolute);
+            this.Icon = System.Windows.Media.Imaging.BitmapFrame.Create(iconUri);
         }
 
         private void Button_Click_IfcExport(object sender, RoutedEventArgs e)
@@ -111,7 +83,7 @@ namespace City2RVT.GUI.XPlan2BIM
             {
                 folder = ifc_Location.Text;
             }
-            string name = "ifc_export_without_topography";
+            string ifcWithoutTopo = "ifc_export_without_topography";
 
             using (TransactionGroup transGroup = new TransactionGroup(doc))
             {
@@ -121,16 +93,16 @@ namespace City2RVT.GUI.XPlan2BIM
                 {
                     firstTrans.Start("First Transaction");
 
-                    var preHide = new List<ElementId>();
+                    var hideTopoList = new List<ElementId>();
 
                     foreach (var id in topoCollector)
                     {
-                        preHide.Add(id.Id);
+                        hideTopoList.Add(id.Id);
                     }
 
                     if (view != null)
                     {
-                        view.HideElements(preHide);
+                        view.HideElements(hideTopoList);
                     }
                     firstTrans.Commit();
                 }
@@ -148,16 +120,15 @@ namespace City2RVT.GUI.XPlan2BIM
                     IFCOptions.AddOption("IncludeSiteElevation", "true");
                     IFCOptions.AddOption("ExportPartsAsBuildingElements", "true");
                     //Export the model to IFC
-                    doc.Export(folder, name, IFCOptions);
+                    doc.Export(folder, ifcWithoutTopo, IFCOptions);
 
                     secondTrans.Commit();
                 }
                 transGroup.RollBack();                
             }
 
-            string original = folder + "\\" + name + ".ifc";                          
+            string original = Path.Combine(folder,ifcWithoutTopo + ".ifc"); 
 
-            //using (var model = IfcXBim.CreateandInitModel("XPlanungs Flaechen", doc))
             using (var model = IfcStore.Open(original))
             {
                 foreach (var t in topoCollector)
@@ -182,7 +153,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 using (var txn = model.BeginTransaction("Create Project Information"))
                 {
-                    //var ifcproject = model.Instances.OfType<IfcProject>();
                     var ifcproject = model.Instances.FirstOrDefault<IfcProject>();
 
                     //set a few basic properties
@@ -191,68 +161,13 @@ namespace City2RVT.GUI.XPlan2BIM
                         rel.RelatedObjects.Add(ifcproject);
                         rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
                         {
-                            pset.Name = "BauantragAllgemein";                            
-
-                            pset.HasProperties.AddRange(new[]
-                            {
-                                model.Instances.New<IfcPropertySingleValue>(p =>
-                                    {
-                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bezeichnung des Bauvorhabens");
-                                        string projInfoParamValue = projInfoParam.AsString();
-                                        string rfaNameAttri = "Bezeichnung des Bauvorhabens";
-                                        p.Name = rfaNameAttri;
-                                        p.NominalValue = new IfcLabel(projInfoParamValue);
-                                    }),
-                            });
-
-                            pset.HasProperties.AddRange(new[]
-                            {
-                                model.Instances.New<IfcPropertySingleValue>(p =>
-                                    {
-                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art der Maßnahme");
-                                        string projInfoParamValue = projInfoParam.AsString();
-                                        string rfaNameAttri = "Art der Maßnahme";
-                                        p.Name = rfaNameAttri;
-                                        p.NominalValue = new IfcLabel(projInfoParamValue);
-                                    }),
-                            });
-
-                            pset.HasProperties.AddRange(new[]
-                            {
-                                model.Instances.New<IfcPropertySingleValue>(p =>
-                                    {
-                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art des Gebäudes");
-                                        string projInfoParamValue = projInfoParam.AsString();
-                                        string rfaNameAttri = "Art des Gebäudes";
-                                        p.Name = rfaNameAttri;
-                                        p.NominalValue = new IfcLabel(projInfoParamValue);
-                                    }),
-                            });
-
-                            pset.HasProperties.AddRange(new[]
-                            {
-                                model.Instances.New<IfcPropertySingleValue>(p =>
-                                    {
-                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Gebäudeklasse");
-                                        string projInfoParamValue = projInfoParam.AsString();
-                                        string rfaNameAttri = "Gebäudeklasse";
-                                        p.Name = rfaNameAttri;
-                                        p.NominalValue = new IfcLabel(projInfoParamValue);
-                                    }),
-                            });
-
-                            pset.HasProperties.AddRange(new[]
-                            {
-                                model.Instances.New<IfcPropertySingleValue>(p =>
-                                    {
-                                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bauweise");
-                                        string projInfoParamValue = projInfoParam.AsString();
-                                        string rfaNameAttri = "Bauweise";
-                                        p.Name = rfaNameAttri;
-                                        p.NominalValue = new IfcLabel(projInfoParamValue);
-                                    }),
-                            });
-
+                            pset.Name = "BauantragAllgemein";
+                            IfcXBim ifcXBim = new IfcXBim();
+                            ifcXBim.getProjectProperties(pset, model, doc, "Bezeichnung des Bauvorhabens");
+                            ifcXBim.getProjectProperties(pset, model, doc, "Art der Maßnahme");
+                            ifcXBim.getProjectProperties(pset, model, doc, "Art des Gebäudes");
+                            ifcXBim.getProjectProperties(pset, model, doc, "Gebäudeklasse");
+                            ifcXBim.getProjectProperties(pset, model, doc, "Bauweise");
                         });
                     });
                     txn.Commit();
@@ -265,7 +180,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 }
                 else
                 {
-                    save = @"" + ifc_Location.Text + "\\" + ifc_name_textbox.Text + ".ifc";
+                    save = Path.Combine(ifc_Location.Text, ifc_name_textbox.Text + ".ifc");
                 }
 
                 model.SaveAs(@save);

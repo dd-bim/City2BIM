@@ -53,6 +53,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>img\HideLayerIcon_32px_96dpi.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Esent.Interop, Version=1.9.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ManagedEsent.1.9.4\lib\net40\Esent.Interop.dll</HintPath>
@@ -259,6 +262,19 @@
     <Folder Include="GUI\BIM2City\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="img\IFC_32px_96dpi.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\XPlan_32px.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="img\XPlan_32px.png" />
+    <Resource Include="img\HideLayerIcon_32px_96dpi.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="GUI\Modify\HideLayerIcon_32px_96dpi.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <None Include="bin\Debug\ALKIS_32px_96dpi.png" />
     <None Include="bin\Debug\ALKISset_32px.png" />
     <None Include="bin\Debug\citygml_32px_96dpi.png" />
@@ -279,8 +295,9 @@
     <Content Include="img\citygml_set_32px.png" />
     <Content Include="img\DTM_32px_96dpi.png" />
     <Content Include="img\Georef_32px_96dpi.png" />
-    <Content Include="img\IFC_32px_96dpi.png" />
-    <None Include="Resources\Georef_32px_96dpi.bmp" />
+    <Resource Include="img\IFC_32px_96dpi.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <None Include="egm2008.egm">
@@ -294,6 +311,9 @@
   <ItemGroup>
     <EmbeddedResource Include="GUI\Modify\ModifyParameterForm.resx">
       <DependentUpon>ModifyParameterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows;
 using System.Windows.Controls;
+using System.Reflection;
 
 
 using Autodesk.Revit.DB;
@@ -29,6 +30,10 @@ namespace City2RVT.GUI.Modify
             Document doc = uidoc.Document;
 
             InitializeComponent();
+
+            // Set an icon using code
+            Uri iconUri = new Uri("pack://application:,,,/City2RVT;component/img/HideLayerIcon_32px_96dpi.ico", UriKind.RelativeOrAbsolute);
+            this.Icon = System.Windows.Media.Imaging.BitmapFrame.Create(iconUri);
 
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
             List<string> xPlanObjectList = new List<string>();
