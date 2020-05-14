@@ -29,20 +29,20 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModifyParameterForm));
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.checkedListBox_selectParams = new System.Windows.Forms.CheckedListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // checkedListBox1
             // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(244, 119);
-            this.checkedListBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(762, 536);
-            this.checkedListBox1.TabIndex = 0;
-            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.attributesCheckedListbox_SelectedIndexChanged);
+            this.checkedListBox_selectParams.FormattingEnabled = true;
+            this.checkedListBox_selectParams.Location = new System.Drawing.Point(244, 119);
+            this.checkedListBox_selectParams.Margin = new System.Windows.Forms.Padding(4);
+            this.checkedListBox_selectParams.Name = "checkedListBox1";
+            this.checkedListBox_selectParams.Size = new System.Drawing.Size(762, 536);
+            this.checkedListBox_selectParams.TabIndex = 0;
+            this.checkedListBox_selectParams.SelectedIndexChanged += new System.EventHandler(this.attributesCheckedListbox_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -73,7 +73,7 @@
             this.ClientSize = new System.Drawing.Size(1395, 804);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.checkedListBox1);
+            this.Controls.Add(this.checkedListBox_selectParams);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ModifyParameterForm";
@@ -85,7 +85,7 @@
 
         #endregion
 
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.CheckedListBox checkedListBox_selectParams;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
     }

@@ -24,13 +24,14 @@ namespace City2RVT.GUI.Modify
             int ix = 0;
             foreach (string item in paramList)
             {
-                checkedListBox1.Items.Add(paramList[ix]);
+                checkedListBox_selectParams.Items.Add(paramList[ix]);
+                //checkedListBox_selectParams.Items.Add(paramList[ix].Substring(0, paramList[ix].IndexOf(' ')));
                 ix++;
             }
 
-            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+            for (int i = 0; i < checkedListBox_selectParams.Items.Count; i++)
             {
-                checkedListBox1.SetItemChecked(i, true);
+                checkedListBox_selectParams.SetItemChecked(i, true);
             }
 
 
@@ -44,9 +45,15 @@ namespace City2RVT.GUI.Modify
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var selectedAttributes = checkedListBox1.CheckedItems;
+            var selectedAttributes = checkedListBox_selectParams.CheckedItems;
+            List<string> selectedAttributesShort = new List<string>();
+            foreach (var x in selectedAttributes)
+            {
+                selectedAttributesShort.Add(x.ToString().Substring(0, x.ToString().IndexOf(' ')));
+            }
+            selectedAttributesShort.Sort();
 
-            GUI.Prop_NAS_settings.SelectedParams = selectedAttributes;
+            GUI.Prop_NAS_settings.SelectedParams = selectedAttributesShort;
 
             this.Close();
         }

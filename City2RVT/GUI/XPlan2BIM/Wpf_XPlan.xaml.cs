@@ -171,7 +171,7 @@ namespace City2RVT.GUI.XPlan2BIM
             projInformation.CreateProjectInformation(app, doc, projCategorySet, parameter, defFile);   
 
             // Selected Layer for beeing shown in revit view
-            var selectedLayers = categoryListbox.SelectedItems;
+            var selectedLayers = categoryListbox_selectedLayer.SelectedItems;
 
             // Selected Parameter for beeing shown in revit view
             var selectedParams = GUI.Prop_NAS_settings.SelectedParams;
@@ -671,7 +671,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click_ClearSelection(object sender, RoutedEventArgs e)
         {
-            categoryListbox.UnselectAll();
+            categoryListbox_selectedLayer.UnselectAll();
             radioButton1.IsChecked = false;
         }
 
@@ -699,24 +699,19 @@ namespace City2RVT.GUI.XPlan2BIM
 
             ReadXPlan xPlanReader = new ReadXPlan();
             List<string> xPlanObjectList = xPlanReader.getXPlanFeatureMembers(allXPlanObjects, nsmgr);
-            List<string> allParamList = xPlanReader.getXPlanParameter(allXPlanObjects);
-
             xPlanObjectList.Sort();
-            allParamList.Sort();
-
-            GUI.Prop_NAS_settings.ParamList = allParamList;
 
             int ix = 0;
             foreach (string item in xPlanObjectList)
             {
-                categoryListbox.Items.Add(xPlanObjectList[ix]);
+                categoryListbox_selectedLayer.Items.Add(xPlanObjectList[ix]);
                 ix++;
             }
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (categoryListbox.SelectedItems.Count < categoryListbox.Items.Count)
+            if (categoryListbox_selectedLayer.SelectedItems.Count < categoryListbox_selectedLayer.Items.Count)
             {
                 radioButton1.IsChecked = false;
             }
@@ -732,11 +727,11 @@ namespace City2RVT.GUI.XPlan2BIM
         {
             if (radioButton1.IsChecked == true)
             {
-                categoryListbox.SelectAll();
+                categoryListbox_selectedLayer.SelectAll();
             }
             else
             {
-                categoryListbox.UnselectAll();
+                categoryListbox_selectedLayer.UnselectAll();
 
             }
         }
@@ -746,8 +741,48 @@ namespace City2RVT.GUI.XPlan2BIM
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_ModifyParams(object sender, RoutedEventArgs e)
         {
+            UIApplication uiapp = commandData.Application;
+            UIDocument uidoc = uiapp.ActiveUIDocument;
+            Document doc = uidoc.Document;
+
+            string xPlanGmlPath = xplan_file.Text;
+            XmlReaderSettings readerSettings = new XmlReaderSettings();
+            readerSettings.IgnoreComments = true;
+            XmlDocument xmlDoc = new XmlDocument();
+
+            using (XmlReader reader = XmlReader.Create(xPlanGmlPath, readerSettings))
+            {
+                xmlDoc.Load(reader);
+                xmlDoc.Load(xPlanGmlPath);
+            }
+
+            var XmlNsmgr = new Builder.Revit_Semantic(doc);
+            XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
+
+            var selectedLayers = categoryListbox_selectedLayer.SelectedItems;
+
+            ReadXPlan xPlanReader = new ReadXPlan();
+
+            List<string> allParamList = new List<string>();
+
+            int il = 0;
+            foreach (var layer in selectedLayers)
+            {
+                List<string> thisParams = xPlanReader.getXPlanParameter(layer.ToString(), xmlDoc, nsmgr);
+
+                foreach (var p in thisParams)
+                {
+                    allParamList.Add(p + " (" + layer.ToString().Substring(layer.ToString().LastIndexOf(':')+1) + ")");
+                }
+
+                il++;
+            }
+            
+            allParamList.Sort();
+            GUI.Prop_NAS_settings.ParamList = allParamList;
+
             Modify.ModifyParameterForm f1 = new Modify.ModifyParameterForm();
             f1.ShowDialog();
         }

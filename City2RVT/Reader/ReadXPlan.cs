@@ -56,12 +56,17 @@ namespace City2RVT.Reader
         /// </summary>
         /// <param name="allXPlanObjects"></param>
         /// <returns></returns>
-        public List<string> getXPlanParameter(XmlNodeList allXPlanObjects)
+        public List<string> getXPlanParameter(string layer, XmlDocument xmlDoc, XmlNamespaceManager nsmgr)
         {
+            var selectedLayer = GUI.Prop_NAS_settings.SelectedLayer;
+
+            XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember/" + layer, nsmgr);
+
+
             List<string> allParamList = new List<string>();
             foreach (XmlNode xmlNode in allXPlanObjects)
             {
-                foreach (XmlNode child in xmlNode.FirstChild)
+                foreach (XmlNode child in xmlNode)
                 {
                     if (child.Name != "#comment")
                     {
