@@ -80,7 +80,7 @@ namespace City2RVT.Reader
             return allParamList;
         }
 
-        public CurveLoop getInterior(XmlNode interiorNode, XmlNamespaceManager nsmgr, List<string> interiorListe, Document doc, Transform transf, double R, double zOffset, int ii)
+        public CurveLoop getInterior(XmlNode interiorNode, XmlNamespaceManager nsmgr, List<string> interiorListe, Document doc, Autodesk.Revit.ApplicationServices.Application app, Transform transf, double R, double zOffset, int ii)
         {
             CurveLoop curveLoopInterior = new CurveLoop();
 
@@ -95,7 +95,7 @@ namespace City2RVT.Reader
 
                     if (koordWerteInterior.Count() == 4)
                     {
-                        var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                        var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
                         Line lineExterior = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
                         curveLoopInterior.Append(lineExterior);
                     }
@@ -106,7 +106,7 @@ namespace City2RVT.Reader
 
                         foreach (string split in koordWerteInterior)
                         {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                            var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
                             Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ia, zOffset);
                             curveLoopInterior.Append(lineClIndu);
 
@@ -127,7 +127,7 @@ namespace City2RVT.Reader
 
                     if (koordWerteInterior.Count() == 4)
                     {
-                        var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                        var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
                         Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
                         curveLoopInterior.Append(lineStrasse);
                     }
@@ -137,7 +137,7 @@ namespace City2RVT.Reader
                         int ib = 0;
                         foreach (string split in koordWerteInterior)
                         {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc);
+                            var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
                             Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ib, zOffset);
                             curveLoopInterior.Append(lineClIndu);
 

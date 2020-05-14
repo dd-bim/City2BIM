@@ -25,7 +25,6 @@ namespace City2RVT.GUI.Modify
             foreach (string item in paramList)
             {
                 checkedListBox_selectParams.Items.Add(paramList[ix]);
-                //checkedListBox_selectParams.Items.Add(paramList[ix].Substring(0, paramList[ix].IndexOf(' ')));
                 ix++;
             }
 
@@ -33,9 +32,6 @@ namespace City2RVT.GUI.Modify
             {
                 checkedListBox_selectParams.SetItemChecked(i, true);
             }
-
-
-
         }
 
         private void attributesCheckedListbox_SelectedIndexChanged(object sender, EventArgs e)
@@ -47,13 +43,19 @@ namespace City2RVT.GUI.Modify
         {
             var selectedAttributes = checkedListBox_selectParams.CheckedItems;
             List<string> selectedAttributesShort = new List<string>();
+            List<string> selectedAttributesPlusLayer = new List<string>();
+
             foreach (var x in selectedAttributes)
             {
+                //selectedAttributesShort.Add(x.ToString());
                 selectedAttributesShort.Add(x.ToString().Substring(0, x.ToString().IndexOf(' ')));
+                selectedAttributesPlusLayer.Add(x.ToString());
             }
             selectedAttributesShort.Sort();
 
             GUI.Prop_NAS_settings.SelectedParams = selectedAttributesShort;
+            GUI.Prop_NAS_settings.SelectedParamsPlusLayer = selectedAttributesPlusLayer;
+
 
             this.Close();
         }

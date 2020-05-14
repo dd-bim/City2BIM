@@ -52,7 +52,6 @@ namespace City2RVT.Builder
 
             foreach (var attribute in attributes)
             {
-                //MessageBox.Show(attribute.Key);
                 if (selectedParams.Contains(attribute.Key))
                 {
                     Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute.Key, GetParameterType(attribute.Value));
@@ -78,7 +77,7 @@ namespace City2RVT.Builder
         /// <summary>
         /// Creates Project Information for the revit project where the data is imported to, like general data or postal address 
         /// </summary>
-        public void CreateProjectInformation(Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet, City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter, DefinitionFile defFile)
+        public void CreateProjectInformation(Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet)
         {
             List<string> projectInformationList = new List<string>();
             projectInformationList.Add("Bezeichnung des Bauvorhabens");
@@ -86,6 +85,9 @@ namespace City2RVT.Builder
             projectInformationList.Add("Art des Gebäudes");
             projectInformationList.Add("Gebäudeklasse");
             projectInformationList.Add("Bauweise");
+
+            DefinitionFile defFile = default(DefinitionFile);
+            City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new GUI.XPlan2BIM.XPlan_Parameter();
 
             string paramFile = doc.Application.SharedParametersFilename;
 

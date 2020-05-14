@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder\RevitXPlanBuilder.cs" />
+    <Compile Include="Builder\XPlan_Semantic.cs" />
     <Compile Include="Calc\ConvexHull.cs" />
     <Compile Include="Calc\GeorefCalc.cs" />
     <Compile Include="Calc\Transformation.cs" />

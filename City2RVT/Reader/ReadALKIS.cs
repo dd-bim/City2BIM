@@ -31,11 +31,8 @@ namespace City2RVT.Reader
             categorySet.Insert(category);
             projCategorySet.Insert(projCategory);
 
-            City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new City2RVT.GUI.XPlan2BIM.XPlan_Parameter();
-            DefinitionFile defFile = default(DefinitionFile);
-
             var projInformation = new City2RVT.Builder.Revit_Semantic(doc);
-            projInformation.CreateProjectInformation(app, doc, projCategorySet, parameter, defFile);
+            projInformation.CreateProjectInformation(app, doc, projCategorySet);
 
             var semBuilder = new Builder.Revit_Semantic(doc);
             semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());

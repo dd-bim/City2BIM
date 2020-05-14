@@ -43,7 +43,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 DefinitionGroup defGrp = defFile.Groups.get_Item(defFileGroup);
 
                 ExternalDefinitionCreationOptions externalDefinitionOption = new ExternalDefinitionCreationOptions(paramName, ParameterType.Text);
-                Definition definition = default(Definition);
+                Definition definition = default;
 
                 if (defGrp == null)
                 {
@@ -68,17 +68,23 @@ namespace City2RVT.GUI.XPlan2BIM
             return defFile;
         }
 
-        public string getNodeText(XmlNode nodeExt, XmlNamespaceManager nsmgr, string xPlanObject, string nodeName)
+        public string getNodeText(XmlNode nodeSurf, XmlNamespaceManager nsmgr, string xPlanObject, string nodeName)
         {
-            string nodeText = default(string);
+            string nodeText;
+            XmlNode xmlNode = nodeSurf.SelectSingleNode("//gml:featureMember/" + xPlanObject + "//" + nodeName, nsmgr);
+            var selectedParamsPlusLayer = GUI.Prop_NAS_settings.SelectedParamsPlusLayer;
 
-            XmlNode rechtsstand = default(XmlNode);
 
-            rechtsstand = nodeExt.SelectSingleNode("//gml:featureMember/" + xPlanObject + "//xplan:" + nodeName, nsmgr);
-
-            if (rechtsstand != null)
+            if (xmlNode != null)
             {
-                nodeText = rechtsstand.InnerText;
+                if (selectedParamsPlusLayer.Contains(nodeName + " (" + xPlanObject + ")"))
+                {
+                    nodeText = xmlNode.InnerText;
+                }
+                else
+                {
+                    nodeText = "Vom Import ausgeschlossen. ";
+                }
             }
             else
             {

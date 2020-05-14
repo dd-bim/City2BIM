@@ -22,7 +22,7 @@ namespace City2RVT.GUI
 
             Prop_GeoRefSettings.SetInitialSettings(doc);            
 
-            var process = new XPlan2BIM.Wpf_XPlan(revit);
+            var process = new XPlan2BIM.Wpf_XPlan(doc,revit);
             process.ShowDialog();
 
             return Result.Succeeded;
