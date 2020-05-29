@@ -45,125 +45,6 @@ namespace City2RVT.GUI.XPlan2BIM
         /// <summary>
         /// Initalizes a new IFC Model (currently not used, because topography is loaded to an already existing IFC file).  
         /// </summary>
-        public static IfcStore CreateandInitModel(string projectName, Document doc)
-        {
-            //first we need to set up some credentials for ownership of data in the new model
-            var credentials = new XbimEditorCredentials
-            {
-                ApplicationDevelopersName = "LandBIMTeam",
-                ApplicationFullName = "Revit to IFC Application",
-                ApplicationIdentifier = "IFC.exe",
-                ApplicationVersion = "1.0",
-                EditorsFamilyName = "Team",
-                EditorsGivenName = "LandBIM",
-                EditorsOrganisationName = "LandBIMTeam"
-            };
-            //now we can create an IfcStore, it is in Ifc4 format and will be held in memory rather than in a database
-            //database is normally better in performance terms if the model is large >50MB of Ifc or if robust transactions are required
-
-            using (var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc4, Xbim.IO.XbimStoreType.InMemoryModel))
-            {
-                //Begin a transaction as all changes to a model are ACID
-                using (var txn = model.BeginTransaction("Initialise Model"))
-                {
-                    //create a project
-                    var project = model.Instances.New<IfcProject>();
-                    //var project = model.Instances.FirstOrDefault<IfcProject>();
-                    //set the units to metres
-                    project.Initialize(ProjectUnits.SIUnitsUK);
-                    project.Name = projectName;
-                    project.UnitsInContext.SetOrChangeSiUnit(IfcUnitEnum.LENGTHUNIT, IfcSIUnitName.METRE, null);
-
-                    //set a few basic properties
-                    model.Instances.New<IfcRelDefinesByProperties>(rel =>
-                    {
-                        rel.RelatedObjects.Add(project);
-                        rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
-                        {
-                            pset.Name = "BauantragAllgemein";
-
-                            pset.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bezeichnung des Bauvorhabens");
-                                    string projInfoParamValue = projInfoParam.AsString();
-                                    string rfaNameAttri = "Bezeichnung des Bauvorhabens";
-                                    p.Name = rfaNameAttri;
-                                    p.NominalValue = new IfcLabel(projInfoParamValue);
-                                }),
-                        });
-                            pset.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
-                                {
-                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art der Maßnahme");
-                                    string projInfoParamValue = projInfoParam.AsString();
-                                    string rfaNameAttri = "Art der Maßnahme";
-                                    p.Name = rfaNameAttri;
-                                    p.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
-                                    //p.EnumerationValues.Add(new IfcLabel("ERRICHTUNG"));
-                                    //p.EnumerationValues.Add(new IfcLabel("AENDERUNG"));
-                                    //p.EnumerationValues.Add(new IfcLabel("NUTZUNGSAENDERUNG_OHNE_BAULICHE_AENDERUNG"));
-                                    //p.EnumerationValues.Add(new IfcLabel("NUTZUNGSAENDERUNG_MIT_BAULICHER_AENDERUNG"));
-                                    //p.EnumerationValues.Add(new IfcLabel("BESEITIGUNG"));
-
-                                }),
-                        });
-                            pset.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Art des Gebäudes");
-                                    string projInfoParamValue = projInfoParam.AsString();
-                                    string rfaNameAttri = "Art des Gebäudes";
-                                    p.Name = rfaNameAttri;
-                                    p.NominalValue = new IfcLabel(projInfoParamValue);
-                                }),
-                        });
-                            pset.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
-                                {
-                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Gebäudeklasse");
-                                    string projInfoParamValue = projInfoParam.AsString();
-                                    string rfaNameAttri = "Gebäudeklasse";
-                                    p.Name = rfaNameAttri;
-                                    p.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
-                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_1"));
-                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_2"));
-                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_3"));
-                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_4"));
-                                    //p.EnumerationValues.Add(new IfcLabel("GEBAEUDEKLASSE_5"));
-
-                                }),
-                        });
-                            pset.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
-                                {
-                                    Parameter projInfoParam = doc.ProjectInformation.LookupParameter("Bauweise");
-                                    string projInfoParamValue = projInfoParam.AsString();
-                                    string rfaNameAttri = "Bauweise";
-                                    p.Name = rfaNameAttri;
-                                    p.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
-                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_EINZELHAUS"));
-                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_DOPPELHAUS"));
-                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_HAUSGRUPPE"));
-                                    //p.EnumerationValues.Add(new IfcLabel("OFFENE_BAUWEISE_GESCHOSSBAU"));
-                                    //p.EnumerationValues.Add(new IfcLabel("GESCHLOSSENE_BAUWEISE"));
-                                    //p.EnumerationValues.Add(new IfcLabel("ABWEICHENDE_BAUWEISE"));
-                                }),
-                        });
-                        });
-                    });
-
-                    //now commit the changes, else they will be rolled back at the end of the scope of the using statement
-                    txn.Commit();
-                }
-                return model;
-            }            
-        }
 
         /// <summary>
         /// Dictionary for rgb definition for different categories.  
@@ -203,10 +84,45 @@ namespace City2RVT.GUI.XPlan2BIM
                             });
         }
 
+        public void getProjectEnums(IfcPropertySet pset, IfcStore model, Document doc, string name, List<string>enums)
+        {
+            pset.HasProperties.AddRange(new[]
+                {
+                model.Instances.New<IfcPropertyEnumeratedValue>(pev =>
+                    {
+                        Parameter projInfoParam = doc.ProjectInformation.LookupParameter(name);
+
+                        pev.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
+                        {
+                            foreach (var enu in enums)
+                            {
+                                pe.EnumerationValues.Add(new IfcLabel(enu));
+                            }
+
+                            string rfaNameAttri = name;
+                            pev.Name = rfaNameAttri;
+
+                            if (pe.EnumerationValues.Contains(new IfcLabel(projInfoParam.AsString())))
+                            {
+                                string projInfoParamValue = projInfoParam.AsString();
+                                pev.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
+                            }
+                            else
+                            {
+                                TaskDialog.Show("Warning","Please select an permitted value for '" + name + "'. Value for '" + projInfoParam.AsString() + "' is set to '-'. " +
+                                    "See 'Modellierungsrichtlinie für den BIM-basierten Bauantrag ZUKUNFT BAU' for further information. ");
+                                string projInfoParamValue = "-";
+                                pev.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
+                            }
+                        });                                    
+                    }),
+            });
+        }
+
         /// <summary>
         /// Get values for surface properties from Revit project information and saves them to the ifc file. 
         /// </summary>
-        public void setSurfaceProperties(IfcPropertySet pset, IfcStore model, Document doc, KeyValuePair<string,string> topoParam)
+        public void setSurfaceProperties(IfcPropertySet pset, IfcStore model, KeyValuePair<string,string> topoParam)
         {
             pset.HasProperties.AddRange(new[]
 {
@@ -335,6 +251,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 presentation.Styles.Add(surfaceStyle);
 
                 var curveSetFace = model.Instances.New<IfcFaceBasedSurfaceModel>();
+                //var curveSetFace = model.Instances.New<IfcGeometricRepresentationItem>();
                 curveSetFace.FbsmFaces.Add(connFaceSet);
 
                 var style = model.Instances.New<IfcStyledItem>();
@@ -361,9 +278,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 //shape definition 2
                 var umringShape2 = model.Instances.New<IfcShapeRepresentation>();
                 var modelContextKrone2 = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-                umringShape2.ContextOfItems = modelContext;
-                modelContext.TrueNorth = model.Instances.New<IfcDirection>();
-                modelContext.TrueNorth.SetXYZ(0, 0, 0);
+                umringShape2.ContextOfItems = modelContext;                
                 umringShape2.RepresentationIdentifier = "FootPrint";
                 umringShape2.RepresentationType = "Curve2D";
                 umringShape2.Items.Add(curveSet);
@@ -416,31 +331,31 @@ namespace City2RVT.GUI.XPlan2BIM
                     }
                 }
 
-                foreach (var topoParam in paramDict)
+                //set a few basic properties
+                model.Instances.New<IfcRelDefinesByProperties>(relBasic =>
                 {
-                    //set a few basic properties
-                    model.Instances.New<IfcRelDefinesByProperties>(relBasic =>
+                    relBasic.RelatedObjects.Add(site);
+                    relBasic.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetBasic =>
                     {
-                        relBasic.RelatedObjects.Add(site);
-                        relBasic.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetBasic =>
+                        psetBasic.Name = "Surface properties";
+                        foreach (var topoParam in paramDict)
                         {
-                            psetBasic.Name = "Surface properties";
                             IfcXBim ifcXBim = new IfcXBim();
-                            ifcXBim.setSurfaceProperties(psetBasic, model, doc, topoParam);
-                        });
+                            ifcXBim.setSurfaceProperties(psetBasic, model, topoParam);
+                        }
                     });
-                }
+                });
 
-                foreach (var s in paramDict)
+                //set a few basic properties
+                model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
                 {
-                    //set a few basic properties
-                    model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
+                    relGeokod.RelatedObjects.Add(site);
+                    relGeokod.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetGeokod =>
                     {
-                        relGeokod.RelatedObjects.Add(site);
-                        relGeokod.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetGeokod =>
-                        {
-                            psetGeokod.Name = "BauantragGeokodierung";
+                        psetGeokod.Name = "BauantragGeokodierung";
 
+                        foreach (var s in paramDict)
+                        {
                             string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
                             string verortungTrim = verortung.Trim(' ');
 
@@ -470,9 +385,9 @@ namespace City2RVT.GUI.XPlan2BIM
                                     }),
                                 });
                             }
-                        });
+                        }                        
                     });
-                }
+                });                
 
                 txn.Commit();
                 return site;

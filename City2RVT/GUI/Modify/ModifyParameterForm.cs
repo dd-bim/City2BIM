@@ -34,7 +34,7 @@ namespace City2RVT.GUI.Modify
             }
         }
 
-        private void attributesCheckedListbox_SelectedIndexChanged(object sender, EventArgs e)
+        private void checkedListBox_selectParams_SelectedIndexChanged(object sender, EventArgs e)
         {
             
         }

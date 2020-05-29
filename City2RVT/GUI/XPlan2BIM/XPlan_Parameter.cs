@@ -77,7 +77,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
             if (xmlNode != null)
             {
-                if (selectedParamsPlusLayer.Contains(nodeName + " (" + xPlanObject + ")"))
+                if (selectedParamsPlusLayer == null || selectedParamsPlusLayer.Contains(nodeName + " (" + xPlanObject + ")"))
                 {
                     nodeText = xmlNode.InnerText;
                 }

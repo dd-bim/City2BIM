@@ -42,7 +42,7 @@
             this.checkedListBox_selectParams.Name = "checkedListBox1";
             this.checkedListBox_selectParams.Size = new System.Drawing.Size(762, 536);
             this.checkedListBox_selectParams.TabIndex = 0;
-            this.checkedListBox_selectParams.SelectedIndexChanged += new System.EventHandler(this.attributesCheckedListbox_SelectedIndexChanged);
+            this.checkedListBox_selectParams.SelectedIndexChanged += new System.EventHandler(this.checkedListBox_selectParams_SelectedIndexChanged);
             // 
             // button1
             // 

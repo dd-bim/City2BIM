@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows;
 using System.Windows.Controls;
+using System.Linq;
 
 
 using Autodesk.Revit.DB;
@@ -13,7 +14,12 @@ using Xbim.Ifc;
 using Xbim.Ifc4.Kernel;
 using Xbim.Ifc4.MeasureResource;
 using Xbim.Ifc4.PropertyResource;
+using Xbim.Ifc4.RepresentationResource;
+using Xbim.Ifc4.GeometricConstraintResource;
+using Xbim.Ifc4.GeometricModelResource;
+using Xbim.Ifc4.GeometryResource;
 using System.IO;
+using City2RVT.Calc;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -119,6 +125,10 @@ namespace City2RVT.GUI.XPlan2BIM
                     IFCOptions.AddOption("ExportSchedulesAsPsets", "true");
                     IFCOptions.AddOption("IncludeSiteElevation", "true");
                     IFCOptions.AddOption("ExportPartsAsBuildingElements", "true");
+                    IFCOptions.AddOption("ExportInternalRevitPropertySets", "false");
+                    IFCOptions.AddOption("ExportIFCCommonPropertySets", "true");
+
+
                     //Export the model to IFC
                     doc.Export(folder, ifcWithoutTopo, IFCOptions);
 
@@ -151,9 +161,42 @@ namespace City2RVT.GUI.XPlan2BIM
                     }
                 }
 
+                List<string> artDerMassnahme = new List<string>();
+                artDerMassnahme.Add("ERRICHTUNG");
+                artDerMassnahme.Add("AENDERUNG");
+                artDerMassnahme.Add("NUTZUNGSAENDERUNG_OHNE_BAULICHE_AENDERUNG");
+                artDerMassnahme.Add("NUTZUNGSAENDERUNG_MIT_BAULICHER_AENDERUNG");
+                artDerMassnahme.Add("BESEITIGUNG");
+
+                List<string> gebaeudeKlasse = new List<string>();
+                gebaeudeKlasse.Add("GEBAEUDEKLASSE_1");
+                gebaeudeKlasse.Add("GEBAEUDEKLASSE_2");
+                gebaeudeKlasse.Add("GEBAEUDEKLASSE_3");
+                gebaeudeKlasse.Add("GEBAEUDEKLASSE_4");
+                gebaeudeKlasse.Add("GEBAEUDEKLASSE_5");
+
+                List<string> bauweise = new List<string>();
+                bauweise.Add("OFFENE_BAUWEISE_EINZELHAUS");
+                bauweise.Add("OFFENE_BAUWEISE_DOPPELHAUS");
+                bauweise.Add("OFFENE_BAUWEISE_HAUSGRUPPE");
+                bauweise.Add("OFFENE_BAUWEISE_GESCHOSSBAU");
+                bauweise.Add("GESCHLOSSENE_BAUWEISE");
+                bauweise.Add("ABWEICHENDE_BAUWEISE");
+
                 using (var txn = model.BeginTransaction("Create Project Information"))
                 {
                     var ifcproject = model.Instances.FirstOrDefault<IfcProject>();
+
+                    var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+
+                    double[] richtung = UTMcalc.AzimuthToLocalVector(angle);
+
+
+                    geomRepContext.TrueNorth = model.Instances.New<IfcDirection>();
+                    geomRepContext.TrueNorth.SetXY(richtung[0], richtung[1]);
+
+
+                    ifcproject.RepresentationContexts.Add(geomRepContext);
 
                     //set a few basic properties
                     model.Instances.New<IfcRelDefinesByProperties>(rel =>
@@ -164,10 +207,10 @@ namespace City2RVT.GUI.XPlan2BIM
                             pset.Name = "BauantragAllgemein";
                             IfcXBim ifcXBim = new IfcXBim();
                             ifcXBim.getProjectProperties(pset, model, doc, "Bezeichnung des Bauvorhabens");
-                            ifcXBim.getProjectProperties(pset, model, doc, "Art der Maßnahme");
+                            ifcXBim.getProjectEnums(pset, model, doc, "Art der Maßnahme",artDerMassnahme);
                             ifcXBim.getProjectProperties(pset, model, doc, "Art des Gebäudes");
-                            ifcXBim.getProjectProperties(pset, model, doc, "Gebäudeklasse");
-                            ifcXBim.getProjectProperties(pset, model, doc, "Bauweise");
+                            ifcXBim.getProjectEnums(pset, model, doc, "Gebäudeklasse", gebaeudeKlasse);
+                            ifcXBim.getProjectEnums(pset, model, doc, "Bauweise", bauweise);
                         });
                     });
                     txn.Commit();

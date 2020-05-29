@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 using City2BIM.Alkis;
 using City2BIM.Geometry;
 using City2BIM.Semantic;
@@ -14,12 +15,13 @@ using System.Xml;
 using NLog;
 using NLog.Targets;
 using NLog.Config;
-
+using Xbim.Tessellator;
 
 namespace City2RVT.Builder
 {
     class RevitXPlanBuilder
     {
+        ExternalCommandData commandData;
         private readonly Document doc;
         private readonly Autodesk.Revit.ApplicationServices.Application app;
         double feetToMeter = 1.0 / 0.3048;
@@ -272,13 +274,13 @@ namespace City2RVT.Builder
             foreach (var referencePoints in xPlanPointDict)
             {
                 {
-                    Transaction referencePlanes = new Transaction(doc, "Reference plane: " + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1));
+                    using (Transaction referenceTransaction = new Transaction(doc, "Reference plane: " + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1)))
                     {
-                        FailureHandlingOptions options = referencePlanes.GetFailureHandlingOptions();
+                        FailureHandlingOptions options = referenceTransaction.GetFailureHandlingOptions();
                         options.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
-                        referencePlanes.SetFailureHandlingOptions(options);
+                        referenceTransaction.SetFailureHandlingOptions(options);
 
-                        referencePlanes.Start();
+                        referenceTransaction.Start();
                         SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
 
                         TopographySurface referencePlane = TopographySurface.Create(doc, referencePoints.Value);
@@ -293,8 +295,11 @@ namespace City2RVT.Builder
 
                         refplaneId = referencePlane.Id;
 
+                        referencePlane.CanBeLocked();
+                        referencePlane.Pinned = true;
+
                         logger.Info("Reference plane: '" + (referencePoints.Key).Substring((referencePoints.Key).LastIndexOf(':') + 1) + "' created.");
-                        referencePlanes.Commit();
+                        referenceTransaction.Commit();
                     }
                 }
             }
@@ -516,6 +521,7 @@ namespace City2RVT.Builder
 
                 System.Collections.IList selectedParams = GUI.Prop_NAS_settings.SelectedParams;
 
+
                 //_________________________________
                 // imports parameter (values later)
                 //*********************************
@@ -531,6 +537,9 @@ namespace City2RVT.Builder
                         FailureHandlingOptions optionsExterior = topoTransaction.GetFailureHandlingOptions();
                         optionsExterior.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
                         topoTransaction.SetFailureHandlingOptions(optionsExterior);
+
+                        XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
+                        string gmlid = root.GetAttribute("gml:id");
 
                         topoTransaction.Start();
                         SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
@@ -565,11 +574,146 @@ namespace City2RVT.Builder
                         Parameter exteriorName = siteSubRegion.TopographySurface.LookupParameter("Kommentare");
                         exteriorName.Set(xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
 
+                        siteSubRegion.TopographySurface.Pinned = true;
+
                         logger.Info("Created sitesubregion for '" + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1) + "' (Exterior). ");
                     }
                     topoTransaction.Commit();
                 }
                 paramDict.Clear();
+            }
+        }
+
+        public void createLineSegments(string xPlanObject, /*Plane geomPlane,*/ XmlDocument xmlDoc, XmlNamespaceManager nsmgr, double zOffset, ElementId pickedId)
+        {
+            XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "/xplan:position/gml:LineString", nsmgr);
+
+            var transfClass = new City2RVT.Calc.Transformation();
+            Transform transf = transfClass.transform(doc);
+
+            // No UTM reduction at the moment, factor R = 1
+            double R = 1;
+
+            List<string> lineList = new List<String>();
+            int il = 0;
+            foreach (XmlNode nodeLine in bpLines)
+            {
+                lineList.Add(nodeLine.InnerText);
+                string[] koordWerteLine = lineList[il].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                int ia = 0;
+
+                using (Transaction createLine = new Transaction(doc, "Create Line for " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
+                {
+                    createLine.Start();
+                    foreach (string split in koordWerteLine)
+                    {
+                        var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
+
+                        double xStart = Convert.ToDouble(koordWerteLine[ia], System.Globalization.CultureInfo.InvariantCulture);
+                        double xStartMeter = xStart * feetToMeter;
+                        double xStartMeterRedu = xStartMeter / R;
+                        double yStart = Convert.ToDouble(koordWerteLine[ia + 1], System.Globalization.CultureInfo.InvariantCulture);
+                        double yStartMeter = yStart * feetToMeter;
+                        double yStartMeterRedu = yStartMeter / R;
+                        double zStart = zOffset;
+                        double zStartMeter = zStart * feetToMeter;
+
+                        double xEnd = Convert.ToDouble(koordWerteLine[ia + 2], System.Globalization.CultureInfo.InvariantCulture);
+                        double xEndMeter = xEnd * feetToMeter;
+                        double xEndMeterRedu = xEndMeter / R;
+                        double yEnd = Convert.ToDouble(koordWerteLine[ia + 3], System.Globalization.CultureInfo.InvariantCulture);
+                        double yEndMeter = yEnd * feetToMeter;
+                        double yEndMeterRedu = yEndMeter / R;
+                        double zEnd = zOffset;
+                        double zEndMeter = zEnd * feetToMeter;
+
+                        XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
+                        XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
+
+                        XYZ tStartPoint = transf.OfPoint(startPoint);
+                        XYZ tEndPoint = transf.OfPoint(endPoint);
+
+                        Outline outline = new Outline(tStartPoint,tEndPoint);
+
+                        Element originalTerrain = doc.GetElement(pickedId);
+                        TopographySurface terrain = originalTerrain as TopographySurface;
+
+                        var terPoints = terrain.GetInteriorPoints();
+                        Dictionary<XYZ, double> elevationDict = new Dictionary<XYZ, double>();
+                        double[] startP = new double[] { tStartPoint.X, tStartPoint.Y };
+                        foreach (var tp in terPoints)
+                        {
+                            elevationDict.Add(tp/feetToMeter, tp.Z/feetToMeter);
+                        }
+
+                        var matchStart = elevationDict.OrderBy(e => Math.Abs(e.Key.DistanceTo(tStartPoint))).FirstOrDefault();
+                        var matchEnd = elevationDict.OrderBy(e => Math.Abs(e.Key.DistanceTo(tEndPoint))).FirstOrDefault();
+
+                        XYZ startPointTerrain = new XYZ(matchStart.Key.X, matchStart.Key.Y, matchStart.Value);
+                        XYZ endPointTerrain = new XYZ(matchEnd.Key.X, matchEnd.Key.Y, matchEnd.Value);
+
+                        XYZ direction = (endPointTerrain - startPointTerrain).Normalize();
+                        XYZ skalar;
+
+
+                        XYZ norm;
+                        if (startPointTerrain.X == endPointTerrain.X)
+                        {
+                            norm = XYZ.BasisX;
+                            skalar = new XYZ(0, direction.Z, -direction.Y);
+                        }
+                        else if (startPointTerrain.Y == endPointTerrain.Y)
+                        {
+                            norm = XYZ.BasisY;
+                            skalar = new XYZ(direction.Z, 0, -direction.X);
+                        }
+                        else if (startPointTerrain.Z == endPointTerrain.Z)
+                        {
+                            norm = XYZ.BasisY;
+                            skalar = new XYZ(-direction.Y, direction.X, 0);
+                        }
+                        else
+                        {
+                            norm = XYZ.BasisZ;
+                            skalar = new XYZ(-direction.Y, direction.X, 0);
+                        }
+
+                        //Plane geomPlane2 = Plane.CreateByNormalAndOrigin(norm, startPointTerrain);
+
+
+                        Calc.Transformation transformation = new Calc.Transformation();
+                        Plane geomPlane2 = transformation.getGeomPlane(doc, skalar);
+
+
+                        //Line lineString = Line.CreateBound(new XYZ(tStartPoint.X,tStartPoint.Y,0), new XYZ(tEndPoint.X,tEndPoint.Y,0));
+                        Line lineString = Line.CreateBound(startPointTerrain, endPointTerrain);
+                        {
+                            FailureHandlingOptions optionsExterior = createLine.GetFailureHandlingOptions();
+                            optionsExterior.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
+                            createLine.SetFailureHandlingOptions(optionsExterior);
+
+                            //SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
+                            SketchPlane sketch = SketchPlane.Create(doc, geomPlane2);
+
+                            ModelLine line = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
+
+                            GraphicsStyle gs = line.LineStyle as GraphicsStyle;
+
+                            gs.GraphicsStyleCategory.LineColor = new Color(250, 10, 10);
+                            gs.GraphicsStyleCategory.SetLineWeight(10, GraphicsStyleType.Projection);
+                        }
+
+                        if ((ia + 3) == (koordWerteLine.Count() - 1))
+                        {
+                            break;
+                        }
+                        ia += 2;
+                    }
+                    createLine.Commit();
+                }
+
+                il++;
             }
         }
     }

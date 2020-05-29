@@ -26,6 +26,7 @@ using NLog.Targets;
 using NLog.Config;
 using City2RVT.Reader;
 using City2RVT.Builder;
+using City2RVT.Calc;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -36,7 +37,6 @@ namespace City2RVT.GUI.XPlan2BIM
     {
         ExternalCommandData commandData;
         private readonly Document doc;
-        double feetToMeter = 1.0 / 0.3048;
 
         public Wpf_XPlan(Document doc,ExternalCommandData cData)
         {
@@ -94,7 +94,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
             // NLog
             #region logging
-            String tempPath = Path.GetTempPath();
+            string tempPath = Path.GetTempPath();
             var configNLog = new LoggingConfiguration();
 
             var fileTarget = new FileTarget("target2")
@@ -113,13 +113,6 @@ namespace City2RVT.GUI.XPlan2BIM
             var materialBuilder = new Builder.RevitXPlanBuilder(doc, app);
             Dictionary<string,ElementId> colorDict = materialBuilder.CreateMaterial();
 
-            // Transforms local coordinates to relative coordinates due to the fact that revit has a 20 miles limit for presentation of geometry. 
-            var transfClass = new City2RVT.Calc.Transformation();
-            Transform transf = transfClass.transform(doc);
-
-            // No UTM reduction at the moment, factor R = 1
-            double R = 1;
-
             //loads the selected GML file
             string xPlanGmlPath = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
@@ -134,9 +127,12 @@ namespace City2RVT.GUI.XPlan2BIM
                 xmlDoc.Load(xPlanGmlPath);
             }
 
-            XYZ origin = new XYZ(0, 0, 0);
-            XYZ normal = new XYZ(0, 0, feetToMeter);
-            Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
+            Transformation transformation = new Transformation();
+            Plane geomPlane = transformation.getGeomPlane(doc,new XYZ(0,0,1));
+
+            ProjectLocation projloc = doc.ActiveProjectLocation;
+            ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
+            double elevation = position_data.Elevation;
 
             // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
             var XmlNsmgr = new Builder.Revit_Semantic(doc);
@@ -192,7 +188,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     if (selectedLayers.Contains(xPlanObject))
                     {
                         //_______________________________________________________________________________________________
-                        // creates referenceplanes (if picked DTM, else new creating new referenceplane) for the surfaces
+                        // creates referenceplanes (if picked DTM, else creating new referenceplane) for the surfaces
                         //***********************************************************************************************
                         XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position", nsmgr);
                         if (xPlanExterior.Count > 0)
@@ -209,84 +205,15 @@ namespace City2RVT.GUI.XPlan2BIM
 
                         //_______________________________________________________________________________________________
                         // creates surfaces with parameters and values
-                        //***********************************************************************************************
-                        XmlNodeList bpSurface = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);
+                        //***********************************************************************************************                         
+                        XmlNodeList bpSurface = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);                        
                         xPlanBuilder.createSurface(xPlanObject, bpSurface, zOffset, xmlDoc, categorySet, geomPlane, logger, colorDict, refplaneId);
-                       
-                        #region lines
 
-                        XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "/xplan:position/gml:LineString", nsmgr);
+                        //_______________________________________________________________________________________________
+                        // creates line segments
+                        //***********************************************************************************************
+                        xPlanBuilder.createLineSegments(xPlanObject, /*geomPlane,*/ xmlDoc, nsmgr, zOffset, pickedId);                        
 
-                        List<string> lineList = new List<String>();
-                        int il = 0;
-                        foreach (XmlNode nodeLine in bpLines)
-                        {
-                            lineList.Add(nodeLine.InnerText);
-                            string[] koordWerteLine = lineList[il].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                            int ia = 0;
-
-                            using (Transaction createLine = new Transaction(doc, "Create Line for " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
-                            {
-                                createLine.Start();
-                                foreach (string split in koordWerteLine)
-                                {
-                                    var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
-
-                                    double xStart = Convert.ToDouble(koordWerteLine[ia], System.Globalization.CultureInfo.InvariantCulture);
-                                    double xStartMeter = xStart * feetToMeter;
-                                    double xStartMeterRedu = xStartMeter / R;
-                                    double yStart = Convert.ToDouble(koordWerteLine[ia + 1], System.Globalization.CultureInfo.InvariantCulture);
-                                    double yStartMeter = yStart * feetToMeter;
-                                    double yStartMeterRedu = yStartMeter / R;
-                                    double zStart = 0;
-                                    double zStartMeter = zStart * feetToMeter;
-
-                                    double xEnd = Convert.ToDouble(koordWerteLine[ia + 2], System.Globalization.CultureInfo.InvariantCulture);
-                                    double xEndMeter = xEnd * feetToMeter;
-                                    double xEndMeterRedu = xEndMeter / R;
-                                    double yEnd = Convert.ToDouble(koordWerteLine[ia + 3], System.Globalization.CultureInfo.InvariantCulture);
-                                    double yEndMeter = yEnd * feetToMeter;
-                                    double yEndMeterRedu = yEndMeter / R;
-                                    double zEnd = 0;
-                                    double zEndMeter = zEnd * feetToMeter;
-
-                                    XYZ startPoint = new XYZ(xStartMeterRedu, yStartMeterRedu, zStartMeter);
-                                    XYZ endPoint = new XYZ(xEndMeterRedu, yEndMeterRedu, zEndMeter);
-
-                                    XYZ tStartPoint = transf.OfPoint(startPoint);
-                                    XYZ tEndPoint = transf.OfPoint(endPoint);
-
-                                    Line lineString = Line.CreateBound(tStartPoint, tEndPoint);
-                                    {
-                                        FailureHandlingOptions optionsExterior = createLine.GetFailureHandlingOptions();
-                                        optionsExterior.SetFailuresPreprocessor(new AxesFailure());
-                                        createLine.SetFailureHandlingOptions(optionsExterior);
-
-                                        SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-
-                                        ModelLine line = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
-
-                                        GraphicsStyle gs = line.LineStyle as GraphicsStyle;
-
-                                        gs.GraphicsStyleCategory.LineColor = new Color(250, 10, 10);
-                                        gs.GraphicsStyleCategory.SetLineWeight(10, GraphicsStyleType.Projection);
-
-                                    }
-
-                                    if ((ia + 3) == (koordWerteLine.Count() - 1))
-                                    {
-                                        break;
-                                    }
-                                    ia += 2;
-                                }
-                                createLine.Commit();
-                            }
-                                
-                            il++;
-                        }
-
-                        #endregion lines
 
                         if (checkBoxZOffset.IsChecked == true)
                         {
@@ -380,10 +307,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click_ModifyParams(object sender, RoutedEventArgs e)
         {
-            //UIApplication uiapp = commandData.Application;
-            //UIDocument uidoc = uiapp.ActiveUIDocument;
-            //Document doc = uidoc.Document;
-
             string xPlanGmlPath = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
@@ -411,7 +334,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 foreach (var p in thisParams)
                 {
-                    //allParamList.Add(p + " (" + layer.ToString().Substring(layer.ToString().LastIndexOf(':')+1) + ")");
                     allParamList.Add(p + " (" + layer.ToString() + ")");
                 }
 
