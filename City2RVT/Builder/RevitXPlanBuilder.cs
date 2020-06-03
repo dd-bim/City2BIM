@@ -634,8 +634,6 @@ namespace City2RVT.Builder
                         XYZ tStartPoint = transf.OfPoint(startPoint);
                         XYZ tEndPoint = transf.OfPoint(endPoint);
 
-                        Outline outline = new Outline(tStartPoint,tEndPoint);
-
                         Element originalTerrain = doc.GetElement(pickedId);
                         TopographySurface terrain = originalTerrain as TopographySurface;
 
@@ -650,51 +648,22 @@ namespace City2RVT.Builder
                         var matchStart = elevationDict.OrderBy(e => Math.Abs(e.Key.DistanceTo(tStartPoint))).FirstOrDefault();
                         var matchEnd = elevationDict.OrderBy(e => Math.Abs(e.Key.DistanceTo(tEndPoint))).FirstOrDefault();
 
-                        XYZ startPointTerrain = new XYZ(matchStart.Key.X, matchStart.Key.Y, matchStart.Value);
-                        XYZ endPointTerrain = new XYZ(matchEnd.Key.X, matchEnd.Key.Y, matchEnd.Value);
+                        XYZ startPointTerrain = new XYZ(tStartPoint.X,tStartPoint.Y, matchStart.Value);
+                        XYZ endPointTerrain = new XYZ(tEndPoint.X,tEndPoint.Y, matchEnd.Value);
 
-                        XYZ direction = (endPointTerrain - startPointTerrain).Normalize();
-                        XYZ skalar;
-
-
-                        XYZ norm;
-                        if (startPointTerrain.X == endPointTerrain.X)
-                        {
-                            norm = XYZ.BasisX;
-                            skalar = new XYZ(0, direction.Z, -direction.Y);
-                        }
-                        else if (startPointTerrain.Y == endPointTerrain.Y)
-                        {
-                            norm = XYZ.BasisY;
-                            skalar = new XYZ(direction.Z, 0, -direction.X);
-                        }
-                        else if (startPointTerrain.Z == endPointTerrain.Z)
-                        {
-                            norm = XYZ.BasisY;
-                            skalar = new XYZ(-direction.Y, direction.X, 0);
-                        }
-                        else
-                        {
-                            norm = XYZ.BasisZ;
-                            skalar = new XYZ(-direction.Y, direction.X, 0);
-                        }
-
-                        //Plane geomPlane2 = Plane.CreateByNormalAndOrigin(norm, startPointTerrain);
-
+                        XYZ norm = startPointTerrain.CrossProduct(endPointTerrain);
+                        XYZ skalar = endPointTerrain;
 
                         Calc.Transformation transformation = new Calc.Transformation();
-                        Plane geomPlane2 = transformation.getGeomPlane(doc, skalar);
+                        Plane geomPlane = transformation.getGeomPlane(doc, norm, skalar);
 
-
-                        //Line lineString = Line.CreateBound(new XYZ(tStartPoint.X,tStartPoint.Y,0), new XYZ(tEndPoint.X,tEndPoint.Y,0));
                         Line lineString = Line.CreateBound(startPointTerrain, endPointTerrain);
                         {
                             FailureHandlingOptions optionsExterior = createLine.GetFailureHandlingOptions();
                             optionsExterior.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
                             createLine.SetFailureHandlingOptions(optionsExterior);
 
-                            //SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
-                            SketchPlane sketch = SketchPlane.Create(doc, geomPlane2);
+                            SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
 
                             ModelLine line = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
 

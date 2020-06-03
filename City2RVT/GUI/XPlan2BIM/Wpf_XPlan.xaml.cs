@@ -127,8 +127,11 @@ namespace City2RVT.GUI.XPlan2BIM
                 xmlDoc.Load(xPlanGmlPath);
             }
 
+            XYZ origin = new XYZ(0, 0, 0);
+            XYZ normal = new XYZ(0, 0, 1);
+
             Transformation transformation = new Transformation();
-            Plane geomPlane = transformation.getGeomPlane(doc,new XYZ(0,0,1));
+            Plane geomPlane = transformation.getGeomPlane(doc,normal,origin);
 
             ProjectLocation projloc = doc.ActiveProjectLocation;
             ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);

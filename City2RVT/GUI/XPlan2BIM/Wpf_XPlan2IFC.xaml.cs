@@ -141,8 +141,8 @@ namespace City2RVT.GUI.XPlan2BIM
 
             using (var model = IfcStore.Open(original))
             {
-                foreach (var t in topoCollector)
-                {
+                foreach (Element t in topoCollector)
+                { 
                     TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
                     IList<XYZ> topoPoints = topoSurf.GetPoints();
                     ParameterSet topoParams = topoSurf.Parameters;
@@ -183,9 +183,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 bauweise.Add("GESCHLOSSENE_BAUWEISE");
                 bauweise.Add("ABWEICHENDE_BAUWEISE");
 
+                var ifcproject = model.Instances.FirstOrDefault<IfcProject>();
+
                 using (var txn = model.BeginTransaction("Create Project Information"))
                 {
-                    var ifcproject = model.Instances.FirstOrDefault<IfcProject>();
 
                     var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
 

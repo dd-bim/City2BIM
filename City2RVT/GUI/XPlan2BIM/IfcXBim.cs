@@ -37,6 +37,8 @@ using System.Xml;
 
 using City2RVT.Calc;
 using Xbim.Ifc4.ActorResource;
+using Xbim.Ifc4.QuantityResource;
+using System.Globalization;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -135,6 +137,48 @@ namespace City2RVT.GUI.XPlan2BIM
                             });
         }
 
+        private static void CreateQuantity(IfcStore model, IfcSite site, TopographySurface topoSurf)
+        {
+            //Create a IfcElementQuantity
+            //first we need a IfcPhysicalSimpleQuantity,first will use IfcQuantityLength
+            var ifcQuantityArea = model.Instances.New<IfcQuantityArea>(qa =>
+            {
+                qa.Name = "GrossArea";
+                qa.Description = "";
+                qa.Unit = model.Instances.New<IfcSIUnit>(siu =>
+                {
+                    siu.UnitType = IfcUnitEnum.AREAUNIT;
+                    //siu.Prefix = IfcSIPrefix.MILLI;
+                    siu.Name = IfcSIUnitName.SQUARE_METRE;
+                });
+                //qa.AreaValue = 100.0;  
+                var area = topoSurf.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
+                string[] areaSplit = area.Split(' ');
+                string areaWithoutUnit = areaSplit[0];
+                qa.AreaValue = Convert.ToDouble(areaWithoutUnit,CultureInfo.InvariantCulture);
+
+            });
+
+            //lets create the IfcElementQuantity
+            var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+            {
+                eq.Name = "Test:IfcElementQuantity";
+                eq.Description = "Measurement quantity";
+                eq.Quantities.Add(ifcQuantityArea);
+                //eq.Quantities.Add(ifcQuantityCount);
+                //eq.Quantities.Add(ifcQuantityLength);
+            });
+
+            //need to create the relationship
+            model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+            {
+                rdbp.Name = "Qto_SiteBaseQuantities";
+                rdbp.Description = "";
+                rdbp.RelatedObjects.Add(site);
+                rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+            });
+        }
+
         public void setAddressLine(Document doc, string address, IfcPostalAddress a)
         {
             Parameter addressLineParam = doc.ProjectInformation.LookupParameter(address);
@@ -153,7 +197,8 @@ namespace City2RVT.GUI.XPlan2BIM
             using (var txn = model.BeginTransaction("Create Ifc Export for topography"))
             {
                 var site = model.Instances.New<IfcSite>();
-                site.Name = "Site for " + "Test";
+                //site.Representatio
+                site.Name = "Site for " + bezeichnung;
                 site.RefElevation = 0.0;
                 site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;                
 
@@ -345,6 +390,31 @@ namespace City2RVT.GUI.XPlan2BIM
                         }
                     });
                 });
+
+
+
+                //set Quantities
+                CreateQuantity(model, site, topoSurf);
+//                model.Instances.New<IfcRelDefinesByProperties>(relBasic =>
+//                {
+//                    relBasic.RelatedObjects.Add(site);
+//                    relBasic.RelatingPropertyDefinition = model.Instances.New<IfcQuantitySet>(qsetBasic =>
+//                    {
+//                        qsetBasic.Name = "Qto_SiteBaseQuantities";
+
+//                        //site.AddQuantity("test",)
+
+//                        qsetBasic...(new[]
+//{
+//                            model.Instances.New<IfcQuantityArea>(p =>
+//                                {
+//                                    string rfaNameAttri = "GrossArea";
+//                                    p.Name = rfaNameAttri;
+//                                    p.AreaValue = 1.0;
+//                                }),
+//                            });
+//                    });
+//                });
 
                 //set a few basic properties
                 model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
