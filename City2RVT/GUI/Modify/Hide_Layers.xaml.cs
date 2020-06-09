@@ -42,6 +42,11 @@ namespace City2RVT.GUI.Modify
             foreach (var t in topoCollector)
             {
                 TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
+                var modelLineCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Lines).Cast<Element>().ToList();
+                if (modelLineCollector.Count > 0 )
+                {
+                    visibleElements.Add("model lines");
+                }
 
                 string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
 
@@ -76,6 +81,7 @@ namespace City2RVT.GUI.Modify
                     }
                 }
             }
+            xPlanObjectList.Add("model lines");
             xPlanObjectList.Sort();
 
             foreach (var elem in visibleElements)
@@ -118,9 +124,16 @@ namespace City2RVT.GUI.Modify
                 topoIds.Add(id.Id);
             }
 
+            FilteredElementCollector lineCollector = new FilteredElementCollector(doc, doc.ActiveView.Id).WherePasses(new ElementClassFilter(typeof(CurveElement)));
+
+            foreach (var id in lineCollector)
+            {
+                topoIds.Add(id.Id);
+            }
+
             foreach (var t in topoCollector)
             {
-                using (var transHideAll = new Transaction(doc, "Test"))
+                using (var transHideAll = new Transaction(doc, "Hide layer. "))
                 {
                     transHideAll.Start();
                     var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
@@ -154,7 +167,17 @@ namespace City2RVT.GUI.Modify
                     hiddenTopoIds.Add(id.Id);
                 }
 
-                using (var tran = new Transaction(doc, "Test"))
+                if (sl.ToString() == "model lines")
+                {
+                    var modelLineCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Lines).Cast<Element>().ToList();
+
+                    foreach (var id in modelLineCollector)
+                    {
+                        hiddenTopoIds.Add(id.Id);
+                    }
+                }
+
+                using (var tran = new Transaction(doc, "Show layer. "))
                 {
                     tran.Start();
                     var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;

@@ -54,22 +54,18 @@ namespace City2RVT.GUI.XPlan2BIM
         public class AxesFailure : IFailuresPreprocessor
         {
             //Eventhandler, der eine ignorierbare Warnung, die nur auf einzelnen Geräten auftrat, überspringt.
-            public FailureProcessingResult PreprocessFailures(
-              FailuresAccessor a)
+            public FailureProcessingResult PreprocessFailures(FailuresAccessor a)
             {
                 // inside event handler, get all warnings
-                IList<FailureMessageAccessor> failures
-                  = a.GetFailureMessages();
+                IList<FailureMessageAccessor> failures = a.GetFailureMessages();
 
                 foreach (FailureMessageAccessor f in failures)
                 {
                     // check failure definition ids 
                     // against ones to dismiss:
-                    FailureDefinitionId id
-                      = f.GetFailureDefinitionId();
+                    FailureDefinitionId id = f.GetFailureDefinitionId();
 
-                    if (BuiltInFailures.InaccurateFailures.InaccurateSketchLine
-                      == id)
+                    if (BuiltInFailures.InaccurateFailures.InaccurateSketchLine == id)
                     {
                         a.DeleteWarning(f);
                     }
@@ -131,7 +127,7 @@ namespace City2RVT.GUI.XPlan2BIM
             XYZ normal = new XYZ(0, 0, 1);
 
             Transformation transformation = new Transformation();
-            Plane geomPlane = transformation.getGeomPlane(doc,normal,origin);
+            Plane geomPlane = transformation.getGeomPlane(/*doc, */normal, origin);
 
             ProjectLocation projloc = doc.ActiveProjectLocation;
             ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);

@@ -47,11 +47,11 @@ namespace City2RVT.Calc
             return transf;
         }
 
-        public Plane getGeomPlane(Document doc, XYZ normal, XYZ origin)
+        public Plane getGeomPlane(/*Document doc, */XYZ normal, XYZ origin)
         {
-            ProjectLocation projloc = doc.ActiveProjectLocation;
-            ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
-            double elevation = position_data.Elevation;
+            //ProjectLocation projloc = doc.ActiveProjectLocation;
+            //ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
+            //double elevation = position_data.Elevation;
 
             //XYZ origin = new XYZ(0, 0, 0);
             //XYZ normal = new XYZ(direction.X, direction.Y, direction.Z);

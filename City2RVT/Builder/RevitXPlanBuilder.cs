@@ -606,10 +606,12 @@ namespace City2RVT.Builder
                 using (Transaction createLine = new Transaction(doc, "Create Line for " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
                 {
                     createLine.Start();
+                    FailureHandlingOptions optionsLines = createLine.GetFailureHandlingOptions();
+                    optionsLines.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
+                    createLine.SetFailureHandlingOptions(optionsLines);
+
                     foreach (string split in koordWerteLine)
                     {
-                        var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
-
                         double xStart = Convert.ToDouble(koordWerteLine[ia], System.Globalization.CultureInfo.InvariantCulture);
                         double xStartMeter = xStart * feetToMeter;
                         double xStartMeterRedu = xStartMeter / R;
@@ -638,31 +640,25 @@ namespace City2RVT.Builder
                         TopographySurface terrain = originalTerrain as TopographySurface;
 
                         var terPoints = terrain.GetInteriorPoints();
-                        Dictionary<XYZ, double> elevationDict = new Dictionary<XYZ, double>();
-                        double[] startP = new double[] { tStartPoint.X, tStartPoint.Y };
+                        List<XYZ> elevationList = new List<XYZ>();
                         foreach (var tp in terPoints)
                         {
-                            elevationDict.Add(tp/feetToMeter, tp.Z/feetToMeter);
+                            elevationList.Add(tp);
                         }
 
-                        var matchStart = elevationDict.OrderBy(e => Math.Abs(e.Key.DistanceTo(tStartPoint))).FirstOrDefault();
-                        var matchEnd = elevationDict.OrderBy(e => Math.Abs(e.Key.DistanceTo(tEndPoint))).FirstOrDefault();
+                        var matchStart = elevationList.OrderBy(e => Math.Abs(e.DistanceTo(tStartPoint))).FirstOrDefault();
+                        var matchEnd = elevationList.OrderBy(e => Math.Abs(e.DistanceTo(tEndPoint))).FirstOrDefault();
 
-                        XYZ startPointTerrain = new XYZ(tStartPoint.X,tStartPoint.Y, matchStart.Value);
-                        XYZ endPointTerrain = new XYZ(tEndPoint.X,tEndPoint.Y, matchEnd.Value);
+                        XYZ startPointTerrain = new XYZ(tStartPoint.X,tStartPoint.Y, matchStart.Z);
+                        XYZ endPointTerrain = new XYZ(tEndPoint.X,tEndPoint.Y, matchEnd.Z);
 
                         XYZ norm = startPointTerrain.CrossProduct(endPointTerrain);
-                        XYZ skalar = endPointTerrain;
+                        XYZ origin = endPointTerrain;
 
                         Calc.Transformation transformation = new Calc.Transformation();
-                        Plane geomPlane = transformation.getGeomPlane(doc, norm, skalar);
-
+                        Plane geomPlane = transformation.getGeomPlane(/*doc, */norm, origin);
                         Line lineString = Line.CreateBound(startPointTerrain, endPointTerrain);
-                        {
-                            FailureHandlingOptions optionsExterior = createLine.GetFailureHandlingOptions();
-                            optionsExterior.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
-                            createLine.SetFailureHandlingOptions(optionsExterior);
-
+                        {      
                             SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
 
                             ModelLine line = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
@@ -681,7 +677,6 @@ namespace City2RVT.Builder
                     }
                     createLine.Commit();
                 }
-
                 il++;
             }
         }
