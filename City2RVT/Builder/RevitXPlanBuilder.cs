@@ -16,6 +16,7 @@ using NLog;
 using NLog.Targets;
 using NLog.Config;
 using Xbim.Tessellator;
+using City2RVT.GUI.XPlan2BIM;
 
 namespace City2RVT.Builder
 {
@@ -584,7 +585,7 @@ namespace City2RVT.Builder
             }
         }
 
-        public void createLineSegments(string xPlanObject, /*Plane geomPlane,*/ XmlDocument xmlDoc, XmlNamespaceManager nsmgr, double zOffset, ElementId pickedId)
+        public void createLineSegments(string xPlanObject, /*Plane geomPlane,*/ XmlDocument xmlDoc, XmlNamespaceManager nsmgr, double zOffset, ElementId pickedId, bool drape_checked)
         {
             XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "/xplan:position/gml:LineString", nsmgr);
 
@@ -636,28 +637,41 @@ namespace City2RVT.Builder
                         XYZ tStartPoint = transf.OfPoint(startPoint);
                         XYZ tEndPoint = transf.OfPoint(endPoint);
 
-                        Element originalTerrain = doc.GetElement(pickedId);
-                        TopographySurface terrain = originalTerrain as TopographySurface;
-
-                        var terPoints = terrain.GetInteriorPoints();
-                        List<XYZ> elevationList = new List<XYZ>();
-                        foreach (var tp in terPoints)
-                        {
-                            elevationList.Add(tp);
-                        }
-
-                        var matchStart = elevationList.OrderBy(e => Math.Abs(e.DistanceTo(tStartPoint))).FirstOrDefault();
-                        var matchEnd = elevationList.OrderBy(e => Math.Abs(e.DistanceTo(tEndPoint))).FirstOrDefault();
-
-                        XYZ startPointTerrain = new XYZ(tStartPoint.X,tStartPoint.Y, matchStart.Z);
-                        XYZ endPointTerrain = new XYZ(tEndPoint.X,tEndPoint.Y, matchEnd.Z);
-
-                        XYZ norm = startPointTerrain.CrossProduct(endPointTerrain);
-                        XYZ origin = endPointTerrain;
-
                         Calc.Transformation transformation = new Calc.Transformation();
-                        Plane geomPlane = transformation.getGeomPlane(/*doc, */norm, origin);
-                        Line lineString = Line.CreateBound(startPointTerrain, endPointTerrain);
+                        Plane geomPlane = default;
+                        Line lineString = default;
+                        if (drape_checked == true)
+                        {
+                            Element originalTerrain = doc.GetElement(pickedId);
+                            TopographySurface terrain = originalTerrain as TopographySurface;
+
+                            var terPoints = terrain.GetInteriorPoints();
+                            List<XYZ> elevationList = new List<XYZ>();
+                            foreach (var tp in terPoints)
+                            {
+                                elevationList.Add(tp);
+                            }
+
+                            var matchStart = elevationList.OrderBy(e => Math.Abs(e.DistanceTo(tStartPoint))).FirstOrDefault();
+                            var matchEnd = elevationList.OrderBy(e => Math.Abs(e.DistanceTo(tEndPoint))).FirstOrDefault();
+
+                            XYZ startPointTerrain = new XYZ(tStartPoint.X, tStartPoint.Y, matchStart.Z);
+                            XYZ endPointTerrain = new XYZ(tEndPoint.X, tEndPoint.Y, matchEnd.Z);
+
+                            XYZ norm = startPointTerrain.CrossProduct(endPointTerrain);
+                            XYZ origin = endPointTerrain;
+
+                            geomPlane = transformation.getGeomPlane(norm, origin);
+                            lineString = Line.CreateBound(startPointTerrain, endPointTerrain);
+                        }
+                        else
+                        {
+                            XYZ origin = new XYZ(0, 0, tStartPoint.Z);
+                            XYZ norm = new XYZ(0, 0, 1);
+                            geomPlane = transformation.getGeomPlane(norm, origin);
+                            lineString = Line.CreateBound(tStartPoint, tEndPoint);
+                        }
+                        
                         {      
                             SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
 

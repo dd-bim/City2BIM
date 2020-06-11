@@ -20,6 +20,8 @@ using Xbim.Ifc4.GeometricModelResource;
 using Xbim.Ifc4.GeometryResource;
 using System.IO;
 using City2RVT.Calc;
+using Xbim.Ifc2x3.ProductExtension;
+using Xbim.Ifc2x3.UtilityResource;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -126,8 +128,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     IFCOptions.AddOption("IncludeSiteElevation", "true");
                     IFCOptions.AddOption("ExportPartsAsBuildingElements", "true");
                     IFCOptions.AddOption("ExportInternalRevitPropertySets", "false");
-                    IFCOptions.AddOption("ExportIFCCommonPropertySets", "true");
-
+                    IFCOptions.AddOption("ExportIFCCommonPropertySets", "true");                   
 
                     //Export the model to IFC
                     doc.Export(folder, ifcWithoutTopo, IFCOptions);
@@ -141,6 +142,72 @@ namespace City2RVT.GUI.XPlan2BIM
 
             using (var model = IfcStore.Open(original))
             {
+                // Standard Site mit PostalAddress versehen
+                var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
+                var ifcSite = ifcProject.Sites.FirstOrDefault();
+
+                //var editor = new XbimEditorCredentials
+                //{
+                //    ApplicationDevelopersName = "xbim developer",
+                //    ApplicationFullName = "xbim toolkit",
+                //    ApplicationIdentifier = "xbim",
+                //    ApplicationVersion = "4.0",
+                //    EditorsFamilyName = "Santini Aichel",
+                //    EditorsGivenName = "Johann Blasius",
+                //    EditorsOrganisationName = "Independent Architecture"
+                //};
+
+
+                using (var txn = model.BeginTransaction("Change Revit Export"))
+                {
+                    var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+
+                    double[] richtung = UTMcalc.AzimuthToLocalVector(angle);
+                    geomRepContext.TrueNorth = model.Instances.New<IfcDirection>();
+                    geomRepContext.TrueNorth.SetXY(richtung[0], richtung[1]);
+
+                    var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
+                    projectBasePoint.SetXYZ(10, 10, 10);
+                    var ax3D = model.Instances.New<IfcAxis2Placement3D>();
+                    ax3D.Location = projectBasePoint;
+
+                    geomRepContext.WorldCoordinateSystem = ax3D;
+
+                    var mapConversion = model.Instances.New<IfcMapConversion>();
+                    mapConversion.SourceCRS = geomRepContext;
+                    mapConversion.Eastings = pbp.X;
+                    mapConversion.Northings = pbp.Y;
+                    mapConversion.OrthogonalHeight = pbp.Z;
+                    mapConversion.XAxisAbscissa = richtung[0];
+                    mapConversion.XAxisOrdinate = richtung[1];
+                    mapConversion.Scale = 1.0;
+
+                    var ifcAddress = model.Instances.New<Xbim.Ifc4.ActorResource.IfcPostalAddress>(a =>
+                    {
+                        a.Description = "Adresse fuer Baugrundstueck. ";
+                        IfcXBim ifcXBim = new IfcXBim();
+                        ifcXBim.setAddressLine(doc, "Address Line", a);
+                        a.Town = ifcXBim.setAddressValues(doc, "Town");
+                        a.Region = ifcXBim.setAddressValues(doc, "Region");
+                        a.PostalCode = ifcXBim.setAddressValues(doc, "Postal Code");
+                        a.Country = ifcXBim.setAddressValues(doc, "Country");
+                    });
+                    ifcSite.SiteAddress = ifcAddress;
+
+                    var projectedCRS = model.Instances.New<IfcProjectedCRS>(p =>
+                    {
+                        p.Description = "CRS fuer Baugrundstueck. ";
+                        IfcXBim ifcXBim = new IfcXBim();
+                        p.GeodeticDatum = ifcXBim.setCrsValue(doc, "GeodeticDatum");
+                        p.VerticalDatum = ifcXBim.setCrsValue(doc, "VerticalDatum");
+                        p.MapProjection = ifcXBim.setCrsValue(doc, "MapProjection");
+                        p.MapZone = ifcXBim.setCrsValue(doc, "MapZone");
+                    });
+                    mapConversion.TargetCRS = projectedCRS;
+
+                    txn.Commit();
+                }
+
                 foreach (Element t in topoCollector)
                 { 
                     TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
@@ -157,7 +224,7 @@ namespace City2RVT.GUI.XPlan2BIM
                     // nur für die Darstellung in Revit notwendig sind, nicht nach IFC exportiert werden.
                     if (bezeichnung.StartsWith("Reference plane") == false)
                     {
-                        IfcXBim.CreateSite(model, topoPoints, /*transf, */topoParams, bezeichnung, topoSurf, pbp, doc);
+                        IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc);
                     }
                 }
 
@@ -183,34 +250,19 @@ namespace City2RVT.GUI.XPlan2BIM
                 bauweise.Add("GESCHLOSSENE_BAUWEISE");
                 bauweise.Add("ABWEICHENDE_BAUWEISE");
 
-                var ifcproject = model.Instances.FirstOrDefault<IfcProject>();
-
                 using (var txn = model.BeginTransaction("Create Project Information"))
-                {
-
-                    var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-
-                    double[] richtung = UTMcalc.AzimuthToLocalVector(angle);
-
-
-                    geomRepContext.TrueNorth = model.Instances.New<IfcDirection>();
-                    geomRepContext.TrueNorth.SetXY(richtung[0], richtung[1]);
-
-
-                    ifcproject.RepresentationContexts.Add(geomRepContext);
-
-                    //set a few basic properties
+                { 
                     model.Instances.New<IfcRelDefinesByProperties>(rel =>
                     {
-                        rel.RelatedObjects.Add(ifcproject);
+                        rel.RelatedObjects.Add(ifcProject);
                         rel.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pset =>
                         {
                             pset.Name = "BauantragAllgemein";
                             IfcXBim ifcXBim = new IfcXBim();
                             ifcXBim.getProjectProperties(pset, model, doc, "Bezeichnung des Bauvorhabens");
-                            ifcXBim.getProjectEnums(pset, model, doc, "Art der Maßnahme",artDerMassnahme);
-                            ifcXBim.getProjectProperties(pset, model, doc, "Art des Gebäudes");
-                            ifcXBim.getProjectEnums(pset, model, doc, "Gebäudeklasse", gebaeudeKlasse);
+                            ifcXBim.getProjectEnums(pset, model, doc, "Art der Massnahme",artDerMassnahme);
+                            ifcXBim.getProjectProperties(pset, model, doc, "Art des Gebaeudes");
+                            ifcXBim.getProjectEnums(pset, model, doc, "Gebaeudeklasse", gebaeudeKlasse);
                             ifcXBim.getProjectEnums(pset, model, doc, "Bauweise", bauweise);
                         });
                     });
@@ -235,7 +287,6 @@ namespace City2RVT.GUI.XPlan2BIM
         {
             
         }
-
 
         private void ifc_name_textbox_TextChanged(object sender, TextChangedEventArgs e)
         {

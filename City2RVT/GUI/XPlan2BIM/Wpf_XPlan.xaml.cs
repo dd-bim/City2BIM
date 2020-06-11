@@ -143,8 +143,8 @@ namespace City2RVT.GUI.XPlan2BIM
             Category projCategory = doc.Settings.Categories.get_Item(BuiltInCategory.OST_ProjectInformation);
             CategorySet categorySet = app.Create.NewCategorySet();
             CategorySet projCategorySet = app.Create.NewCategorySet();
-            categorySet.Insert(category);
-            projCategorySet.Insert(projCategory);
+            _ = categorySet.Insert(category);
+            _ = projCategorySet.Insert(projCategory);
 
             #endregion parameter  
 
@@ -172,6 +172,7 @@ namespace City2RVT.GUI.XPlan2BIM
             double zOffset = 0.0;
             if (selectedLayers.Count != 0)
             {
+                bool drape_checked = false;
                 if (check_drape.IsChecked == true)
                 {
                     this.Hide();
@@ -180,6 +181,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                     pickedId = hasPickOne.ElementId;
                     this.Show();
+                    drape_checked = true;
                 }
 
                 foreach (string xPlanObject in xPlanObjectList)
@@ -211,7 +213,8 @@ namespace City2RVT.GUI.XPlan2BIM
                         //_______________________________________________________________________________________________
                         // creates line segments
                         //***********************************************************************************************
-                        xPlanBuilder.createLineSegments(xPlanObject, /*geomPlane,*/ xmlDoc, nsmgr, zOffset, pickedId);                        
+                        //bool drape_checked = (bool)check_drape.IsChecked;
+                        xPlanBuilder.createLineSegments(xPlanObject, /*geomPlane,*/ xmlDoc, nsmgr, zOffset, pickedId, drape_checked);                        
 
 
                         if (checkBoxZOffset.IsChecked == true)
@@ -267,7 +270,7 @@ namespace City2RVT.GUI.XPlan2BIM
             int ix = 0;
             foreach (string item in xPlanObjectList)
             {
-                categoryListbox_selectedLayer.Items.Add(xPlanObjectList[ix]);
+                _ = categoryListbox_selectedLayer.Items.Add(xPlanObjectList[ix]);
                 ix++;
             }
         }
@@ -343,7 +346,7 @@ namespace City2RVT.GUI.XPlan2BIM
             GUI.Prop_NAS_settings.ParamList = allParamList;
 
             Modify.ModifyParameterForm f1 = new Modify.ModifyParameterForm();
-            f1.ShowDialog();
+            _ = f1.ShowDialog();
         }
 
         private void drape_Checked(object sender, RoutedEventArgs e)

@@ -73,34 +73,20 @@ namespace City2RVT.Builder
                 doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
         }
 
-
-        /// <summary>
-        /// Creates Project Information for the revit project where the data is imported to, like general data or postal address 
-        /// </summary>
-        public void CreateProjectInformation(Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet)
+        public void CreateProjectInformationParameter(List<string> projInfoList, Autodesk.Revit.ApplicationServices.Application app, CategorySet projCatSet, BuiltInParameterGroup builtInParameterGroup)
         {
-            List<string> projectInformationList = new List<string>();
-            projectInformationList.Add("Bezeichnung des Bauvorhabens");
-            projectInformationList.Add("Art der Maßnahme");
-            projectInformationList.Add("Art des Gebäudes");
-            projectInformationList.Add("Gebäudeklasse");
-            projectInformationList.Add("Bauweise");
-
-            DefinitionFile defFile = default(DefinitionFile);
-            City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new GUI.XPlan2BIM.XPlan_Parameter();
-
+            DefinitionFile defFile = default;
+            GUI.XPlan2BIM.XPlan_Parameter parameter = new GUI.XPlan2BIM.XPlan_Parameter();
             string paramFile = doc.Application.SharedParametersFilename;
 
-            var selectedParams = GUI.Prop_NAS_settings.SelectedParams;
-
-            foreach (var p in projectInformationList)
+            foreach (var p in projInfoList)
             {
                 defFile = parameter.CreateDefinitionFile(paramFile, app, doc, p, "ProjectInformation");
             }
 
             foreach (DefinitionGroup dg in defFile.Groups)
             {
-                foreach (var projInfoName in projectInformationList)
+                foreach (var projInfoName in projInfoList)
                 {
                     if (dg.Name == "ProjectInformation")
                     {
@@ -109,10 +95,10 @@ namespace City2RVT.Builder
                         Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
                         {
                             tProjectInfo.Start();
-                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
+                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCatSet);
                             if (externalDefinition != null)
                             {
-                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_GENERAL);
+                                doc.ParameterBindings.Insert(externalDefinition, newIB, builtInParameterGroup);
                             }
                             //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
                         }
@@ -120,6 +106,21 @@ namespace City2RVT.Builder
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates Project Information for the revit project where the data is imported to, like general data or postal address 
+        /// </summary>
+        public void CreateProjectInformation(Autodesk.Revit.ApplicationServices.Application app, Document doc, CategorySet projCategorySet)
+        {
+            List<string> projectInformationList = new List<string>();
+            projectInformationList.Add("Bezeichnung des Bauvorhabens");
+            projectInformationList.Add("Art der Massnahme");
+            projectInformationList.Add("Art des Gebaeudes");
+            projectInformationList.Add("Gebaeudeklasse");
+            projectInformationList.Add("Bauweise");
+
+            CreateProjectInformationParameter(projectInformationList, app, projCategorySet, BuiltInParameterGroup.PG_GENERAL);
 
             List<string> projectAddressList = new List<string>();
             projectAddressList.Add("Address Line");
@@ -128,33 +129,15 @@ namespace City2RVT.Builder
             projectAddressList.Add("Region");
             projectAddressList.Add("Country");
 
-            foreach (var a in projectAddressList)
-            {
-                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, a, "IfcSiteAddress");
-            }
+            CreateProjectInformationParameter(projectAddressList, app, projCategorySet, BuiltInParameterGroup.PG_DATA);
 
-            foreach (DefinitionGroup dg in defFile.Groups)
-            {
-                foreach (var projInfoName in projectAddressList)
-                {
-                    if (dg.Name == "IfcSiteAddress")
-                    {
-                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
+            List<string> crsList = new List<string>();
+            crsList.Add("GeodeticDatum");
+            crsList.Add("VerticalDatum");
+            crsList.Add("MapProjection");
+            crsList.Add("MapZone");
 
-                        Transaction tProjectInfo = new Transaction(doc, "Insert IfcSiteAddress");
-                        {
-                            tProjectInfo.Start();
-                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCategorySet);
-                            if (externalDefinition != null)
-                            {
-                                doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_DATA);
-                            }
-                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
-                        }
-                        tProjectInfo.Commit();
-                    }
-                }
-            }
+            CreateProjectInformationParameter(crsList, app, projCategorySet, BuiltInParameterGroup.PG_ANALYTICAL_MODEL);
         }
 
         private ParameterType GetParameterType(Xml_AttrRep.AttrType gmlType)

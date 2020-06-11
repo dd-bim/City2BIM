@@ -111,10 +111,10 @@ namespace City2RVT.GUI.XPlan2BIM
                             }
                             else
                             {
-                                TaskDialog.Show("Warning","Please select an permitted value for '" + name + "'. Value for '" + projInfoParam.AsString() + "' is set to '-'. " +
-                                    "See 'Modellierungsrichtlinie für den BIM-basierten Bauantrag ZUKUNFT BAU' for further information. ");
-                                string projInfoParamValue = "-";
-                                pev.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
+                                //TaskDialog.Show("Warning","Please select an permitted value for '" + name + "'. Value for '" + projInfoParam.AsString() + "' is set to '-'. " +
+                                //    "See 'Modellierungsrichtlinie für den BIM-basierten Bauantrag ZUKUNFT BAU' for further information. ");
+                                //string projInfoParamValue = "-";
+                                //pev.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
                             }
                         });                                    
                     }),
@@ -186,6 +186,27 @@ namespace City2RVT.GUI.XPlan2BIM
             a.AddressLines.Add(addressLineParamValue);
         }
 
+        public string setAddressValues(Document doc, string addressParam)
+        {
+            Parameter param = doc.ProjectInformation.LookupParameter(addressParam);
+            string paramValue = param.AsString();
+
+            return paramValue;
+        }
+
+        public string setCrsValue(Document doc, string crsParam)
+        {
+            string paramValue = default;
+            if (doc.ProjectInformation.LookupParameter(crsParam) != null)
+            {
+                Parameter param = doc.ProjectInformation.LookupParameter(crsParam);
+                paramValue = param.AsString();
+            }
+            
+
+            return paramValue;
+        }
+
         /// <summary>
         /// Creates an IFCSite which includes geometry and properties taken from revit project along with some basic predefined properties. 
         /// </summary>
@@ -193,6 +214,10 @@ namespace City2RVT.GUI.XPlan2BIM
             XYZ pbp, Document doc)
         {
             double feetToMeter = 1.0 / 0.3048;
+            var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
+
+
+
 
             using (var txn = model.BeginTransaction("Create Ifc Export for topography"))
             {
@@ -216,13 +241,13 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var ifcAddress = model.Instances.New<Xbim.Ifc4.ActorResource.IfcPostalAddress>(a =>
                 {
-                    a.Description = "Keine Addresse pro Flurstück/Nutzungfläche sondern für das Baugrundstück bzw. Bauobjekt. ";
+                    a.Description = "Adresse fuer Baugrundstueck. ";
                     IfcXBim ifcXBim = new IfcXBim();
                     ifcXBim.setAddressLine(doc, "Address Line", a);
-                    ifcXBim.setAddressLine(doc, "Postal Code", a);
-                    ifcXBim.setAddressLine(doc, "Town", a);
-                    ifcXBim.setAddressLine(doc, "Region", a);
-                    ifcXBim.setAddressLine(doc, "Country", a);
+                    a.Town = ifcXBim.setAddressValues(doc, "Town");
+                    a.Region = ifcXBim.setAddressValues(doc, "Region");
+                    a.PostalCode = ifcXBim.setAddressValues(doc, "Postal Code");
+                    a.Country = ifcXBim.setAddressValues(doc, "Country");
                 });
                 site.SiteAddress = ifcAddress;
 
@@ -286,7 +311,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var surfaceStyleRendering = model.Instances.New<IfcSurfaceStyleRendering>();
                 surfaceStyleRendering.SurfaceColour = colourRgb;
-                surfaceStyleRendering.Transparency = 50;
+                surfaceStyleRendering.Transparency = 0.5;
 
                 var surfaceStyle = model.Instances.New<IfcSurfaceStyle>();
                 surfaceStyle.Styles.Add(surfaceStyleRendering);
@@ -313,24 +338,24 @@ namespace City2RVT.GUI.XPlan2BIM
                 material.HasRepresentation.Append(materialDefRepresentation);
 
                 //shape definition 1
-                var umringShape = model.Instances.New<IfcShapeRepresentation>();
-                var modelContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-                umringShape.ContextOfItems = modelContext;
-                umringShape.RepresentationIdentifier = "Body";
-                umringShape.RepresentationType = "SweptSolid";
-                umringShape.Items.Add(curveSetFace);
+                var shapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+                var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+                //shapeRepresentation.RepresentationType = new IfcLabel("SurfaceOrSolidModel");
 
-                //shape definition 2
-                var umringShape2 = model.Instances.New<IfcShapeRepresentation>();
-                var modelContextKrone2 = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-                umringShape2.ContextOfItems = modelContext;                
-                umringShape2.RepresentationIdentifier = "FootPrint";
-                umringShape2.RepresentationType = "Curve2D";
-                umringShape2.Items.Add(curveSet);
+                //ProjectLocation projloc = doc.ActiveProjectLocation;
+                //ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
+                //double angle = position_data.Angle;
+                //double[] richtung = UTMcalc.AzimuthToLocalVector(angle);
+                //geomRepContext.TrueNorth = model.Instances.New<IfcDirection>();
+                //geomRepContext.TrueNorth.SetXY(richtung[0], richtung[1]); 
+
+                shapeRepresentation.ContextOfItems = geomRepContext;
+                shapeRepresentation.RepresentationIdentifier = "Body";
+                shapeRepresentation.RepresentationType = "SurfaceModel";
+                shapeRepresentation.Items.Add(curveSetFace);
 
                 var rep = model.Instances.New<IfcProductDefinitionShape>();
-                rep.Representations.Add(umringShape);
-                rep.Representations.Add(umringShape2);
+                rep.Representations.Add(shapeRepresentation);
                 site.Representation = rep;
 
                 var lp = model.Instances.New<IfcLocalPlacement>();
@@ -342,6 +367,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 ax3D.Axis.SetXYZ(0, 0, 1);
                 lp.RelativePlacement = ax3D;
                 site.ObjectPlacement = lp;
+
 
                 List<string> guidList = new List<string>();
                 foreach (Parameter v in topoParams)
@@ -391,30 +417,8 @@ namespace City2RVT.GUI.XPlan2BIM
                     });
                 });
 
-
-
                 //set Quantities
                 CreateQuantity(model, site, topoSurf);
-//                model.Instances.New<IfcRelDefinesByProperties>(relBasic =>
-//                {
-//                    relBasic.RelatedObjects.Add(site);
-//                    relBasic.RelatingPropertyDefinition = model.Instances.New<IfcQuantitySet>(qsetBasic =>
-//                    {
-//                        qsetBasic.Name = "Qto_SiteBaseQuantities";
-
-//                        //site.AddQuantity("test",)
-
-//                        qsetBasic...(new[]
-//{
-//                            model.Instances.New<IfcQuantityArea>(p =>
-//                                {
-//                                    string rfaNameAttri = "GrossArea";
-//                                    p.Name = rfaNameAttri;
-//                                    p.AreaValue = 1.0;
-//                                }),
-//                            });
-//                    });
-//                });
 
                 //set a few basic properties
                 model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
@@ -457,7 +461,11 @@ namespace City2RVT.GUI.XPlan2BIM
                             }
                         }                        
                     });
-                });                
+                });
+
+                var relAggregates = model.Instances.New<IfcRelAggregates>();
+                relAggregates.RelatingObject = ifcProject;
+                relAggregates.RelatedObjects.Add(site);
 
                 txn.Commit();
                 return site;

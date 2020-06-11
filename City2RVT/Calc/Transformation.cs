@@ -47,7 +47,7 @@ namespace City2RVT.Calc
             return transf;
         }
 
-        public Plane getGeomPlane(/*Document doc, */XYZ normal, XYZ origin)
+        public Plane getGeomPlane(XYZ normal, XYZ origin)
         {
             //ProjectLocation projloc = doc.ActiveProjectLocation;
             //ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
