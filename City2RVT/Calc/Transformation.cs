@@ -60,5 +60,27 @@ namespace City2RVT.Calc
 
             return geomPlane;
         }
+
+        public XYZ getProjectBasePoint(Document doc)
+        {
+            ProjectLocation projloc = doc.ActiveProjectLocation;
+            ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
+            double elevation = position_data.Elevation;
+            double easting = position_data.EastWest;
+            double northing = position_data.NorthSouth;
+
+            XYZ pbp = new XYZ(Math.Round((easting / feetToMeter), 4), (Math.Round((northing / feetToMeter), 4)), (Math.Round((elevation / feetToMeter), 4)));
+
+            return pbp;
+        }
+
+        public Double getAngle(Document doc)
+        {
+            ProjectLocation projloc = doc.ActiveProjectLocation;
+            ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
+            double angle = position_data.Angle;
+
+            return angle;
+        }
     }
 }

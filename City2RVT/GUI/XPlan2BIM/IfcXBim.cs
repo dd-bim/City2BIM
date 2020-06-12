@@ -96,6 +96,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                         pev.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
                         {
+                            pe.Name = name + "_enum";
                             foreach (var enu in enums)
                             {
                                 pe.EnumerationValues.Add(new IfcLabel(enu));
@@ -151,7 +152,6 @@ namespace City2RVT.GUI.XPlan2BIM
                     //siu.Prefix = IfcSIPrefix.MILLI;
                     siu.Name = IfcSIUnitName.SQUARE_METRE;
                 });
-                //qa.AreaValue = 100.0;  
                 var area = topoSurf.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
                 string[] areaSplit = area.Split(' ');
                 string areaWithoutUnit = areaSplit[0];
@@ -165,8 +165,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 eq.Name = "Test:IfcElementQuantity";
                 eq.Description = "Measurement quantity";
                 eq.Quantities.Add(ifcQuantityArea);
-                //eq.Quantities.Add(ifcQuantityCount);
-                //eq.Quantities.Add(ifcQuantityLength);
             });
 
             //need to create the relationship
@@ -202,27 +200,20 @@ namespace City2RVT.GUI.XPlan2BIM
                 Parameter param = doc.ProjectInformation.LookupParameter(crsParam);
                 paramValue = param.AsString();
             }
-            
-
             return paramValue;
         }
 
         /// <summary>
         /// Creates an IFCSite which includes geometry and properties taken from revit project along with some basic predefined properties. 
         /// </summary>
-        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf, 
-            XYZ pbp, Document doc)
+        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf, XYZ pbp, Document doc)
         {
             double feetToMeter = 1.0 / 0.3048;
             var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
 
-
-
-
             using (var txn = model.BeginTransaction("Create Ifc Export for topography"))
             {
                 var site = model.Instances.New<IfcSite>();
-                //site.Representatio
                 site.Name = "Site for " + bezeichnung;
                 site.RefElevation = 0.0;
                 site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;                
@@ -239,7 +230,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 site.GlobalId = Guid.NewGuid();
 
-                var ifcAddress = model.Instances.New<Xbim.Ifc4.ActorResource.IfcPostalAddress>(a =>
+                var ifcAddress = model.Instances.New<IfcPostalAddress>(a =>
                 {
                     a.Description = "Adresse fuer Baugrundstueck. ";
                     IfcXBim ifcXBim = new IfcXBim();
@@ -321,7 +312,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 presentation.Styles.Add(surfaceStyle);
 
                 var curveSetFace = model.Instances.New<IfcFaceBasedSurfaceModel>();
-                //var curveSetFace = model.Instances.New<IfcGeometricRepresentationItem>();
                 curveSetFace.FbsmFaces.Add(connFaceSet);
 
                 var style = model.Instances.New<IfcStyledItem>();
@@ -331,9 +321,11 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
                 styledRepresentation.Items.Add(style);
+                
 
                 var materialDefRepresentation = model.Instances.New<IfcMaterialDefinitionRepresentation>();
                 materialDefRepresentation.Representations.Add(styledRepresentation);
+                materialDefRepresentation.RepresentedMaterial = material;
 
                 material.HasRepresentation.Append(materialDefRepresentation);
 
@@ -354,19 +346,21 @@ namespace City2RVT.GUI.XPlan2BIM
                 shapeRepresentation.RepresentationType = "SurfaceModel";
                 shapeRepresentation.Items.Add(curveSetFace);
 
+                styledRepresentation.ContextOfItems = geomRepContext;
+
                 var rep = model.Instances.New<IfcProductDefinitionShape>();
                 rep.Representations.Add(shapeRepresentation);
                 site.Representation = rep;
 
-                var lp = model.Instances.New<IfcLocalPlacement>();
+                var localPlacement = model.Instances.New<IfcLocalPlacement>();
                 var ax3D = model.Instances.New<IfcAxis2Placement3D>();
                 ax3D.Location = projectBasePoint;
                 ax3D.RefDirection = model.Instances.New<IfcDirection>();
                 ax3D.RefDirection.SetXYZ(0, 1, 0);
                 ax3D.Axis = model.Instances.New<IfcDirection>();
                 ax3D.Axis.SetXYZ(0, 0, 1);
-                lp.RelativePlacement = ax3D;
-                site.ObjectPlacement = lp;
+                localPlacement.RelativePlacement = ax3D;
+                site.ObjectPlacement = localPlacement;
 
 
                 List<string> guidList = new List<string>();
@@ -420,48 +414,75 @@ namespace City2RVT.GUI.XPlan2BIM
                 //set Quantities
                 CreateQuantity(model, site, topoSurf);
 
-                //set a few basic properties
-                model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
-                {
-                    relGeokod.RelatedObjects.Add(site);
-                    relGeokod.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetGeokod =>
+                    model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
                     {
-                        psetGeokod.Name = "BauantragGeokodierung";
-
-                        foreach (var s in paramDict)
+                        relGeokod.RelatedObjects.Add(site);
+                        relGeokod.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetGeokod =>
                         {
-                            string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
-                            string verortungTrim = verortung.Trim(' ');
+                            psetGeokod.Name = "BauantragGeokodierung";
 
-                            if (verortungTrim == "Gemarkung_Nummer" || verortungTrim == "Flure" || verortungTrim == "Flurstuecksnummer")
+                            if (paramDict.ContainsKey("alkis:Gemarkung_Nummer") || paramDict.ContainsKey("alkis:Flure") || paramDict.ContainsKey("alkis:Flurstuecksnummer"))
+                            {
+                                foreach (var s in paramDict)
+                                {
+                                    string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
+                                    string verortungTrim = verortung.Trim(' ');
+
+                                    if (verortungTrim == "Gemarkung_Nummer" || verortungTrim == "Flure" || verortungTrim == "Flurstuecksnummer")
+                                    {
+                                        psetGeokod.HasProperties.AddRange(new[]
+                                        {
+                                        model.Instances.New<IfcPropertySingleValue>(p =>
+                                            {
+                                                switch (verortungTrim)
+                                                {
+                                                    case "Gemarkung_Nummer":
+                                                        p.Name = "Gemarkungen";
+                                                        p.NominalValue = new IfcText(s.Value);
+                                                        break;
+                                                    case "Flure":
+                                                        p.Name = "Flure";
+                                                        p.NominalValue = new IfcText(s.Value);
+                                                        break;
+                                                    case "Flurstuecksnummer":
+                                                        p.Name = "Flurstücke";
+                                                        p.NominalValue = new IfcText(s.Value);
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }),
+                                        });
+                                    }  
+                                }
+                            }
+                            else
                             {
                                 psetGeokod.HasProperties.AddRange(new[]
                                 {
-                                model.Instances.New<IfcPropertySingleValue>(p =>
-                                    {
-                                        switch (verortungTrim)
-                                        {
-                                            case "Gemarkung_Nummer":
-                                                p.Name = "Gemarkungen";
-                                                p.NominalValue = new IfcText(s.Value);
-                                                break;
-                                            case "Flure":
-                                                p.Name = "Flure";
-                                                p.NominalValue = new IfcText(s.Value);
-                                                break;
-                                            case "Flurstuecksnummer":
-                                                p.Name = "Flurstücke";
-                                                p.NominalValue = new IfcText(s.Value);
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }),
-                                });
+                                     model.Instances.New<IfcPropertySingleValue>(p =>
+                                         {
+                                             p.Name = "Gemarkungen";
+                                             p.NominalValue = new IfcText("empty");
+
+                                         }),
+                                     model.Instances.New<IfcPropertySingleValue>(p =>
+                                         {
+                                             p.Name = "Flure";
+                                             p.NominalValue = new IfcText("empty");
+
+                                         }),
+                                     model.Instances.New<IfcPropertySingleValue>(p =>
+                                         {
+                                             p.Name = "Flurstuecksnummer";
+                                             p.NominalValue = new IfcText("empty");
+
+                                         }),
+                                 });
                             }
-                        }                        
+                        });
                     });
-                });
+                
 
                 var relAggregates = model.Instances.New<IfcRelAggregates>();
                 relAggregates.RelatingObject = ifcProject;

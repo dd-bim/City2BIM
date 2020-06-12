@@ -161,6 +161,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\IfcBuilder.cs" />
     <Compile Include="Builder\RevitXPlanBuilder.cs" />
     <Compile Include="Builder\XPlan_Semantic.cs" />
     <Compile Include="Calc\ConvexHull.cs" />
