@@ -585,11 +585,11 @@ namespace City2RVT.Builder
             }
         }
 
-        public void createLineSegments(string xPlanObject, /*Plane geomPlane,*/ XmlDocument xmlDoc, XmlNamespaceManager nsmgr, double zOffset, ElementId pickedId, bool drape_checked)
+        public void createLineSegments(string xPlanObject, XmlDocument xmlDoc, XmlNamespaceManager nsmgr, double zOffset, ElementId pickedId, bool drape_checked)
         {
             XmlNodeList bpLines = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "/xplan:position/gml:LineString", nsmgr);
 
-            var transfClass = new City2RVT.Calc.Transformation();
+            var transfClass = new Calc.Transformation();
             Transform transf = transfClass.transform(doc);
 
             // No UTM reduction at the moment, factor R = 1
@@ -604,12 +604,12 @@ namespace City2RVT.Builder
 
                 int ia = 0;
 
-                using (Transaction createLine = new Transaction(doc, "Create Line for " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
+                using (Transaction txnCreateLine = new Transaction(doc, "Create Line for " + xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1)))
                 {
-                    createLine.Start();
-                    FailureHandlingOptions optionsLines = createLine.GetFailureHandlingOptions();
-                    optionsLines.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
-                    createLine.SetFailureHandlingOptions(optionsLines);
+                    txnCreateLine.Start();
+                    FailureHandlingOptions optionsLines = txnCreateLine.GetFailureHandlingOptions();
+                    optionsLines.SetFailuresPreprocessor(new Wpf_XPlan.AxesFailure());
+                    txnCreateLine.SetFailureHandlingOptions(optionsLines);
 
                     foreach (string split in koordWerteLine)
                     {
@@ -661,6 +661,7 @@ namespace City2RVT.Builder
                             XYZ norm = startPointTerrain.CrossProduct(endPointTerrain);
                             XYZ origin = endPointTerrain;
 
+
                             geomPlane = transformation.getGeomPlane(norm, origin);
                             lineString = Line.CreateBound(startPointTerrain, endPointTerrain);
                         }
@@ -670,18 +671,16 @@ namespace City2RVT.Builder
                             XYZ norm = new XYZ(0, 0, 1);
                             geomPlane = transformation.getGeomPlane(norm, origin);
                             lineString = Line.CreateBound(tStartPoint, tEndPoint);
-                        }
+                        }                        
                         
-                        {      
-                            SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
+                        SketchPlane sketch = SketchPlane.Create(doc, geomPlane);
 
-                            ModelLine line = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
+                        ModelLine line = doc.Create.NewModelCurve(lineString, sketch) as ModelLine;
 
-                            GraphicsStyle gs = line.LineStyle as GraphicsStyle;
+                        GraphicsStyle gs = line.LineStyle as GraphicsStyle;
 
-                            gs.GraphicsStyleCategory.LineColor = new Color(250, 10, 10);
-                            gs.GraphicsStyleCategory.SetLineWeight(10, GraphicsStyleType.Projection);
-                        }
+                        gs.GraphicsStyleCategory.LineColor = new Color(250, 10, 10);
+                        gs.GraphicsStyleCategory.SetLineWeight(10, GraphicsStyleType.Projection);                       
 
                         if ((ia + 3) == (koordWerteLine.Count() - 1))
                         {
@@ -689,7 +688,7 @@ namespace City2RVT.Builder
                         }
                         ia += 2;
                     }
-                    createLine.Commit();
+                    txnCreateLine.Commit();
                 }
                 il++;
             }

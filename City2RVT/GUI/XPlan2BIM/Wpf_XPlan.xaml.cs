@@ -69,6 +69,10 @@ namespace City2RVT.GUI.XPlan2BIM
                     {
                         a.DeleteWarning(f);
                     }
+                    if (id == BuiltInFailures.InaccurateFailures.InaccurateLine)
+                    {
+                        a.DeleteWarning(f);
+                    }
                 }
                 return FailureProcessingResult.Continue;
             }
@@ -214,7 +218,7 @@ namespace City2RVT.GUI.XPlan2BIM
                         // creates line segments
                         //***********************************************************************************************
                         //bool drape_checked = (bool)check_drape.IsChecked;
-                        xPlanBuilder.createLineSegments(xPlanObject, /*geomPlane,*/ xmlDoc, nsmgr, zOffset, pickedId, drape_checked);                        
+                        xPlanBuilder.createLineSegments(xPlanObject, xmlDoc, nsmgr, zOffset, pickedId, drape_checked);                        
 
 
                         if (checkBoxZOffset.IsChecked == true)

@@ -261,6 +261,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
+                //projectBasePoint.SetXYZ(0,0,0);
 
                 var facebound = model.Instances.New<IfcFaceBound>();
                 facebound.Bound = loop;
