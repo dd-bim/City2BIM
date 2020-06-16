@@ -37,7 +37,7 @@ namespace City2RVT.Builder
                     Prop_Revit.TerrainId = surface.Id; //needed for draping of 2D data, e.g. ALKIS data
 
                     Parameter kommentarParam = surface.LookupParameter("Kommentare");
-                    kommentarParam.Set(dtmFile);
+                    kommentarParam.Set("DTM: " + dtmFile);
 
                     surface.Pinned = true;
                 }

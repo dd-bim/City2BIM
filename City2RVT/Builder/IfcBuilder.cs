@@ -121,13 +121,10 @@ namespace City2RVT.Builder
         /// <summary>
         /// Edits the standard revit IFC export
         /// </summary>
-        /// <param name="ifcProject"></param>
         /// <param name="model"></param>
         /// <param name="doc"></param>
-        public void editRevitExport(IfcProject ifcProject, IfcStore model, Document doc)
+        public void editRevitExport(IfcStore model, Document doc)
         {
-            var ifcSite = ifcProject.Sites.FirstOrDefault();
-
             var transfClass = new Transformation();
             XYZ pbp = transfClass.getProjectBasePoint(doc);
             double angle = transfClass.getAngle(doc);
@@ -135,6 +132,11 @@ namespace City2RVT.Builder
             using (var txn = model.BeginTransaction("Change Revit Export"))
             {
                 var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+
+                //var ifcSite = ifcProject.Sites.FirstOrDefault();
+                var ifcSite = model.Instances.FirstOrDefault<IfcSite>();
+                ifcSite.Name = "Revit export default site";
+                ifcSite.Description = "Default export by revit software";
 
                 double[] richtung = UTMcalc.AzimuthToLocalVector(angle);
                 geomRepContext.TrueNorth = model.Instances.New<IfcDirection>();

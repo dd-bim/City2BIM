@@ -195,7 +195,8 @@ namespace City2RVT.GUI.XPlan2BIM
                         //_______________________________________________________________________________________________
                         // creates referenceplanes (if picked DTM, else creating new referenceplane) for the surfaces
                         //***********************************************************************************************
-                        XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position", nsmgr);
+                        //XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position", nsmgr);
+                        XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position//gml:exterior", nsmgr);
                         if (xPlanExterior.Count > 0)
                         { 
                             if (check_drape.IsChecked == false)

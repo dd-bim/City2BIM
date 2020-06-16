@@ -221,7 +221,7 @@ namespace City2RVT.Builder
         {
             ElementId refplaneId = Prop_Revit.TerrainId;
 
-            var transfClass = new City2RVT.Calc.Transformation();
+            var transfClass = new Calc.Transformation();
             Transform transf = transfClass.transform(doc);
 
             // No UTM reduction at the moment, factor R = 1
@@ -584,6 +584,8 @@ namespace City2RVT.Builder
                 paramDict.Clear();
             }
         }
+
+
 
         public void createLineSegments(string xPlanObject, XmlDocument xmlDoc, XmlNamespaceManager nsmgr, double zOffset, ElementId pickedId, bool drape_checked)
         {

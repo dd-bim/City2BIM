@@ -44,6 +44,8 @@ namespace City2RVT.GUI.XPlan2BIM
 {
     public class IfcXBim
     {
+        private static double feetToMeter = 1.0 / 0.3048;
+
         /// <summary>
         /// Initalizes a new IFC Model (currently not used, because topography is loaded to an already existing IFC file).  
         /// </summary>
@@ -249,9 +251,9 @@ namespace City2RVT.GUI.XPlan2BIM
                 {
                     XYZ topoPoint = new XYZ(topoPoints[i].X, topoPoints[i].Y, topoPoints[i].Z);
                     var cartPoint = model.Instances.New<IfcCartesianPoint>();
-                    cartPoint.SetXYZ(Convert.ToDouble(topoPoint.X, System.Globalization.CultureInfo.InvariantCulture)/feetToMeter,
-                        Convert.ToDouble(topoPoint.Y, System.Globalization.CultureInfo.InvariantCulture) / feetToMeter,
-                        Convert.ToDouble(topoPoint.Z, System.Globalization.CultureInfo.InvariantCulture) / feetToMeter);
+                    cartPoint.SetXYZ(Convert.ToDouble(topoPoint.X, CultureInfo.InvariantCulture)/feetToMeter,
+                        Convert.ToDouble(topoPoint.Y, CultureInfo.InvariantCulture) / feetToMeter,
+                        Convert.ToDouble(topoPoint.Z, CultureInfo.InvariantCulture) / feetToMeter);
 
                     curveSet.Points.Add(cartPoint);
                     loop.Polygon.Add(cartPoint);
@@ -279,7 +281,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 material.Name = "transparent";
 
                 var colorDict = new Dictionary<string, string>();
-                var bezeichner = new IfcXBim();
                 colorDict = CreateColors();
 
                 double rot,gruen,blau;
@@ -347,6 +348,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 shapeRepresentation.RepresentationType = "SurfaceModel";
                 shapeRepresentation.Items.Add(curveSetFace);
 
+                var layerAssignment = model.Instances.New<IfcPresentationLayerAssignment>();
+                layerAssignment.Name = "LandBIM";
+                layerAssignment.AssignedItems.Add(shapeRepresentation);
+
                 styledRepresentation.ContextOfItems = geomRepContext;
 
                 var rep = model.Instances.New<IfcProductDefinitionShape>();
@@ -362,16 +367,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 ax3D.Axis.SetXYZ(0, 0, 1);
                 localPlacement.RelativePlacement = ax3D;
                 site.ObjectPlacement = localPlacement;
-
-
-                List<string> guidList = new List<string>();
-                foreach (Parameter v in topoParams)
-                {
-                    if (v.IsShared)
-                    {
-                        guidList.Add(v.GUID.ToString());
-                    }
-                }
 
                 Dictionary<string, string> paramDict = new Dictionary<string, string>();
                 paramDict.Add("Bezeichnung", bezeichnung);
@@ -415,82 +410,232 @@ namespace City2RVT.GUI.XPlan2BIM
                 //set Quantities
                 CreateQuantity(model, site, topoSurf);
 
-                    model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
+                model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
+                {
+                    relGeokod.RelatedObjects.Add(site);
+                    relGeokod.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetGeokod =>
                     {
-                        relGeokod.RelatedObjects.Add(site);
-                        relGeokod.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(psetGeokod =>
+                        psetGeokod.Name = "BauantragGeokodierung";
+
+                        if (paramDict.ContainsKey("alkis:Gemarkung_Nummer") || paramDict.ContainsKey("alkis:Flure") || paramDict.ContainsKey("alkis:Flurstuecksnummer"))
                         {
-                            psetGeokod.Name = "BauantragGeokodierung";
-
-                            if (paramDict.ContainsKey("alkis:Gemarkung_Nummer") || paramDict.ContainsKey("alkis:Flure") || paramDict.ContainsKey("alkis:Flurstuecksnummer"))
+                            foreach (var s in paramDict)
                             {
-                                foreach (var s in paramDict)
-                                {
-                                    string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
-                                    string verortungTrim = verortung.Trim(' ');
+                                string verortung = s.Key.Substring(s.Key.LastIndexOf(':') + 1);
+                                string verortungTrim = verortung.Trim(' ');
 
-                                    if (verortungTrim == "Gemarkung_Nummer" || verortungTrim == "Flure" || verortungTrim == "Flurstuecksnummer")
+                                if (verortungTrim == "Gemarkung_Nummer" || verortungTrim == "Flure" || verortungTrim == "Flurstuecksnummer")
+                                {
+                                    psetGeokod.HasProperties.AddRange(new[]
                                     {
-                                        psetGeokod.HasProperties.AddRange(new[]
+                                    model.Instances.New<IfcPropertySingleValue>(p =>
                                         {
-                                        model.Instances.New<IfcPropertySingleValue>(p =>
+                                            switch (verortungTrim)
                                             {
-                                                switch (verortungTrim)
-                                                {
-                                                    case "Gemarkung_Nummer":
-                                                        p.Name = "Gemarkungen";
-                                                        p.NominalValue = new IfcText(s.Value);
-                                                        break;
-                                                    case "Flure":
-                                                        p.Name = "Flure";
-                                                        p.NominalValue = new IfcText(s.Value);
-                                                        break;
-                                                    case "Flurstuecksnummer":
-                                                        p.Name = "Flurstücke";
-                                                        p.NominalValue = new IfcText(s.Value);
-                                                        break;
-                                                    default:
-                                                        break;
-                                                }
-                                            }),
-                                        });
-                                    }  
-                                }
+                                                case "Gemarkung_Nummer":
+                                                    p.Name = "Gemarkungen";
+                                                    p.NominalValue = new IfcText(s.Value);
+                                                    break;
+                                                case "Flure":
+                                                    p.Name = "Flure";
+                                                    p.NominalValue = new IfcText(s.Value);
+                                                    break;
+                                                case "Flurstuecksnummer":
+                                                    p.Name = "Flurstücke";
+                                                    p.NominalValue = new IfcText(s.Value);
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }),
+                                    });
+                                }  
                             }
-                            else
+                        }
+                        else
+                        {
+                            psetGeokod.HasProperties.AddRange(new[]
                             {
-                                psetGeokod.HasProperties.AddRange(new[]
-                                {
-                                     model.Instances.New<IfcPropertySingleValue>(p =>
-                                         {
-                                             p.Name = "Gemarkungen";
-                                             p.NominalValue = new IfcText("empty");
+                                 model.Instances.New<IfcPropertySingleValue>(p =>
+                                     {
+                                         p.Name = "Gemarkungen";
+                                         p.NominalValue = new IfcText("empty");
 
-                                         }),
-                                     model.Instances.New<IfcPropertySingleValue>(p =>
-                                         {
-                                             p.Name = "Flure";
-                                             p.NominalValue = new IfcText("empty");
+                                     }),
+                                 model.Instances.New<IfcPropertySingleValue>(p =>
+                                     {
+                                         p.Name = "Flure";
+                                         p.NominalValue = new IfcText("empty");
 
-                                         }),
-                                     model.Instances.New<IfcPropertySingleValue>(p =>
-                                         {
-                                             p.Name = "Flurstuecksnummer";
-                                             p.NominalValue = new IfcText("empty");
+                                     }),
+                                 model.Instances.New<IfcPropertySingleValue>(p =>
+                                     {
+                                         p.Name = "Flurstuecksnummer";
+                                         p.NominalValue = new IfcText("empty");
 
-                                         }),
-                                 });
-                            }
-                        });
+                                     }),
+                             });
+                        }
                     });
-                
+                });
 
                 var relAggregates = model.Instances.New<IfcRelAggregates>();
                 relAggregates.RelatingObject = ifcProject;
                 relAggregates.RelatedObjects.Add(site);
 
+
+                //var space = model.Instances.New<IfcSpace>();
+
+                //relAggregates.RelatedObjects.Add(space);
+
+
                 txn.Commit();
                 return site;
+            }
+        }
+
+        public static IfcSpace createSpace(IfcStore model, Document doc, TopographySurface topoSurf, ExternalCommandData commandData, XYZ pbp, string bezeichnung)
+        {
+            var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
+
+            using (var txn = model.BeginTransaction("Create Ifc Export for topography"))
+            {
+                var space = model.Instances.New<IfcSpace>();
+                space.Name = "Space for " + bezeichnung;
+                space.Description = "ifcspace";
+
+
+                //ElementId pickedId = Prop_Revit.PickedId;
+
+                //var elements = model.Instances.OfType<IfcElement>();
+
+                var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+
+                var boundingBox = topoSurf.get_BoundingBox(view);
+
+                var cpbbMin = model.Instances.New<IfcCartesianPoint>();
+                cpbbMin.SetXYZ(boundingBox.Min.X, boundingBox.Min.Y, boundingBox.Min.Z);
+                var cpbbMax = model.Instances.New<IfcCartesianPoint>();
+                cpbbMax.SetXYZ(boundingBox.Max.X, boundingBox.Max.Y, boundingBox.Max.Z);
+
+                //var bound = topoSurf.GetBoundaryPoints();
+
+                var material = model.Instances.New<IfcMaterial>();
+                material.Name = "transparent";
+
+                var colorDict = new Dictionary<string, string>();
+                colorDict = CreateColors();
+
+                double rot, gruen, blau;
+                if (colorDict.ContainsKey(bezeichnung))
+                {
+                    rot = Convert.ToDouble(colorDict[bezeichnung].Split('/')[0]);
+                    gruen = Convert.ToDouble(colorDict[bezeichnung].Split('/')[1]);
+                    blau = Convert.ToDouble(colorDict[bezeichnung].Split('/')[2]);
+                }
+                else
+                {
+                    rot = 255;
+                    gruen = 250;
+                    blau = 240;
+                }
+
+                var colourRgb = model.Instances.New<IfcColourRgb>();
+                colourRgb.Red = rot / 255.0;
+                colourRgb.Green = gruen / 255.0;
+                colourRgb.Blue = blau / 255.0;
+
+                var surfaceStyleRendering = model.Instances.New<IfcSurfaceStyleRendering>();
+                surfaceStyleRendering.SurfaceColour = colourRgb;
+                surfaceStyleRendering.Transparency = 0.5;
+
+                var surfaceStyle = model.Instances.New<IfcSurfaceStyle>();
+                surfaceStyle.Styles.Add(surfaceStyleRendering);
+                surfaceStyle.Name = bezeichnung;
+
+                var presentation = model.Instances.New<IfcPresentationStyleAssignment>();
+                presentation.Styles.Add(surfaceStyle);
+
+                //var ifcbb = model.Instances.New<IfcBoundingBox>();
+                //ifcbb.Corner = cpbbMin;
+                //ifcbb.XDim = (cpbbMax.X - cpbbMin.X) / feetToMeter;
+                //ifcbb.YDim = (cpbbMax.Y - cpbbMin.Y) / feetToMeter;
+                //ifcbb.ZDim = (cpbbMax.Z - cpbbMin.Z) / feetToMeter + 20.0;
+
+                //var geomCurveSet = model.Instances.New<IfcGeometricCurveSet>();
+
+                var rectProf = model.Instances.New<IfcRectangleProfileDef>();
+                rectProf.ProfileType = IfcProfileTypeEnum.AREA;
+                rectProf.XDim = (cpbbMax.X - cpbbMin.X) / feetToMeter; 
+                rectProf.YDim = (cpbbMax.Y - cpbbMin.Y) / feetToMeter;
+
+                var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
+                spaceSolid.Depth = (cpbbMax.Z - cpbbMin.Z) / feetToMeter; 
+                spaceSolid.SweptArea = rectProf;
+                spaceSolid.ExtrudedDirection = model.Instances.New<IfcDirection>();
+                spaceSolid.ExtrudedDirection.SetXYZ(0, 0, 1);
+
+                double midX = ((cpbbMax.X - cpbbMin.X) / feetToMeter) / 2;
+                double midY = ((cpbbMax.Y - cpbbMin.Y) / feetToMeter) / 2;
+                double midZ = (cpbbMin.Z) / feetToMeter;
+
+                //double midX = (cpbbMax.X - cpbbMin.X) / 2;
+                //double midY = (cpbbMax.Y - cpbbMin.Y) / 2;
+                //double midZ = cpbbMin.Z;
+
+                var position = model.Instances.New<IfcCartesianPoint>();
+                position.SetXYZ(midX, midY, midZ);
+                //position.SetXYZ(0, 0, 0);
+                spaceSolid.Position = model.Instances.New<IfcAxis2Placement3D>();
+                spaceSolid.Position.Location = position;
+
+                var style = model.Instances.New<IfcStyledItem>();
+                style.Item = spaceSolid;
+                style.Styles.Add(presentation);
+                spaceSolid.StyledByItem.Append(style);
+
+                var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
+                styledRepresentation.Items.Add(style);
+
+
+                //Element element = doc.GetElement(pickedId) as IfcElement;
+                //var spaceBoundary = model.Instances.New<IfcRelSpaceBoundary>();
+                //space.BoundedBy.Append(spaceBoundary);
+
+                var shapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+                var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+
+                shapeRepresentation.Items.Add(spaceSolid);
+                shapeRepresentation.ContextOfItems = geomRepContext;
+                shapeRepresentation.RepresentationIdentifier = "Body";
+                shapeRepresentation.RepresentationType = "SweptSolid";
+
+                var spaceRep = model.Instances.New<IfcProductDefinitionShape>();
+                spaceRep.Representations.Add(shapeRepresentation);
+                space.Representation = spaceRep;
+
+                var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
+                projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
+                //projectBasePoint.SetXYZ(0,0,0);
+                //projectBasePoint.SetXYZ(midX, midY, midZ);
+
+
+                var localPlacement = model.Instances.New<IfcLocalPlacement>();
+                var ax3D = model.Instances.New<IfcAxis2Placement3D>();
+                ax3D.Location = projectBasePoint;
+                ax3D.RefDirection = model.Instances.New<IfcDirection>();
+                ax3D.RefDirection.SetXYZ(0, 1, 0);
+                ax3D.Axis = model.Instances.New<IfcDirection>();
+                ax3D.Axis.SetXYZ(0, 0, 1);
+                localPlacement.RelativePlacement = ax3D;
+                space.ObjectPlacement = localPlacement;
+
+                var relAggregates = model.Instances.New<IfcRelAggregates>();
+                relAggregates.RelatingObject = ifcProject;
+                relAggregates.RelatedObjects.Add(space);
+
+                txn.Commit();
+                return space;
             }
         }
     }

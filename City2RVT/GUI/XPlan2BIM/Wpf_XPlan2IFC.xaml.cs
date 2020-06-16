@@ -79,7 +79,7 @@ namespace City2RVT.GUI.XPlan2BIM
             {
                 IfcProject ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
 
-                ifcBuilder.editRevitExport(ifcProject, model, doc);
+                ifcBuilder.editRevitExport(model, doc);
 
                 foreach (Element t in topoCollector)
                 { 
@@ -95,9 +95,11 @@ namespace City2RVT.GUI.XPlan2BIM
 
                     // Diese IF-Anweisung bewirkt, dass die Referenzflächen, also die Boundingboxen, die "gedachte Flächen", d.h. keine existierenden Flächen sondern 
                     // nur für die Darstellung in Revit notwendig sind, nicht nach IFC exportiert werden.
-                    if (bezeichnung.StartsWith("Reference plane") == false)
+                    if (bezeichnung.StartsWith("Reference plane") == false && bezeichnung.StartsWith("DTM: ") == false)
                     {
                         IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc);
+
+                        IfcXBim.createSpace(model, doc, topoSurf, commandData, pbp, bezeichnung);
                     }
                 }
 
