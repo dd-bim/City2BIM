@@ -62,6 +62,12 @@ namespace City2RVT.GUI.XPlan2BIM
             string original = ifcBuilder.getRevitDefaultExportPath(ifc_Location.Text, doc, commandData);
 
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+            FilteredElementCollector wallCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Walls);
+            FilteredElementCollector roofCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Roofs);
+
+            FilteredElementCollector buildingElements = wallCollector.UnionWith(roofCollector);
+
+
             var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
             var editor = new XbimEditorCredentials
@@ -99,9 +105,17 @@ namespace City2RVT.GUI.XPlan2BIM
                     {
                         IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc);
 
-                        IfcXBim.createSpace(model, doc, topoSurf, commandData, pbp, bezeichnung);
+                        IfcXBim.createSpace(model, topoSurf, commandData, pbp, bezeichnung);
                     }
                 }
+
+                var ifcBuildings = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcBuilding>();
+
+                foreach (Xbim.Ifc4.ProductExtension.IfcBuilding b in ifcBuildings)
+                {
+                    IfcXBim.createBuildingSpace(model, buildingElements, commandData, pbp);
+                }
+
 
                 ifcBuilder.createProjectInformation(model, ifcProject, doc);
 

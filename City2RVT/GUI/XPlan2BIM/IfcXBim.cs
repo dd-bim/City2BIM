@@ -140,7 +140,7 @@ namespace City2RVT.GUI.XPlan2BIM
                             });
         }
 
-        private static void CreateQuantity(IfcStore model, IfcSite site, TopographySurface topoSurf)
+        private static void CreateSiteQuantity(IfcStore model, IfcSite site, TopographySurface topoSurf)
         {
             //Create a IfcElementQuantity
             //first we need a IfcPhysicalSimpleQuantity,first will use IfcQuantityLength
@@ -164,7 +164,7 @@ namespace City2RVT.GUI.XPlan2BIM
             //lets create the IfcElementQuantity
             var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
             {
-                eq.Name = "Test:IfcElementQuantity";
+                eq.Name = "IfcElementQuantity";
                 eq.Description = "Measurement quantity";
                 eq.Quantities.Add(ifcQuantityArea);
             });
@@ -175,6 +175,45 @@ namespace City2RVT.GUI.XPlan2BIM
                 rdbp.Name = "Qto_SiteBaseQuantities";
                 rdbp.Description = "";
                 rdbp.RelatedObjects.Add(site);
+                rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+            });
+        }
+
+        private static void CreateSpaceQuantity(IfcStore model, IfcSpace space, TopographySurface topoSurf)
+        {
+            //Create a IfcElementQuantity
+            //first we need a IfcPhysicalSimpleQuantity,first will use IfcQuantityLength
+            var ifcQuantityArea = model.Instances.New<IfcQuantityArea>(qa =>
+            {
+                qa.Name = "GrossFloorArea";
+                qa.Description = "";
+                qa.Unit = model.Instances.New<IfcSIUnit>(siu =>
+                {
+                    siu.UnitType = IfcUnitEnum.AREAUNIT;
+                    //siu.Prefix = IfcSIPrefix.MILLI;
+                    siu.Name = IfcSIUnitName.SQUARE_METRE;
+                });
+                var area = topoSurf.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
+                string[] areaSplit = area.Split(' ');
+                string areaWithoutUnit = areaSplit[0];
+                qa.AreaValue = Convert.ToDouble(areaWithoutUnit, CultureInfo.InvariantCulture);
+
+            });
+
+            //lets create the IfcElementQuantity
+            var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+            {
+                eq.Name = "IfcElementQuantity";
+                eq.Description = "Measurement quantity";
+                eq.Quantities.Add(ifcQuantityArea);
+            });
+
+            //need to create the relationship
+            model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+            {
+                rdbp.Name = "Qto_SpaceBaseQuantities";
+                rdbp.Description = "";
+                rdbp.RelatedObjects.Add(space);
                 rdbp.RelatingPropertyDefinition = ifcElementQuantity;
             });
         }
@@ -408,7 +447,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 });
 
                 //set Quantities
-                CreateQuantity(model, site, topoSurf);
+                CreateSiteQuantity(model, site, topoSurf);
 
                 model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
                 {
@@ -483,42 +522,29 @@ namespace City2RVT.GUI.XPlan2BIM
                 relAggregates.RelatingObject = ifcProject;
                 relAggregates.RelatedObjects.Add(site);
 
-
-                //var space = model.Instances.New<IfcSpace>();
-
-                //relAggregates.RelatedObjects.Add(space);
-
-
                 txn.Commit();
                 return site;
             }
         }
 
-        public static IfcSpace createSpace(IfcStore model, Document doc, TopographySurface topoSurf, ExternalCommandData commandData, XYZ pbp, string bezeichnung)
+        public static IfcSpace createSpace(IfcStore model, TopographySurface topoSurf, ExternalCommandData commandData, XYZ pbp, string bezeichnung)
         {
             var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
 
-            using (var txn = model.BeginTransaction("Create Ifc Export for topography"))
+            using (var txn = model.BeginTransaction("Create IfcSpace for surfaces"))
             {
                 var space = model.Instances.New<IfcSpace>();
                 space.Name = "Space for " + bezeichnung;
                 space.Description = "ifcspace";
 
-
-                //ElementId pickedId = Prop_Revit.PickedId;
-
-                //var elements = model.Instances.OfType<IfcElement>();
-
                 var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
-                var boundingBox = topoSurf.get_BoundingBox(view);
+                BoundingBoxXYZ boundingBox = topoSurf.get_BoundingBox(view);
 
                 var cpbbMin = model.Instances.New<IfcCartesianPoint>();
-                cpbbMin.SetXYZ(boundingBox.Min.X, boundingBox.Min.Y, boundingBox.Min.Z);
+                cpbbMin.SetXYZ(Convert.ToDouble(boundingBox.Min.X / feetToMeter), Convert.ToDouble(boundingBox.Min.Y) / feetToMeter, Convert.ToDouble(boundingBox.Min.Z) / feetToMeter);
                 var cpbbMax = model.Instances.New<IfcCartesianPoint>();
-                cpbbMax.SetXYZ(boundingBox.Max.X, boundingBox.Max.Y, boundingBox.Max.Z);
-
-                //var bound = topoSurf.GetBoundaryPoints();
+                cpbbMax.SetXYZ(Convert.ToDouble(boundingBox.Max.X) / feetToMeter, Convert.ToDouble(boundingBox.Max.Y) / feetToMeter, Convert.ToDouble(boundingBox.Max.Z) / feetToMeter);
 
                 var material = model.Instances.New<IfcMaterial>();
                 material.Name = "transparent";
@@ -556,36 +582,23 @@ namespace City2RVT.GUI.XPlan2BIM
                 var presentation = model.Instances.New<IfcPresentationStyleAssignment>();
                 presentation.Styles.Add(surfaceStyle);
 
-                //var ifcbb = model.Instances.New<IfcBoundingBox>();
-                //ifcbb.Corner = cpbbMin;
-                //ifcbb.XDim = (cpbbMax.X - cpbbMin.X) / feetToMeter;
-                //ifcbb.YDim = (cpbbMax.Y - cpbbMin.Y) / feetToMeter;
-                //ifcbb.ZDim = (cpbbMax.Z - cpbbMin.Z) / feetToMeter + 20.0;
-
-                //var geomCurveSet = model.Instances.New<IfcGeometricCurveSet>();
-
                 var rectProf = model.Instances.New<IfcRectangleProfileDef>();
                 rectProf.ProfileType = IfcProfileTypeEnum.AREA;
-                rectProf.XDim = (cpbbMax.X - cpbbMin.X) / feetToMeter; 
-                rectProf.YDim = (cpbbMax.Y - cpbbMin.Y) / feetToMeter;
+                rectProf.XDim = (cpbbMax.X - cpbbMin.X); 
+                rectProf.YDim = (cpbbMax.Y - cpbbMin.Y);
 
                 var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
-                spaceSolid.Depth = (cpbbMax.Z - cpbbMin.Z) / feetToMeter; 
+                spaceSolid.Depth = (cpbbMax.Z - cpbbMin.Z); 
                 spaceSolid.SweptArea = rectProf;
                 spaceSolid.ExtrudedDirection = model.Instances.New<IfcDirection>();
                 spaceSolid.ExtrudedDirection.SetXYZ(0, 0, 1);
 
-                double midX = ((cpbbMax.X - cpbbMin.X) / feetToMeter) / 2;
-                double midY = ((cpbbMax.Y - cpbbMin.Y) / feetToMeter) / 2;
-                double midZ = (cpbbMin.Z) / feetToMeter;
-
-                //double midX = (cpbbMax.X - cpbbMin.X) / 2;
-                //double midY = (cpbbMax.Y - cpbbMin.Y) / 2;
-                //double midZ = cpbbMin.Z;
+                double midX = ((cpbbMax.X + cpbbMin.X)) / 2;
+                double midY = ((cpbbMax.Y + cpbbMin.Y)) / 2;
+                double midZ = (cpbbMin.Z);
 
                 var position = model.Instances.New<IfcCartesianPoint>();
                 position.SetXYZ(midX, midY, midZ);
-                //position.SetXYZ(0, 0, 0);
                 spaceSolid.Position = model.Instances.New<IfcAxis2Placement3D>();
                 spaceSolid.Position.Location = position;
 
@@ -597,11 +610,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
                 styledRepresentation.Items.Add(style);
 
-
-                //Element element = doc.GetElement(pickedId) as IfcElement;
-                //var spaceBoundary = model.Instances.New<IfcRelSpaceBoundary>();
-                //space.BoundedBy.Append(spaceBoundary);
-
                 var shapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
                 var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
 
@@ -610,15 +618,14 @@ namespace City2RVT.GUI.XPlan2BIM
                 shapeRepresentation.RepresentationIdentifier = "Body";
                 shapeRepresentation.RepresentationType = "SweptSolid";
 
+                styledRepresentation.ContextOfItems = geomRepContext;
+
                 var spaceRep = model.Instances.New<IfcProductDefinitionShape>();
                 spaceRep.Representations.Add(shapeRepresentation);
                 space.Representation = spaceRep;
 
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
-                //projectBasePoint.SetXYZ(0,0,0);
-                //projectBasePoint.SetXYZ(midX, midY, midZ);
-
 
                 var localPlacement = model.Instances.New<IfcLocalPlacement>();
                 var ax3D = model.Instances.New<IfcAxis2Placement3D>();
@@ -634,9 +641,205 @@ namespace City2RVT.GUI.XPlan2BIM
                 relAggregates.RelatingObject = ifcProject;
                 relAggregates.RelatedObjects.Add(space);
 
+                //set a few basic properties
+                model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
+                {
+                    relSpace.RelatedObjects.Add(space);
+                    relSpace.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpace =>
+                    {
+                        pSetSpace.Name = "Space properties";
+                        pSetSpace.HasProperties.AddRange(new[]
+{
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    p.Name = "IstGrundstücksfläche";
+                                    p.NominalValue = new IfcBoolean(true);
+                                }),
+                            });
+                    });
+                });
+
+                //set Quantities
+                CreateSpaceQuantity(model, space, topoSurf);
+
                 txn.Commit();
                 return space;
             }
+        }
+
+        public static IfcSpace createBuildingSpace(IfcStore model, FilteredElementCollector buildingElements, ExternalCommandData commandData, XYZ pbp)
+        {
+            var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
+
+            using (var txn = model.BeginTransaction("Create IfcSpace for buildings"))
+            {
+                var space = model.Instances.New<IfcSpace>();
+                space.Name = "Space for building";
+                space.Description = "ifcspace";
+
+                var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
+
+                List<double> minMaxListX = new List<double>();
+                List<double> minMaxListY = new List<double>();
+                List<double> minMaxListZ = new List<double>();
+
+                foreach (var x in buildingElements)
+                {
+                    if (x.get_BoundingBox(view) != null)
+                    {
+                        var cbb = x.get_BoundingBox(view);
+                        minMaxListX.Add(cbb.Min.X);
+                        minMaxListY.Add(cbb.Min.Y);
+                        minMaxListZ.Add(cbb.Min.Z);
+                        minMaxListX.Add(cbb.Max.X);
+                        minMaxListY.Add(cbb.Max.Y);
+                        minMaxListZ.Add(cbb.Max.Z);
+                    }
+       
+                }
+
+
+                var boundingBox = new BoundingBoxXYZ();
+                boundingBox.Min = new XYZ(minMaxListX.Min(), minMaxListY.Min(), minMaxListZ.Min());
+                boundingBox.Max = new XYZ(minMaxListX.Max(), minMaxListY.Max(), minMaxListZ.Max());
+
+
+
+                //var spaces = ifcBuilding.;
+
+                //var testspace = spaces.FirstOrDefault();
+
+                var cpbbMin = model.Instances.New<IfcCartesianPoint>();
+                cpbbMin.SetXYZ(Convert.ToDouble(boundingBox.Min.X / feetToMeter), Convert.ToDouble(boundingBox.Min.Y) / feetToMeter, Convert.ToDouble(boundingBox.Min.Z) / feetToMeter);
+                var cpbbMax = model.Instances.New<IfcCartesianPoint>();
+                cpbbMax.SetXYZ(Convert.ToDouble(boundingBox.Max.X) / feetToMeter, Convert.ToDouble(boundingBox.Max.Y) / feetToMeter, Convert.ToDouble(boundingBox.Max.Z) / feetToMeter);
+
+                var material = model.Instances.New<IfcMaterial>();
+                material.Name = "transparent";
+
+                var colorDict = new Dictionary<string, string>();
+                colorDict = CreateColors();
+
+                string bezeichnung = "123";
+
+                double rot, gruen, blau;
+                if (colorDict.ContainsKey(bezeichnung))
+                {
+                    rot = Convert.ToDouble(colorDict[bezeichnung].Split('/')[0]);
+                    gruen = Convert.ToDouble(colorDict[bezeichnung].Split('/')[1]);
+                    blau = Convert.ToDouble(colorDict[bezeichnung].Split('/')[2]);
+                }
+                else
+                {
+                    rot = 255;
+                    gruen = 250;
+                    blau = 240;
+                }
+
+                var colourRgb = model.Instances.New<IfcColourRgb>();
+                colourRgb.Red = rot / 255.0;
+                colourRgb.Green = gruen / 255.0;
+                colourRgb.Blue = blau / 255.0;
+
+                var surfaceStyleRendering = model.Instances.New<IfcSurfaceStyleRendering>();
+                surfaceStyleRendering.SurfaceColour = colourRgb;
+                surfaceStyleRendering.Transparency = 0.5;
+
+                var surfaceStyle = model.Instances.New<IfcSurfaceStyle>();
+                surfaceStyle.Styles.Add(surfaceStyleRendering);
+                surfaceStyle.Name = "building";
+
+                var presentation = model.Instances.New<IfcPresentationStyleAssignment>();
+                presentation.Styles.Add(surfaceStyle);
+
+                var rectProf = model.Instances.New<IfcRectangleProfileDef>();
+                rectProf.ProfileType = IfcProfileTypeEnum.AREA;
+                rectProf.XDim = (cpbbMax.X - cpbbMin.X);
+                rectProf.YDim = (cpbbMax.Y - cpbbMin.Y);
+
+                var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
+                spaceSolid.Depth = cpbbMax.Z - cpbbMin.Z;
+                spaceSolid.SweptArea = rectProf;
+                spaceSolid.ExtrudedDirection = model.Instances.New<IfcDirection>();
+                spaceSolid.ExtrudedDirection.SetXYZ(0, 0, 1);
+
+                double midX = (cpbbMax.X + cpbbMin.X) / 2;
+                double midY = (cpbbMax.Y + cpbbMin.Y) / 2;
+                double midZ = cpbbMin.Z;
+
+                var position = model.Instances.New<IfcCartesianPoint>();
+                //position.SetXYZ(midX, midY, midZ);
+                position.SetXYZ(0, 0, 0);
+                spaceSolid.Position = model.Instances.New<IfcAxis2Placement3D>();
+                spaceSolid.Position.Location = position;
+
+                var style = model.Instances.New<IfcStyledItem>();
+                style.Item = spaceSolid;
+                style.Styles.Add(presentation);
+                spaceSolid.StyledByItem.Append(style);
+
+                var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
+                styledRepresentation.Items.Add(style);
+
+                var shapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
+                var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+
+                shapeRepresentation.Items.Add(spaceSolid);
+                shapeRepresentation.ContextOfItems = geomRepContext;
+                shapeRepresentation.RepresentationIdentifier = "Body";
+                shapeRepresentation.RepresentationType = "SweptSolid";
+
+                styledRepresentation.ContextOfItems = geomRepContext;
+
+                var spaceRep = model.Instances.New<IfcProductDefinitionShape>();
+                spaceRep.Representations.Add(shapeRepresentation);
+                space.Representation = spaceRep;
+
+                var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
+                projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
+
+                var localPlacement = model.Instances.New<IfcLocalPlacement>();
+                var ax3D = model.Instances.New<IfcAxis2Placement3D>();
+                ax3D.Location = projectBasePoint;
+                ax3D.RefDirection = model.Instances.New<IfcDirection>();
+                ax3D.RefDirection.SetXYZ(0, 1, 0);
+                ax3D.Axis = model.Instances.New<IfcDirection>();
+                ax3D.Axis.SetXYZ(0, 0, 1);
+                localPlacement.RelativePlacement = ax3D;
+                space.ObjectPlacement = localPlacement;
+
+                var relAggregates = model.Instances.New<IfcRelAggregates>();
+                relAggregates.RelatingObject = ifcProject;
+                relAggregates.RelatedObjects.Add(space);
+
+//                //set a few basic properties
+//                model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
+//                {
+//                    relSpace.RelatedObjects.Add(space);
+//                    relSpace.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpace =>
+//                    {
+//                        pSetSpace.Name = "Space properties";
+//                        pSetSpace.HasProperties.AddRange(new[]
+//{
+//                            model.Instances.New<IfcPropertySingleValue>(p =>
+//                                {
+//                                    p.Name = "IstGrundstücksfläche";
+//                                    p.NominalValue = new IfcBoolean(true);
+//                                }),
+//                            });
+//                    });
+//                });
+
+                //set Quantities
+                //CreateSpaceQuantity(model, space, topoSurf);
+
+                txn.Commit();
+                return space;
+            }
+
+
+
+
         }
     }
 }
