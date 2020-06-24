@@ -18,7 +18,7 @@
                  SelectionChanged="ListBox_SelectionChanged" SelectionMode="Multiple"/>
         <Button Content="Apply" HorizontalAlignment="Left" Margin="494,55,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_ApplyXPlanFile"/>
         <Button Content="Close" HorizontalAlignment="Left" Margin="494,361,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_CloseXplanForm"/>
-        <RadioButton Name="radioButton1" Content="Select all" HorizontalAlignment="Left" 
+        <RadioButton Name="rb_selectAll" Content="Select all" HorizontalAlignment="Left" 
                      Margin="397,110,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
         <CheckBox Name="checkBoxZOffset" Content="Z-Offset für Layer" HorizontalAlignment="Left" Margin="494,292,0,0" 
                   VerticalAlignment="Top" Checked="checkBoxZOffset_Checked"/>

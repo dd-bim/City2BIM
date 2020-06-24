@@ -37,6 +37,8 @@ namespace City2RVT.GUI.XPlan2BIM
     {
         ExternalCommandData commandData;
         private readonly Document doc;
+        GUI_helper guiLogic = new GUI_helper();
+
 
         public Wpf_XPlan(Document doc,ExternalCommandData cData)
         {
@@ -195,7 +197,6 @@ namespace City2RVT.GUI.XPlan2BIM
                         //_______________________________________________________________________________________________
                         // creates referenceplanes (if picked DTM, else creating new referenceplane) for the surfaces
                         //***********************************************************************************************
-                        //XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position", nsmgr);
                         XmlNodeList xPlanExterior = xmlDoc.SelectNodes("//gml:featureMember//xplan:position//gml:exterior", nsmgr);
                         if (xPlanExterior.Count > 0)
                         { 
@@ -247,7 +248,7 @@ namespace City2RVT.GUI.XPlan2BIM
         private void Button_Click_ClearSelection(object sender, RoutedEventArgs e)
         {
             categoryListbox_selectedLayer.UnselectAll();
-            radioButton1.IsChecked = false;
+            rb_selectAll.IsChecked = false;
         }
 
         private void Button_Click_ApplyXPlanFile(object sender, RoutedEventArgs e)
@@ -282,10 +283,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (categoryListbox_selectedLayer.SelectedItems.Count < categoryListbox_selectedLayer.Items.Count)
-            {
-                radioButton1.IsChecked = false;
-            }
+            guiLogic.uncheckRbWhenSelected(rb_selectAll, categoryListbox_selectedLayer);
         }
 
         private void Button_Click_CloseXplanForm(object sender, RoutedEventArgs e)
@@ -296,15 +294,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            if (radioButton1.IsChecked == true)
-            {
-                categoryListbox_selectedLayer.SelectAll();
-            }
-            else
-            {
-                categoryListbox_selectedLayer.UnselectAll();
-
-            }
+            guiLogic.setRadiobutton(rb_selectAll, categoryListbox_selectedLayer);
         }
 
         private void checkBoxZOffset_Checked(object sender, RoutedEventArgs e)

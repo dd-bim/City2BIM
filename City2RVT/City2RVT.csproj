@@ -170,6 +170,7 @@
     <Compile Include="Calc\UTMcalc.cs" />
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
+    <Compile Include="GUI\GUI_helper.cs" />
     <Compile Include="GUI\Modify\ModifyParameterForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -11,6 +11,26 @@ using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 
+using Xbim.Common;
+using Xbim.Common.Step21;
+using Xbim.Ifc;
+using Xbim.Ifc4.PresentationOrganizationResource;
+using Xbim.Ifc4.GeometricConstraintResource;
+using Xbim.Ifc4.GeometricModelResource;
+using Xbim.Ifc4.GeometryResource;
+using Xbim.Ifc4.Interfaces;
+using Xbim.Ifc4.Kernel;
+using Xbim.Ifc4.ProductExtension;
+using Xbim.Ifc4.RepresentationResource;
+using Xbim.Ifc4.PresentationAppearanceResource;
+using System.Windows.Forms;
+using Xbim.Ifc4.TopologyResource;
+using Xbim.Ifc4.MeasureResource;
+using Xbim.Ifc4.PropertyResource;
+using Xbim.Ifc4.SharedBldgElements;
+using Xbim.Ifc4.ProfileResource;
+using Xbim.Ifc4.MaterialResource;
+
 namespace City2RVT.Calc
 {
     class Transformation
@@ -49,15 +69,7 @@ namespace City2RVT.Calc
 
         public Plane getGeomPlane(XYZ normal, XYZ origin)
         {
-            //ProjectLocation projloc = doc.ActiveProjectLocation;
-            //ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
-            //double elevation = position_data.Elevation;
-
-            //XYZ origin = new XYZ(0, 0, 0);
-            //XYZ normal = new XYZ(direction.X, direction.Y, direction.Z);
-            //XYZ normal = new XYZ(0, 0, 1);
             Plane geomPlane = Plane.CreateByNormalAndOrigin(normal, origin);
-
             return geomPlane;
         }
 

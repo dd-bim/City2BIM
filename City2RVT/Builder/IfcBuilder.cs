@@ -105,6 +105,7 @@ namespace City2RVT.Builder
                     IFCOptions.AddOption("ExportPartsAsBuildingElements", "true");
                     IFCOptions.AddOption("ExportInternalRevitPropertySets", "false");
                     IFCOptions.AddOption("ExportIFCCommonPropertySets", "true");
+                    IFCOptions.AddOption("ExportRoomsInView", "true");
 
                     //Export the model to IFC
                     doc.Export(folder, ifcWithoutTopo, IFCOptions);
@@ -114,7 +115,6 @@ namespace City2RVT.Builder
             }
 
             string original = Path.Combine(folder, ifcWithoutTopo + ".ifc");
-
             return original;
         }
 
@@ -143,7 +143,7 @@ namespace City2RVT.Builder
                 geomRepContext.TrueNorth.SetXY(richtung[0], richtung[1]);
 
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
-                projectBasePoint.SetXYZ(10, 10, 10);
+                projectBasePoint.SetXYZ(0, 0, 0);
                 var ax3D = model.Instances.New<IfcAxis2Placement3D>();
                 ax3D.Location = projectBasePoint;
 
@@ -184,6 +184,36 @@ namespace City2RVT.Builder
 
                 txn.Commit();
             }
+        }
+
+        public void editRooms(IfcStore model, IfcSpace room)
+        {
+            using (var txn = model.BeginTransaction("Change Revit Export"))
+            {
+                //set a few basic properties
+                model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
+                {
+                    relSpace.RelatedObjects.Add(room);
+                    relSpace.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpace =>
+                    {
+                        pSetSpace.Name = "BauantragNutzungseinheiten";
+                        pSetSpace.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
+                                {
+                                    p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
+                                    {
+                                        pe.Name = "Nutzung";
+                                        pe.EnumerationValues.Add(new IfcLabel("Nutzung"));
+                                     
+                                    });
+                                }),
+                            });
+                    });
+                });
+                txn.Commit();
+            }
+                
         }
 
         /// <summary>

@@ -22,6 +22,9 @@ using System.IO;
 using City2RVT.Calc;
 using Xbim.Ifc2x3.ProductExtension;
 using Xbim.Ifc2x3.UtilityResource;
+using Xbim.Ifc4.ProductExtension;
+using Xbim.Ifc4.Interfaces;
+using IfcBuildingStorey = Xbim.Ifc4.ProductExtension.IfcBuildingStorey;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -31,6 +34,7 @@ namespace City2RVT.GUI.XPlan2BIM
     public partial class Wpf_XPlan2IFC : Window
     {
         ExternalCommandData commandData;
+        GUI_helper guiLogic = new GUI_helper();
 
         public Wpf_XPlan2IFC(ExternalCommandData cData)
         {
@@ -45,6 +49,34 @@ namespace City2RVT.GUI.XPlan2BIM
             // Set an icon using code
             Uri iconUri = new Uri("pack://application:,,,/City2RVT;component/img/IFC_32px_96dpi.ico", UriKind.RelativeOrAbsolute);
             this.Icon = System.Windows.Media.Imaging.BitmapFrame.Create(iconUri);
+
+            ifc_name_textbox.Text = doc.Title;
+            var docPathname = Path.GetDirectoryName(doc.PathName);
+            ifc_Location.Text = docPathname;
+
+            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+            List<string> ifcExportList = new List<string>();
+
+            foreach (var t in topoCollector)
+            {
+                TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
+                string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
+
+                if (bezeichnung.StartsWith("Reference plane") == false)
+                {
+                    if (ifcExportList.Contains(bezeichnung) == false)
+                    {
+                        ifcExportList.Add(bezeichnung);
+                    }
+                }
+            }
+
+            int ix = 0;
+            foreach (string item in ifcExportList)
+            {
+                _ = ifcExportListbox.Items.Add(ifcExportList[ix]);
+                ix++;
+            }
         }
 
         private void Button_Click_IfcExport(object sender, RoutedEventArgs e)
@@ -64,10 +96,9 @@ namespace City2RVT.GUI.XPlan2BIM
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
             FilteredElementCollector wallCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Walls);
             FilteredElementCollector roofCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Roofs);
-
             FilteredElementCollector buildingElements = wallCollector.UnionWith(roofCollector);
 
-
+            var selectedLayers = ifcExportListbox.SelectedItems;
             var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
             var editor = new XbimEditorCredentials
@@ -87,9 +118,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 ifcBuilder.editRevitExport(model, doc);
 
-                foreach (Element t in topoCollector)
+                foreach (Element topo in topoCollector)
                 { 
-                    TopographySurface topoSurf = doc.GetElement(t.UniqueId.ToString()) as TopographySurface;
+                    // Get parameters, point coordinates and geometry of topography surfaces
+                    TopographySurface topoSurf = doc.GetElement(topo.UniqueId.ToString()) as TopographySurface;
                     IList<XYZ> topoPoints = topoSurf.GetPoints();
                     ParameterSet topoParams = topoSurf.Parameters;
 
@@ -101,34 +133,50 @@ namespace City2RVT.GUI.XPlan2BIM
 
                     // Diese IF-Anweisung bewirkt, dass die Referenzflächen, also die Boundingboxen, die "gedachte Flächen", d.h. keine existierenden Flächen sondern 
                     // nur für die Darstellung in Revit notwendig sind, nicht nach IFC exportiert werden.
-                    if (bezeichnung.StartsWith("Reference plane") == false && bezeichnung.StartsWith("DTM: ") == false)
+                    if (bezeichnung.StartsWith("Reference plane") == false && bezeichnung.StartsWith("DTM: ") == false && selectedLayers.Contains(bezeichnung))
                     {
                         IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc);
-
                         IfcXBim.createSpace(model, topoSurf, commandData, pbp, bezeichnung);
                     }
                 }
 
                 var ifcBuildings = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcBuilding>();
-
                 foreach (Xbim.Ifc4.ProductExtension.IfcBuilding b in ifcBuildings)
                 {
                     IfcXBim.createBuildingSpace(model, buildingElements, commandData, pbp);
                 }
 
+                var buldingStory = model.Instances.OfType<IfcBuildingStorey>();
+                List<double> storeyElevationList = new List<double>();
+                foreach (var bs in buldingStory)
+                {
+                    double relZ = bs.Elevation.Value;
+                    storeyElevationList.Add(relZ);
+                }
+                storeyElevationList.Add(15.47);
+                var firstEle = storeyElevationList.FirstOrDefault();
+                storeyElevationList.RemoveAt(0);
+                storeyElevationList.Add(firstEle);
+
+                int i = 0;
+                foreach (var bs in buldingStory)
+                {
+                    if (storeyElevationList[i] > 0)
+                    {
+                        IfcXBim.createStoreySpace(model, bs, commandData, storeyElevationList[i], wallCollector);
+                        i++;
+                    }
+                }
 
                 ifcBuilder.createProjectInformation(model, ifcProject, doc);
 
-                string save;
-                if (string.IsNullOrWhiteSpace(ifc_name_textbox.Text))
-                {                    
-                    save = @"D:\Daten\revit2ifc.ifc";
-                }
-                else
+                var ifcRooms = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcSpace>();
+                foreach (var room in ifcRooms)
                 {
-                    save = Path.Combine(ifc_Location.Text, ifc_name_textbox.Text + ".ifc");
+                    ifcBuilder.editRooms(model, room);
                 }
 
+                string save = Path.Combine(ifc_Location.Text, ifc_name_textbox.Text + ".ifc");
                 model.SaveAs(@save);
             }  
         }
@@ -140,15 +188,32 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void ifc_name_textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            
         }
 
         private void Button_Click_SetIfcLocation(object sender, RoutedEventArgs e)
         {
             var dlg = new FolderBrowserDialog();
-            DialogResult folder = dlg.ShowDialog();
+            //DialogResult folder = dlg.ShowDialog();
+            dlg.ShowDialog();
             string locationFolder = dlg.SelectedPath;
             ifc_Location.Text = locationFolder;
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            guiLogic.setRadiobutton(rb_selectAll, ifcExportListbox);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ifcExportListbox.UnselectAll();
+            rb_selectAll.IsChecked = false;
+        }
+
+        private void ifcExportListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            guiLogic.uncheckRbWhenSelected(rb_selectAll, ifcExportListbox);
         }
     }
 }

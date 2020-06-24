@@ -6,18 +6,22 @@
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="612.262"
-             Height="250" Width="634"
+             Height="450" Width="634"
         Title="Export to IFC" Icon="/City2RVT;component/img/IFC_32px_96dpi.ico">
     <Grid Margin="10,10,0,0">
-        <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="493,94,0,0" 
-                VerticalAlignment="Top" Width="75" Click="Button_Click_IfcExport"/>
-        <TextBox Name="ifc_Location" HorizontalAlignment="Left" Height="23" Margin="138,57,0,0" 
+        <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="497,360,0,0" 
+                VerticalAlignment="Top" Width="97" Click="Button_Click_IfcExport"/>
+        <TextBox Name="ifc_Location" HorizontalAlignment="Left" Height="23" Margin="134,20,0,0" 
                  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_Location_TextChanged"/>
         <TextBox Name="ifc_name_textbox" HorizontalAlignment="Left" Height="23" 
-                 Margin="138,94,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_name_textbox_TextChanged"/>
-        <Label Content="File name" HorizontalAlignment="Left" Margin="33,50,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="File Location" HorizontalAlignment="Left" Margin="35,57,0,0" 
+                 Margin="134,57,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_name_textbox_TextChanged"/>
+        <Label Content="File name" HorizontalAlignment="Left" Margin="29,13,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="File Location" HorizontalAlignment="Left" Margin="31,20,0,0" 
                 VerticalAlignment="Top" Width="75" Click="Button_Click_SetIfcLocation"/>
-        <Label Content="File name" HorizontalAlignment="Left" Margin="35,94,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label Content="File name" HorizontalAlignment="Left" Margin="31,57,0,0" VerticalAlignment="Top" Width="75"/>
+        <ListBox Name="ifcExportListbox" HorizontalAlignment="Left" Height="259" Margin="134,121,0,0" VerticalAlignment="Top" Width="331" SelectionMode="Multiple" SelectionChanged="ifcExportListbox_SelectionChanged"/>
+        <Label Content="Layer to be exported" HorizontalAlignment="Left" Margin="134,95,0,0" VerticalAlignment="Top"/>
+        <RadioButton Name="rb_selectAll" Content="Select all" HorizontalAlignment="Left" Margin="497,121,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+        <Button Content="Clear Selection" HorizontalAlignment="Left" Margin="497,141,0,0" VerticalAlignment="Top" Width="97" Click="Button_Click"/>
     </Grid>
 </Window>
