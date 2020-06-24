@@ -118,6 +118,12 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 ifcBuilder.editRevitExport(model, doc);
 
+                var ifcRooms = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcSpace>();
+                foreach (var room in ifcRooms)
+                {
+                    ifcBuilder.EditRooms(model, room);
+                }
+
                 foreach (Element topo in topoCollector)
                 { 
                     // Get parameters, point coordinates and geometry of topography surfaces
@@ -170,12 +176,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 ifcBuilder.createProjectInformation(model, ifcProject, doc);
 
-                var ifcRooms = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcSpace>();
-                foreach (var room in ifcRooms)
-                {
-                    ifcBuilder.editRooms(model, room);
-                }
-
                 string save = Path.Combine(ifc_Location.Text, ifc_name_textbox.Text + ".ifc");
                 model.SaveAs(@save);
             }  
@@ -214,6 +214,11 @@ namespace City2RVT.GUI.XPlan2BIM
         private void ifcExportListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             guiLogic.uncheckRbWhenSelected(rb_selectAll, ifcExportListbox);
+        }
+
+        private void close_dialoge_button(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

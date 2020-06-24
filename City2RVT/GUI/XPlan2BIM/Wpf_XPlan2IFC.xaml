@@ -9,7 +9,7 @@
              Height="450" Width="634"
         Title="Export to IFC" Icon="/City2RVT;component/img/IFC_32px_96dpi.ico">
     <Grid Margin="10,10,0,0">
-        <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="497,360,0,0" 
+        <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="497,319,0,0" 
                 VerticalAlignment="Top" Width="97" Click="Button_Click_IfcExport"/>
         <TextBox Name="ifc_Location" HorizontalAlignment="Left" Height="23" Margin="134,20,0,0" 
                  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_Location_TextChanged"/>
@@ -23,5 +23,6 @@
         <Label Content="Layer to be exported" HorizontalAlignment="Left" Margin="134,95,0,0" VerticalAlignment="Top"/>
         <RadioButton Name="rb_selectAll" Content="Select all" HorizontalAlignment="Left" Margin="497,121,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
         <Button Content="Clear Selection" HorizontalAlignment="Left" Margin="497,141,0,0" VerticalAlignment="Top" Width="97" Click="Button_Click"/>
+        <Button Content="Close" HorizontalAlignment="Left" Margin="497,360,0,0" VerticalAlignment="Top" Width="97" Click="close_dialoge_button"/>
     </Grid>
 </Window>

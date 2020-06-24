@@ -186,7 +186,7 @@ namespace City2RVT.Builder
             }
         }
 
-        public void editRooms(IfcStore model, IfcSpace room)
+        public void EditRooms(IfcStore model, IfcSpace room)
         {
             using (var txn = model.BeginTransaction("Change Revit Export"))
             {
@@ -204,9 +204,23 @@ namespace City2RVT.Builder
                                     p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
                                     {
                                         pe.Name = "Nutzung";
-                                        pe.EnumerationValues.Add(new IfcLabel("Nutzung"));
-                                     
+                                        pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_EIGENTUMSWOHNUNG"));
+                                        pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_MIETWOHNUNG"));
+                                        pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_SOZIALWOHNUNG"));
+                                        pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_GEWERBLICH"));
+                                        pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_FREIBERUFLICH"));
+                                        pe.EnumerationValues.Add(new IfcLabel("NUTZUNGSEINHEIT_GEWERBE"));
                                     });
+                                    p.Name = "Nutzung";
+                                    p.EnumerationValues.Add(new IfcLabel("NUTZUNGSEINHEIT_GEWERBE"));
+                                }),
+                            });
+                        pSetSpace.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    p.Name = "Einheit";
+                                    p.NominalValue = new IfcIdentifier("M2");
                                 }),
                             });
                     });
