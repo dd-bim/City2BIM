@@ -121,7 +121,8 @@ namespace City2RVT.GUI.XPlan2BIM
                 var ifcRooms = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcSpace>();
                 foreach (var room in ifcRooms)
                 {
-                    ifcBuilder.EditRooms(model, room);
+                    ifcBuilder.CreateUsage(model, room);
+                    ifcBuilder.CreateRoomArea(model, room);
                 }
 
                 foreach (Element topo in topoCollector)
@@ -149,7 +150,12 @@ namespace City2RVT.GUI.XPlan2BIM
                 var ifcBuildings = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcBuilding>();
                 foreach (Xbim.Ifc4.ProductExtension.IfcBuilding b in ifcBuildings)
                 {
-                    IfcXBim.createBuildingSpace(model, buildingElements, commandData, pbp);
+                    IfcXBim.CreateBuildingSpace(model, buildingElements, commandData, pbp);
+                }
+
+                foreach (Xbim.Ifc4.ProductExtension.IfcBuilding b in ifcBuildings)
+                {
+                    IfcXBim.CreateFloorSpace(model, buildingElements, commandData, pbp);
                 }
 
                 var buldingStory = model.Instances.OfType<IfcBuildingStorey>();

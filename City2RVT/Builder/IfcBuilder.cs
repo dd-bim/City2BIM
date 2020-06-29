@@ -186,7 +186,7 @@ namespace City2RVT.Builder
             }
         }
 
-        public void EditRooms(IfcStore model, IfcSpace room)
+        public void CreateUsage(IfcStore model, IfcSpace room)
         {
             using (var txn = model.BeginTransaction("Change Revit Export"))
             {
@@ -226,8 +226,79 @@ namespace City2RVT.Builder
                     });
                 });
                 txn.Commit();
+            }                
+        }
+
+        public void CreateRoomArea(IfcStore model, IfcSpace room)
+        {
+            using (var txn = model.BeginTransaction("Change Revit Export"))
+            {
+                //set a few basic properties
+                model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
+                {
+                    relSpace.RelatedObjects.Add(room);
+                    relSpace.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpace =>
+                    {
+                        pSetSpace.Name = "BauantragNettoflächen";
+                        pSetSpace.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
+                                {
+                                    p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
+                                    {
+                                        pe.Name = "Art";
+                                        pe.EnumerationValues.Add(new IfcLabel("NUF1 (Wohnen und Aufenthalt)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("NUF2 (Büroarbeit)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("NUF3 (Produktion, Hand- und Maschinenarbeit, Forschung und Entwicklung)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("NUF4 (Lagern, Verteilen und Verkaufen)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("NUF5 (Bildung, Unterricht und Kultur)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("NUF6 (Heilen und Pflegen)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("NUF7 (Sonstige Nutzung)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("TF (Technikfläche)"));
+                                        pe.EnumerationValues.Add(new IfcLabel("VF (Verkehrsfläche)"));
+                                    });
+                                    p.Name = "Art";
+                                    p.EnumerationValues.Add(new IfcLabel("NUF1 (Wohnen und Aufenthalt)"));
+                                }),
+                            });
+                        pSetSpace.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertyEnumeratedValue>(p =>
+                                {
+                                    p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
+                                    {
+                                        pe.Name = "Raumumschließung";
+                                        pe.EnumerationValues.Add(new IfcLabel("REGELFALL"));
+                                        pe.EnumerationValues.Add(new IfcLabel("SONDERFALL"));
+                                    });
+                                    p.Name = "Raumumschließung";
+                                    p.EnumerationValues.Add(new IfcLabel("REGELFALL"));
+                                }),
+                            });
+                    });
+                });
+
+                try
+                {
+                    double bbHeight = room.Height.Value;
+                    //double bbLength = cpbbMax.X - cpbbMin.X;
+                    //double bbWidth = cpbbMax.Y - cpbbMin.Y;
+                    double bbFloorArea = room.NetFloorArea.Value;
+                    double bbFloorVolume = bbFloorArea * bbHeight;
+
+                    IfcXBim.CreateSpaceQuantity(model, room, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea", "Area");
+                    IfcXBim.CreateSpaceQuantity(model, room, bbHeight, "Qto_SpaceBaseQuantites", "Height", "Length");
+                    IfcXBim.CreateSpaceQuantity(model, room, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume", "Volume");
+                }
+                catch
+                {
+                    IfcXBim.CreateSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossFloorArea", "Area");
+                    IfcXBim.CreateSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "Height", "Length");
+                    IfcXBim.CreateSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossVolume", "Volume");
+                }
+
+                txn.Commit();
             }
-                
         }
 
         /// <summary>
