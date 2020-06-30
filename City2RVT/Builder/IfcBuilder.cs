@@ -186,6 +186,25 @@ namespace City2RVT.Builder
             }
         }
 
+        public void CreateEnumeration(IfcStore model, IfcPropertyEnumeratedValue p)
+        {
+            using (var txn = model.BeginTransaction("Change Revit Export"))
+            {
+                p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
+                {
+                    pe.Name = "Nutzung";
+                    pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_EIGENTUMSWOHNUNG"));
+                    pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_MIETWOHNUNG"));
+                    pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_SOZIALWOHNUNG"));
+                    pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_GEWERBLICH"));
+                    pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_FREIBERUFLICH"));
+                    pe.EnumerationValues.Add(new IfcLabel("NUTZUNGSEINHEIT_GEWERBE"));
+                });
+
+                txn.Commit();
+            }
+        }
+
         public void CreateUsage(IfcStore model, IfcSpace room)
         {
             using (var txn = model.BeginTransaction("Change Revit Export"))
@@ -203,7 +222,7 @@ namespace City2RVT.Builder
                                 {
                                     p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
                                     {
-                                        pe.Name = "Nutzung";
+                                        pe.Name = "Nutzung " + room.Name;
                                         pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_EIGENTUMSWOHNUNG"));
                                         pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_MIETWOHNUNG"));
                                         pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_SOZIALWOHNUNG"));
@@ -211,7 +230,7 @@ namespace City2RVT.Builder
                                         pe.EnumerationValues.Add(new IfcLabel("WOHNEINHEIT_FREIBERUFLICH"));
                                         pe.EnumerationValues.Add(new IfcLabel("NUTZUNGSEINHEIT_GEWERBE"));
                                     });
-                                    p.Name = "Nutzung";
+                                    p.Name = "Nutzung " + room.Name;
                                     p.EnumerationValues.Add(new IfcLabel("NUTZUNGSEINHEIT_GEWERBE"));
                                 }),
                             });
@@ -246,7 +265,7 @@ namespace City2RVT.Builder
                                 {
                                     p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
                                     {
-                                        pe.Name = "Art";
+                                        pe.Name = "Art " + room.Name;
                                         pe.EnumerationValues.Add(new IfcLabel("NUF1 (Wohnen und Aufenthalt)"));
                                         pe.EnumerationValues.Add(new IfcLabel("NUF2 (Büroarbeit)"));
                                         pe.EnumerationValues.Add(new IfcLabel("NUF3 (Produktion, Hand- und Maschinenarbeit, Forschung und Entwicklung)"));
@@ -257,7 +276,7 @@ namespace City2RVT.Builder
                                         pe.EnumerationValues.Add(new IfcLabel("TF (Technikfläche)"));
                                         pe.EnumerationValues.Add(new IfcLabel("VF (Verkehrsfläche)"));
                                     });
-                                    p.Name = "Art";
+                                    p.Name = "Art " + room.Name;
                                     p.EnumerationValues.Add(new IfcLabel("NUF1 (Wohnen und Aufenthalt)"));
                                 }),
                             });
@@ -267,11 +286,11 @@ namespace City2RVT.Builder
                                 {
                                     p.EnumerationReference = model.Instances.New<IfcPropertyEnumeration>(pe =>
                                     {
-                                        pe.Name = "Raumumschließung";
+                                        pe.Name = "Raumumschließung " + room.Name;
                                         pe.EnumerationValues.Add(new IfcLabel("REGELFALL"));
                                         pe.EnumerationValues.Add(new IfcLabel("SONDERFALL"));
                                     });
-                                    p.Name = "Raumumschließung";
+                                    p.Name = "Raumumschließung " + room.Name;;
                                     p.EnumerationValues.Add(new IfcLabel("REGELFALL"));
                                 }),
                             });
@@ -286,15 +305,15 @@ namespace City2RVT.Builder
                     double bbFloorArea = room.NetFloorArea.Value;
                     double bbFloorVolume = bbFloorArea * bbHeight;
 
-                    IfcXBim.CreateSpaceQuantity(model, room, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea", "Area");
-                    IfcXBim.CreateSpaceQuantity(model, room, bbHeight, "Qto_SpaceBaseQuantites", "Height", "Length");
-                    IfcXBim.CreateSpaceQuantity(model, room, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume", "Volume");
+                    IfcXBim.AreaSpaceQuantity(model, room, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+                    IfcXBim.HeightSpaceQuantity(model, room, bbHeight, "Qto_SpaceBaseQuantites", "Height");
+                    IfcXBim.VolumeSpaceQuantity(model, room, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume");
                 }
                 catch
                 {
-                    IfcXBim.CreateSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossFloorArea", "Area");
-                    IfcXBim.CreateSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "Height", "Length");
-                    IfcXBim.CreateSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossVolume", "Volume");
+                    IfcXBim.AreaSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+                    IfcXBim.HeightSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "Height");
+                    IfcXBim.VolumeSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossVolume");
                 }
 
                 txn.Commit();

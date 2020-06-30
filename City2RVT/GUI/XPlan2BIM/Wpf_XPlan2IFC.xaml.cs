@@ -25,6 +25,7 @@ using Xbim.Ifc2x3.UtilityResource;
 using Xbim.Ifc4.ProductExtension;
 using Xbim.Ifc4.Interfaces;
 using IfcBuildingStorey = Xbim.Ifc4.ProductExtension.IfcBuildingStorey;
+using Xbim.Ifc2x3.SharedBldgElements;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -35,6 +36,8 @@ namespace City2RVT.GUI.XPlan2BIM
     {
         ExternalCommandData commandData;
         GUI_helper guiLogic = new GUI_helper();
+        private static double feetToMeter = 1.0 / 0.3048;
+
 
         public Wpf_XPlan2IFC(ExternalCommandData cData)
         {
@@ -119,6 +122,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 ifcBuilder.editRevitExport(model, doc);
 
                 var ifcRooms = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcSpace>();
+                //ifcBuilder.CreateEnumeration(model,)
                 foreach (var room in ifcRooms)
                 {
                     ifcBuilder.CreateUsage(model, room);
@@ -165,7 +169,19 @@ namespace City2RVT.GUI.XPlan2BIM
                     double relZ = bs.Elevation.Value;
                     storeyElevationList.Add(relZ);
                 }
-                storeyElevationList.Add(15.47);
+
+                List<double> roofHeightList = new List<double>();
+                foreach (var r in roofCollector)
+                {
+                    BoundingBoxXYZ boundingBox = r.get_BoundingBox(view);
+                    if (boundingBox != null)
+                    {
+                        roofHeightList.Add(Convert.ToDouble(boundingBox.Max.Z / feetToMeter));
+                    }
+                }
+                double roofHeight = roofHeightList.Max();
+
+                storeyElevationList.Add(roofHeight);
                 var firstEle = storeyElevationList.FirstOrDefault();
                 storeyElevationList.RemoveAt(0);
                 storeyElevationList.Add(firstEle);

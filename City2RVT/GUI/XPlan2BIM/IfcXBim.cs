@@ -179,7 +179,7 @@ namespace City2RVT.GUI.XPlan2BIM
             });
         }
 
-        public static void CreateSpaceQuantity(IfcStore model, IfcSpace space, double value, string qsetName, string qName, string unit)
+        public static IfcQuantityArea AreaSpaceQuantity(IfcStore model, IfcSpace space, double value, string qsetName, string qName)
         {
             //Create a IfcElementQuantity
             //first we need a IfcPhysicalSimpleQuantity,first will use IfcQuantityLength
@@ -189,49 +189,109 @@ namespace City2RVT.GUI.XPlan2BIM
                 qa.Description = "";
                 qa.Unit = model.Instances.New<IfcSIUnit>(siu =>
                 {
-                    if (unit == "Area")
-                    {
-                        siu.UnitType = IfcUnitEnum.AREAUNIT;
-                        //siu.Prefix = IfcSIPrefix.MILLI;
-                        siu.Name = IfcSIUnitName.SQUARE_METRE;
-                    }
-                    else if (unit == "Length")
-                    {
-                        siu.UnitType = IfcUnitEnum.LENGTHUNIT;
-                        siu.Name = IfcSIUnitName.METRE;
-                    }
-                    else if (unit == "Volume")
-                    {
-                        siu.UnitType = IfcUnitEnum.VOLUMEUNIT;
-                        siu.Name = IfcSIUnitName.CUBIC_METRE;
-                    }
+                    siu.UnitType = IfcUnitEnum.AREAUNIT;
+                    //siu.Prefix = IfcSIPrefix.MILLI;
+                    siu.Name = IfcSIUnitName.SQUARE_METRE;
 
                 });
-                //var area = topoSurf.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
-                //string[] areaSplit = area.Split(' ');
-                //string areaWithoutUnit = areaSplit[0];
-                //double areaWithoutUnitDouble = Convert.ToDouble(areaWithoutUnit, CultureInfo.InvariantCulture);
                 double areaWithoutUnitDouble = value;
                 qa.AreaValue = areaWithoutUnitDouble;
-
             });
 
-            //lets create the IfcElementQuantity
-            var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+            return ifcQuantityArea;
+
+            ////lets create the IfcElementQuantity
+            //var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+            //{
+            //    eq.Name = qsetName;
+            //    eq.Description = "Measurement quantity";
+            //    eq.Quantities.Add(ifcQuantityArea);
+            //});
+
+            ////need to create the relationship
+            //model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+            //{
+            //    rdbp.Name = "Qto_SpaceBaseQuantities";
+            //    rdbp.Description = "";
+            //    rdbp.RelatedObjects.Add(space);
+            //    rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+            //});
+        }
+
+        public static IfcQuantityLength HeightSpaceQuantity(IfcStore model, IfcSpace space, double value, string qsetName, string qName)
+        {
+            //Create a IfcElementQuantity
+            //first we need a IfcPhysicalSimpleQuantity,first will use IfcQuantityLength
+            var ifcQuantityHeight = model.Instances.New<IfcQuantityLength>(qa =>
             {
-                eq.Name = qsetName;
-                eq.Description = "Measurement quantity";
-                eq.Quantities.Add(ifcQuantityArea);
+                qa.Name = qName;
+                qa.Description = "";
+                qa.Unit = model.Instances.New<IfcSIUnit>(siu =>
+                {
+                    siu.UnitType = IfcUnitEnum.LENGTHUNIT;
+                    siu.Name = IfcSIUnitName.METRE;
+
+                });
+                double areaWithoutUnitDouble = value;
+                qa.LengthValue = areaWithoutUnitDouble;
             });
 
-            //need to create the relationship
-            model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+            return ifcQuantityHeight;
+
+            ////lets create the IfcElementQuantity
+            //var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+            //{
+            //    eq.Name = qsetName;
+            //    eq.Description = "Measurement quantity";
+            //    eq.Quantities.Add(ifcQuantityHeight);
+            //});
+
+            ////need to create the relationship
+            //model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+            //{
+            //    rdbp.Name = "Qto_SpaceBaseQuantities";
+            //    rdbp.Description = "";
+            //    rdbp.RelatedObjects.Add(space);
+            //    rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+            //});
+        }
+
+        public static IfcQuantityVolume VolumeSpaceQuantity(IfcStore model, IfcSpace space, double value, string qsetName, string qName)
+        {
+            //Create a IfcElementQuantity
+            //first we need a IfcPhysicalSimpleQuantity,first will use IfcQuantityLength
+            var ifcQuantityVolume = model.Instances.New<IfcQuantityVolume>(qa =>
             {
-                rdbp.Name = "Qto_SpaceBaseQuantities";
-                rdbp.Description = "";
-                rdbp.RelatedObjects.Add(space);
-                rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+                qa.Name = qName;
+                qa.Description = "";
+                qa.Unit = model.Instances.New<IfcSIUnit>(siu =>
+                {
+                    siu.UnitType = IfcUnitEnum.VOLUMEUNIT;
+                    siu.Name = IfcSIUnitName.CUBIC_METRE;
+
+                });
+                double areaWithoutUnitDouble = value;
+                qa.VolumeValue = areaWithoutUnitDouble;
             });
+
+            return ifcQuantityVolume;
+
+            ////lets create the IfcElementQuantity
+            //var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+            //{
+            //    eq.Name = qsetName;
+            //    eq.Description = "Measurement quantity";
+            //    eq.Quantities.Add(ifcQuantityVolume);
+            //});
+
+            ////need to create the relationship
+            //model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+            //{
+            //    rdbp.Name = "Qto_SpaceBaseQuantities";
+            //    rdbp.Description = "";
+            //    rdbp.RelatedObjects.Add(space);
+            //    rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+            //});
         }
 
         public void setAddressLine(Document doc, string address, IfcPostalAddress a)
@@ -554,7 +614,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 space.Description = "ifcspace";
 
                 var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-
                 BoundingBoxXYZ boundingBox = topoSurf.get_BoundingBox(view);
 
                 var cpbbMin = model.Instances.New<IfcCartesianPoint>();
@@ -609,6 +668,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 rectProf.Position = model.Instances.New<IfcAxis2Placement2D>();
                 rectProf.Position.Location = insertPoint;
                 rectProf.Position.RefDirection = model.Instances.New<IfcDirection>();
+                rectProf.Position.RefDirection.SetXY(1, 0);
 
                 var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
                 spaceSolid.Depth = (cpbbMax.Z - cpbbMin.Z); 
@@ -652,6 +712,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 spaceRep.Representations.Add(shapeRepresentation);
                 space.Representation = spaceRep;
 
+                var layerAssignment = model.Instances.New<IfcPresentationLayerAssignment>();
+                layerAssignment.Name = "LandBIM";
+                layerAssignment.AssignedItems.Add(shapeRepresentation);
+
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
 
@@ -687,13 +751,78 @@ namespace City2RVT.GUI.XPlan2BIM
                     });
                 });
 
+                // Propertyset für versiegelte Flächen sowie Spiel- und Freizeitflächen
+                model.Instances.New<IfcRelDefinesByProperties>(relSpaceArea =>
+                {
+                    relSpaceArea.RelatedObjects.Add(space);
+                    // Propertyset für versiegelte Flächen sowie Spiel- und Freizeitflächen
+                    relSpaceArea.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpaceArea =>
+                    {
+                        pSetSpaceArea.Name = "BauantragGrundstücksflächen";
+                        pSetSpaceArea.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    p.Name = "IstVersiegelt";
+                                    p.NominalValue = new IfcBoolean(false);
+                                }),
+                            });
+                        pSetSpaceArea.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    p.Name = "IstSpielUndFreizeitfläche";
+                                    p.NominalValue = new IfcBoolean(false);
+                                }),
+                            });
+                        pSetSpaceArea.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    p.Name = "IstVerkaufsfläche";
+                                    p.NominalValue = new IfcBoolean(false);
+                                }),
+                            });
+                        pSetSpaceArea.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    p.Name = "IstNebenanlage";
+                                    p.NominalValue = new IfcBoolean(false);
+                                }),
+                            });
+                        pSetSpaceArea.HasProperties.AddRange(new[]
+                            {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    p.Name = "IstGemeinschaftsanlage";
+                                    p.NominalValue = new IfcBoolean(false);
+                                }),
+                            });
+                    });
+                });
+
                 var area = topoSurf.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
                 string[] areaSplit = area.Split(' ');
                 string areaWithoutUnit = areaSplit[0];
                 double areaWithoutUnitDouble = Convert.ToDouble(areaWithoutUnit, CultureInfo.InvariantCulture);
 
-                //set Quantities
-                CreateSpaceQuantity(model, space, areaWithoutUnitDouble, "Qto_SpaceBaseQuantites", "GrossFloorArea", "Area");
+                var ifcQuantityArea = AreaSpaceQuantity(model, space, areaWithoutUnitDouble, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+
+                var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+                {
+                    eq.Name = "Qto_SpaceBaseQuantites";
+                    eq.Description = "Measurement quantity";
+                    eq.Quantities.Add(ifcQuantityArea);
+                });
+
+                model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+                {
+                    rdbp.Name = "Qto_SpaceBaseQuantities";
+                    rdbp.Description = "";
+                    rdbp.RelatedObjects.Add(space);
+                    rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+                });
 
                 txn.Commit();
                 return space;
@@ -797,6 +926,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 rectProf.Position = model.Instances.New<IfcAxis2Placement2D>();
                 rectProf.Position.Location = insertPoint;
                 rectProf.Position.RefDirection = model.Instances.New<IfcDirection>();
+                rectProf.Position.RefDirection.SetXY(1, 0);
 
                 var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
                 spaceSolid.Depth = cpbbMax.Z - cpbbMin.Z;
@@ -836,6 +966,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 spaceRep.Representations.Add(shapeRepresentation);
                 space.Representation = spaceRep;
 
+                var layerAssignment = model.Instances.New<IfcPresentationLayerAssignment>();
+                layerAssignment.Name = "LandBIM";
+                layerAssignment.AssignedItems.Add(shapeRepresentation);
+
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
 
@@ -872,7 +1006,23 @@ namespace City2RVT.GUI.XPlan2BIM
                 });
 
                 double buildingHeight = cpbbMax.Z - cpbbMin.Z;
-                CreateSpaceQuantity(model, space, buildingHeight, "Qto_SpaceBaseQuantites", "Height", "Length");
+
+                var ifcQuantityHeight = HeightSpaceQuantity(model, space, buildingHeight, "Qto_SpaceBaseQuantites", "Height");
+
+                var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+                {
+                    eq.Name = "Qto_SpaceBaseQuantites";
+                    eq.Description = "Measurement quantity";
+                    eq.Quantities.Add(ifcQuantityHeight);
+                });
+
+                model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+                {
+                    rdbp.Name = "Qto_SpaceBaseQuantities";
+                    rdbp.Description = "";
+                    rdbp.RelatedObjects.Add(space);
+                    rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+                });
 
                 txn.Commit();
                 return space;
@@ -978,6 +1128,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 rectProf.Position = model.Instances.New<IfcAxis2Placement2D>();
                 rectProf.Position.Location = insertPoint;
                 rectProf.Position.RefDirection = model.Instances.New<IfcDirection>();
+                rectProf.Position.RefDirection.SetXY(1, 0);
 
                 var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
                 spaceSolid.Depth = cpbbMax.Z - cpbbMin.Z;
@@ -1020,6 +1171,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 var spaceRep = model.Instances.New<IfcProductDefinitionShape>();
                 spaceRep.Representations.Add(shapeRepresentation);
                 space.Representation = spaceRep;
+
+                var layerAssignment = model.Instances.New<IfcPresentationLayerAssignment>();
+                layerAssignment.Name = "LandBIM";
+                layerAssignment.AssignedItems.Add(shapeRepresentation);
 
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
                 projectBasePoint.SetXYZ(location.X, location.Y, location.Z);
@@ -1067,9 +1222,26 @@ namespace City2RVT.GUI.XPlan2BIM
                 double bbFloorArea = bbLength * bbWidth;
                 double bbFloorVolume = bbFloorArea * bbHeight;
 
-                CreateSpaceQuantity(model, space, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea", "Area");
-                CreateSpaceQuantity(model, space, bbHeight, "Qto_SpaceBaseQuantites", "Height", "Length");
-                CreateSpaceQuantity(model, space, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume", "Volume");
+                var ifcQuantityHeight = HeightSpaceQuantity(model, space, bbHeight, "Qto_SpaceBaseQuantites", "Height");
+                var ifcQuantityArea = AreaSpaceQuantity(model, space, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+                var ifcQuantityVolume = VolumeSpaceQuantity(model, space, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume");
+
+                var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+                {
+                    eq.Name = "Qto_SpaceBaseQuantites";
+                    eq.Description = "Measurement quantity";
+                    eq.Quantities.Add(ifcQuantityHeight);
+                    eq.Quantities.Add(ifcQuantityArea);
+                    eq.Quantities.Add(ifcQuantityVolume);
+                });
+
+                model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+                {
+                    rdbp.Name = "Qto_SpaceBaseQuantities";
+                    rdbp.Description = "";
+                    rdbp.RelatedObjects.Add(space);
+                    rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+                });
 
                 txn.Commit();
                 return space;
@@ -1080,7 +1252,7 @@ namespace City2RVT.GUI.XPlan2BIM
         {
             var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
 
-            using (var txn = model.BeginTransaction("Create IfcSpace for buildings"))
+            using (var txn = model.BeginTransaction("Create FloorSpace for buildings"))
             {
                 var space = model.Instances.New<IfcSpace>();
                 space.Name = "Space for floor space";
@@ -1184,6 +1356,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 rectProf.Position = model.Instances.New<IfcAxis2Placement2D>();
                 rectProf.Position.Location = insertPoint;
                 rectProf.Position.RefDirection = model.Instances.New<IfcDirection>();
+                rectProf.Position.RefDirection.SetXY(1, 0);
 
                 var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
                 spaceSolid.Depth = cpbbMax.Z - cpbbMin.Z;
@@ -1222,6 +1395,10 @@ namespace City2RVT.GUI.XPlan2BIM
                 var spaceRep = model.Instances.New<IfcProductDefinitionShape>();
                 spaceRep.Representations.Add(shapeRepresentation);
                 space.Representation = spaceRep;
+
+                var layerAssignment = model.Instances.New<IfcPresentationLayerAssignment>();
+                layerAssignment.Name = "LandBIM";
+                layerAssignment.AssignedItems.Add(shapeRepresentation);
 
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
@@ -1278,9 +1455,26 @@ namespace City2RVT.GUI.XPlan2BIM
                 double bbFloorArea = bbLength * bbWidth;
                 double bbFloorVolume = bbFloorArea * bbHeight;
 
-                CreateSpaceQuantity(model, space, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea", "Area");
-                CreateSpaceQuantity(model, space, bbHeight, "Qto_SpaceBaseQuantites", "Height", "Length");
-                CreateSpaceQuantity(model, space, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume", "Volume");
+                var ifcQuantityHeight = HeightSpaceQuantity(model, space, bbHeight, "Qto_SpaceBaseQuantites", "Height");
+                var ifcQuantityArea  = AreaSpaceQuantity(model, space, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+                var ifcQuantityVolume = VolumeSpaceQuantity(model, space, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume");
+
+                var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
+                {
+                    eq.Name = "Qto_SpaceBaseQuantites";
+                    eq.Description = "Measurement quantity";
+                    eq.Quantities.Add(ifcQuantityHeight);
+                    eq.Quantities.Add(ifcQuantityArea);
+                    eq.Quantities.Add(ifcQuantityVolume);
+                });
+
+                model.Instances.New<IfcRelDefinesByProperties>(rdbp =>
+                {
+                    rdbp.Name = "Qto_SpaceBaseQuantities";
+                    rdbp.Description = "";
+                    rdbp.RelatedObjects.Add(space);
+                    rdbp.RelatingPropertyDefinition = ifcElementQuantity;
+                });
 
                 txn.Commit();
                 return space;
