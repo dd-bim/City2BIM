@@ -53,20 +53,11 @@ namespace City2RVT.Builder
         /// <param name="doc"></param>
         /// <param name="commandData"></param>
         /// <returns></returns>
-        public string getRevitDefaultExportPath(String ifc_Location, Document doc, ExternalCommandData commandData)
+        public string startRevitIfcExport(string ifc_Location, Document doc, ExternalCommandData commandData)
         {
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
             var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
 
-            string folder;
-            if (string.IsNullOrWhiteSpace(ifc_Location))
-            {
-                folder = @"D:\Daten";
-            }
-            else
-            {
-                folder = ifc_Location;
-            }
             string ifcWithoutTopo = "ifc_export_without_topography";
 
             using (TransactionGroup transGroup = new TransactionGroup(doc))
@@ -75,7 +66,7 @@ namespace City2RVT.Builder
 
                 using (Transaction firstTrans = new Transaction(doc))
                 {
-                    firstTrans.Start("First Transaction");
+                    firstTrans.Start("Hide topographies Transaction");
 
                     var hideTopoList = new List<ElementId>();
 
@@ -93,7 +84,7 @@ namespace City2RVT.Builder
 
                 using (Transaction secondTrans = new Transaction(doc))
                 {
-                    secondTrans.Start("Second Transaction");
+                    secondTrans.Start("Revit IFC Export Transaction");
                     IFCExportOptions IFCOptions = new IFCExportOptions();
                     IFCOptions.FileVersion = IFCVersion.IFC4;
                     IFCOptions.FilterViewId = view.Id;
@@ -108,13 +99,13 @@ namespace City2RVT.Builder
                     IFCOptions.AddOption("ExportRoomsInView", "true");
 
                     //Export the model to IFC
-                    doc.Export(folder, ifcWithoutTopo, IFCOptions);
+                    doc.Export(ifc_Location, ifcWithoutTopo, IFCOptions);
                     secondTrans.Commit();
                 }
                 transGroup.RollBack();
             }
 
-            string original = Path.Combine(folder, ifcWithoutTopo + ".ifc");
+            string original = Path.Combine(ifc_Location, ifcWithoutTopo + ".ifc");
             return original;
         }
 
@@ -143,7 +134,8 @@ namespace City2RVT.Builder
                 geomRepContext.TrueNorth.SetXY(richtung[0], richtung[1]);
 
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
-                projectBasePoint.SetXYZ(0, 0, 0);
+                //projectBasePoint.SetXYZ(0, 0, 0);
+                projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
                 var ax3D = model.Instances.New<IfcAxis2Placement3D>();
                 ax3D.Location = projectBasePoint;
 
@@ -207,7 +199,7 @@ namespace City2RVT.Builder
 
         public void CreateUsage(IfcStore model, IfcSpace room)
         {
-            using (var txn = model.BeginTransaction("Change Revit Export"))
+            using (var txn = model.BeginTransaction("Set usage"))
             {
                 //set a few basic properties
                 model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
@@ -250,7 +242,7 @@ namespace City2RVT.Builder
 
         public void CreateRoomArea(IfcStore model, IfcSpace room)
         {
-            using (var txn = model.BeginTransaction("Change Revit Export"))
+            using (var txn = model.BeginTransaction("Set Netto-Raumflächen"))
             {
                 //set a few basic properties
                 model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
@@ -305,15 +297,15 @@ namespace City2RVT.Builder
                     double bbFloorArea = room.NetFloorArea.Value;
                     double bbFloorVolume = bbFloorArea * bbHeight;
 
-                    IfcXBim.AreaSpaceQuantity(model, room, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea");
-                    IfcXBim.HeightSpaceQuantity(model, room, bbHeight, "Qto_SpaceBaseQuantites", "Height");
-                    IfcXBim.VolumeSpaceQuantity(model, room, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume");
+                    IfcXBim.AreaSpaceQuantity(model, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+                    IfcXBim.HeightSpaceQuantity(model, bbHeight, "Qto_SpaceBaseQuantites", "Height");
+                    IfcXBim.VolumeSpaceQuantity(model, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume");
                 }
                 catch
                 {
-                    IfcXBim.AreaSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossFloorArea");
-                    IfcXBim.HeightSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "Height");
-                    IfcXBim.VolumeSpaceQuantity(model, room, 0, "Qto_SpaceBaseQuantites", "GrossVolume");
+                    IfcXBim.AreaSpaceQuantity(model, 0, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+                    IfcXBim.HeightSpaceQuantity(model, 0, "Qto_SpaceBaseQuantites", "Height");
+                    IfcXBim.VolumeSpaceQuantity(model, 0, "Qto_SpaceBaseQuantites", "GrossVolume");
                 }
 
                 txn.Commit();

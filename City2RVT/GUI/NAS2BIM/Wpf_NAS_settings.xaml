@@ -113,7 +113,7 @@
                 </Grid.ColumnDefinitions>
                 <CheckBox Name="check_drapeParcels" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"/>
                 <Label Content="drape Parcels" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
-                <CheckBox Name="check_drapeUsage" Grid.Column="1" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                <CheckBox Name="check_drapeUsage" Grid.Column="1" Margin="1,12,185,12" VerticalAlignment="Center" Checked="check_drapeUsage_Checked"/>
                 <Label Content="drape Usage" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
                 <CheckBox Name="check_drapeBldgs" Grid.Column="2" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"/>
                 <Label Content="drape Building contours" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>

@@ -311,6 +311,11 @@ namespace City2RVT.GUI
             f1.ShowDialog();
         }
 
+        private void check_drapeUsage_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
 
         //private void rb_custom_Checked(object sender, RoutedEventArgs e)
         //{

@@ -58,10 +58,7 @@ namespace City2RVT.Reader
         /// <returns></returns>
         public List<string> getXPlanParameter(string layer, XmlDocument xmlDoc, XmlNamespaceManager nsmgr)
         {
-            var selectedLayer = GUI.Prop_NAS_settings.SelectedLayer;
-
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember/" + layer, nsmgr);
-
 
             List<string> allParamList = new List<string>();
             foreach (XmlNode xmlNode in allXPlanObjects)
@@ -78,81 +75,6 @@ namespace City2RVT.Reader
                 }
             }
             return allParamList;
-        }
-
-        public CurveLoop getInterior(XmlNode interiorNode, XmlNamespaceManager nsmgr, List<string> interiorListe, Document doc, Autodesk.Revit.ApplicationServices.Application app, Transform transf, double R, double zOffset, int ii)
-        {
-            CurveLoop curveLoopInterior = new CurveLoop();
-
-            {
-                XmlNodeList interiorNodeList = interiorNode.SelectNodes("gml:LinearRing/gml:posList", nsmgr);
-                XmlNodeList interiorRingNodeList = interiorNode.SelectNodes("gml:Ring/gml:curveMember//gml:posList", nsmgr);
-
-                foreach (XmlNode xc in interiorNodeList)
-                {
-                    interiorListe.Add(xc.InnerText);
-                    string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (koordWerteInterior.Count() == 4)
-                    {
-                        var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
-                        Line lineExterior = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
-                        curveLoopInterior.Append(lineExterior);
-                    }
-
-                    else if (koordWerteInterior.Count() > 4)
-                    {
-                        int ia = 0;
-
-                        foreach (string split in koordWerteInterior)
-                        {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
-                            Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ia, zOffset);
-                            curveLoopInterior.Append(lineClIndu);
-
-                            if ((ia + 3) == (koordWerteInterior.Count() - 1))
-                            {
-                                break;
-                            }
-                            ia += 2;
-                        }
-                    }
-                    ii++;
-                }
-
-                foreach (XmlNode xc in interiorRingNodeList)
-                {
-                    interiorListe.Add(xc.InnerText);
-                    string[] koordWerteInterior = interiorListe[ii].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (koordWerteInterior.Count() == 4)
-                    {
-                        var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
-                        Line lineStrasse = geomBuilder.CreateLineString(koordWerteInterior, R, transf, zOffset);
-                        curveLoopInterior.Append(lineStrasse);
-                    }
-
-                    else if (koordWerteInterior.Count() > 4)
-                    {
-                        int ib = 0;
-                        foreach (string split in koordWerteInterior)
-                        {
-                            var geomBuilder = new Builder.RevitXPlanBuilder(doc, app);
-                            Line lineClIndu = geomBuilder.CreateLineRing(koordWerteInterior, R, transf, ib, zOffset);
-                            curveLoopInterior.Append(lineClIndu);
-
-                            if ((ib + 3) == (koordWerteInterior.Count() - 1))
-                            {
-                                break;
-                            }
-
-                            ib += 2;
-                        }
-                    }
-                    ii++;
-                }
-            }
-            return curveLoopInterior;
         }
     }
 }

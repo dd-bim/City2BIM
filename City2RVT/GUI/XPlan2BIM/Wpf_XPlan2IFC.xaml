@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="612.262"
-             Height="450" Width="634"
+             Height="450" Width="700"
         Title="Export to IFC" Icon="/City2RVT;component/img/IFC_32px_96dpi.ico">
     <Grid Margin="10,10,0,0">
         <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="497,319,0,0" 
@@ -24,5 +24,7 @@
         <RadioButton Name="rb_selectAll" Content="Select all" HorizontalAlignment="Left" Margin="497,121,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
         <Button Content="Clear Selection" HorizontalAlignment="Left" Margin="497,141,0,0" VerticalAlignment="Top" Width="97" Click="Button_Click"/>
         <Button Content="Close" HorizontalAlignment="Left" Margin="497,360,0,0" VerticalAlignment="Top" Width="97" Click="close_dialoge_button"/>
+        <CheckBox Name="checkboxAsSite" Content="Export surfaces as IfcSite" HorizontalAlignment="Left" Margin="497,265,0,0" VerticalAlignment="Top" IsChecked="True" Checked="checkboxAsSite_Checked"/>
+        <CheckBox Name="checkboxAsSpace" Content="Export surfaces as IfcSpace" HorizontalAlignment="Left" Margin="497,285,0,0" VerticalAlignment="Top" Checked="checkboxAsSpace_Checked"/>
     </Grid>
 </Window>

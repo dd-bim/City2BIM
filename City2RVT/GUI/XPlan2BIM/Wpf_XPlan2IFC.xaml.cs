@@ -94,7 +94,7 @@ namespace City2RVT.GUI.XPlan2BIM
             double angle = transfClass.getAngle(doc);
 
             Builder.IfcBuilder ifcBuilder = new Builder.IfcBuilder();
-            string original = ifcBuilder.getRevitDefaultExportPath(ifc_Location.Text, doc, commandData);
+            string original = ifcBuilder.startRevitIfcExport(ifc_Location.Text, doc, commandData);
 
             FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
             FilteredElementCollector wallCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Walls);
@@ -122,7 +122,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 ifcBuilder.editRevitExport(model, doc);
 
                 var ifcRooms = model.Instances.OfType<Xbim.Ifc4.ProductExtension.IfcSpace>();
-                //ifcBuilder.CreateEnumeration(model,)
                 foreach (var room in ifcRooms)
                 {
                     ifcBuilder.CreateUsage(model, room);
@@ -134,7 +133,15 @@ namespace City2RVT.GUI.XPlan2BIM
                     // Get parameters, point coordinates and geometry of topography surfaces
                     TopographySurface topoSurf = doc.GetElement(topo.UniqueId.ToString()) as TopographySurface;
                     IList<XYZ> topoPoints = topoSurf.GetPoints();
+                    //IList<XYZ> topoPoints = topoSurf.GetBoundaryPoints();
                     ParameterSet topoParams = topoSurf.Parameters;
+
+                    Options options = new Options();
+                    options.ComputeReferences = true;
+
+                    //var mesho = doc.GetElement(topo.UniqueId.ToString()).get_Geometry(options) as Mesh;
+
+
 
                     string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
                     if (bezeichnung == null)
@@ -146,8 +153,24 @@ namespace City2RVT.GUI.XPlan2BIM
                     // nur für die Darstellung in Revit notwendig sind, nicht nach IFC exportiert werden.
                     if (bezeichnung.StartsWith("Reference plane") == false && bezeichnung.StartsWith("DTM: ") == false && selectedLayers.Contains(bezeichnung))
                     {
-                        IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc);
-                        IfcXBim.createSpace(model, topoSurf, commandData, pbp, bezeichnung);
+                        Mesh mesh = topoSurf.get_Geometry(options).First(q => q is Mesh) as Mesh;
+
+                        //var verts = mesh.Vertices;
+                        //var triangle = mesh.get_Triangle(1);
+
+                        if (checkboxAsSite.IsChecked == true && checkboxAsSpace.IsChecked == false)
+                        {
+                            IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc, mesh);
+                        }
+                        else if (checkboxAsSpace.IsChecked == true && checkboxAsSite.IsChecked == false)
+                        {
+                            IfcXBim.createSpace(model, topoSurf, commandData, pbp, bezeichnung);
+                        }
+                        else if (checkboxAsSpace.IsChecked == true && checkboxAsSite.IsChecked == true)
+                        {
+                            IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc, mesh);
+                            IfcXBim.createSpace(model, topoSurf, commandData, pbp, bezeichnung);
+                        }
                     }
                 }
 
@@ -241,6 +264,16 @@ namespace City2RVT.GUI.XPlan2BIM
         private void close_dialoge_button(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void checkboxAsSite_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void checkboxAsSpace_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
