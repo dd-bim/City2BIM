@@ -15,6 +15,7 @@ using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 
 using Xbim.Common;
+using Xbim.Common.Exceptions;
 using Xbim.Common.Step21;
 using Xbim.Ifc;
 using Xbim.Ifc4.PresentationOrganizationResource;
@@ -33,6 +34,7 @@ using Xbim.Ifc4.PropertyResource;
 using Xbim.Ifc4.SharedBldgElements;
 using Xbim.Ifc4.ProfileResource;
 using Xbim.Ifc4.MaterialResource;
+using Xbim.Ifc4.PresentationDefinitionResource;
 using System.Xml;
 //using CoordIndex = System.Tuple<int, int, int>;
 
@@ -40,6 +42,7 @@ using City2RVT.Calc;
 using Xbim.Ifc4.ActorResource;
 using Xbim.Ifc4.QuantityResource;
 using System.Globalization;
+using Xbim.Common.Collections;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -89,7 +92,7 @@ namespace City2RVT.GUI.XPlan2BIM
                             });
         }
 
-        public void getProjectEnums(IfcPropertySet pset, IfcStore model, Document doc, string name, List<string>enums)
+        public void getProjectEnums(IfcPropertySet pset, IfcStore model, Document doc, string name, List<string> enums)
         {
             pset.HasProperties.AddRange(new[]
                 {
@@ -120,7 +123,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                 //string projInfoParamValue = "-";
                                 //pev.EnumerationValues.Add(new IfcLabel(projInfoParamValue));
                             }
-                        });                                    
+                        });
                     }),
             });
         }
@@ -128,7 +131,7 @@ namespace City2RVT.GUI.XPlan2BIM
         /// <summary>
         /// Get values for surface properties from Revit project information and saves them to the ifc file. 
         /// </summary>
-        public void setSurfaceProperties(IfcPropertySet pset, IfcStore model, KeyValuePair<string,string> topoParam)
+        public void setSurfaceProperties(IfcPropertySet pset, IfcStore model, KeyValuePair<string, string> topoParam)
         {
             pset.HasProperties.AddRange(new[]
 {
@@ -158,7 +161,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 var area = topoSurf.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
                 string[] areaSplit = area.Split(' ');
                 string areaWithoutUnit = areaSplit[0];
-                qa.AreaValue = Convert.ToDouble(areaWithoutUnit,CultureInfo.InvariantCulture);
+                qa.AreaValue = Convert.ToDouble(areaWithoutUnit, CultureInfo.InvariantCulture);
 
             });
 
@@ -205,7 +208,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 eq.Description = "Measurement area quantity";
                 eq.Quantities.Add(ifcQuantityArea);
             });
-            return ifcQuantityArea;            
+            return ifcQuantityArea;
         }
 
         public static IfcQuantityLength HeightSpaceQuantity(IfcStore model, double value, string qsetName, string qName)
@@ -300,7 +303,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 var site = model.Instances.New<IfcSite>();
                 site.Name = "Site for " + bezeichnung;
                 site.RefElevation = 0.0;
-                site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;                
+                site.Description = "Site fuer Nutzungsflaeche " + bezeichnung;
 
                 double lat, lon, gamma, scale;
                 UTMcalc.UtmGrs80Reverse(33, false, pbp.X, pbp.Y, out lat, out lon, out gamma, out scale);
@@ -326,44 +329,17 @@ namespace City2RVT.GUI.XPlan2BIM
                 });
                 site.SiteAddress = ifcAddress;
 
-                var curveSet = model.Instances.New<IfcPolyline>();
-                var loop = model.Instances.New<IfcPolyLoop>();
-
-                foreach (var tp in topoPoints)
-                {
-                    XYZ topoPoint = new XYZ(tp.X, tp.Y, tp.Z);
-                    var cartPoint = model.Instances.New<IfcCartesianPoint>();
-                    cartPoint.SetXYZ(Convert.ToDouble(topoPoint.X, CultureInfo.InvariantCulture)/feetToMeter,
-                        Convert.ToDouble(topoPoint.Y, CultureInfo.InvariantCulture) / feetToMeter,
-                        Convert.ToDouble(topoPoint.Z, CultureInfo.InvariantCulture) / feetToMeter);
-
-                    curveSet.Points.Add(cartPoint);
-                    loop.Polygon.Add(cartPoint);
-                }
-
                 var projectBasePoint = model.Instances.New<IfcCartesianPoint>();
                 projectBasePoint.SetXYZ(pbp.X, pbp.Y, pbp.Z);
                 //projectBasePoint.SetXYZ(0,0,0);
 
-                var facebound = model.Instances.New<IfcFaceBound>();
-                facebound.Bound = loop;
-
-                var outerFace = model.Instances.New<IfcFaceOuterBound>();
-                outerFace.Bound = loop;
-
-                var face = model.Instances.New<IfcFace>();
-                face.Bounds.Add(outerFace);
-
-                var connFaceSet = model.Instances.New<IfcConnectedFaceSet>();
-                connFaceSet.CfsFaces.Add(face);
-
                 var material = model.Instances.New<IfcMaterial>();
-                material.Name = "transparent";
+                //material.Name = "transparent";
 
                 var colorDict = new Dictionary<string, string>();
                 colorDict = CreateColors();
 
-                double rot,gruen,blau;
+                double rot, gruen, blau;
                 if (colorDict.ContainsKey(bezeichnung))
                 {
                     rot = Convert.ToDouble(colorDict[bezeichnung].Split('/')[0]);
@@ -384,7 +360,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var surfaceStyleRendering = model.Instances.New<IfcSurfaceStyleRendering>();
                 surfaceStyleRendering.SurfaceColour = colourRgb;
-                //surfaceStyleRendering.Transparency = 0.5;
+                surfaceStyleRendering.Transparency = 0.5;
 
                 var surfaceStyle = model.Instances.New<IfcSurfaceStyle>();
                 surfaceStyle.Styles.Add(surfaceStyleRendering);
@@ -393,56 +369,17 @@ namespace City2RVT.GUI.XPlan2BIM
                 var presentation = model.Instances.New<IfcPresentationStyleAssignment>();
                 presentation.Styles.Add(surfaceStyle);
 
-                //var pointList3D = model.Instances.New<IfcCartesianPointList3D>();
-                //pointList3D.CoordList.Add(new ifclengthm(1.0);
-
-                //foreach (var tp in topoPoints)
-                //{
-                //    XYZ topoPoint = new XYZ(tp.X, tp.Y, tp.Z);
-                //    var cartPoint = model.Instances.New<IfcCartesianPoint>();
-                //    cartPoint.SetXYZ(Convert.ToDouble(topoPoint.X, CultureInfo.InvariantCulture) / feetToMeter,
-                //        Convert.ToDouble(topoPoint.Y, CultureInfo.InvariantCulture) / feetToMeter,
-                //        Convert.ToDouble(topoPoint.Z, CultureInfo.InvariantCulture) / feetToMeter);
-
-                //    curveSet.Points.Add(cartPoint);
-                //    loop.Polygon.Add(cartPoint);
-                //}
-
-                //       List<CoordIndex> coordIndex = new List<CoordIndex>() {
-                //       new CoordIndex(1, 6, 5), new CoordIndex(1, 2, 6), new CoordIndex(6, 2, 7),
-                //       new CoordIndex(7, 2, 3), new CoordIndex(7, 8, 6), new CoordIndex(6, 8, 5),
-                //       new CoordIndex(5, 8, 1), new CoordIndex(1, 8, 4), new CoordIndex(4, 2, 1),
-                //       new CoordIndex(2, 4, 3), new CoordIndex(4, 8, 7), new CoordIndex(7, 3, 4)
-
-
-                //};
-
-                //var coordIndex = model.Instances.New<IItemSet<IItemSet<IfcPositiveInteger>>>();
-
-                //////////////var coordIndex = model.Instances.New<IItemSet<IfcPositiveInteger>>(ccl =>
-                //////////////{
-                //////////////    int posInt1 = 1;
-                //////////////    int posInt2 = 2;
-                //////////////    int posInt3 = 3;
-
-                //////////////    //ccl.AddRange(posInt1);
-                //////////////});
-
-                //IItemSet<IfcPositiveInteger> coordIndex;
-                //var coordIndex = model.Instances.New<IItemSet>();
+                int cplc = 0;
                 var pointList = model.Instances.New<IfcCartesianPointList3D>(cpl =>
                 {
                     foreach (var tp in topoPoints)
                     {
-                        cpl.CoordList.GetAt(0).AddRange(new IfcLengthMeasure[] { tp.X, tp.Y, tp.Z });
-                        //cpl.CoordList.GetAt(0).AddRange(new IfcLengthMeasure[] { tp.X, tp.Y, tp.Z });
-                        //cpl.CoordList.GetAt(1).AddRange(new IfcLengthMeasure[] { 137.671, 442.768, 13.7401 });
-                        //cpl.CoordList.GetAt(2).AddRange(new IfcLengthMeasure[] { 142.393, 462.543, 11.4145 });
+                        cpl.CoordList.GetAt(cplc++).AddRange(new IfcLengthMeasure[] { tp.X / feetToMeter, tp.Y / feetToMeter, tp.Z / feetToMeter });
                     }
                 });
 
-                var triangIrregularNetwork = model.Instances.New<IfcTriangulatedFaceSet>();
-                triangIrregularNetwork.Coordinates = pointList;
+                var triangFaceSet = model.Instances.New<IfcTriangulatedFaceSet>();
+                triangFaceSet.Coordinates = pointList;
 
                 var numTriangles = mesh.NumTriangles;
 
@@ -450,36 +387,37 @@ namespace City2RVT.GUI.XPlan2BIM
                 int cnt = 0;
                 for (int i = 0; i < numTriangles; i++)
                 {
-                    var fi = triangIrregularNetwork.CoordIndex.GetAt(cnt++);
-                    fi.Add(mesh.get_Triangle(i).get_Index(0));
-                    fi.Add(mesh.get_Triangle(i).get_Index(1));
-                    fi.Add(mesh.get_Triangle(i).get_Index(2));
+                    var fi = triangFaceSet.CoordIndex.GetAt(cnt++);
+                    fi.Add(mesh.get_Triangle(i).get_Index(0) + 1);
+                    fi.Add(mesh.get_Triangle(i).get_Index(1) + 1);
+                    fi.Add(mesh.get_Triangle(i).get_Index(2) + 1);
                 }
 
-                //var triangIrregularNetwork = model.Instances.New<IfcTriangulatedIrregularNetwork>();
-                //triangIrregularNetwork.Coordinates = pointList;
-
-                //var curveSetFace = model.Instances.New<IfcFaceBasedSurfaceModel>();
-                //curveSetFace.FbsmFaces.Add(connFaceSet);
-
-                //var style = model.Instances.New<IfcStyledItem>();
-                //style.Item = curveSetFace;
-                //style.Styles.Add(presentation);
-                //curveSetFace.StyledByItem.Append(style);
-
-                //var style = model.Instances.New<IfcStyledItem>();
-                //style.Item = triangFaceSet;
-                //style.Styles.Add(presentation);
-                //triangFaceSet.StyledByItem.Append(style);
-
                 var style = model.Instances.New<IfcStyledItem>();
-                style.Item = triangIrregularNetwork;
+                style.Item = triangFaceSet;
                 style.Styles.Add(presentation);
-                triangIrregularNetwork.StyledByItem.Append(style);
+                triangFaceSet.StyledByItem.Append(style);
+
+                var colourRgbList = model.Instances.New<IfcColourRgbList>(rgbl =>
+                {
+                    rgbl.ColourList.GetAt(0).AddRange(new IfcNormalisedRatioMeasure[] { 0.396078431372549, 0.505882352941176, 0.380392156862745 });
+                });
+
+                //var colourRgbList = model.Instances.New<IfcColourRgbList>();
+                //colourRgbList.ColourList.Add();
+
+                //var indexColourMap = model.Instances.New<IfcIndexedColourMap>();
+                //indexColourMap.MappedTo = triangFaceSet;
+                //indexColourMap.Opacity = 1;
+                //indexColourMap.Colours = colourRgbList;
+                //for (int i = 0; i < numTriangles; i++)
+                //{
+                //    indexColourMap.ColourIndex.Add(1);
+                //}
 
                 var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
                 styledRepresentation.Items.Add(style);
-                
+
 
                 var materialDefRepresentation = model.Instances.New<IfcMaterialDefinitionRepresentation>();
                 materialDefRepresentation.Representations.Add(styledRepresentation);
@@ -490,7 +428,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 //shape definition 1
                 var shapeRepresentation = model.Instances.New<IfcShapeRepresentation>();
                 var geomRepContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
-                //shapeRepresentation.RepresentationType = new IfcLabel("SurfaceOrSolidModel");
+                shapeRepresentation.RepresentationType = new IfcLabel("SurfaceOrSolidModel");
 
                 //ProjectLocation projloc = doc.ActiveProjectLocation;
                 //ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
@@ -502,11 +440,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 shapeRepresentation.ContextOfItems = geomRepContext;
                 shapeRepresentation.RepresentationIdentifier = "Body";
                 shapeRepresentation.RepresentationType = "SurfaceModel";
-                //shapeRepresentation.Items.Add(curveSetFace);
-                //shapeRepresentation.Items.Add(triangFaceSet);
-                shapeRepresentation.Items.Add(triangIrregularNetwork);
-
-
+                shapeRepresentation.Items.Add(triangFaceSet);
 
                 var layerAssignment = model.Instances.New<IfcPresentationLayerAssignment>();
                 layerAssignment.Name = "LandBIM";
@@ -609,7 +543,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                             }
                                         }),
                                     });
-                                }  
+                                }
                             }
                         }
                         else
@@ -704,7 +638,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var rectProf = model.Instances.New<IfcRectangleProfileDef>();
                 rectProf.ProfileType = IfcProfileTypeEnum.AREA;
-                rectProf.XDim = (cpbbMax.X - cpbbMin.X); 
+                rectProf.XDim = (cpbbMax.X - cpbbMin.X);
                 rectProf.YDim = (cpbbMax.Y - cpbbMin.Y);
 
                 //insert point
@@ -716,7 +650,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 rectProf.Position.RefDirection.SetXY(1, 0);
 
                 var spaceSolid = model.Instances.New<IfcExtrudedAreaSolid>();
-                spaceSolid.Depth = (cpbbMax.Z - cpbbMin.Z); 
+                spaceSolid.Depth = (cpbbMax.Z - cpbbMin.Z);
                 spaceSolid.SweptArea = rectProf;
                 spaceSolid.ExtrudedDirection = model.Instances.New<IfcDirection>();
                 spaceSolid.ExtrudedDirection.SetXYZ(0, 0, 1);
@@ -1084,9 +1018,9 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var objectPlacement = buildingStorey.ObjectPlacement as IfcLocalPlacement;
                 var lp1 = objectPlacement.PlacementRelTo as IfcLocalPlacement;
-                var lp2 = lp1.PlacementRelTo as IfcLocalPlacement;            
-                var axis3d = lp2.RelativePlacement as IfcAxis2Placement3D;    
-                var location = axis3d.Location; 
+                var lp2 = lp1.PlacementRelTo as IfcLocalPlacement;
+                var axis3d = lp2.RelativePlacement as IfcAxis2Placement3D;
+                var location = axis3d.Location;
 
                 double relZ = buildingStorey.Elevation.Value;
 
@@ -1496,7 +1430,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 double bbFloorVolume = bbFloorArea * bbHeight;
 
                 var ifcQuantityHeight = HeightSpaceQuantity(model, bbHeight, "Qto_SpaceBaseQuantites", "Height");
-                var ifcQuantityArea  = AreaSpaceQuantity(model, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea");
+                var ifcQuantityArea = AreaSpaceQuantity(model, bbFloorArea, "Qto_SpaceBaseQuantites", "GrossFloorArea");
                 var ifcQuantityVolume = VolumeSpaceQuantity(model, bbFloorVolume, "Qto_SpaceBaseQuantites", "GrossVolume");
 
                 var ifcElementQuantity = model.Instances.New<IfcElementQuantity>(eq =>
