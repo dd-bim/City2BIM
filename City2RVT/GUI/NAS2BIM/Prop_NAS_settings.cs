@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Autodesk.Revit.DB;
+using System.Collections.Generic;
 
 namespace City2RVT.GUI
 {
@@ -25,8 +26,9 @@ namespace City2RVT.GUI
         private static List<string> paramList = default(List<string>);
         private static System.Collections.IList selectedParams = default(System.Collections.IList);
         private static System.Collections.IList selectedParamsPlusLayer = default(System.Collections.IList);
-
-
+        private static string selectedElement = default(string);
+        private static int chosenElement = default(int);
+        private static string selectedId = default(string);
 
         //user-defined extent properties
         //private static double extent = 300.0;
@@ -47,8 +49,12 @@ namespace City2RVT.GUI
         public static System.Collections.IList SelectedLayer { get => selectedLayer; set => selectedLayer = value; }
         public static bool ZOffsetIsChecked { get => zOffsetIsChecked; set => zOffsetIsChecked = value; }
         public static List<string> ParamList { get => paramList; set => paramList = value; }
+        public static int ChosenElement { get => chosenElement; set => chosenElement = value; }
         public static System.Collections.IList SelectedParams { get => selectedParams; set => selectedParams = value; }
         public static System.Collections.IList SelectedParamsPlusLayer { get => selectedParamsPlusLayer; set => selectedParamsPlusLayer = value; }
+        public static string SelectedElement { get => selectedElement; set => selectedElement = value; }
+        public static string SelectedId { get => selectedId; set => selectedId = value; }
+
 
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
         public static bool DrapeBldgsOnTopo { get => drapeBldgsOnTopo; set => drapeBldgsOnTopo = value; }

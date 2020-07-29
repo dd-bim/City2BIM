@@ -275,5 +275,11 @@ namespace City2RVT.GUI.XPlan2BIM
         {
 
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Modify.IfcPropertySets f1 = new Modify.IfcPropertySets(commandData);
+            _ = f1.ShowDialog();
+        }
     }
 }

@@ -418,7 +418,6 @@ namespace City2RVT.GUI.XPlan2BIM
                 var styledRepresentation = model.Instances.New<IfcStyledRepresentation>();
                 styledRepresentation.Items.Add(style);
 
-
                 var materialDefRepresentation = model.Instances.New<IfcMaterialDefinitionRepresentation>();
                 materialDefRepresentation.Representations.Add(styledRepresentation);
                 materialDefRepresentation.RepresentedMaterial = material;
