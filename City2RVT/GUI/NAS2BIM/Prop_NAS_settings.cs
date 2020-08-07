@@ -27,6 +27,7 @@ namespace City2RVT.GUI
         private static System.Collections.IList selectedParams = default(System.Collections.IList);
         private static System.Collections.IList selectedParamsPlusLayer = default(System.Collections.IList);
         private static string selectedElement = default(string);
+        private static string selectedPset = default(string);
         private static int chosenElement = default(int);
         private static string selectedId = default(string);
 
@@ -53,6 +54,8 @@ namespace City2RVT.GUI
         public static System.Collections.IList SelectedParams { get => selectedParams; set => selectedParams = value; }
         public static System.Collections.IList SelectedParamsPlusLayer { get => selectedParamsPlusLayer; set => selectedParamsPlusLayer = value; }
         public static string SelectedElement { get => selectedElement; set => selectedElement = value; }
+        public static string SelectedPset { get => selectedPset; set => selectedPset = value; }
+
         public static string SelectedId { get => selectedId; set => selectedId = value; }
 
 

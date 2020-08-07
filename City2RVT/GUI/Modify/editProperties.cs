@@ -30,6 +30,7 @@ using Form = System.Windows.Forms.Form;
 using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace City2RVT.GUI.Modify
 {
@@ -63,20 +64,48 @@ namespace City2RVT.GUI.Modify
             }
 
             update(chosenList);
+            checkJson(dgv_editProperties);
 
         }
 
         public void update(List<Element> chosenList)
         {
-            editPropertiesGrid.ColumnCount = 1;
-            editPropertiesGrid.Columns[0].Name = "Grundstück";
-            editPropertiesGrid.Columns[0].Width = 150;
+            dgv_editProperties.ColumnCount = 2;
+            dgv_editProperties.Columns[0].Name = "Grundstück";
+            dgv_editProperties.Columns[0].Width = 600;
+            dgv_editProperties.Columns[0].Visible = false;
+
+            dgv_editProperties.Columns[1].Name = "Bezeichnung";
+            dgv_editProperties.Columns[1].Width = 300;
 
             foreach (var c in chosenList)
             {
                 ArrayList row = new ArrayList();
                 row.Add(c.UniqueId.ToString());
-                editPropertiesGrid.Rows.Add(row.ToArray());
+
+                ParameterSet pl = c.Parameters;
+                List<string> paraList = new List<string>();
+                foreach (Parameter p in pl)
+                {
+                    paraList.Add(p.Definition.Name);
+                }
+                if (paraList.Contains("alkis: Flurstuecksnummer"))
+                {
+                    Parameter kommentarParam = c.LookupParameter("alkis: Flurstuecksnummer");
+                    string paramValue = kommentarParam.AsString();
+                    row.Add(paramValue);
+                }
+                else
+                {
+                    Parameter kommentarParam = c.LookupParameter("Kommentare");
+                    string paramValue = kommentarParam.AsString();
+                    row.Add(paramValue);
+                }
+
+                //Parameter kommentarParam = c.LookupParameter("Kommentare");
+                //string paramValue = kommentarParam.AsString();
+                //row.Add(paramValue);
+                dgv_editProperties.Rows.Add(row.ToArray());
             }
 
             //Add Checkbox
@@ -84,7 +113,24 @@ namespace City2RVT.GUI.Modify
             chk.HeaderText = "IstGrundstücksfläche";
             chk.Name = "CheckBox";
             chk.Width = 225;
-            editPropertiesGrid.Columns.Add(chk);
+            dgv_editProperties.Columns.Add(chk);
+        }
+
+        public void checkJson(DataGridView dgv)
+        {
+            string fileName = @"D:\testjson.json";
+
+            var text = File.ReadAllText(fileName);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
+
+            foreach (DataGridViewRow e in dgv.Rows)
+            {
+                if (dict != null && dict.ContainsKey(e.Cells[0].Value.ToString()) && dict[e.Cells[0].Value.ToString()] == true)
+                {
+                    e.Cells[2].Value = true;
+                }
+            }
+
         }
 
 
@@ -98,48 +144,133 @@ namespace City2RVT.GUI.Modify
             
         }
 
+        public class IfcElement
+        {
+            public string Bezeichnung { get; set; }
+            public string elementGuid { get; set; }
+            public PropertySet propertySet { get; set; }
+        }
+        public class Properties
+        {
+            public string Name { get; set; }
+            public string propertyGuid { get; set; }
+            public bool value { get; set; }
+        }
+        public class PropertySet
+        {
+            public string Name { get; set; }
+            public string psetGuid { get; set; }
+            public Properties properties { get; set; }
+        }
+               
+
+        public class RootObject
+        {
+            public List<IfcElement> IFCElements { get; set; }
+        }
+
         private void applyButton_Click(object sender, EventArgs e)
         {
-            string fileName = @"D:\testjson.json";
 
-            var text = File.ReadAllText(fileName);
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
+            #region ALTE Variante
+            // Variante mit Dictionary (alt)
+            //string fileName = @"D:\testjson.json";
+            //var text = File.ReadAllText(fileName);
+            //Dictionary<string, bool> dict = new Dictionary<string, bool>();
+            //dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
 
-            foreach (DataGridViewRow roow in editPropertiesGrid.Rows)
-            {
-                DataGridViewCheckBoxCell chkchecking = roow.Cells[1] as DataGridViewCheckBoxCell;
+            //foreach (DataGridViewRow roow in dgv_editProperties.Rows)
+            //{
+            //    DataGridViewCheckBoxCell chkchecking = roow.Cells[2] as DataGridViewCheckBoxCell;
 
-                if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == false)
+            //    if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == false)
+            //    {
+            //        dict.Add(roow.Cells[0].Value.ToString(), Convert.ToBoolean(chkchecking.Value));
+            //    }
+            //    else if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == true)
+            //    {
+            //        dict[roow.Cells[0].Value.ToString()] = Convert.ToBoolean(chkchecking.Value);
+            //    }
+            //}
+
+            //var json = JsonConvert.SerializeObject(dict, Newtonsoft.Json.Formatting.Indented);
+            #endregion ALTE Variante
+
+            string path = @"D:\testjson2.json";
+
+            IfcElement elem = new IfcElement();
+            PropertySet pSet = new PropertySet();
+            Properties properties = new Properties();
+
+            foreach (DataGridViewRow roow in dgv_editProperties.Rows)
+            {     
+                elem.propertySet = pSet;
+                elem.Bezeichnung = roow.Cells[1].Value.ToString();
+                elem.elementGuid = roow.Cells[0].Value.ToString();
+
+                pSet.properties = properties;
+                pSet.Name = Prop_NAS_settings.SelectedPset;
+
+                properties.Name = dgv_editProperties.Columns[1].Name;
+                properties.value = Convert.ToBoolean(roow.Cells[2].Value);
+
+                string JSONresult;
+
+                if (File.Exists(path))
                 {
-                    dict.Add(roow.Cells[0].Value.ToString(), Convert.ToBoolean(chkchecking.Value));
+                    JSONresult = File.ReadAllText(path);
+                    var rootObject = JsonConvert.DeserializeObject<List<IfcElement>>(JSONresult);
+                    rootObject.Add(new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), elementGuid = roow.Cells[0].Value.ToString() });
+
+                    string JSONresult2 = JsonConvert.SerializeObject(rootObject, Formatting.Indented);
+
+                    using (var tw = new StreamWriter(path, false))
+                    {
+                        tw.WriteLine(JSONresult2.ToString());
+                        tw.Close();
+                    }
                 }
-                else if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == true)
+                else if (!File.Exists(path))
                 {
-                    dict[roow.Cells[0].Value.ToString()] = Convert.ToBoolean(chkchecking.Value);
+                    JSONresult = JsonConvert.SerializeObject(elem);
+
+                    var objectToSerialize = new RootObject();
+                    objectToSerialize.IFCElements = new List<IfcElement>()
+                          {
+                             new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), elementGuid = roow.Cells[0].Value.ToString() },
+                          };
+                    string json = JsonConvert.SerializeObject(objectToSerialize.IFCElements);
+
+                    //File.WriteAllText(path, JSONresult);
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(json.ToString());
+                        tw.Close();
+                    }
                 }
             }
-
-            var json = JsonConvert.SerializeObject(dict, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(fileName, json);
+            this.Close();
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 0)
+            if (e.ColumnIndex == 0 || e.ColumnIndex == 1)
             {
-                string clickedValue = Convert.ToString(editPropertiesGrid.Rows[e.RowIndex].Cells[0].Value);
-                GUI.Prop_NAS_settings.SelectedId = clickedValue;
+                string clickedGuid = Convert.ToString(dgv_editProperties.Rows[e.RowIndex].Cells[0].Value);
+                string clickedName = Convert.ToString(dgv_editProperties.Rows[e.RowIndex].Cells[1].Value);
+                GUI.Prop_NAS_settings.SelectedId = clickedGuid;
 
                 Modify.showProperties f1 = new Modify.showProperties(commandData);
+                f1.Text = clickedName;
                 _ = f1.ShowDialog();
             }
         }
 
         private void CheckAll_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in editPropertiesGrid.Rows)
+            foreach (DataGridViewRow row in dgv_editProperties.Rows)
             {
-                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[2];
                 //chk.Value = !(chk.Value == null ? false : (bool)chk.Value); //because chk.Value is initialy null
                 chk.Value = true;
             }
@@ -147,11 +278,21 @@ namespace City2RVT.GUI.Modify
 
         private void UncheckAll_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in editPropertiesGrid.Rows)
+            foreach (DataGridViewRow row in dgv_editProperties.Rows)
             {
-                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[2];
                 chk.Value = false;
             }
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void editPropertiesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

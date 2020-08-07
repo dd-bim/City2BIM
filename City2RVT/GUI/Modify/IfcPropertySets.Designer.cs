@@ -34,23 +34,25 @@
             // PropertySetsListbox
             // 
             this.PropertySetsListbox.FormattingEnabled = true;
-            this.PropertySetsListbox.Location = new System.Drawing.Point(11, 11);
-            this.PropertySetsListbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PropertySetsListbox.ItemHeight = 25;
+            this.PropertySetsListbox.Location = new System.Drawing.Point(22, 21);
+            this.PropertySetsListbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.PropertySetsListbox.Name = "PropertySetsListbox";
-            this.PropertySetsListbox.Size = new System.Drawing.Size(232, 186);
+            this.PropertySetsListbox.Size = new System.Drawing.Size(460, 354);
             this.PropertySetsListbox.TabIndex = 0;
             this.PropertySetsListbox.SelectedIndexChanged += new System.EventHandler(this.PropertySetsListbox_SelectedIndexChanged);
             // 
             // IfcPropertySets
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(275, 254);
+            this.ClientSize = new System.Drawing.Size(550, 488);
             this.Controls.Add(this.PropertySetsListbox);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "IfcPropertySets";
             this.Text = "IfcPropertySets";
             this.Load += new System.EventHandler(this.IfcPropertySets_Load);
+            this.VisibleChanged += new System.EventHandler(this.IfcPropertySets_VisibleChanged);
             this.ResumeLayout(false);
 
         }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 
 using Autodesk.Revit.DB;
@@ -17,11 +18,13 @@ namespace City2RVT.GUI.Modify
 {
     public partial class IfcPropertySets : Form
     {
+        Window someWindow;
         ExternalCommandData commandData;
-        public IfcPropertySets(ExternalCommandData cData)
+        public IfcPropertySets(ExternalCommandData cData, Window parentWindow)
         {
             commandData = cData;
             InitializeComponent();
+            someWindow = parentWindow;
             PropertySetsListbox.MouseDoubleClick += new MouseEventHandler(propertyListBox_DoubleClick);
 
         }
@@ -56,17 +59,24 @@ namespace City2RVT.GUI.Modify
 
         void propertyListBox_DoubleClick(object sender, MouseEventArgs e)
         {
+            //this.Hide();
             if (PropertySetsListbox.SelectedItem != null)
-            {
+            {                
                 //MessageBox.Show(propertyListBox.SelectedItem.ToString());
-                Prop_NAS_settings.SelectedElement = PropertySetsListbox.SelectedItem.ToString();
+                Prop_NAS_settings.SelectedPset = PropertySetsListbox.SelectedItem.ToString();
 
-                if (Prop_NAS_settings.SelectedElement == "BauantragGrundstück")
+                if (Prop_NAS_settings.SelectedPset == "BauantragGrundstück")
                 {
-                    editIfcProperties f1 = new editIfcProperties(commandData);
+                    
+                    editIfcProperties f1 = new editIfcProperties(commandData, this);
                     _ = f1.ShowDialog();
                 }                
             }
+        }
+
+        private void IfcPropertySets_VisibleChanged(object sender, EventArgs e)
+        {
+            if (!this.Visible) { someWindow.Hide(); }
         }
     }
 }

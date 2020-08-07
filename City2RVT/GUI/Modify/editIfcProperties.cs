@@ -9,6 +9,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 
 using Xbim.Ifc;
 using Xbim.Ifc4.Kernel;
@@ -28,49 +29,36 @@ using IfcBuildingStorey = Xbim.Ifc4.ProductExtension.IfcBuildingStorey;
 using Xbim.Ifc2x3.SharedBldgElements;
 using Form = System.Windows.Forms.Form;
 using MessageBox = System.Windows.Forms.MessageBox;
+using View = Autodesk.Revit.DB.View;
 
 namespace City2RVT.GUI.Modify
 {
     public partial class editIfcProperties : Form
     {
+        Form someForm;
         ExternalCommandData commandData;
 
-        public editIfcProperties(ExternalCommandData cData)
+        public editIfcProperties(ExternalCommandData cData, Form parentForm)
         {
             commandData = cData;
             InitializeComponent();
+            someForm = parentForm;
             propertyListBox.MouseDoubleClick += new MouseEventHandler(propertyListBox_DoubleClick);
         }
 
-
         private void propertyListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //UIApplication app = commandData.Application;
-            //UIDocument uidoc = app.ActiveUIDocument;
-            //Document doc = uidoc.Document;
-
-            //FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
-
-            //foreach (Element topo in topoCollector)
-            //{
-            //    TopographySurface topoSurf = doc.GetElement(topo.UniqueId.ToString()) as TopographySurface;
-
-            //    string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
-            //    if (bezeichnung == null)
-            //    {
-            //        bezeichnung = "-";
-            //    }
-            //}
+            
         }
 
         void propertyListBox_DoubleClick(object sender, MouseEventArgs e)
         {
             if (propertyListBox.SelectedItem != null)
             {
-                //MessageBox.Show(propertyListBox.SelectedItem.ToString());
                 GUI.Prop_NAS_settings.SelectedElement = propertyListBox.SelectedItem.ToString();
 
                 Modify.editProperties f1 = new Modify.editProperties(commandData);
+                f1.Text = propertyListBox.SelectedItem.ToString();
                 _ = f1.ShowDialog();
             }
         }
@@ -99,7 +87,6 @@ namespace City2RVT.GUI.Modify
                 }
             }
 
-            //var paramList = GUI.Prop_NAS_settings.ParamList;
             var paramList = bezList;
 
 
@@ -109,10 +96,40 @@ namespace City2RVT.GUI.Modify
                 propertyListBox.Items.Add(paramList[ix]);
                 ix++;
             }
+        }
 
-            //for (int i = 0; i < propertyListBox.Items.Count; i++)
+        private void pickElement_Click(object sender, EventArgs e)
+        {
+            UIApplication uiapp = commandData.Application;
+            UIDocument uidoc = uiapp.ActiveUIDocument;
+            Document doc = uidoc.Document;
+            Autodesk.Revit.ApplicationServices.Application app = uiapp.Application;
+            Autodesk.Revit.DB.View view = doc.ActiveView;
+            Element pickedElement = Prop_Revit.PickedElement;
+
+            this.Hide();
+            someForm.Hide();
+
+            Selection choices = uidoc.Selection;
+            Reference hasPickOne = choices.PickObject(ObjectType.Element, "Please select the element to change ifc properties. ");
+
+            pickedElement = doc.GetElement(hasPickOne);
+
+            Prop_Revit.PickedElement = pickedElement;
+
+            Modify.editElement f1 = new Modify.editElement(commandData);
+            //f1.Text = clickedName;
+            _ = f1.ShowDialog();
+
+
+            this.Show();
+        }
+
+        private void editIfcProperties_VisibleChanged(object sender, EventArgs e)
+        {
+            //if (this.Visible == false)
             //{
-            //    propertyListBox.SetItemChecked(i, true);
+            //    MessageBox.Show("ausgeblendet");
             //}
         }
     }

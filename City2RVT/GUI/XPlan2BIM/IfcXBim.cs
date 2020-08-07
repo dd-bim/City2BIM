@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using NETGeographicLib;
 //using System.Windows.Media.Media3D;
+using System.IO;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -37,6 +38,7 @@ using Xbim.Ifc4.MaterialResource;
 using Xbim.Ifc4.PresentationDefinitionResource;
 using System.Xml;
 //using CoordIndex = System.Tuple<int, int, int>;
+using Newtonsoft.Json;
 
 using City2RVT.Calc;
 using Xbim.Ifc4.ActorResource;
@@ -583,6 +585,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
         public static IfcSpace createSpace(IfcStore model, TopographySurface topoSurf, ExternalCommandData commandData, XYZ pbp, string bezeichnung)
         {
+            string fileName = @"D:\testjson.json";
+            var text = File.ReadAllText(fileName);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
+
             var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
 
             using (var txn = model.BeginTransaction("Create IfcSpace for surfaces"))
@@ -722,8 +728,16 @@ namespace City2RVT.GUI.XPlan2BIM
 {
                             model.Instances.New<IfcPropertySingleValue>(p =>
                                 {
+                                    var elementId = topoSurf.UniqueId;
                                     p.Name = "IstGrundstücksfläche";
-                                    p.NominalValue = new IfcBoolean(true);
+                                    if (dict.ContainsKey(elementId))
+                                    {
+                                        p.NominalValue = new IfcBoolean(dict[elementId]);
+                                    }
+                                    else
+                                    {
+                                        p.NominalValue = new IfcLabel("n/a");
+                                    } 
                                 }),
                             });
                     });

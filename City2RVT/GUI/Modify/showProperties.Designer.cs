@@ -42,6 +42,7 @@
             this.showPropertiesGrid.Size = new System.Drawing.Size(451, 325);
             this.showPropertiesGrid.TabIndex = 0;
             this.showPropertiesGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.showPropertiesGrid_CellContentClick);
+            this.showPropertiesGrid.VisibleChanged += new System.EventHandler(this.showPropertiesGrid_VisibleChanged);
             // 
             // showProperties
             // 

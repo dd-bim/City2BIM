@@ -26,6 +26,8 @@ using Xbim.Ifc4.ProductExtension;
 using Xbim.Ifc4.Interfaces;
 using IfcBuildingStorey = Xbim.Ifc4.ProductExtension.IfcBuildingStorey;
 using Xbim.Ifc2x3.SharedBldgElements;
+using City2RVT.GUI.Modify;
+using Form = System.Windows.Forms.Form;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -278,8 +280,10 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Modify.IfcPropertySets f1 = new Modify.IfcPropertySets(commandData);
+            //this.Close();
+            Modify.IfcPropertySets f1 = new Modify.IfcPropertySets(commandData, this);
             _ = f1.ShowDialog();
+            this.Close();
         }
     }
 }

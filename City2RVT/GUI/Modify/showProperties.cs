@@ -18,11 +18,18 @@ namespace City2RVT.GUI.Modify
 {
     public partial class showProperties : Form
     {
+        
         ExternalCommandData commandData;
         public showProperties(ExternalCommandData cData)
         {
             commandData = cData;
             InitializeComponent();
+            
+
+            //editIfcProperties obj2 = new editIfcProperties(commandData);
+            //obj2.RefToForm1 = this;
+            //this.Visible = false;
+            //obj2.Hide();
         }
 
         private void showProperties_Load(object sender, EventArgs e)
@@ -31,8 +38,6 @@ namespace City2RVT.GUI.Modify
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
             var selectedId = GUI.Prop_NAS_settings.SelectedId;
-
-            //var selectedId = "d6ac4e1b-0d17-46a3-8589-d1c211b74b69-00076da5";
 
             var elem = doc.GetElement(selectedId);
 
@@ -44,6 +49,11 @@ namespace City2RVT.GUI.Modify
             showPropertiesGrid.Columns[1].Name = "Wert";
             showPropertiesGrid.Columns[1].Width = 300;
 
+            ArrayList row = new ArrayList();
+            row.Add("Kommentare");
+            row.Add(elem.LookupParameter("Kommentare").AsString());
+            showPropertiesGrid.Rows.Add(row.ToArray());
+
             foreach (Parameter p in topoParams)
             {
                 if  (p.IsShared)
@@ -53,23 +63,23 @@ namespace City2RVT.GUI.Modify
 
                     if (value != null && value != "")
                     {
-                        ArrayList row = new ArrayList();
+                        /*ArrayList*/ row = new ArrayList();
                         row.Add(key);
                         row.Add(value);
                         showPropertiesGrid.Rows.Add(row.ToArray());
-                    }
-
-                    
+                    }                    
                 }
-            }
-
-            //var parameters = elem.GetParameters();
-
+            } 
         }
 
         private void showPropertiesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void showPropertiesGrid_VisibleChanged(object sender, EventArgs e)
+        {
+            //MessageBox.Show("ausgeblendet");
         }
     }
 }
