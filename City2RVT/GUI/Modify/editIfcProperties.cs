@@ -57,7 +57,7 @@ namespace City2RVT.GUI.Modify
             {
                 GUI.Prop_NAS_settings.SelectedElement = propertyListBox.SelectedItem.ToString();
 
-                Modify.editProperties f1 = new Modify.editProperties(commandData);
+                Modify.EditProperties f1 = new Modify.EditProperties(commandData);
                 f1.Text = propertyListBox.SelectedItem.ToString();
                 _ = f1.ShowDialog();
             }

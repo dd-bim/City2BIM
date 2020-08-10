@@ -30,7 +30,7 @@ namespace City2RVT.GUI.Modify
         {
             update();
             updateOriginal();
-            var editProperties = new editProperties(commandData);
+            var editProperties = new EditProperties(commandData);
             editProperties.checkJson(dgv_tabPsets);
         }
 
@@ -68,9 +68,6 @@ namespace City2RVT.GUI.Modify
                 row.Add(paramValue);
             }
 
-            //Parameter kommentarParam = c.LookupParameter("Kommentare");
-            //string paramValue = kommentarParam.AsString();
-            //row.Add(paramValue);
             dgv_tabPsets.Rows.Add(row.ToArray());
 
             //Add Checkbox
@@ -106,7 +103,7 @@ namespace City2RVT.GUI.Modify
 
                     if (value != null && value != "")
                     {
-                        /*ArrayList*/ row = new ArrayList();
+                        row = new ArrayList();
                         row.Add(key);
                         row.Add(value);
                         dgv_original.Rows.Add(row.ToArray());
@@ -132,28 +129,8 @@ namespace City2RVT.GUI.Modify
 
         private void btn_applyPsets_Click(object sender, EventArgs e)
         {
-            string fileName = @"D:\testjson.json";
-
-            var text = File.ReadAllText(fileName);
-            Dictionary<string, bool> dict = new Dictionary<string, bool>();
-            dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
-
-            foreach (DataGridViewRow roow in dgv_tabPsets.Rows)
-            {
-                DataGridViewCheckBoxCell chkchecking = roow.Cells[2] as DataGridViewCheckBoxCell;
-
-                if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == false)
-                {
-                    dict.Add(roow.Cells[0].Value.ToString(), Convert.ToBoolean(chkchecking.Value));
-                }
-                else if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == true)
-                {
-                    dict[roow.Cells[0].Value.ToString()] = Convert.ToBoolean(chkchecking.Value);
-                }
-            }
-
-            var json = JsonConvert.SerializeObject(dict, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(fileName, json);
+            EditProperties editProperties = new EditProperties(commandData);
+            editProperties.createJSON(dgv_tabPsets);
             this.Close();
         }
     }

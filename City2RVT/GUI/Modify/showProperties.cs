@@ -24,12 +24,6 @@ namespace City2RVT.GUI.Modify
         {
             commandData = cData;
             InitializeComponent();
-            
-
-            //editIfcProperties obj2 = new editIfcProperties(commandData);
-            //obj2.RefToForm1 = this;
-            //this.Visible = false;
-            //obj2.Hide();
         }
 
         private void showProperties_Load(object sender, EventArgs e)
@@ -63,7 +57,7 @@ namespace City2RVT.GUI.Modify
 
                     if (value != null && value != "")
                     {
-                        /*ArrayList*/ row = new ArrayList();
+                        row = new ArrayList();
                         row.Add(key);
                         row.Add(value);
                         showPropertiesGrid.Rows.Add(row.ToArray());

@@ -219,11 +219,11 @@
     <Compile Include="GUI\Modify\showProperties.Designer.cs">
       <DependentUpon>showProperties.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Modify\editProperties.cs">
+    <Compile Include="GUI\Modify\EditProperties.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Modify\editProperties.Designer.cs">
-      <DependentUpon>editProperties.cs</DependentUpon>
+    <Compile Include="GUI\Modify\EditProperties.Designer.cs">
+      <DependentUpon>EditProperties.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
@@ -376,8 +376,8 @@
     <EmbeddedResource Include="GUI\Modify\showProperties.resx">
       <DependentUpon>showProperties.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Modify\editProperties.resx">
-      <DependentUpon>editProperties.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Modify\EditProperties.resx">
+      <DependentUpon>EditProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

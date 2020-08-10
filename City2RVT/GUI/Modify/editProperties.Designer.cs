@@ -1,6 +1,6 @@
 ﻿namespace City2RVT.GUI.Modify
 {
-    partial class editProperties
+    partial class EditProperties
     {
         /// <summary>
         /// Required designer variable.

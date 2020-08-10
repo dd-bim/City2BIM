@@ -34,10 +34,10 @@ using Newtonsoft.Json.Linq;
 
 namespace City2RVT.GUI.Modify
 {
-    public partial class editProperties : Form
+    public partial class EditProperties : Form
     {
         ExternalCommandData commandData;
-        public editProperties(ExternalCommandData cData)
+        public EditProperties(ExternalCommandData cData)
         {
             commandData = cData;
             InitializeComponent();
@@ -118,19 +118,28 @@ namespace City2RVT.GUI.Modify
 
         public void checkJson(DataGridView dgv)
         {
-            string fileName = @"D:\testjson.json";
+            string fileName = @"D:\testjson2.json";
 
-            var text = File.ReadAllText(fileName);
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
+            var JSONresult = File.ReadAllText(fileName);
+
+            var rootObject = JsonConvert.DeserializeObject<List<IfcElement>>(JSONresult);
+
+            Dictionary<string, bool> elemGuidDict = new Dictionary<string, bool>();
+            if (rootObject != null)
+            {
+                foreach (var x in rootObject)
+                {
+                    elemGuidDict.Add(x.elementGuid.ToString(), x.propertySet.properties.value);
+                }
+            }
 
             foreach (DataGridViewRow e in dgv.Rows)
             {
-                if (dict != null && dict.ContainsKey(e.Cells[0].Value.ToString()) && dict[e.Cells[0].Value.ToString()] == true)
+                if (elemGuidDict != null && elemGuidDict.ContainsKey(e.Cells[0].Value.ToString()) && elemGuidDict[e.Cells[0].Value.ToString()] == true)
                 {
                     e.Cells[2].Value = true;
                 }
             }
-
         }
 
 
@@ -161,49 +170,23 @@ namespace City2RVT.GUI.Modify
             public string Name { get; set; }
             public string psetGuid { get; set; }
             public Properties properties { get; set; }
-        }
-               
+        }               
 
         public class RootObject
         {
             public List<IfcElement> IFCElements { get; set; }
         }
 
-        private void applyButton_Click(object sender, EventArgs e)
+        public void createJSON(DataGridView dgv)
         {
-
-            #region ALTE Variante
-            // Variante mit Dictionary (alt)
-            //string fileName = @"D:\testjson.json";
-            //var text = File.ReadAllText(fileName);
-            //Dictionary<string, bool> dict = new Dictionary<string, bool>();
-            //dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
-
-            //foreach (DataGridViewRow roow in dgv_editProperties.Rows)
-            //{
-            //    DataGridViewCheckBoxCell chkchecking = roow.Cells[2] as DataGridViewCheckBoxCell;
-
-            //    if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == false)
-            //    {
-            //        dict.Add(roow.Cells[0].Value.ToString(), Convert.ToBoolean(chkchecking.Value));
-            //    }
-            //    else if (dict.ContainsKey(roow.Cells[0].Value.ToString()) == true)
-            //    {
-            //        dict[roow.Cells[0].Value.ToString()] = Convert.ToBoolean(chkchecking.Value);
-            //    }
-            //}
-
-            //var json = JsonConvert.SerializeObject(dict, Newtonsoft.Json.Formatting.Indented);
-            #endregion ALTE Variante
-
             string path = @"D:\testjson2.json";
 
             IfcElement elem = new IfcElement();
             PropertySet pSet = new PropertySet();
             Properties properties = new Properties();
 
-            foreach (DataGridViewRow roow in dgv_editProperties.Rows)
-            {     
+            foreach (DataGridViewRow roow in dgv.Rows)
+            {
                 elem.propertySet = pSet;
                 elem.Bezeichnung = roow.Cells[1].Value.ToString();
                 elem.elementGuid = roow.Cells[0].Value.ToString();
@@ -211,7 +194,7 @@ namespace City2RVT.GUI.Modify
                 pSet.properties = properties;
                 pSet.Name = Prop_NAS_settings.SelectedPset;
 
-                properties.Name = dgv_editProperties.Columns[1].Name;
+                properties.Name = dgv.Columns[2].HeaderText;
                 properties.value = Convert.ToBoolean(roow.Cells[2].Value);
 
                 string JSONresult;
@@ -220,14 +203,40 @@ namespace City2RVT.GUI.Modify
                 {
                     JSONresult = File.ReadAllText(path);
                     var rootObject = JsonConvert.DeserializeObject<List<IfcElement>>(JSONresult);
-                    rootObject.Add(new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), elementGuid = roow.Cells[0].Value.ToString() });
 
-                    string JSONresult2 = JsonConvert.SerializeObject(rootObject, Formatting.Indented);
-
-                    using (var tw = new StreamWriter(path, false))
+                    List<string> elemGuidList = new List<string>();
+                    if (rootObject != null)
                     {
-                        tw.WriteLine(JSONresult2.ToString());
-                        tw.Close();
+                        foreach (var x in rootObject)
+                        {
+                            elemGuidList.Add(x.elementGuid.ToString());
+                        }
+                    }
+
+                    if (!elemGuidList.Contains(roow.Cells[0].Value.ToString()))
+                    {
+                        rootObject.Add(new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), elementGuid = roow.Cells[0].Value.ToString() });
+
+                        string JSONresult2 = JsonConvert.SerializeObject(rootObject, Formatting.Indented);
+
+                        using (var tw = new StreamWriter(path, false))
+                        {
+                            tw.WriteLine(JSONresult2.ToString());
+                            tw.Close();
+                        }
+                    }
+                    else if (elemGuidList.Contains(roow.Cells[0].Value.ToString()))
+                    {
+                        var toChange = rootObject.FirstOrDefault(d => d.elementGuid == roow.Cells[0].Value.ToString());
+                        if (toChange != null) { toChange.propertySet.properties.value = Convert.ToBoolean(roow.Cells[2].Value); }
+
+                        string JSONresult2 = JsonConvert.SerializeObject(rootObject, Formatting.Indented);
+
+                        using (var tw = new StreamWriter(path, false))
+                        {
+                            tw.WriteLine(JSONresult2.ToString());
+                            tw.Close();
+                        }
                     }
                 }
                 else if (!File.Exists(path))
@@ -249,6 +258,11 @@ namespace City2RVT.GUI.Modify
                     }
                 }
             }
+        }
+
+        private void applyButton_Click(object sender, EventArgs e)
+        {
+            createJSON(dgv_editProperties);
             this.Close();
         }
 
