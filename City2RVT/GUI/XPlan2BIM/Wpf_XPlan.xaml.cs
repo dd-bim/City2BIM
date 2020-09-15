@@ -50,7 +50,7 @@ namespace City2RVT.GUI.XPlan2BIM
             Uri iconUri = new Uri("pack://application:,,,/City2RVT;component/img/XPlan_32px.ico", UriKind.RelativeOrAbsolute);
             this.Icon = BitmapFrame.Create(iconUri);
 
-            xplan_file.Text = Prop_XPLAN_settings.FileUrl;
+            xplan_file.Text = Prop_XPLAN_settings.GmlUrl;
         }
 
         public class AxesFailure : IFailuresPreprocessor
@@ -289,7 +289,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
         private void Button_Click_CloseXplanForm(object sender, RoutedEventArgs e)
         {
-            Prop_XPLAN_settings.FileUrl = xplan_file.Text;
+            Prop_XPLAN_settings.GmlUrl = xplan_file.Text;
             this.Close();
         }
 

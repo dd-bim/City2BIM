@@ -39,9 +39,17 @@ namespace City2RVT.GUI.Properties
 
         private void Btn_Start_Click(object sender, RoutedEventArgs e)
         {
-            Wpf_showLayer f1 = new Wpf_showLayer(commandData);
-            //f1.Text = propertyListBox.SelectedItem.ToString();
-            _ = f1.ShowDialog();
+            if (Cb_Theme.SelectedItem.ToString() == "XPlanung")
+            {
+                Wpf_showLayer f1 = new Wpf_showLayer(commandData);
+                //f1.Text = propertyListBox.SelectedItem.ToString();
+                _ = f1.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Noch nicht implementiert. ");
+            }
+            
         }
 
         private void Cb_Theme_SelectionChanged(object sender, SelectionChangedEventArgs e)

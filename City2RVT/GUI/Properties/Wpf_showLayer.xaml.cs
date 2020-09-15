@@ -83,5 +83,38 @@ namespace City2RVT.GUI.Properties
             //f1.Text = propertyListBox.SelectedItem.ToString();
             _ = f1.ShowDialog();
         }
+
+        private void btn_gml_Click(object sender, RoutedEventArgs e)
+        {
+            Reader.FileDialog winexp = new Reader.FileDialog();
+            string gml = winexp.ImportPath(Reader.FileDialog.Data.XPlanGML);
+            tf_gml.Text = gml;
+            XPlan2BIM.Prop_XPLAN_settings.GmlUrl = gml;
+        }
+
+        private void btn_metajson_Click(object sender, RoutedEventArgs e)
+        {
+            Reader.FileDialog winexp = new Reader.FileDialog();
+            string metaJson = winexp.ImportPath(Reader.FileDialog.Data.JSON);
+            tf_metajson.Text = metaJson;
+            XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl = metaJson;
+        }
+
+        private void btn_exportjson_Click(object sender, RoutedEventArgs e)
+        {
+            Reader.FileDialog winexp = new Reader.FileDialog();
+            string exportJson = winexp.ImportPath(Reader.FileDialog.Data.JSON);
+            tf_exportjson.Text = exportJson;
+            XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl = exportJson;
+        }
+
+        private void btn_choose_Click(object sender, RoutedEventArgs e)
+        {
+            Prop_NAS_settings.SelectedSingleLayer = lb_layer.SelectedItem.ToString();
+
+            Wf_showEntities f1 = new Wf_showEntities(commandData);
+            //f1.Text = propertyListBox.SelectedItem.ToString();
+            _ = f1.ShowDialog();
+        }
     }
 }

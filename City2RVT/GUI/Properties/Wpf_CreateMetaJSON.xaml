@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:City2RVT.GUI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
-        Height="450" Width="400" Title="Select theme">
+        Height="200" Width="200" Title="Select theme">
     <Grid>
-        <ComboBox Name="Cb_Theme" HorizontalAlignment="Left" Margin="136,104,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="Cb_Theme_SelectionChanged"
+        <ComboBox Name="Cb_Theme" HorizontalAlignment="Left" Margin="41,39,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="Cb_Theme_SelectionChanged"
                   IsEditable="True" IsReadOnly="True" Text="Select a theme."/>
-        <Button x:Name="Btn_Start" HorizontalAlignment="Left" Margin="136,260,0,0" VerticalAlignment="Top" Width="120" Click="Btn_Start_Click" Height="25" Content="Start"></Button>
+        <Button x:Name="Btn_Start" HorizontalAlignment="Left" Margin="41,89,0,0" VerticalAlignment="Top" Width="120" Click="Btn_Start_Click" Height="25" Content="Start"></Button>
     </Grid>
 </Window>
