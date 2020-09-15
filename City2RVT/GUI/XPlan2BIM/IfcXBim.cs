@@ -45,6 +45,7 @@ using Xbim.Ifc4.ActorResource;
 using Xbim.Ifc4.QuantityResource;
 using System.Globalization;
 using Xbim.Common.Collections;
+using City2RVT.GUI.Modify;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -585,9 +586,18 @@ namespace City2RVT.GUI.XPlan2BIM
 
         public static IfcSpace createSpace(IfcStore model, TopographySurface topoSurf, ExternalCommandData commandData, XYZ pbp, string bezeichnung)
         {
-            string fileName = @"D:\testjson.json";
-            var text = File.ReadAllText(fileName);
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(text);
+            string fileName = @"D:\testjson2.json";
+            var JSONresult = File.ReadAllText(fileName);
+            var rootObject = JsonConvert.DeserializeObject<List<Modify.EditProperties.IfcElement>>(JSONresult);
+
+            Dictionary<string, List<EditProperties.Properties>> dict = new Dictionary<string, List<EditProperties.Properties>>();
+            if (rootObject != null)
+            {
+                foreach (var x in rootObject)
+                {
+                    dict.Add(x.elementGuid.ToString(), x.propertySet.properties);
+                }
+            }
 
             var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
 
@@ -732,7 +742,7 @@ namespace City2RVT.GUI.XPlan2BIM
                                     p.Name = "IstGrundstücksfläche";
                                     if (dict.ContainsKey(elementId))
                                     {
-                                        p.NominalValue = new IfcBoolean(dict[elementId]);
+                                        //p.NominalValue = new IfcBoolean(dict[elementId]);
                                     }
                                     else
                                     {

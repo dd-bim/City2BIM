@@ -65,11 +65,13 @@ namespace City2RVT.GUI.Modify
                 //MessageBox.Show(propertyListBox.SelectedItem.ToString());
                 Prop_NAS_settings.SelectedPset = PropertySetsListbox.SelectedItem.ToString();
 
+                editIfcProperties f1 = new editIfcProperties(commandData, this);
+                _ = f1.ShowDialog();
+
                 if (Prop_NAS_settings.SelectedPset == "BauantragGrundstück")
-                {
-                    
-                    editIfcProperties f1 = new editIfcProperties(commandData, this);
-                    _ = f1.ShowDialog();
+                {                    
+                    //editIfcProperties f1 = new editIfcProperties(commandData, this);
+                    //_ = f1.ShowDialog();
                 }                
             }
         }

@@ -223,11 +223,9 @@ namespace City2RVT.GUI
             buttonXPlan2IFC.ToolTip = "IFC Export functionality for XPlanung files.";
             buttonXPlan2IFC.LargeImage = largeImageXPLan2IFC;
 
-
-
             #endregion XPlanung panel
 
-            #region aendern panel
+            #region modify panel
             RibbonPanel panel8 = application.CreateRibbonPanel(tabName, "Modify");
 
             var hideLayerPath =
@@ -241,7 +239,26 @@ namespace City2RVT.GUI
             thisAssemblyPath, "City2RVT.GUI.Modify.Cmd_HideLayers")) as PushButton;
             buttonHideLayer.ToolTip = "Hides Layers.";
             buttonHideLayer.LargeImage = largeImagehideLayer;
-            #endregion aendern panel
+            #endregion modify panel
+
+            #region property panel
+
+            RibbonPanel panel9 = application.CreateRibbonPanel(tabName, "Properties");
+
+            var propertyPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var propertyRootPath = Path.Combine(propertyPath, "..", "..");
+            var propertySetPath = Path.Combine(propertyRootPath, "img", "HideLayerIcon_32px_96dpi.png");
+            Uri uriImageProperty = new Uri(propertySetPath);
+            BitmapImage largeImageProperty = new BitmapImage(uriImageProperty);
+
+            PushButton buttonProperty = panel9.AddItem(new PushButtonData("Property", "Properties to edit",
+            thisAssemblyPath, "City2RVT.GUI.Properties.Cmd_properties")) as PushButton;
+            buttonProperty.ToolTip = "Show and edit properties.";
+            buttonProperty.LargeImage = largeImageProperty;
+
+            #endregion property panel
+
 
             return Result.Succeeded;
         }

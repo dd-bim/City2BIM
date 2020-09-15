@@ -254,6 +254,7 @@ namespace City2RVT.GUI.XPlan2BIM
         private void Button_Click_ApplyXPlanFile(object sender, RoutedEventArgs e)
         {
             string xPlanGmlPath = xplan_file.Text;
+            Prop_NAS_settings.FileUrl = xplan_file.Text;
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
             XmlDocument xmlDoc = new XmlDocument();

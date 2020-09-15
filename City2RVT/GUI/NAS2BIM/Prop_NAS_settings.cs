@@ -30,6 +30,10 @@ namespace City2RVT.GUI
         private static string selectedPset = default(string);
         private static int chosenElement = default(int);
         private static string selectedId = default(string);
+        private static string selectedGmlGuid = default(string);
+        private static string selectedSingleLayer = default(string);
+        private static int chkColumn = default(int);
+
 
         //user-defined extent properties
         //private static double extent = 300.0;
@@ -55,8 +59,13 @@ namespace City2RVT.GUI
         public static System.Collections.IList SelectedParamsPlusLayer { get => selectedParamsPlusLayer; set => selectedParamsPlusLayer = value; }
         public static string SelectedElement { get => selectedElement; set => selectedElement = value; }
         public static string SelectedPset { get => selectedPset; set => selectedPset = value; }
+        public static string SelectedSingleLayer { get => selectedSingleLayer; set => selectedSingleLayer = value; }
+        public static int ChkColumn { get => chkColumn; set => chkColumn = value; }
 
         public static string SelectedId { get => selectedId; set => selectedId = value; }
+
+        public static string SelecteGmlGuid { get => selectedGmlGuid; set => selectedGmlGuid = value; }
+
 
 
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }

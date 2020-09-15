@@ -55,9 +55,9 @@ namespace City2RVT.GUI.Modify
         {
             if (propertyListBox.SelectedItem != null)
             {
-                GUI.Prop_NAS_settings.SelectedElement = propertyListBox.SelectedItem.ToString();
+                Prop_NAS_settings.SelectedElement = propertyListBox.SelectedItem.ToString();
 
-                Modify.EditProperties f1 = new Modify.EditProperties(commandData);
+                EditProperties f1 = new EditProperties(commandData);
                 f1.Text = propertyListBox.SelectedItem.ToString();
                 _ = f1.ShowDialog();
             }
@@ -69,33 +69,51 @@ namespace City2RVT.GUI.Modify
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
-            List<string> bezList = new List<string>();
+            var selected = Prop_NAS_settings.SelectedPset;
 
-            foreach (Element topo in topoCollector)
+            if (selected == "BauantragGrundstück")
             {
-                TopographySurface topoSurf = doc.GetElement(topo.UniqueId.ToString()) as TopographySurface;
+                FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+                List<string> bezList = new List<string>();
 
-                string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
-                if (bezeichnung == null)
+                foreach (Element topo in topoCollector)
                 {
-                    bezeichnung = "-";
+                    TopographySurface topoSurf = doc.GetElement(topo.UniqueId.ToString()) as TopographySurface;
+
+                    string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
+                    if (bezeichnung == null)
+                    {
+                        bezeichnung = "-";
+                    }
+                    if (!bezList.Contains(bezeichnung) && !bezeichnung.StartsWith("Reference plane"))
+                    {
+                        bezList.Add(bezeichnung);
+                    }
                 }
-                if (bezList.Contains(bezeichnung) == false && bezeichnung.StartsWith("Reference plane") == false)
+
+                var paramList = bezList;
+
+
+                int ix = 0;
+                foreach (string item in paramList)
                 {
-                    bezList.Add(bezeichnung);
+                    propertyListBox.Items.Add(paramList[ix]);
+                    ix++;
                 }
             }
 
-            var paramList = bezList;
-
-
-            int ix = 0;
-            foreach (string item in paramList)
+            else if (selected == "BauantragGebäude")
             {
-                propertyListBox.Items.Add(paramList[ix]);
-                ix++;
+                propertyListBox.Items.Add("Gebäude");
             }
+
+            else if (selected == "BauantragGeschoss")
+            {
+                propertyListBox.Items.Add("Geschoss");
+            }
+
+
+
         }
 
         private void pickElement_Click(object sender, EventArgs e)

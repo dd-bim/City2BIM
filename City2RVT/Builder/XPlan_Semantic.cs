@@ -25,6 +25,17 @@ namespace City2RVT.Builder
             this.doc = doc;
             this.app = app;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="xPlanObject"></param>
+        /// <param name="defFile"></param>
+        /// <param name="paramList"></param>
+        /// <param name="nodeSurf"></param>
+        /// <param name="xmlDoc"></param>
+        /// <param name="categorySet"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
         public Dictionary<string, string> createParameter(string xPlanObject, DefinitionFile defFile, List<string> paramList, XmlNode nodeSurf, XmlDocument xmlDoc, CategorySet categorySet, Logger logger)
         {
             string nodeInnerText;

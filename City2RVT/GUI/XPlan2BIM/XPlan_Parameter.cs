@@ -71,23 +71,37 @@ namespace City2RVT.GUI.XPlan2BIM
         public string getNodeText(XmlNode nodeSurf, XmlNamespaceManager nsmgr, string xPlanObject, string nodeName)
         {
             string nodeText;
-            XmlNode xmlNode = nodeSurf.SelectSingleNode("//gml:featureMember/" + xPlanObject + "//" + nodeName, nsmgr);
+            //XmlNode xmlNode = nodeSurf.SelectSingleNode("//gml:featureMember/" + xPlanObject + "//" + nodeName, nsmgr);
+            //XmlNode xmlNode = nodeSurf.SelectSingleNode("//gml:featureMember/" + xPlanObject, nsmgr);
+            XmlNode xmlNode = nodeSurf.ParentNode.ParentNode.ParentNode;
+
+
+            var subNode = xmlNode.SelectSingleNode("//" + nodeName, nsmgr);
+            //var subNode = nodeSurf.SelectSingleNode("//" + nodeName, nsmgr);
+
             var selectedParamsPlusLayer = GUI.Prop_NAS_settings.SelectedParamsPlusLayer;
 
 
-            if (xmlNode != null)
+            if (subNode != null)
             {
                 if (selectedParamsPlusLayer == null || selectedParamsPlusLayer.Contains(nodeName + " (" + xPlanObject + ")"))
                 {
-                    nodeText = xmlNode.InnerText;
+                    nodeText = subNode.InnerText;
                 }
                 else
                 {
                     nodeText = "Vom Import ausgeschlossen. ";
                 }
             }
+            else if (nodeName == "gml:id")
+            {
+                string gmlId = xmlNode.Attributes["gml:id"].Value;
+                //string gmlId = nodeSurf.Attributes["gml:id"].Value;
+                nodeText = gmlId;
+            }
             else
             {
+
                 nodeText = "-";
             }
 

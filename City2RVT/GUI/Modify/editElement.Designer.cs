@@ -45,10 +45,10 @@
             // 
             this.tabControl1.Controls.Add(this.tabPsets);
             this.tabControl1.Controls.Add(this.tabOriginal);
-            this.tabControl1.Location = new System.Drawing.Point(71, 61);
+            this.tabControl1.Location = new System.Drawing.Point(28, 61);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1055, 665);
+            this.tabControl1.Size = new System.Drawing.Size(1188, 665);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPsets
@@ -58,7 +58,7 @@
             this.tabPsets.Location = new System.Drawing.Point(8, 39);
             this.tabPsets.Name = "tabPsets";
             this.tabPsets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPsets.Size = new System.Drawing.Size(1039, 618);
+            this.tabPsets.Size = new System.Drawing.Size(1172, 618);
             this.tabPsets.TabIndex = 0;
             this.tabPsets.Text = "IFC Property Sets";
             this.tabPsets.UseVisualStyleBackColor = true;
@@ -66,9 +66,9 @@
             // 
             // btn_apply
             // 
-            this.btn_apply.Location = new System.Drawing.Point(752, 67);
+            this.btn_apply.Location = new System.Drawing.Point(933, 67);
             this.btn_apply.Name = "btn_apply";
-            this.btn_apply.Size = new System.Drawing.Size(165, 66);
+            this.btn_apply.Size = new System.Drawing.Size(208, 66);
             this.btn_apply.TabIndex = 1;
             this.btn_apply.Text = "Apply";
             this.btn_apply.UseVisualStyleBackColor = true;
@@ -82,7 +82,7 @@
             this.dgv_tabPsets.Name = "dgv_tabPsets";
             this.dgv_tabPsets.RowHeadersWidth = 82;
             this.dgv_tabPsets.RowTemplate.Height = 33;
-            this.dgv_tabPsets.Size = new System.Drawing.Size(577, 460);
+            this.dgv_tabPsets.Size = new System.Drawing.Size(862, 460);
             this.dgv_tabPsets.TabIndex = 0;
             this.dgv_tabPsets.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_tabPsets_CellContentClick);
             // 
@@ -92,7 +92,7 @@
             this.tabOriginal.Location = new System.Drawing.Point(8, 39);
             this.tabOriginal.Name = "tabOriginal";
             this.tabOriginal.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOriginal.Size = new System.Drawing.Size(1039, 618);
+            this.tabOriginal.Size = new System.Drawing.Size(1172, 618);
             this.tabOriginal.TabIndex = 1;
             this.tabOriginal.Text = "Original";
             this.tabOriginal.UseVisualStyleBackColor = true;

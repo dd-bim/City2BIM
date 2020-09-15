@@ -455,6 +455,15 @@ namespace City2RVT.Builder
                     }
                 }
 
+                foreach (XmlNode child in nodeSurf.ParentNode.ParentNode.ParentNode.ParentNode)
+                {
+                    defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child/*.ParentNode*/.Attributes["gml:id"].Name, "XPlanDaten");
+                    if (child/*.ParentNode*/.Attributes["gml:id"].Name != "#comment")
+                    {
+                        paramList.Add(child/*.ParentNode*/.Attributes["gml:id"].Name);
+                    }
+                }
+
                 foreach (XmlNode nodePosSurf in surface)
                 {
                     positionList.Add(nodePosSurf.InnerText);

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
+using System.Globalization;
 using Newtonsoft.Json;
 using System.IO;
 using Autodesk.Revit.DB;
@@ -31,18 +32,18 @@ namespace City2RVT.GUI.Modify
             update();
             updateOriginal();
             var editProperties = new EditProperties(commandData);
-            editProperties.checkJson(dgv_tabPsets);
+            editProperties.checkJson(dgv_tabPsets,3);
         }
 
         public void update()
         {
-            dgv_tabPsets.ColumnCount = 2;
+            dgv_tabPsets.ColumnCount = 3;
             dgv_tabPsets.Columns[0].Name = "Grundstück";
-            dgv_tabPsets.Columns[0].Width = 600;
+            dgv_tabPsets.Columns[0].Width = 300;
             dgv_tabPsets.Columns[0].Visible = false;
 
             dgv_tabPsets.Columns[1].Name = "Bezeichnung";
-            dgv_tabPsets.Columns[1].Width = 300;
+            dgv_tabPsets.Columns[1].Width = 100;
 
             Element pickedElement = Prop_Revit.PickedElement;
 
@@ -74,8 +75,18 @@ namespace City2RVT.GUI.Modify
             DataGridViewCheckBoxColumn chk = new DataGridViewCheckBoxColumn();
             chk.HeaderText = "IstGrundstücksfläche";
             chk.Name = "CheckBox";
-            chk.Width = 225;
+            chk.Width = 125;
             dgv_tabPsets.Columns.Add(chk);
+
+            dgv_tabPsets.Columns[2].Name = "GrossFloorArea";
+            dgv_tabPsets.Columns[2].Width = 125;
+
+            var area = pickedElement.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
+            string[] areaSplit = area.Split(' ');
+            string areaWithoutUnit = areaSplit[0];
+            double areaWithoutUnitDouble = Convert.ToDouble(areaWithoutUnit, CultureInfo.InvariantCulture);
+
+            row.Add(areaWithoutUnitDouble);
         }
 
         public void updateOriginal()
@@ -130,7 +141,8 @@ namespace City2RVT.GUI.Modify
         private void btn_applyPsets_Click(object sender, EventArgs e)
         {
             EditProperties editProperties = new EditProperties(commandData);
-            editProperties.createJSON(dgv_tabPsets);
+            int zahl = Prop_NAS_settings.ChkColumn;
+            editProperties.createJSON(dgv_tabPsets, zahl);
             this.Close();
         }
     }
