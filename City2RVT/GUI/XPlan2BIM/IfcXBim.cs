@@ -595,7 +595,7 @@ namespace City2RVT.GUI.XPlan2BIM
             {
                 foreach (var x in rootObject)
                 {
-                    dict.Add(x.elementGuid.ToString(), x.propertySet.properties);
+                    dict.Add(x.Guid.ToString(), x.propertySet.properties);
                 }
             }
 

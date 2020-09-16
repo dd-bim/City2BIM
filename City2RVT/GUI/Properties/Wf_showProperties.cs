@@ -53,6 +53,7 @@ namespace City2RVT.GUI.Properties
             public string name { get; set; }
             public string description { get; set; }
             public List<Properties> properties { get; set; }
+            //public List<PropertySet> propertySet { get; set; }
         }
 
         public class IfcElement
@@ -71,7 +72,7 @@ namespace City2RVT.GUI.Properties
         public class PropertySet
         {
             public string Name { get; set; }
-            public string psetGuid { get; set; }
+            public string guid { get; set; }
             public List<Properties> properties { get; set; }
         }
 
@@ -87,95 +88,7 @@ namespace City2RVT.GUI.Properties
 
         public void update()
         {
-            UIApplication app = commandData.Application;
-            UIDocument uidoc = app.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            dgv_showProperties.ColumnCount = 2;
-            dgv_showProperties.Columns[0].Name = "Attribut";
-            dgv_showProperties.Columns[0].Width = 200;
-            dgv_showProperties.Columns[0].ValueType = typeof(string);
-
-            dgv_showProperties.Columns[1].Name = "Wert";
-            dgv_showProperties.Columns[1].Width = 200;
-            dgv_showProperties.Columns[1].ValueType = typeof(string);
-
-            string gmlId = GUI.Prop_NAS_settings.SelecteGmlGuid;
-
-            // ______________________________________________________________
-            string metaJsonPath;
-            if (XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != "" && XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != null)
-            {
-                metaJsonPath = XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl;
-            }
-            else
-            {
-                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
-            }
-            // ______________________________________________________________
-            var JSONresult = File.ReadAllText(metaJsonPath);
-
-            var metaJson = JObject.Parse(JSONresult).SelectToken("meta").ToString();
-            var jsonObject = JsonConvert.DeserializeObject<List<XPlanJSON>>(metaJson);
-
-            string layer = Prop_NAS_settings.SelectedSingleLayer;
-
-            List<string> propListString = new List<string>();
-            foreach (var x in jsonObject)
-            {
-                if (x.name == layer)
-                {
-                    List<Properties> propList = new List<Properties>();
-                    propList = x.properties;
-
-                    foreach (var p in propList)
-                    {
-                        propListString.Add(p.Name);
-                    }
-                }
-            }
-
-            string pathGml;
-            if (XPlan2BIM.Prop_XPLAN_settings.GmlUrl != "" && XPlan2BIM.Prop_XPLAN_settings.GmlUrl != null)
-            {
-                pathGml = XPlan2BIM.Prop_XPLAN_settings.GmlUrl;
-            }
-            else
-            {
-                pathGml = @"D:\Daten\LandBIM\AP 2\Daten\XPlanung Import\Bergedorf\Bergedorf84.gml";
-            }
-
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(pathGml);
-
-            string layerMitNs = "xplan:" + Prop_NAS_settings.SelectedSingleLayer;
-
-            var XmlNsmgr = new Builder.Revit_Semantic(doc);
-            XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
-
-
-            XmlNodeList nodes = xmlDoc.SelectNodes("//" + layerMitNs + "[@gml:id='" + gmlId + "']", nsmgr);
-
-            foreach (XmlNode xmlNode in nodes)
-            {
-                foreach (XmlNode c in xmlNode.ChildNodes)
-                {
-                    if (propListString.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
-                    {
-                        ArrayList row = new ArrayList();
-                        row.Add(c.Name);
-                        row.Add(c.InnerText);
-
-                        dgv_showProperties.Rows.Add(row.ToArray());
-                    }
-                }
-
-                ArrayList row2 = new ArrayList();
-                row2.Add("gml:id");
-                row2.Add(gmlId);
-                dgv_showProperties.Rows.Add(row2.ToArray());
-
-            }
+            applyGml(true);            
         }
 
         private void dgv_showProperties_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -283,7 +196,149 @@ namespace City2RVT.GUI.Properties
                     tw.WriteLine(json.ToString());
                     tw.Close();
                 }
-            }            
+            }
+            this.Close();
+        }
+
+        private void btn_reset_Click(object sender, EventArgs e)
+        {
+            dgv_showProperties.Rows.Clear();
+            applyGml(false);            
+        }
+
+        public void applyGml(bool check)
+        {
+            UIApplication app = commandData.Application;
+            UIDocument uidoc = app.ActiveUIDocument;
+            Document doc = uidoc.Document;
+
+            dgv_showProperties.ColumnCount = 2;
+            dgv_showProperties.Columns[0].Name = "Attribut";
+            dgv_showProperties.Columns[0].Width = 200;
+            dgv_showProperties.Columns[0].ValueType = typeof(string);
+
+            dgv_showProperties.Columns[1].Name = "Wert";
+            dgv_showProperties.Columns[1].Width = 200;
+            dgv_showProperties.Columns[1].ValueType = typeof(string);
+
+            string gmlId = GUI.Prop_NAS_settings.SelecteGmlGuid;
+
+            // ______________________________________________________________
+            string metaJsonPath;
+            if (XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != "" && XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != null)
+            {
+                metaJsonPath = XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl;
+            }
+            else
+            {
+                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+            }
+            // ______________________________________________________________
+            var JSONresult = File.ReadAllText(metaJsonPath);
+
+            var metaJson = JObject.Parse(JSONresult).SelectToken("meta").ToString();
+            var jsonObject = JsonConvert.DeserializeObject<List<XPlanJSON>>(metaJson);
+
+            string layer = Prop_NAS_settings.SelectedSingleLayer;
+
+            List<string> propListString = new List<string>();
+            foreach (var x in jsonObject)
+            {
+                if (x.name == layer)
+                {
+                    List<Properties> propList = new List<Properties>();
+                    propList = x.properties;
+
+                    foreach (var p in propList)
+                    {
+                        propListString.Add(p.Name);
+                    }
+                }
+            }
+
+            string pathGml;
+            if (XPlan2BIM.Prop_XPLAN_settings.GmlUrl != "" && XPlan2BIM.Prop_XPLAN_settings.GmlUrl != null)
+            {
+                pathGml = XPlan2BIM.Prop_XPLAN_settings.GmlUrl;
+            }
+            else
+            {
+                pathGml = @"D:\Daten\LandBIM\AP 2\Daten\XPlanung Import\Bergedorf\Bergedorf84.gml";
+            }
+
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(pathGml);
+
+            string layerMitNs = "xplan:" + Prop_NAS_settings.SelectedSingleLayer;
+
+            List<string> elemGuidList = new List<string>();
+            List<IfcElement> rootObject = default;
+            if (check == true)
+            {
+                // ____________________Check exported json
+                string exportJsonPath;
+                if (XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl != "" && XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl != null)
+                {
+                    exportJsonPath = XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl;
+                }
+                else
+                {
+                    exportJsonPath = @"D:\testjson2.json";
+                }
+
+                JSONresult = File.ReadAllText(exportJsonPath);
+                rootObject = JsonConvert.DeserializeObject<List<IfcElement>>(JSONresult);
+
+                if (rootObject != null)
+                {
+                    foreach (var x in rootObject)
+                    {
+                        elemGuidList.Add(x.Guid.ToString());
+                    }
+                }
+            }
+
+            if (!elemGuidList.Contains(gmlId))
+            {
+                var XmlNsmgr = new Builder.Revit_Semantic(doc);
+                XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
+
+                XmlNodeList nodes = xmlDoc.SelectNodes("//" + layerMitNs + "[@gml:id='" + gmlId + "']", nsmgr);
+
+                foreach (XmlNode xmlNode in nodes)
+                {
+                    foreach (XmlNode c in xmlNode.ChildNodes)
+                    {
+                        if (propListString.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
+                        {
+                            ArrayList row = new ArrayList();
+                            row.Add(c.Name);
+                            row.Add(c.InnerText);
+
+                            dgv_showProperties.Rows.Add(row.ToArray());
+                        }
+                    }
+
+                    ArrayList row2 = new ArrayList();
+                    row2.Add("gml:id");
+                    row2.Add(gmlId);
+                    dgv_showProperties.Rows.Add(row2.ToArray());
+                }
+            }
+            else if (elemGuidList.Contains(gmlId))
+            {
+                var toChange = rootObject.FirstOrDefault(d => d.Guid == gmlId);
+                if (toChange != null)
+                {
+                    foreach (var jsonElem in toChange.propertySet.properties)
+                    {
+                        ArrayList row = new ArrayList();
+                        row.Add(jsonElem.Name);
+                        row.Add(jsonElem.Value);
+                        dgv_showProperties.Rows.Add(row.ToArray());
+                    }
+                }
+            }
         }
     }
 }

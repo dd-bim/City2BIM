@@ -30,6 +30,7 @@
         {
             this.dgv_showProperties = new System.Windows.Forms.DataGridView();
             this.btn_apply = new System.Windows.Forms.Button();
+            this.btn_reset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_showProperties)).BeginInit();
             this.SuspendLayout();
             // 
@@ -38,7 +39,7 @@
             this.dgv_showProperties.AllowUserToAddRows = false;
             this.dgv_showProperties.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_showProperties.Location = new System.Drawing.Point(25, 24);
-            this.dgv_showProperties.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgv_showProperties.Margin = new System.Windows.Forms.Padding(2);
             this.dgv_showProperties.Name = "dgv_showProperties";
             this.dgv_showProperties.RowHeadersWidth = 82;
             this.dgv_showProperties.RowTemplate.Height = 33;
@@ -56,14 +57,25 @@
             this.btn_apply.UseVisualStyleBackColor = true;
             this.btn_apply.Click += new System.EventHandler(this.btn_apply_Click);
             // 
+            // btn_reset
+            // 
+            this.btn_reset.Location = new System.Drawing.Point(615, 101);
+            this.btn_reset.Name = "btn_reset";
+            this.btn_reset.Size = new System.Drawing.Size(75, 23);
+            this.btn_reset.TabIndex = 2;
+            this.btn_reset.Text = "Reset";
+            this.btn_reset.UseVisualStyleBackColor = true;
+            this.btn_reset.Click += new System.EventHandler(this.btn_reset_Click);
+            // 
             // Wf_showProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(744, 453);
+            this.Controls.Add(this.btn_reset);
             this.Controls.Add(this.btn_apply);
             this.Controls.Add(this.dgv_showProperties);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Wf_showProperties";
             this.Text = "Wf_showProperties";
             this.Load += new System.EventHandler(this.Wf_showProperties_Load);
@@ -76,5 +88,6 @@
 
         private System.Windows.Forms.DataGridView dgv_showProperties;
         private System.Windows.Forms.Button btn_apply;
+        private System.Windows.Forms.Button btn_reset;
     }
 }

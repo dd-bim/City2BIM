@@ -286,15 +286,15 @@ namespace City2RVT.GUI.Modify
             {
                 foreach (var x in rootObject)
                 {
-                    elemGuidDict.Add(x.elementGuid.ToString(), x.propertySet.properties);
+                    elemGuidDict.Add(x.Guid.ToString(), x.propertySet.properties);
                 }
             }
 
             foreach (DataGridViewRow e in dgv.Rows)
             {
-                ////var list = elemGuidDict[e.Cells[0].Value.ToString()];
-                //if (elemGuidDict != null && elemGuidDict.ContainsKey(e.Cells[0].Value.ToString()) 
-                //    && elemGuidDict[e.Cells[0].Value.ToString()].FirstOrDefault(d => d.Name == dgv.Columns[i].HeaderText).value == true)
+                //var list = elemGuidDict[e.Cells[0].Value.ToString()];
+                //if (elemGuidDict != null && elemGuidDict.ContainsKey(e.Cells[0].Value.ToString())
+                //    && elemGuidDict[e.Cells[0].Value.ToString()].FirstOrDefault(d => d.Name == dgv.Columns[i].HeaderText).Value == true)
                 //{
                 //    e.Cells[i].Value = true;
                 //}
@@ -315,14 +315,14 @@ namespace City2RVT.GUI.Modify
         public class IfcElement
         {
             public string Bezeichnung { get; set; }
-            public string elementGuid { get; set; }
+            public string Guid { get; set; }
             public PropertySet propertySet { get; set; }
         }
         public class Properties
         {
             public string Name { get; set; }
             public string propertyGuid { get; set; }
-            public Object value { get; set; }
+            public Object Value { get; set; }
             //public bool boolValue { get; set; }
         }
         public class PropertySet
@@ -351,7 +351,7 @@ namespace City2RVT.GUI.Modify
 
                 elem.propertySet = pSet;
                 elem.Bezeichnung = roow.Cells[1].Value.ToString();
-                elem.elementGuid = roow.Cells[0].Value.ToString();
+                elem.Guid = roow.Cells[0].Value.ToString();
 
                 pSet.properties = properties;
                 pSet.Name = Prop_NAS_settings.SelectedPset;
@@ -378,7 +378,7 @@ namespace City2RVT.GUI.Modify
                         {
                             valueO = Convert.ToBoolean(roow.Cells[column.Index].Value);
                         }
-                        properties.Add(new Properties { Name = dgv.Columns[column.Index].HeaderText, value = valueO  });
+                        properties.Add(new Properties { Name = dgv.Columns[column.Index].HeaderText, Value = valueO  });
                     }
 
                 }
@@ -398,13 +398,13 @@ namespace City2RVT.GUI.Modify
                     {
                         foreach (var x in rootObject)
                         {
-                            elemGuidList.Add(x.elementGuid.ToString());
+                            elemGuidList.Add(x.Guid.ToString());
                         }
                     }
 
                     if (!elemGuidList.Contains(roow.Cells[0].Value.ToString()))
                     {
-                        rootObject.Add(new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), elementGuid = roow.Cells[0].Value.ToString() });
+                        rootObject.Add(new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), Guid = roow.Cells[0].Value.ToString() });
 
                         string JSONresult2 = JsonConvert.SerializeObject(rootObject, Formatting.Indented);
 
@@ -416,13 +416,13 @@ namespace City2RVT.GUI.Modify
                     }
                     else if (elemGuidList.Contains(roow.Cells[0].Value.ToString()))
                     {
-                        var toChange = rootObject.FirstOrDefault(d => d.elementGuid == roow.Cells[0].Value.ToString());
+                        var toChange = rootObject.FirstOrDefault(d => d.Guid == roow.Cells[0].Value.ToString());
                         if (toChange != null) 
                         {
                             var toChangeInner = toChange.propertySet.properties.FirstOrDefault(d => d.Name == dgv.Columns[i].HeaderText);
                             if (toChangeInner != null)
                             { 
-                                toChangeInner.value = (roow.Cells[i].Value).ToString(); 
+                                toChangeInner.Value = (roow.Cells[i].Value).ToString(); 
                             }
                         }
 
@@ -442,7 +442,7 @@ namespace City2RVT.GUI.Modify
                     var objectToSerialize = new RootObject();
                     objectToSerialize.IFCElements = new List<IfcElement>()
                           {
-                             new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), elementGuid = roow.Cells[0].Value.ToString() },
+                             new IfcElement { propertySet = pSet, Bezeichnung = roow.Cells[1].Value.ToString(), Guid = roow.Cells[0].Value.ToString() },
                           };
                     string json = JsonConvert.SerializeObject(objectToSerialize.IFCElements);
 

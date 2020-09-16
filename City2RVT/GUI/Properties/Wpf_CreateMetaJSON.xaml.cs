@@ -30,7 +30,6 @@ namespace City2RVT.GUI.Properties
         {
             InitializeComponent();
             commandData = cData;
-            //Cb_Theme.Text = "Select a theme.";
             Cb_Theme.Items.Add("XPlanung");
             Cb_Theme.Items.Add("ALKIS");
             Cb_Theme.Items.Add("ZukunftBau");
@@ -40,6 +39,12 @@ namespace City2RVT.GUI.Properties
         private void Btn_Start_Click(object sender, RoutedEventArgs e)
         {
             if (Cb_Theme.SelectedItem.ToString() == "XPlanung")
+            {
+                Wpf_showLayer f1 = new Wpf_showLayer(commandData);
+                //f1.Text = propertyListBox.SelectedItem.ToString();
+                _ = f1.ShowDialog();
+            }
+            else if (Cb_Theme.SelectedItem.ToString() == "ZukunftBau")
             {
                 Wpf_showLayer f1 = new Wpf_showLayer(commandData);
                 //f1.Text = propertyListBox.SelectedItem.ToString();
