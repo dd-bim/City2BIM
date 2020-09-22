@@ -8,6 +8,8 @@ using System.Linq;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.ExtensibleStorage;
+using Autodesk.Revit.DB.Fabrication;
 using Autodesk.Revit.UI;
 
 using Xbim.Ifc;
@@ -53,7 +55,7 @@ namespace City2RVT.GUI.Properties
             public string name { get; set; }
             public string description { get; set; }
             public List<Properties> properties { get; set; }
-            //public List<PropertySet> propertySet { get; set; }
+            public List<PropertySet> propertySet { get; set; }
         }
 
         public class IfcElement
@@ -83,12 +85,13 @@ namespace City2RVT.GUI.Properties
 
         private void Wf_showProperties_Load(object sender, EventArgs e)
         {
-            update();
+            updateGml();
+            updateZukunftBau();
         }
 
-        public void update()
+        public void updateGml()
         {
-            applyGml(true);            
+            applyGml();            
         }
 
         private void dgv_showProperties_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -98,119 +101,78 @@ namespace City2RVT.GUI.Properties
 
         private void btn_apply_Click(object sender, EventArgs e)
         {
-            string exportJsonPath;
-            if (XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl != "" && XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl != null)
-            {
-                exportJsonPath = XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl;
-            }
-            else
-            {
-                exportJsonPath = @"D:\testjson2.json";
-            }
+            UIApplication app = commandData.Application;
+            UIDocument uidoc = app.ActiveUIDocument;
+            Document doc = uidoc.Document;
 
-            string layer = Prop_NAS_settings.SelectedSingleLayer;
-            string gmlId = GUI.Prop_NAS_settings.SelecteGmlGuid;
+            Autodesk.Revit.UI.Selection.Selection selection = uidoc.Selection;
+            ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
+            Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
+            TopographySurface pickedSurface = pickedElement as TopographySurface;
 
-            IfcElement elem = new IfcElement();
-            PropertySet pSet = new PropertySet();
+            StoreDataInSurface(pickedSurface);
 
-            List<Properties> properties = new List<Properties>();
-
-            foreach (DataGridViewRow roow in dgv_showProperties.Rows)
-            {    
-                elem.Bezeichnung = layer;
-                elem.Guid = gmlId;
-
-                pSet.properties = properties;
-                pSet.Name = "XPlanung PropertySet";
-
-                properties.Add(new Properties { Name = roow.Cells[0].Value.ToString(), Value = roow.Cells[1].Value.ToString() });
-            }
-
-            string JSONresult;
-
-            if (File.Exists(exportJsonPath))
-            {
-                JSONresult = File.ReadAllText(exportJsonPath);
-                var rootObject = JsonConvert.DeserializeObject<List<IfcElement>>(JSONresult);
-
-                List<string> elemGuidList = new List<string>();
-                if (rootObject != null)
-                {
-                    foreach (var x in rootObject)
-                    {
-                        elemGuidList.Add(x.Guid.ToString());
-                    }
-                }
-
-                if (!elemGuidList.Contains(gmlId))
-                {
-                    rootObject.Add(new IfcElement { Bezeichnung = layer, Guid = gmlId, propertySet = pSet });
-
-                    string JSONresult2 = JsonConvert.SerializeObject(rootObject, Formatting.Indented);
-
-                    using (var tw = new StreamWriter(exportJsonPath, false))
-                    {
-                        tw.WriteLine(JSONresult2.ToString());
-                        tw.Close();
-                    }
-                }
-                else if (elemGuidList.Contains(gmlId))
-                {
-                    var toChange = rootObject.FirstOrDefault(d => d.Guid == gmlId);
-                    if (toChange != null)
-                    {
-                        foreach (DataGridViewRow roow in dgv_showProperties.Rows)
-                        {
-                            Properties toChangeInner = toChange.propertySet.properties.FirstOrDefault(d => d.Name == roow.Cells[0].Value.ToString());
-                            if (toChangeInner != null)
-                            {
-                                toChangeInner.Value = roow.Cells[1].Value.ToString();
-                            }
-                        }
-                    }
-
-                    string JSONresult2 = JsonConvert.SerializeObject(rootObject, Formatting.Indented);
-
-                    using (var tw = new StreamWriter(exportJsonPath, false))
-                    {
-                        tw.WriteLine(JSONresult2.ToString());
-                        tw.Close();
-                    }
-                }
-            }
-
-            else if (!File.Exists(exportJsonPath))
-            {
-                JSONresult = JsonConvert.SerializeObject(elem);
-
-                var objectToSerialize = new RootObject();
-                objectToSerialize.IFCElements = new List<IfcElement>()
-                          {
-                             new IfcElement { Bezeichnung = layer, Guid = gmlId, propertySet=pSet },
-                          };
-                string json = JsonConvert.SerializeObject(objectToSerialize.IFCElements, Formatting.Indented);
-
-                using (var tw = new StreamWriter(exportJsonPath, true))
-                {
-                    tw.WriteLine(json.ToString());
-                    tw.Close();
-                }
-            }
             this.Close();
         }
+
+        public void StoreDataInSurface(TopographySurface topographySurface)
+        {
+            Transaction createSchemaAndStoreData= new Transaction(topographySurface.Document, "tCreateAndStore");
+
+            createSchemaAndStoreData.Start();
+
+            SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
+
+            // allow anyone to read the object
+            schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
+
+            foreach (DataGridViewRow roow in dgv_showProperties.Rows)
+            {
+                FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(roow.Cells[0].Value.ToString().Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1), typeof(string));
+                fieldBuilder.SetDocumentation("ein paar properties.");
+            }
+
+            schemaBuilder.SetSchemaName("XPlanung");
+
+            Schema schema = schemaBuilder.Finish(); // register the Schema object
+
+            // create an entity (object) for this schema (class)
+            Entity entity = new Entity(schema);
+
+            foreach (DataGridViewRow roow in dgv_showProperties.Rows)
+            {
+                // get the field from the schema
+                Field fieldSpliceLocation = schema.GetField(roow.Cells[0].Value.ToString().Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1));
+
+                entity.Set<string>(fieldSpliceLocation, (roow.Cells[1].Value.ToString())); // set the value for this entity
+
+                topographySurface.SetEntity(entity); // store the entity in the element
+            }
+
+            // get the data back from the wall
+            Entity retrievedEntity = topographySurface.GetEntity(schema);
+
+            string retrievedData = retrievedEntity.Get<string>(schema.GetField("text"));
+
+            createSchemaAndStoreData.Commit();
+        }        
 
         private void btn_reset_Click(object sender, EventArgs e)
         {
             dgv_showProperties.Rows.Clear();
-            applyGml(false);            
+            applyGml();
+            applyZukunftBau();
         }
 
-        public void applyGml(bool check)
+        public void applyGml()
         {
             UIApplication app = commandData.Application;
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
+
+            Autodesk.Revit.UI.Selection.Selection selection = uidoc.Selection;
+            ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
+            Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
 
             dgv_showProperties.ColumnCount = 2;
             dgv_showProperties.Columns[0].Name = "Attribut";
@@ -221,25 +183,16 @@ namespace City2RVT.GUI.Properties
             dgv_showProperties.Columns[1].Width = 200;
             dgv_showProperties.Columns[1].ValueType = typeof(string);
 
-            string gmlId = GUI.Prop_NAS_settings.SelecteGmlGuid;
+            string gmlId = pickedElement.LookupParameter("gml:id").AsString();
 
-            // ______________________________________________________________
-            string metaJsonPath;
-            if (XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != "" && XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != null)
-            {
-                metaJsonPath = XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl;
-            }
-            else
-            {
-                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
-            }
-            // ______________________________________________________________
+            string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+
             var JSONresult = File.ReadAllText(metaJsonPath);
 
             var metaJson = JObject.Parse(JSONresult).SelectToken("meta").ToString();
             var jsonObject = JsonConvert.DeserializeObject<List<XPlanJSON>>(metaJson);
 
-            string layer = Prop_NAS_settings.SelectedSingleLayer;
+            string layer = pickedElement.LookupParameter("Kommentare").AsString();
 
             List<string> propListString = new List<string>();
             foreach (var x in jsonObject)
@@ -256,88 +209,135 @@ namespace City2RVT.GUI.Properties
                 }
             }
 
-            string pathGml;
-            if (XPlan2BIM.Prop_XPLAN_settings.GmlUrl != "" && XPlan2BIM.Prop_XPLAN_settings.GmlUrl != null)
-            {
-                pathGml = XPlan2BIM.Prop_XPLAN_settings.GmlUrl;
-            }
-            else
-            {
-                pathGml = @"D:\Daten\LandBIM\AP 2\Daten\XPlanung Import\Bergedorf\Bergedorf84.gml";
-            }
+            string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\XPlanung Import\Bergedorf\Bergedorf84.gml";
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(pathGml);
 
-            string layerMitNs = "xplan:" + Prop_NAS_settings.SelectedSingleLayer;
+            string layerMitNs = "xplan:" + pickedElement.LookupParameter("Kommentare").AsString();
 
-            List<string> elemGuidList = new List<string>();
-            List<IfcElement> rootObject = default;
-            if (check == true)
+            var XmlNsmgr = new Builder.Revit_Semantic(doc);
+            XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
+
+            XmlNodeList nodes = xmlDoc.SelectNodes("//" + layerMitNs + "[@gml:id='" + gmlId + "']", nsmgr);
+
+            foreach (XmlNode xmlNode in nodes)
             {
-                // ____________________Check exported json
-                string exportJsonPath;
-                if (XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl != "" && XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl != null)
+                foreach (XmlNode c in xmlNode.ChildNodes)
                 {
-                    exportJsonPath = XPlan2BIM.Prop_XPLAN_settings.ExportJsonUrl;
-                }
-                else
-                {
-                    exportJsonPath = @"D:\testjson2.json";
-                }
-
-                JSONresult = File.ReadAllText(exportJsonPath);
-                rootObject = JsonConvert.DeserializeObject<List<IfcElement>>(JSONresult);
-
-                if (rootObject != null)
-                {
-                    foreach (var x in rootObject)
-                    {
-                        elemGuidList.Add(x.Guid.ToString());
-                    }
-                }
-            }
-
-            if (!elemGuidList.Contains(gmlId))
-            {
-                var XmlNsmgr = new Builder.Revit_Semantic(doc);
-                XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
-
-                XmlNodeList nodes = xmlDoc.SelectNodes("//" + layerMitNs + "[@gml:id='" + gmlId + "']", nsmgr);
-
-                foreach (XmlNode xmlNode in nodes)
-                {
-                    foreach (XmlNode c in xmlNode.ChildNodes)
-                    {
-                        if (propListString.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
-                        {
-                            ArrayList row = new ArrayList();
-                            row.Add(c.Name);
-                            row.Add(c.InnerText);
-
-                            dgv_showProperties.Rows.Add(row.ToArray());
-                        }
-                    }
-
-                    ArrayList row2 = new ArrayList();
-                    row2.Add("gml:id");
-                    row2.Add(gmlId);
-                    dgv_showProperties.Rows.Add(row2.ToArray());
-                }
-            }
-            else if (elemGuidList.Contains(gmlId))
-            {
-                var toChange = rootObject.FirstOrDefault(d => d.Guid == gmlId);
-                if (toChange != null)
-                {
-                    foreach (var jsonElem in toChange.propertySet.properties)
+                    if (propListString.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
                     {
                         ArrayList row = new ArrayList();
-                        row.Add(jsonElem.Name);
-                        row.Add(jsonElem.Value);
+                        row.Add(c.Name);
+                        row.Add(c.InnerText);
+
                         dgv_showProperties.Rows.Add(row.ToArray());
                     }
                 }
+
+                ArrayList row2 = new ArrayList();
+                row2.Add("gml:id");
+                row2.Add(gmlId);
+                dgv_showProperties.Rows.Add(row2.ToArray());
+            }
+        }
+
+        public void applyZukunftBau()
+        {
+
+        }
+
+        private void dgv_zukunftBau_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        public void updateZukunftBau()
+        {
+            dgv_zukunftBau.ColumnCount = 1;
+            dgv_zukunftBau.Columns[0].Name = "Attribut";
+            dgv_zukunftBau.Columns[0].Width = 200;
+            dgv_zukunftBau.Columns[0].ValueType = typeof(string);
+
+            //dgv_zukunftBau.Columns[1].Name = "Wert";
+            //dgv_zukunftBau.Columns[1].Width = 200;
+            //dgv_zukunftBau.Columns[1].ValueType = typeof(string);
+
+            //Add Checkbox
+            DataGridViewCheckBoxColumn chk = new DataGridViewCheckBoxColumn();
+            chk.HeaderText = "Wert";
+            chk.Name = "CheckBox";
+            chk.Width = 125;
+            chk.ValueType = typeof(bool);
+            dgv_zukunftBau.Columns.Add(chk);
+
+            // ______________________________________________________________
+            string metaJsonPath;
+            if (XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != "" && XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl != null)
+            {
+                metaJsonPath = XPlan2BIM.Prop_XPLAN_settings.MetaJsonUrl;
+            }
+            else
+            {
+                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+            }
+
+            var JSONresult = File.ReadAllText(metaJsonPath);
+
+            var metaJson = JObject.Parse(JSONresult).SelectToken("meta").ToString();
+            var jsonObject = JsonConvert.DeserializeObject<List<XPlanJSON>>(metaJson);
+
+            string layer = "Grundstück";
+
+            List<string> propListString = new List<string>();
+            foreach (var x in jsonObject)
+            {
+                if (x.name == layer)
+                {
+                    List<PropertySet> propSetList = new List<PropertySet>();
+                    foreach (var s in x.propertySet)
+                    {
+                        propSetList.Add(s);
+                    }
+                    List<Properties> propList = new List<Properties>();
+
+                    foreach (var r in propSetList)
+                    {
+                        propList = r.properties;
+                    }
+                    propList = x.propertySet[0].properties;
+
+                    foreach (var p in propList)
+                    {
+                        propListString.Add(p.Name);
+                    }
+                }
+            }
+
+            foreach (var p in propListString)
+            {
+                //ArrayList row = new ArrayList();
+                //row.Add(p);
+
+                //DataGridViewCheckBoxCell checkboxCell = new DataGridViewCheckBoxCell()
+                //{
+                //    TrueValue = "1",
+                //    FalseValue = "0",
+                //};
+                //checkboxCell.Style.NullValue = false;
+                //row.Add(checkboxCell);
+                ////row.Add(p.InnerText);
+
+                //dgv_zukunftBau.Rows.Add(row.ToArray());
+
+                int rowId = dgv_zukunftBau.Rows.Add();
+
+                DataGridViewRow dgvrow = dgv_zukunftBau.Rows[rowId];
+                //var index = dgv_zukunftBau.Rows.Add(dgvrow);
+                dgvrow.Cells[0].Value = p;
+                //dgvrow.Cells[1].Value = checkboxCell;
+
+                //dgv_zukunftBau.Rows.Add(dgvrow);
             }
         }
     }

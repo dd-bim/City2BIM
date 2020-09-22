@@ -21,7 +21,7 @@ namespace City2RVT.GUI.Properties
 
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            var process = new Properties.Wpf_CreateMetaJSON(commandData);
+            var process = new Properties.Wf_showProperties(commandData);
             process.ShowDialog();
 
             return Result.Succeeded;
