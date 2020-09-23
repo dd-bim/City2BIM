@@ -128,7 +128,8 @@ namespace City2RVT.GUI.Properties
 
             foreach (DataGridViewRow roow in dgv_showProperties.Rows)
             {
-                FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(roow.Cells[0].Value.ToString().Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1), typeof(string));
+                string paramName = roow.Cells[0].Value.ToString().Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1);
+                FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(paramName, typeof(string));
                 fieldBuilder.SetDocumentation("ein paar properties.");
             }
 
@@ -209,7 +210,18 @@ namespace City2RVT.GUI.Properties
                 }
             }
 
-            string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\XPlanung Import\Bergedorf\Bergedorf84.gml";
+            //retrieve Data Storage
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            var datastorageList = collector.OfClass(typeof(DataStorage)).ToList();
+            DataStorage dataStorage = datastorageList.Where(n => n.Name == "DS_XPlanung").FirstOrDefault() as DataStorage;
+
+            IList<Schema> list = Schema.ListSchemas();
+            Schema schema = list.Where(i => i.SchemaName == "Filepaths").FirstOrDefault();
+
+            Entity retrievedEntity = dataStorage.GetEntity(schema);
+            string retrievedData = retrievedEntity.Get<string>(schema.GetField("gmlPath"));
+
+            string pathGml = retrievedData;
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(pathGml);

@@ -20,6 +20,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB.ExtensibleStorage;
 
 using NLog;
 using NLog.Targets;
@@ -86,6 +87,52 @@ namespace City2RVT.GUI.XPlan2BIM
             xplan_file.Text = winexp.ImportPath(Reader.FileDialog.Data.XPlanGML);
         }
 
+        public void CreatedInfoSchema()
+        {
+
+        }
+
+        public void StoreFilepathInStorage(/*TopographySurface topographySurface, */string gmlPath)
+        {
+            UIApplication uiapp = commandData.Application;
+            UIDocument uidoc = uiapp.ActiveUIDocument;
+            Document doc = uidoc.Document;
+            Transaction tStoreFilepath = new Transaction(doc, "tCreateAndStore");
+
+            tStoreFilepath.Start();
+
+            DataStorage createdInfoStorage = DataStorage.Create(doc);
+            createdInfoStorage.Name = "DS_XPlanung";
+
+            SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
+
+            // allow anyone to read the object
+            schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
+
+            FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField("gmlPath", typeof(string));
+            fieldBuilder.SetDocumentation("ein paar properties.");
+
+            schemaBuilder.SetSchemaName("Filepaths");
+
+            Schema schema = schemaBuilder.Finish(); // register the Schema object
+
+            // create an entity (object) for this schema (class)
+            Entity entity = new Entity(schema);
+
+            // get the field from the schema
+            Field fieldSpliceLocation = schema.GetField("gmlPath");
+
+            entity.Set<string>(fieldSpliceLocation, gmlPath); // set the value for this entity
+
+            createdInfoStorage.SetEntity(entity); // store the entity in the element
+
+            //// get the data back from the wall
+            //Entity retrievedEntity = createdInfoStorage.GetEntity(schema);
+
+            //string retrievedData = retrievedEntity.Get<string>(schema.GetField("gmlPath"));
+
+            tStoreFilepath.Commit();
+        }
 
         private void Button_Click_StartXPlanImport(object sender, RoutedEventArgs e)
         {
@@ -117,6 +164,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
             //loads the selected GML file
             string xPlanGmlPath = xplan_file.Text;
+            StoreFilepathInStorage(xPlanGmlPath);
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
             XmlDocument xmlDoc = new XmlDocument();
