@@ -87,32 +87,25 @@ namespace City2RVT.GUI.XPlan2BIM
             xplan_file.Text = winexp.ImportPath(Reader.FileDialog.Data.XPlanGML);
         }
 
-        public void CreatedInfoSchema()
-        {
-
-        }
-
-        public void StoreFilepathInStorage(/*TopographySurface topographySurface, */string gmlPath)
+        public void StoreFilepathInStorage(string gmlPath)
         {
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Document doc = uidoc.Document;
-            Transaction tStoreFilepath = new Transaction(doc, "tCreateAndStore");
 
+            Transaction tStoreFilepath = new Transaction(doc, "tCreateAndStore");
             tStoreFilepath.Start();
 
             DataStorage createdInfoStorage = DataStorage.Create(doc);
             createdInfoStorage.Name = "DS_XPlanung";
 
             SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
-
             // allow anyone to read the object
             schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
+            schemaBuilder.SetSchemaName("Filepaths");
 
             FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField("gmlPath", typeof(string));
-            fieldBuilder.SetDocumentation("ein paar properties.");
-
-            schemaBuilder.SetSchemaName("Filepaths");
+            fieldBuilder.SetDocumentation("Properties für XPlanung.");            
 
             Schema schema = schemaBuilder.Finish(); // register the Schema object
 
@@ -125,11 +118,6 @@ namespace City2RVT.GUI.XPlan2BIM
             entity.Set<string>(fieldSpliceLocation, gmlPath); // set the value for this entity
 
             createdInfoStorage.SetEntity(entity); // store the entity in the element
-
-            //// get the data back from the wall
-            //Entity retrievedEntity = createdInfoStorage.GetEntity(schema);
-
-            //string retrievedData = retrievedEntity.Get<string>(schema.GetField("gmlPath"));
 
             tStoreFilepath.Commit();
         }
