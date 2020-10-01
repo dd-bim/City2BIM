@@ -87,39 +87,40 @@ namespace City2RVT.GUI.XPlan2BIM
             xplan_file.Text = winexp.ImportPath(Reader.FileDialog.Data.XPlanGML);
         }
 
-        public void StoreFilepathInStorage(string gmlPath)
+        public void StoreFilepathInStorage(string gmlPath, Document doc)
         {
-            UIApplication uiapp = commandData.Application;
-            UIDocument uidoc = uiapp.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            using (Transaction tStoreFilepath = new Transaction(doc, "tCreateAndStore"))
+            {
+                tStoreFilepath.Start();
 
-            Transaction tStoreFilepath = new Transaction(doc, "tCreateAndStore");
-            tStoreFilepath.Start();
+                // create a new Data storage.
+                DataStorage createdInfoStorage = DataStorage.Create(doc);
+                createdInfoStorage.Name = "DS_XPlanung";
 
-            DataStorage createdInfoStorage = DataStorage.Create(doc);
-            createdInfoStorage.Name = "DS_XPlanung";
+                // new Schema builder for editing schema
+                SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
+                schemaBuilder.SetSchemaName("Filepaths");
+                // allow anyone to read the object
+                schemaBuilder.SetReadAccessLevel(AccessLevel.Public);                
 
-            SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
-            // allow anyone to read the object
-            schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
-            schemaBuilder.SetSchemaName("Filepaths");
+                // add new field "gmlPath"
+                FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField("gmlPath", typeof(string));
+                fieldBuilder.SetDocumentation("Path to gml file of XPlanung.");
 
-            FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField("gmlPath", typeof(string));
-            fieldBuilder.SetDocumentation("Properties für XPlanung.");            
+                Schema schema = schemaBuilder.Finish(); // register the Schema object
 
-            Schema schema = schemaBuilder.Finish(); // register the Schema object
+                // create an entity (object) for this schema (class)
+                Entity entity = new Entity(schema);
 
-            // create an entity (object) for this schema (class)
-            Entity entity = new Entity(schema);
+                // get the field from the schema
+                Field fieldSpliceLocation = schema.GetField("gmlPath");
 
-            // get the field from the schema
-            Field fieldSpliceLocation = schema.GetField("gmlPath");
+                entity.Set<string>(fieldSpliceLocation, gmlPath); // set the value for this entity
 
-            entity.Set<string>(fieldSpliceLocation, gmlPath); // set the value for this entity
+                createdInfoStorage.SetEntity(entity); // store the entity in the element (data storage)
 
-            createdInfoStorage.SetEntity(entity); // store the entity in the element
-
-            tStoreFilepath.Commit();
+                tStoreFilepath.Commit();
+            }            
         }
 
         private void Button_Click_StartXPlanImport(object sender, RoutedEventArgs e)
@@ -152,7 +153,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
             //loads the selected GML file
             string xPlanGmlPath = xplan_file.Text;
-            StoreFilepathInStorage(xPlanGmlPath);
+            StoreFilepathInStorage(xPlanGmlPath, doc);
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.IgnoreComments = true;
             XmlDocument xmlDoc = new XmlDocument();
@@ -171,10 +172,6 @@ namespace City2RVT.GUI.XPlan2BIM
             Transformation transformation = new Transformation();
             Plane geomPlane = transformation.getGeomPlane(/*doc, */normal, origin);
 
-            ProjectLocation projloc = doc.ActiveProjectLocation;
-            ProjectPosition position_data = projloc.GetProjectPosition(XYZ.Zero);
-            double elevation = position_data.Elevation;
-
             // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
             var XmlNsmgr = new Builder.Revit_Semantic(doc);
             XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
@@ -187,6 +184,9 @@ namespace City2RVT.GUI.XPlan2BIM
             CategorySet projCategorySet = app.Create.NewCategorySet();
             _ = categorySet.Insert(category);
             _ = projCategorySet.Insert(projCategory);
+
+            //GUI.Properties.Wf_showProperties wf_ShowProperties = new Properties.Wf_showProperties(commandData);
+            //wf_ShowProperties.updateGml(doc, uidoc);
 
             #endregion parameter  
 
@@ -249,8 +249,8 @@ namespace City2RVT.GUI.XPlan2BIM
                         //_______________________________________________________________________________________________
                         // creates surfaces with parameters and values
                         //***********************************************************************************************                         
-                        XmlNodeList bpSurface = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);                        
-                        xPlanBuilder.createSurface(xPlanObject, bpSurface, zOffset, xmlDoc, categorySet, geomPlane, logger, colorDict, refplaneId);
+                        XmlNodeList xpSurface = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);                        
+                        xPlanBuilder.createSurface(xPlanObject, xpSurface, zOffset, xmlDoc, categorySet, geomPlane, logger, colorDict, refplaneId);
 
                         //_______________________________________________________________________________________________
                         // creates line segments

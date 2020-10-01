@@ -135,15 +135,9 @@ namespace City2RVT.GUI.XPlan2BIM
                     // Get parameters, point coordinates and geometry of topography surfaces
                     TopographySurface topoSurf = doc.GetElement(topo.UniqueId.ToString()) as TopographySurface;
                     IList<XYZ> topoPoints = topoSurf.GetPoints();
-                    //IList<XYZ> topoPoints = topoSurf.GetBoundaryPoints();
-                    ParameterSet topoParams = topoSurf.Parameters;
 
                     Options options = new Options();
                     options.ComputeReferences = true;
-
-                    //var mesho = doc.GetElement(topo.UniqueId.ToString()).get_Geometry(options) as Mesh;
-
-
 
                     string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
                     if (bezeichnung == null)
@@ -157,12 +151,9 @@ namespace City2RVT.GUI.XPlan2BIM
                     {
                         Mesh mesh = topoSurf.get_Geometry(options).First(q => q is Mesh) as Mesh;
 
-                        //var verts = mesh.Vertices;
-                        //var triangle = mesh.get_Triangle(1);
-
                         if (checkboxAsSite.IsChecked == true && checkboxAsSpace.IsChecked == false)
                         {
-                            IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc, mesh);
+                            IfcXBim.CreateSite(model, topoPoints, bezeichnung, topoSurf, pbp, doc, mesh);
                         }
                         else if (checkboxAsSpace.IsChecked == true && checkboxAsSite.IsChecked == false)
                         {
@@ -170,7 +161,7 @@ namespace City2RVT.GUI.XPlan2BIM
                         }
                         else if (checkboxAsSpace.IsChecked == true && checkboxAsSite.IsChecked == true)
                         {
-                            IfcXBim.CreateSite(model, topoPoints, topoParams, bezeichnung, topoSurf, pbp, doc, mesh);
+                            IfcXBim.CreateSite(model, topoPoints, bezeichnung, topoSurf, pbp, doc, mesh);
                             IfcXBim.createSpace(model, topoSurf, commandData, pbp, bezeichnung);
                         }
                     }

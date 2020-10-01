@@ -331,7 +331,7 @@ namespace City2RVT.Builder
             return refplaneId;
         }
 
-        public void createSurface(string xPlanObject, XmlNodeList bpSurface, double zOffset, XmlDocument xmlDoc, CategorySet categorySet, Plane geomPlane, Logger logger, 
+        public void createSurface(string xPlanObject, XmlNodeList xpSurface, double zOffset, XmlDocument xmlDoc, CategorySet categorySet, Plane geomPlane, Logger logger, 
             Dictionary<string, ElementId> colorDict, ElementId refplaneId)
         {
             var transfClass = new City2RVT.Calc.Transformation();
@@ -360,7 +360,7 @@ namespace City2RVT.Builder
             List<string> paramList = new List<String>();
             List<string> interiorListe = new List<String>();
             int i = 0;
-            foreach (XmlNode nodeSurf in bpSurface)
+            foreach (XmlNode nodeSurf in xpSurface)
             {
                 List<CurveLoop> curveLoopSurfaceList = new List<CurveLoop>();
                 CurveLoop curveLoop = new CurveLoop();
@@ -532,11 +532,11 @@ namespace City2RVT.Builder
                 System.Collections.IList selectedParams = GUI.Prop_NAS_settings.SelectedParams;
 
 
-                //_________________________________
-                // imports parameter (values later)
-                //*********************************
-                XPlan_Semantic xPlan_Semantic = new XPlan_Semantic(doc,app);
-                Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, defFile, paramList, nodeSurf, xmlDoc, categorySet, logger);
+                ////_________________________________
+                //// imports parameter (values later)
+                ////*********************************
+                //XPlan_Semantic xPlan_Semantic = new XPlan_Semantic(doc,app);
+                //Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, defFile, paramList, nodeSurf, xmlDoc, categorySet, logger);
 
                 if (curveLoop.GetExactLength() > 0)
                 {
@@ -554,6 +554,12 @@ namespace City2RVT.Builder
                         topoTransaction.Start();
                         SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
                         SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopSurfaceList, refplaneId);
+
+                        //_________________________________
+                        // imports parameter (values later)
+                        //*********************************
+                        XPlan_Semantic xPlan_Semantic = new XPlan_Semantic(doc, app);
+                        Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, defFile, paramList, nodeSurf, xmlDoc, categorySet, logger, siteSubRegion.TopographySurface);
 
                         Parameter materialParamSurface = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
 
@@ -590,7 +596,6 @@ namespace City2RVT.Builder
                     }
                     topoTransaction.Commit();
                 }
-                paramDict.Clear();
             }
         }
 

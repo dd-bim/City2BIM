@@ -62,6 +62,9 @@
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>DD_BIM_ICON.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GeoJSON.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoJSON.Net.1.1.64\lib\net45\GeoJSON.Net.dll</HintPath>
@@ -133,6 +136,8 @@
     <Compile Include="ALKIS\AX_Object.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DD_BIM_ICON.ico" />
+    <Content Include="DD_BIM_LOGO.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

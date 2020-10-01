@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
 using System.Xml;
+using System.Drawing;
+using System.Collections;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -18,7 +20,6 @@ using City2RVT.Calc;
 
 using Form = System.Windows.Forms.Form;
 using MessageBox = System.Windows.Forms.MessageBox;
-using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -34,6 +35,13 @@ namespace City2RVT.GUI.Properties
         {
             commandData = cData;  
             InitializeComponent();
+
+            //this.Icon = Icon.ExtractAssociatedIcon
+
+            //ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
+            //Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
+            //string gmlId = pickedElement.LookupParameter("gml:id").AsString();
+            //this.Text = "Eigenschaften für ";
         }
 
         public class XPlanJSON
@@ -63,6 +71,7 @@ namespace City2RVT.GUI.Properties
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
 
+            //this.Text = "titel";
             updateGml(doc, uidoc);
             updateZukunftBau(doc, uidoc);
         }    
@@ -84,32 +93,21 @@ namespace City2RVT.GUI.Properties
             this.Close();
         }
 
-        public void StoreDataInSurface(TopographySurface topographySurface, DataGridView dgv, string schemaName)
+        public void StoreDataInSurface(TopographySurface topoSurface, DataGridView dgv, string schemaName)
         {
-            using (Transaction trans = new Transaction(topographySurface.Document, "tCreateAndStore"))
+            // starts transaction. Transactions are needed for changes at revit documents. 
+            using (Transaction trans = new Transaction(topoSurface.Document, "storeData"))
             {
                 trans.Start();
 
+                // List all existing schemas
                 IList<Schema> list = Schema.ListSchemas();
+
+                // select schema from list by schema name
                 Schema schemaExist = list.Where(i => i.SchemaName == schemaName).FirstOrDefault();
 
-                //SchemaBuilder sb = new SchemaBuilder(schemaExist.GUID);
-
-                SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
-                schemaBuilder.SetSchemaName(schemaName);
-
-                // allow anyone to read the object
-                schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
-
-                foreach (DataGridViewRow roow in dgv.Rows)
-                {
-                    string paramName = roow.Cells[0].Value.ToString().Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1);
-                    FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(paramName, typeof(string));
-                    fieldBuilder.SetDocumentation("ein paar properties.");
-                }
-
-
                 // register the Schema object
+                // check if schema with specific name exists. Otherwise new Schema is created. 
                 Schema schema = default;
                 if (schemaExist != null)
                 {
@@ -117,11 +115,26 @@ namespace City2RVT.GUI.Properties
                 }
                 else
                 {
+                    // new schema builder for editing schema
+                    SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
+                    schemaBuilder.SetSchemaName(schemaName);
+
+                    // allow anyone to read the object
+                    schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
+
+                    // parameter and values of datagridview are checkd and added as fields
+                    foreach (DataGridViewRow roow in dgv.Rows)
+                    {
+                        string paramName = roow.Cells[0].Value.ToString()
+                            .Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1);
+
+                        // adds new field to the schema
+                        FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(paramName, typeof(string));
+                        fieldBuilder.SetDocumentation("Set XPlanung properties.");
+                    }
+
                     schema = schemaBuilder.Finish();
                 }
-
-                var lf = schema.ListFields();
-
 
                 // create an entity (object) for this schema (class)
                 Entity entity = new Entity(schema);
@@ -129,14 +142,15 @@ namespace City2RVT.GUI.Properties
                 foreach (DataGridViewRow roow in dgv.Rows)
                 {
                     // get the field from the schema
-                    string fieldName = roow.Cells[0].Value.ToString().Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1);
+                    string fieldName = roow.Cells[0].Value.ToString()
+                        .Substring(roow.Cells[0].Value.ToString().LastIndexOf(':') + 1);
                     Field fieldSpliceLocation = schema.GetField(fieldName);
 
                     // set the value for this entity
                     entity.Set<string>(fieldSpliceLocation, (roow.Cells[1].Value.ToString()));
 
                     // store the entity in the element
-                    topographySurface.SetEntity(entity);
+                    topoSurface.SetEntity(entity);
                 }
 
                 trans.Commit();
@@ -152,22 +166,39 @@ namespace City2RVT.GUI.Properties
             resetGml(doc, uidoc);
         }
 
+        /// <summary>
+        /// Returns path of the imported gml-file.
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public string retrieveFilePath(Document doc, IList<Schema> list)
         {
             //retrieve Data Storage
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             var datastorageList = collector.OfClass(typeof(DataStorage)).ToList();
+
+            // get data storage by name
             DataStorage dataStorage = datastorageList.Where(n => n.Name == "DS_XPlanung").FirstOrDefault() as DataStorage;
 
+            // get schema by name
             Schema schema = list.Where(i => i.SchemaName == "Filepaths").FirstOrDefault();
 
+            // retrieve entity by schema
             Entity retrievedEntity = dataStorage.GetEntity(schema);
-            string retrievedData = retrievedEntity.Get<string>(schema.GetField("gmlPath"));
 
-            string pathGml = retrievedData;
+            // retrieve data from field by name
+            string pathGml = retrievedEntity.Get<string>(schema.GetField("gmlPath"));
+
             return pathGml;
         }
 
+        /// <summary>
+        /// returns list of properties for a chosen layer from metajson file
+        /// </summary>
+        /// <param name="metaJsonPath"></param>
+        /// <param name="layer"></param>
+        /// <returns></returns>
         public List<string> readGmlJson(string metaJsonPath, string layer)
         {
             var JSONresult = File.ReadAllText(metaJsonPath);
@@ -194,59 +225,74 @@ namespace City2RVT.GUI.Properties
 
         public void updateGml(Document doc, UIDocument uidoc)
         {
+            // getting the Element the user selected
             ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
             Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
 
+            // gml-id and layer-name for picked element
+            string gmlId = pickedElement.LookupParameter("gml:id").AsString();
+            string layer = pickedElement.LookupParameter("Kommentare").AsString();
+
+            // title for the GUI
+            this.Text = "Eigenschaften für " + gmlId;
+
+            // define columns for datagridview
             dgv_showProperties.ColumnCount = 2;
             dgv_showProperties.Columns[0].Name = "Attribut";
-            dgv_showProperties.Columns[0].Width = 200;
+            dgv_showProperties.Columns[0].Width = 250;
             dgv_showProperties.Columns[0].ValueType = typeof(string);
 
             dgv_showProperties.Columns[1].Name = "Wert";
-            dgv_showProperties.Columns[1].Width = 200;
+            dgv_showProperties.Columns[1].Width = 250;
             dgv_showProperties.Columns[1].ValueType = typeof(string);
-
-            string gmlId = pickedElement.LookupParameter("gml:id").AsString();
-
+            
+            // file for metajson for xplan (later:path in plugin folder)
             string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
-            string layer = pickedElement.LookupParameter("Kommentare").AsString();
-
+            
+            // list of properties for the layer from metajson file
             List<string> propListString = readGmlJson(metaJsonPath, layer);
 
+            // lists all schemas of the revit project
             IList<Schema> list = Schema.ListSchemas();
 
+            // path to imported gml-file and loads xml document
             string pathGml = retrieveFilePath(doc, list);
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(pathGml);
 
             //retrieve Data Storage
-            FilteredElementCollector topoCollector = new FilteredElementCollector(doc);
-            var topoList = topoCollector.OfClass(typeof(TopographySurface)).ToList();
-            TopographySurface topoSurface = topoList.Where(n => n.LookupParameter("gml:id").AsString() == gmlId).FirstOrDefault() as TopographySurface;
+
+            // picked Element es Topography. SchemaName is Parameter "Kommentare" from the surface
+            TopographySurface topoSurface = pickedElement as TopographySurface;
             var schemaName = topoSurface.LookupParameter("Kommentare").AsString();
 
+            // select schema by name
             Schema topoSchema = list.Where(i => i.SchemaName == schemaName).FirstOrDefault();
 
-            List<string> fieldString = new List<string>();
+
+            List<string> fieldList = new List<string>();
             string topoRetrievedData = default;
             Entity topoRetrievedEntity = new Entity();
             if (topoSchema != null)
             {
                 topoRetrievedEntity = topoSurface.GetEntity(topoSchema);
+
+                // all fields from selected schema
                 var fieldsList = topoSchema.ListFields();
 
-                foreach (var f in fieldsList)
+                // add names of fields to list
+                foreach (var f in fieldsList) 
                 {
-                    fieldString.Add(f.FieldName);
+                    fieldList.Add(f.FieldName); 
                 }
-            }
-            
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(pathGml);
+            }    
 
+
+            // selectin nodes in xml dpcument by gml-id
             string layerMitNs = "xplan:" + pickedElement.LookupParameter("Kommentare").AsString();
 
             var XmlNsmgr = new Builder.Revit_Semantic(doc);
             XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
-
             XmlNodeList nodes = xmlDoc.SelectNodes("//" + layerMitNs + "[@gml:id='" + gmlId + "']", nsmgr);
 
             foreach (XmlNode xmlNode in nodes)
@@ -259,7 +305,7 @@ namespace City2RVT.GUI.Properties
                         row.Add(c.Name);
 
                         // check if Data Storage already contains parameter for the surface. Otherwise parameter are retrieved from the gml file. 
-                        if (fieldString.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)) && topoRetrievedEntity.Schema != null)
+                        if (fieldList.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)) && topoRetrievedEntity.Schema != null)
                         {
                             topoRetrievedData = topoRetrievedEntity.Get<string>(topoSchema.GetField(c.Name.Substring(c.Name.LastIndexOf(':') + 1)));
                             row.Add(topoRetrievedData);
@@ -278,7 +324,7 @@ namespace City2RVT.GUI.Properties
                 row2.Add(gmlId);
                 dgv_showProperties.Rows.Add(row2.ToArray());
             }
-            fieldString.Clear();
+            fieldList.Clear();
         }
 
         private void dgv_zukunftBau_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -335,14 +381,14 @@ namespace City2RVT.GUI.Properties
 
             dgv_zukunftBau.ColumnCount = 1;
             dgv_zukunftBau.Columns[0].Name = "Attribut";
-            dgv_zukunftBau.Columns[0].Width = 200;
+            dgv_zukunftBau.Columns[0].Width = 250;
             dgv_zukunftBau.Columns[0].ValueType = typeof(string);
 
             //Add Checkbox
             DataGridViewCheckBoxColumn chk = new DataGridViewCheckBoxColumn();
             chk.HeaderText = "Wert";
             chk.Name = "CheckBox";
-            chk.Width = 125;
+            chk.Width = 250;
             chk.ValueType = typeof(bool);
             dgv_zukunftBau.Columns.Add(chk);
 
@@ -351,22 +397,19 @@ namespace City2RVT.GUI.Properties
             // read meta json file for ZukunftBau
             var propListNames = readZukunftBauJson(metaJsonPath);
 
-            string gmlId = pickedElement.LookupParameter("gml:id").AsString();
-
+            // select schema by name
             IList<Schema> list = Schema.ListSchemas();
-
-
-            //retrieve Data Storage
-            FilteredElementCollector topoCollector = new FilteredElementCollector(doc);
-            var topoList = topoCollector.OfClass(typeof(TopographySurface)).ToList();
-            TopographySurface topoSurface = topoList.Where(n => n.LookupParameter("gml:id").AsString() == gmlId).FirstOrDefault() as TopographySurface;
-            var schemaName = topoSurface.LookupParameter("Kommentare").AsString();
-
             Schema topoSchema = list.Where(i => i.SchemaName == "ZukunftBau").FirstOrDefault();
+
+            //retrieve picked Element as data storage
+            TopographySurface topoSurface = pickedElement as TopographySurface;
+            var schemaName = topoSurface.LookupParameter("Kommentare").AsString();            
 
             List<string> fieldString = new List<string>();
             string topoRetrievedData = default;
             Entity topoRetrievedEntity = new Entity();
+
+            // if schema by name exists
             if (topoSchema != null)
             {
                 topoRetrievedEntity = topoSurface.GetEntity(topoSchema);
@@ -377,7 +420,12 @@ namespace City2RVT.GUI.Properties
                     fieldString.Add(f.FieldName);
                 }
             }
+            else
+            {
+                // und wenn nicht? --> das nochmal testen
+            }
 
+            // check each property name in each datagridview row. If property already exists, value is replaced. 
             foreach (var p in propListNames)
             {
                 bool check = false;
@@ -399,10 +447,10 @@ namespace City2RVT.GUI.Properties
 
             foreach (DataGridViewRow roow in dgv_zukunftBau.Rows)
             {
-                if (fieldString.Contains(roow.Cells[0].Value.ToString()) /*c.Name.Substring(c.Name.LastIndexOf(':') + 1))*/ && topoRetrievedEntity.Schema != null)
+                if (fieldString.Contains(roow.Cells[0].Value.ToString()) && topoRetrievedEntity.Schema != null)
                 {
                     roow.Cells[chk.Name].Value = false;
-                    topoRetrievedData = topoRetrievedEntity.Get<string>(topoSchema.GetField(roow.Cells[0].Value.ToString() /*c.Name.Substring(c.Name.LastIndexOf(':') + 1))*/));
+                    topoRetrievedData = topoRetrievedEntity.Get<string>(topoSchema.GetField(roow.Cells[0].Value.ToString()));
                     roow.Cells[chk.Name].Value = Convert.ToBoolean(topoRetrievedData);
                 }
                 else
@@ -484,6 +532,11 @@ namespace City2RVT.GUI.Properties
                 row2.Add(gmlId);
                 dgv_showProperties.Rows.Add(row2.ToArray());
             }
+        }
+
+        private void btn_close_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

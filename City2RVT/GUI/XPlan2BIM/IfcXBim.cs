@@ -7,6 +7,7 @@ using System.Windows;
 using NETGeographicLib;
 //using System.Windows.Media.Media3D;
 using System.IO;
+using System.Collections;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -14,6 +15,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB.ExtensibleStorage;
 
 using Xbim.Common;
 using Xbim.Common.Exceptions;
@@ -39,6 +41,7 @@ using Xbim.Ifc4.PresentationDefinitionResource;
 using System.Xml;
 //using CoordIndex = System.Tuple<int, int, int>;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using City2RVT.Calc;
 using Xbim.Ifc4.ActorResource;
@@ -46,6 +49,9 @@ using Xbim.Ifc4.QuantityResource;
 using System.Globalization;
 using Xbim.Common.Collections;
 using City2RVT.GUI.Modify;
+
+using PropertySet = City2RVT.GUI.Properties.Wf_showProperties.PropertySet;
+using Properties = City2RVT.GUI.Properties.Wf_showProperties.Properties;
 
 namespace City2RVT.GUI.XPlan2BIM
 {
@@ -293,10 +299,53 @@ namespace City2RVT.GUI.XPlan2BIM
             return paramValue;
         }
 
+        public static Dictionary<string, string> retrieveParameterFromStorage(TopographySurface topoSurface, string schemaName)
+        {
+            // List all existing schemas
+            IList<Schema> list = Schema.ListSchemas();
+
+            Schema topoSchema = list.Where(i => i.SchemaName == schemaName).FirstOrDefault();
+
+            List<string> fieldString = new List<string>();
+            string topoRetrievedData = default;
+            Entity topoRetrievedEntity = new Entity();
+            if (topoSchema != null)
+            {
+                topoRetrievedEntity = topoSurface.GetEntity(topoSchema);
+                var fieldsList = topoSchema.ListFields();
+
+                foreach (var f in fieldsList)
+                {
+                    fieldString.Add(f.FieldName);
+                }
+            }
+            else if (topoSchema == null)
+            {
+                //parameter und schemas schon beim import anlegen
+            }
+
+            Dictionary<string, string> paramDict = new Dictionary<string, string>();
+
+            foreach (var f in fieldString)
+            {
+                if (topoRetrievedEntity.Schema != null)
+                {
+                    topoRetrievedData = topoRetrievedEntity.Get<string>(topoSchema.GetField(f));
+                    paramDict.Add(f, topoRetrievedData);
+                }
+                else if (topoRetrievedEntity.Schema == null)
+                {
+                    paramDict.Add(f, "n/a");
+                }
+            }
+
+            return paramDict;
+        }
+
         /// <summary>
         /// Creates an IFCSite which includes geometry and properties taken from revit project along with some basic predefined properties. 
         /// </summary>
-        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, ParameterSet topoParams, string bezeichnung, TopographySurface topoSurf, XYZ pbp, Document doc, Mesh mesh)
+        public static IfcSite CreateSite(IfcStore model, IList<XYZ> topoPoints, string bezeichnung, TopographySurface topoSurface, XYZ pbp, Document doc, Mesh mesh)
         {
             double feetToMeter = 1.0 / 0.3048;
             var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
@@ -464,29 +513,9 @@ namespace City2RVT.GUI.XPlan2BIM
                 localPlacement.RelativePlacement = ax3D;
                 site.ObjectPlacement = localPlacement;
 
-                Dictionary<string, string> paramDict = new Dictionary<string, string>();
-                paramDict.Add("Bezeichnung", bezeichnung);
-
-                foreach (Parameter p in topoParams)
-                {
-                    if (p.IsShared)
-                    {
-                        string key = topoSurf.get_Parameter(new Guid(p.GUID.ToString())).Definition.Name;
-                        string value = topoSurf.get_Parameter(new Guid(p.GUID.ToString())).AsString();
-
-                        if (paramDict.ContainsKey(key) == false)
-                        {
-                            if (value == null)
-                            {
-
-                            }
-                            else
-                            {
-                                paramDict.Add(key, value);
-                            }
-                        }
-                    }
-                }
+                // retrieve Parameters 
+                string schemaName = topoSurface.LookupParameter("Kommentare").AsString();
+                Dictionary<string, string> paramDict = retrieveParameterFromStorage(topoSurface, schemaName);
 
                 //set a few basic properties
                 model.Instances.New<IfcRelDefinesByProperties>(relDef =>
@@ -504,7 +533,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 });
 
                 //set Quantities
-                CreateSiteQuantity(model, site, topoSurf);
+                CreateSiteQuantity(model, site, topoSurface);
 
                 model.Instances.New<IfcRelDefinesByProperties>(relGeokod =>
                 {
@@ -584,20 +613,10 @@ namespace City2RVT.GUI.XPlan2BIM
             }
         }
 
-        public static IfcSpace createSpace(IfcStore model, TopographySurface topoSurf, ExternalCommandData commandData, XYZ pbp, string bezeichnung)
+        public static IfcSpace createSpace(IfcStore model, TopographySurface topoSurface, ExternalCommandData commandData, XYZ pbp, string bezeichnung)
         {
-            string fileName = @"D:\testjson2.json";
-            var JSONresult = File.ReadAllText(fileName);
-            var rootObject = JsonConvert.DeserializeObject<List<Modify.EditProperties.IfcElement>>(JSONresult);
-
-            Dictionary<string, List<EditProperties.Properties>> dict = new Dictionary<string, List<EditProperties.Properties>>();
-            if (rootObject != null)
-            {
-                foreach (var x in rootObject)
-                {
-                    dict.Add(x.Guid.ToString(), x.propertySet.properties);
-                }
-            }
+            // retrieve Parameters 
+            Dictionary<string, string> newDict = retrieveParameterFromStorage(topoSurface, "ZukunftBau");
 
             var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
 
@@ -608,7 +627,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 space.Description = "ifcspace";
 
                 var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
-                BoundingBoxXYZ boundingBox = topoSurf.get_BoundingBox(view);
+                BoundingBoxXYZ boundingBox = topoSurface.get_BoundingBox(view);
 
                 var cpbbMin = model.Instances.New<IfcCartesianPoint>();
                 cpbbMin.SetXYZ(Convert.ToDouble(boundingBox.Min.X / feetToMeter), Convert.ToDouble(boundingBox.Min.Y) / feetToMeter, Convert.ToDouble(boundingBox.Min.Z) / feetToMeter);
@@ -727,84 +746,47 @@ namespace City2RVT.GUI.XPlan2BIM
                 relAggregates.RelatingObject = ifcProject;
                 relAggregates.RelatedObjects.Add(space);
 
-                //set a few basic properties
-                model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
-                {
-                    relSpace.RelatedObjects.Add(space);
-                    relSpace.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpace =>
-                    {
-                        pSetSpace.Name = "BauantragGrundstück";
-                        pSetSpace.HasProperties.AddRange(new[]
-{
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    var elementId = topoSurf.UniqueId;
-                                    p.Name = "IstGrundstücksfläche";
-                                    if (dict.ContainsKey(elementId))
-                                    {
-                                        //p.NominalValue = new IfcBoolean(dict[elementId]);
-                                    }
-                                    else
-                                    {
-                                        p.NominalValue = new IfcLabel("n/a");
-                                    } 
-                                }),
-                            });
-                    });
-                });
+                string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\ZukunftBauAsJSON.json";
+                var JSONresult = File.ReadAllText(metaJsonPath);
+                var metaJson = JObject.Parse(JSONresult).SelectToken("meta").ToString();
+                var jsonObject = JsonConvert.DeserializeObject<List<GUI.Properties.Wf_showProperties.XPlanJSON>>(metaJson);
 
-                // Propertyset für versiegelte Flächen sowie Spiel- und Freizeitflächen
-                model.Instances.New<IfcRelDefinesByProperties>(relSpaceArea =>
-                {
-                    relSpaceArea.RelatedObjects.Add(space);
-                    // Propertyset für versiegelte Flächen sowie Spiel- und Freizeitflächen
-                    relSpaceArea.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpaceArea =>
-                    {
-                        pSetSpaceArea.Name = "BauantragGrundstücksflächen";
-                        pSetSpaceArea.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    p.Name = "IstVersiegelt";
-                                    p.NominalValue = new IfcBoolean(false);
-                                }),
-                            });
-                        pSetSpaceArea.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    p.Name = "IstSpielUndFreizeitfläche";
-                                    p.NominalValue = new IfcBoolean(false);
-                                }),
-                            });
-                        pSetSpaceArea.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    p.Name = "IstVerkaufsfläche";
-                                    p.NominalValue = new IfcBoolean(false);
-                                }),
-                            });
-                        pSetSpaceArea.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    p.Name = "IstNebenanlage";
-                                    p.NominalValue = new IfcBoolean(false);
-                                }),
-                            });
-                        pSetSpaceArea.HasProperties.AddRange(new[]
-                            {
-                            model.Instances.New<IfcPropertySingleValue>(p =>
-                                {
-                                    p.Name = "IstGemeinschaftsanlage";
-                                    p.NominalValue = new IfcBoolean(false);
-                                }),
-                            });
-                    });
-                });
 
-                var area = topoSurf.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
+                List<PropertySet> propSetListString = new List<PropertySet>();
+                List<PropertySet> propSetList = new List<PropertySet>();
+                foreach (var x in jsonObject)
+                {
+                    if (x.name == "Grundstück")
+                    {
+                        propSetList = x.propertySet;
+                    }
+                }
+
+                foreach (var pset in propSetList)
+                {
+                    foreach (var prop in pset.properties)
+                    {
+                        model.Instances.New<IfcRelDefinesByProperties>(relSpace =>
+                        {
+                            relSpace.RelatedObjects.Add(space);
+                            relSpace.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSetSpace =>
+                            {
+                                pSetSpace.Name = pset.Name;
+                                pSetSpace.HasProperties.AddRange(new[]
+        {
+                            model.Instances.New<IfcPropertySingleValue>(p =>
+                                {
+                                    var elementId = topoSurface.UniqueId;
+                                    p.Name = prop.Name;
+                                    p.NominalValue = new IfcLabel((newDict[prop.Name]));
+                                }),
+                            });
+                            });
+                        });
+                    }
+                }
+
+                var area = topoSurface.get_Parameter(BuiltInParameter.PROJECTED_SURFACE_AREA).AsValueString();
                 string[] areaSplit = area.Split(' ');
                 string areaWithoutUnit = areaSplit[0];
                 double areaWithoutUnitDouble = Convert.ToDouble(areaWithoutUnit, CultureInfo.InvariantCulture);
