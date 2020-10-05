@@ -136,9 +136,11 @@ namespace City2RVT.Builder
                 {
                     foreach (XmlNode xn in root)
                     {
-                        if (xn.Name.EndsWith(f.FieldName) && xn.InnerText != null)
+                        //if (xn.Name.EndsWith(f.FieldName) && xn.InnerText != null)
+                        if (xn.Name.Substring(xn.Name.LastIndexOf(':') + 1) == f.FieldName  && xn.InnerText != null)
                         {
-                            li.Add(f.FieldName, xn.InnerText);
+                            var xnName = xn.Name.Substring(xn.Name.LastIndexOf(':') + 1);
+                            li.Add(xnName, xn.InnerText);
                         }
                         
                     }
