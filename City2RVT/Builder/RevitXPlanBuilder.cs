@@ -457,10 +457,10 @@ namespace City2RVT.Builder
 
                 foreach (XmlNode child in nodeSurf.ParentNode.ParentNode.ParentNode.ParentNode)
                 {
-                    defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child/*.ParentNode*/.Attributes["gml:id"].Name, "XPlanDaten");
-                    if (child/*.ParentNode*/.Attributes["gml:id"].Name != "#comment")
+                    defFile = parameter.CreateDefinitionFile(sharedParamFile, app, doc, child.Attributes["gml:id"].Name, "XPlanDaten");
+                    if (child.Attributes["gml:id"].Name != "#comment")
                     {
-                        paramList.Add(child/*.ParentNode*/.Attributes["gml:id"].Name);
+                        paramList.Add(child.Attributes["gml:id"].Name);
                     }
                 }
 
@@ -535,9 +535,6 @@ namespace City2RVT.Builder
                 ////_________________________________
                 //// imports parameter (values later)
                 ////*********************************
-                //XPlan_Semantic xPlan_Semantic = new XPlan_Semantic(doc,app);
-                //Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, defFile, paramList, nodeSurf, xmlDoc, categorySet, logger);
-
                 if (curveLoop.GetExactLength() > 0)
                 {
                     curveLoopSurfaceList.Add(curveLoop);
@@ -598,8 +595,6 @@ namespace City2RVT.Builder
                 }
             }
         }
-
-
 
         public void createLineSegments(string xPlanObject, XmlDocument xmlDoc, XmlNamespaceManager nsmgr, double zOffset, ElementId pickedId, bool drape_checked)
         {

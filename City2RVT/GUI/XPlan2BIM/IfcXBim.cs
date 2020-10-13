@@ -516,6 +516,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 // retrieve Parameters 
                 string schemaName = topoSurface.LookupParameter("Kommentare").AsString();
                 Dictionary<string, string> paramDict = retrieveParameterFromStorage(topoSurface, schemaName);
+                Dictionary<string, string> zukunftBauDict = retrieveParameterFromStorage(topoSurface, "ZukunftBau");
 
                 //set a few basic properties
                 model.Instances.New<IfcRelDefinesByProperties>(relDef =>
@@ -528,6 +529,22 @@ namespace City2RVT.GUI.XPlan2BIM
                         {
                             IfcXBim ifcXBim = new IfcXBim();
                             ifcXBim.setSurfaceProperties(pSet, model, topoParam);
+                        }
+                    });
+                });
+
+                //set a few basic properties
+                model.Instances.New<IfcRelDefinesByProperties>(relDef =>
+                {
+                    relDef.RelatedObjects.Add(site);
+                    relDef.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSet =>
+                    {
+                        pSet.Name = "ZukunftBAU";
+                        foreach (var zukunftBauParam in zukunftBauDict)
+                        {
+                            IfcXBim ifcXBim = new IfcXBim();
+                            ifcXBim.setSurfaceProperties(pSet, model, zukunftBauParam);
+
                         }
                     });
                 });
@@ -884,7 +901,6 @@ namespace City2RVT.GUI.XPlan2BIM
 
                 var surfaceStyleRendering = model.Instances.New<IfcSurfaceStyleRendering>();
                 surfaceStyleRendering.SurfaceColour = colourRgb;
-                //surfaceStyleRendering.Transparency = 0.5;
 
                 var surfaceStyle = model.Instances.New<IfcSurfaceStyle>();
                 surfaceStyle.Styles.Add(surfaceStyleRendering);

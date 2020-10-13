@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using System.Windows.Forms;
+using System.Linq;
 
 using City2BIM.Alkis;
 using City2BIM.Geometry;
@@ -68,6 +69,22 @@ namespace City2RVT.GUI
             //{
             //    cb_Codelist.Items.Add(item);
             //}
+
+            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+
+            var topoList = new List<ElementId>();
+
+            foreach (var id in topoCollector)
+            {
+                topoList.Add(id.Id);
+            }
+
+            if (topoList.Count() == 1)
+            {
+                Prop_Revit.TerrainId = topoList.FirstOrDefault();
+            }
+
+             
 
             //if no Terrain is added before, the functionality is not given
             //ATTENTION, TO DO: if Terrain is present but not imported via DTM2BIM this terrain will now not be considered
@@ -305,14 +322,15 @@ namespace City2RVT.GUI
 
         }
 
+        private void check_drapeUsage_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void Button_Click_ModifyParameter(object sender, RoutedEventArgs e)
         {
             Modify.ModifyParameterForm f1 = new Modify.ModifyParameterForm();
             f1.ShowDialog();
-        }
-
-        private void check_drapeUsage_Checked(object sender, RoutedEventArgs e)
-        {
 
         }
 

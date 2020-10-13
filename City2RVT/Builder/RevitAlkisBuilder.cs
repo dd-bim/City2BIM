@@ -1,5 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.ExtensibleStorage;
+using Autodesk.Revit.DB.Fabrication;
 using Autodesk.Revit.UI;
 using City2BIM.Alkis;
 using City2BIM.Geometry;
@@ -8,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace City2RVT.Builder
 {
@@ -151,7 +154,115 @@ namespace City2RVT.Builder
 
                                     siteSubRegion.TopographySurface.Pinned = true;
 
-                                }
+
+                                //    TopographySurface topoSurface = siteSubRegion.TopographySurface;
+                                //    Dictionary<string, string> li = new Dictionary<string, string>();
+
+                                //    // get gml-id of element
+                                //    //topoGr.
+                                //    //XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
+                                //    //string gmlId = root.GetAttribute("gml:id");
+                                //    string gmlId = "DEBYvAAAAABHqr1H";
+
+
+                                //    // register the Schema object
+                                //    // check if schema with specific name exists. Otherwise new Schema is created. 
+                                //    Schema schema = default;
+
+                                //    XPlan_Semantic xPlan_Semantic = new XPlan_Semantic(doc, app);
+                                //    //Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, defFile, paramList, nodeSurf, xmlDoc, categorySet, logger, siteSubRegion.TopographySurface);
+
+                                //    string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\aaa.json";
+
+                                //    GUI.Properties.Wf_showProperties wf_ShowProperties = new GUI.Properties.Wf_showProperties(commandData);
+                                //    var propListNames = wf_ShowProperties.readGmlJson(metaJsonPath, obj.UsageType/*.Substring(xPlanObject.LastIndexOf(':') + 1)*/);
+                                //    //string pathGml = wf_ShowProperties.retrieveFilePath(doc, list);
+                                //    string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\ALKIS Import\Daten Ingolstadt\789172_0.xml";
+
+
+                                //    XmlReaderSettings readerSettings = new XmlReaderSettings();
+                                //    readerSettings.IgnoreComments = true;
+                                //    XmlDocument xmlDoc = new XmlDocument();
+
+                                //    Reader.ReadXPlan xPlanReader = new Reader.ReadXPlan();
+
+                                //    using (XmlReader reader = XmlReader.Create(pathGml, readerSettings))
+                                //    {
+                                //        xmlDoc.Load(reader);
+                                //        xmlDoc.Load(pathGml);
+                                //    }
+
+                                //    // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
+                                //    var XmlNsmgr = new Builder.Revit_Semantic(doc);
+                                //    XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
+
+
+                                //    // get all nodes by gml-id
+                                //    XmlNodeList nodes = xmlDoc.SelectNodes("//" + obj.UsageType, nsmgr);
+
+                                //    string schemaName = obj.UsageType;
+
+                                //    // new schema builder for editing schema
+                                //    SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
+                                //    schemaBuilder.SetSchemaName(schemaName);
+
+                                //    // allow anyone to read the object
+                                //    schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
+
+                                //    //List<string> li = new List<string>();
+                                //    foreach (XmlNode xmlNode in nodes)
+                                //    {
+                                //        foreach (XmlNode c in xmlNode.ChildNodes)
+                                //        {
+                                //            if (propListNames.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
+                                //            {
+                                //                if (!li.ContainsKey(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
+                                //                {
+                                //                    li.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), "-");
+                                //                }
+                                //                // parameter and values of datagridview are checkd and added as fields
+
+                                //                XmlElement test = xmlNode as XmlElement;
+                                //                if (test.GetAttribute("gml:id") == gmlId)
+                                //                {
+                                //                    li[c.Name.Substring(c.Name.LastIndexOf(':') + 1)] = c.InnerText;
+                                //                }
+                                //            }
+                                //        }
+                                //    }
+
+                                //    li.Add("id", gmlId);
+
+                                //    foreach (var p in li)
+                                //    {
+                                //        string paramName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
+
+                                //        // adds new field to the schema
+                                //        FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(paramName, typeof(string));
+                                //        fieldBuilder.SetDocumentation("Set XPlanung properties.");
+                                //    }
+
+                                //    schema = schemaBuilder.Finish();
+                                ////}
+
+                                //// create an entity (object) for this schema (class)
+                                //Entity entity = new Entity(schema);
+
+                                //foreach (var p in li)
+                                //{
+                                //    // get the field from the schema
+                                //    string fieldName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
+                                //    Field fieldSpliceLocation = schema.GetField(fieldName);
+
+                                //    // set the value for this entity
+                                //    entity.Set<string>(fieldSpliceLocation, li[p.Key]);
+
+                                //    // store the entity in the element
+                                //    topoSurface.SetEntity(entity);
+                                //}
+
+
+                            }
                                 subTrans.Commit();
                             }
                         }

@@ -1,5 +1,4 @@
-﻿using Autodesk.Revit.DB;
-using City2BIM.Alkis;
+﻿using City2BIM.Alkis;
 using City2BIM.Geometry;
 using City2BIM.Semantic;
 using System.Collections.Generic;
@@ -50,7 +49,6 @@ namespace City2RVT.Builder
             Dictionary<string, string> paramDict = new Dictionary<string, string>();
             Dictionary<string, string> paramDictOhne = new Dictionary<string, string>();
 
-
             System.Collections.IList selectedParams = GUI.Prop_NAS_settings.SelectedParams;
 
             var XmlNsmgr = new Builder.Revit_Semantic(doc);
@@ -81,35 +79,17 @@ namespace City2RVT.Builder
 
                                 }
 
-                                //Transaction tParam = new Transaction(doc, "Insert Parameter");
-                                //{
-                                //    tParam.Start();
                                 InstanceBinding newIB = app.Create.NewInstanceBinding(categorySet);
                                     if (externalDefinition != null)
                                     {
                                         doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_DATA);
                                     }
                                     logger.Info("Applied Parameters to '" + paramName.Substring(paramName.LastIndexOf(':') + 1) + "'. ");
-                                //}
-                                //tParam.Commit();
                             }
                         }
                     }
                 }
             }
-
-
-            
-
-
-            //// starts transaction. Transactions are needed for changes at revit documents. 
-            //using (Transaction trans = new Transaction(doc, "storeData"))
-            //{
-            //    trans.Start();
-
-            
-
-
 
             string schemaName = xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1);
 
@@ -136,15 +116,12 @@ namespace City2RVT.Builder
                 {
                     foreach (XmlNode xn in root)
                     {
-                        //if (xn.Name.EndsWith(f.FieldName) && xn.InnerText != null)
                         if (xn.Name.Substring(xn.Name.LastIndexOf(':') + 1) == f.FieldName  && xn.InnerText != null)
                         {
                             var xnName = xn.Name.Substring(xn.Name.LastIndexOf(':') + 1);
                             li.Add(xnName, xn.InnerText);
-                        }
-                        
+                        }                        
                     }
-                    //li.Add(f.FieldName, paramDictOhne[f.FieldName]);
                 }
                 li.Add("id", gmlId);
             }
@@ -156,14 +133,8 @@ namespace City2RVT.Builder
                 var propListNames = wf_ShowProperties.readGmlJson(metaJsonPath, xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));
                 string pathGml = wf_ShowProperties.retrieveFilePath(doc, list);
 
-                //// get gml-id of element
-                //XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
-                //string gmlId = root.GetAttribute("gml:id");
-
                 // get all nodes by gml-id
-                //XmlNodeList nodes = xmlDoc.SelectNodes("//" + xPlanObject + "[@gml:id='" + gmlId + "']", nsmgr);
                 XmlNodeList nodes = xmlDoc.SelectNodes("//" + xPlanObject, nsmgr);
-
 
                 // new schema builder for editing schema
                 SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
@@ -171,16 +142,6 @@ namespace City2RVT.Builder
 
                 // allow anyone to read the object
                 schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
-
-                //// parameter and values of datagridview are checkd and added as fields
-                //foreach (var p in paramList)
-                //{
-                //    string paramName = p.Substring(p.LastIndexOf(':') + 1 );
-
-                //    // adds new field to the schema
-                //    FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(paramName, typeof(string));
-                //    fieldBuilder.SetDocumentation("Set XPlanung properties.");
-                //}
 
                 //List<string> li = new List<string>();
                 foreach (XmlNode xmlNode in nodes)
@@ -192,9 +153,6 @@ namespace City2RVT.Builder
                             if (!li.ContainsKey(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
                             {
                                 li.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), "-");
-                                //li.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), c.InnerText);
-                                //FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(c.Name.Substring(c.Name.LastIndexOf(':') + 1), typeof(string));
-                                //fieldBuilder.SetDocumentation("Set XPlanung properties.");
                             }
                             // parameter and values of datagridview are checkd and added as fields
 
@@ -203,16 +161,6 @@ namespace City2RVT.Builder
                             {
                                 li[c.Name.Substring(c.Name.LastIndexOf(':') + 1)] = c.InnerText;
                             }
-
-
-                            //foreach (var p in li)
-                            //{
-                            //    //string paramName = p.Substring(p.LastIndexOf(':') + 1);
-
-                            //    // adds new field to the schema
-                            //    FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(p.Key, typeof(string));
-                            //    fieldBuilder.SetDocumentation("Set XPlanung properties.");
-                            //}
                         }
                     }
                 }
@@ -231,48 +179,8 @@ namespace City2RVT.Builder
                 schema = schemaBuilder.Finish();
             }
 
-
             // create an entity (object) for this schema (class)
             Entity entity = new Entity(schema);
-
-
-            //XmlDocument xmlDoc = new XmlDocument();
-            //xmlDoc.Load(pathGml);
-
-            //string layerMitNs = "xplan:" + pickedElement.LookupParameter("Kommentare").AsString();
-
-            //var XmlNsmgr = new Builder.Revit_Semantic(doc);
-            //XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
-
-            //XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
-            //string gmlId = root.GetAttribute("gml:id");
-
-            //XmlNodeList nodes = xmlDoc.SelectNodes("//" + xPlanObject + "[@gml:id='" + gmlId + "']", nsmgr);
-
-            //foreach (XmlNode xmlNode in nodes)
-            //{
-            //    foreach (XmlNode c in xmlNode.ChildNodes)
-
-            //    {
-            //        if (propListNames.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
-            //        {
-            //            //foreach (var p in paramList)
-            //            //{
-            //            //    // get the field from the schema
-            //            //    string fieldName = p.Substring(p.LastIndexOf(':') + 1);
-            //            //    Field fieldSpliceLocation = schema.GetField(fieldName);
-
-            //            //    // set the value for this entity
-            //            //    entity.Set<string>(fieldSpliceLocation, "n/a");
-
-            //            //    // store the entity in the element
-            //            //    topoSurface.SetEntity(entity);
-            //            //}
-            //        }
-            //    }
-            //}
-
-            //li.Add("id", gmlId);
 
             foreach (var p in li)
             {
@@ -286,24 +194,6 @@ namespace City2RVT.Builder
                 // store the entity in the element
                 topoSurface.SetEntity(entity);
             }
-
-            //foreach (var p in paramList)
-            //    {
-            //        // get the field from the schema
-            //        string fieldName = p.Substring(p.LastIndexOf(':') + 1);
-            //    Field fieldSpliceLocation = schema.GetField(fieldName);
-
-            //        // set the value for this entity
-            //        entity.Set<string>(fieldSpliceLocation, "n/a");
-
-            //        // store the entity in the element
-            //        topoSurface.SetEntity(entity);
-            //    }
-
-            //    trans.Commit();
-            //}
-
-
 
             paramList.Clear();
             return paramDict;

@@ -26,6 +26,5 @@
         <Button Content="Close" HorizontalAlignment="Left" Margin="497,360,0,0" VerticalAlignment="Top" Width="97" Click="close_dialoge_button"/>
         <CheckBox Name="checkboxAsSite" Content="Export surfaces as IfcSite" HorizontalAlignment="Left" Margin="497,265,0,0" VerticalAlignment="Top" IsChecked="True" Checked="checkboxAsSite_Checked"/>
         <CheckBox Name="checkboxAsSpace" Content="Export surfaces as IfcSpace" HorizontalAlignment="Left" Margin="497,285,0,0" VerticalAlignment="Top" Checked="checkboxAsSpace_Checked"/>
-        <Button Content="Edit Properties" HorizontalAlignment="Left" Margin="497,226,0,0" VerticalAlignment="Top" Width="97" Click="Button_Click_1"/>
     </Grid>
 </Window>

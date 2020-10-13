@@ -35,13 +35,6 @@ namespace City2RVT.GUI.Properties
         {
             commandData = cData;  
             InitializeComponent();
-
-            //this.Icon = Icon.ExtractAssociatedIcon
-
-            //ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
-            //Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
-            //string gmlId = pickedElement.LookupParameter("gml:id").AsString();
-            //this.Text = "Eigenschaften für ";
         }
 
         public class XPlanJSON
@@ -71,9 +64,8 @@ namespace City2RVT.GUI.Properties
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            //this.Text = "titel";
             updateGml(doc, uidoc);
-            updateZukunftBau(doc, uidoc);
+            updateZukunftBau(doc, uidoc, "ZukunftBau");
         }    
 
         private void btn_apply_Click(object sender, EventArgs e)
@@ -374,7 +366,7 @@ namespace City2RVT.GUI.Properties
             return propListNames;
         }
 
-        public void updateZukunftBau(Document doc, UIDocument uidoc)
+        public void updateZukunftBau(Document doc, UIDocument uidoc, string schemaName)
         {
             ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
             Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
@@ -399,11 +391,10 @@ namespace City2RVT.GUI.Properties
 
             // select schema by name
             IList<Schema> list = Schema.ListSchemas();
-            Schema topoSchema = list.Where(i => i.SchemaName == "ZukunftBau").FirstOrDefault();
+            Schema topoSchema = list.Where(i => i.SchemaName == schemaName).FirstOrDefault();
 
             //retrieve picked Element as data storage
             TopographySurface topoSurface = pickedElement as TopographySurface;
-            var schemaName = topoSurface.LookupParameter("Kommentare").AsString();            
 
             List<string> fieldString = new List<string>();
             string topoRetrievedData = default;

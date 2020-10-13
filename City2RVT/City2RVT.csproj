@@ -189,41 +189,9 @@
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
     <Compile Include="GUI\GUI_helper.cs" />
-    <Compile Include="GUI\Modify\editElement.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Modify\editElement.Designer.cs">
-      <DependentUpon>editElement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Modify\editIfcProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Modify\editIfcProperties.Designer.cs">
-      <DependentUpon>editIfcProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Modify\IfcPropertySets.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Modify\IfcPropertySets.Designer.cs">
-      <DependentUpon>IfcPropertySets.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Modify\ModifyParameterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="GUI\Modify\ModifyParameterForm.cs" />
     <Compile Include="GUI\Modify\ModifyParameterForm.Designer.cs">
       <DependentUpon>ModifyParameterForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Modify\showProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Modify\showProperties.Designer.cs">
-      <DependentUpon>showProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Modify\EditProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Modify\EditProperties.Designer.cs">
-      <DependentUpon>EditProperties.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Properties\Cmd_properties.cs" />
     <Compile Include="GUI\Properties\Wf_showEntities.cs">
@@ -388,23 +356,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GUI\Modify\editElement.resx">
-      <DependentUpon>editElement.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Modify\editIfcProperties.resx">
-      <DependentUpon>editIfcProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Modify\IfcPropertySets.resx">
-      <DependentUpon>IfcPropertySets.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Modify\ModifyParameterForm.resx">
       <DependentUpon>ModifyParameterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Modify\showProperties.resx">
-      <DependentUpon>showProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Modify\EditProperties.resx">
-      <DependentUpon>EditProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Properties\Wf_showEntities.resx">
       <DependentUpon>Wf_showEntities.cs</DependentUpon>

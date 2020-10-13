@@ -232,7 +232,6 @@ namespace City2RVT.GUI.XPlan2BIM
         private void Button_Click_SetIfcLocation(object sender, RoutedEventArgs e)
         {
             var dlg = new FolderBrowserDialog();
-            //DialogResult folder = dlg.ShowDialog();
             dlg.ShowDialog();
             string locationFolder = dlg.SelectedPath;
             ifc_Location.Text = locationFolder;
@@ -267,14 +266,6 @@ namespace City2RVT.GUI.XPlan2BIM
         private void checkboxAsSpace_Checked(object sender, RoutedEventArgs e)
         {
 
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            //this.Close();
-            Modify.IfcPropertySets f1 = new Modify.IfcPropertySets(commandData, this);
-            _ = f1.ShowDialog();
-            this.Close();
         }
     }
 }
