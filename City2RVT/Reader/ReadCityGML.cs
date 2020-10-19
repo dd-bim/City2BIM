@@ -77,16 +77,17 @@ namespace City2RVT.Reader
                 {
                     string messageXY = "There are different CRS for the XY-plane.";
                     string messageHeight = "There are different CRS for the Elevation";
-                    string messageDecision = "Press OK to ignore and continue Import or cancel for checking Georef settings.";
+                    string messageDecision = "Press OK to ignore and continue Import or cancel for checking Georef settings. ";
+                    string messageHint =  "You can change the settings for georeferencing under City2BIM -> Georeferencing -> Level of Georef. ";
 
                     if (!sameXY && !sameHeight)
-                        crsDialog.MainContent = messageXY + "\r\n" + messageHeight + "\r\n" + messageDecision;
+                        crsDialog.MainContent = messageXY + "\r\n" + messageHeight + "\r\n" + messageDecision + "\r\n" + messageHint;
 
                     if (!sameXY && sameHeight)
-                        crsDialog.MainContent = messageXY + "\r\n" + messageDecision;
+                        crsDialog.MainContent = messageXY + "\r\n" + messageDecision + "\r\n" + messageHint;
 
                     if (sameXY && !sameHeight)
-                        crsDialog.MainContent = messageHeight + "\r\n" + messageDecision;
+                        crsDialog.MainContent = messageHeight + "\r\n" + messageDecision + "\r\n" + messageHint;
 
                     crsDialog.CommonButtons = TaskDialogCommonButtons.Ok | TaskDialogCommonButtons.Cancel;
 

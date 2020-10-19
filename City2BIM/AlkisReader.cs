@@ -6,6 +6,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml;
 
 namespace City2BIM
 {
@@ -36,7 +37,7 @@ namespace City2BIM
                 {
                     AX_Object axObj = new AX_Object
                     {
-                        UsageType = axObject
+                        UsageType = axObject                        
                     };
 
                     XElement extSeg = xmlObj.Descendants(allns["gml"] + "exterior").SingleOrDefault();
@@ -48,6 +49,7 @@ namespace City2BIM
 
                     axObj.Group = AX_Object.AXGroup.parcel;
                     axObj.Attributes = new Alkis_Sem_Reader(xDoc, allns).ReadAttributeValuesParcel(xmlObj, Alkis_Semantic.GetParcelAttributes());
+                    axObj.Gmlid = xmlObj.Attribute("gml:id").Value;
 
                     axObjects.Add(axObj);
                 }

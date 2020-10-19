@@ -6,6 +6,8 @@ using City2BIM.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using City2RVT.GUI;
 
 namespace City2RVT.Builder
@@ -64,6 +66,7 @@ namespace City2RVT.Builder
                             {
                                 List<LogPair> lod1Messages = new List<LogPair>();
 
+                                //___________________________________hier_____________________________________________________
                                 CreateLOD1Building(part.PartSolid.InternalID.ToString(), part.PartSolid, part.PartSurfaces, bldg.BldgAttributes, ref lod1Messages, ref error, ref errorLod1, part.BldgPartAttributes);
                                 bldg.LogEntries.AddRange(lod1Messages);
                                 bldg.LogEntries.Add(new LogPair(LogType.info, "LOD1-Representation used."));
@@ -183,6 +186,17 @@ namespace City2RVT.Builder
                               orderby v.Position.Z
                               select v.Position.Z;
 
+            //var ordByHeight = ordByHeight2.ToList();
+            //var avg = ordByHeight.Average();
+
+            //foreach (var o in ordByHeight)
+            //{
+            //    if (o > 2*avg)
+            //    {
+            //        ordByHeight.Remove(o);
+            //    }
+            //}
+
             var height = ordByHeight.LastOrDefault() - ordByHeight.FirstOrDefault();
 
             var groundSurfaces = (from p in surfaces
@@ -237,7 +251,18 @@ namespace City2RVT.Builder
                                 ds = SetAttributeValues(ds, partAttributes);
                             ds.Pinned = true;
 
-                            SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
+                        if (height > 20)
+                        {
+                            var sv = solid.Vertices;
+                            var obh = ordByHeight;
+                            var g = groundSurface.ExteriorPts.First().Z;
+                            var ol = ordByHeight.LastOrDefault();
+                            var of = ordByHeight.FirstOrDefault();
+                            var h = height;
+                        }
+                        
+
+                        SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
                         
 
                         t.Commit();
@@ -386,49 +411,56 @@ namespace City2RVT.Builder
 
             List<LogPair> allLogs = new List<LogPair>();
 
-            foreach (var building in buildings)
+            using (Transaction t = new Transaction(doc, "Create face extrusion"))
             {
-                foreach (var part in building.Parts)
+                t.Start();
+
+                foreach (var building in buildings)
                 {
-                    foreach (var surface in part.PartSurfaces)
+                    foreach (var part in building.Parts)
+                    {
+                        foreach (var surface in part.PartSurfaces)
+                        {
+                            all++;
+
+                            try
+                            {
+                                CreateRevitFaceRepresentation(surface, building.BldgAttributes, part.Lod, part.BldgPartAttributes);
+                                success++;
+
+                            }
+                            catch (Exception ex)
+                            {
+                                error++;
+                                building.LogEntries.Add(new LogPair(LogType.error, "Surface transfer not successful at Building Part" + part.BldgPartId));
+                                building.LogEntries.Add(new LogPair(LogType.error, "Surface info: Id = " + surface.SurfaceId + ", Type = " + surface.Facetype));
+                                building.LogEntries.Add(new LogPair(LogType.error, "Error message: = " + ex.Message));
+                                continue;
+                            }
+                        }
+                    }
+
+                    foreach (var surface in building.BldgSurfaces)
                     {
                         all++;
 
                         try
                         {
-                            CreateRevitFaceRepresentation(surface, building.BldgAttributes, part.Lod, part.BldgPartAttributes);
+                            CreateRevitFaceRepresentation(surface, building.BldgAttributes, building.Lod);
                             success++;
-
                         }
                         catch (Exception ex)
                         {
                             error++;
-                            building.LogEntries.Add(new LogPair(LogType.error, "Surface transfer not successful at Building Part" +  part.BldgPartId));
-                            building.LogEntries.Add(new LogPair(LogType.error, "Surface info: Id = "  + surface.SurfaceId + ", Type = " + surface.Facetype));
+                            building.LogEntries.Add(new LogPair(LogType.error, "Surface info: Id = " + surface.SurfaceId + ", Type = " + surface.Facetype));
                             building.LogEntries.Add(new LogPair(LogType.error, "Error message: = " + ex.Message));
                             continue;
                         }
                     }
+                    allLogs.AddRange(building.LogEntries);
                 }
 
-                foreach (var surface in building.BldgSurfaces)
-                {
-                    all++;
-
-                    try
-                    {
-                        CreateRevitFaceRepresentation(surface, building.BldgAttributes, building.Lod);
-                        success++;
-                    }
-                    catch (Exception ex)
-                    {
-                        error++;
-                        building.LogEntries.Add(new LogPair(LogType.error, "Surface info: Id = " + surface.SurfaceId + ", Type = " + surface.Facetype));
-                        building.LogEntries.Add(new LogPair(LogType.error, "Error message: = " + ex.Message));
-                        continue;
-                    }
-                }
-                allLogs.AddRange(building.LogEntries);
+                t.Commit();
             }
             LogWriter.WriteLogFile(allLogs, false, all, success, null, null, error);
         }
@@ -443,60 +475,51 @@ namespace City2RVT.Builder
 
             Solid bldgFaceSolid = GeometryCreationUtilities.CreateExtrusionGeometry(loopList, normal, height, opt);
 
-            using (Transaction t = new Transaction(doc, "Create face extrusion"))
+            ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
+
+            switch (surface.Facetype)
             {
-                t.Start();
-                // create direct shape and assign the sphere shape
+                case (CityGml_Surface.FaceType.roof):
+                    elem = new ElementId(BuiltInCategory.OST_Roofs);
 
-                ElementId elem = new ElementId(BuiltInCategory.OST_GenericModel);
+                    break;
 
-                switch (surface.Facetype)
-                {
-                    case (CityGml_Surface.FaceType.roof):
-                        elem = new ElementId(BuiltInCategory.OST_Roofs);
+                case (CityGml_Surface.FaceType.wall):
+                    elem = new ElementId(BuiltInCategory.OST_Walls);
+                    break;
 
-                        break;
+                case (CityGml_Surface.FaceType.ground):
+                    elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
+                    break;
 
-                    case (CityGml_Surface.FaceType.wall):
-                        elem = new ElementId(BuiltInCategory.OST_Walls);
-                        break;
+                case (CityGml_Surface.FaceType.closure):
+                    elem = new ElementId(BuiltInCategory.OST_GenericModel);
+                    break;
 
-                    case (CityGml_Surface.FaceType.ground):
-                        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
-                        break;
+                case (CityGml_Surface.FaceType.outerCeiling):
+                    elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
+                    break;
 
-                    case (CityGml_Surface.FaceType.closure):
-                        elem = new ElementId(BuiltInCategory.OST_GenericModel);
-                        break;
+                case (CityGml_Surface.FaceType.outerFloor):
+                    elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
+                    break;
 
-                    case (CityGml_Surface.FaceType.outerCeiling):
-                        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
-                        break;
-
-                    case (CityGml_Surface.FaceType.outerFloor):
-                        elem = new ElementId(BuiltInCategory.OST_StructuralFoundation);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                DirectShape ds = DirectShape.CreateElement(doc, elem);
-                
-                    ds.SetShape(new GeometryObject[] { bldgFaceSolid });
-
-                    SetRevitInternalParameters(surface.InternalID.ToString(), lod, ds);
-
-                    ds = SetAttributeValues(ds, bldgAttributes);
-                    if (partAttributes != null)
-                        ds = SetAttributeValues(ds, partAttributes);
-                    ds = SetAttributeValues(ds, surface.SurfaceAttributes);
-
-                    ds.Pinned = true;
-                
-
-                t.Commit();
+                default:
+                    break;
             }
+
+            DirectShape ds = DirectShape.CreateElement(doc, elem);
+
+            ds.SetShape(new GeometryObject[] { bldgFaceSolid });
+
+            SetRevitInternalParameters(surface.InternalID.ToString(), lod, ds);
+
+            ds = SetAttributeValues(ds, bldgAttributes);
+            if (partAttributes != null)
+                ds = SetAttributeValues(ds, partAttributes);
+            ds = SetAttributeValues(ds, surface.SurfaceAttributes);
+
+            ds.Pinned = true;
         }
         #endregion Surfaces to Revit incl. Fallback
 
@@ -511,39 +534,76 @@ namespace City2RVT.Builder
                 var p = ds.LookupParameter(aName.XmlNamespace + ": " + aName.Name);
                 attributes.TryGetValue(aName, out var val);
 
-                try
+                if (p != null)
                 {
-                    if (val != null)
+                    try
                     {
-                        switch (aName.XmlType)
+                        if (val != null)
                         {
-                            case (Xml_AttrRep.AttrType.intAttribute):
-                                p.Set(int.Parse(val));
-                                break;
+                            switch (aName.XmlType)
+                            {
+                                case (Xml_AttrRep.AttrType.intAttribute):
+                                    p.Set(int.Parse(val));
+                                    break;
 
-                            case (Xml_AttrRep.AttrType.doubleAttribute):
-                                p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
-                                break;
+                                case (Xml_AttrRep.AttrType.doubleAttribute):
+                                    p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
+                                    break;
 
-                            case (Xml_AttrRep.AttrType.measureAttribute):
-                                var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
-                                p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
-                                break;
+                                case (Xml_AttrRep.AttrType.measureAttribute):
+                                    var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
+                                    p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
+                                    break;
 
-                            case (Xml_AttrRep.AttrType.stringAttribute):
-                                p.Set(CheckForCodeTranslation(aName.Name, val, Prop_CityGML_settings.CodelistName));
-                                break;
+                                case (Xml_AttrRep.AttrType.stringAttribute):
+                                    p.Set(CheckForCodeTranslation(aName.Name, val, Prop_CityGML_settings.CodelistName));
+                                    break;
 
-                            default:
-                                p.Set(val);
-                                break;
+                                default:
+                                    p.Set(val);
+                                    break;
+                            }
                         }
                     }
+                    catch
+                    {
+                        continue;
+                    }
                 }
-                catch
-                {
-                    continue;
-                }
+
+                //try
+                //{
+                //    if (val != null)
+                //    {
+                //        switch (aName.XmlType)
+                //        {
+                //            case (Xml_AttrRep.AttrType.intAttribute):
+                //                p.Set(int.Parse(val));
+                //                break;
+
+                //            case (Xml_AttrRep.AttrType.doubleAttribute):
+                //                p.Set(double.Parse(val, System.Globalization.CultureInfo.InvariantCulture));
+                //                break;
+
+                //            case (Xml_AttrRep.AttrType.measureAttribute):
+                //                var valNew = double.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
+                //                p.Set(valNew * 3.28084);    //Revit-DB speichert alle Längenmaße in Fuß, hier hart kodierte Umerechnung, Annahme: CityGML speichert Meter
+                //                break;
+
+                //            case (Xml_AttrRep.AttrType.stringAttribute):
+                //                p.Set(CheckForCodeTranslation(aName.Name, val, Prop_CityGML_settings.CodelistName));
+                //                break;
+
+                //            default:
+                //                p.Set(val);
+                //                break;
+                //        }
+                //    }
+                //}
+                //catch
+                //{
+                //    continue;
+                //}
             }
 
             return ds;

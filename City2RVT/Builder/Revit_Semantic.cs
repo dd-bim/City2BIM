@@ -45,27 +45,24 @@ namespace City2RVT.Builder
             Category projInfoCat = GetCategory(BuiltInCategory.OST_ProjectInformation);
 
             List<Definition> parProjInfoDef = GetExistentCategoryParametersDef(projInfoCat);
-            var selectedParams = GUI.Prop_NAS_settings.SelectedParams;
 
 
             var parProjInfo = parProjInfoDef.Select(p => p.Name);   //needed name for comparison
 
             foreach (var attribute in attributes)
-            {
-                if (selectedParams.Contains(attribute.Key))
+            {                
+                Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute.Key, GetParameterType(attribute.Value));
+
+                CategorySet assocCats = doc.Application.Create.NewCategorySet();
+
+                if (!parProjInfo.Contains(attribute.Key))
+                    assocCats.Insert(projInfoCat);
+
+                if (!assocCats.IsEmpty)
                 {
-                    Definition paramDef = SetDefinitionsToGroup(parGroupGeoref, attribute.Key, GetParameterType(attribute.Value));
-
-                    CategorySet assocCats = doc.Application.Create.NewCategorySet();
-
-                    if (!parProjInfo.Contains(attribute.Key))
-                        assocCats.Insert(projInfoCat);
-
-                    if (!assocCats.IsEmpty)
-                    {
-                        BindParameterDefinitionToCategories(paramDef, assocCats);
-                    }
-                }                
+                    BindParameterDefinitionToCategories(paramDef, assocCats);
+                }
+                       
             }
             //set SharedParameterFile back to user defined one (if applied)
 

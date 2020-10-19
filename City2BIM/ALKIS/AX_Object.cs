@@ -19,6 +19,7 @@ namespace City2BIM.Alkis
         private List<List<C2BPoint[]>> innerSegments;
         private AXGroup group;
         private Dictionary<Xml_AttrRep, string> attributes;
+        private string gmlid;
 
         /// <summary>
         /// Stores object type ("AX_xy") for later differentation
@@ -44,5 +45,10 @@ namespace City2BIM.Alkis
         /// Stores interior line segments (if applicable, could bw 
         /// </summary>
         public List<List<C2BPoint[]>> InnerSegments { get => innerSegments; set => innerSegments = value; }
+
+        /// <summary>
+        /// Stores interior line segments (if applicable, could bw 
+        /// </summary>
+        public string Gmlid { get => gmlid; set => gmlid = value; }
     }
 }

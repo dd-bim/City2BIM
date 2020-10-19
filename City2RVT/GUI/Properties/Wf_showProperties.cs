@@ -50,6 +50,7 @@ namespace City2RVT.GUI.Properties
             public string Name { get; set; }
             public string propertyGuid { get; set; }
             public string Value { get; set; }
+
         }
         public class PropertySet
         {
@@ -204,11 +205,14 @@ namespace City2RVT.GUI.Properties
                 if (x.name == layer)
                 {
                     List<Properties> propList = new List<Properties>();
-                    propList = x.properties;
+                    propList = x.properties;                    
 
                     foreach (var p in propList)
                     {
-                        propListString.Add(p.Name);
+                        if (p.Name != null)
+                        {
+                            propListString.Add(p.Name);
+                        }                       
                     }
                 }
             }
