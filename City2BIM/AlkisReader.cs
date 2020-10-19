@@ -26,6 +26,7 @@ namespace City2BIM
                     GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
                     ToDictionary(g => g.Key, g => g.First());
 
+
             //read all parcelTypes objects
             List<AX_Object> axObjects = new List<AX_Object>();
 
@@ -49,7 +50,7 @@ namespace City2BIM
 
                     axObj.Group = AX_Object.AXGroup.parcel;
                     axObj.Attributes = new Alkis_Sem_Reader(xDoc, allns).ReadAttributeValuesParcel(xmlObj, Alkis_Semantic.GetParcelAttributes());
-                    axObj.Gmlid = xmlObj.Attribute("gml:id").Value;
+                    axObj.Gmlid = (string)xmlObj.Attribute(XName.Get("id", "http://www.opengis.net/gml/3.2"));
 
                     axObjects.Add(axObj);
                 }
