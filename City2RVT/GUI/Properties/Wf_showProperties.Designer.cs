@@ -38,11 +38,14 @@
             this.dgv_zukunftBau = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btn_close = new System.Windows.Forms.Button();
+            this.dgv_alkis = new System.Windows.Forms.DataGridView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_showProperties)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_zukunftBau)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_alkis)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_apply
@@ -128,6 +131,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.dgv_alkis);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -145,6 +149,18 @@
             this.btn_close.Text = "Close";
             this.btn_close.UseVisualStyleBackColor = true;
             this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
+            // 
+            // dgv_alkis
+            // 
+            this.dgv_alkis.AllowUserToAddRows = false;
+            this.dgv_alkis.AllowUserToDeleteRows = false;
+            this.dgv_alkis.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_alkis.Location = new System.Drawing.Point(0, 0);
+            this.dgv_alkis.Name = "dgv_alkis";
+            this.dgv_alkis.RowHeadersVisible = false;
+            this.dgv_alkis.Size = new System.Drawing.Size(489, 349);
+            this.dgv_alkis.TabIndex = 0;
+            this.dgv_alkis.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_alkis_CellContentClick);
             // 
             // Wf_showProperties
             // 
@@ -165,6 +181,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgv_showProperties)).EndInit();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_zukunftBau)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_alkis)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -179,5 +197,6 @@
         private System.Windows.Forms.DataGridView dgv_zukunftBau;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btn_close;
+        private System.Windows.Forms.DataGridView dgv_alkis;
     }
 }

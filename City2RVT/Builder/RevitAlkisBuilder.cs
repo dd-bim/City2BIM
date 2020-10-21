@@ -135,66 +135,67 @@ namespace City2RVT.Builder
 
                             using (Transaction subTrans = new Transaction(doc, "Create " + obj.UsageType))
                             {
+
+                                FailureHandlingOptions options = subTrans.GetFailureHandlingOptions();
+                                options.SetFailuresPreprocessor(new AxesFailure());
+                                subTrans.SetFailureHandlingOptions(options);
+
+                                subTrans.Start();
+
+                                SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
+                                siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
+
+                                //if (obj.Attributes != null)
+                                //    siteSubRegion = SetAttributeValues(siteSubRegion, obj.Attributes);
+
+                                string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
+                                Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
+                                commAttr.Set("ALKIS: " + obj.UsageType);
+
+                                siteSubRegion.TopographySurface.Pinned = true;
+
+
+                                TopographySurface topoSurface = siteSubRegion.TopographySurface;
+                                Dictionary<string, string> di = new Dictionary<string, string>();
+
+                                // get gml-id of element
+                                //topoGr.
+                                //XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
+                                //string gmlId = root.GetAttribute("gml:id");
+                                //string gmlId = "DEBYvAAAAABHqr1H";
+                                string gmlId = obj.Gmlid;
+
+                                IList<Schema> list = Schema.ListSchemas();
+
+                                // register the Schema object
+                                // check if schema with specific name exists. Otherwise new Schema is created. 
+                                Schema schema = default;
+                                Schema schemaExist = list.Where(i => i.SchemaName == obj.UsageType).FirstOrDefault();
+
+                                string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\ALKIS Import\Daten Ingolstadt\789172_0.xml";
+
+                                XmlReaderSettings readerSettings = new XmlReaderSettings();
+                                readerSettings.IgnoreComments = true;
+                                XmlDocument xmlDoc = new XmlDocument();
+
+                                Reader.ReadXPlan xPlanReader = new Reader.ReadXPlan();
+
+                                using (XmlReader reader = XmlReader.Create(pathGml, readerSettings))
                                 {
-                                    FailureHandlingOptions options = subTrans.GetFailureHandlingOptions();
-                                    options.SetFailuresPreprocessor(new AxesFailure());
-                                    subTrans.SetFailureHandlingOptions(options);
+                                    xmlDoc.Load(reader);
+                                    xmlDoc.Load(pathGml);
+                                }
 
-                                    subTrans.Start();
+                                // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
+                                var XmlNsmgr = new Builder.Revit_Semantic(doc);
+                                XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
 
-                                    SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
-                                    siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
-
-                                    if (obj.Attributes != null)
-                                        siteSubRegion = SetAttributeValues(siteSubRegion, obj.Attributes);
-
-                                    string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
-                                    Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
-                                    commAttr.Set("ALKIS: " + obj.UsageType);
-
-                                    siteSubRegion.TopographySurface.Pinned = true;
-
-
-                                    TopographySurface topoSurface = siteSubRegion.TopographySurface;
-                                    Dictionary<string, string> di = new Dictionary<string, string>();
-
-                                    // get gml-id of element
-                                    //topoGr.
-                                    //XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
-                                    //string gmlId = root.GetAttribute("gml:id");
-                                    //string gmlId = "DEBYvAAAAABHqr1H";
-                                    string gmlId = obj.Gmlid;
-
-                                    // register the Schema object
-                                    // check if schema with specific name exists. Otherwise new Schema is created. 
-                                    Schema schema = default;
-
-                                    XPlan_Semantic xPlan_Semantic = new XPlan_Semantic(doc, app);
-                                    //Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, defFile, paramList, nodeSurf, xmlDoc, categorySet, logger, siteSubRegion.TopographySurface);
-
+                                if (schemaExist == null)
+                                {
                                     string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\aaa.json";
 
                                     GUI.Properties.Wf_showProperties wf_ShowProperties = new GUI.Properties.Wf_showProperties(commandData);
                                     List<string> propListNames = wf_ShowProperties.readGmlJson(metaJsonPath, obj.UsageType);
-                                    //string pathGml = wf_ShowProperties.retrieveFilePath(doc, list);
-                                    string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\ALKIS Import\Daten Ingolstadt\789172_0.xml";
-
-                                    XmlReaderSettings readerSettings = new XmlReaderSettings();
-                                    readerSettings.IgnoreComments = true;
-                                    XmlDocument xmlDoc = new XmlDocument();
-
-                                    Reader.ReadXPlan xPlanReader = new Reader.ReadXPlan();
-
-                                    using (XmlReader reader = XmlReader.Create(pathGml, readerSettings))
-                                    {
-                                        xmlDoc.Load(reader);
-                                        xmlDoc.Load(pathGml);
-                                    }
-
-                                    // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
-                                    var XmlNsmgr = new Builder.Revit_Semantic(doc);
-                                    XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
-
 
                                     // get all nodes by gml-id
                                     XmlNodeList nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType /*+ "[@gml:id='" + gmlId + "']"*/, nsmgr);
@@ -231,6 +232,8 @@ namespace City2RVT.Builder
                                     }
 
                                     di.Add("id", gmlId);
+                                    di.Add("City2BIM_Type", obj.UsageType);
+                                    di.Add("City2BIM_Source", "ALKIS");
 
                                     foreach (var p in di)
                                     {
@@ -238,32 +241,58 @@ namespace City2RVT.Builder
 
                                         // adds new field to the schema
                                         FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(paramName, typeof(string));
-                                        fieldBuilder.SetDocumentation("Set XPlanung properties.");
+                                        fieldBuilder.SetDocumentation("Set ALKIS properties.");
                                     }
 
                                     schema = schemaBuilder.Finish();
-                                    //}
+                                }
+                                else if (schemaExist != null)
+                                {
+                                    schema = schemaExist;
+                                    var lf = schema.ListFields();
 
-                                    // create an entity (object) for this schema (class)
-                                    Entity entity = new Entity(schema);
+                                    XmlNodeList nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType + "[@gml:id='" + gmlId + "']", nsmgr);
 
-                                    foreach (var p in di)
+                                    foreach (XmlNode xmlNode in nodes)
                                     {
-                                        // get the field from the schema
-                                        string fieldName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
-                                        Field fieldSpliceLocation = schema.GetField(fieldName);
-
-                                        // set the value for this entity
-                                        entity.Set<string>(fieldSpliceLocation, di[p.Key]);
-
-                                        // store the entity in the element
-                                        topoSurface.SetEntity(entity);
+                                        foreach (var f in lf)
+                                        {
+                                            foreach (XmlNode xn in xmlNode.ChildNodes)
+                                            {
+                                                if (xn.Name.Substring(xn.Name.LastIndexOf(':') + 1) == f.FieldName && xn.InnerText != null)
+                                                {
+                                                    var xnName = xn.Name.Substring(xn.Name.LastIndexOf(':') + 1);
+                                                    if (!di.ContainsKey(xnName))
+                                                    {
+                                                        di.Add(xnName, xn.InnerText);
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
+                                    di.Add("id", gmlId);
+                                    di.Add("City2BIM_Type", obj.UsageType);
+                                    di.Add("City2BIM_Source", "ALKIS");
+                                }
 
+                                // create an entity (object) for this schema (class)
+                                Entity entity = new Entity(schema);
 
+                                foreach (var p in di)
+                                {
+                                    // get the field from the schema
+                                    string fieldName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
+                                    Field fieldSpliceLocation = schema.GetField(fieldName);
+
+                                    // set the value for this entity
+                                    entity.Set<string>(fieldSpliceLocation, di[p.Key]);
+
+                                    // store the entity in the element
+                                    topoSurface.SetEntity(entity);
                                 }
                                 subTrans.Commit();
                             }
+
                         }
                         catch
                         {

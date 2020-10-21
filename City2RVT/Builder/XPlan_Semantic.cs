@@ -95,7 +95,7 @@ namespace City2RVT.Builder
 
             // List all existing schemas
             IList<Schema> list = Schema.ListSchemas();
-            Dictionary<string,string> li = new Dictionary<string, string>();
+            Dictionary<string,string> di = new Dictionary<string, string>();
 
             // select schema from list by schema name
             Schema schemaExist = list.Where(i => i.SchemaName == schemaName).FirstOrDefault();
@@ -119,11 +119,13 @@ namespace City2RVT.Builder
                         if (xn.Name.Substring(xn.Name.LastIndexOf(':') + 1) == f.FieldName  && xn.InnerText != null)
                         {
                             var xnName = xn.Name.Substring(xn.Name.LastIndexOf(':') + 1);
-                            li.Add(xnName, xn.InnerText);
+                            di.Add(xnName, xn.InnerText);
                         }                        
                     }
                 }
-                li.Add("id", gmlId);
+                di.Add("id", gmlId);
+                di.Add("City2BIM_Type", schemaName);
+                di.Add("City2BIM_Source", "XPlanung");
             }
             else
             {
@@ -150,24 +152,26 @@ namespace City2RVT.Builder
                     {
                         if (propListNames.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
                         {
-                            if (!li.ContainsKey(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
+                            if (!di.ContainsKey(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
                             {
-                                li.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), "-");
+                                di.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), "-");
                             }
                             // parameter and values of datagridview are checkd and added as fields
 
                             XmlElement test = xmlNode as XmlElement;
                             if (test.GetAttribute("gml:id") == gmlId)
                             {
-                                li[c.Name.Substring(c.Name.LastIndexOf(':') + 1)] = c.InnerText;
+                                di[c.Name.Substring(c.Name.LastIndexOf(':') + 1)] = c.InnerText;
                             }
                         }
                     }
                 }
 
-                li.Add("id", gmlId);
+                di.Add("id", gmlId);
+                di.Add("City2BIM_Type", schemaName);
+                di.Add("City2BIM_Source", "XPlanung");
 
-                foreach (var p in li)
+                foreach (var p in di)
                 {
                     string paramName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
 
@@ -182,14 +186,14 @@ namespace City2RVT.Builder
             // create an entity (object) for this schema (class)
             Entity entity = new Entity(schema);
 
-            foreach (var p in li)
+            foreach (var p in di)
             {
                 // get the field from the schema
                 string fieldName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
                 Field fieldSpliceLocation = schema.GetField(fieldName);
 
                 // set the value for this entity
-                entity.Set<string>(fieldSpliceLocation, li[p.Key]);
+                entity.Set<string>(fieldSpliceLocation, di[p.Key]);
 
                 // store the entity in the element
                 topoSurface.SetEntity(entity);

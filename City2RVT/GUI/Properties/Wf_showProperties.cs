@@ -65,7 +65,20 @@ namespace City2RVT.GUI.Properties
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            updateGml(doc, uidoc);
+            string layer = GetLayer();
+
+            // retrieve data from field by name
+            string source = GetSchemaFieldValue(layer, "City2BIM_Source", uidoc, doc);
+
+            if (source == "ALKIS")
+            {
+                updateGml(doc, uidoc, dgv_alkis, source);
+            }
+            else if (source == "XPlanung")
+            {
+                updateGml(doc, uidoc, dgv_showProperties, source);
+            }
+                        
             updateZukunftBau(doc, uidoc, "ZukunftBau");
         }    
 
@@ -75,19 +88,25 @@ namespace City2RVT.GUI.Properties
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
-            Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
-            TopographySurface pickedSurface = pickedElement as TopographySurface;
-            var schemaName = pickedElement.LookupParameter("Kommentare").AsString();
+            string layer = GetLayer();
 
-            StoreDataInSurface(pickedSurface, dgv_showProperties, schemaName);
-            StoreDataInSurface(pickedSurface, dgv_zukunftBau, "ZukunftBau");
+            // retrieve data from field by name
+            string schemaName = GetSchemaFieldValue(layer, "City2BIM_Type", uidoc, doc);
+
+            StoreDataInSurface(dgv_showProperties, schemaName, uidoc, doc);
+            StoreDataInSurface(dgv_alkis, schemaName, uidoc, doc);
+            StoreDataInSurface(dgv_zukunftBau, "ZukunftBau", uidoc, doc);
 
             this.Close();
         }
 
-        public void StoreDataInSurface(TopographySurface topoSurface, DataGridView dgv, string schemaName)
+        public void StoreDataInSurface(DataGridView dgv, string schemaName, UIDocument uidoc, Document doc)
         {
+            // getting the Element the user selected
+            ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
+            Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
+            TopographySurface topoSurface = pickedElement as TopographySurface;
+
             // starts transaction. Transactions are needed for changes at revit documents. 
             using (Transaction trans = new Transaction(topoSurface.Document, "storeData"))
             {
@@ -155,8 +174,17 @@ namespace City2RVT.GUI.Properties
             UIApplication app = commandData.Application;
             UIDocument uidoc = app.ActiveUIDocument;
             Document doc = uidoc.Document;
-            dgv_showProperties.Rows.Clear();
-            resetGml(doc, uidoc);
+
+            if (tabControl1.SelectedTab.Text == "ALKIS")
+            {
+                dgv_alkis.Rows.Clear();
+                resetGml(doc, uidoc, dgv_alkis, "ALKIS");
+            }
+            else if (tabControl1.SelectedTab.Text == "XPlanung")
+            {
+                dgv_showProperties.Rows.Clear();
+                resetGml(doc, uidoc, dgv_showProperties, "XPlanung");
+            }
         }
 
         /// <summary>
@@ -219,52 +247,49 @@ namespace City2RVT.GUI.Properties
             return propListString;
         }
 
-        public void updateGml(Document doc, UIDocument uidoc)
+        public void updateGml(Document doc, UIDocument uidoc, DataGridView dgv, string source)
         {
             // getting the Element the user selected
             ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
             Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
+            TopographySurface topoSurface = pickedElement as TopographySurface;
 
-            // gml-id and layer-name for picked element
-            string gmlId = pickedElement.LookupParameter("gml:id").AsString();
-            string layer = pickedElement.LookupParameter("Kommentare").AsString();
+            IList<Schema> list = Schema.ListSchemas();
+            string layer = GetLayer();
+
+            // retrieve data from field by name
+            string gmlId = GetSchemaFieldValue(layer, "id", uidoc, doc);
+            string type = GetSchemaFieldValue(layer, "City2BIM_Type", uidoc, doc);
 
             // title for the GUI
             this.Text = "Eigenschaften für " + gmlId;
 
             // define columns for datagridview
-            dgv_showProperties.ColumnCount = 2;
-            dgv_showProperties.Columns[0].Name = "Attribut";
-            dgv_showProperties.Columns[0].Width = 250;
-            dgv_showProperties.Columns[0].ValueType = typeof(string);
+            dgv.ColumnCount = 2;
+            dgv.Columns[0].Name = "Attribut";
+            dgv.Columns[0].Width = 250;
+            dgv.Columns[0].ValueType = typeof(string);
 
-            dgv_showProperties.Columns[1].Name = "Wert";
-            dgv_showProperties.Columns[1].Width = 250;
-            dgv_showProperties.Columns[1].ValueType = typeof(string);
-            
+            dgv.Columns[1].Name = "Wert";
+            dgv.Columns[1].Width = 250;
+            dgv.Columns[1].ValueType = typeof(string);
+
             // file for metajson for xplan (later:path in plugin folder)
-            string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
-            
+            string metaJsonPath = default;
+            if (source == "ALKIS")
+            {
+                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\aaa.json";
+            }
+            else if ( source == "XPlanung")
+            {
+                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+            }
+
             // list of properties for the layer from metajson file
             List<string> propListString = readGmlJson(metaJsonPath, layer);
 
-            // lists all schemas of the revit project
-            IList<Schema> list = Schema.ListSchemas();
-
-            // path to imported gml-file and loads xml document
-            string pathGml = retrieveFilePath(doc, list);
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(pathGml);
-
-            //retrieve Data Storage
-
-            // picked Element es Topography. SchemaName is Parameter "Kommentare" from the surface
-            TopographySurface topoSurface = pickedElement as TopographySurface;
-            var schemaName = topoSurface.LookupParameter("Kommentare").AsString();
-
             // select schema by name
-            Schema topoSchema = list.Where(i => i.SchemaName == schemaName).FirstOrDefault();
-
+            Schema topoSchema = list.Where(i => i.SchemaName == type).FirstOrDefault();
 
             List<string> fieldList = new List<string>();
             string topoRetrievedData = default;
@@ -274,52 +299,43 @@ namespace City2RVT.GUI.Properties
                 topoRetrievedEntity = topoSurface.GetEntity(topoSchema);
 
                 // all fields from selected schema
-                var fieldsList = topoSchema.ListFields();
+                var listField = topoSchema.ListFields();
 
                 // add names of fields to list
-                foreach (var f in fieldsList) 
+                foreach (var f in listField) 
                 {
                     fieldList.Add(f.FieldName); 
                 }
-            }    
 
+                ArrayList row0 = new ArrayList();
+                row0.Add("City2BIM_Type");
+                row0.Add(type);
+                dgv.Rows.Add(row0.ToArray());
 
-            // selectin nodes in xml dpcument by gml-id
-            string layerMitNs = "xplan:" + pickedElement.LookupParameter("Kommentare").AsString();
+                ArrayList row1 = new ArrayList();
+                row1.Add("City2BIM_Source");
+                row1.Add(source);
+                dgv.Rows.Add(row1.ToArray());
 
-            var XmlNsmgr = new Builder.Revit_Semantic(doc);
-            XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
-            XmlNodeList nodes = xmlDoc.SelectNodes("//" + layerMitNs + "[@gml:id='" + gmlId + "']", nsmgr);
-
-            foreach (XmlNode xmlNode in nodes)
-            {
-                foreach (XmlNode c in xmlNode.ChildNodes)
+                foreach (var f in fieldList)
                 {
-                    if (propListString.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
+                    if (propListString.Contains(f))
                     {
                         ArrayList row = new ArrayList();
-                        row.Add(c.Name);
+                        row.Add(f);
 
-                        // check if Data Storage already contains parameter for the surface. Otherwise parameter are retrieved from the gml file. 
-                        if (fieldList.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)) && topoRetrievedEntity.Schema != null)
-                        {
-                            topoRetrievedData = topoRetrievedEntity.Get<string>(topoSchema.GetField(c.Name.Substring(c.Name.LastIndexOf(':') + 1)));
-                            row.Add(topoRetrievedData);
-                        }
-                        else
-                        {
-                            row.Add(c.InnerText);
-                        }
+                        topoRetrievedData = topoRetrievedEntity.Get<string>(topoSchema.GetField(f));
+                        row.Add(topoRetrievedData);
 
-                        dgv_showProperties.Rows.Add(row.ToArray());
+                        dgv.Rows.Add(row.ToArray());
                     }
                 }
-
                 ArrayList row2 = new ArrayList();
                 row2.Add("gml:id");
                 row2.Add(gmlId);
-                dgv_showProperties.Rows.Add(row2.ToArray());
-            }
+                dgv.Rows.Add(row2.ToArray());
+
+            }    
             fieldList.Clear();
         }
 
@@ -388,6 +404,7 @@ namespace City2RVT.GUI.Properties
             chk.ValueType = typeof(bool);
             dgv_zukunftBau.Columns.Add(chk);
 
+            // file for metajson for xplan (later:path in plugin folder)
             string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\ZukunftBauAsJSON.json";
 
             // read meta json file for ZukunftBau
@@ -455,30 +472,36 @@ namespace City2RVT.GUI.Properties
             }            
         }
 
-        public void resetGml(Document doc, UIDocument uidoc)
+        public void resetGml(Document doc, UIDocument uidoc, DataGridView dgv, string source)
         {
-            ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
-            Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
+            dgv.ColumnCount = 2;
+            dgv.Columns[0].Name = "Attribut";
+            dgv.Columns[0].Width = 200;
+            dgv.Columns[0].ValueType = typeof(string);
+            
+            dgv.Columns[1].Name = "Wert";
+            dgv.Columns[1].Width = 200;
+            dgv.Columns[1].ValueType = typeof(string);
 
-            dgv_showProperties.ColumnCount = 2;
-            dgv_showProperties.Columns[0].Name = "Attribut";
-            dgv_showProperties.Columns[0].Width = 200;
-            dgv_showProperties.Columns[0].ValueType = typeof(string);
+            string layer = GetLayer();
+            string gmlId = GetSchemaFieldValue(layer, "id", uidoc, doc);
+            string type = GetSchemaFieldValue(layer, "City2BIM_Type", uidoc, doc);
 
-            dgv_showProperties.Columns[1].Name = "Wert";
-            dgv_showProperties.Columns[1].Width = 200;
-            dgv_showProperties.Columns[1].ValueType = typeof(string);
-
-            string gmlId = pickedElement.LookupParameter("gml:id").AsString();
-
-            string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+            // file for metajson for xplan (later:path in plugin folder)
+            string metaJsonPath = default;
+            if (source == "ALKIS")
+            {
+                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\aaa.json";
+            }
+            else if (source == "XPlanung")
+            {
+                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+            }
 
             var JSONresult = File.ReadAllText(metaJsonPath);
 
             var metaJson = JObject.Parse(JSONresult).SelectToken("meta").ToString();
             var jsonObject = JsonConvert.DeserializeObject<List<XPlanJSON>>(metaJson);
-
-            string layer = pickedElement.LookupParameter("Kommentare").AsString();
 
             List<string> propListString = new List<string>();
             foreach (var x in jsonObject)
@@ -495,13 +518,24 @@ namespace City2RVT.GUI.Properties
                 }
             }
 
-            IList<Schema> list = Schema.ListSchemas();
-            string pathGml = retrieveFilePath(doc, list);
+            //string pathGml = retrieveFilePath(doc, list);
+            Reader.FileDialog winexp = new Reader.FileDialog();
+            string pathGml = winexp.ImportPath(Reader.FileDialog.Data.GMLXML);
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(pathGml);
 
-            string layerMitNs = "xplan:" + pickedElement.LookupParameter("Kommentare").AsString();
+            string ns = default;
+            if (source == "ALKIS")
+            {
+                ns = "ns2:";
+            }
+            else if (source == "XPlanung")
+            {
+                ns = "xplan:";
+            }
+
+            string layerMitNs = ns + layer;
 
             var XmlNsmgr = new Builder.Revit_Semantic(doc);
             XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
@@ -510,6 +544,16 @@ namespace City2RVT.GUI.Properties
 
             foreach (XmlNode xmlNode in nodes)
             {
+                ArrayList row0 = new ArrayList();
+                row0.Add("City2BIM_Type");
+                row0.Add(type);
+                dgv.Rows.Add(row0.ToArray());
+
+                ArrayList row1 = new ArrayList();
+                row1.Add("City2BIM_Source");
+                row1.Add(source);
+                dgv.Rows.Add(row1.ToArray());
+
                 foreach (XmlNode c in xmlNode.ChildNodes)
                 {
                     if (propListString.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
@@ -518,20 +562,79 @@ namespace City2RVT.GUI.Properties
                         row.Add(c.Name);
                         row.Add(c.InnerText);
 
-                        dgv_showProperties.Rows.Add(row.ToArray());
+                        dgv.Rows.Add(row.ToArray());
                     }
                 }
 
                 ArrayList row2 = new ArrayList();
                 row2.Add("gml:id");
                 row2.Add(gmlId);
-                dgv_showProperties.Rows.Add(row2.ToArray());
+                dgv.Rows.Add(row2.ToArray());
             }
         }
 
         private void btn_close_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        public string GetLayer()
+        {
+            IList<Schema> list = Schema.ListSchemas();
+            string layer = default;
+            foreach (var l in list)
+            {
+                try
+                {
+                    var lf = l.ListFields();
+                    List<string> lfs = new List<string>();
+
+                    foreach (var f in lf)
+                    {
+                        lfs.Add(f.FieldName);
+                    }
+
+                    if (lfs.Contains("City2BIM_Type"))
+                    {
+                        var fieldName = l.GetField("City2BIM_Type").FieldName;
+                        layer = l.SchemaName;
+                    }
+                }
+                catch
+                { }                
+            }
+
+            return layer;
+        }
+
+        public string GetSchemaFieldValue(string layer, string fieldName, UIDocument uidoc, Document doc)
+        {
+            ICollection<ElementId> selectedIds = uidoc.Selection.GetElementIds();
+            Element pickedElement = doc.GetElement(selectedIds.FirstOrDefault());
+            TopographySurface topoSurface = pickedElement as TopographySurface;
+
+            IList<Schema> list = Schema.ListSchemas();
+
+            // get schema by name
+            Schema schema = list.Where(i => i.SchemaName == layer).FirstOrDefault();
+
+            Entity retrievedEntity = new Entity();
+
+            if (schema != null)
+            {
+                // retrieve entity by schema
+                retrievedEntity = topoSurface.GetEntity(schema);
+            }
+
+            // retrieve data from field by name
+            string fieldValue = retrievedEntity.Get<string>(schema.GetField(fieldName));
+
+            return fieldValue;
+        }
+
+        private void dgv_alkis_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
