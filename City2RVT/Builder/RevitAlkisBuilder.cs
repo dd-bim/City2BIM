@@ -107,7 +107,7 @@ namespace City2RVT.Builder
                         topoTransaction.Commit();
                     }
                 }
-                
+
                 foreach (AX_Object obj in topoGr)
                 {
                     if (selectedLayer.Contains(obj.UsageType))
@@ -145,12 +145,9 @@ namespace City2RVT.Builder
                                 SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, topoId);
                                 siteSubRegion.TopographySurface.MaterialId = colors[MapToSubGroupForMaterial(obj.UsageType)];
 
-                                //if (obj.Attributes != null)
-                                //    siteSubRegion = SetAttributeValues(siteSubRegion, obj.Attributes);
-
                                 string commAttrLabel = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS);
                                 Parameter commAttr = siteSubRegion.TopographySurface.LookupParameter(commAttrLabel);
-                                commAttr.Set("ALKIS: " + obj.UsageType);
+                                commAttr.Set(obj.UsageType);
 
                                 siteSubRegion.TopographySurface.Pinned = true;
 
@@ -158,12 +155,15 @@ namespace City2RVT.Builder
                                 TopographySurface topoSurface = siteSubRegion.TopographySurface;
                                 Dictionary<string, string> di = new Dictionary<string, string>();
 
-                                // get gml-id of element
-                                //topoGr.
-                                //XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
-                                //string gmlId = root.GetAttribute("gml:id");
-                                //string gmlId = "DEBYvAAAAABHqr1H";
-                                string gmlId = obj.Gmlid;
+                            string gmlId = default;
+                            if (obj.Gmlid != null)
+                            {
+                                gmlId = obj.Gmlid;
+                            }
+                            else if (obj.Gmlid == null)
+                            {
+                                gmlId = "-";
+                            }
 
                                 IList<Schema> list = Schema.ListSchemas();
 
@@ -251,7 +251,17 @@ namespace City2RVT.Builder
                                     schema = schemaExist;
                                     var lf = schema.ListFields();
 
-                                    XmlNodeList nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType + "[@gml:id='" + gmlId + "']", nsmgr);
+                                    XmlNodeList nodes = default;
+
+                                    if (gmlId != "-")
+                                    {
+                                        nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType + "[@gml:id='" + gmlId + "']", nsmgr);
+                                    }
+                                    else if (gmlId == "-")
+                                    {
+                                        nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType, nsmgr);
+                                    }
+
 
                                     foreach (XmlNode xmlNode in nodes)
                                     {
@@ -293,12 +303,12 @@ namespace City2RVT.Builder
                                 subTrans.Commit();
                             }
 
-                        }
+                    }
                         catch
-                        {
-                            continue;
-                        }
-                    }                    
+                    {
+                        continue;
+                    }
+                }                    
                 } 
             }
         }

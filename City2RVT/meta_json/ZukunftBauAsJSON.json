@@ -1,0 +1,86 @@
+{
+    "Name": "ZukunftBauAsJSON v1",
+    "description": "JSON Struktur für ZukunftBau",
+    "meta": [
+        {
+            "id": "",
+            "name": "Grundstück",
+            "description": "Grundstücksfläche",
+            "propertySet": [
+			{
+                "Name": "BauantragGrundstück",
+                "guid": "",
+                "properties": [
+                    {
+                        "id": 1,
+                        "name": "IstGrundstücksfläche",
+                        "dataType": "bool",
+                        "minOccours": 1,
+                        "readOnly": false
+                    }
+                ]
+            },
+			{                
+				"Name": "BauantragGrundstücksflächen",
+                "guid": "",
+                "properties": [
+                    {
+                        "id": 2,
+                        "name": "IstVersiegelt",
+                        "dataType": "bool",
+                        "minOccours": 1,
+                        "readOnly": false
+                    },
+					{
+                        "id": 2,
+                        "name": "IstSpielUndFreizeitfläche",
+                        "dataType": "bool",
+                        "minOccours": 1,
+                        "readOnly": false
+                    }
+                ]
+            },
+			{                
+				"Name": "BauantragGeokodierung",
+                "guid": "",
+                "properties": [
+                    {
+                        "id": 2,
+                        "name": "Gemarkungen",
+                        "dataType": "string",
+                        "minOccours": 1,
+                        "readOnly": false
+                    },
+					{
+                        "id": 2,
+                        "name": "Flure",
+                        "dataType": "string",
+                        "minOccours": 1,
+                        "readOnly": false
+                    },
+					{
+                        "id": 2,
+                        "name": "Flurstücke",
+                        "dataType": "string",
+                        "minOccours": 1,
+                        "readOnly": false
+                    }
+                ]
+            }],
+            "quantitySet": [
+			{
+                "Name": "Qto_SpaceBaseQuantites",
+                "guid": "",
+                "quantites": [
+                    {
+                        "id": 1, 
+                        "name": "GrossFloorArea",
+                        "dataType": "float",
+                        "minOccours": 1,
+                        "readOnly": true
+                    }
+                ]
+            }]			
+        }
+    ]
+}

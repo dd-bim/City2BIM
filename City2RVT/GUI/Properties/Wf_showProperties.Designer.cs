@@ -160,7 +160,6 @@
             this.dgv_alkis.RowHeadersVisible = false;
             this.dgv_alkis.Size = new System.Drawing.Size(489, 349);
             this.dgv_alkis.TabIndex = 0;
-            this.dgv_alkis.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_alkis_CellContentClick);
             // 
             // Wf_showProperties
             // 
