@@ -50,29 +50,29 @@ namespace City2RVT.GUI.Modify
 
                 string bezeichnung = topoSurf.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).AsString();
 
-                if (bezeichnung.StartsWith("Reference plane") == false)
+                if (!bezeichnung.StartsWith("Reference plane"))
                 {
-                    if (xPlanObjectList.Contains(bezeichnung) == false)
+                    if (!xPlanObjectList.Contains(bezeichnung))
                     {
                         xPlanObjectList.Add(bezeichnung);
                     }                    
                 }
-                else if (bezeichnung.StartsWith("Reference plane") == true)
+                else if (bezeichnung.StartsWith("Reference plane"))
                 {
-                    if (xPlanObjectList.Contains(bezeichnung.Substring(bezeichnung.LastIndexOf(':') + 2)) == false)
+                    if (!xPlanObjectList.Contains(bezeichnung))
                     {
-                        xPlanObjectList.Add(bezeichnung.Substring(bezeichnung.LastIndexOf(':') + 2));
+                        xPlanObjectList.Add(bezeichnung);
                     }
                 }
 
                 var view = commandData.Application.ActiveUIDocument.ActiveView as View3D;
                 if (topoSurf.IsHidden(view) == false)
                 {
-                    if (visibleElements.Contains(bezeichnung) == false)
+                    if (!visibleElements.Contains(bezeichnung))
                     {
                         if (bezeichnung.StartsWith("Reference plan"))
                         {
-                            visibleElements.Add(bezeichnung.Substring(bezeichnung.LastIndexOf(':') + 2));
+                            visibleElements.Add(bezeichnung);
                         }
                         else
                         {

@@ -148,7 +148,7 @@ namespace City2RVT.GUI.XPlan2BIM
 
             #endregion logging
 
-            var materialBuilder = new Builder.RevitXPlanBuilder(doc, app);
+            var materialBuilder = new RevitXPlanBuilder(doc, app);
             Dictionary<string,ElementId> colorDict = materialBuilder.CreateMaterial();
 
             //loads the selected GML file
@@ -170,10 +170,10 @@ namespace City2RVT.GUI.XPlan2BIM
             XYZ normal = new XYZ(0, 0, 1);
 
             Transformation transformation = new Transformation();
-            Plane geomPlane = transformation.getGeomPlane(/*doc, */normal, origin);
+            Plane geomPlane = transformation.getGeomPlane(normal, origin);
 
             // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
-            var XmlNsmgr = new Builder.Revit_Semantic(doc);
+            var XmlNsmgr = new Revit_Semantic(doc);
             XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
 
             #region parameter
@@ -191,9 +191,7 @@ namespace City2RVT.GUI.XPlan2BIM
             #endregion parameter  
 
             // Creates Project Information for revit project like general data or postal address
-            //City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new XPlan_Parameter();
-            //DefinitionFile defFile = default(DefinitionFile);
-            var projInformation = new City2RVT.Builder.Revit_Semantic(doc);
+            var projInformation = new Revit_Semantic(doc);
             projInformation.CreateProjectInformation(app, doc, projCategorySet);   
 
             // Selected Layer for beeing shown in revit view
@@ -217,12 +215,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 bool drape_checked = false;
                 if (check_drape.IsChecked == true)
                 {
-                    this.Hide();
-                    Selection choices = uidoc.Selection;
-                    Reference hasPickOne = choices.PickObject(ObjectType.Element, "Please select the terrain where the surfaces got draped to. ");
-
-                    pickedId = hasPickOne.ElementId;
-                    this.Show();
+                    pickedId = GetTerrain(uidoc);                    
                     drape_checked = true;
                 }
 
@@ -301,7 +294,7 @@ namespace City2RVT.GUI.XPlan2BIM
                 xmlDoc.Load(xPlanGmlPath);
             }
 
-            var XmlNsmgr = new Builder.Revit_Semantic(doc);
+            var XmlNsmgr = new Revit_Semantic(doc);
             XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
 
             XmlNodeList allXPlanObjects = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
@@ -384,6 +377,39 @@ namespace City2RVT.GUI.XPlan2BIM
         private void drape_Checked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        public ElementId GetTerrain(UIDocument uidoc)
+        {
+            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
+            ElementId pickedId = Prop_Revit.PickedId;
+
+            var topoList = new List<ElementId>();
+            foreach (var id in topoCollector)
+            {
+                topoList.Add(id.Id);
+            }
+
+            // if there is only one terrain in the revit project, this one will be used as Hostelement. Otherwise user has to pick one. 
+            if (topoList.Count() == 1)
+            {
+                pickedId = topoList.FirstOrDefault();
+            }
+            else if (topoList.Count() == 0)
+            {
+                TaskDialog.Show("No terrain", "There is no terrain. Please import a terrain first via function 'DTM2BIM - Get terrain data '. " +
+                    "Alternative switch off the 'drape-checkbox' when importing your data. ");
+            }
+            else if (topoList.Count() > 0)
+            {
+                this.Hide();
+                Selection choices = uidoc.Selection;
+                Reference hasPickOne = choices.PickObject(ObjectType.Element, "Please select the terrain where the surfaces got draped to. ");
+
+                pickedId = hasPickOne.ElementId;
+                this.Show();
+            }
+            return pickedId;
         }
     }
 }

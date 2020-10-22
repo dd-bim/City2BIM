@@ -27,15 +27,6 @@ namespace City2RVT.GUI
     public partial class Wpf_NAS_settings : Window
     {
         ExternalCommandData commandData;
-        //copy from CityGML_settings, may enhance later for server request and/or code translation
-
-        //private string[] codelistTypes = new string[] { "AdV (Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der BRD)", 
-        //                                                "SIG3D (Special Interest Group 3D)" };
-
-        //public static System.Collections.IList SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
-        //public static string[] SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
-
-        //public static string SelectedLayer { get => SelectedLayer; set => SelectedLayer = value; }
 
         public Wpf_NAS_settings(ExternalCommandData cData)
         {
@@ -47,44 +38,15 @@ namespace City2RVT.GUI
 
             InitializeComponent();
 
-            //tb_lat.Text = GeoRefSettings.WgsCoord[0].ToString();
-            //tb_lon.Text = GeoRefSettings.WgsCoord[1].ToString();
-            //tb_extent.Text = City2BIM_prop.Extent.ToString();
             tb_file.Text = Prop_NAS_settings.FileUrl;
-            //tb_server.Text = NAS2BIM_prop.ServerUrl;
-
-            //if (NAS2BIM_prop.IsServerRequest)
-            //    rb_server.IsChecked = true;
-            //else
-            //    rb_file.IsChecked = true;
-
-            //AlkisCategoryListbox.SelectedItem = SelectedLayer;
 
             if (Prop_NAS_settings.IsGeodeticSystem)
                 rb_YXZ.IsChecked = true;
             else
                 rb_XYZ.IsChecked = true;
 
-            //foreach (var item in codelistTypes)
-            //{
-            //    cb_Codelist.Items.Add(item);
-            //}
-
-            FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
-
-            var topoList = new List<ElementId>();
-
-            foreach (var id in topoCollector)
-            {
-                topoList.Add(id.Id);
-            }
-
-            if (topoList.Count() == 1)
-            {
-                Prop_Revit.TerrainId = topoList.FirstOrDefault();
-            }
-
-             
+            XPlan2BIM.Wpf_XPlan wpf_XPlan = new XPlan2BIM.Wpf_XPlan(doc, commandData);
+            Prop_Revit.TerrainId = wpf_XPlan.GetTerrain(uidoc);            
 
             //if no Terrain is added before, the functionality is not given
             //ATTENTION, TO DO: if Terrain is present but not imported via DTM2BIM this terrain will now not be considered
@@ -106,13 +68,7 @@ namespace City2RVT.GUI
         {
             Reader.FileDialog imp = new Reader.FileDialog();
             tb_file.Text = imp.ImportPath(Reader.FileDialog.Data.ALKIS);
-
         }
-
-        //private void bt_editURL_Click(object sender, RoutedEventArgs e)
-        //{
-        //    tb_server.IsEnabled = true;
-        //}
 
         private void Bt_apply_Click(object sender, RoutedEventArgs e)
         {
@@ -272,21 +228,6 @@ namespace City2RVT.GUI
             paramList.Add("Eigentuemer_Strasse");
             paramList.Add("Eigentuemer_Hausnummer");
 
-
-            //XmlNodeList bpEinzelnExterior = xmlDoc.SelectNodes("//gml:featureMember", nsmgr);
-            //foreach (XmlNode nodeExt in bpEinzelnExterior)
-            //{
-            //    foreach (XmlNode child in nodeExt.FirstChild)
-            //    {
-            //        if (child.Name != "#comment")
-            //        {
-            //            if (paramList.Contains("alkis: " + child.Name) == false)
-            //            {
-            //                paramList.Add("alkis: " + child.Name);
-            //            }                        
-            //        }
-            //    }
-            //}
             GUI.Prop_NAS_settings.ParamList = paramList;
         }
 
@@ -299,7 +240,6 @@ namespace City2RVT.GUI
             else
             {
                 AlkisCategoryListbox.UnselectAll();
-
             }
         }
 
@@ -331,7 +271,6 @@ namespace City2RVT.GUI
         {
             Modify.ModifyParameterForm f1 = new Modify.ModifyParameterForm();
             f1.ShowDialog();
-
         }
 
 

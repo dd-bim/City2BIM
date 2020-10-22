@@ -27,7 +27,7 @@ namespace City2RVT.Reader
                 case (Data.DGM):
                     {
                         ofd.Title = "Select Grid terrain file.";
-                        ofd.Filter = "DGM - XYZ coordinates (*.txt) | *.txt| DGM - XYZ coordinates (*.csv) | *.csv| All Files (*.*) | *.*";
+                        ofd.Filter = "DGM - XYZ coordinates (*.txt) | *.txt| DGM - XYZ coordinates (*.csv) | *.csv| DGM - XYZ coordinates (*.xyz) | *.xyz| All Files (*.*) | *.*";
                         break;
                     }
                 case (Data.XPlanGML):
@@ -39,7 +39,7 @@ namespace City2RVT.Reader
                 case (Data.GMLXML):
                     {
                         ofd.Title = "Select Reset file.";
-                        ofd.Filter = "XPlanGML (*.gml) | *.gml|NAS - XML | *.xml | All Files (*.*) | *.*";
+                        ofd.Filter = "XPlanGML (*.gml) | *.gml|NAS - XML | *.xml| All Files (*.*) | *.*";
                         break;
                     }
                 case (Data.IFC):
