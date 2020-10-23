@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City2RVT", "City2RVT\City2R
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "City2RVT2019_Setup", "City2RVT2019_Setup\City2RVT2019_Setup.vdproj", "{05069F74-295C-4078-ABA0-FA2357047401}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lageplanImport", "lageplanImport\lageplanImport.csproj", "{8170A460-767B-4677-BADC-DF6786D42F58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lageplanImport", "City2RVT\lageplanImport\lageplanImport.csproj", "{8170A460-767B-4677-BADC-DF6786D42F58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -382,10 +382,6 @@
       <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
       <Name>City2IFC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\lageplanImport\lageplanImport.csproj">
-      <Project>{8170a460-767b-4677-badc-df6786d42f58}</Project>
-      <Name>lageplanImport</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
