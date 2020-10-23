@@ -212,6 +212,7 @@
     <Compile Include="GUI\Properties\Wpf_showLayer.xaml.cs">
       <DependentUpon>Wpf_showLayer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Surveyorsplan2Revit\importLageplan.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
@@ -381,6 +382,10 @@
     <ProjectReference Include="..\City2IFC\City2IFC.csproj">
       <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
       <Name>City2IFC</Name>
+    </ProjectReference>
+    <ProjectReference Include="lageplanImport\lageplanImport.csproj">
+      <Project>{8170a460-767b-4677-badc-df6786d42f58}</Project>
+      <Name>lageplanImport</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

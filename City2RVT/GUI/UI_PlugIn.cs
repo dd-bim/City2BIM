@@ -271,7 +271,7 @@ namespace City2RVT.GUI
             BitmapImage largeImagesurvPlan = new BitmapImage(uriImagesurvPlan);
 
             PushButton buttonsurvPlan = panel10.AddItem(new PushButtonData("Surveyorsplan2Revit", "Surveyorsplan2Revit",
-            thisAssemblyPath, "City2RVT.lageplanImport.importLageplan")) as PushButton;
+            thisAssemblyPath, "City2RVT.GUI.importLageplan")) as PushButton;
             buttonsurvPlan.ToolTip = "Show and edit properties.";
             buttonsurvPlan.LargeImage = largeImagesurvPlan;
 
