@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City2RVT", "City2RVT\City2R
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "City2RVT2019_Setup", "City2RVT2019_Setup\City2RVT2019_Setup.vdproj", "{05069F74-295C-4078-ABA0-FA2357047401}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lageplanImport", "lageplanImport\lageplanImport.csproj", "{8170A460-767B-4677-BADC-DF6786D42F58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,14 @@ Global
 		{05069F74-295C-4078-ABA0-FA2357047401}.Debug|x64.ActiveCfg = Debug
 		{05069F74-295C-4078-ABA0-FA2357047401}.Release|Any CPU.ActiveCfg = Release
 		{05069F74-295C-4078-ABA0-FA2357047401}.Release|x64.ActiveCfg = Release
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Debug|x64.Build.0 = Debug|Any CPU
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Release|x64.ActiveCfg = Release|Any CPU
+		{8170A460-767B-4677-BADC-DF6786D42F58}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

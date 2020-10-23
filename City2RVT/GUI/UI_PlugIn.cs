@@ -248,7 +248,7 @@ namespace City2RVT.GUI
             var propertyPath =
             System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             var propertyRootPath = Path.Combine(propertyPath, "..", "..");
-            var propertySetPath = Path.Combine(propertyRootPath, "img", "HideLayerIcon_32px_96dpi.png");
+            var propertySetPath = Path.Combine(propertyRootPath, "img", "Attribute32.png");
             Uri uriImageProperty = new Uri(propertySetPath);
             BitmapImage largeImageProperty = new BitmapImage(uriImageProperty);
 
@@ -259,6 +259,35 @@ namespace City2RVT.GUI
 
             #endregion property panel
 
+            #region survPlan panel
+
+            RibbonPanel panel10 = application.CreateRibbonPanel(tabName, "Surveyorsplan2Revit");
+
+            var survPlanPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var survPlanRootPath = Path.Combine(survPlanPath, "..", "..");
+            var survPlanSetPath = Path.Combine(survPlanRootPath, "img", "Vermesser32.png");
+            Uri uriImagesurvPlan = new Uri(survPlanSetPath);
+            BitmapImage largeImagesurvPlan = new BitmapImage(uriImagesurvPlan);
+
+            PushButton buttonsurvPlan = panel10.AddItem(new PushButtonData("Surveyorsplan2Revit", "Surveyorsplan2Revit",
+            thisAssemblyPath, "lageplanImport.importLageplan")) as PushButton;
+            buttonsurvPlan.ToolTip = "Show and edit properties.";
+            buttonsurvPlan.LargeImage = largeImagesurvPlan;
+
+            var attributePath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var attributeRootPath = Path.Combine(attributePath, "..", "..");
+            var attributeSetPath = Path.Combine(attributeRootPath, "img", "Attribute32.png");
+            Uri uriImageattribute = new Uri(attributeSetPath);
+            BitmapImage largeImageattribute = new BitmapImage(uriImageattribute);
+
+            PushButton buttonattribute = panel10.AddItem(new PushButtonData("Attribute", "Attribute",
+            thisAssemblyPath, "lageplanImport.Attributes")) as PushButton;
+            buttonattribute.ToolTip = "Show and edit properties.";
+            buttonattribute.LargeImage = largeImageattribute;
+
+            #endregion survPlan panel
 
             return Result.Succeeded;
         }
