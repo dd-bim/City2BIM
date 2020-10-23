@@ -93,6 +93,13 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="netDxf, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\netDXF.2.2.0.1\lib\net45\netDxf.dll</HintPath>
+    </Reference>
     <Reference Include="NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GeographicLib\NETGeographic.dll</HintPath>
@@ -212,7 +219,6 @@
     <Compile Include="GUI\Properties\Wpf_showLayer.xaml.cs">
       <DependentUpon>Wpf_showLayer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Surveyorsplan2Revit\importLageplan.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
@@ -270,6 +276,25 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourcePictures.resx</DependentUpon>
     </Compile>
+    <Compile Include="Surveyorsplan2Revit\attributeList.cs" />
+    <Compile Include="Surveyorsplan2Revit\Attributes.cs" />
+    <Compile Include="Surveyorsplan2Revit\Funktionen.cs" />
+    <Compile Include="Surveyorsplan2Revit\helpclasses.cs" />
+    <Compile Include="Surveyorsplan2Revit\importLageplan.cs" />
+    <Compile Include="Surveyorsplan2Revit\Inserts.cs" />
+    <Compile Include="Surveyorsplan2Revit\lageplanCLass.cs" />
+    <Compile Include="Surveyorsplan2Revit\listBoxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Surveyorsplan2Revit\listBoxForm.Designer.cs">
+      <DependentUpon>listBoxForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Surveyorsplan2Revit\mainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Surveyorsplan2Revit\mainForm.Designer.cs">
+      <DependentUpon>mainForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
@@ -307,8 +332,18 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GUI\BIM2City\" />
+    <Folder Include="GUI\Surveyorsplan2Revit\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Surveyorsplan2Revit\NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Surveyorsplan2Revit\NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Surveyorsplan2Revit\packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <Resource Include="img\IFC_32px_96dpi.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -373,6 +408,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Surveyorsplan2Revit\listBoxForm.resx">
+      <DependentUpon>listBoxForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Surveyorsplan2Revit\mainForm.resx">
+      <DependentUpon>mainForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\City2BIM\City2BIM.csproj">
@@ -382,10 +423,6 @@
     <ProjectReference Include="..\City2IFC\City2IFC.csproj">
       <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
       <Name>City2IFC</Name>
-    </ProjectReference>
-    <ProjectReference Include="lageplanImport\lageplanImport.csproj">
-      <Project>{8170a460-767b-4677-badc-df6786d42f58}</Project>
-      <Name>lageplanImport</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
