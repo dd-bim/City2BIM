@@ -11,6 +11,8 @@ using System.Linq;
 using System;
 using System.Windows.Forms;
 using System.Xml;
+using System.IO;
+using System.Reflection;
 
 namespace City2RVT.Builder
 {
@@ -172,7 +174,8 @@ namespace City2RVT.Builder
                                 Schema schema = default;
                                 Schema schemaExist = list.Where(i => i.SchemaName == obj.UsageType).FirstOrDefault();
 
-                                string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\ALKIS Import\Daten Ingolstadt\789172_0.xml";
+                                //string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\ALKIS Import\Daten Ingolstadt\789172_0.xml";
+                                string pathGml = GUI.Prop_NAS_settings.FileUrl;
 
                                 XmlReaderSettings readerSettings = new XmlReaderSettings();
                                 readerSettings.IgnoreComments = true;
@@ -192,7 +195,10 @@ namespace City2RVT.Builder
 
                                 if (schemaExist == null)
                                 {
-                                    string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\aaa.json";
+                                    string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                                    string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
+                                    string subPath = "meta_json\\aaa.json";
+                                    string metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
 
                                     GUI.Properties.Wf_showProperties wf_ShowProperties = new GUI.Properties.Wf_showProperties(commandData);
                                     List<string> propListNames = wf_ShowProperties.readGmlJson(metaJsonPath, obj.UsageType);
