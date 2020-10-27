@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
 using System.Xml;
+using System.IO;
+using System.Reflection;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -129,7 +131,10 @@ namespace City2RVT.Builder
             }
             else
             {
-                string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+                string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
+                string subPath = "meta_json\\xplan.json";
+                string metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
 
                 GUI.Properties.Wf_showProperties wf_ShowProperties = new GUI.Properties.Wf_showProperties(commandData);
                 var propListNames = wf_ShowProperties.readGmlJson(metaJsonPath, xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1));

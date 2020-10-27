@@ -8,6 +8,7 @@ using NETGeographicLib;
 //using System.Windows.Media.Media3D;
 using System.IO;
 using System.Collections;
+using System.Reflection;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -763,7 +764,11 @@ namespace City2RVT.GUI.XPlan2BIM
                 relAggregates.RelatingObject = ifcProject;
                 relAggregates.RelatedObjects.Add(space);
 
-                string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\ZukunftBauAsJSON.json";
+                string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
+                string subPath = "meta_json\\ZukunftBauAsJSON.json";
+                string metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
+
                 var JSONresult = File.ReadAllText(metaJsonPath);
                 var metaJson = JObject.Parse(JSONresult).SelectToken("meta").ToString();
                 var jsonObject = JsonConvert.DeserializeObject<List<GUI.Properties.Wf_showProperties.XPlanJSON>>(metaJson);

@@ -174,7 +174,6 @@ namespace City2RVT.Builder
                                 Schema schema = default;
                                 Schema schemaExist = list.Where(i => i.SchemaName == obj.UsageType).FirstOrDefault();
 
-                                //string pathGml = @"D:\Daten\LandBIM\AP 2\Daten\ALKIS Import\Daten Ingolstadt\789172_0.xml";
                                 string pathGml = GUI.Prop_NAS_settings.FileUrl;
 
                                 XmlReaderSettings readerSettings = new XmlReaderSettings();

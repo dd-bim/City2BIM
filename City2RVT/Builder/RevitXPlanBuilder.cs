@@ -338,14 +338,16 @@ namespace City2RVT.Builder
             Transform transf = transfClass.transform(doc);
 
             DefinitionFile defFile = default;
-            City2RVT.GUI.XPlan2BIM.XPlan_Parameter parameter = new GUI.XPlan2BIM.XPlan_Parameter();
+            XPlan_Parameter parameter = new XPlan_Parameter();
 
             // No UTM reduction at the moment, factor R = 1
             double R = 1;
 
             //create shared parameter file
-            string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
-            string sharedParamFile = Path.Combine(modulePath, "City2BIM_Parameters.txt");
+            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            string sharedParamFile = Path.Combine(folder, "City2BIM_Parameters.txt");
 
             if (!File.Exists(sharedParamFile))
             {

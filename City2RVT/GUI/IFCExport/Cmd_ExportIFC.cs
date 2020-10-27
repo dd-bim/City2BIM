@@ -14,10 +14,12 @@ namespace City2RVT.GUI
         // The main Execute method (inherited from IExternalCommand) must be public
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
+            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
 
             TaskDialog.Show("Ifc Export", "Please use Revit Ifc-Exporter. For correct naming of georef property set please import" +
-                " City2BIM_ParameterSet.txt in " + modulePath + " as user-defined Property Set in the IFC Exporter!");
+                " City2BIM_ParameterSet.txt in " + folder + " as user-defined Property Set in the IFC Exporter!");
 
             var ifcSem = new Builder.Revit_Semantic(revit.Application.ActiveUIDocument.Document);
             ifcSem.CreateParameterSetFile();

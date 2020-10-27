@@ -410,7 +410,10 @@ namespace City2RVT.GUI.Properties
             dgv_zukunftBau.Columns.Add(chk);
 
             // file for metajson for xplan (later:path in plugin folder)
-            string metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\ZukunftBauAsJSON.json";
+            string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
+            string subPath = "meta_json\\xplan.json";
+            string metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
 
             // read meta json file for ZukunftBau
             var propListNames = readZukunftBauJson(metaJsonPath);
@@ -496,11 +499,17 @@ namespace City2RVT.GUI.Properties
             string metaJsonPath = default;
             if (source == "ALKIS")
             {
-                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\aaa.json";
+                string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
+                string subPath = "meta_json\\aaa.json";
+                metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
             }
             else if (source == "XPlanung")
             {
-                metaJsonPath = @"D:\Daten\LandBIM\AP 2\Dokumente\Skizze JSON\xplan.json";
+                string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
+                string subPath = "meta_json\\xplan.json";
+                metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
             }
 
             var JSONresult = File.ReadAllText(metaJsonPath);
