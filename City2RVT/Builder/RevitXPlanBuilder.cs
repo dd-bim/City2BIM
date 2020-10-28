@@ -547,11 +547,7 @@ namespace City2RVT.Builder
                         optionsExterior.SetFailuresPreprocessor(new GUI.XPlan2BIM.Wpf_XPlan.AxesFailure());
                         topoTransaction.SetFailureHandlingOptions(optionsExterior);
 
-                        XmlElement root = nodeSurf.ParentNode.ParentNode.ParentNode as XmlElement;
-                        string gmlid = root.GetAttribute("gml:id");
-
                         topoTransaction.Start();
-                        SketchPlane sketchExterior = SketchPlane.Create(doc, geomPlane);
                         SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, curveLoopSurfaceList, refplaneId);
 
                         //_________________________________

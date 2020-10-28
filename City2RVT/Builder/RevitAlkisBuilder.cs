@@ -59,9 +59,7 @@ namespace City2RVT.Builder
             //therefore for each AX_Object.Group will be an separate topography object with the certain objects as subRegion
             //subRegions of one group should not overlap in the ALKIS data
 
-            var groupedTopo = topoObjs.GroupBy(g => g.Group);
-
-            
+            var groupedTopo = topoObjs.GroupBy(g => g.Group);            
 
             foreach (var topoGr in groupedTopo)
             {
@@ -153,19 +151,18 @@ namespace City2RVT.Builder
 
                                 siteSubRegion.TopographySurface.Pinned = true;
 
-
                                 TopographySurface topoSurface = siteSubRegion.TopographySurface;
                                 Dictionary<string, string> di = new Dictionary<string, string>();
 
-                            string gmlId = default;
-                            if (obj.Gmlid != null)
-                            {
-                                gmlId = obj.Gmlid;
-                            }
-                            else if (obj.Gmlid == null)
-                            {
-                                gmlId = "-";
-                            }
+                                string gmlId = default;
+                                if (obj.Gmlid != null)
+                                {
+                                    gmlId = obj.Gmlid;
+                                }
+                                else if (obj.Gmlid == null)
+                                {
+                                    gmlId = "-";
+                                }
 
                                 IList<Schema> list = Schema.ListSchemas();
 
@@ -203,7 +200,7 @@ namespace City2RVT.Builder
                                     List<string> propListNames = wf_ShowProperties.readGmlJson(metaJsonPath, obj.UsageType);
 
                                     // get all nodes by gml-id
-                                    XmlNodeList nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType /*+ "[@gml:id='" + gmlId + "']"*/, nsmgr);
+                                    XmlNodeList nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType, nsmgr);
 
                                     string schemaName = obj.UsageType;
 
