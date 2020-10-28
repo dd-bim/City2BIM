@@ -13,6 +13,8 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "City2RVT_2019_Setup", "City
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "City2RVT_2020_Setup", "City2RVT_2020_Setup\City2RVT_2020_Setup.vdproj", "{1E6602A4-3F59-466A-AEA5-5FA13D236127}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "City2RVT_2021_Setup", "City2RVT_2021_Setup\City2RVT_2021_Setup.vdproj", "{B17B0592-DEB1-40A0-A4B4-E4BB436B7F51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,8 +45,8 @@ Global
 		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Debug|x64.Build.0 = Debug|Any CPU
 		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Release|x64.ActiveCfg = Release|Any CPU
-		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Release|x64.Build.0 = Release|Any CPU
+		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Release|x64.ActiveCfg = Release|x64
+		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Release|x64.Build.0 = Release|x64
 		{367850A8-7E22-49E0-AE0E-446330FFC0F0}.Debug|Any CPU.ActiveCfg = Debug
 		{367850A8-7E22-49E0-AE0E-446330FFC0F0}.Debug|x64.ActiveCfg = Debug
 		{367850A8-7E22-49E0-AE0E-446330FFC0F0}.Release|Any CPU.ActiveCfg = Release
@@ -53,6 +55,10 @@ Global
 		{1E6602A4-3F59-466A-AEA5-5FA13D236127}.Debug|x64.ActiveCfg = Debug
 		{1E6602A4-3F59-466A-AEA5-5FA13D236127}.Release|Any CPU.ActiveCfg = Release
 		{1E6602A4-3F59-466A-AEA5-5FA13D236127}.Release|x64.ActiveCfg = Release
+		{B17B0592-DEB1-40A0-A4B4-E4BB436B7F51}.Debug|Any CPU.ActiveCfg = Debug
+		{B17B0592-DEB1-40A0-A4B4-E4BB436B7F51}.Debug|x64.ActiveCfg = Debug
+		{B17B0592-DEB1-40A0-A4B4-E4BB436B7F51}.Release|Any CPU.ActiveCfg = Release
+		{B17B0592-DEB1-40A0-A4B4-E4BB436B7F51}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

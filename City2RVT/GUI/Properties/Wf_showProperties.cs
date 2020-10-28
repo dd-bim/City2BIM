@@ -412,7 +412,7 @@ namespace City2RVT.GUI.Properties
             // file for metajson for xplan (later:path in plugin folder)
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
-            string subPath = "meta_json\\xplan.json";
+            string subPath = "meta_json\\ZukunftBauAsJSON.json";
             string metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
 
             // read meta json file for ZukunftBau

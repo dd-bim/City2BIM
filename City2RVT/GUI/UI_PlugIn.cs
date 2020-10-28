@@ -194,6 +194,18 @@ namespace City2RVT.GUI
             buttonIFC.ToolTip = "Export functionality for writing IFC files.";
             buttonIFC.LargeImage = largeImageIfc;
 
+            var xPlan2IFCPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var xPlan2IFCRootPath = Path.Combine(xPlan2IFCPath, "..", "..");
+            var xPlan2IFCSetPath = Path.Combine(xPlan2IFCRootPath, "img", "IFC_32px_96dpi.png");
+            Uri uriImageXPlan2IFC = new Uri(xPlan2IFCSetPath);
+            BitmapImage largeImageXPLan2IFC = new BitmapImage(uriImageXPlan2IFC);
+
+            PushButton buttonXPlan2IFC = panel6.AddItem(new PushButtonData("XPlanung2IFC", "Export data to IFC (new)",
+            thisAssemblyPath, "City2RVT.GUI.XPlan2BIM.Cmd_ExportXPlan2IFC")) as PushButton;
+            buttonXPlan2IFC.ToolTip = "IFC Export functionality for XPlanung files.";
+            buttonXPlan2IFC.LargeImage = largeImageXPLan2IFC;
+
             #endregion IFC Export panel
 
             #region XPlanung panel
@@ -206,22 +218,11 @@ namespace City2RVT.GUI
             Uri uriImageXPlan = new Uri(xPlanSetPath);
             BitmapImage largeImageXPLan = new BitmapImage(uriImageXPlan);
 
-            PushButton buttonXPlan = panel7.AddItem(new PushButtonData("XPlanung_Importer", "Import XPlanung-file",
+            PushButton buttonXPlan = panel7.AddItem(new PushButtonData("XPlanung_Importer", "Import XPlanung data",
             thisAssemblyPath, "City2RVT.GUI.Cmd_ImportXPlan")) as PushButton;
             buttonXPlan.ToolTip = "Import functionality for XPlanung files.";
             buttonXPlan.LargeImage = largeImageXPLan;
-
-            var xPlan2IFCPath =
-            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var xPlan2IFCRootPath = Path.Combine(xPlan2IFCPath, "..", "..");
-            var xPlan2IFCSetPath = Path.Combine(xPlan2IFCRootPath, "img", "IFC_32px_96dpi.png");
-            Uri uriImageXPlan2IFC = new Uri(xPlan2IFCSetPath);
-            BitmapImage largeImageXPLan2IFC = new BitmapImage(uriImageXPlan2IFC);
-
-            PushButton buttonXPlan2IFC = panel7.AddItem(new PushButtonData("XPlanung2IFC", "Exports XPlanung to IFC",
-            thisAssemblyPath, "City2RVT.GUI.XPlan2BIM.Cmd_ExportXPlan2IFC")) as PushButton;
-            buttonXPlan2IFC.ToolTip = "IFC Export functionality for XPlanung files.";
-            buttonXPlan2IFC.LargeImage = largeImageXPLan2IFC;
+           
 
             #endregion XPlanung panel
 
@@ -235,9 +236,9 @@ namespace City2RVT.GUI
             Uri uriImagehideLayer = new Uri(hideLayerSetPath);
             BitmapImage largeImagehideLayer = new BitmapImage(uriImagehideLayer);
 
-            PushButton buttonHideLayer = panel8.AddItem(new PushButtonData("Hide Layer", "Hides Layer in view",
+            PushButton buttonHideLayer = panel8.AddItem(new PushButtonData("Hide surfaces.", "Hides surfaces",
             thisAssemblyPath, "City2RVT.GUI.Modify.Cmd_HideLayers")) as PushButton;
-            buttonHideLayer.ToolTip = "Hides Layers.";
+            buttonHideLayer.ToolTip = "Hide surfaces by its theme.";
             buttonHideLayer.LargeImage = largeImagehideLayer;
             #endregion modify panel
 
@@ -252,9 +253,9 @@ namespace City2RVT.GUI
             Uri uriImageProperty = new Uri(propertySetPath);
             BitmapImage largeImageProperty = new BitmapImage(uriImageProperty);
 
-            PushButton buttonProperty = panel9.AddItem(new PushButtonData("Property", "Properties to edit",
+            PushButton buttonProperty = panel9.AddItem(new PushButtonData("Property", "Manage Properties",
             thisAssemblyPath, "City2RVT.GUI.Properties.Cmd_properties")) as PushButton;
-            buttonProperty.ToolTip = "Show and edit properties.";
+            buttonProperty.ToolTip = "Select a surface to show and edit its properties.";
             buttonProperty.LargeImage = largeImageProperty;
 
             #endregion property panel
