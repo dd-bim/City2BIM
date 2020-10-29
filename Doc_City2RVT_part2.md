@@ -2,7 +2,7 @@
 
 ## Überblick
 
-![image-20201028101605572](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028101605572.png)
+![image-20201028101605572](pic/pic_part2/overview.png)
 
 **Weiterarbeit und Erweiterung des City2RVT-Plugins** im Rahmen des Forschungsprojekts "LandBIM" (01.08.2019 bis 31.07.2021, HTW Dresden, Fakultät Geoinformation). Folgende Funktionen sind hierbei hinzugekommen:
 
@@ -20,7 +20,7 @@ Für Hinweise zur Installation sei auf Teil 1 der Dokumentation verwiesen.
 
 ## Import XPlanung data
 
-![image-20201028102341569](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028102341569.png)
+![image-20201028102341569](pic/pic_part2/image-20201028102341569.png)
 
 ### Funktion
 
@@ -37,7 +37,7 @@ Folgende Voraussetzungen müssen erfüllt sein bzw. vorliegen:
 
 Nach Aufruf des Buttons "Import XPlanung data" öffnet sich folgende GUI: 
 
-![image-20201028102914601](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028102914601.png)
+![image-20201028102914601](pic/pic_part2/image-20201028102914601.png)
 
 Folgende Schritte sind zu tätigen:
 
@@ -53,13 +53,13 @@ Folgende Schritte sind zu tätigen:
 
 Eingabemaske:
 
-![image-20201028105318780](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028105318780.png)
+![image-20201028105318780](pic/pic_part2/image-20201028105318780.png)
 
 Ergebnis in Revit:
 
-![image-20201028105404133](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028105404133.png)
+![image-20201028105404133](pic/pic_part2/image-20201028105404133.png)
 
-![image-20201028105444466](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028105444466.png)
+![image-20201028105444466](pic/pic_part2/image-20201028105444466.png)
 
 
 
@@ -78,7 +78,7 @@ Hiermit können die importierten Daten nach IFC exportiert werden. Der Export ka
 
 Folgende GUI öffnet sich nach Aufruf des Buttons "Export data to IFC (new)":
 
-![image-20201028110828709](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028110828709.png)
+![image-20201028110828709](pic/pic_part2/image-20201028110828709.png)
 
 Folgende Schritte sind zu tätigen:
 
@@ -91,9 +91,9 @@ Folgende Schritte sind zu tätigen:
 
 ### Beispiel
 
-![image-20201028113244343](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028113244343.png)
+![image-20201028113244343](pic/pic_part2/image-20201028113244343.png)
 
-![image-20201028113351975](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028113351975.png)
+![image-20201028113351975](pic/pic_part2/image-20201028113351975.png)
 
 ## Hide Layer in View
 
@@ -103,7 +103,7 @@ Tool zum Ein- und Ausblenden von Ebenen nach Thema.
 
 ### Oberfläche
 
-![image-20201028114552759](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028114552759.png)
+![image-20201028114552759](pic/pic_part2/image-20201028114552759.png)
 
 - Auswahl der einzublendenden Layer
 - Auswahl bzw. Abwahl aller Layer über "Select all" bzw. "Unselect all"
@@ -119,7 +119,7 @@ Importierte Sachdaten werden in den Revit Data Storages gespeichert. Diese werde
 
 Nach Auswahl einer Fläche und betätigen des "Manage Properties" Buttons öffnet sich folgende GUI:
 
-![image-20201028115729645](C:/Users/meiers/AppData/Roaming/Typora/typora-user-images/image-20201028115729645.png)
+![image-20201028115729645](pic/pic_part2/image-20201028115729645.png)
 
 - **Reiter: ** in den einzelnen Reitern (XPlanung, ZukunftBau, ALKIS) werden die Daten der entsprechenden Themengebiete geführt (je nachdem was importiert wurde). Die Daten können direkt in der Tabelle editiert werden. 
 - **Apply: ** Sollten Daten editiert worden sein, können die Änderungen mit "Apply" bestätigt werden. Das bewirkt, dass die geänderten Daten im Revit Data storage gespeichert werden. 

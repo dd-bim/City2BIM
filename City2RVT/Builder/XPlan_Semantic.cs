@@ -44,55 +44,14 @@ namespace City2RVT.Builder
         /// <param name="categorySet"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public Dictionary<string, string> createParameter(string xPlanObject, DefinitionFile defFile, List<string> paramList, XmlNode nodeSurf, XmlDocument xmlDoc, CategorySet categorySet, Logger logger,
+        public Dictionary<string, string> createParameter(string xPlanObject, List<string> paramList, XmlNode nodeSurf, XmlDocument xmlDoc, CategorySet categorySet, Logger logger,
             TopographySurface topoSurface)
         {
             // Shared Parameter Variante
-            //string nodeInnerText;
             Dictionary<string, string> paramDict = new Dictionary<string, string>();
-            //Dictionary<string, string> paramDictOhne = new Dictionary<string, string>();
-
-            //System.Collections.IList selectedParams = GUI.Prop_NAS_settings.SelectedParams;
 
             var XmlNsmgr = new Builder.Revit_Semantic(doc);
             XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
-
-            //foreach (DefinitionGroup dg in defFile.Groups)
-            //{
-            //    foreach (var paramName in paramList)
-            //    {
-            //        if (dg.Name == "XPlanDaten")
-            //        {
-            //            XmlNode objektBezeichnung = nodeSurf.ParentNode.ParentNode.ParentNode;
-            //            var parameterBezeichnung = objektBezeichnung.SelectNodes(paramName, nsmgr);
-
-            //            if (selectedParams == null || selectedParams.Contains(paramName))
-            //            {
-            //                if (parameterBezeichnung != null)
-            //                {
-            //                    ExternalDefinition externalDefinition = dg.Definitions.get_Item(paramName) as ExternalDefinition;
-
-            //                    var getNodeContent = new GUI.XPlan2BIM.XPlan_Parameter();
-            //                    nodeInnerText = getNodeContent.getNodeText(nodeSurf, nsmgr, xPlanObject, paramName);
-
-            //                    if (paramDict.ContainsKey(paramName) == false)
-            //                    {
-            //                        paramDict.Add(paramName, nodeInnerText);
-            //                        paramDictOhne.Add(paramName.Substring(paramName.LastIndexOf(':') + 1), nodeInnerText);
-
-            //                    }
-
-            //                    InstanceBinding newIB = app.Create.NewInstanceBinding(categorySet);
-            //                        if (externalDefinition != null)
-            //                        {
-            //                            doc.ParameterBindings.Insert(externalDefinition, newIB, BuiltInParameterGroup.PG_DATA);
-            //                        }
-            //                        logger.Info("Applied Parameters to '" + paramName.Substring(paramName.LastIndexOf(':') + 1) + "'. ");
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
 
             string schemaName = xPlanObject.Substring(xPlanObject.LastIndexOf(':') + 1);
 
