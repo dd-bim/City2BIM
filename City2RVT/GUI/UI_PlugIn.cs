@@ -264,31 +264,31 @@ namespace City2RVT.GUI
 
             // Code für Integrieren von Surveyorsplan2Revit. Klappt aber noch nicht, daher für Release auskommentiert.
             //----------------------------------------------------------------------
-            //RibbonPanel panel10 = application.CreateRibbonPanel(tabName, "Surveyorsplan2Revit");
+            RibbonPanel panel10 = application.CreateRibbonPanel(tabName, "Surveyorsplan2Revit");
 
-            //var survPlanPath =
-            //System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            //var survPlanRootPath = Path.Combine(survPlanPath, "..", "..");
-            //var survPlanSetPath = Path.Combine(survPlanRootPath, "img", "Vermesser32.png");
-            //Uri uriImagesurvPlan = new Uri(survPlanSetPath);
-            //BitmapImage largeImagesurvPlan = new BitmapImage(uriImagesurvPlan);
+            var survPlanPath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var survPlanRootPath = Path.Combine(survPlanPath, "..", "..");
+            var survPlanSetPath = Path.Combine(survPlanRootPath, "img", "Vermesser32.png");
+            Uri uriImagesurvPlan = new Uri(survPlanSetPath);
+            BitmapImage largeImagesurvPlan = new BitmapImage(uriImagesurvPlan);
 
-            //PushButton buttonsurvPlan = panel10.AddItem(new PushButtonData("Surveyorsplan2Revit", "Surveyorsplan2Revit",
-            //thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.importLageplan")) as PushButton;
-            //buttonsurvPlan.ToolTip = "Show and edit properties.";
-            //buttonsurvPlan.LargeImage = largeImagesurvPlan;
+            PushButton buttonsurvPlan = panel10.AddItem(new PushButtonData("Surveyorsplan2Revit", "Surveyorsplan2Revit",
+            thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.importLageplan")) as PushButton;
+            buttonsurvPlan.ToolTip = "Show and edit properties.";
+            buttonsurvPlan.LargeImage = largeImagesurvPlan;
 
-            //var attributePath =
-            //System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            //var attributeRootPath = Path.Combine(attributePath, "..", "..");
-            //var attributeSetPath = Path.Combine(attributeRootPath, "img", "Attribute32.png");
-            //Uri uriImageattribute = new Uri(attributeSetPath);
-            //BitmapImage largeImageattribute = new BitmapImage(uriImageattribute);
+            var attributePath =
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var attributeRootPath = Path.Combine(attributePath, "..", "..");
+            var attributeSetPath = Path.Combine(attributeRootPath, "img", "Attribute32.png");
+            Uri uriImageattribute = new Uri(attributeSetPath);
+            BitmapImage largeImageattribute = new BitmapImage(uriImageattribute);
 
-            //PushButton buttonattribute = panel10.AddItem(new PushButtonData("Attribute", "Attribute",
-            //thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.Attributes")) as PushButton;
-            //buttonattribute.ToolTip = "Show and edit properties.";
-            //buttonattribute.LargeImage = largeImageattribute;
+            PushButton buttonattribute = panel10.AddItem(new PushButtonData("Attribute", "Attribute",
+            thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.Attributes")) as PushButton;
+            buttonattribute.ToolTip = "Show and edit properties.";
+            buttonattribute.LargeImage = largeImageattribute;
 
             #endregion survPlan panel
 

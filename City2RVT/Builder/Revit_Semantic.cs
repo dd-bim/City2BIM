@@ -508,7 +508,6 @@ namespace City2RVT.Builder
                                 }
                             }
                         }
-
                     }
                 }
             }

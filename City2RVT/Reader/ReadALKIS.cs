@@ -34,8 +34,9 @@ namespace City2RVT.Reader
             var projInformation = new City2RVT.Builder.Revit_Semantic(doc);
             projInformation.CreateProjectInformation(app, doc, projCategorySet);
 
-            var semBuilder = new Builder.Revit_Semantic(doc);
-            semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());
+            // Shared parameter anlegen rausgenommen, da mittlerweile mit data storages gearbeitet wird
+            //var semBuilder = new Builder.Revit_Semantic(doc);
+            //semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());
 
             var geomBuilder = new Builder.RevitAlkisBuilder(doc, cData);
             geomBuilder.CreateTopo(alkisRep.AlkisObjects, res);

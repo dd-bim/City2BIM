@@ -243,7 +243,7 @@ namespace City2RVT.GUI.XPlan2BIM
                         // creates surfaces with parameters and values
                         //***********************************************************************************************                         
                         XmlNodeList xpSurface = xmlDoc.SelectNodes("//gml:featureMember/" + xPlanObject + "//gml:exterior", nsmgr);                        
-                        xPlanBuilder.createSurface(xPlanObject, xpSurface, zOffset, xmlDoc, categorySet, geomPlane, logger, colorDict, refplaneId);
+                        xPlanBuilder.createSurface(xPlanObject, xpSurface, zOffset, xmlDoc, logger, colorDict, refplaneId);
 
                         //_______________________________________________________________________________________________
                         // creates line segments

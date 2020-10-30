@@ -44,8 +44,7 @@ namespace City2RVT.Builder
         /// <param name="categorySet"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public Dictionary<string, string> createParameter(string xPlanObject, List<string> paramList, XmlNode nodeSurf, XmlDocument xmlDoc, CategorySet categorySet, Logger logger,
-            TopographySurface topoSurface)
+        public Dictionary<string, string> createParameter(string xPlanObject, List<string> paramList, XmlNode nodeSurf, XmlDocument xmlDoc, TopographySurface topoSurface)
         {
             // Shared Parameter Variante
             Dictionary<string, string> paramDict = new Dictionary<string, string>();

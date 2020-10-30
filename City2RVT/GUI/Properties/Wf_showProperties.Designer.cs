@@ -37,8 +37,8 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.dgv_zukunftBau = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.btn_close = new System.Windows.Forms.Button();
             this.dgv_alkis = new System.Windows.Forms.DataGridView();
+            this.btn_close = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_showProperties)).BeginInit();
@@ -140,16 +140,6 @@
             this.tabPage3.Text = "ALKIS";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // btn_close
-            // 
-            this.btn_close.Location = new System.Drawing.Point(558, 374);
-            this.btn_close.Name = "btn_close";
-            this.btn_close.Size = new System.Drawing.Size(75, 23);
-            this.btn_close.TabIndex = 4;
-            this.btn_close.Text = "Close";
-            this.btn_close.UseVisualStyleBackColor = true;
-            this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
-            // 
             // dgv_alkis
             // 
             this.dgv_alkis.AllowUserToAddRows = false;
@@ -160,6 +150,17 @@
             this.dgv_alkis.RowHeadersVisible = false;
             this.dgv_alkis.Size = new System.Drawing.Size(489, 349);
             this.dgv_alkis.TabIndex = 0;
+            this.dgv_alkis.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_alkis_CellContentClick);
+            // 
+            // btn_close
+            // 
+            this.btn_close.Location = new System.Drawing.Point(558, 374);
+            this.btn_close.Name = "btn_close";
+            this.btn_close.Size = new System.Drawing.Size(75, 23);
+            this.btn_close.TabIndex = 4;
+            this.btn_close.Text = "Close";
+            this.btn_close.UseVisualStyleBackColor = true;
+            this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
             // 
             // Wf_showProperties
             // 

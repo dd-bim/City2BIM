@@ -101,7 +101,6 @@ namespace City2RVT.Builder
                                 topoId = topoRef.Id;
 
                                 topoRef.Pinned = true;
-
                             }
                         }
                         topoTransaction.Commit();
@@ -121,7 +120,6 @@ namespace City2RVT.Builder
 
                             if (obj.InnerSegments != null)
                             {
-
                                 foreach (var segInt in obj.InnerSegments)
                                 {
                                     List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
@@ -135,7 +133,6 @@ namespace City2RVT.Builder
 
                             using (Transaction subTrans = new Transaction(doc, "Create " + obj.UsageType))
                             {
-
                                 FailureHandlingOptions options = subTrans.GetFailureHandlingOptions();
                                 options.SetFailuresPreprocessor(new AxesFailure());
                                 subTrans.SetFailureHandlingOptions(options);
@@ -216,20 +213,23 @@ namespace City2RVT.Builder
                                     {
                                         foreach (XmlNode c in xmlNode.ChildNodes)
                                         {
-                                            if (propListNames.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
-                                            {
-                                                if (!di.ContainsKey(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
+                                            //if (!c.HasChildNodes)
+                                            //{
+                                                if (propListNames.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
                                                 {
-                                                    di.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), "-");
-                                                }
-                                                // parameter and values of datagridview are checkd and added as fields
+                                                    if (!di.ContainsKey(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
+                                                    {
+                                                        di.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), "-");
+                                                    }
+                                                    // parameter and values of datagridview are checkd and added as fields
 
-                                                XmlElement test = xmlNode as XmlElement;
-                                                if (test.GetAttribute("gml:id") == gmlId)
-                                                {
-                                                    di[c.Name.Substring(c.Name.LastIndexOf(':') + 1)] = c.InnerText;
+                                                    XmlElement nodeAsElement = xmlNode as XmlElement;
+                                                    if (nodeAsElement.GetAttribute("gml:id") == gmlId)
+                                                    {
+                                                        di[c.Name.Substring(c.Name.LastIndexOf(':') + 1)] = c.InnerText;
+                                                    }
                                                 }
-                                            }
+                                            //}                                            
                                         }
                                     }
 
@@ -703,7 +703,6 @@ namespace City2RVT.Builder
 
             else
                 return ColorType.parcel;
-
         }
     }
 }

@@ -331,8 +331,7 @@ namespace City2RVT.Builder
             return refplaneId;
         }
 
-        public void createSurface(string xPlanObject, XmlNodeList xpSurface, double zOffset, XmlDocument xmlDoc, CategorySet categorySet, Plane geomPlane, Logger logger, 
-            Dictionary<string, ElementId> colorDict, ElementId refplaneId)
+        public void createSurface(string xPlanObject, XmlNodeList xpSurface, double zOffset, XmlDocument xmlDoc, Logger logger, Dictionary<string, ElementId> colorDict, ElementId refplaneId)
         {
             var transfClass = new City2RVT.Calc.Transformation();
             Transform transf = transfClass.transform(doc);
@@ -554,7 +553,7 @@ namespace City2RVT.Builder
                         // imports parameter (values later)
                         //*********************************
                         XPlan_Semantic xPlan_Semantic = new XPlan_Semantic(doc, app);
-                        Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, defFile, paramList, nodeSurf, xmlDoc, categorySet, logger, siteSubRegion.TopographySurface);
+                        Dictionary<string, string> paramDict = xPlan_Semantic.createParameter(xPlanObject, paramList, nodeSurf, xmlDoc, siteSubRegion.TopographySurface);
 
                         Parameter materialParamSurface = siteSubRegion.TopographySurface.get_Parameter(BuiltInParameter.MATERIAL_ID_PARAM);
 

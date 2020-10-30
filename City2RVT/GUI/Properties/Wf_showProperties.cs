@@ -627,5 +627,10 @@ namespace City2RVT.GUI.Properties
 
             return fieldValue;
         }
+
+        private void dgv_alkis_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }
