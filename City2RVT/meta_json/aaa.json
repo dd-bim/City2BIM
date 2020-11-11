@@ -24701,7 +24701,7 @@
                     "dataType": "ReferenceType"
                 },
                 {
-                    "name": "G.150",
+                    "name": "G150",
                     "dataType": "ReferenceType"
                 },
                 {
@@ -24709,7 +24709,7 @@
                     "dataType": "ReferenceType"
                 },
                 {
-                    "name": "gehoertZuBauwerk_AX_HistorischesBauwerkOderHistorischeEinrichtung",
+                    "name": "gehoertZuBauwerk_AX_HistorischesBauwerkOderHistorischeEinr",
                     "dataType": "ReferenceType"
                 },
                 {
@@ -24773,7 +24773,7 @@
                     "dataType": "ReferenceType"
                 },
                 {
-                    "name": "gehoertZuBauwerk_AX_BauwerkOderAnlageFuerSportFreizeitUndErholung",
+                    "name": "gehoertZuBauwerk_AX_BauwerkOderAnlageFuerSportFreizeit",
                     "dataType": "ReferenceType"
                 },
                 {
