@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 using City2RVT.GUI;
+using Autodesk.Revit.DB.ExtensibleStorage;
 
 namespace City2RVT.Builder
 {
@@ -27,6 +28,7 @@ namespace City2RVT.Builder
             this.gmlCorner = gmlCorner;
             this.colors = CreateColorAsMaterial();
         }
+
 
         #region Solid to Revit incl. LOD1-Fallback
 
@@ -148,18 +150,29 @@ namespace City2RVT.Builder
 
                     DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
                    
-                        ds.ApplicationId = "Application id";
-                        ds.ApplicationDataId = "Geometry object id";
+                    ds.ApplicationId = "Application id";
+                    ds.ApplicationDataId = "Geometry object id";
 
-                        ds.SetShape(result.GetGeometricalObjects());
+                    ds.SetShape(result.GetGeometricalObjects());
 
-                        ds = SetAttributeValues(ds, bldgAttributes);
+                    ds = SetAttributeValues(ds, bldgAttributes);
 
-                        if (partAttributes != null)
-                            ds = SetAttributeValues(ds, partAttributes);
-                        ds.Pinned = true;
+                    if (partAttributes != null)
+                        ds = SetAttributeValues(ds, partAttributes);
+                    ds.Pinned = true;
 
-                        SetRevitInternalParameters(internalID, lod, ds);
+                    //add citygml attributes
+                    var citySchema = utils.getSchemaByName("CityGMLImportSchema");
+                    Entity entity = new Entity(citySchema);
+
+                    foreach (var attribute in bldgAttributes)
+                    {
+                        Field currentField = citySchema.GetField(attribute.Key.Name);
+                        entity.Set<string>(currentField, attribute.Value);
+                    }
+
+                    ds.SetEntity(entity);
+                    SetRevitInternalParameters(internalID, lod, ds);
                    
 
                     t.Commit();
@@ -519,6 +532,18 @@ namespace City2RVT.Builder
             ds = SetAttributeValues(ds, surface.SurfaceAttributes);
 
             ds.Pinned = true;
+
+            //add citygml attributes
+            var citySchema = utils.getSchemaByName("CityGMLImportSchema");
+            Entity entity = new Entity(citySchema);
+
+            foreach (var attribute in bldgAttributes)
+            {
+                Field currentField = citySchema.GetField(attribute.Key.Name);
+                entity.Set<string>(currentField, attribute.Value);
+            }
+
+            ds.SetEntity(entity);
         }
         #endregion Surfaces to Revit incl. Fallback
 

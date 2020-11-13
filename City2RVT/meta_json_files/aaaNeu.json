@@ -1,0 +1,3617 @@
+{
+    "name": "AAA",
+    "meta": [
+        {
+            "name": "AX_Bahnverkehr",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_BahnverkehrType"
+                },
+                {
+                    "name": "bahnkategorie",
+                    "dataType": "AX_BahnkategorieType"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "nummerDerBahnstrecke",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zweitname",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_BahnverkehrType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Bergbaubetrieb",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                },
+                {
+                    "name": "abbaugut",
+                    "dataType": "AX_Abbaugut_BergbaubetriebType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_BergbaubetriebType"
+                }
+            ]
+        },
+        {
+            "name": "AX_FlaecheBesondererFunktionalerPraegung",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_FlaecheBesondererFunktionalerPraegungType"
+                },
+                {
+                    "name": "artDerBebauung",
+                    "dataType": "AX_ArtDerBebauung_FlaecheBesondererFunktionalerPraegungType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_FlaecheBesondererFunktionalerPraegungType"
+                }
+            ]
+        },
+        {
+            "name": "AX_FlaecheGemischterNutzung",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "artDerBebauung",
+                    "dataType": "AX_ArtDerBebauung_FlaecheGemischterNutzungType"
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_FlaecheGemischterNutzungType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_FlaecheGemischterNutzungType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Fliessgewaesser",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_FliessgewaesserType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_KanalType"
+                },
+                {
+                    "name": "hydrologischesMerkmal",
+                    "dataType": "AX_HydrologischesMerkmal_FliessgewaesserType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Flugverkehr",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_FlugverkehrType"
+                },
+                {
+                    "name": "art",
+                    "dataType": "AX_Art_FlugverkehrType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                },
+                {
+                    "name": "nutzung",
+                    "dataType": "AX_Nutzung_FlugverkehrType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_FlugverkehrType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Flurstueck",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "GeometryPropertyType"
+                },
+                {
+                    "name": "gemarkung",
+                    "dataType": "AX_Gemarkung_SchluesselPropertyType"
+                },
+                {
+                    "name": "flurstuecksnummer",
+                    "dataType": "AX_FlurstuecksnummerPropertyType"
+                },
+                {
+                    "name": "flurstueckskennzeichen",
+                    "dataType": "string"
+                },
+                {
+                    "name": "amtlicheFlaeche",
+                    "dataType": "AreaType"
+                },
+                {
+                    "name": "flurnummer",
+                    "dataType": "integer"
+                },
+                {
+                    "name": "flurstuecksfolge",
+                    "dataType": "string"
+                },
+                {
+                    "name": "abweichenderRechtszustand",
+                    "dataType": "boolean"
+                },
+                {
+                    "name": "zweifelhafterFlurstuecksnachweis",
+                    "dataType": "boolean"
+                },
+                {
+                    "name": "rechtsbehelfsverfahren",
+                    "dataType": "boolean"
+                },
+                {
+                    "name": "objektkoordinaten",
+                    "dataType": "PointPropertyType"
+                },
+                {
+                    "name": "sonstigeEigenschaften",
+                    "dataType": "AX_SonstigeEigenschaften_FlurstueckPropertyType"
+                },
+                {
+                    "name": "zeitpunktDerEntstehung",
+                    "dataType": "date"
+                },
+                {
+                    "name": "gemeindezugehoerigkeit",
+                    "dataType": "AX_GemeindekennzeichenPropertyType"
+                },
+                {
+                    "name": "zustaendigeStelle",
+                    "dataType": "AX_Dienststelle_SchluesselPropertyType"
+                },
+                {
+                    "name": "inversZu_beziehtSichAuf",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istGebucht",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "zeigtAuf",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "weistAuf",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "gehoertAnteiligZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "beziehtSichAufFlurstueck",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_verweistAuf",
+                    "dataType": "ReferenceType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Friedhof",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_FriedhofType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_FriedhofType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Gebaeude",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "GeometryPropertyType"
+                },
+                {
+                    "name": "gebaeudefunktion",
+                    "dataType": "AX_GebaeudefunktionType"
+                },
+                {
+                    "name": "weitereGebaeudefunktion",
+                    "dataType": "AX_Weitere_GebaeudefunktionType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "nutzung",
+                    "dataType": "AX_Nutzung_GebaeudePropertyType"
+                },
+                {
+                    "name": "bauweise",
+                    "dataType": "AX_Bauweise_GebaeudeType"
+                },
+                {
+                    "name": "anzahlDerOberirdischenGeschosse",
+                    "dataType": "integer"
+                },
+                {
+                    "name": "anzahlDerUnterirdischenGeschosse",
+                    "dataType": "integer"
+                },
+                {
+                    "name": "hochhaus",
+                    "dataType": "boolean"
+                },
+                {
+                    "name": "objekthoehe",
+                    "dataType": "LengthType"
+                },
+                {
+                    "name": "dachform",
+                    "dataType": "AX_DachformType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_GebaeudeType"
+                },
+                {
+                    "name": "geschossflaeche",
+                    "dataType": "AreaType"
+                },
+                {
+                    "name": "grundflaeche",
+                    "dataType": "AreaType"
+                },
+                {
+                    "name": "umbauterRaum",
+                    "dataType": "VolumeType"
+                },
+                {
+                    "name": "baujahr",
+                    "dataType": "integer"
+                },
+                {
+                    "name": "lageZurErdoberflaeche",
+                    "dataType": "AX_LageZurErdoberflaeche_GebaeudeType"
+                },
+                {
+                    "name": "dachart",
+                    "dataType": "string"
+                },
+                {
+                    "name": "dachgeschossausbau",
+                    "dataType": "AX_Dachgeschossausbau_GebaeudeType"
+                },
+                {
+                    "name": "gebaeudekennzeichen",
+                    "dataType": "string"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "zeigtAuf",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hat",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "gehoert",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "gehoertZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "haengtZusammenMit",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_gehoertZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_zeigtAuf",
+                    "dataType": "ReferenceType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Gehoelz",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "vegetationsmerkmal",
+                    "dataType": "AX_Vegetationsmerkmal_GehoelzType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_GehoelzType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Hafenbecken",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_HafenbeckenType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "nutzung",
+                    "dataType": "AX_Nutzung_HafenbeckenType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Halde",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "lagergut",
+                    "dataType": "AX_Lagergut_HaldeType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_HaldeType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Heide",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_IndustrieUndGewerbeflaeche",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_IndustrieUndGewerbeflaecheType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                },
+                {
+                    "name": "foerdergut",
+                    "dataType": "AX_Foerdergut_IndustrieUndGewerbeflaecheType"
+                },
+                {
+                    "name": "lagergut",
+                    "dataType": "AX_Lagergut_IndustrieUndGewerbeflaecheType"
+                },
+                {
+                    "name": "primaerenergie",
+                    "dataType": "AX_Primaerenergie_IndustrieUndGewerbeflaecheType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_IndustrieUndGewerbeflaecheType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Landwirtschaft",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "vegetationsmerkmal",
+                    "dataType": "AX_Vegetationsmerkmal_LandwirtschaftType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_Meer",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_MeerType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                },
+                {
+                    "name": "tidemerkmal",
+                    "dataType": "AX_Tidemerkmal_MeerType"
+                },
+                {
+                    "name": "zweitname",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_Moor",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_Platz",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_PlatzType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "strassenschluessel",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zweitname",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_Schiffsverkehr",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_SchiffsverkehrType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_SchiffsverkehrType"
+                }
+            ]
+        },
+        {
+            "name": "AX_SportFreizeitUndErholungsflaeche",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_SportFreizeitUndErholungsflaecheType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_SportFreizeitUndErholungsflaecheType"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_StehendesGewaesser",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_StehendesGewaesserType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "gewaesserkennziffer",
+                    "dataType": "string"
+                },
+                {
+                    "name": "hydrologischesMerkmal",
+                    "dataType": "AX_HydrologischesMerkmal_StehendesGewaesserType"
+                },
+                {
+                    "name": "widmung",
+                    "dataType": "AX_Widmung_StehendesGewaesserType"
+                },
+                {
+                    "name": "schifffahrtskategorie",
+                    "dataType": "AX_SchifffahrtskategorieType"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_Strassenverkehr",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_StrasseType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "zweitname",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_StrasseType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Sumpf",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_TagebauGrubeSteinbruch",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "abbaugut",
+                    "dataType": "AX_Abbaugut_TagebauGrubeSteinbruchType"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_TagebauGrubeSteinbruchType"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_UnlandVegetationsloseFlaeche",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "oberflaechenmaterial",
+                    "dataType": "AX_Oberflaechenmaterial_UnlandVegetationsloseFlaecheType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_UnlandVegetationsloseFlaecheType"
+                }
+            ]
+        },
+        {
+            "name": "AX_Wald",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "vegetationsmerkmal",
+                    "dataType": "AX_Vegetationsmerkmal_WaldType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_Weg",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "funktion",
+                    "dataType": "AX_Funktion_WegType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "AX_LagebezeichnungPropertyType"
+                },
+                {
+                    "name": "bezeichnung",
+                    "dataType": "string"
+                }
+            ]
+        },
+        {
+            "name": "AX_Wohnbauflaeche",
+            "properties": [
+                {
+                    "name": "metaDataProperty",
+                    "dataType": "MetaDataPropertyType"
+                },
+                {
+                    "name": "description",
+                    "dataType": "StringOrRefType"
+                },
+                {
+                    "name": "descriptionReference",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "identifier",
+                    "dataType": "CodeWithAuthorityType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "boundedBy",
+                    "dataType": "BoundingShapeType"
+                },
+                {
+                    "name": "location",
+                    "dataType": "LocationPropertyType"
+                },
+                {
+                    "name": "lebenszeitintervall",
+                    "dataType": "AA_LebenszeitintervallPropertyType"
+                },
+                {
+                    "name": "modellart",
+                    "dataType": "AA_ModellartPropertyType"
+                },
+                {
+                    "name": "anlass",
+                    "dataType": "CodeType"
+                },
+                {
+                    "name": "zeigtAufExternes",
+                    "dataType": "AA_FachdatenverbindungPropertyType"
+                },
+                {
+                    "name": "istTeilVon",
+                    "dataType": null
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_Darstellung",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PTO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_FPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_KPO_3D",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_LPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_dientZurDarstellungVon_AP_PPO",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "traegtBeiZu",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "istAbgeleitetAus",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "inversZu_hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "hatDirektUnten",
+                    "dataType": "ReferenceType"
+                },
+                {
+                    "name": "position",
+                    "dataType": "SurfacePropertyType"
+                },
+                {
+                    "name": "datumDerLetztenUeberpruefung",
+                    "dataType": "dateTime"
+                },
+                {
+                    "name": "qualitaetsangaben",
+                    "dataType": null
+                },
+                {
+                    "name": "artDerBebauung",
+                    "dataType": "AX_ArtDerBebauung_WohnbauflaecheType"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string"
+                },
+                {
+                    "name": "zustand",
+                    "dataType": "AX_Zustand_WohnbauflaecheType"
+                },
+                {
+                    "name": "zweitname",
+                    "dataType": "string"
+                }
+            ]
+        }
+    ]
+}

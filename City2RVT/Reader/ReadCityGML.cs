@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using City2BIM.WFS;
 
+using Autodesk.Revit.DB.ExtensibleStorage;
+
 namespace City2RVT.Reader
 {
     public class ReadCityGML
@@ -103,6 +105,47 @@ namespace City2RVT.Reader
                 List<CityGml_Bldg> gmlBuildings = gmlRead.GmlBuildings;
                 C2BPoint lowerCorner = gmlRead.LowerCornerPt;
                 var attributes = gmlRead.Attributes;
+
+                //Create internal revit extensible storage scheme "CityGMLImportSchema" or check if already exists
+                using (Transaction trans = new Transaction(doc, "CityGML Schema Creation"))
+                {
+                    trans.Start();
+
+                    var existingSchemaList = Schema.ListSchemas();
+
+                    //check if schema already exists
+                    foreach (var schema in existingSchemaList)
+                    {
+                        if (schema.SchemaName == "CityGMLImportSchema")
+                        {
+                            trans.RollBack();
+                            return;
+                        }
+                    }
+
+                    HashSet<string> attrNames = new HashSet<string>();
+                    
+                    //make sure no duplicates are in attribute name list
+                    foreach (var attribute in attributes)
+                    {
+                        attrNames.Add(attribute.Name);
+                    }
+
+                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                    sb.SetSchemaName("CityGMLImportSchema");
+                    sb.SetReadAccessLevel(AccessLevel.Public);
+                    sb.SetWriteAccessLevel(AccessLevel.Public);
+
+                    foreach (var attribute in attrNames)
+                    {
+                        FieldBuilder fb = sb.AddSimpleField(attribute, typeof(string));
+                    }
+
+                    //finish schema creation and commit transaction
+                    sb.Finish();
+                    trans.Commit();
+
+                }
 
                 //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
                 RevitCityBuilder cityModel = new Builder.RevitCityBuilder(doc, gmlBuildings, lowerCorner);

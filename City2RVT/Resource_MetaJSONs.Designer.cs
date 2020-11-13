@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace City2BIM.Properties {
+namespace City2RVT {
     using System;
     
     
@@ -22,24 +22,24 @@ namespace City2BIM.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resource_MetaJSONs {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Resource_MetaJSONs() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("City2BIM.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("City2RVT.Resource_MetaJSONs", typeof(Resource_MetaJSONs).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace City2BIM.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -79,7 +79,7 @@ namespace City2BIM.Properties {
         ///                    &quot;name&quot;: &quot;descriptionReference&quot;,
         ///                    &quot;dataType&quot;: &quot;ReferenceType [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string aaa {
+        public static string aaa {
             get {
                 return ResourceManager.GetString("aaa", resourceCulture);
             }
@@ -104,7 +104,7 @@ namespace City2BIM.Properties {
         ///                    &quot;name&quot;: &quot;descriptionReference&quot;,
         ///                    &quot;dataType&quot;: &quot;ReferenceTyp [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string aaaNeu {
+        public static string aaaNeu {
             get {
                 return ResourceManager.GetString("aaaNeu", resourceCulture);
             }
@@ -130,19 +130,9 @@ namespace City2BIM.Properties {
         ///                    &quot;name&quot;: &quot;text&quot;,
         ///    [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string xplan {
+        public static string xplan {
             get {
                 return ResourceManager.GetString("xplan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap XPlan_32px {
-            get {
-                object obj = ResourceManager.GetObject("XPlan_32px", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -165,7 +155,7 @@ namespace City2BIM.Properties {
         ///                        &quot;name&quot;: &quot;IstGrundstücksfläche&quot;,
         ///                        &quot;dat [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string ZukunftBauAsJSON {
+        public static string ZukunftBauAsJSON {
             get {
                 return ResourceManager.GetString("ZukunftBauAsJSON", resourceCulture);
             }

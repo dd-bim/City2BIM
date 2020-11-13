@@ -240,6 +240,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Reader\MetaInformation.cs" />
     <Compile Include="Reader\ReadALKIS.cs" />
     <Compile Include="Reader\ReadCityGML.cs" />
     <Compile Include="Reader\FileDialog.cs" />
@@ -276,6 +277,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourcePictures.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resource_MetaJSONs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource_MetaJSONs.resx</DependentUpon>
+    </Compile>
     <Compile Include="Surveyorsplan2Revit\attributeList.cs" />
     <Compile Include="Surveyorsplan2Revit\Attributes.cs" />
     <Compile Include="Surveyorsplan2Revit\Funktionen.cs" />
@@ -295,6 +301,7 @@
     <Compile Include="Surveyorsplan2Revit\mainForm.Designer.cs">
       <DependentUpon>mainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
@@ -338,6 +345,10 @@
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="meta_json_files\aaa.json" />
+    <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
+    <EmbeddedResource Include="meta_json_files\xplan.json" />
+    <EmbeddedResource Include="meta_json_files\ZukunftBauAsJSON.json" />
     <None Include="Surveyorsplan2Revit\NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -405,8 +416,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource_MetaJSONs.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource_MetaJSONs.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Surveyorsplan2Revit\listBoxForm.resx">
       <DependentUpon>listBoxForm.cs</DependentUpon>

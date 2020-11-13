@@ -49,8 +49,8 @@ namespace City2BIM.Alkis
                 nr = GetXmlValue(gem, "gemarkungsnummer");
             }
 
-            kvp.Add(attributes.Where(f => f.Name == "Gemarkung_Land").Single(), land);
-            kvp.Add(attributes.Where(f => f.Name == "Gemarkung_Nummer").Single(), nr);
+            kvp.Add(attributes.Where(f => f.Name == "gemarkung_Land").Single(), land);
+            kvp.Add(attributes.Where(f => f.Name == "gemarkung_Nummer").Single(), nr);
 
             //Flurstücksnummer
 
@@ -64,16 +64,16 @@ namespace City2BIM.Alkis
                 n = GetXmlValue(flst, "nenner");
             }
 
-            kvp.Add(attributes.Where(f => f.Name == "Flurstuecksnummer").Single(), z + "_" + n);
+            kvp.Add(attributes.Where(f => f.Name == "flurstuecksnummer").Single(), z + "_" + n);
 
-            kvp.Add(attributes.Where(f => f.Name == "Flurstueckskennzeichen").Single(), GetXmlValue(p, "flurstueckskennzeichen"));
-            kvp.Add(attributes.Where(f => f.Name == "Amtliche_Flaeche").Single(), GetXmlValue(p, "amtlicheFlaeche"));
-            kvp.Add(attributes.Where(f => f.Name == "Flurnummer").Single(), GetXmlValue(p, "flurnummer"));
-            kvp.Add(attributes.Where(f => f.Name == "Flurstuecksfolge").Single(), GetXmlValue(p, "flurstuecksfolge"));
-            kvp.Add(attributes.Where(f => f.Name == "Abweichender_Rechtszustand").Single(), GetXmlValue(p, "abweichenderRechtszustand"));
-            kvp.Add(attributes.Where(f => f.Name == "Zweifelhafter_Flurstuecksnachweis").Single(), GetXmlValue(p, "zweifelhafterFlurstuecksnachweis"));
-            kvp.Add(attributes.Where(f => f.Name == "Rechtsbehelfsverfahren").Single(), GetXmlValue(p, "rechtsbehelfsverfahren"));
-            kvp.Add(attributes.Where(f => f.Name == "Zeitpunkt_der_Entstehung").Single(), GetXmlValue(p, "zeitpunktDerEntstehung"));
+            kvp.Add(attributes.Where(f => f.Name == "flurstueckskennzeichen").Single(), GetXmlValue(p, "flurstueckskennzeichen"));
+            kvp.Add(attributes.Where(f => f.Name == "amtlicheFlaeche").Single(), GetXmlValue(p, "amtlicheFlaeche"));
+            kvp.Add(attributes.Where(f => f.Name == "flurnummer").Single(), GetXmlValue(p, "flurnummer"));
+            kvp.Add(attributes.Where(f => f.Name == "flurstuecksfolge").Single(), GetXmlValue(p, "flurstuecksfolge"));
+            kvp.Add(attributes.Where(f => f.Name == "abweichenderRechtszustand").Single(), GetXmlValue(p, "abweichenderRechtszustand"));
+            kvp.Add(attributes.Where(f => f.Name == "zweifelhafterFlurstuecksnachweis").Single(), GetXmlValue(p, "zweifelhafterFlurstuecksnachweis"));
+            kvp.Add(attributes.Where(f => f.Name == "rechtsbehelfsverfahren").Single(), GetXmlValue(p, "rechtsbehelfsverfahren"));
+            kvp.Add(attributes.Where(f => f.Name == "zeitpunktDerEntstehung").Single(), GetXmlValue(p, "zeitpunktDerEntstehung"));
 
             //Gemeindezugehörigkeit
 
@@ -90,11 +90,11 @@ namespace City2BIM.Alkis
                 teil = GetXmlValue(gmd, "gemeindeteil");
             }
 
-            kvp.Add(attributes.Where(f => f.Name == "Gemeinde_Land").Single(), landG);
-            kvp.Add(attributes.Where(f => f.Name == "Gemeinde_Bezirk").Single(), bezirk);
-            kvp.Add(attributes.Where(f => f.Name == "Gemeinde_Kreis").Single(), kreis);
-            kvp.Add(attributes.Where(f => f.Name == "Gemeinde").Single(), gemeinde);
-            kvp.Add(attributes.Where(f => f.Name == "Gemeindeteil").Single(), teil);
+            kvp.Add(attributes.Where(f => f.Name == "gemeinde_Land").Single(), landG);
+            kvp.Add(attributes.Where(f => f.Name == "gemeinde_Bezirk").Single(), bezirk);
+            kvp.Add(attributes.Where(f => f.Name == "gemeinde_Kreis").Single(), kreis);
+            kvp.Add(attributes.Where(f => f.Name == "gemeinde").Single(), gemeinde);
+            kvp.Add(attributes.Where(f => f.Name == "gemeindeteil").Single(), teil);
 
             //Zuständige Stelle
 
@@ -113,8 +113,8 @@ namespace City2BIM.Alkis
                 stelleNr = GetXmlValue(stelle, "stelle");
             }
 
-            kvp.Add(attributes.Where(f => f.Name == "Zustaendige_Stelle_Land").Single(), landD);
-            kvp.Add(attributes.Where(f => f.Name == "Zustaendige_Stelle").Single(), stelleNr);
+            kvp.Add(attributes.Where(f => f.Name == "zustaendige_Stelle_Land").Single(), landD);
+            kvp.Add(attributes.Where(f => f.Name == "zustaendige_Stelle").Single(), stelleNr);
 
             //Eigentümer
 
@@ -199,12 +199,12 @@ namespace City2BIM.Alkis
                 }
             }
 
-            kvp.Add(attributes.Where(f => f.Name == "Eigentuemer_Name_Firma").Single(), name);
-            kvp.Add(attributes.Where(f => f.Name == "Eigentuemer_Vorname").Single(), vorname);
-            kvp.Add(attributes.Where(f => f.Name == "Eigentuemer_Ort").Single(), ort);
-            kvp.Add(attributes.Where(f => f.Name == "Eigentuemer_Plz").Single(), plz);
-            kvp.Add(attributes.Where(f => f.Name == "Eigentuemer_Strasse").Single(), strasse);
-            kvp.Add(attributes.Where(f => f.Name == "Eigentuemer_Hausnummer").Single(), hausNr);
+            kvp.Add(attributes.Where(f => f.Name == "eigentuemer_Name_Firma").Single(), name);
+            kvp.Add(attributes.Where(f => f.Name == "eigentuemer_Vorname").Single(), vorname);
+            kvp.Add(attributes.Where(f => f.Name == "eigentuemer_Ort").Single(), ort);
+            kvp.Add(attributes.Where(f => f.Name == "eigentuemer_Plz").Single(), plz);
+            kvp.Add(attributes.Where(f => f.Name == "eigentuemer_Strasse").Single(), strasse);
+            kvp.Add(attributes.Where(f => f.Name == "eigentuemer_Hausnummer").Single(), hausNr);
 
             return kvp;
         }

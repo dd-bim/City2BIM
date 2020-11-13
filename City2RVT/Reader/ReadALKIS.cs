@@ -38,6 +38,9 @@ namespace City2RVT.Reader
             //var semBuilder = new Builder.Revit_Semantic(doc);
             //semBuilder.CreateParameters(Alkis_Semantic.GetParcelAttributes());
 
+            //add ALKIS-Schema as Internal Data Storage
+            MetaInformation.createALKISSchema(doc);
+
             var geomBuilder = new Builder.RevitAlkisBuilder(doc, cData);
             geomBuilder.CreateTopo(alkisRep.AlkisObjects, res);
         }

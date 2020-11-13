@@ -164,10 +164,10 @@ namespace City2RVT.Builder
                 ueberbaubareGrundstuecksFlaecheMaterial.Color = new Color(160, 082, 045);
                 colorList.Add("BP_UeberbaubareGrundstuecksFlaeche", ueberbaubareGrundstuecksFlaecheMaterialId);
 
-                defaultMaterialId = Material.Create(doc, "default");
-                Material defaultMaterial = doc.GetElement(defaultMaterialId) as Material;
-                defaultMaterial.Color = new Color(100, 100, 100);
-                colorList.Add("default", defaultMaterialId);
+                //defaultMaterialId = Material.Create(doc, "default");
+                //Material defaultMaterial = doc.GetElement(defaultMaterialId) as Material;
+                //defaultMaterial.Color = new Color(100, 100, 100);
+                //colorList.Add("default", defaultMaterialId);
 
                 bereichMaterialId = Material.Create(doc, "bereich");
                 Material bereichMaterial = doc.GetElement(bereichMaterialId) as Material;

@@ -145,8 +145,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Resources\ZukunftBauAsJSON.json" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\aaa.json" />
+    <None Include="Resources\aaaNeu.json" />
+    <None Include="Resources\xplan.json" />
     <None Include="Resources\XPlan_32px.png" />
   </ItemGroup>
   <ItemGroup>

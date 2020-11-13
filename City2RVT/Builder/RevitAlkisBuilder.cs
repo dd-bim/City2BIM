@@ -161,151 +161,35 @@ namespace City2RVT.Builder
                                     gmlId = "-";
                                 }
 
-                                IList<Schema> list = Schema.ListSchemas();
+                                //IList<Schema> list = Schema.ListSchemas();
+                                Schema currentSchema = utils.getSchemaByName(obj.UsageType);
 
-                                // register the Schema object
-                                // check if schema with specific name exists. Otherwise new Schema is created. 
-                                Schema schema = default;
-                                Schema schemaExist = list.Where(i => i.SchemaName == obj.UsageType).FirstOrDefault();
+                                Entity ent = new Entity(currentSchema);
+                                var fieldList = currentSchema.ListFields();
+                                var fieldNameList = new List<string>();
 
-                                string pathGml = GUI.Prop_NAS_settings.FileUrl;
-
-                                XmlReaderSettings readerSettings = new XmlReaderSettings();
-                                readerSettings.IgnoreComments = true;
-                                XmlDocument xmlDoc = new XmlDocument();
-
-                                Reader.ReadXPlan xPlanReader = new Reader.ReadXPlan();
-
-                                using (XmlReader reader = XmlReader.Create(pathGml, readerSettings))
+                                foreach(var field in fieldList)
                                 {
-                                    xmlDoc.Load(reader);
-                                    xmlDoc.Load(pathGml);
+                                    fieldNameList.Add(field.FieldName);
                                 }
 
-                                // Namespacemanager for used namespaces, e.g. in XPlanung GML or ALKIS XML files
-                                var XmlNsmgr = new Builder.Revit_Semantic(doc);
-                                XmlNamespaceManager nsmgr = XmlNsmgr.GetNamespaces(xmlDoc);
+                                Field gmlid = currentSchema.GetField("gmlid");
+                                ent.Set<string>(gmlid, obj.Gmlid);
 
-                                if (schemaExist == null)
+                                foreach (KeyValuePair<Xml_AttrRep, string> entry in obj.Attributes)
                                 {
-                                    string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                                    string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
-                                    string subPath = "meta_json\\aaa.json";
-                                    string metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
-
-                                    GUI.Properties.Wf_showProperties wf_ShowProperties = new GUI.Properties.Wf_showProperties(commandData);
-                                    List<string> propListNames = wf_ShowProperties.readGmlJson(metaJsonPath, obj.UsageType);
-
-                                    // get all nodes by gml-id
-                                    XmlNodeList nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType, nsmgr);
-
-                                    string schemaName = obj.UsageType;
-
-                                    // new schema builder for editing schema
-                                    SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
-                                    schemaBuilder.SetSchemaName(schemaName);
-
-                                    // allow anyone to read the object
-                                    schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
-
-                                    //List<string> li = new List<string>();
-                                    foreach (XmlNode xmlNode in nodes)
+                                    if (fieldNameList.Contains(entry.Key.Name))
                                     {
-                                        foreach (XmlNode c in xmlNode.ChildNodes)
-                                        {
-                                            //if (!c.HasChildNodes)
-                                            //{
-                                                if (propListNames.Contains(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
-                                                {
-                                                    if (!di.ContainsKey(c.Name.Substring(c.Name.LastIndexOf(':') + 1)))
-                                                    {
-                                                        di.Add(c.Name.Substring(c.Name.LastIndexOf(':') + 1), "-");
-                                                    }
-                                                    // parameter and values of datagridview are checkd and added as fields
-
-                                                    XmlElement nodeAsElement = xmlNode as XmlElement;
-                                                    if (nodeAsElement.GetAttribute("gml:id") == gmlId)
-                                                    {
-                                                        di[c.Name.Substring(c.Name.LastIndexOf(':') + 1)] = c.InnerText;
-                                                    }
-                                                }
-                                            //}                                            
-                                        }
+                                        Field currentField = currentSchema.GetField(entry.Key.Name);
+                                        ent.Set<string>(currentField, entry.Value);
                                     }
-
-                                    di.Add("id", gmlId);
-                                    di.Add("City2BIM_Type", obj.UsageType);
-                                    di.Add("City2BIM_Source", "ALKIS");
-
-                                    foreach (var p in di)
-                                    {
-                                        string paramName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
-
-                                        // adds new field to the schema
-                                        FieldBuilder fieldBuilder = schemaBuilder.AddSimpleField(paramName, typeof(string));
-                                        fieldBuilder.SetDocumentation("Set ALKIS properties.");
-                                    }
-
-                                    schema = schemaBuilder.Finish();
-                                }
-                                else if (schemaExist != null)
-                                {
-                                    schema = schemaExist;
-                                    var lf = schema.ListFields();
-
-                                    XmlNodeList nodes = default;
-
-                                    if (gmlId != "-")
-                                    {
-                                        nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType + "[@gml:id='" + gmlId + "']", nsmgr);
-                                    }
-                                    else if (gmlId == "-")
-                                    {
-                                        nodes = xmlDoc.SelectNodes("//ns2:" + obj.UsageType, nsmgr);
-                                    }
-
-
-                                    foreach (XmlNode xmlNode in nodes)
-                                    {
-                                        foreach (var f in lf)
-                                        {
-                                            foreach (XmlNode xn in xmlNode.ChildNodes)
-                                            {
-                                                if (xn.Name.Substring(xn.Name.LastIndexOf(':') + 1) == f.FieldName && xn.InnerText != null)
-                                                {
-                                                    var xnName = xn.Name.Substring(xn.Name.LastIndexOf(':') + 1);
-                                                    if (!di.ContainsKey(xnName))
-                                                    {
-                                                        di.Add(xnName, xn.InnerText);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    di.Add("id", gmlId);
-                                    di.Add("City2BIM_Type", obj.UsageType);
-                                    di.Add("City2BIM_Source", "ALKIS");
                                 }
 
-                                // create an entity (object) for this schema (class)
-                                Entity entity = new Entity(schema);
-
-                                foreach (var p in di)
-                                {
-                                    // get the field from the schema
-                                    string fieldName = p.Key.Substring(p.Key.LastIndexOf(':') + 1);
-                                    Field fieldSpliceLocation = schema.GetField(fieldName);
-
-                                    // set the value for this entity
-                                    entity.Set<string>(fieldSpliceLocation, di[p.Key]);
-
-                                    // store the entity in the element
-                                    topoSurface.SetEntity(entity);
-                                }
-                                subTrans.Commit();
+                                topoSurface.SetEntity(ent);
+                                subTrans.Commit(); 
                             }
 
-                    }
+                        }
                         catch
                     {
                         continue;
