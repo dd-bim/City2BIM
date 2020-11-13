@@ -29,6 +29,8 @@ namespace City2BIM
                     GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
                     ToDictionary(g => g.Key, g => g.First());
 
+            //ALKIS JSON from Resources 
+            Dictionary<string, List<string>> ALKISSchemaDict = getALKISSchemaDict();
 
             //read all parcelTypes objects --> alle Flurstücke
             List<AX_Object> axObjects = new List<AX_Object>();
@@ -69,10 +71,10 @@ namespace City2BIM
 
                 foreach (XElement xmlObj in xmlObjType)
                 {
-                    AX_Object axObj = new AX_Object
-                    {
-                        UsageType = axObject
-                    };
+                    AX_Object axObj = new AX_Object();
+                    axObj.UsageType = axObject;
+                    axObj.Group = AX_Object.AXGroup.building;
+                    axObj.Gmlid = xmlObj.Attribute(allns["gml"] + "id").Value;
 
                     XElement extSeg = xmlObj.Descendants(allns["gml"] + "exterior").SingleOrDefault();
                     axObj.Segments = ReadSegments(extSeg);
@@ -81,7 +83,7 @@ namespace City2BIM
                     if (intSeg.Any())
                         axObj.InnerSegments = ReadInnerSegments(intSeg);
 
-                    axObj.Group = AX_Object.AXGroup.building;
+                    axObj.Attributes = readAttributesForUsageType(xmlObj, ALKISSchemaDict);
 
                     axObjects.Add(axObj);
                 }
@@ -109,7 +111,7 @@ namespace City2BIM
                         axObj.InnerSegments = ReadInnerSegments(intSeg);
 
                     axObj.Group = AX_Object.AXGroup.usage;
-                    axObj.Attributes = readAttributesForUsageType(xmlObj);
+                    axObj.Attributes = readAttributesForUsageType(xmlObj, ALKISSchemaDict);
                     axObjects.Add(axObj);
                 }
 
@@ -218,10 +220,10 @@ namespace City2BIM
             "AX_Meer"
         };
 
-        private static Dictionary<Xml_AttrRep, string> readAttributesForUsageType(XElement objType)
+        private static Dictionary<Xml_AttrRep, string> readAttributesForUsageType(XElement objType, Dictionary<string, List<string>> ALKISSchemaDict)
         {
             //ALKIS JSON from Resources 
-            var ALKISSchemaDict = getALKISSchemaDict();
+            //var ALKISSchemaDict = getALKISSchemaDict();
 
             //alle Attribute des objekttyps aus JSON
             List<string> attrList = ALKISSchemaDict[objType.Name.LocalName];
@@ -238,31 +240,6 @@ namespace City2BIM
                     objDict.Add(attrDef, value);
                 }
             }
-
-            
-            //einzelnes objekt 
-            /*
-            foreach (var obj in allObjsOfGivenType)
-            {
-                AX_Object alkisObj = new AX_Object();
-                alkisObj.Gmlid = obj.Attribute(allns["gml"] + "id").Value;
-                alkisObj.UsageType = objType;
-
-                var objDict = new Dictionary<Xml_AttrRep, string>();
-
-                //schleife für jedes attribut aus json
-                foreach (string attribute in attrList)
-                {
-                    var attrDef = new Xml_AttrRep(Xml_AttrRep.AttrNsp.alkis, attribute, Xml_AttrRep.AttrType.stringAttribute, Xml_AttrRep.AttrHierarchy.alkis);
-                    var node = obj.Descendants(allns[""] + attribute).ToList();
-                    if (node.Count == 1)
-                    {
-                        var value = node.FirstOrDefault().Value;
-                        objDict.Add(attrDef, value);
-                    }
-                }
-                alkisObj.Attributes = objDict;
-            }*/
             
             return objDict;
         }
