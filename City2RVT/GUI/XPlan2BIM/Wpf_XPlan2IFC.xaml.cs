@@ -112,9 +112,9 @@ namespace City2RVT.GUI.XPlan2BIM
                 ApplicationFullName = "IFC Export LandBIM",
                 ApplicationIdentifier = "LandBIM_IFC",
                 ApplicationVersion = "1.0",
-                EditorsFamilyName = "Meier",
-                EditorsGivenName = "Sören",
-                EditorsOrganisationName = "HTW Dresden"
+                EditorsFamilyName = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+                EditorsGivenName = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+                EditorsOrganisationName = ""
             };
 
             using (IfcStore model = IfcStore.Open(original,editor))

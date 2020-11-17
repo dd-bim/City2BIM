@@ -272,8 +272,18 @@ namespace City2RVT.Builder
                             var of = ordByHeight.FirstOrDefault();
                             var h = height;
                         }
-                        
 
+                        //add citygml attributes
+                        var citySchema = utils.getSchemaByName("CityGMLImportSchema");
+                        Entity entity = new Entity(citySchema);
+
+                        foreach (var attribute in attributes)
+                        {
+                            Field currentField = citySchema.GetField(attribute.Key.Name);
+                            entity.Set<string>(currentField, attribute.Value);
+                        }
+
+                        ds.SetEntity(entity);
                         SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
                         
 
@@ -332,6 +342,18 @@ namespace City2RVT.Builder
                         if (partAttributes != null)
                             ds = SetAttributeValues(ds, partAttributes);
                         ds.Pinned = true;
+
+                        //add citygml attributes
+                        var citySchema = utils.getSchemaByName("CityGMLImportSchema");
+                        Entity entity = new Entity(citySchema);
+
+                        foreach (var attribute in attributes)
+                        {
+                            Field currentField = citySchema.GetField(attribute.Key.Name);
+                            entity.Set<string>(currentField, attribute.Value);
+                        }
+
+                        ds.SetEntity(entity);
 
                         SetRevitInternalParameters(internalID, "LOD1 Convex Hull (Fallback from LOD1)", ds);
 
