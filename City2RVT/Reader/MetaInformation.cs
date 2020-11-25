@@ -34,6 +34,12 @@ namespace City2RVT.Reader
                 //loop creates new schema for each ALKIS object type
                 foreach (KeyValuePair<String, List<String>> entry in ALKISSchemaDict)
                 {
+
+                    if (utils.getSchemaByName(entry.Key) != null)
+                    {
+                        continue;
+                    }
+
                     SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
                     sb.SetSchemaName(entry.Key);
                     sb.SetReadAccessLevel(AccessLevel.Public);
