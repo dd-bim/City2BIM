@@ -39,10 +39,12 @@ namespace City2RVT.Builder
                               group xObj by xObj.UsageType into usageGroup
                               select usageGroup;
 
+            ElementId terrainID = Prop_Revit.TerrainId;
+
             foreach(var group in queryGroups)
             {
-                //ElementId RefPlaneId = new ElementId(BuiltInCategory.OST_TopographySurface);
-                ElementId terrainID = null;
+                ElementId RefPlaneId = (terrainID == null) ? null : terrainID;
+                //ElementId terrainID = null;
                 string groupName = group.Key;
                 List<XPlanungObject> objList = group.ToList();
 
@@ -50,7 +52,7 @@ namespace City2RVT.Builder
                 List<C2BPoint> reducedPoints = refSurfPts.Select(p => GeorefCalc.CalcUnprojectedPoint(p, true)).ToList();
                 List<XYZ> RevitPts = reducedPoints.Select(p => Revit_Build.GetRevPt(p)).ToList();
 
-                if (terrainID == null)
+                if (RefPlaneId == null)
                 {
                     using (Transaction trans = new Transaction(doc, "Create RefPlane"))
                     {
@@ -61,55 +63,31 @@ namespace City2RVT.Builder
                         Parameter nameParam = refSurf.LookupParameter("Name");
                         nameParam.Set("RefPlane_" + groupName);
 
-                        terrainID = refSurf.Id;
+                        RefPlaneId = refSurf.Id;
                         trans.Commit();
                     }
                 }
 
-                
-                Schema currentSchema = utils.getSchemaByName(groupName);
-
-                /*
-                foreach (var xObj in objList)
+                else
                 {
-                    using (Transaction trans = new Transaction(doc, "Create XPlanObjs"))
+                    using (Transaction trans = new Transaction(doc, "Copy DTM as new RefPlane"))
                     {
                         trans.Start();
-                        if (xObj.Geom == XPlanungObject.geomType.Polygon)
-                        {
-                            var siteSubRegion = createSiteSubRegion(xObj, terrainID);
+                        TopographySurface refSurf = doc.GetElement(Prop_Revit.TerrainId) as TopographySurface;
+                        var copyOfRefSurfId = ElementTransformUtils.CopyElement(doc, refSurf.Id, new XYZ(0, 0, 0));
 
-                            Parameter nameParam = siteSubRegion.TopographySurface.LookupParameter("Name");
-                            nameParam.Set("RefPlane_" + groupName);
+                        TopographySurface copiedRefSurf = doc.GetElement(copyOfRefSurfId.First()) as TopographySurface;
+                        copiedRefSurf.Pinned = true;
 
-                            //Add Attributes
-                            Entity ent = new Entity(currentSchema);
-                            var fieldList = currentSchema.ListFields();
-                            var fieldNameList = new List<string>();
+                        Parameter nameParam = copiedRefSurf.LookupParameter("Name");
+                        nameParam.Set("RefPlane_" + groupName);
 
-                            foreach (var field in fieldList)
-                            {
-                                fieldNameList.Add(field.FieldName);
-                            }
-
-                            Field gmlid = currentSchema.GetField("gmlid");
-                            ent.Set<string>(gmlid, xObj.Gmlid);
-
-                            foreach (KeyValuePair<string, string> entry in xObj.Attributes)
-                            {
-                                if (fieldNameList.Contains(entry.Key))
-                                {
-                                    Field currentField = currentSchema.GetField(entry.Key);
-                                    ent.Set<string>(currentField, entry.Value);
-                                }
-                            }
-                            TopographySurface topoSurface = siteSubRegion.TopographySurface;
-                            topoSurface.SetEntity(ent);
-                        }
+                        RefPlaneId = copiedRefSurf.Id;
                         trans.Commit();
                     }
-                }*/
-
+                }
+                
+                Schema currentSchema = utils.getSchemaByName(groupName);
 
                 if (objList[0].Geom == XPlanungObject.geomType.Polygon)
                 {
@@ -118,7 +96,7 @@ namespace City2RVT.Builder
                         trans.Start();
                         foreach (var xObj in objList)
                         {
-                            var siteSubRegion = createSiteSubRegion(xObj, terrainID);
+                            var siteSubRegion = createSiteSubRegion(xObj, RefPlaneId);
 
                             Parameter nameParam = siteSubRegion.TopographySurface.LookupParameter("Name");
                             //nameParam.Set("RefPlane_" + groupName);
