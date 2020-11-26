@@ -1,18 +1,11 @@
-- [IFCTerrain Documentation](#ifcterrain-documentation)
-  * [Terrain models in IFC](#terrain-models-in-ifc)
-    + [IfcGeometricCurveSet](#ifcgeometriccurveset)
-    + [IfcShellBasedSurfaceModel](#ifcshellbasedsurfacemodel)
-    + [IfcTriangulatedFaceSet](#ifctriangulatedfaceset)
-  * [The IFCTerrain tool](#the-ifcterrain-tool)
-    + [Import settings](#import-settings)
-    + [Export settings](#export-settings)
-      - [IFC Version](#ifc-version)
-      - [Export shape and model](#export-shape-and-model)
-      - [Coordinate Origin](#coordinate-origin)
-    + [Generating IFCTerrain data using command line arguments](#generating-ifcterrain-data-using-command-line-arguments)
-  * [Usability of generated IFC files in other software](#usability-of-generated-ifc-files-in-other-software)
-    + [Revit](#revit)
-    + [Solibri](#solibri)
+# City2RVT - Plugin zum Import von amtlichen Geodaten
+
+---------------------
+
+
+++**[-> short english version](#overview)**
+++
+
 - [City2RVT - Plugin zum Import von amtlichen Geodaten](#city2rvt---plugin-zum-import-von-amtlichen-geodaten)
   * [Überblick](#-berblick)
   * [Installation](#installation)
@@ -55,13 +48,7 @@
 
 <!--<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>-->
 
-# City2RVT - Plugin zum Import von amtlichen Geodaten
 
----------------------
-
-
-++**[-> short english version](#overview)**
-++
 
 ## Überblick
 
