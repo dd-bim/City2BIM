@@ -39,7 +39,7 @@ namespace City2RVT.Builder
                               group xObj by xObj.UsageType into usageGroup
                               select usageGroup;
 
-            ElementId terrainID = Prop_Revit.TerrainId;
+            ElementId terrainID = utils.getHTWDDTerrainID(doc);
 
             foreach(var group in queryGroups)
             {
@@ -52,6 +52,7 @@ namespace City2RVT.Builder
                 List<C2BPoint> reducedPoints = refSurfPts.Select(p => GeorefCalc.CalcUnprojectedPoint(p, true)).ToList();
                 List<XYZ> RevitPts = reducedPoints.Select(p => Revit_Build.GetRevPt(p)).ToList();
 
+                //When no DTM is availabe -> xPlanungObjects are mapped flat
                 if (RefPlaneId == null)
                 {
                     using (Transaction trans = new Transaction(doc, "Create RefPlane"))
@@ -68,12 +69,13 @@ namespace City2RVT.Builder
                     }
                 }
 
+                //When xPlanungsObjects should be mapped to DTM data
                 else
                 {
                     using (Transaction trans = new Transaction(doc, "Copy DTM as new RefPlane"))
                     {
                         trans.Start();
-                        TopographySurface refSurf = doc.GetElement(Prop_Revit.TerrainId) as TopographySurface;
+                        TopographySurface refSurf = doc.GetElement(RefPlaneId) as TopographySurface;
                         var copyOfRefSurfId = ElementTransformUtils.CopyElement(doc, refSurf.Id, new XYZ(0, 0, 0));
 
                         TopographySurface copiedRefSurf = doc.GetElement(copyOfRefSurfId.First()) as TopographySurface;
