@@ -134,6 +134,8 @@
     <Compile Include="ALKIS\Alkis_Semantic.cs" />
     <Compile Include="ALKIS\Alkis_Sem_Reader.cs" />
     <Compile Include="ALKIS\AX_Object.cs" />
+    <Compile Include="XPlanung\XPlanungReader.cs" />
+    <Compile Include="XPlanung\XPlanung_Object.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DD_BIM_ICON.ico" />

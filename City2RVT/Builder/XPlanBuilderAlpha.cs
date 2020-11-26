@@ -13,6 +13,7 @@ using City2BIM.Geometry;
 using City2BIM.Semantic;
 using City2BIM.XPlanung;
 using City2RVT.Calc;
+using City2RVT;
 
 namespace City2RVT.Builder
 {
@@ -21,12 +22,15 @@ namespace City2RVT.Builder
         ExternalCommandData commandData;
         private readonly Document doc;
         //private readonly Dictionary<ColorType, ElementId> colors;
+        //private ElementId terrainID;
 
         public XPlanBuilderAlpha(Document doc, ExternalCommandData cData)
         {
             commandData = cData;
             this.doc = doc;
             //this.colors = CreateColorAsMaterial();
+            ElementId terrainID = Prop_Revit.TerrainId;
+            //terrainID = Prop_Revit.TerrainId;
         }
 
         public void buildRevitObjects(List<XPlanungObject> xPlanungList)
@@ -37,7 +41,8 @@ namespace City2RVT.Builder
 
             foreach(var group in queryGroups)
             {
-                ElementId RefPlaneId = new ElementId(BuiltInCategory.OST_TopographySurface);
+                //ElementId RefPlaneId = new ElementId(BuiltInCategory.OST_TopographySurface);
+                ElementId terrainID = null;
                 string groupName = group.Key;
                 List<XPlanungObject> objList = group.ToList();
 
@@ -45,28 +50,79 @@ namespace City2RVT.Builder
                 List<C2BPoint> reducedPoints = refSurfPts.Select(p => GeorefCalc.CalcUnprojectedPoint(p, true)).ToList();
                 List<XYZ> RevitPts = reducedPoints.Select(p => Revit_Build.GetRevPt(p)).ToList();
 
-                using (Transaction trans = new Transaction(doc, "Create RefPlane"))
+                if (terrainID == null)
                 {
-                    trans.Start();
-                    TopographySurface refSurf = TopographySurface.Create(doc, RevitPts);
-                    refSurf.Pinned = true;
-                    
-                    Parameter nameParam = refSurf.LookupParameter("Name");
-                    nameParam.Set("RefPlane_" + groupName);
-                    
-                    RefPlaneId = refSurf.Id;
-                    trans.Commit();
+                    using (Transaction trans = new Transaction(doc, "Create RefPlane"))
+                    {
+                        trans.Start();
+                        TopographySurface refSurf = TopographySurface.Create(doc, RevitPts);
+                        refSurf.Pinned = true;
+
+                        Parameter nameParam = refSurf.LookupParameter("Name");
+                        nameParam.Set("RefPlane_" + groupName);
+
+                        terrainID = refSurf.Id;
+                        trans.Commit();
+                    }
                 }
 
+                
                 Schema currentSchema = utils.getSchemaByName(groupName);
+
+                /*
+                foreach (var xObj in objList)
+                {
+                    using (Transaction trans = new Transaction(doc, "Create XPlanObjs"))
+                    {
+                        trans.Start();
+                        if (xObj.Geom == XPlanungObject.geomType.Polygon)
+                        {
+                            var siteSubRegion = createSiteSubRegion(xObj, terrainID);
+
+                            Parameter nameParam = siteSubRegion.TopographySurface.LookupParameter("Name");
+                            nameParam.Set("RefPlane_" + groupName);
+
+                            //Add Attributes
+                            Entity ent = new Entity(currentSchema);
+                            var fieldList = currentSchema.ListFields();
+                            var fieldNameList = new List<string>();
+
+                            foreach (var field in fieldList)
+                            {
+                                fieldNameList.Add(field.FieldName);
+                            }
+
+                            Field gmlid = currentSchema.GetField("gmlid");
+                            ent.Set<string>(gmlid, xObj.Gmlid);
+
+                            foreach (KeyValuePair<string, string> entry in xObj.Attributes)
+                            {
+                                if (fieldNameList.Contains(entry.Key))
+                                {
+                                    Field currentField = currentSchema.GetField(entry.Key);
+                                    ent.Set<string>(currentField, entry.Value);
+                                }
+                            }
+                            TopographySurface topoSurface = siteSubRegion.TopographySurface;
+                            topoSurface.SetEntity(ent);
+                        }
+                        trans.Commit();
+                    }
+                }*/
+
+
                 if (objList[0].Geom == XPlanungObject.geomType.Polygon)
                 {
-                    using (Transaction trans = new Transaction(doc, "Creaet XPlanObjs"))
+                    using (Transaction trans = new Transaction(doc, "Create XPlanObjs"))
                     {
                         trans.Start();
                         foreach (var xObj in objList)
                         {
-                            var siteSubRegion = createSiteSubRegion(xObj, RefPlaneId);
+                            var siteSubRegion = createSiteSubRegion(xObj, terrainID);
+
+                            Parameter nameParam = siteSubRegion.TopographySurface.LookupParameter("Name");
+                            //nameParam.Set("RefPlane_" + groupName);
+                            nameParam.Set(groupName);
 
                             //Add Attributes
                             Entity ent = new Entity(currentSchema);
@@ -101,23 +157,7 @@ namespace City2RVT.Builder
         private SiteSubRegion createSiteSubRegion(XPlanungObject obj, ElementId hostId)
         {
             List<C2BPoint> polyExt = obj.getOuterRing();
-
-            //obj.Segments.Select(j => j[0]).ToList();
-            //polyExt.Add(obj.Segments[0][0]);                                    //convert Segments to LinearRing
-
             List<List<C2BPoint>> polysInt = obj.getInnerRings();
-                //new List<List<C2BPoint>>();
-
-            /*if (obj.InnerSegments != null)
-            {
-                foreach (var segInt in obj.InnerSegments)
-                {
-                    List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
-                    polyInt.Add(segInt[0][0]);                                    //convert Segments to LinearRing
-
-                    polysInt.Add(polyInt);
-                }
-            }*/
 
             List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(polyExt, polysInt, out XYZ normal);
             SiteSubRegion siteSubRegion = SiteSubRegion.Create(doc, loopList, hostId);
