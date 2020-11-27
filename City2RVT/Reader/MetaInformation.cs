@@ -65,6 +65,49 @@ namespace City2RVT.Reader
             
         }
 
+        public static void createXPlanungSchema(Autodesk.Revit.DB.Document doc)
+        {
+            string xPlanJSON = Resource_MetaJSONs.xplan;
+            var xPlanSchemaDict = getSchemaDataFromJSONString(xPlanJSON);
+
+            using (Transaction trans = new Transaction(doc, "XPlanung Schema Creation"))
+            {
+                trans.Start();
+
+                //loop creates new schema for each ALKIS object type
+                foreach (KeyValuePair<String, List<String>> entry in xPlanSchemaDict)
+                {
+
+                    if (utils.getSchemaByName(entry.Key) != null)
+                    {
+                        continue;
+                    }
+
+                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                    sb.SetSchemaName(entry.Key);
+                    sb.SetReadAccessLevel(AccessLevel.Public);
+                    sb.SetWriteAccessLevel(AccessLevel.Public);
+
+                    //add gmlid as Field
+                    sb.AddSimpleField("gmlid", typeof(string));
+
+                    //hack to get rid of duplicates that are present due to inheritance
+                    var attrList = entry.Value.Distinct().ToList();
+
+                    //loop for adding attributes of object type into a field of the currrent schema
+                    foreach (string attrName in attrList)
+                    {
+                        FieldBuilder fb = sb.AddSimpleField(attrName, typeof(string));
+                    }
+
+                    sb.Finish();
+                }
+
+                trans.Commit();
+            }
+
+        }
+
         private static Dictionary<String, List<String>> getSchemaDataFromJSONString(string jsonString)
         {
             //var JSONAsText = File.ReadAllText(jsonPath);
