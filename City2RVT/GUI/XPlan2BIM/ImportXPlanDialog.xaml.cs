@@ -67,6 +67,9 @@ namespace City2RVT.GUI.XPlan2BIM
         private void browseButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML/GML files (*.xml, *.gml)|*.xml; *.gml|All files (*.*)|*.*";
+
+
             if (openFileDialog.ShowDialog() == true)
             {
                 filePathBox.Text = openFileDialog.FileName;
@@ -131,13 +134,13 @@ namespace City2RVT.GUI.XPlan2BIM
             if (this.layerNamesToImport.Count > 0)
             {
                 this.startImport = true;
-                if (drapeCheckBox.IsEnabled)
+                if (drapeCheckBox.IsEnabled & (bool) drapeCheckBox.IsChecked)
                 {
-                    drape = true;
+                    this.drape = true;
                 }
                 else
                 {
-                    drape = false;
+                    this.drape = false;
                 }
 
                 this.filePath = filePathBox.Text;
@@ -147,6 +150,12 @@ namespace City2RVT.GUI.XPlan2BIM
             {
                 TaskDialog.Show("Error", "No layers to import!");
             }
+        }
+
+        private void cancelButton_click(object sender, RoutedEventArgs e)
+        {
+            this.startImport = false;
+            this.Close();
         }
     }
 }
