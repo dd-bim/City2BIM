@@ -15,13 +15,12 @@ namespace City2RVT.Reader
     {
         public static void createALKISSchema(Autodesk.Revit.DB.Document doc)
         {
-            //string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //string twoUp = Path.GetFullPath(Path.Combine(assemblyPath, @"..\..\"));
-            //string subPath = "meta_json\\aaaSelectedObjectTypes.json";
-            //string metaJsonPath = Path.GetFullPath(Path.Combine(twoUp, subPath));
-
-            //var assembly = Assembly.GetEntryAssembly();
-            //var stream = assembly.GetManifestResourceStream("aaaNeu.json");
+            //check if schema exists -> dirty hack TODO: make one xplan schema and sub schemas for objects
+            Schema xPlanSchema = utils.getSchemaByName("AX_Flurstueck");
+            if (xPlanSchema != null)
+            {
+                return;
+            }
 
             string alkisJSON = Resource_MetaJSONs.aaaNeu;
 
@@ -67,6 +66,13 @@ namespace City2RVT.Reader
 
         public static void createXPlanungSchema(Autodesk.Revit.DB.Document doc)
         {
+            //check if schema exists -> dirty hack TODO: make one xplan schema and sub schemas for objects
+            Schema xPlanSchema = utils.getSchemaByName("BP_Bereich");
+            if (xPlanSchema != null)
+            {
+                return;
+            }
+
             string xPlanJSON = Resource_MetaJSONs.xplan;
             var xPlanSchemaDict = getSchemaDataFromJSONString(xPlanJSON);
 
