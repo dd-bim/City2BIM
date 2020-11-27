@@ -19,21 +19,21 @@ namespace City2RVT.Builder
 {
     public class XPlanBuilderAlpha
     {
-        ExternalCommandData commandData;
+        //ExternalCommandData commandData;
         private readonly Document doc;
         //private readonly Dictionary<ColorType, ElementId> colors;
         //private ElementId terrainID;
 
-        public XPlanBuilderAlpha(Document doc, ExternalCommandData cData)
+        public XPlanBuilderAlpha(Document doc) //, ExternalCommandData cData)
         {
-            commandData = cData;
+            //commandData = cData;
             this.doc = doc;
             //this.colors = CreateColorAsMaterial();
             ElementId terrainID = Prop_Revit.TerrainId;
             //terrainID = Prop_Revit.TerrainId;
         }
 
-        public void buildRevitObjects(List<XPlanungObject> xPlanungList)
+        public void buildRevitObjects(List<XPlanungObject> xPlanungList, bool drapeOnTerrain)
         {
             var queryGroups = from xObj in xPlanungList
                               group xObj by xObj.UsageType into usageGroup
@@ -53,7 +53,7 @@ namespace City2RVT.Builder
                 List<XYZ> RevitPts = reducedPoints.Select(p => Revit_Build.GetRevPt(p)).ToList();
 
                 //When no DTM is availabe -> xPlanungObjects are mapped flat
-                if (RefPlaneId == null)
+                if (RefPlaneId == null || drapeOnTerrain == false )
                 {
                     using (Transaction trans = new Transaction(doc, "Create RefPlane"))
                     {
