@@ -1,0 +1,44 @@
+﻿<Window x:Class="City2RVT.GUI.Modify.LayerSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             MinWidth="600" Width="600" MinHeight="500" Height="500" Title="LayerSelector">
+    <StackPanel Margin="5">
+        <Grid Margin="10" MaxHeight="430">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl Name="LayerTable">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding LayerName}"/>
+                                <CheckBox Grid.Column="1" IsChecked="{Binding Visibility}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+        <Grid Margin="0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="selectAll" Margin="10 0 10 0" Content="select all" Grid.Column="0" Click="selectAll_click"/>
+            <Button x:Name="unSelectAll" Margin="10 0 10 0" Content="unselect all" Grid.Column="1" Click="unSelectAll_click"/>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="apply" Margin="10 0 10 0" Content="apply" Grid.Column="0" Click="apply_click"/>
+            <Button x:Name="cancel" Margin="10 0 10 0" Content="cancel" Grid.Column="1" Click="cancel_click"/>
+        </Grid>
+    </StackPanel>
+</Window>
