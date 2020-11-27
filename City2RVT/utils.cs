@@ -8,7 +8,7 @@ using Autodesk.Revit.UI;
 
 namespace City2RVT
 {
-    class utils
+    public class utils
     {
 
         public static Schema getSchemaByName(string schemaName)
@@ -41,6 +41,37 @@ namespace City2RVT
             }
 
             return IfcToRevitDic;
+        }
+
+        public static ElementId getHTWDDTerrainID(Document doc)
+        {
+            using (Transaction trans = new Transaction(doc, "Read TerrainID"))
+            {
+                trans.Start();
+                Schema terrainIDSchema = getSchemaByName("HTWDD_TerrainID");
+
+                if (terrainIDSchema == null)
+                {
+                    trans.Commit();
+                    return null;
+                }
+
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                IList<Element> dataStorageList = collector.OfClass(typeof(DataStorage)).ToElements();
+
+                foreach (var ds in dataStorageList)
+                {
+                    Entity ent = ds.GetEntity(terrainIDSchema);
+
+                    if (ent.IsValid())
+                    {
+                        ElementId terrainID =  ent.Get<ElementId>(terrainIDSchema.GetField("terrainID"));
+                        trans.Commit();
+                        return terrainID;
+                    }
+                }
+            }
+            return null;
         }
     }
 
