@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="500"
-        Width="500" Height="600" MinWidth="500">
+        Width="550" Height="600" MinWidth="550" MinHeight="600">
     <Border Padding="10">
         <StackPanel>
-            <Grid Margin="0">
+            <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="5*"/>
@@ -45,28 +45,29 @@
                             </ItemsControl>
                         </ScrollViewer>
                     </Grid>
-                    <Grid Grid.Column="1" Margin="10,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Button x:Name="LoadLayerBtn" Content="Load Layer" Grid.Row="0" Click="LoadLayerBtn_click"></Button>
-                        <Button x:Name="selectAllBtn" Content="Select All" Grid.Row="1" Click="selectAllBtn_click"></Button>
-                        <Button x:Name="clearSelectionBtn" Content="Clear Selection" Grid.Row="2" Click="clearSelectionBtn_click"></Button>
+                    <Grid Grid.Column="1" Margin="5,0,0,0">
+                        <StackPanel>
+                            <Button x:Name="LoadLayerBtn" Content="Load Layer" Grid.Row="0" Click="LoadLayerBtn_click" Margin="0,0,0,10"></Button>
+                            <Button x:Name="selectAllBtn" Content="Select All" Grid.Row="1" Click="selectAllBtn_click" Margin="0,0,0,10"></Button>
+                            <Button x:Name="clearSelectionBtn" Content="Clear All" Grid.Row="2" Click="clearSelectionBtn_click"></Button>
+                        </StackPanel>
                     </Grid>
                 </Grid>
             </GroupBox>
             <GroupBox Header="Drape on Terrain" Margin="0,15,0,0">
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox x:Name="drapeCheckBox" IsEnabled="False"></CheckBox>
+                    <CheckBox x:Name="drapeCheckBox" IsEnabled="False" Margin="0,5,0,0"></CheckBox>
                     <Label Content="drape objects on imported terrain"/>
                 </StackPanel>
             </GroupBox>
-            <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
-                <Button x:Name="importButton" Content="import" Click="importButton_click" ></Button>
-                <Button x:Name="cancelButton" Content="cancel" ></Button>
-            </StackPanel>
+            <Grid Margin="0,15,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="importButton" Content="import" Click="importButton_click" Margin="0,0,150,0" ></Button>
+                <Button x:Name="cancelButton" Grid.Column="1" Content="cancel" Margin="150,0,0,0" ></Button>
+            </Grid>
         </StackPanel>
     </Border>
 </Window>
