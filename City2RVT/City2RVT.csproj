@@ -186,6 +186,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\AlkisBuilder.cs" />
     <Compile Include="Builder\IfcBuilder.cs" />
     <Compile Include="Builder\RevitXPlanBuilder.cs" />
     <Compile Include="Builder\XPlanBuilderAlpha.cs" />
@@ -205,6 +206,9 @@
     </Compile>
     <Compile Include="GUI\Modify\ModifyParameterForm.Designer.cs">
       <DependentUpon>ModifyParameterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NAS2BIM\ImportDialogAlkis.xaml.cs">
+      <DependentUpon>ImportDialogAlkis.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Properties\Cmd_properties.cs" />
     <Compile Include="GUI\Properties\PropertyWindow.xaml.cs">
@@ -327,6 +331,10 @@
     <Page Include="GUI\Modify\LayerSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\NAS2BIM\ImportDialogAlkis.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml">
       <Generator>MSBuild:Compile</Generator>
