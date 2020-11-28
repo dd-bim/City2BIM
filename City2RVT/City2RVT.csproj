@@ -370,7 +370,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GUI\BIM2City\" />
     <Folder Include="GUI\Surveyorsplan2Revit\" />
   </ItemGroup>
   <ItemGroup>
