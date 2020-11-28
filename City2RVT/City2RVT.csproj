@@ -188,6 +188,7 @@
   <ItemGroup>
     <Compile Include="Builder\IfcBuilder.cs" />
     <Compile Include="Builder\RevitXPlanBuilder.cs" />
+    <Compile Include="Builder\XPlanBuilderAlpha.cs" />
     <Compile Include="Builder\XPlan_Semantic.cs" />
     <Compile Include="Calc\ConvexHull.cs" />
     <Compile Include="Calc\GeorefCalc.cs" />
@@ -196,11 +197,19 @@
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
     <Compile Include="GUI\GUI_helper.cs" />
-    <Compile Include="GUI\Modify\ModifyParameterForm.cs" />
+    <Compile Include="GUI\Modify\LayerSelector.xaml.cs">
+      <DependentUpon>LayerSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Modify\ModifyParameterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\Modify\ModifyParameterForm.Designer.cs">
       <DependentUpon>ModifyParameterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Properties\Cmd_properties.cs" />
+    <Compile Include="GUI\Properties\PropertyWindow.xaml.cs">
+      <DependentUpon>PropertyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Properties\Wf_showEntities.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -226,6 +235,9 @@
       <DependentUpon>Hide_Layers.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\IfcXBim.cs" />
+    <Compile Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml.cs">
+      <DependentUpon>ImportXPlanDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XPlan2BIM\Prop_XPLAN_settings.cs" />
     <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
       <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
@@ -312,6 +324,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\Modify\LayerSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -320,6 +336,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\Properties\PropertyWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="GUI\Properties\Wpf_CreateMetaJSON.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -327,6 +347,10 @@
     <Page Include="GUI\Properties\Wpf_showLayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\XPlan2BIM\Wpf_XPlan.xaml">
       <SubType>Designer</SubType>
@@ -349,6 +373,10 @@
     <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
     <EmbeddedResource Include="meta_json_files\xplan.json" />
     <EmbeddedResource Include="meta_json_files\ZukunftBauAsJSON.json" />
+    <None Include="NLog.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Surveyorsplan2Revit\NLog.xsd">
       <SubType>Designer</SubType>
     </None>
