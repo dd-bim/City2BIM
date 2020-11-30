@@ -1,7 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using City2BIM.Geometry;
-using City2BIM.GmlRep;
 using City2RVT.GUI;
 using City2RVT.Builder;
 using System;
@@ -10,6 +9,7 @@ using System.Xml.Linq;
 using City2BIM.WFS;
 
 using Autodesk.Revit.DB.ExtensibleStorage;
+using City2BIM.CityGML;
 
 namespace City2RVT.Reader
 {
@@ -58,7 +58,7 @@ namespace City2RVT.Reader
 
             }
 
-            var gmlRead = new City2BIM.CityGMLReader(gmlDoc, solid); /*gmlDoc,*/ /*, user-defined calculation parameters may from extended GUI or from config file*/
+            var gmlRead = new CityGMLReader(gmlDoc, solid); /*gmlDoc,*/ /*, user-defined calculation parameters may from extended GUI or from config file*/
         
             
             string gmlCRS = gmlRead.GmlCRS;

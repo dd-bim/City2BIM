@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using City2BIM.Geometry;
 using City2BIM.Semantic;
 
-namespace City2BIM.GmlRep
+namespace City2BIM.CityGML
 {
     public class CityGml_Surface
     {
-        private Guid internalID;        
+        private Guid internalID;
         private string surfaceId;
         private FaceType facetype;
         private Dictionary<Xml_AttrRep, string> surfaceAttributes;
@@ -21,19 +21,19 @@ namespace City2BIM.GmlRep
 
         public CityGml_Surface()
         {
-            this.internalID = Guid.NewGuid();
+            internalID = Guid.NewGuid();
         }
 
         public string SurfaceId
         {
             get
             {
-                return this.surfaceId;
+                return surfaceId;
             }
 
             set
             {
-                this.surfaceId = value;
+                surfaceId = value;
             }
         }
 
@@ -41,12 +41,12 @@ namespace City2BIM.GmlRep
         {
             get
             {
-                return this.surfaceAttributes;
+                return surfaceAttributes;
             }
 
             set
             {
-                this.surfaceAttributes = value;
+                surfaceAttributes = value;
             }
         }
 
@@ -54,12 +54,12 @@ namespace City2BIM.GmlRep
         {
             get
             {
-                return this.facetype;
+                return facetype;
             }
 
             set
             {
-                this.facetype = value;
+                facetype = value;
             }
         }
 

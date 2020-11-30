@@ -53,33 +53,12 @@ namespace City2RVT.GUI
                 //filter object list based on usage type string in layer name list
                 List<XPlanungObject> objsToBuild = xPlanObjx.Where(item => layerNameList.Any(category => category.Equals(item.UsageType))).ToList();
 
-                XPlanBuilderAlpha xPlanBuilder = new XPlanBuilderAlpha(doc);
+                XPlanBuilder xPlanBuilder = new XPlanBuilder(doc);
                 xPlanBuilder.buildRevitObjects(objsToBuild, dialog.Drape);
             }
 
             return Result.Succeeded;
 
-            /*string filePath = @"D:\LandBIM\OrdnerÜbergabe\Testdaten\XPlanung Import\Bergedorf\Bergedorf84.gml";
-            XDocument xdoc = XDocument.Load(filePath);
-            XPlanungReader xplanReader = new XPlanungReader(xdoc);
-            xplanReader.readData();
-
-            XPlanBuilderAlpha xbuilder = new XPlanBuilderAlpha(doc, revit);
-
-            xbuilder.buildRevitObjects(xplanReader.XPlanungObjects);
-            */
-
-
-            /*
-            Document doc = revit.Application.ActiveUIDocument.Document;
-
-            Prop_GeoRefSettings.SetInitialSettings(doc);            
-
-            var process = new XPlan2BIM.Wpf_XPlan(doc,revit);
-            process.ShowDialog();
-
-            return Result.Succeeded;
-            */
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using City2BIM.Geometry;
-using City2BIM.Alkis;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +10,7 @@ using City2BIM.Semantic;
 using City2BIM.Properties;
 using Newtonsoft.Json;
 
-namespace City2BIM
+namespace City2BIM.Alkis
 {
     public class AlkisReader
     {
@@ -26,7 +25,7 @@ namespace City2BIM
 
             allns = xDoc.Root.Attributes().
                     Where(a => a.IsNamespaceDeclaration).
-                    GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
+                    GroupBy(a => a.Name.Namespace == XNamespace.None ? string.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
                     ToDictionary(g => g.Key, g => g.First());
 
             //ALKIS JSON from Resources 
@@ -43,7 +42,7 @@ namespace City2BIM
                 {
                     AX_Object axObj = new AX_Object
                     {
-                        UsageType = axObject                        
+                        UsageType = axObject
                     };
 
                     XElement extSeg = xmlObj.Descendants(allns["gml"] + "exterior").SingleOrDefault();
@@ -116,7 +115,7 @@ namespace City2BIM
                 }
 
             }
-            this.alkisObjects = axObjects;
+            alkisObjects = axObjects;
 
         }
         private static List<C2BPoint[]> ReadSegments(XElement surfaceExt)
@@ -240,7 +239,7 @@ namespace City2BIM
                     objDict.Add(attrDef, value);
                 }
             }
-            
+
             return objDict;
         }
 
@@ -249,12 +248,12 @@ namespace City2BIM
             var jsonString = Resources.aaaNeu;
             dynamic result = JsonConvert.DeserializeObject(jsonString);
 
-            var schemaDict = new Dictionary<String, List<String>>();
+            var schemaDict = new Dictionary<string, List<string>>();
 
             foreach (var obj in result.meta)
             {
                 var key = obj.name.Value;
-                var values = new List<String>();
+                var values = new List<string>();
 
                 foreach (var prop in obj.properties)
                 {

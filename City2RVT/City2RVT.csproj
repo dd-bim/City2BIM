@@ -188,9 +188,7 @@
   <ItemGroup>
     <Compile Include="Builder\AlkisBuilder.cs" />
     <Compile Include="Builder\IfcBuilder.cs" />
-    <Compile Include="Builder\RevitXPlanBuilder.cs" />
-    <Compile Include="Builder\XPlanBuilderAlpha.cs" />
-    <Compile Include="Builder\XPlan_Semantic.cs" />
+    <Compile Include="Builder\XPlanBuilder.cs" />
     <Compile Include="Calc\ConvexHull.cs" />
     <Compile Include="Calc\GeorefCalc.cs" />
     <Compile Include="Calc\Transformation.cs" />
@@ -200,12 +198,6 @@
     <Compile Include="GUI\GUI_helper.cs" />
     <Compile Include="GUI\Modify\LayerSelector.xaml.cs">
       <DependentUpon>LayerSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Modify\ModifyParameterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\Modify\ModifyParameterForm.Designer.cs">
-      <DependentUpon>ModifyParameterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\NAS2BIM\ImportDialogAlkis.xaml.cs">
       <DependentUpon>ImportDialogAlkis.xaml</DependentUpon>
@@ -235,17 +227,11 @@
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
-    <Compile Include="GUI\Modify\Hide_Layers.xaml.cs">
-      <DependentUpon>Hide_Layers.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\XPlan2BIM\IfcXBim.cs" />
     <Compile Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml.cs">
       <DependentUpon>ImportXPlanDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\Prop_XPLAN_settings.cs" />
-    <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
-      <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\XPlan2BIM\Wpf_XPlan2IFC.xaml.cs">
       <DependentUpon>Wpf_XPlan2IFC.xaml</DependentUpon>
     </Compile>
@@ -257,12 +243,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Reader\MetaInformation.cs" />
-    <Compile Include="Reader\ReadALKIS.cs" />
     <Compile Include="Reader\ReadCityGML.cs" />
     <Compile Include="Reader\FileDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader\ReadTerrain.cs" />
-    <Compile Include="Builder\RevitAlkisBuilder.cs" />
     <Compile Include="Builder\RevitCityBuilder.cs" />
     <Compile Include="Builder\RevitTopoSurfaceBuilder.cs" />
     <Compile Include="Builder\Revit_Build.cs" />
@@ -281,13 +265,8 @@
     </Compile>
     <Compile Include="GUI\IFCExport\Cmd_ExportIFC.cs" />
     <Compile Include="GUI\NAS2BIM\Prop_NAS_settings.cs" />
-    <Compile Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml.cs">
-      <DependentUpon>Wpf_NAS_settings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\NAS2BIM\Cmd_OpenALKISSettings.cs" />
     <Compile Include="GUI\NAS2BIM\Cmd_ReadALKIS.cs" />
     <Compile Include="GUI\UI_PlugIn.cs" />
-    <Compile Include="Reader\ReadXPlan.cs" />
     <Compile Include="ResourcePictures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -336,14 +315,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\Modify\Hide_Layers.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="GUI\Properties\PropertyWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -359,10 +330,6 @@
     <Page Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\XPlan2BIM\Wpf_XPlan.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\XPlan2BIM\Wpf_XPlan2IFC.xaml">
       <SubType>Designer</SubType>
@@ -438,9 +405,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GUI\Modify\ModifyParameterForm.resx">
-      <DependentUpon>ModifyParameterForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Properties\Wf_showEntities.resx">
       <DependentUpon>Wf_showEntities.cs</DependentUpon>
     </EmbeddedResource>

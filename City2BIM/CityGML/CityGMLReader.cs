@@ -1,5 +1,4 @@
 ﻿using City2BIM.Geometry;
-using City2BIM.GmlRep;
 using City2BIM.Logging;
 using City2BIM.Semantic;
 using System;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 
-namespace City2BIM
+namespace City2BIM.CityGML
 {
     public class CityGMLReader
     {
@@ -20,7 +19,7 @@ namespace City2BIM
         private string gmlCRS = "";
 
         public C2BPoint LowerCornerPt { get => lowerCornerPt; }
-        public HashSet<Xml_AttrRep> Attributes { get => attributes;  }
+        public HashSet<Xml_AttrRep> Attributes { get => attributes; }
         public List<CityGml_Bldg> GmlBuildings { get => gmlBuildings; }
         public string GmlCRS { get => gmlCRS; }
 
@@ -39,31 +38,31 @@ namespace City2BIM
             #region Namespaces
 
             //Save all namespaces in Dictionary with shortenings
-            this.allns = gmlDoc.Root.Attributes().
+            allns = gmlDoc.Root.Attributes().
                 Where(a => a.IsNamespaceDeclaration).
-                GroupBy(a => a.Name.Namespace == XNamespace.None ? String.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
+                GroupBy(a => a.Name.Namespace == XNamespace.None ? string.Empty : a.Name.LocalName, a => XNamespace.Get(a.Value)).
                 ToDictionary(g => g.Key, g => g.First());
 
             //special case:
-            if (this.allns.ContainsKey(""))
+            if (allns.ContainsKey(""))
             {
-                if (!this.allns.ContainsKey("core"))
-                    this.allns.Add("core", this.allns[""]);     //if namespace has no shortener --> core namespace is used
+                if (!allns.ContainsKey("core"))
+                    allns.Add("core", allns[""]);     //if namespace has no shortener --> core namespace is used
             }
 
             #endregion Namespaces
 
             #region CRS-Envelope
 
-            var envelope = gmlDoc.Descendants(this.allns["gml"] + "Envelope").FirstOrDefault();
+            var envelope = gmlDoc.Descendants(allns["gml"] + "Envelope").FirstOrDefault();
 
             var srsName = envelope.Attribute("srsName");
-            this.gmlCRS = srsName.Value;
+            gmlCRS = srsName.Value;
 
             #endregion CRS-Envelope
 
             //Main reading class for surface attributes and surface geometry:
-            this.gmlBuildings = ReadGmlData(gmlDoc);
+            gmlBuildings = ReadGmlData(gmlDoc);
 
             //If user wishes to calculate solid geometry (topological correct, "watertight")
             if (solid.HasValue)
@@ -289,7 +288,7 @@ namespace City2BIM
                     continue;
 
                 var delPts = from r in rawPolygonSE
-                             where (r.X == next.X && r.Y == next.Y && r.Z == next.Z)
+                             where r.X == next.X && r.Y == next.Y && r.Z == next.Z
                              select r;
 
                 deletePt.AddRange(delPts);                    //second point is dead end --> will be removed later
@@ -299,19 +298,19 @@ namespace City2BIM
 
         private C2BPoint SplitCoordinate(string[] xyzString, C2BPoint lowerCorner)
         {
-            double z = Double.Parse(xyzString[2], CultureInfo.InvariantCulture) - lowerCorner.Z;
+            double z = double.Parse(xyzString[2], CultureInfo.InvariantCulture) - lowerCorner.Z;
 
             //Left-handed (geodetic) vs. right-handed (mathematical) system
 
-            double axis0 = Double.Parse(xyzString[0], CultureInfo.InvariantCulture);
-            double axis1 = Double.Parse(xyzString[1], CultureInfo.InvariantCulture);
+            double axis0 = double.Parse(xyzString[0], CultureInfo.InvariantCulture);
+            double axis1 = double.Parse(xyzString[1], CultureInfo.InvariantCulture);
 
             return new C2BPoint(axis0 - lowerCorner.X, axis1 - lowerCorner.Y, z);
         }
 
         private List<CityGml_Surface> ReadSurfaces(XElement bldgEl, HashSet<Xml_AttrRep> attributes, out CityGml_Bldg.LodRep lod)
         {
-            var bldgParts = bldgEl.Elements(this.allns["bldg"] + "consistsOfBuildingPart");
+            var bldgParts = bldgEl.Elements(allns["bldg"] + "consistsOfBuildingPart");
             var bldg = bldgEl.Elements().Except(bldgParts);
 
             var surfaces = new List<CityGml_Surface>();
@@ -332,7 +331,7 @@ namespace City2BIM
 
                 #region WallSurfaces
 
-                var lod2Walls = bldg.DescendantsAndSelf(this.allns["bldg"] + "WallSurface");
+                var lod2Walls = bldg.DescendantsAndSelf(allns["bldg"] + "WallSurface");
 
                 foreach (var wall in lod2Walls)
                 {
@@ -347,7 +346,7 @@ namespace City2BIM
 
                 #region RoofSurfaces
 
-                var lod2Roofs = bldg.DescendantsAndSelf(this.allns["bldg"] + "RoofSurface");
+                var lod2Roofs = bldg.DescendantsAndSelf(allns["bldg"] + "RoofSurface");
 
                 foreach (var roof in lod2Roofs)
                 {
@@ -359,7 +358,7 @@ namespace City2BIM
 
                 #region GroundSurfaces
 
-                var lod2Grounds = bldg.DescendantsAndSelf(this.allns["bldg"] + "GroundSurface");
+                var lod2Grounds = bldg.DescendantsAndSelf(allns["bldg"] + "GroundSurface");
 
                 foreach (var ground in lod2Grounds)
                 {
@@ -371,7 +370,7 @@ namespace City2BIM
 
                 #region ClosureSurfaces
 
-                var lod2Closures = bldg.DescendantsAndSelf(this.allns["bldg"] + "ClosureSurface");
+                var lod2Closures = bldg.DescendantsAndSelf(allns["bldg"] + "ClosureSurface");
 
                 foreach (var closure in lod2Closures)
                 {
@@ -383,7 +382,7 @@ namespace City2BIM
 
                 #region OuterCeilingSurfaces
 
-                var lod2OuterCeiling = bldg.DescendantsAndSelf(this.allns["bldg"] + "OuterCeilingSurface");
+                var lod2OuterCeiling = bldg.DescendantsAndSelf(allns["bldg"] + "OuterCeilingSurface");
 
                 foreach (var ceiling in lod2OuterCeiling)
                 {
@@ -395,7 +394,7 @@ namespace City2BIM
 
                 #region OuterFloorSurfaces
 
-                var lod2OuterFloor = bldg.DescendantsAndSelf(this.allns["bldg"] + "OuterFloorSurface");
+                var lod2OuterFloor = bldg.DescendantsAndSelf(allns["bldg"] + "OuterFloorSurface");
 
                 foreach (var floor in lod2OuterFloor)
                 {
@@ -412,14 +411,14 @@ namespace City2BIM
                 lod = CityGml_Bldg.LodRep.LOD1;
 
                 //one occurence per building
-                var lod1Rep = bldg.DescendantsAndSelf(this.allns["bldg"] + "lod1Solid").FirstOrDefault();
+                var lod1Rep = bldg.DescendantsAndSelf(allns["bldg"] + "lod1Solid").FirstOrDefault();
 
                 if (lod1Rep == null)
-                    lod1Rep = bldg.DescendantsAndSelf(this.allns["bldg"] + "lod1MultiSurface").FirstOrDefault();
+                    lod1Rep = bldg.DescendantsAndSelf(allns["bldg"] + "lod1MultiSurface").FirstOrDefault();
 
                 if (lod1Rep != null)
                 {
-                    var polys = lod1Rep.Descendants(this.allns["gml"] + "Polygon").ToList();
+                    var polys = lod1Rep.Descendants(allns["gml"] + "Polygon").ToList();
                     var elemsWithID = lod1Rep.DescendantsAndSelf().Where(a => a.Attribute(allns["gml"] + "id") != null);
 
                     for (var i = 0; i < polys.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
@@ -430,7 +429,7 @@ namespace City2BIM
 
                         if (faceID == null)
                         {
-                            var gmlSolid = lod1Rep.Descendants(this.allns["gml"] + "Solid").FirstOrDefault();
+                            var gmlSolid = lod1Rep.Descendants(allns["gml"] + "Solid").FirstOrDefault();
 
                             faceID = gmlSolid.Attribute(allns["gml"] + "id").Value;
 
@@ -461,7 +460,7 @@ namespace City2BIM
         {
             List<CityGml_Surface> polyList = new List<CityGml_Surface>();
 
-            var polysR = gmlSurface.Descendants(this.allns["gml"] + "Polygon").ToList();
+            var polysR = gmlSurface.Descendants(allns["gml"] + "Polygon").ToList();
 
             for (var i = 0; i < polysR.Count(); i++)          //normally 1 polygon but sometimes surfaces are grouped under the surface type
             {
@@ -502,7 +501,7 @@ namespace City2BIM
 
             //only one could (should) exist
 
-            var exteriorF = poly.Descendants(this.allns["gml"] + "exterior").FirstOrDefault();
+            var exteriorF = poly.Descendants(allns["gml"] + "exterior").FirstOrDefault();
 
             var posListExt = exteriorF.Descendants(allns["gml"] + "posList");
 
@@ -510,7 +509,7 @@ namespace City2BIM
 
             if (posListExt.Any())
             {
-                ptList.AddRange(CollectPoints(posListExt.FirstOrDefault(), this.lowerCornerPt));
+                ptList.AddRange(CollectPoints(posListExt.FirstOrDefault(), lowerCornerPt));
             }
             else
             {
@@ -518,7 +517,7 @@ namespace City2BIM
 
                 foreach (var pos in posExt)
                 {
-                    ptList.Add(CollectPoint(pos, this.lowerCornerPt));
+                    ptList.Add(CollectPoint(pos, lowerCornerPt));
                 }
             }
 
@@ -596,7 +595,7 @@ namespace City2BIM
 
             //if existent, it also could have more than one hole
 
-            var interiorF = poly.Descendants(this.allns["gml"] + "interior");
+            var interiorF = poly.Descendants(allns["gml"] + "interior");
 
             var posListInt = interiorF.Descendants(allns["gml"] + "posList").ToList();
 
@@ -606,7 +605,7 @@ namespace City2BIM
 
                 for (var j = 0; j < posListInt.Count(); j++)
                 {
-                    interiorPolys.Add(CollectPoints(posListInt[j], this.LowerCornerPt));
+                    interiorPolys.Add(CollectPoints(posListInt[j], LowerCornerPt));
                 }
                 surface.InteriorPts = interiorPolys;
             }
@@ -626,7 +625,7 @@ namespace City2BIM
 
                         foreach (var pos in posInt)
                         {
-                            ptListI.Add(CollectPoint(pos, this.lowerCornerPt));
+                            ptListI.Add(CollectPoint(pos, lowerCornerPt));
                         }
                         interiorPolys.Add(ptListI);
                     }
@@ -644,13 +643,13 @@ namespace City2BIM
             #region LowerCorner
 
             //For better calculation, Identify lower Corner
-            var lowerCorner = gmlDoc.Descendants(this.allns["gml"] + "lowerCorner").FirstOrDefault();
-            this.lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
+            var lowerCorner = gmlDoc.Descendants(allns["gml"] + "lowerCorner").FirstOrDefault();
+            lowerCornerPt = CollectPoint(lowerCorner, new C2BPoint(0, 0, 0));
 
             #endregion LowerCorner
 
             //Read all overall building elements
-            var gmlBuildings = gmlDoc.Descendants(this.allns["bldg"] + "Building");
+            var gmlBuildings = gmlDoc.Descendants(allns["bldg"] + "Building");
             //--------------------------------------------------------------------------
 
             #region Semantics
@@ -658,13 +657,13 @@ namespace City2BIM
             //Read all semantic attributes first:
             //Loop over all buildings, parameter list in Revit needs consistent parameters for object types
             //first of all regular schema attributes (inherited by parsing of XML schema for core and bldg, standard specific)
-            this.attributes = City_Semantic.GetSchemaAttributes();
+            attributes = City_Semantic.GetSchemaAttributes();
 
             //secondly add generic attributes (file specific)
-            var genAttr = City_Semantic.ReadGenericAttributes(gmlBuildings, this.allns);
+            var genAttr = City_Semantic.ReadGenericAttributes(gmlBuildings, allns);
 
             //union for consistent attribute list
-            this.Attributes.UnionWith(genAttr);
+            Attributes.UnionWith(genAttr);
             //--------------------------------------------------------------------------------------------------------------------------
 
             #endregion Semantics
@@ -697,7 +696,7 @@ namespace City2BIM
                 gmlBldg.BldgSurfaces = surfaces;
 
                 //investigation of building parts
-                var gmlBuildingParts = bldg.Descendants(this.allns["bldg"] + "BuildingPart");    //in LOD1 und LOD2 possible
+                var gmlBuildingParts = bldg.Descendants(allns["bldg"] + "BuildingPart");    //in LOD1 und LOD2 possible
 
                 var parts = new List<CityGml_BldgPart>();
 

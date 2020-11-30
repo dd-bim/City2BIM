@@ -17,14 +17,14 @@ using City2RVT;
 
 namespace City2RVT.Builder
 {
-    public class XPlanBuilderAlpha
+    public class XPlanBuilder
     {
         //ExternalCommandData commandData;
         private readonly Document doc;
         //private readonly Dictionary<ColorType, ElementId> colors;
         //private ElementId terrainID;
 
-        public XPlanBuilderAlpha(Document doc) //, ExternalCommandData cData)
+        public XPlanBuilder(Document doc) //, ExternalCommandData cData)
         {
             //commandData = cData;
             this.doc = doc;

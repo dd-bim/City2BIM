@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace City2BIM.GmlRep
+namespace City2BIM.CityGML
 {
     public static class CityGml_Codelist
     {

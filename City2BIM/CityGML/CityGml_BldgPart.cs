@@ -2,7 +2,7 @@
 using City2BIM.Geometry;
 using City2BIM.Semantic;
 
-namespace City2BIM.GmlRep
+namespace City2BIM.CityGML
 {
     public class CityGml_BldgPart
     {
@@ -16,12 +16,12 @@ namespace City2BIM.GmlRep
         {
             get
             {
-                return this.bldgPartId;
+                return bldgPartId;
             }
 
             set
             {
-                this.bldgPartId = value;
+                bldgPartId = value;
             }
         }
 
@@ -29,12 +29,12 @@ namespace City2BIM.GmlRep
         {
             get
             {
-                return this.partSolid;
+                return partSolid;
             }
 
             set
             {
-                this.partSolid = value;
+                partSolid = value;
             }
         }
 
@@ -42,12 +42,12 @@ namespace City2BIM.GmlRep
         {
             get
             {
-                return this.bldgPartAttributes;
+                return bldgPartAttributes;
             }
 
             set
             {
-                this.bldgPartAttributes = value;
+                bldgPartAttributes = value;
             }
         }
 
@@ -57,12 +57,12 @@ namespace City2BIM.GmlRep
         {
             get
             {
-                return this.partSurfaces;
+                return partSurfaces;
             }
 
             set
             {
-                this.partSurfaces = value;
+                partSurfaces = value;
             }
         }
 

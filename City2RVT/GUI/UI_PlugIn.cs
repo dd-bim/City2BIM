@@ -131,7 +131,7 @@ namespace City2RVT.GUI
                  System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "ALKISset_32px.png");
             Uri uriImageCAlk = new Uri(alkisxmlsetPath);
             BitmapImage largeImageCAlk = new BitmapImage(uriImageCAlk);*/
-            System.IO.MemoryStream msCAlk = new System.IO.MemoryStream();
+            /*System.IO.MemoryStream msCAlk = new System.IO.MemoryStream();
             var bitmapCAlk = ResourcePictures.ALKISset_32px;
             bitmapCAlk.Save(msCAlk, System.Drawing.Imaging.ImageFormat.Png);
             BitmapImage largeImageCAlk = new BitmapImage();
@@ -144,7 +144,7 @@ namespace City2RVT.GUI
             thisAssemblyPath, "City2RVT.GUI.Cmd_OpenALKISSettings")) as PushButton;
             btAlkisSettings.ToolTip = "Import settings for ALKIS data.";
             btAlkisSettings.LargeImage = largeImageCAlk;
-
+            */
 
             #endregion ALKIS panel
 

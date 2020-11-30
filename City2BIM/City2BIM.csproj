@@ -116,10 +116,10 @@
     <Compile Include="Semantic\Read_GmlDictionary.cs" />
     <Compile Include="Semantic\City_Semantic.cs" />
     <Compile Include="Semantic\ReadSemValues.cs" />
-    <Compile Include="GmlRep\CityGml_Bldg.cs" />
-    <Compile Include="GmlRep\CityGml_BldgPart.cs" />
-    <Compile Include="GmlRep\CityGml_Codelist.cs" />
-    <Compile Include="GmlRep\CityGml_Surface.cs" />
+    <Compile Include="CityGML\CityGml_Bldg.cs" />
+    <Compile Include="CityGML\CityGml_BldgPart.cs" />
+    <Compile Include="CityGML\CityGml_Codelist.cs" />
+    <Compile Include="CityGML\CityGml_Surface.cs" />
     <Compile Include="Logging\LogWriter.cs" />
     <Compile Include="Logging\LogPair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -128,9 +128,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="CityGMLReader.cs" />
+    <Compile Include="CityGML\CityGMLReader.cs" />
     <Compile Include="WFS\WFSClient.cs" />
-    <Compile Include="AlkisReader.cs" />
+    <Compile Include="ALKIS\AlkisReader.cs" />
     <Compile Include="ALKIS\Alkis_Semantic.cs" />
     <Compile Include="ALKIS\Alkis_Sem_Reader.cs" />
     <Compile Include="ALKIS\AX_Object.cs" />
