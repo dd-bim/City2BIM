@@ -47,7 +47,6 @@
                     </Grid>
                     <Grid Grid.Column="1" Margin="5,0,0,0">
                         <StackPanel>
-                            <Button x:Name="LoadLayerBtn" Content="Load Layer" Grid.Row="0" Click="LoadLayerBtn_click" Margin="0,0,0,10"></Button>
                             <Button x:Name="selectAllBtn" Content="Select All" Grid.Row="1" Click="selectAllBtn_click" Margin="0,0,0,10"></Button>
                             <Button x:Name="clearSelectionBtn" Content="Clear All" Grid.Row="2" Click="clearSelectionBtn_click"></Button>
                         </StackPanel>

@@ -71,36 +71,34 @@ namespace City2RVT.GUI.NAS2BIM
 
             if (openFileDialog.ShowDialog() == true)
             {
-                filePathBox.Text = openFileDialog.FileName;
+                try
+                {
+
+                    filePathBox.Text = openFileDialog.FileName;
+
+                    AlkisReader alkisReader = new AlkisReader(openFileDialog.FileName);
+
+                    var alkisObjs = alkisReader.AlkisObjects;
+
+                    var avialableLayers = from alkisObj in alkisObjs
+                                          group alkisObj by alkisObj.UsageType into usageGroup
+                                          select usageGroup;
+
+                    List<LayerStatus> layerStatusList = new List<LayerStatus>();
+
+                    foreach (var usageGroup in avialableLayers)
+                    {
+                        layerStatusList.Add(new LayerStatus { LayerName = usageGroup.Key, Visibility = true });
+                    }
+
+                    this.layerStatusList = layerStatusList;
+                    LayerTable.ItemsSource = this.layerStatusList;
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("Error!", "An error occured. Did you specify a valid Alkis-File?" + "\n\n" + ex.ToString());
+                }
             }
-        }
-
-        private void LoadLayerBtn_click(object sender, RoutedEventArgs e)
-        {
-            string path = filePathBox.Text;
-            if (path == null)
-            {
-                TaskDialog.Show("Warning!", "Please specify a path to your data!");
-                return;
-            }
-
-            AlkisReader alkisReader = new AlkisReader(path);
-
-            var alkisObjs = alkisReader.AlkisObjects;
-
-            var avialableLayers = from alkisObj in alkisObjs
-                                  group alkisObj by alkisObj.UsageType into usageGroup
-                                  select usageGroup;
-
-            List<LayerStatus> layerStatusList = new List<LayerStatus>();
-
-            foreach (var usageGroup in avialableLayers)
-            {
-                layerStatusList.Add(new LayerStatus { LayerName = usageGroup.Key, Visibility = true });
-            }
-
-            this.layerStatusList = layerStatusList;
-            LayerTable.ItemsSource = this.layerStatusList;
         }
 
         private void selectAllBtn_click(object sender, RoutedEventArgs e)
