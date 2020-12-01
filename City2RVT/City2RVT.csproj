@@ -340,6 +340,9 @@
     <Folder Include="GUI\Surveyorsplan2Revit\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="img\HideLayerIcon_32px_96dpi.png" />
+    <None Include="img\Vermesser32.png" />
+    <None Include="img\Attribute32.png" />
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -379,7 +382,7 @@
     <None Include="bin\Debug\Georef_32px_96dpi.png" />
     <None Include="bin\Debug\IFC_32px_96dpi.png" />
     <Content Include="Geographic.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="GUI\Georeferencing\img\Georef_96dpi.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef10.png" />

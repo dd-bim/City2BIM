@@ -93,6 +93,16 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap Attribute32 {
+            get {
+                object obj = ResourceManager.GetObject("Attribute32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap citygml_32px_96dpi {
             get {
                 object obj = ResourceManager.GetObject("citygml_32px_96dpi", resourceCulture);
@@ -143,6 +153,16 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap HideLayerIcon_32px_96dpi {
+            get {
+                object obj = ResourceManager.GetObject("HideLayerIcon_32px_96dpi", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap icon_georef10 {
             get {
                 object obj = ResourceManager.GetObject("icon_georef10", resourceCulture);
@@ -176,6 +196,16 @@ namespace City2RVT {
         public static System.Drawing.Bitmap IFC_32px_96dpi {
             get {
                 object obj = ResourceManager.GetObject("IFC_32px_96dpi", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Vermesser32 {
+            get {
+                object obj = ResourceManager.GetObject("Vermesser32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
