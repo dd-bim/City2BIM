@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 using Autodesk.Revit.DB.ExtensibleStorage;
 using Autodesk.Revit.DB;
@@ -72,6 +73,46 @@ namespace City2RVT
                 }
             }
             return null;
+        }
+
+        public static XYZ getProjectBasePointMeter(Document doc)
+        {
+            var projectBasePointFeet = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_ProjectBasePoint).FirstOrDefault() as BasePoint;
+            return projectBasePointFeet.SharedPosition.Multiply(0.3048);
+        }
+
+        public static double getProjectAngleDeg(Document doc)
+        {
+            ProjectPosition projectPositionOrigin = doc.ActiveProjectLocation.GetProjectPosition(XYZ.Zero);
+            return projectPositionOrigin.Angle * 180 / System.Math.PI;
+        }
+
+        public static List<Dictionary<string, Dictionary<string, string>>> getSchemaAttributesForElement(Element element)
+        {
+            List<Dictionary<string, Dictionary<string, string>>> schemaAndAttributeList = new List<Dictionary<string, Dictionary<string, string>>>();
+
+            var schemaGUIDList = element.GetEntitySchemaGuids();
+
+            foreach (var schemaGUID in schemaGUIDList)
+            {
+                var schema = Schema.Lookup(schemaGUID);
+
+                Entity ent = element.GetEntity(schema);
+
+                Dictionary<string, string> attrDict = new Dictionary<string, string>();
+                foreach (var field in schema.ListFields())
+                {
+                    var value = ent.Get<string>(field);
+                    if (value != null && value != string.Empty)
+                    {
+                        attrDict.Add(field.FieldName, value);
+                    }
+                }
+
+                schemaAndAttributeList.Add(new Dictionary<string, Dictionary<string, string>>() { { schema.SchemaName, attrDict } });
+            }
+
+            return schemaAndAttributeList;
         }
     }
 
