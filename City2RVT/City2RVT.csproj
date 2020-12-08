@@ -239,6 +239,8 @@
     </Compile>
     <Compile Include="GUI\XPlan2BIM\XPlan_Inhalt.cs" />
     <Compile Include="GUI\XPlan2BIM\XPlan_Parameter.cs" />
+    <Compile Include="IFCExport\IfcUtils.cs" />
+    <Compile Include="IFCExport\RevitIfcExporter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
