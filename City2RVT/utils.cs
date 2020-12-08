@@ -34,11 +34,17 @@ namespace City2RVT
 
             IList<Element> selection = collector.WherePasses(filter).WhereElementIsNotElementType().ToElements();
 
+            var cityGMLSchema = utils.getSchemaByName("CityGMLImportSchema");
             foreach (Element el in selection)
             {
-                Guid cShaprGuid = ExportUtils.GetExportId(doc, el.Id);
-                string ifcGuid = IfcGuid.ToIfcGuid(cShaprGuid);
-                IfcToRevitDic.Add(ifcGuid, el.UniqueId);
+                Entity ent = el.GetEntity(cityGMLSchema);
+
+                if (ent != null && ent.IsValidObject)
+                {
+                    Guid cShaprGuid = ExportUtils.GetExportId(doc, el.Id);
+                    string ifcGuid = IfcGuid.ToIfcGuid(cShaprGuid);
+                    IfcToRevitDic.Add(ifcGuid, el.UniqueId);
+                }
             }
 
             return IfcToRevitDic;
