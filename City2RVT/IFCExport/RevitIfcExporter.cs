@@ -13,6 +13,7 @@ using Xbim.Ifc4.Kernel;
 using Xbim.Ifc4.PropertyResource;
 using Xbim.Ifc4.MeasureResource;
 using Xbim.Ifc4.RepresentationResource;
+using Xbim.Ifc4.ProductExtension;
 
 using City2RVT.Calc;
 
@@ -20,6 +21,10 @@ namespace City2RVT.IFCExport
 {
     class RevitIfcExporter
     {
+        public enum ExportType
+        {
+            IfcSite, IfcGeographicElement
+        }
         private Document doc { get; set; }
 
         private XbimEditorCredentials editor = new XbimEditorCredentials
@@ -169,7 +174,7 @@ namespace City2RVT.IFCExport
             }
         }
 
-        public void exportSurfaces(IfcStore model)
+        public void exportSurfaces(IfcStore model, ExportType exportType, IfcSite referenceSite)
         {
             ElementId terrainId = utils.getHTWDDTerrainID(this.doc);
             ElementId[] excludeIds = { terrainId };
@@ -218,8 +223,15 @@ namespace City2RVT.IFCExport
 
                     var attributes = utils.getSchemaAttributesForElement(importedObj);
 
-                    IfcUtils.addIfcGeographicElementFromMesh(model, meshPointsMeter, mesh, usageType, optionalProperties: attributes);
-
+                    switch (exportType)
+                    {
+                        case ExportType.IfcGeographicElement:
+                            IfcUtils.addIfcGeographicElementFromMesh(model, meshPointsMeter, mesh, usageType, optionalProperties: attributes);
+                            break;
+                        case ExportType.IfcSite:
+                            IfcUtils.addIfcSiteFromMesh(model, meshPointsMeter, mesh, usageType, referenceSite, optionalProperties: attributes);
+                            break;
+                    }
                 }
                 trans.Commit();
             }

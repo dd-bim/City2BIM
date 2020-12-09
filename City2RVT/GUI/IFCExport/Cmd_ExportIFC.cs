@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Xbim.Ifc;
+using Xbim.Ifc4.ProductExtension;
 
 using City2RVT.IFCExport;
 using City2RVT;
+
 
 namespace City2RVT.GUI
 {
@@ -40,7 +43,10 @@ namespace City2RVT.GUI
                 {
                     exporter.createLoGeoRef50(model);
                     exporter.exportDTM(model);
-                    exporter.exportSurfaces(model);
+
+                    var site = model.Instances.OfType<IfcSite>().FirstOrDefault();
+
+                    exporter.exportSurfaces(model, RevitIfcExporter.ExportType.IfcSite, site);
                     
                     if (cityGMLBuildingList.Count > 0)
                     {

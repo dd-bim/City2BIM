@@ -198,6 +198,9 @@
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
     <Compile Include="GUI\GUI_helper.cs" />
+    <Compile Include="GUI\IFCExport\IfcExportDialog.xaml.cs">
+      <DependentUpon>IfcExportDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Modify\LayerSelector.xaml.cs">
       <DependentUpon>LayerSelector.xaml</DependentUpon>
     </Compile>
@@ -310,6 +313,10 @@
     <Page Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\IFCExport\IfcExportDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\Modify\LayerSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
