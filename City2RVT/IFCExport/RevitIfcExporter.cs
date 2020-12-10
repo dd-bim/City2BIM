@@ -19,7 +19,7 @@ using City2RVT.Calc;
 
 namespace City2RVT.IFCExport
 {
-    class RevitIfcExporter
+    public class RevitIfcExporter
     {
         public enum ExportType
         {

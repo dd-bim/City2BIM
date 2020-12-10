@@ -8,7 +8,7 @@ using Xbim.Ifc;
 using Xbim.Ifc4.ProductExtension;
 
 using City2RVT.IFCExport;
-using City2RVT;
+using City2RVT.GUI.IFCExport;
 
 
 namespace City2RVT.GUI
@@ -33,30 +33,35 @@ namespace City2RVT.GUI
 
             var cityGMLBuildingList = utils.getIfc2CityGMLGuidDic(doc);
 
-            RevitIfcExporter exporter = new RevitIfcExporter(doc);
+            var dialog = new IfcExportDialog();
+            dialog.ShowDialog();
 
-            exporter.startRevitIfcExport(outFolder, outFileName, commandData);
-
-            using (var model = IfcStore.Open(completePath))
+            if (dialog.startExport)
             {
-                using (var txn = model.BeginTransaction("Edit standard Revit export"))
+                RevitIfcExporter exporter = new RevitIfcExporter(doc);
+
+                exporter.startRevitIfcExport(outFolder, outFileName, commandData);
+
+                using (var model = IfcStore.Open(completePath))
                 {
-                    exporter.createLoGeoRef50(model);
-                    exporter.exportDTM(model);
-
-                    var site = model.Instances.OfType<IfcSite>().FirstOrDefault();
-
-                    exporter.exportSurfaces(model, RevitIfcExporter.ExportType.IfcSite, site);
-                    
-                    if (cityGMLBuildingList.Count > 0)
+                    using (var txn = model.BeginTransaction("Edit standard Revit export"))
                     {
-                        exporter.addCityGMLAttributes(model, doc, cityGMLBuildingList);
-                    }
-                    txn.Commit();
-                }
-                model.SaveAs(completePath);
-            }
+                        exporter.createLoGeoRef50(model);
+                        exporter.exportDTM(model);
 
+                        var site = model.Instances.OfType<IfcSite>().FirstOrDefault();
+
+                        exporter.exportSurfaces(model, dialog.ExportType, site);
+
+                        if (cityGMLBuildingList.Count > 0)
+                        {
+                            exporter.addCityGMLAttributes(model, doc, cityGMLBuildingList);
+                        }
+                        txn.Commit();
+                    }
+                    model.SaveAs(dialog.ExportPath);
+                }
+            }
 
             //RevitIfcExporter exporter = new RevitIfcExporter(doc);
             //exporter.startRevitIfcExport(outFolder, outFileName, commandData);

@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+using City2RVT.IFCExport;
 
 namespace City2RVT.GUI.IFCExport
 {
@@ -20,12 +13,21 @@ namespace City2RVT.GUI.IFCExport
     /// </summary>
     public partial class IfcExportDialog : Window
     {
+        public RevitIfcExporter.ExportType ExportType;
+        public bool startExport = false;
+        public string ExportPath
+        {
+            get => exportPath;
+        }
+
+        private string exportPath { get; set; }
+
         public IfcExportDialog()
         {
             InitializeComponent();
         }
 
-        private void browseButton_Click(object sender, RoutedEventArgs e)
+        private void saveAsButton_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.FileName = "IfcExport";
@@ -40,24 +42,33 @@ namespace City2RVT.GUI.IFCExport
 
         private void exportBtn_click(object sender, RoutedEventArgs e)
         {
-
+            if (filePathBox.Text != null )
+            {
+                exportPath = filePathBox.Text;
+                startExport = true;
+                var checkedRadioBtn = ExportTypePanel.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked.HasValue && r.IsChecked.Value);
+                Enum.TryParse(checkedRadioBtn.Content.ToString(), out this.ExportType);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Please specify a valid output path", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void cancelBtn_click(object sender, RoutedEventArgs e)
         {
-
+            this.Close();
         }
 
-        /*
-        private void selectAllBtn_Click(object sender, RoutedEventArgs e)
+        /*private void radioButton_Checked(object sender, RoutedEventArgs e)
         {
+            RadioButton checkedButton = sender as RadioButton;
+            if (checkedButton.IsChecked.Value)
+            {
+                ExportType = (RevitIfcExporter.ExportType) checkedButton.Content;
+            }
+        }*/
 
-        }
-
-        private void clearSelectionBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        */
     }
 }
