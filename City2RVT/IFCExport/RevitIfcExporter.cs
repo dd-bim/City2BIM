@@ -180,6 +180,11 @@ namespace City2RVT.IFCExport
             ElementId[] excludeIds = { terrainId };
             FilteredElementCollector topoCollector = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Topography).Excluding(excludeIds);
 
+            if (topoCollector.GetElementCount() == 0)
+            {
+                return;
+            }
+
             using (Transaction trans = new Transaction(this.doc, "export remaining surfaces"))
             {
                 trans.Start();
