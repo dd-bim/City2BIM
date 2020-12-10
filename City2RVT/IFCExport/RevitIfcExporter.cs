@@ -177,8 +177,18 @@ namespace City2RVT.IFCExport
         public void exportSurfaces(IfcStore model, ExportType exportType, IfcSite referenceSite)
         {
             ElementId terrainId = utils.getHTWDDTerrainID(this.doc);
-            ElementId[] excludeIds = { terrainId };
-            FilteredElementCollector topoCollector = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Topography).Excluding(excludeIds);
+            FilteredElementCollector topoCollector = default;
+            
+            if (terrainId != null )
+            {
+                ElementId[] excludeIds = { terrainId };
+                topoCollector = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Topography).Excluding(excludeIds);
+            }
+            else
+            {
+                topoCollector = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Topography);
+            }
+            
 
             if (topoCollector.GetElementCount() == 0)
             {
