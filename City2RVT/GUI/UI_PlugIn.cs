@@ -91,12 +91,6 @@ namespace City2RVT.GUI
             buttonIFC.ToolTip = "Export functionality for writing IFC files.";
             buttonIFC.LargeImage = getBitmapFromResx(ResourcePictures.IFC_32px_96dpi);
 
-
-            PushButton buttonXPlan2IFC = panelIFC.AddItem(new PushButtonData("XPlanung2IFC", "Export data to IFC (new)",
-            thisAssemblyPath, "City2RVT.GUI.XPlan2BIM.Cmd_ExportXPlan2IFC")) as PushButton;
-            buttonXPlan2IFC.ToolTip = "IFC Export functionality for XPlanung files.";
-            buttonXPlan2IFC.LargeImage = getBitmapFromResx(ResourcePictures.IFC_32px_96dpi);
-
             #endregion IFC Export panel
 
             #region XPlanung panel
