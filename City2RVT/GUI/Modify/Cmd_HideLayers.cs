@@ -27,6 +27,8 @@ namespace City2RVT.GUI.Modify
             using (Transaction trans = new Transaction(doc, "Modify Layer Visibility"))
             {
                 trans.Start();
+                
+                //Alkis / XPlanung 
                 FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
 
                 List<LayerStatus> layerStatusList = new List<LayerStatus>();
@@ -41,6 +43,28 @@ namespace City2RVT.GUI.Modify
 
                     }
                 }
+
+                //CityGML
+                FilteredElementCollector cityGMLCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Entourage);
+                var citySchema = utils.getSchemaByName("CityGMLImportSchema");
+                var isHiddenCityGML = false;
+                List<ElementId> CityGMLElements = new List<ElementId>();
+
+                foreach (var element in cityGMLCollector)
+                {
+                    if (element.GetEntity(citySchema).IsValid() && element.GetEntity(citySchema) != null)
+                    {
+                        isHiddenCityGML = element.IsHidden(view);
+                        CityGMLElements.Add(element.Id);
+                        //layerStatusList.Add(new LayerStatus { LayerName = "CityGML Buildings", Visibility = !isHidden });
+                    }
+                }
+
+                if (CityGMLElements.Count > 0)
+                {
+                    layerStatusList.Add(new LayerStatus { LayerName = "CityGMLBuildings", Visibility = !isHiddenCityGML });
+                }
+                
 
                 var layerUI = new LayerSelector(layerStatusList);
                 layerUI.ShowDialog();
@@ -65,6 +89,11 @@ namespace City2RVT.GUI.Modify
                     }
                 }
 
+                if (layerUI.visibleLayers.Contains("CityGMLBuildings"))
+                {
+                    layerToShow.AddRange(CityGMLElements);
+                }
+
                 foreach (var unvisibleLayer in layerUI.unvisibleLayers)
                 {
                     foreach (var element in topoCollector)
@@ -80,6 +109,13 @@ namespace City2RVT.GUI.Modify
                     }
                 }
 
+                if (layerUI.unvisibleLayers.Contains("CityGMLBuildings"))
+                {
+                    layerToHide.AddRange(CityGMLElements);
+                }
+
+                
+                
                 if (layerToHide.Count > 0)
                 {
                     view.HideElements(layerToHide);
