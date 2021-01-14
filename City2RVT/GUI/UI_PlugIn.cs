@@ -141,7 +141,15 @@ namespace City2RVT.GUI
 
             #endregion survPlan panel
 
+            #region DataCat panel
+            RibbonPanel panelDataCat = application.CreateRibbonPanel(tabName, "DataCat");
+            PushButton loginDataCat = panelDataCat.AddItem(new PushButtonData("LoginBtn", "Login", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatLogin")) as PushButton;
+            PushButton querySubjects = panelDataCat.AddItem(new PushButtonData("QuerySubjBtn", "Subj", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatSubjQuery")) as PushButton;
+
+            #endregion DataCat panel
+
             return Result.Succeeded;
+
         }
 
         public Result OnShutdown(UIControlledApplication application)

@@ -1,5 +1,9 @@
 ﻿using Autodesk.Revit.DB;
 using System.Windows.Forms;
+using System;
+
+using System.IdentityModel.Tokens.Jwt;
+using City2RVT.ExternalDataCatalog;
 
 namespace City2RVT
 {
@@ -10,6 +14,9 @@ namespace City2RVT
         private static ElementId pickedId;
         private static Element pickedElement;
 
+        private static JwtSecurityToken dataCatToken;
+        private static int tokenExpirationDate;
+        private static ExternalDataClient dataClient;
 
         public const double radToDeg = 180 / System.Math.PI;
         public const double feetToM = 0.3048;
@@ -17,7 +24,9 @@ namespace City2RVT
         public static ElementId TerrainId { get => terrainId; set => terrainId = value; }
         public static ElementId PickedId { get => pickedId; set => pickedId = value; }
         public static Element PickedElement { get => pickedElement; set => pickedElement = value; }
-
+        public static JwtSecurityToken DataCatToken { get => dataCatToken; set => dataCatToken = value; }
+        public static int TokenExpirationDate { get => tokenExpirationDate; set => tokenExpirationDate = value; }
+        public static ExternalDataClient DataClient { get => dataClient; set => dataClient = value; }
 
         public static Transform TrafoPBP { get => SetRevitProjectTransformation() /*trafoPBP*/; }
 
