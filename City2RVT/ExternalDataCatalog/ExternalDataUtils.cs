@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,12 +98,14 @@ namespace City2RVT.ExternalDataCatalog
     {
         public string id { get; set; }
         public string name { get; set; }
-        public List<Property> properties { get; set; }
+        //public List<Property> properties { get; set; }
+        public ObservableCollection<Property> properties { get; set; }
     }
 
     public class FindSubjects
     {
-        public List<Node> nodes { get; set; }
+        //public List<Node> nodes { get; set; }
+        public ObservableCollection<Node> nodes { get; set; }
     }
 
     public class DataFind

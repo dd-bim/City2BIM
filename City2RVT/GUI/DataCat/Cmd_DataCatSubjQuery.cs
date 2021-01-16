@@ -17,17 +17,15 @@ namespace City2RVT.GUI.DataCat
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            bool tokenStatus = ExternalDataUtils.testTokenValidity();
+            
 
-            if (tokenStatus == false)
-            {
-                TaskDialog.Show("Error!", "You are currently not logged into the external server!");
-                return Result.Failed;
-            }
+            //var findResponse = Prop_Revit.DataClient.querySubjects("Leitung");
 
-            var content = Prop_Revit.DataClient.querySubjects("Leitung");
+            var resultPopUp = new findSubjectResultForm();
 
-            TaskDialog.Show("Message", content);
+            resultPopUp.Show();
+
+            //TaskDialog.Show("Message", findResponse);
 
             return Result.Succeeded;
         }

@@ -41,7 +41,7 @@ namespace City2RVT.ExternalDataCatalog
             }
         }
 
-        public string querySubjects(string searchText)
+        public FindResponse querySubjects(string searchText)
         {
             string query = ExternalDataUtils.getSubjectSearchQueryAsRawJson(searchText);
 
@@ -55,11 +55,11 @@ namespace City2RVT.ExternalDataCatalog
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var searchResponse = JsonConvert.DeserializeObject<FindResponse>(response.Content);
-                return response.Content;
+                return searchResponse;
             }
             else
             {
-                return "Fehler!";
+                return null;
             }
         }
 

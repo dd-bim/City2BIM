@@ -1,0 +1,40 @@
+﻿<Window x:Class="City2RVT.GUI.DataCat.findSubjectResultForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:City2RVT.GUI.DataCat"
+             xmlns:DataCat="clr-namespace:City2RVT.ExternalDataCatalog"
+             mc:Ignorable="d" 
+             Height="450" MinHeight="450" MinWidth="500" Width="500">
+    <StackPanel Margin="10">
+        <Label Content="Search text for subjects"></Label>
+
+        <Grid Margin="0,0,0,10" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Padding="2" x:Name="SearchBox" Grid.Column="0" Margin="0 0 10 0"></TextBox>
+            <Button Name="queryBtn" Content="query" Grid.Column="1" Click="queryBtn_click"></Button>
+
+        </Grid>
+        
+
+        <TreeView Name="trvFindResult" Height="300">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type DataCat:Node}" ItemsSource="{Binding properties}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding name}"></TextBlock>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type DataCat:Property}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding name}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </StackPanel>
+</Window>
