@@ -39,5 +39,11 @@ namespace City2RVT.GUI.DataCat
                 trvFindResult.ItemsSource = response.data.findSubjects.nodes;
             }
         }
+
+        private void findSubjectWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double actualHeight = findSubjectWindow.ActualHeight;
+            treeViewGrid.Height = actualHeight * .7;
+        }
     }
 }

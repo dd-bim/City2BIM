@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:City2RVT.GUI.DataCat"
              xmlns:DataCat="clr-namespace:City2RVT.ExternalDataCatalog"
              mc:Ignorable="d" 
-             Height="450" MinHeight="450" MinWidth="500" Width="500">
+             Height="450" MinHeight="450" MinWidth="500" Width="500"
+             Name="findSubjectWindow" SizeChanged="findSubjectWindow_SizeChanged" Title="Query External Data Catalog">
     <StackPanel Margin="10">
         <Label Content="Search text for subjects"></Label>
 
@@ -20,21 +21,22 @@
             <Button Name="queryBtn" Content="query" Grid.Column="1" Click="queryBtn_click"></Button>
 
         </Grid>
-        
 
-        <TreeView Name="trvFindResult" Height="300">
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type DataCat:Node}" ItemsSource="{Binding properties}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding name}"></TextBlock>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type DataCat:Property}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding name}"></TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </TreeView.Resources>
-        </TreeView>
+        <Grid Name="treeViewGrid" Height="300" MinHeight="300">
+            <TreeView Name="trvFindResult">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type DataCat:Node}" ItemsSource="{Binding properties}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding name}"></TextBlock>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type DataCat:Property}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding name}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </Grid>
     </StackPanel>
 </Window>
