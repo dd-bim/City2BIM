@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:City2RVT.GUI.DataCat"
              xmlns:DataCat="clr-namespace:City2RVT.ExternalDataCatalog"
              mc:Ignorable="d" 
-             Height="450" MinHeight="450" MinWidth="500" Width="500"
+             Height="500" MinHeight="500" MinWidth="500" Width="500"
              Name="findSubjectWindow" SizeChanged="findSubjectWindow_SizeChanged" Title="Query External Data Catalog">
     <StackPanel Margin="10">
         <Label Content="Search text for subjects"></Label>
@@ -17,7 +17,7 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBox Padding="2" x:Name="SearchBox" Grid.Column="0" Margin="0 0 10 0"></TextBox>
+            <TextBox Padding="2" x:Name="SearchBox" Grid.Column="0" Margin="0 0 10 0" KeyDown="SearchBox_KeyDown"></TextBox>
             <Button Name="queryBtn" Content="query" Grid.Column="1" Click="queryBtn_click"></Button>
 
         </Grid>
@@ -38,5 +38,18 @@
                 </TreeView.Resources>
             </TreeView>
         </Grid>
+
+        <Grid Margin="0,13">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Name="setObjectBtn" Content="set selected object" Click="setObjectBtn_Click"></Button>
+            <Button Name="closeBtn" Content="close" Grid.Column="2" Click="closeBtn_Click"></Button>
+
+        </Grid>
+
     </StackPanel>
 </Window>

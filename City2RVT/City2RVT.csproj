@@ -216,6 +216,9 @@
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatLogin.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatSubjQuery.cs" />
+    <Compile Include="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
+      <DependentUpon>DataCatalogEditorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\DataCat\findSubjectResultForm.xaml.cs">
       <DependentUpon>findSubjectResultForm.xaml</DependentUpon>
     </Compile>
@@ -335,6 +338,10 @@
     <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\DataCat\DataCatalogEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\DataCat\findSubjectResultForm.xaml">
       <SubType>Designer</SubType>

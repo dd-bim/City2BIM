@@ -37,7 +37,8 @@ namespace City2RVT.GUI.Properties
         private void save_Click(object sender, RoutedEventArgs e)
         {
             saveChanges = true;
-            TaskDialog.Show("Information", "Will save data after closing window!");
+            this.Close();
+            //TaskDialog.Show("Information", "Will save data after closing window!");
         }
 
         private void cancel_Click(object sender, RoutedEventArgs e)

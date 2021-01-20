@@ -21,7 +21,7 @@ namespace City2RVT.GUI.DataCat
 
             if (tokenValidity)
             {
-                string output = "You are already successfully loged into: {0} \nCredentials valid until {1}";
+                string output = "You are already successfully logged into: {0} \nCredentials valid until {1}";
                 output = string.Format(output, Prop_Revit.DataCatToken.Issuer, Prop_Revit.DataCatToken.ValidTo);
                 TaskDialog.Show("Information", output);
             }
@@ -41,7 +41,7 @@ namespace City2RVT.GUI.DataCat
                         Prop_Revit.DataCatToken = token;
                         Prop_Revit.TokenExpirationDate = (Int32)(token.ValidTo.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                         Prop_Revit.DataClient = client;
-                        TaskDialog.Show("Message", "Successfully loged in!");
+                        TaskDialog.Show("Message", "Successfully logged in!");
                     }
 
                     else

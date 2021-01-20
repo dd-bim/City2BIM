@@ -15,17 +15,19 @@ namespace City2RVT.GUI.DataCat
     class Cmd_DataCatSubjQuery : IExternalCommand
     {
 
-        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            
+            UIDocument uiDoc = commandData.Application.ActiveUIDocument;
 
-            //var findResponse = Prop_Revit.DataClient.querySubjects("Leitung");
+            if (ExternalDataUtils.testTokenValidity() == false)
+            {
+                TaskDialog.Show("Error!", "You are currently not logged into the external server!");
+                return Result.Failed;
+            }
 
-            var resultPopUp = new findSubjectResultForm();
+            var resultPopUp = new findSubjectResultForm(uiDoc);
 
-            resultPopUp.Show();
-
-            //TaskDialog.Show("Message", findResponse);
+            resultPopUp.ShowDialog();
 
             return Result.Succeeded;
         }

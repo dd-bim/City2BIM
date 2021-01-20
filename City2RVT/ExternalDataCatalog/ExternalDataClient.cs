@@ -33,7 +33,6 @@ namespace City2RVT.ExternalDataCatalog
                 var handler = new JwtSecurityTokenHandler();
                 var token = handler.ReadJwtToken(loginResponse.data.login);
                 return token;
-
             }
             else
             {

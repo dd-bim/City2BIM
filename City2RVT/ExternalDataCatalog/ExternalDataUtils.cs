@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.ExtensibleStorage;
 
 namespace City2RVT.ExternalDataCatalog
 {
@@ -28,7 +28,7 @@ namespace City2RVT.ExternalDataCatalog
         public static string getSubjectSearchQueryAsRawJson(string searchText)
         {
             string query = @"""query findInputQuery($searchText: String!) {
-                              findSubjects(input: {query: $searchText, pageSize: 20}) {
+                              findSubjects(input: {query: $searchText, pageSize: 100}) {
                                 nodes {
                                   id
                                   name
@@ -69,13 +69,39 @@ namespace City2RVT.ExternalDataCatalog
                 Prop_Revit.TokenExpirationDate = 0;
                 return false;
             }
+        }
 
+        public static Schema createExternalDataCatalogSchema(Autodesk.Revit.DB.Document doc)
+        {
+            var externalSchema = utils.getSchemaByName("ExternalDataCatalogSchema");
 
+            if (externalSchema != null)
+            {
+                return externalSchema;
+            }
+
+            using (SubTransaction trans = new SubTransaction(doc))
+            {
+                trans.Start();
+
+                SchemaBuilder schemaBuilder = new SchemaBuilder(Guid.NewGuid());
+                schemaBuilder.SetSchemaName("ExternalDataCatalogSchema");
+                schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
+                schemaBuilder.SetWriteAccessLevel(AccessLevel.Public);
+
+                schemaBuilder.AddSimpleField("ObjectType", typeof(string));
+                schemaBuilder.AddSimpleField("Properties", typeof(string));
+
+                externalSchema = schemaBuilder.Finish();
+
+                trans.Commit();
+            }
+
+            return externalSchema;
         }
 
     }
 
-    
 
     public class LoginResponse
     {
@@ -98,13 +124,11 @@ namespace City2RVT.ExternalDataCatalog
     {
         public string id { get; set; }
         public string name { get; set; }
-        //public List<Property> properties { get; set; }
         public ObservableCollection<Property> properties { get; set; }
     }
 
     public class FindSubjects
     {
-        //public List<Node> nodes { get; set; }
         public ObservableCollection<Node> nodes { get; set; }
     }
 
@@ -118,4 +142,22 @@ namespace City2RVT.ExternalDataCatalog
         public DataFind data { get; set; }
     }
 
+    public class ExternalDataSchemaObject
+    {
+        public string ObjectType { get; set; }
+        public Dictionary<string, string> Properties { get; set; }
+
+        public ExternalDataSchemaObject(string objectType, Dictionary<string, string> props)
+        {
+            this.ObjectType = objectType;
+            this.Properties = props;
+        }
+
+        public Dictionary<string, Dictionary<string, string>> prepareForEditorWindow()
+        {
+            var result = new Dictionary<string, Dictionary<string, string>>();
+            result.Add(this.ObjectType, this.Properties);
+            return result;
+        }
+    }
 }
