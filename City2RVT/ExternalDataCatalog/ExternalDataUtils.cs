@@ -100,6 +100,28 @@ namespace City2RVT.ExternalDataCatalog
             return externalSchema;
         }
 
+        public static Dictionary<string, string> getIfc2ExternalDataGuidDic(Document doc)
+        {
+            Dictionary<string, string> IfcToRevitDic = new Dictionary<string, string>();
+            List<Element> elements = new List<Element>();
+            var externalDataSchema = utils.getSchemaByName("ExternalDataCatalogSchema");
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.WherePasses(new ExtensibleStorageFilter(externalDataSchema.GUID));
+
+            elements.AddRange(collector.ToElements());
+
+            foreach (var element in elements)
+            {
+                Guid cSharpGuid = ExportUtils.GetExportId(doc, element.Id);
+                string ifcGuid = IfcGuid.ToIfcGuid(cSharpGuid);
+                IfcToRevitDic.Add(ifcGuid, element.UniqueId);
+            }
+
+            return IfcToRevitDic;
+
+        }
+
     }
 
 

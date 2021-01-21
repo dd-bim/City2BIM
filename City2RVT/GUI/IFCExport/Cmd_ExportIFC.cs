@@ -9,7 +9,7 @@ using Xbim.Ifc4.ProductExtension;
 
 using City2RVT.IFCExport;
 using City2RVT.GUI.IFCExport;
-
+using City2RVT.ExternalDataCatalog;
 
 namespace City2RVT.GUI
 {
@@ -57,6 +57,9 @@ namespace City2RVT.GUI
                         {
                             exporter.addCityGMLAttributes(model, doc, cityGMLBuildingList);
                         }
+
+                        exporter.addExternalData(model, doc);
+
                         txn.Commit();
                     }
                     model.SaveAs(dialog.ExportPath);
