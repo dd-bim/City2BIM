@@ -35,7 +35,6 @@ namespace City2RVT.GUI.Properties
                 }
                 else
                 {
-                    var schemaList = Schema.ListSchemas();
                     var firstElemId = selectedIds.First();
                     Element pickedElement = doc.GetElement(firstElemId);
 
@@ -46,6 +45,11 @@ namespace City2RVT.GUI.Properties
                     foreach (var schemaGUID in schemaGUIDS)
                     {
                         var currentSchema = Schema.Lookup(schemaGUID);
+                        if (currentSchema.SchemaName == "ExternalDataCatalogSchema")
+                        {
+                            continue;
+                        }
+
                         Entity ent = pickedElement.GetEntity(currentSchema);
 
                         Dictionary<string, string> schemaAttributes = new Dictionary<string, string>();

@@ -89,8 +89,7 @@ namespace City2RVT.ExternalDataCatalog
                 schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
                 schemaBuilder.SetWriteAccessLevel(AccessLevel.Public);
 
-                schemaBuilder.AddSimpleField("ObjectType", typeof(string));
-                schemaBuilder.AddSimpleField("Properties", typeof(string));
+                schemaBuilder.AddMapField("data", typeof(string), typeof(string));
 
                 externalSchema = schemaBuilder.Finish();
 

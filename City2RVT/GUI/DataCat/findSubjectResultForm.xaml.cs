@@ -100,12 +100,38 @@ namespace City2RVT.GUI.DataCat
 
                         Schema externalSchema = ExternalDataUtils.createExternalDataCatalogSchema(uiDoc.Document);
                         var revitElement = uiDoc.Document.GetElement(selectedIds.FirstOrDefault());
-                        var revitEntity = new Entity(externalSchema);
 
-                        revitEntity.Set<string>(externalSchema.GetField("ObjectType"), node.name);
-                        revitEntity.Set<string>(externalSchema.GetField("Properties"), editor.getDataAsJsonString());
+                        var revitEntity = revitElement.GetEntity(externalSchema);
 
-                        revitElement.SetEntity(revitEntity);
+                        //if entity already exists data gets attached -> multiple property sets for one element possible
+                        if (revitEntity.IsValid())
+                        {
+                            var data = revitEntity.Get <IDictionary<string, string>>("data");
+
+                            if (data.ContainsKey(node.name))
+                            {
+                                data[node.name] = editor.getDataAsJsonString();
+                            }
+
+                            else
+                            {
+                                data.Add(node.name, editor.getDataAsJsonString());
+                            }
+
+                            revitEntity.Set<IDictionary<string, string>>("data", data);
+                            revitElement.SetEntity(revitEntity);
+
+                        }
+
+                        else
+                        {
+                            var data = new Dictionary<string, string>();
+                            data.Add(node.name, editor.getDataAsJsonString());
+                            revitEntity = new Entity(externalSchema);
+                            revitEntity.Set<IDictionary<string, string>>("data", data);
+                            revitElement.SetEntity(revitEntity);
+                        }
+
                         trans.Commit();
                     }
                 }

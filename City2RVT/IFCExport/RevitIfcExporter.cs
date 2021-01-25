@@ -318,39 +318,38 @@ namespace City2RVT.IFCExport
                 Element revitElement = doc.GetElement(entry.Value);
                 Entity bpEntity = revitElement.GetEntity(externalDataSchema);
 
-                string objectType = bpEntity.Get<string>("ObjectType");
-                string propertiesAsJsonString = bpEntity.Get<string>("Properties");
-                var propertyDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(propertiesAsJsonString);
-
                 if (bpEntity.IsValid())
                 {
                     var ifcEntity = model.Instances.FirstOrDefault<IfcProduct>(p => p.GlobalId == entry.Key);
 
-                    //create new propertiy set with attributes
+                    //create new property set with attributes
                     //read attributes from revit extensible storage
-                    var pSetRel = model.Instances.New<IfcRelDefinesByProperties>(r =>
+
+                    var dict = bpEntity.Get<IDictionary<string, string>>("data");
+
+                    foreach (KeyValuePair<string, string> externalDataPair in dict)
                     {
-                        r.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSet =>
+                        //attribute data that is stored as single json string in revit gets deserialized to c# dictionary
+                        var propertyDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(externalDataPair.Value);
+
+                        var pSetRel = model.Instances.New<IfcRelDefinesByProperties>(r =>
                         {
-                            pSet.Name = "ExternalDataCatalog";
-
-                            pSet.HasProperties.Add(model.Instances.New<IfcPropertySingleValue>(p =>
+                            r.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSet =>
                             {
-                                p.Name = "ObjectType";
-                                p.NominalValue = new IfcText(objectType);
-                            }));
+                                pSet.Name = externalDataPair.Key;
 
-                            foreach (KeyValuePair<string,string> property in propertyDict)
-                            {
-                                pSet.HasProperties.Add(model.Instances.New<IfcPropertySingleValue>(p =>
+                                foreach (KeyValuePair<string, string> property in propertyDict)
                                 {
-                                    p.Name = property.Key;
-                                    p.NominalValue = new IfcText(property.Value);
-                                }));
-                            }
+                                    pSet.HasProperties.Add(model.Instances.New<IfcPropertySingleValue>(p =>
+                                    {
+                                        p.Name = property.Key;
+                                        p.NominalValue = new IfcText(property.Value);
+                                    }));
+                                }
+                            });
                         });
-                    });
-                    pSetRel.RelatedObjects.Add(ifcEntity);
+                        pSetRel.RelatedObjects.Add(ifcEntity);
+                    }
                 }
             }
         }
