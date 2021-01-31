@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -55,7 +56,7 @@ namespace City2RVT.IFCExport
             }
         }
 
-        public void startRevitIfcExport(string outFolderPath, string outFileName, ExternalCommandData commandData)
+        public void startRevitIfcExport(string outFilePath, ExternalCommandData commandData)
         {
             FilteredElementCollector topoCollector = new FilteredElementCollector(this.doc).OfCategory(BuiltInCategory.OST_Topography);
             var view = commandData.Application.ActiveUIDocument.ActiveView;
@@ -89,7 +90,7 @@ namespace City2RVT.IFCExport
                     IFCOptions.AddOption("ExportVisibleElementsInView", "true");
                     IFCOptions.AddOption("VisibleElementsOfCurrentView", "true");
 
-                    doc.Export(outFolderPath, outFileName, IFCOptions);
+                    doc.Export(Path.GetDirectoryName(outFilePath), Path.GetDirectoryName(outFilePath), IFCOptions);
 
                     exportTrans.Commit();
                 }

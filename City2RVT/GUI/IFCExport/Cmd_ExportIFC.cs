@@ -27,9 +27,6 @@ namespace City2RVT.GUI
             Document doc = uiDoc.Document;
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            string outFolder = @"D:\LandBIM\OrdnerÜbergabe\Testdaten\IFC_ExportTest_Tim";
-            string outFileName = "ExportIfc.ifc";
-            string completePath = Path.Combine(outFolder, outFileName);
 
             var cityGMLBuildingList = utils.getIfc2CityGMLGuidDic(doc);
 
@@ -40,9 +37,9 @@ namespace City2RVT.GUI
             {
                 RevitIfcExporter exporter = new RevitIfcExporter(doc);
 
-                exporter.startRevitIfcExport(outFolder, outFileName, commandData);
+                exporter.startRevitIfcExport(dialog.ExportPath, commandData);
 
-                using (var model = IfcStore.Open(completePath))
+                using (var model = IfcStore.Open(dialog.ExportPath))
                 {
                     using (var txn = model.BeginTransaction("Edit standard Revit export"))
                     {
@@ -66,23 +63,6 @@ namespace City2RVT.GUI
                 }
             }
 
-            //RevitIfcExporter exporter = new RevitIfcExporter(doc);
-            //exporter.startRevitIfcExport(outFolder, outFileName, commandData);
-
-            //var guidDic = utils.getIfc2CityGMLGuidDic(doc);
-            //exporter.addCityGMLAttributes(completePath, doc, guidDic);
-
-
-            /*string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "City2BIM");
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            TaskDialog.Show("Ifc Export", "Please use Revit Ifc-Exporter. For correct naming of georef property set please import" +
-                " City2BIM_ParameterSet.txt in " + folder + " as user-defined Property Set in the IFC Exporter!");
-
-            var ifcSem = new Builder.Revit_Semantic(commandData.Application.ActiveUIDocument.Document);
-            ifcSem.CreateParameterSetFile();
-            */
             return Result.Succeeded;
         }
     }
