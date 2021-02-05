@@ -2,7 +2,9 @@
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+
 using Autodesk.Revit.UI;
+using Serilog;
 
 namespace City2RVT.GUI
 {
@@ -20,6 +22,15 @@ namespace City2RVT.GUI
             // Add a new Tab
             string tabName = "City2BIM";
             application.CreateRibbonTab(tabName);
+
+            string logPath = Path.Combine(Path.GetDirectoryName(thisAssemblyPath), "City2RVTLog.log");
+            //string logPath = @"D:\dev\Projekte\City2RVTLog.log";
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, rollOnFileSizeLimit: true)
+                .CreateLogger();
+
+            Log.Information("Application started!");
+            //Log.Information("assumed log path is: " + assumedLogPath);
 
             #region Georef panel
 
@@ -154,6 +165,7 @@ namespace City2RVT.GUI
 
         public Result OnShutdown(UIControlledApplication application)
         {
+            Log.CloseAndFlush();
             // nothing to clean up in this simple case
             return Result.Succeeded;
         }

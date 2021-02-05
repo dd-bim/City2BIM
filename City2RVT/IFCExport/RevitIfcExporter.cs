@@ -90,7 +90,7 @@ namespace City2RVT.IFCExport
                     IFCOptions.AddOption("ExportVisibleElementsInView", "true");
                     IFCOptions.AddOption("VisibleElementsOfCurrentView", "true");
 
-                    doc.Export(Path.GetDirectoryName(outFilePath), Path.GetDirectoryName(outFilePath), IFCOptions);
+                    doc.Export(Path.GetDirectoryName(outFilePath), Path.GetFileName(outFilePath), IFCOptions);
 
                     exportTrans.Commit();
                 }

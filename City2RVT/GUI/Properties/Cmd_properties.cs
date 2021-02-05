@@ -7,6 +7,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using Serilog;
 
 namespace City2RVT.GUI.Properties
 {
@@ -31,6 +32,7 @@ namespace City2RVT.GUI.Properties
 
                 if (selectedIds.Count != 1)
                 {
+                    Log.Warning("ManageProperties: to much or to less elements were selected. nr of selected elements: " + selectedIds.Count);
                     TaskDialog.Show("Hint", "Please only select one element for which custom attribtes should be shown!");
                 }
                 else
