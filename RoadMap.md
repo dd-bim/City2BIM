@@ -39,6 +39,12 @@
 
 ## Revit
 
+### Versionsmanagement, Bauen und Testen
+- Studierende und Mitarbeiter arbeiten im eigenen Branch und senden regelmäßig Pull Requests
+- Es gibt einen Testdatensatz (Ingoldstadt, DD-BIM Ordner auf kfs1) zum Test der City2BIM Plugins Releaseversionen in allen Revit Versionen (2019-2021)
+- Kurze Testanleitung schreiben (Georef->DGM->,CityGML,ALKIS, IFC-Export)
+
+
 ### Site Subregion
 - Performance sehr schlecht, wenn mehr als ca. 20 Subregions pro TopographySurface definiert werden!
 ```C#
