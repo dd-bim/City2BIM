@@ -65,6 +65,7 @@
   - Georefchecker (exe)
   - IfcTerrain (exe mit und ihne GUI)
   - SurveyorsPlanToIfc
+  - UnitTests
 
 ### Versionsmanagement, Bauen und Testen
 - Studierende und Mitarbeiter arbeiten im eigenen Branch und senden regelmäßig Pull Requests
@@ -79,24 +80,33 @@
 ```
 - Noch mehr TopographySurfaces für Flurstücke anlegen und diese in 10er- 20er Pakete erstellen?
   - Nachteil: Noch viel mehr "unnötiges" Gelände in Revit-Dokument
-- Anderes Revit-Bauteil verwenden? 
-
+- Anderes Revit-Bauteil verwenden?
+- Work-Around: ES gibt einen räumlichen Filter / Buffer um den Projektbasispunkt ca. 100 m (default) 
+  - ALKIS +/-100 m
+  - XPlanung  +/- 250 m 
+  
 ### Materialien
 - Für Alkis und XPlanung nach Umstrukturierung keine Materialdefinition mehr
+- Siehe Felix ProgressPatch / XXX.cs
 
 ### Surveyors Plan to Revit
-?
-
+- (MA Marcus Schröder)
 
 ## IFC-Export
 
 ### Umgebungsmodelle Master
 - Revit Projektdateien neu aufsetzen? Für verschiedene Rvt Versionen (2019, 2020, 2021)? --> dauert lange
 - Export durchführen. Fehler dokumentieren
+- Tim an Marcus
 
+## Dokumentation und Testung
 
-## Dokumentation
-- Berarbeitung nötig :(
+- Berarbeitung nötig :( mehere md Dateien)
+    - Kurzanleitung zum Bedienen
+    - Installation
+    - Ausführliche Beschreibung (Parameter,...)
+    - Entwicklung (Wiki?)
+- Marcus startet mit Tests
 
 
 ## Abstandsflchen
