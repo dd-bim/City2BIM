@@ -16,6 +16,7 @@ using Xbim.Ifc4.MeasureResource;
 using Xbim.Ifc4.RepresentationResource;
 using Xbim.Ifc4.ProductExtension;
 using Newtonsoft.Json;
+using Serilog;
 
 using City2RVT.Calc;
 using City2RVT.ExternalDataCatalog;
@@ -90,11 +91,15 @@ namespace City2RVT.IFCExport
                     IFCOptions.AddOption("ExportVisibleElementsInView", "true");
                     IFCOptions.AddOption("VisibleElementsOfCurrentView", "true");
 
+                    Log.Information("Startet Revit IFC-Export");
                     doc.Export(Path.GetDirectoryName(outFilePath), Path.GetFileName(outFilePath), IFCOptions);
+                    
 
                     exportTrans.Commit();
                 }
 
+                Log.Information("Finished Revit IFC-Export");
+                
                 if (elementsToHide.Count > 0)
                 {
                     using (Transaction unHideTrans = new Transaction(doc, "unhide topo elements"))

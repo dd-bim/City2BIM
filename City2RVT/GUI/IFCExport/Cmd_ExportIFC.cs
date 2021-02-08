@@ -6,10 +6,11 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Xbim.Ifc;
 using Xbim.Ifc4.ProductExtension;
+using Serilog;
 
 using City2RVT.IFCExport;
 using City2RVT.GUI.IFCExport;
-using City2RVT.ExternalDataCatalog;
+
 
 namespace City2RVT.GUI
 {
@@ -39,6 +40,8 @@ namespace City2RVT.GUI
 
                 exporter.startRevitIfcExport(dialog.ExportPath, commandData);
 
+                Log.Information("start custom IFC export");
+
                 using (var model = IfcStore.Open(dialog.ExportPath))
                 {
                     using (var txn = model.BeginTransaction("Edit standard Revit export"))
@@ -62,6 +65,8 @@ namespace City2RVT.GUI
                     model.SaveAs(dialog.ExportPath);
                 }
             }
+
+            Log.Information("finished custom IFC export");
 
             return Result.Succeeded;
         }
