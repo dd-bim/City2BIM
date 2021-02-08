@@ -39,6 +39,33 @@
 
 ## Revit
 
+### Aufbau Solution und Projektdateien
+
+- Solution (GeospatialEngineeringBIM)
+  - BIMGISInteropLibs (alle mit Serilog)
+    - Georef (Bibliothek für LoGeoRef, CRS-Berechnungen)
+    - Terrain (Bibliothek für DGM-Import, Modellbildung)
+    - CityGML (Bibliothek zum Lesen und Heilen von CityGML)
+    - Alkis
+    - XPlanung
+    - SurveyorsPlan (Biliothek zum CAD Import für topographische Objekte)
+      - DXF (Punkte,Linien,Flächen,Layer)
+      - Anbinden von Objektbibliotheken (?)
+    - datacat
+  - City2Rvt (Revit-Plugin mit Revit API) 
+    - Georef 
+    - Terrain
+    - CityGML
+    - ALKIS
+    - XPlanung
+    - datacat
+    - SurveyorsPlan
+    - Options (Manage Properties / Hide Surfaces / log )    
+  - City2IFC (IFC Konverter, stand alone)
+  - Georefchecker (exe)
+  - IfcTerrain (exe mit und ihne GUI)
+  - SurveyorsPlanToIfc
+
 ### Versionsmanagement, Bauen und Testen
 - Studierende und Mitarbeiter arbeiten im eigenen Branch und senden regelmäßig Pull Requests
 - Es gibt einen Testdatensatz (Ingoldstadt, DD-BIM Ordner auf kfs1) zum Test der City2BIM Plugins Releaseversionen in allen Revit Versionen (2019-2021)
