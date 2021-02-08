@@ -101,7 +101,7 @@
 
 ## Dokumentation und Testung
 
-- Berarbeitung nötig :( mehere md Dateien)
+- Berarbeitung nötig :(in Wiki)
     - Kurzanleitung zum Bedienen
     - Installation
     - Ausführliche Beschreibung (Parameter,...)
