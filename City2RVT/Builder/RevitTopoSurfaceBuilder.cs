@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.ExtensibleStorage;
 using City2BIM.Geometry;
 
 namespace City2RVT.Builder
@@ -36,6 +38,8 @@ namespace City2RVT.Builder
                 {
                     Prop_Revit.TerrainId = surface.Id; //needed for draping of 2D data, e.g. ALKIS data
 
+                    storeTerrainIDInExtensibleStorage(doc, surface.Id);
+
                     Parameter kommentarParam = surface.LookupParameter("Kommentare");
                     kommentarParam.Set("DTM: " + dtmFile);
 
@@ -43,6 +47,37 @@ namespace City2RVT.Builder
                 }
 
                 t.Commit();
+            }
+        }
+
+        private static void storeTerrainIDInExtensibleStorage(Document doc, ElementId terrainID)
+        {
+            using (SubTransaction trans = new SubTransaction(doc))
+            {
+                trans.Start();
+                Schema terrainIDSchema = utils.getSchemaByName("HTWDD_TerrainID");
+
+                if (terrainIDSchema == null)
+                {
+                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                    sb.SetSchemaName("HTWDD_TerrainID");
+                    sb.SetReadAccessLevel(AccessLevel.Public);
+                    sb.SetWriteAccessLevel(AccessLevel.Public);
+
+                    FieldBuilder fb = sb.AddSimpleField("terrainID", typeof(ElementId));
+                    fb.SetDocumentation("Field stores element id of TopoGraphySurface of imported DTM");
+
+                    terrainIDSchema = sb.Finish();
+                }
+
+                Entity ent = new Entity(terrainIDSchema);
+                Field terrainIDField = terrainIDSchema.GetField("terrainID");
+                ent.Set<ElementId>(terrainIDField, terrainID);
+
+                DataStorage terrainIDStorage = DataStorage.Create(doc);
+                terrainIDStorage.SetEntity(ent);
+
+                trans.Commit();
             }
         }
     }

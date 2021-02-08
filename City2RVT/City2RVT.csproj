@@ -93,6 +93,15 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.6.8.0\lib\net461\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.6.8.0\lib\net461\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.8.0\lib\net461\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -112,11 +121,20 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RestSharp, Version=106.11.7.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.File.4.1.0-dev-00806\lib\net45\Serilog.Sinks.File.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -128,9 +146,13 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.8.0\lib\net461\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -143,6 +165,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Text.Encodings.Web, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.4.7.1\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Text.Json, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Json.4.7.2\lib\net461\System.Text.Json.dll</HintPath>
@@ -154,6 +177,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -186,21 +210,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\AlkisBuilder.cs" />
     <Compile Include="Builder\IfcBuilder.cs" />
-    <Compile Include="Builder\RevitXPlanBuilder.cs" />
-    <Compile Include="Builder\XPlan_Semantic.cs" />
+    <Compile Include="Builder\XPlanBuilder.cs" />
     <Compile Include="Calc\ConvexHull.cs" />
     <Compile Include="Calc\GeorefCalc.cs" />
     <Compile Include="Calc\Transformation.cs" />
     <Compile Include="Calc\UTMcalc.cs" />
+    <Compile Include="ExternalDataCatalog\ExternalDataClient.cs" />
+    <Compile Include="ExternalDataCatalog\ExternalDataUtils.cs" />
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
+    <Compile Include="GUI\DataCat\Cmd_DataCatLogin.cs" />
+    <Compile Include="GUI\DataCat\Cmd_DataCatSubjQuery.cs" />
+    <Compile Include="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
+      <DependentUpon>DataCatalogEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DataCat\findSubjectResultForm.xaml.cs">
+      <DependentUpon>findSubjectResultForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DataCat\LoginScreen.xaml.cs">
+      <DependentUpon>LoginScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
     <Compile Include="GUI\GUI_helper.cs" />
-    <Compile Include="GUI\Modify\ModifyParameterForm.cs" />
-    <Compile Include="GUI\Modify\ModifyParameterForm.Designer.cs">
-      <DependentUpon>ModifyParameterForm.cs</DependentUpon>
+    <Compile Include="GUI\IFCExport\IfcExportDialog.xaml.cs">
+      <DependentUpon>IfcExportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Modify\LayerSelector.xaml.cs">
+      <DependentUpon>LayerSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NAS2BIM\ImportDialogAlkis.xaml.cs">
+      <DependentUpon>ImportDialogAlkis.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Properties\Cmd_properties.cs" />
+    <Compile Include="GUI\Properties\PropertyWindow.xaml.cs">
+      <DependentUpon>PropertyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Properties\Wf_showEntities.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,30 +267,28 @@
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
-    <Compile Include="GUI\Modify\Hide_Layers.xaml.cs">
-      <DependentUpon>Hide_Layers.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\XPlan2BIM\IfcXBim.cs" />
-    <Compile Include="GUI\XPlan2BIM\Prop_XPLAN_settings.cs" />
-    <Compile Include="GUI\XPlan2BIM\Wpf_XPlan.xaml.cs">
-      <DependentUpon>Wpf_XPlan.xaml</DependentUpon>
+    <Compile Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml.cs">
+      <DependentUpon>ImportXPlanDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\XPlan2BIM\Prop_XPLAN_settings.cs" />
     <Compile Include="GUI\XPlan2BIM\Wpf_XPlan2IFC.xaml.cs">
       <DependentUpon>Wpf_XPlan2IFC.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\XPlan2BIM\XPlan_Inhalt.cs" />
     <Compile Include="GUI\XPlan2BIM\XPlan_Parameter.cs" />
+    <Compile Include="IFCExport\IfcUtils.cs" />
+    <Compile Include="IFCExport\RevitIfcExporter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reader\ReadALKIS.cs" />
+    <Compile Include="Reader\MetaInformation.cs" />
     <Compile Include="Reader\ReadCityGML.cs" />
     <Compile Include="Reader\FileDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader\ReadTerrain.cs" />
-    <Compile Include="Builder\RevitAlkisBuilder.cs" />
     <Compile Include="Builder\RevitCityBuilder.cs" />
     <Compile Include="Builder\RevitTopoSurfaceBuilder.cs" />
     <Compile Include="Builder\Revit_Build.cs" />
@@ -264,17 +307,17 @@
     </Compile>
     <Compile Include="GUI\IFCExport\Cmd_ExportIFC.cs" />
     <Compile Include="GUI\NAS2BIM\Prop_NAS_settings.cs" />
-    <Compile Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml.cs">
-      <DependentUpon>Wpf_NAS_settings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\NAS2BIM\Cmd_OpenALKISSettings.cs" />
     <Compile Include="GUI\NAS2BIM\Cmd_ReadALKIS.cs" />
     <Compile Include="GUI\UI_PlugIn.cs" />
-    <Compile Include="Reader\ReadXPlan.cs" />
     <Compile Include="ResourcePictures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourcePictures.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resource_MetaJSONs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource_MetaJSONs.resx</DependentUpon>
     </Compile>
     <Compile Include="Surveyorsplan2Revit\attributeList.cs" />
     <Compile Include="Surveyorsplan2Revit\Attributes.cs" />
@@ -295,23 +338,44 @@
     <Compile Include="Surveyorsplan2Revit\mainForm.Designer.cs">
       <DependentUpon>mainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\DataCat\DataCatalogEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\DataCat\findSubjectResultForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\DataCat\LoginScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GUI\NAS2BIM\Wpf_NAS_settings.xaml">
+    <Page Include="GUI\IFCExport\IfcExportDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Modify\LayerSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GUI\Modify\Hide_Layers.xaml">
+    <Page Include="GUI\NAS2BIM\ImportDialogAlkis.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Properties\PropertyWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\Properties\Wpf_CreateMetaJSON.xaml">
       <SubType>Designer</SubType>
@@ -321,9 +385,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\XPlan2BIM\Wpf_XPlan.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\XPlan2BIM\Wpf_XPlan2IFC.xaml">
       <SubType>Designer</SubType>
@@ -331,13 +395,23 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GUI\BIM2City\" />
     <Folder Include="GUI\Surveyorsplan2Revit\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="img\HideLayerIcon_32px_96dpi.png" />
+    <None Include="img\Vermesser32.png" />
+    <None Include="img\Attribute32.png" />
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="meta_json_files\aaa.json" />
+    <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
+    <EmbeddedResource Include="meta_json_files\xplan.json" />
+    <EmbeddedResource Include="meta_json_files\ZukunftBauAsJSON.json" />
+    <None Include="NLog.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Surveyorsplan2Revit\NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -366,7 +440,7 @@
     <None Include="bin\Debug\Georef_32px_96dpi.png" />
     <None Include="bin\Debug\IFC_32px_96dpi.png" />
     <Content Include="Geographic.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="GUI\Georeferencing\img\Georef_96dpi.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef10.png" />
@@ -392,9 +466,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GUI\Modify\ModifyParameterForm.resx">
-      <DependentUpon>ModifyParameterForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Properties\Wf_showEntities.resx">
       <DependentUpon>Wf_showEntities.cs</DependentUpon>
     </EmbeddedResource>
@@ -405,8 +476,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource_MetaJSONs.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource_MetaJSONs.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Surveyorsplan2Revit\listBoxForm.resx">
       <DependentUpon>listBoxForm.cs</DependentUpon>

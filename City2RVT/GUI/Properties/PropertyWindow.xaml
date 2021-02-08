@@ -1,0 +1,34 @@
+﻿<Window x:Class="City2RVT.GUI.Properties.PropertyWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:City2RVT.GUI.Properties"
+             mc:Ignorable="d" 
+             Width="600" MinWidth="600" MinHeight="700" Height="700" Title="Attributes for Object">
+    <StackPanel Margin="5">
+        <Grid Margin="10" Height="600">
+            <TabControl x:Name="tabs">
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <DataGrid AutoGenerateColumns="True" ItemsSource="{Binding}">
+                            </DataGrid>
+                        </Grid>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </Grid>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Margin="10 0 10 0" Content="save and close" Click="save_Click" Grid.Column="0"></Button>
+            <Button Margin="10 0 10 0" Content="cancel" Click="cancel_Click" Grid.Column="2"></Button>
+        </Grid>
+        
+    </StackPanel>
+</Window>

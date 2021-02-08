@@ -50,5 +50,29 @@ namespace City2BIM.Alkis
         /// Stores interior line segments (if applicable, could bw 
         /// </summary>
         public string Gmlid { get => gmlid; set => gmlid = value; }
+
+        public List<C2BPoint> getOuterRing()
+        {
+            List<C2BPoint> polyExt = this.Segments.Select(j => j[0]).ToList();
+            polyExt.Add(Segments[0][0]);
+            return polyExt;
+        }
+
+        public List<List<C2BPoint>> getInnerRings()
+        {
+            List<List<C2BPoint>> polysInt = new List<List<C2BPoint>>();
+            if (this.InnerSegments != null)
+            {
+                foreach (var segInt in this.InnerSegments)
+                {
+                    List<C2BPoint> polyInt = segInt.Select(j => j[0]).ToList();
+
+                    polyInt.Add(segInt[0][0]);
+                    polysInt.Add(polyInt);
+                }
+                return polysInt;
+            }
+            return polysInt;
+        }
     }
 }

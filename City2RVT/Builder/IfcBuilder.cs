@@ -176,6 +176,9 @@ namespace City2RVT.Builder
 
                 txn.Commit();
             }
+            
+            IDictionary<string, string> guidMap = utils.getIfc2CityGMLGuidDic(doc);
+            IfcXBim.addCityGMLAttributes(model, doc, guidMap);
         }
 
         public void CreateEnumeration(IfcStore model, IfcPropertyEnumeratedValue p)

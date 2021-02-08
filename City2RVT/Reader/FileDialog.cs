@@ -27,7 +27,7 @@ namespace City2RVT.Reader
                 case (Data.DGM):
                     {
                         ofd.Title = "Select Grid terrain file.";
-                        ofd.Filter = "DGM - XYZ coordinates (*.txt) | *.txt| DGM - XYZ coordinates (*.csv) | *.csv| DGM - XYZ coordinates (*.xyz) | *.xyz| All Files (*.*) | *.*";
+                        ofd.Filter = "DTM - XYZ coordinates (*.txt, *.xyz, *.csv)|*.txt; *.xyz; *.csv|All files (*.*)|*.*";
                         break;
                     }
                 case (Data.XPlanGML):

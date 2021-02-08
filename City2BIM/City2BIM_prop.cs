@@ -1,5 +1,4 @@
-﻿using City2BIM.GmlRep;
-
+﻿
 namespace City2BIM
 {
     public static class City2BIM_prop

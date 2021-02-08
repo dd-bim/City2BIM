@@ -88,6 +88,6 @@
         /// Enum for possible attribute namespaces
         /// Shortcuts for namespaces as saved in CityGML (+ Alkis) files
         /// </summary>
-        public enum AttrHierarchy { bldgCity, surface, wall, ground, roof, closure, outerCeiling, outerFloor, parcel, usage, bldgAlkis }
+        public enum AttrHierarchy { bldgCity, surface, wall, ground, roof, closure, outerCeiling, outerFloor, parcel, usage, bldgAlkis, alkis }
     }
 }

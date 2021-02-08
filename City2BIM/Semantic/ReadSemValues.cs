@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using City2BIM.GmlRep;
+using City2BIM.CityGML;
 
 namespace City2BIM.Semantic
 {

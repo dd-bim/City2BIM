@@ -1480,5 +1480,56 @@ namespace City2RVT.GUI.XPlan2BIM
                 return space;
             }
         }
+
+
+        public static void addCityGMLAttributes(IfcStore model, Document doc, IDictionary<string, string> ifc2CityGMLGuidDic)
+        {
+
+            //retrieve ifc to revit id dictionary
+            //IDictionary<string, string> ifc2CityGMLGuidDic = utils.getIfc2CityGMLGuidDic(doc);
+            var CityGMLImportSchema = utils.getSchemaByName("CityGMLImportSchema");
+
+            var ifcProject = model.Instances.OfType<IfcProject>().FirstOrDefault();
+
+            //start transaction for adding citygml attributs as property set
+            using (var txn = model.BeginTransaction("Create property sets for CityGML buildings"))
+            {
+                foreach(KeyValuePair<string, string> entry in ifc2CityGMLGuidDic)
+                {
+                    Element revitElement = doc.GetElement(entry.Value);
+                    Entity bpEntity = revitElement.GetEntity(CityGMLImportSchema);
+                    if (bpEntity.IsValid())
+                    {
+                        var buildingProxy = model.Instances.FirstOrDefault<IfcBuildingElementProxy>(d => d.GlobalId == entry.Key);
+
+                        //create new propertiy set with attributes
+                        //read attributes from revit extensible storage
+                        var pSetRel = model.Instances.New<IfcRelDefinesByProperties>(r =>
+                        {
+                            r.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSet =>
+                            {
+                                pSet.Name = "CityGML Attributes";
+
+                                foreach (var field in CityGMLImportSchema.ListFields())
+                                {
+                                    var value = bpEntity.Get<string>(field);
+                                    if (value != "")
+                                    {
+                                        pSet.HasProperties.Add(model.Instances.New<IfcPropertySingleValue>(p =>
+                                        {
+                                            p.Name = field.FieldName;
+                                            p.NominalValue = new IfcText(value);
+                                        }));
+                                    }
+                                }
+                            });
+                        });
+
+                        pSetRel.RelatedObjects.Add(buildingProxy);
+                    }
+                }
+                txn.Commit();
+            }
+        }
     }
 }
