@@ -117,4 +117,8 @@ Comparison / CmdVisibilityAnalysis.cs / ab Zeile 130)
 
 
 ## DataCat
-?
+- GUI mehr Strukturelemente (Fachmodell, Gruppe,...)?
+- Auswahl der Revitobjekte (Filter, Multiselektion)
+- Editieren, Ergänzen,..... einzelner Objekte
+- IFC Export (Benennung der Propertysets, Typ/Instanz, IfcClassification)
+
