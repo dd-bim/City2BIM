@@ -87,7 +87,8 @@
   
 ### Materialien
 - Für Alkis und XPlanung nach Umstrukturierung keine Materialdefinition mehr
-- Siehe Felix ProgressPatch / XXX.cs
+- Siehe Felix ProgressPatch / XXX.cs (progresspatch / 01_Quellcode / ConstructionProgressMonitoring / 
+Comparison / CmdVisibilityAnalysis.cs / ab Zeile 130)
 
 ### Surveyors Plan to Revit
 - (MA Marcus Schröder)
