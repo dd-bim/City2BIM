@@ -66,8 +66,14 @@
     <ApplicationIcon>DD_BIM_ICON.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BimGisCad, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BimGisCad.1.0.6\lib\netstandard2.0\BimGisCad.dll</HintPath>
+    </Reference>
     <Reference Include="GeoJSON.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoJSON.Net.1.1.64\lib\net45\GeoJSON.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="IxMilia.Dxf, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IxMilia.Dxf.0.8.0\lib\netstandard2.0\IxMilia.Dxf.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -91,8 +97,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
@@ -107,11 +119,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="City2BIM_prop.cs" />
+    <Compile Include="CityGML\CityGMLReaderTerrain.cs" />
+    <Compile Include="DXF\ReaderTerrain.cs" />
+    <Compile Include="GEOgraf\OHorizon.cs" />
+    <Compile Include="GEOgraf\OLine.cs" />
+    <Compile Include="GEOgraf\OPoint.cs" />
+    <Compile Include="GEOgraf\OTriangle.cs" />
+    <Compile Include="GEOgraf\Reader.cs" />
     <Compile Include="Geometry\C2BEdge.cs" />
     <Compile Include="Geometry\C2BPlane.cs" />
     <Compile Include="Geometry\C2BSolid.cs" />
     <Compile Include="Geometry\C2BVertex.cs" />
     <Compile Include="Geometry\C2BPoint.cs" />
+    <Compile Include="IFCTerrain\Result.cs" />
     <Compile Include="Semantic\Xml_AttrRep.cs" />
     <Compile Include="Semantic\Read_GmlDictionary.cs" />
     <Compile Include="Semantic\City_Semantic.cs" />
