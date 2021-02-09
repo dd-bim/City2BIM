@@ -100,6 +100,10 @@ Comparison / CmdVisibilityAnalysis.cs / ab Zeile 130)
 - Export durchführen. Fehler dokumentieren
 - Tim an Marcus
 
+## Lokalisierung
+- Wie Ressourcen anlegen und Nutzen?
+- Stringtable verwalten
+
 ## Dokumentation und Testung
 
 - Berarbeitung nötig :(in Wiki)
@@ -110,7 +114,7 @@ Comparison / CmdVisibilityAnalysis.cs / ab Zeile 130)
 - Marcus startet mit Tests
 
 
-## Abstandsflchen
+## Abstandsflächen
 - GeoOffice?
 - Testdatensatz anfertigen
 - Implementierung Vorschlag Zehrfeld?
