@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 using Autodesk.Revit.UI;
 using City2RVT.GUI.Modify;
-using City2BIM.Alkis;
+using BIMGISInteropLibs.Alkis;
 
 namespace City2RVT.GUI.NAS2BIM
 {

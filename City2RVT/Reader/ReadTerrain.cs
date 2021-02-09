@@ -6,8 +6,8 @@ using System.Linq;
 using System.Xml.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using C2BPoint = City2BIM.Geometry.C2BPoint;
-using GmlAttribute = City2BIM.Semantic.Xml_AttrRep;
+using C2BPoint = BIMGISInteropLibs.Geometry.C2BPoint;
+using GmlAttribute = BIMGISInteropLibs.Semantic.Xml_AttrRep;
 
 namespace City2RVT.Reader
 {

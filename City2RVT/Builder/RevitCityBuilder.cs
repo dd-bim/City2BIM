@@ -1,14 +1,14 @@
 ﻿using Autodesk.Revit.DB;
-using City2BIM.Geometry;
-using City2BIM.Semantic;
-using City2BIM.Logging;
+using BIMGISInteropLibs.Geometry;
+using BIMGISInteropLibs.Semantic;
+using BIMGISInteropLibs.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 using City2RVT.GUI;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using City2BIM.CityGML;
+using BIMGISInteropLibs.CityGML;
 
 namespace City2RVT.Builder
 {

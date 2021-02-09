@@ -6,9 +6,9 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using Autodesk.Revit.DB.Architecture;
 
-using City2BIM.Geometry;
-using City2BIM.Alkis;
-using City2BIM.Semantic;
+using BIMGISInteropLibs.Geometry;
+using BIMGISInteropLibs.Alkis;
+using BIMGISInteropLibs.Semantic;
 using City2RVT.Calc;
 
 namespace City2RVT.Builder

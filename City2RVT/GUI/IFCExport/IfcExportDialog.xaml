@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:City2RVT.GUI.IFCExport"
              mc:Ignorable="d" 
              d:DesignHeight="230" d:DesignWidth="800" Width="550" MinHeight="240" Height="240"
-             Title="City2BIM IfcExport">
+             Title="City2RVT IfcExport">
     <Border Padding="10">
         <StackPanel>
             <Grid Margin="0,5,0,15">

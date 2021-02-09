@@ -8,10 +8,10 @@ using Autodesk.Revit.DB.ExtensibleStorage;
 using Autodesk.Revit.DB.Fabrication;
 using Autodesk.Revit.UI;
 
-using City2BIM.Alkis;
-using City2BIM.Geometry;
-using City2BIM.Semantic;
-using City2BIM.XPlanung;
+using BIMGISInteropLibs.Alkis;
+using BIMGISInteropLibs.Geometry;
+using BIMGISInteropLibs.Semantic;
+using BIMGISInteropLibs.XPlanung;
 using City2RVT.Calc;
 using City2RVT;
 

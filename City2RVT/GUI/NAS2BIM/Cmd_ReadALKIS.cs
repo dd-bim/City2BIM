@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using City2BIM.Alkis;
+using BIMGISInteropLibs.Alkis;
 using City2RVT.Reader;
 using City2RVT.Builder;
 using City2RVT.GUI.NAS2BIM;

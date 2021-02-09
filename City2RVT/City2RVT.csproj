@@ -57,6 +57,9 @@
     <ApplicationIcon>img\HideLayerIcon_32px_96dpi.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BIMGISInteropLibs">
+      <HintPath>..\BIMGISInteropLibs\bin\Debug\BIMGISInteropLibs.dll</HintPath>
+    </Reference>
     <Reference Include="Esent.Interop, Version=1.9.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ManagedEsent.1.9.4\lib\net40\Esent.Interop.dll</HintPath>
     </Reference>
@@ -408,10 +411,6 @@
     <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
     <EmbeddedResource Include="meta_json_files\xplan.json" />
     <EmbeddedResource Include="meta_json_files\ZukunftBauAsJSON.json" />
-    <None Include="NLog.config" />
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Surveyorsplan2Revit\NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -491,10 +490,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\City2BIM\City2BIM.csproj">
-      <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
-      <Name>City2BIM</Name>
-    </ProjectReference>
     <ProjectReference Include="..\City2IFC\City2IFC.csproj">
       <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
       <Name>City2IFC</Name>

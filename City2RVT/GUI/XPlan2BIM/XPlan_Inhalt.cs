@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using City2BIM.Semantic;
+﻿using System.Collections.Generic;
+
+using BIMGISInteropLibs.Semantic;
 
 namespace City2RVT.GUI.XPlan2BIM
 {

@@ -1,5 +1,5 @@
-﻿using City2BIM;
-using City2BIM.CityGML;
+﻿using BIMGISInteropLibs;
+using BIMGISInteropLibs.CityGML;
 using System;
 using System.Globalization;
 using System.Windows;

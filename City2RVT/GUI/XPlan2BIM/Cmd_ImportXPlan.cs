@@ -9,7 +9,7 @@ using Autodesk.Revit.DB;
 /// <summary>
 /// </summary>
 using System.Xml.Linq;
-using City2BIM.XPlanung;
+using BIMGISInteropLibs.XPlanung;
 using City2RVT.Builder;
 using City2RVT.Reader;
 

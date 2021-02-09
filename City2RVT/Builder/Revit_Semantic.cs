@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Windows.Forms;
-using Xml_AttrRep = City2BIM.Semantic.Xml_AttrRep;
+using Xml_AttrRep = BIMGISInteropLibs.Semantic.Xml_AttrRep;
 
 namespace City2RVT.Builder
 {

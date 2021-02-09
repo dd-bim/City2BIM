@@ -7,7 +7,7 @@ using Microsoft.Win32;
 
 using Autodesk.Revit.UI;
 
-using City2BIM.XPlanung;
+using BIMGISInteropLibs.XPlanung;
 using City2RVT.GUI.Modify;
 
 namespace City2RVT.GUI.XPlan2BIM

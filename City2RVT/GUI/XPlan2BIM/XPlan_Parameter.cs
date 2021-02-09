@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using City2BIM.Semantic;
+using BIMGISInteropLibs.Semantic;
 using System.IO;
 using System.Reflection;
 using System.Windows;

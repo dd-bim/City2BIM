@@ -1,4 +1,4 @@
-﻿using City2BIM.CityGML;
+﻿using BIMGISInteropLibs.CityGML;
 using System;
 using System.IO;
 

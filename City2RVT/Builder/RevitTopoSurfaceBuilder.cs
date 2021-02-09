@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using City2BIM.Geometry;
+using BIMGISInteropLibs.Geometry;
 
 namespace City2RVT.Builder
 {

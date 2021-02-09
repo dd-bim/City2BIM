@@ -1,6 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using City2BIM.Semantic;
+using BIMGISInteropLibs.Semantic;
 using System;
 using System.Collections.Generic;
 using System.IO;
