@@ -23,7 +23,7 @@ namespace BIMGISInteropLibs.CityGML
         /// Reads a TIN from a CityGML file
         /// </summary>
         /// <param name="fileName">Location of the CityGML file</param>
-        /// <returns></returns>
+        /// <returns>TIN (in the form of result.tin)</returns>
         public static Result ReadTIN(string fileName)
         {
             //var logger = LogManager.GetCurrentClassLogger(); NLog removed

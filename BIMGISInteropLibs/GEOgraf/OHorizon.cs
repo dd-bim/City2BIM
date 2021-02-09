@@ -6,15 +6,23 @@ using System.Threading.Tasks;
 
 namespace BIMGISInteropLibs.GEOgraf
 {
+    /// <summary>
+    /// Horizon - class for processing in GEOgraf OUT
+    /// </summary>
     public class OHorizon
     {
-        //Dokumentation zum GRAFBAT - Format
+        //Documentation for GRAFBAT - Format
         #region Documenation
         //Link: https://vps2.hhk.de/geograf/Hilfe/GEOgraf/Anhang/Formatdokumentation/GRAFBAT_Format/GRAFBAT_Format.htm#Horizontdefinition
         #endregion
 
-        //Konstruktor
         #region Constructor
+        /// <summary>
+        /// Constructor for horizon
+        /// </summary>
+        /// <param name="HorNr">Horizon number (equals ID)</param>
+        /// <param name="Designation">Description of the horizon, insofar as included</param>
+        /// <param name="is3D">boolean value whether it is a 3D horizon (true) or 2D horizon (false)</param>
         public OHorizon(int HorNr, string Designation, bool is3D)
         {
             this.HorNr = HorNr;
@@ -23,13 +31,12 @@ namespace BIMGISInteropLibs.GEOgraf
         }
         #endregion
 
-        //Eigenschaften
         #region Properties
-        //Horizonnummer
+        //Horizon Number
         public int HorNr { get; set; }
-        //Beschreibung des Horizonts
+        //Description of the horizon
         public string Designation { get; set; }
-        //Boolscher Wert - true = 3D-Horizont; false = 2D-Horizont
+        //Boolean value - true = 3D horizon; false = 2D horizon
         public bool is3D { get; set; }
         #endregion
     }

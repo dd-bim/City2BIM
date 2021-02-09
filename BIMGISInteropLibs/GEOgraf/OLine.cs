@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BIMGISInteropLibs.GEOgraf
 {
+    /// <summary>
+    /// processing lines in GRAFBAT format
+    /// </summary>
     public class OLine
     {
         #region Documentation
@@ -13,6 +16,12 @@ namespace BIMGISInteropLibs.GEOgraf
         #endregion
 
         #region Constructors
+        /// <summary>
+        /// Constructed structure for a line according to GRAFBAT - format in processing of a TIN (if necessary also break edges)
+        /// </summary>
+        /// <param name="PNr1">Starting point of a line - described by the point number</param>
+        /// <param name="PNr2">End point of a line - described by the point number</param>
+        /// <param name="LineType">line type - if necessary to use for filtering</param>
         public OLine(OPoint PNr1, OPoint PNr2, int LineType)
         {
             this.PNr1 = PNr1;
@@ -22,11 +31,8 @@ namespace BIMGISInteropLibs.GEOgraf
         #endregion
 
         #region Properties
-        //Startpoint
         public OPoint PNr1 { get; set; }
-        //Endpoint
         public OPoint PNr2 { get; set; }
-        //Linetype - Linienart - ggf. für die Nutzung zur Filterung
         public int LineType { get; set; }
         #endregion
     }

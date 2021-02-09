@@ -46,7 +46,7 @@ namespace BIMGISInteropLibs.DXF
         /// </summary>
         /// <param name="fileName">Location of the DXF file</param>
         /// <param name="dxfFile">Output for further processing</param>
-        /// <returns></returns>
+        /// <returns>DXFFile for processing via IxMilia</returns>
         public static bool ReadFile(string fileName, out DxfFile dxfFile)
         {
             //try to open DXF file via FileStream
@@ -76,7 +76,7 @@ namespace BIMGISInteropLibs.DXF
         /// <param name="breaklinelayer">all layers of the breaklines</param>
         /// <param name="minDist">minimal distance</param>
         /// <param name="breakline">boolean value whether to process break edges</param>
-        /// <returns></returns>
+        /// <returns>TIN (in form of result.Tin)</returns>
         public static Result ReadDXFTin(DxfFile dxfFile, string layer, string breaklinelayer, double minDist, bool breakline)
         {
             //[TODO]

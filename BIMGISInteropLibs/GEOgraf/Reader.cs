@@ -21,6 +21,9 @@ using BIMGISInteropLibs.IFCTerrain;
 
 namespace BIMGISInteropLibs.GEOgraf
 {
+    /// <summary>
+    /// Processing GEOgraf OUT (based on meshing)
+    /// </summary>
     public static class ReadOUT
     {
         #region DictionaryCollection - TIN
@@ -41,7 +44,13 @@ namespace BIMGISInteropLibs.GEOgraf
         //EMPTY
         #endregion
 
-        //auslesen aller Punkte
+        /// <summary>
+        /// Class for reading out the mesh (via points and triangles)
+        /// </summary>
+        /// <param name="filePath">Location of the GEOgraf OUT - file</param>
+        /// <param name="pointIndex2NumberMap"></param>
+        /// <param name="triangleIndex2NumberMap"></param>
+        /// <returns>TIN - for processing in IFCTerrain or Revit</returns>
         public static Result ReadOutData(string filePath, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumberMap)
         {
             //Logger

@@ -11,6 +11,9 @@ using BimGisCad.Representation.Geometry.Composed;   //TIN
 
 namespace BIMGISInteropLibs.IFCTerrain
 {
+    /// <summary>
+    /// Exchange class for processing tins, break edges and error messages
+    /// </summary>
     public class Result
     {
         //Error - [TODO] check if necessary
