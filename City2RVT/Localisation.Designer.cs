@@ -61,11 +61,92 @@ namespace City2RVT {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Server Settings.
+        ///   Looks up a localized string similar to Apply.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server {
+        internal static string Wpf_CityGML_settingsButton_bt_applyGeoref {
             get {
-                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server", resourceCulture);
+                return ResourceManager.GetString("Wpf_CityGML_settingsButton_bt_applyGeoref", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Codelist translation.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_code_header {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_code_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  of codes into its meaning.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_code_lbl8 {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_code_lbl8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to use Codelist for translation.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_code_lbl9 {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_code_lbl9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_Bt_browse {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_Bt_browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File settings.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_header {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File:.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_lbl6 {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_lbl6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order of coordinates:.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_lbl7 {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_lbl7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XYZ / NEH (Northings, Eastings, Height).
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_rb_XYZ {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_rb_XYZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to YXZ / ENH (Eastings, Northings, Height.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_rb_YXZ {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_rb_YXZ", resourceCulture);
             }
         }
         
@@ -84,6 +165,15 @@ namespace City2RVT {
         internal static string Wpf_CityGML_settingsGroupBox_gr_server_check_saveResponse {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_check_saveResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Settings.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_server_header {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_header", resourceCulture);
             }
         }
         
@@ -151,11 +241,38 @@ namespace City2RVT {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Source.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_source_header {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_source_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CityGML file.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_source_rb_file {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_source_rb_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VCS server.
+        /// </summary>
+        internal static string Wpf_CityGML_settingsGroupBox_gr_source_rb_server {
+            get {
+                return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_source_rb_server", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static string Wpf_CityGML_settingsWindowTitleSettings {
+        internal static string Wpf_CityGML_settingsWindowTitle {
             get {
-                return ResourceManager.GetString("Wpf_CityGML_settingsWindowTitleSettings", resourceCulture);
+                return ResourceManager.GetString("Wpf_CityGML_settingsWindowTitle", resourceCulture);
             }
         }
     }
