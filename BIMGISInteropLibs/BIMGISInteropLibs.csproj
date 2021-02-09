@@ -131,7 +131,9 @@
     <Compile Include="Geometry\C2BSolid.cs" />
     <Compile Include="Geometry\C2BVertex.cs" />
     <Compile Include="Geometry\C2BPoint.cs" />
+    <Compile Include="IFCTerrain\Common.cs" />
     <Compile Include="IFCTerrain\Result.cs" />
+    <Compile Include="LandXML\ReaderTerrain.cs" />
     <Compile Include="Logging\LogWriterIfcTerrain.cs" />
     <Compile Include="Semantic\Xml_AttrRep.cs" />
     <Compile Include="Semantic\Read_GmlDictionary.cs" />

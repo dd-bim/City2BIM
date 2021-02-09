@@ -10,7 +10,7 @@ namespace BIMGISInteropLibs.Logging
     /// Logging for processing using IFCTerrain
     /// CURRENTLY only DUMMY
     /// </summary>
-    class LogWriterIFCTerrain
+    class LogWriterIfcTerrain
     {
     }
 }
