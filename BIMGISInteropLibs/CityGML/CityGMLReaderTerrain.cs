@@ -20,11 +20,11 @@ namespace BIMGISInteropLibs.CityGML
     class CityGMLReaderTerrain
     {
         /// <summary>
-        ///  Liest das erste TIN aus einer GML Datei
+        /// Reads a TIN from a CityGML file
         /// </summary>
-        /// <param name="fileName">  </param>
-        /// <returns>  </returns>
-        public static Result ReadTIN(bool is3d, string fileName, double minDist, string logFilePath, string verbosityLevel)
+        /// <param name="fileName">Location of the CityGML file</param>
+        /// <returns></returns>
+        public static Result ReadTIN(string fileName)
         {
             //var logger = LogManager.GetCurrentClassLogger(); NLog removed
 
