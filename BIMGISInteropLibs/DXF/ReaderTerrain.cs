@@ -23,7 +23,10 @@ namespace BIMGISInteropLibs.DXF
     
     class ReaderTerrain
     {
-        //Dictionary for DxfUnits - need for different unit import
+
+        /// <summary>
+        /// Dictionary for DxfUnits - need for different unit import
+        /// </summary>
         public static readonly Dictionary<DxfUnits, double> UnitToMeter = new Dictionary<DxfUnits, double>()
         {
             [DxfUnits.Millimeters] = 0.001,
@@ -38,7 +41,12 @@ namespace BIMGISInteropLibs.DXF
             [DxfUnits.Unitless] = 1.0
         };
 
-        //Reading DXF FILE and output DXF FILE for further processing
+        /// <summary>
+        /// Reading DXF FILE and output DXF FILE for further processing
+        /// </summary>
+        /// <param name="fileName">Location of the DXF file</param>
+        /// <param name="dxfFile">Output for further processing</param>
+        /// <returns></returns>
         public static bool ReadFile(string fileName, out DxfFile dxfFile)
         {
             //try to open DXF file via FileStream
@@ -60,10 +68,18 @@ namespace BIMGISInteropLibs.DXF
             }
         }
 
-        //Reader for reading Faces of an Dxf-file
-        public static Result ReadDXFTin(bool is3d, DxfFile dxfFile, string layer, string breaklinelayer, double minDist, bool breakline)
+        /// <summary>
+        /// Processing the meshing of a DXF file
+        /// </summary>
+        /// <param name="dxfFile">DXF-File</param>
+        /// <param name="layer">all layers of the mesh</param>
+        /// <param name="breaklinelayer">all layers of the breaklines</param>
+        /// <param name="minDist">minimal distance</param>
+        /// <param name="breakline">boolean value whether to process break edges</param>
+        /// <returns></returns>
+        public static Result ReadDXFTin(DxfFile dxfFile, string layer, string breaklinelayer, double minDist, bool breakline)
         {
-            //TODO
+            //[TODO]
             //use is3d is not implemented right now
 
             double minDistSq = minDist * minDist;
