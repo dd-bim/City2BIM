@@ -32,7 +32,9 @@ namespace BIMGISInteropLibs.CityGML
             var tinB = Tin.CreateBuilder(true);
             int pnr = 0;
 
+            //create new result to be able to transfer later
             var result = new Result();
+
             try
             {
                 using (var reader = XmlReader.Create(fileName))
@@ -58,7 +60,6 @@ namespace BIMGISInteropLibs.CityGML
                                 { reader.Read(); }
                                 if (insideTri)
                                 {
-                                    //var tin = new Mesh(is3d, minDist);
                                     while (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Triangle"
                                         && XElement.ReadFrom(reader) is XElement el)
                                     {
@@ -76,14 +77,12 @@ namespace BIMGISInteropLibs.CityGML
                                             tinB.AddPoint(pnr++, pt2);
                                             tinB.AddPoint(pnr++, pt3);
 
-                                            //adding Triangle to TIN-Builder
+                                            //adding Triangle to TIN-Builder (Referencing to point numbers just used)
                                             tinB.AddTriangle(pnr - 3, pnr - 2, pnr - 1, true);
-
-                                            //tin.AddFace(new[] { pt1, pt2, pt3 });
                                         }
-                                        reader.Read();
+                                        reader.Read(); // <-- check! is this necessary here? [TODO]
                                     }
-                                    /* ÜBERPRÜFUNG neu erstellen
+                                    /* Check if TIN is "error free" Add a new TIN
                                     if(!tin.Points.Any() || !tin.FaceEdges.Any())
                                     {
                                         result.Error = string.Format(Properties.Resources.errNoTINData, Path.GetFileName(fileName));
@@ -91,15 +90,16 @@ namespace BIMGISInteropLibs.CityGML
                                         return result;
                                     }
                                     */
-                                    //result.Mesh = tin;
+
+                                    //logging [TODO]
                                     //logger.Info("Reading GML-data successful");
                                     //logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
 
-                                    //TIN aus TIN-Builder erzeugen
+                                    //Generate TIN from TIN Builder
                                     Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-                                    //Result beschreiben
                                     result.Tin = tin;
-                                    //Result übergeben
+
+                                    //Result handed over
                                     return result;
                                 }
                             }
@@ -110,6 +110,7 @@ namespace BIMGISInteropLibs.CityGML
                     return result;
                 }
             }
+            //[TODO]: Pass error message and "Error" and add logging
             catch
             {
                 //result.Error = string.Format(Properties.Resources.errFileNotReadable, Path.GetFileName(fileName));
