@@ -1,4 +1,4 @@
-﻿<Window x:Class="City2RVT.GUI.Wpf_CityGML_settings"
+﻿<Window x:Name="WindowTitleSettings" x:Class="City2RVT.GUI.Wpf_CityGML_settings"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,17 +13,22 @@
             <RowDefinition Height="90" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="720"/>
+            <ColumnDefinition Width="40.667"/>
+            <ColumnDefinition Width="10.667"/>
+            <ColumnDefinition Width="43"/>
+            <ColumnDefinition Width="181"/>
+            <ColumnDefinition Width="93"/>
+            <ColumnDefinition Width="351.667"/>
             <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
-        <GroupBox Name="gr_source" Header="Source" FontSize="12" Grid.Column="2" Width="150" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,15,0,0">
+        <GroupBox Name="gr_source" Header="Source" FontSize="12" Grid.Column="6" Width="150" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10.333,15,0,0">
             <StackPanel Grid.Column="1">
                 <RadioButton Name="rb_server" Content="VCS server" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,15,0,0"/>
                 <RadioButton x:Name="rb_file" Content="CityGML file" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="15,15,0,0"/>
             </StackPanel>
         </GroupBox>
-        <Button Content="Apply" Name="bt_applyGeoref" Margin="22,0,58,14" Height="30" Width="120" Click="Bt_apply_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="2" />
-        <GroupBox Name="gr_server" Header="Server settings" HorizontalAlignment="Left" Height="180" Margin="10,16,0,15" VerticalAlignment="Center" Width="700" Grid.Row="0" Grid.ColumnSpan="2">
+        <Button Content="Apply" Name="bt_applyGeoref" Margin="22.333,0,57.667,14" Height="30" Width="120" Click="Bt_apply_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="6" />
+        <GroupBox Name="gr_server" Header="Server settings" HorizontalAlignment="Left" Height="180" Margin="10,16,0,15" VerticalAlignment="Center" Width="700" Grid.Row="0" Grid.ColumnSpan="6">
             <Grid Name="grid_server" HorizontalAlignment="Left" Height="150" Margin="20,0,0,0" VerticalAlignment="Top" Width="660">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="70" />
@@ -38,22 +43,22 @@
                 </Grid.RowDefinitions>
                 <TextBox Name="tb_server" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="420" IsEnabled="False" Grid.ColumnSpan="2" Height="18" Margin="10,16,10,17" Grid.Column="1"/>
                 <Button Content="Edit URL" Name="bt_editUrl" Click="Bt_editURL_Click"  Width="100" Height="25" Grid.Row="0" Grid.Column="3" Margin="10,10,50,11" />
-                <Label Content="Center:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" Height="26" Margin="2,13,10,12" />
-                <Label Content="Lat" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Height="26" Margin="0,13,0,12" />
+                <Label x:Name="lbl2" Content="Center:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="58" Height="26" Margin="0,12,10,12" />
+                <Label x:Name="lbl3" Content="Lat" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Height="26" Margin="0,12,170,12" />
                 <TextBox Name="tb_lat" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" IsEnabled="False" Height="18" Margin="62,16,38,16"/>
-                <Label Content="Lon" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Height="26" Margin="0,13,0,12"  />
+                <Label x:Name="lbl4" Content="Lon" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Height="26" Margin="0,13,0,12"  />
                 <TextBox Name="tb_lon" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" IsEnabled="False" Height="18" Margin="58,17,42,16"/>
                 <RadioButton Name="rb_site" IsChecked="True" Content="from Site location" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0" Grid.Column="3" Grid.Row="1" Height="15" Width="140"/>
                 <RadioButton Name="Rb_custom" Content="custom" HorizontalAlignment="Left" Grid.Column="3" Grid.Row="1" Margin="0,30,0,5" Width="58" Checked="Rb_custom_Checked"/>
-                <Label Content="Extent:" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" Height="26" Margin="2,12,10,13" />
+                <Label x:Name="lbl5" Content="Extent:" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" Height="26" Margin="2,12,10,13" />
                 <TextBox Name="tb_extent" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" Height="18" Margin="62,17,38,16" />
                 <Label Content="m" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Height="26" Margin="0,12,0,13" />
-                <Label Content="URL:" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" Height="26" Margin="2,12,10,13" />
+                <Label x:Name="lbl1" Content="URL:" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" Height="26" Margin="2,12,10,13" />
                 <CheckBox Name="check_saveResponse" Content="save response to" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center"/>
                 <Button Name="Bt_saveResponse" Content="..." Grid.Column="3" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Center" Width="26" Margin="0,16,10,14" Click="Bt_saveResponse_Click"/>
             </Grid>
         </GroupBox>
-        <GroupBox Name="gr_prop" Header="File settings" HorizontalAlignment="Left" Height="130" Margin="10,11,0,10" VerticalAlignment="Center" Width="700" Grid.Row="1" Grid.ColumnSpan="2">
+        <GroupBox Name="gr_prop" Header="File settings" HorizontalAlignment="Left" Height="130" Margin="10,15,0,16" VerticalAlignment="Center" Width="700" Grid.Row="1" Grid.ColumnSpan="6">
             <Grid Name="grid_prop" HorizontalAlignment="Left" Height="100" Margin="20,0,0,0" VerticalAlignment="Top" Width="670">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150" />
@@ -73,7 +78,7 @@
                 <Label Content="File:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="71" Height="26" Margin="0,10,0,15" />
             </Grid>
         </GroupBox>
-        <GroupBox Name="gr_code" Header="Codelist translation" HorizontalAlignment="Left" Height="70" Margin="10,11,0,10" VerticalAlignment="Center" Width="700" Grid.Row="2" Grid.ColumnSpan="2">
+        <GroupBox Name="gr_code" Header="Codelist translation" HorizontalAlignment="Left" Height="70" Margin="10,11,0,10" VerticalAlignment="Center" Width="700" Grid.Row="2" Grid.ColumnSpan="6">
             <Grid Name="grid_code" HorizontalAlignment="Left" Height="40" Margin="20,0,0,0" VerticalAlignment="Top" Width="670">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300" />

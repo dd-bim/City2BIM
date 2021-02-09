@@ -309,6 +309,11 @@
     <Compile Include="GUI\NAS2BIM\Prop_NAS_settings.cs" />
     <Compile Include="GUI\NAS2BIM\Cmd_ReadALKIS.cs" />
     <Compile Include="GUI\UI_PlugIn.cs" />
+    <Compile Include="Localisation.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localisation.resx</DependentUpon>
+    </Compile>
     <Compile Include="ResourcePictures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -470,6 +475,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localisation.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localisation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
