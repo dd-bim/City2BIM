@@ -146,6 +146,5 @@ namespace BIMGISInteropLibs.LandXML
             //logger.Error("No TIN-data found");
             return result;
         } //End ReadTIN
-
     }
 }

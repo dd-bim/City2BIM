@@ -121,6 +121,7 @@
     <Compile Include="City2BIM_prop.cs" />
     <Compile Include="CityGML\CityGMLReaderTerrain.cs" />
     <Compile Include="DXF\ReaderTerrain.cs" />
+    <Compile Include="ElevationGrid\ReaderTerrain.cs" />
     <Compile Include="GEOgraf\OHorizon.cs" />
     <Compile Include="GEOgraf\OLine.cs" />
     <Compile Include="GEOgraf\OPoint.cs" />
