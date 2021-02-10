@@ -126,7 +126,7 @@
     <Compile Include="GEOgraf\OLine.cs" />
     <Compile Include="GEOgraf\OPoint.cs" />
     <Compile Include="GEOgraf\OTriangle.cs" />
-    <Compile Include="GEOgraf\Reader.cs" />
+    <Compile Include="GEOgraf\ReaderTerrain.cs" />
     <Compile Include="Geometry\C2BEdge.cs" />
     <Compile Include="Geometry\C2BPlane.cs" />
     <Compile Include="Geometry\C2BSolid.cs" />
