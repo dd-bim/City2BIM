@@ -52,7 +52,7 @@
                     </Grid>
                 </Grid>
             </GroupBox> -->
-            <GroupBox Header="Select Alkis / XPlanung Export Type" Margin="0, 15, 0, 0">
+            <GroupBox x:Name="id1" Header="Select Alkis / XPlanung Export Type" Margin="0, 15, 0, 0">
                 <StackPanel x:Name="ExportTypePanel">
                     <RadioButton x:Name="geogElemRadioBtn" IsChecked="True" GroupName="exportTypeRadio" Margin="5,5,0,0" Content="IfcGeographicElement"></RadioButton>
                     <RadioButton x:Name="siteRadioBtn" GroupName="exportTypeRadio" Margin="5,5,0,0" Content="IfcSite"></RadioButton>

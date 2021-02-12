@@ -123,6 +123,72 @@
   <data name="DataCatalogEditorWindow_id2" xml:space="preserve">
     <value>cancel</value>
   </data>
+  <data name="IfcExportDialog" xml:space="preserve">
+    <value>City2RVT IfcExport</value>
+  </data>
+  <data name="IfcExportDialog_cancelBtn" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="IfcExportDialog_exportBtn" xml:space="preserve">
+    <value>export</value>
+  </data>
+  <data name="IfcExportDialog_FileLabel" xml:space="preserve">
+    <value>Export File</value>
+  </data>
+  <data name="IfcExportDialog_geogElemRadioBtn" xml:space="preserve">
+    <value>IfcGeographicElement</value>
+  </data>
+  <data name="IfcExportDialog_id1" xml:space="preserve">
+    <value>Select Alkis / XPlanung Export Type</value>
+  </data>
+  <data name="IfcExportDialog_saveAsButton" xml:space="preserve">
+    <value>Save As</value>
+  </data>
+  <data name="IfcExportDialog_siteRadioBtn" xml:space="preserve">
+    <value>IfcSite</value>
+  </data>
+  <data name="ImportDialogAlkis_browseButton" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ImportDialogAlkis_cancelButton" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="ImportDialogAlkis_clearSelectionBtn" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="ImportDialogAlkis_FileLabel" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ImportDialogAlkis_id1" xml:space="preserve">
+    <value>Layers to Import</value>
+  </data>
+  <data name="ImportDialogAlkis_id2" xml:space="preserve">
+    <value>Drape on Terrain</value>
+  </data>
+  <data name="ImportDialogAlkis_id3" xml:space="preserve">
+    <value>drape objects on imported terrain</value>
+  </data>
+  <data name="ImportDialogAlkis_importButton" xml:space="preserve">
+    <value>import</value>
+  </data>
+  <data name="ImportDialogAlkis_selectAllBtn" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="LayerSelector" xml:space="preserve">
+    <value>LayerSelector</value>
+  </data>
+  <data name="LayerSelector_apply" xml:space="preserve">
+    <value>apply</value>
+  </data>
+  <data name="LayerSelector_cancel" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="LayerSelector_selectAll" xml:space="preserve">
+    <value>select all</value>
+  </data>
+  <data name="LayerSelector_unSelectAll" xml:space="preserve">
+    <value>unselect all</value>
+  </data>
   <data name="LoginScreen_id1" xml:space="preserve">
     <value>Login to External Data Catalog</value>
   </data>
@@ -137,6 +203,15 @@
   </data>
   <data name="LoginScreen_id5" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="PropertyWindow" xml:space="preserve">
+    <value>Attributes for Object</value>
+  </data>
+  <data name="PropertyWindow_id1" xml:space="preserve">
+    <value>save and close</value>
+  </data>
+  <data name="PropertyWindow_id2" xml:space="preserve">
+    <value>cancel</value>
   </data>
   <data name="Wpf_CityGML_settings" xml:space="preserve">
     <value>Settings</value>
@@ -209,6 +284,15 @@
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_source_rb_server" xml:space="preserve">
     <value>VCS server</value>
+  </data>
+  <data name="Wpf_CreateMetaJSON" xml:space="preserve">
+    <value>Select theme</value>
+  </data>
+  <data name="Wpf_CreateMetaJSON_Btn_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Wpf_CreateMetaJSON_Cb_Theme" xml:space="preserve">
+    <value>Select a theme</value>
   </data>
   <data name="Wpf_GeoRef_Form" xml:space="preserve">
     <value>Georeferencing</value>
@@ -293,5 +377,29 @@
   </data>
   <data name="Wpf_GeoRef_Form_rb_siteToProj" xml:space="preserve">
     <value>Site (LatLon) to Projection (UTM)</value>
+  </data>
+  <data name="Wpf_showLayer" xml:space="preserve">
+    <value>Select layer</value>
+  </data>
+  <data name="Wpf_showLayer_btn_choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="Wpf_showLayer_btn_exportjson" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Wpf_showLayer_btn_gml" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Wpf_showLayer_btn_metajson" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Wpf_showLayer_id1" xml:space="preserve">
+    <value>GML</value>
+  </data>
+  <data name="Wpf_showLayer_id2" xml:space="preserve">
+    <value>Meta JSON</value>
+  </data>
+  <data name="Wpf_showLayer_id3" xml:space="preserve">
+    <value>Export JSON</value>
   </data>
 </root>

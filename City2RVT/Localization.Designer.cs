@@ -79,6 +79,222 @@ namespace City2RVT {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to City2RVT IfcExport.
+        /// </summary>
+        internal static string IfcExportDialog {
+            get {
+                return ResourceManager.GetString("IfcExportDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cancel.
+        /// </summary>
+        internal static string IfcExportDialog_cancelBtn {
+            get {
+                return ResourceManager.GetString("IfcExportDialog_cancelBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to export.
+        /// </summary>
+        internal static string IfcExportDialog_exportBtn {
+            get {
+                return ResourceManager.GetString("IfcExportDialog_exportBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export File.
+        /// </summary>
+        internal static string IfcExportDialog_FileLabel {
+            get {
+                return ResourceManager.GetString("IfcExportDialog_FileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IfcGeographicElement.
+        /// </summary>
+        internal static string IfcExportDialog_geogElemRadioBtn {
+            get {
+                return ResourceManager.GetString("IfcExportDialog_geogElemRadioBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Alkis / XPlanung Export Type.
+        /// </summary>
+        internal static string IfcExportDialog_id1 {
+            get {
+                return ResourceManager.GetString("IfcExportDialog_id1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save As.
+        /// </summary>
+        internal static string IfcExportDialog_saveAsButton {
+            get {
+                return ResourceManager.GetString("IfcExportDialog_saveAsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IfcSite.
+        /// </summary>
+        internal static string IfcExportDialog_siteRadioBtn {
+            get {
+                return ResourceManager.GetString("IfcExportDialog_siteRadioBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        internal static string ImportDialogAlkis_browseButton {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_browseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cancel.
+        /// </summary>
+        internal static string ImportDialogAlkis_cancelButton {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_cancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear All.
+        /// </summary>
+        internal static string ImportDialogAlkis_clearSelectionBtn {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_clearSelectionBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        internal static string ImportDialogAlkis_FileLabel {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_FileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Layers to Import.
+        /// </summary>
+        internal static string ImportDialogAlkis_id1 {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_id1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drape on Terrain.
+        /// </summary>
+        internal static string ImportDialogAlkis_id2 {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_id2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to drape objects on imported terrain.
+        /// </summary>
+        internal static string ImportDialogAlkis_id3 {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_id3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to import.
+        /// </summary>
+        internal static string ImportDialogAlkis_importButton {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_importButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        internal static string ImportDialogAlkis_selectAllBtn {
+            get {
+                return ResourceManager.GetString("ImportDialogAlkis_selectAllBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        internal static string browseButton {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        internal static string ImportXPlanDialog_FileLabel {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_FileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LayerSelector.
+        /// </summary>
+        internal static string LayerSelector {
+            get {
+                return ResourceManager.GetString("LayerSelector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to apply.
+        /// </summary>
+        internal static string LayerSelector_apply {
+            get {
+                return ResourceManager.GetString("LayerSelector_apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cancel.
+        /// </summary>
+        internal static string LayerSelector_cancel {
+            get {
+                return ResourceManager.GetString("LayerSelector_cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to select all.
+        /// </summary>
+        internal static string LayerSelector_selectAll {
+            get {
+                return ResourceManager.GetString("LayerSelector_selectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unselect all.
+        /// </summary>
+        internal static string LayerSelector_unSelectAll {
+            get {
+                return ResourceManager.GetString("LayerSelector_unSelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login to External Data Catalog.
         /// </summary>
         internal static string LoginScreen_id1 {
@@ -120,6 +336,33 @@ namespace City2RVT {
         internal static string LoginScreen_id5 {
             get {
                 return ResourceManager.GetString("LoginScreen_id5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attributes for Object.
+        /// </summary>
+        internal static string PropertyWindow {
+            get {
+                return ResourceManager.GetString("PropertyWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to save and close.
+        /// </summary>
+        internal static string PropertyWindow_id1 {
+            get {
+                return ResourceManager.GetString("PropertyWindow_id1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cancel.
+        /// </summary>
+        internal static string PropertyWindow_id2 {
+            get {
+                return ResourceManager.GetString("PropertyWindow_id2", resourceCulture);
             }
         }
         
@@ -336,6 +579,33 @@ namespace City2RVT {
         internal static string Wpf_CityGML_settingsGroupBox_gr_source_rb_server {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_source_rb_server", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select theme.
+        /// </summary>
+        internal static string Wpf_CreateMetaJSON {
+            get {
+                return ResourceManager.GetString("Wpf_CreateMetaJSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string Wpf_CreateMetaJSON_Btn_Start {
+            get {
+                return ResourceManager.GetString("Wpf_CreateMetaJSON_Btn_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a theme.
+        /// </summary>
+        internal static string Wpf_CreateMetaJSON_Cb_Theme {
+            get {
+                return ResourceManager.GetString("Wpf_CreateMetaJSON_Cb_Theme", resourceCulture);
             }
         }
         
@@ -588,6 +858,78 @@ namespace City2RVT {
         internal static string Wpf_GeoRef_Form_rb_siteToProj {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_rb_siteToProj", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select layer.
+        /// </summary>
+        internal static string Wpf_showLayer {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose.
+        /// </summary>
+        internal static string Wpf_showLayer_btn_choose {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer_btn_choose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        internal static string Wpf_showLayer_btn_exportjson {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer_btn_exportjson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        internal static string Wpf_showLayer_btn_gml {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer_btn_gml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        internal static string Wpf_showLayer_btn_metajson {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer_btn_metajson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GML.
+        /// </summary>
+        internal static string Wpf_showLayer_id1 {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer_id1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meta JSON.
+        /// </summary>
+        internal static string Wpf_showLayer_id2 {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer_id2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export JSON.
+        /// </summary>
+        internal static string Wpf_showLayer_id3 {
+            get {
+                return ResourceManager.GetString("Wpf_showLayer_id3", resourceCulture);
             }
         }
     }

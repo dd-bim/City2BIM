@@ -14,10 +14,10 @@
         <Button x:Name="btn_metajson" Content="Browse" HorizontalAlignment="Left" Margin="481,88,0,0" VerticalAlignment="Top" Width="75" Click="btn_metajson_Click"/>
         <TextBox x:Name="tf_gml" HorizontalAlignment="Left" Height="23" Margin="110,50,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="356"/>
         <TextBox x:Name="tf_metajson" HorizontalAlignment="Left" Height="23" Margin="110,88,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="356"/>
-        <Label Content="GML" HorizontalAlignment="Left" Margin="26,50,0,0" VerticalAlignment="Top"/>
-        <Label Content="Meta JSON" HorizontalAlignment="Left" Margin="26,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.434,-3.712"/>
+        <Label x:Name="id1" Content="GML" HorizontalAlignment="Left" Margin="26,50,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="id2" Content="Meta JSON" HorizontalAlignment="Left" Margin="26,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.434,-3.712"/>
         <Button x:Name="btn_exportjson" Content="Browse" HorizontalAlignment="Left" Margin="481,140,0,0" VerticalAlignment="Top" Width="75" Click="btn_exportjson_Click"/>
-        <Label Content="Export JSON" HorizontalAlignment="Left" Margin="26,138,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="id3" Content="Export JSON" HorizontalAlignment="Left" Margin="26,138,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="tf_exportjson" HorizontalAlignment="Left" Height="22" Margin="110,138,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="356"/>
         <Button x:Name="btn_choose" Content="Choose" HorizontalAlignment="Left" Margin="391,472,0,0" VerticalAlignment="Top" Width="75" Click="btn_choose_Click"/>
 
