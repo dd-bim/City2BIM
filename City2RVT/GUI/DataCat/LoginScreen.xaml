@@ -8,15 +8,15 @@
              Height="360" Width="450" MinWidth="450" MinHeight="360">
     <Border Margin="5">
         <StackPanel Margin="10">
-            <Label Content="Login to External Data Catalog" FontSize="24" HorizontalAlignment="Center"></Label>
+            <Label x:Name="id1" Content="Login to External Data Catalog" FontSize="24" HorizontalAlignment="Center"></Label>
             <Separator></Separator>
-            <Label Content="Server-Url" FontSize="20"></Label>
+            <Label x:Name="id2" Content="Server-Url" FontSize="20"></Label>
             <TextBox Name="ServerBox" FontSize="18" Text="https://landbim.org/graphql"></TextBox>
-            <Label Content="Username" FontSize="20"></Label>
+            <Label x:Name="id3" Content="Username" FontSize="20"></Label>
             <TextBox Name="userNameBox" FontSize="18"></TextBox>
-            <Label Content="Password" FontSize="20"></Label>
+            <Label x:Name="id4" Content="Password" FontSize="20"></Label>
             <PasswordBox Name="PassWordBox" FontSize="18"></PasswordBox>
-            <Button Margin="15" FontSize="24" Content="Submit" HorizontalAlignment="Center" Click="submit_click" Padding="10,1"></Button>
+            <Button x:Name="id5" Margin="15" FontSize="24" Content="Submit" HorizontalAlignment="Center" Click="submit_click" Padding="10,1"></Button>
         </StackPanel>
     </Border>
 </Window>

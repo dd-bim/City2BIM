@@ -117,6 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DataCatalogEditorWindow_id1" xml:space="preserve">
+    <value>save</value>
+  </data>
+  <data name="DataCatalogEditorWindow_id2" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="LoginScreen_id1" xml:space="preserve">
+    <value>Login to External Data Catalog</value>
+  </data>
+  <data name="LoginScreen_id2" xml:space="preserve">
+    <value>Server-Url</value>
+  </data>
+  <data name="LoginScreen_id3" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="LoginScreen_id4" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LoginScreen_id5" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="Wpf_CityGML_settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="Wpf_CityGML_settingsButton_bt_applyGeoref" xml:space="preserve">
     <value>Apply</value>
   </data>
@@ -186,7 +210,88 @@
   <data name="Wpf_CityGML_settingsGroupBox_gr_source_rb_server" xml:space="preserve">
     <value>VCS server</value>
   </data>
-  <data name="Wpf_CityGML_settingsWindowTitle" xml:space="preserve">
-    <value>Settings</value>
+  <data name="Wpf_GeoRef_Form" xml:space="preserve">
+    <value>Georeferencing</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_bt_applyGeoref" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_bt_quit" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_group10" xml:space="preserve">
+    <value>Postal Address</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id1" xml:space="preserve">
+    <value>Address lines:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id10" xml:space="preserve">
+    <value>Projected coordinates</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id11" xml:space="preserve">
+    <value>Eastings [m]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id12" xml:space="preserve">
+    <value>Northings [m]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id13" xml:space="preserve">
+    <value>Grid North [°]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id14" xml:space="preserve">
+    <value>Scale:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id15" xml:space="preserve">
+    <value>EPSG-Code (CRS):</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id16" xml:space="preserve">
+    <value>Elevation</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id17" xml:space="preserve">
+    <value>Orthometric Height [m]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id18" xml:space="preserve">
+    <value>Vertical Datum:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id19" xml:space="preserve">
+    <value>UTM transformation</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id2" xml:space="preserve">
+    <value>Postal Code:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id20" xml:space="preserve">
+    <value>Calculate</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id3" xml:space="preserve">
+    <value>Town:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id4" xml:space="preserve">
+    <value>Region:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id5" xml:space="preserve">
+    <value>Country:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id6" xml:space="preserve">
+    <value>Geographic site coordinates</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id7" xml:space="preserve">
+    <value>Latitude [°]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id8" xml:space="preserve">
+    <value>Longitude [°]</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id9" xml:space="preserve">
+    <value>True North [°]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_deg" xml:space="preserve">
+    <value>Deg</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_dms" xml:space="preserve">
+    <value>DMS</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_projToSite" xml:space="preserve">
+    <value>Projection (UTM) to Site (LatLon)</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_siteToProj" xml:space="preserve">
+    <value>Site (LatLon) to Projection (UTM)</value>
   </data>
 </root>
