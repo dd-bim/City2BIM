@@ -234,9 +234,27 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
-        internal static string browseButton {
+        internal static string ImportXPlanDialog_browseButton {
             get {
-                return ResourceManager.GetString("ImportXPlanDialog_", resourceCulture);
+                return ResourceManager.GetString("ImportXPlanDialog_browseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cancel.
+        /// </summary>
+        internal static string ImportXPlanDialog_cancelButton {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_cancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear All.
+        /// </summary>
+        internal static string ImportXPlanDialog_clearSelectionBtn {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_clearSelectionBtn", resourceCulture);
             }
         }
         
@@ -246,6 +264,51 @@ namespace City2RVT {
         internal static string ImportXPlanDialog_FileLabel {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_FileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Layers to Import.
+        /// </summary>
+        internal static string ImportXPlanDialog_id1 {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_id1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drape on Terrain.
+        /// </summary>
+        internal static string ImportXPlanDialog_id2 {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_id2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to drape objects on imported terrain.
+        /// </summary>
+        internal static string ImportXPlanDialog_id3 {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_id3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to import.
+        /// </summary>
+        internal static string ImportXPlanDialog_importButton {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_importButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        internal static string ImportXPlanDialog_selectAllBtn {
+            get {
+                return ResourceManager.GetString("ImportXPlanDialog_selectAllBtn", resourceCulture);
             }
         }
         
@@ -930,6 +993,96 @@ namespace City2RVT {
         internal static string Wpf_showLayer_id3 {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_id3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export to IFC.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export surfaces as IfcSite.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_checkboxAsSite {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_checkboxAsSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export surfaces as IfcSpace.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_checkboxAsSpace {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_checkboxAsSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Location.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_id1 {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_id1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_id2 {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_id2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Layer to be exported.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_id3 {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_id3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Selection.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_id4 {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_id4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export to IFC.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_id5 {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_id5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_id6 {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_id6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        internal static string Wpf_XPlan2IFC_rb_selectAll {
+            get {
+                return ResourceManager.GetString("Wpf_XPlan2IFC_rb_selectAll", resourceCulture);
             }
         }
     }

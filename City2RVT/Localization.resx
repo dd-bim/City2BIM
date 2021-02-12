@@ -174,6 +174,33 @@
   <data name="ImportDialogAlkis_selectAllBtn" xml:space="preserve">
     <value>Select All</value>
   </data>
+  <data name="ImportXPlanDialog_browseButton" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ImportXPlanDialog_cancelButton" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="ImportXPlanDialog_clearSelectionBtn" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="ImportXPlanDialog_FileLabel" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ImportXPlanDialog_id1" xml:space="preserve">
+    <value>Layers to Import</value>
+  </data>
+  <data name="ImportXPlanDialog_id2" xml:space="preserve">
+    <value>Drape on Terrain</value>
+  </data>
+  <data name="ImportXPlanDialog_id3" xml:space="preserve">
+    <value>drape objects on imported terrain</value>
+  </data>
+  <data name="ImportXPlanDialog_importButton" xml:space="preserve">
+    <value>import</value>
+  </data>
+  <data name="ImportXPlanDialog_selectAllBtn" xml:space="preserve">
+    <value>Select All</value>
+  </data>
   <data name="LayerSelector" xml:space="preserve">
     <value>LayerSelector</value>
   </data>
@@ -401,5 +428,35 @@
   </data>
   <data name="Wpf_showLayer_id3" xml:space="preserve">
     <value>Export JSON</value>
+  </data>
+  <data name="Wpf_XPlan2IFC" xml:space="preserve">
+    <value>Export to IFC</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_checkboxAsSite" xml:space="preserve">
+    <value>Export surfaces as IfcSite</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_checkboxAsSpace" xml:space="preserve">
+    <value>Export surfaces as IfcSpace</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id1" xml:space="preserve">
+    <value>File Location</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id2" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id3" xml:space="preserve">
+    <value>Layer to be exported</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id4" xml:space="preserve">
+    <value>Clear Selection</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id5" xml:space="preserve">
+    <value>Export to IFC</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id6" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_rb_selectAll" xml:space="preserve">
+    <value>Select all</value>
   </data>
 </root>
