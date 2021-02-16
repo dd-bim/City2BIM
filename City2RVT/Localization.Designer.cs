@@ -79,6 +79,51 @@ namespace City2RVT {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Query External Data Catalog.
+        /// </summary>
+        internal static string findSubjectResultForm {
+            get {
+                return ResourceManager.GetString("findSubjectResultForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to close.
+        /// </summary>
+        internal static string findSubjectResultForm_closeBtn {
+            get {
+                return ResourceManager.GetString("findSubjectResultForm_closeBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search text for subjects.
+        /// </summary>
+        internal static string findSubjectResultForm_id1 {
+            get {
+                return ResourceManager.GetString("findSubjectResultForm_id1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to query.
+        /// </summary>
+        internal static string findSubjectResultForm_queryBtn {
+            get {
+                return ResourceManager.GetString("findSubjectResultForm_queryBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to set selected object.
+        /// </summary>
+        internal static string findSubjectResultForm_setObjectBtn {
+            get {
+                return ResourceManager.GetString("findSubjectResultForm_setObjectBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to City2RVT IfcExport.
         /// </summary>
         internal static string IfcExportDialog {

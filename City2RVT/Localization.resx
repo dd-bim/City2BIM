@@ -123,6 +123,21 @@
   <data name="DataCatalogEditorWindow_id2" xml:space="preserve">
     <value>cancel</value>
   </data>
+  <data name="findSubjectResultForm" xml:space="preserve">
+    <value>Query External Data Catalog</value>
+  </data>
+  <data name="findSubjectResultForm_closeBtn" xml:space="preserve">
+    <value>close</value>
+  </data>
+  <data name="findSubjectResultForm_id1" xml:space="preserve">
+    <value>Search text for subjects</value>
+  </data>
+  <data name="findSubjectResultForm_queryBtn" xml:space="preserve">
+    <value>query</value>
+  </data>
+  <data name="findSubjectResultForm_setObjectBtn" xml:space="preserve">
+    <value>set selected object</value>
+  </data>
   <data name="IfcExportDialog" xml:space="preserve">
     <value>City2RVT IfcExport</value>
   </data>
