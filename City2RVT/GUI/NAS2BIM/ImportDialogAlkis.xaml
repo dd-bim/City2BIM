@@ -19,7 +19,7 @@
                 <TextBox x:Name="filePathBox" Grid.Column="1"></TextBox>
                 <Button x:Name="browseButton" Content="Browse" Grid.Column="2" Margin="10,0,0,0" Click="browseButton_Click"></Button>
             </Grid>
-            <GroupBox Header="Layers to Import" Margin="0,15,0,0">
+            <GroupBox x:Name="id1" Header="Layers to Import" Margin="0,15,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*"/>
@@ -52,10 +52,10 @@
                     </Grid>
                 </Grid>
             </GroupBox>
-            <GroupBox Header="Drape on Terrain" Margin="0,15,0,0">
+            <GroupBox x:Name="id2" Header="Drape on Terrain" Margin="0,15,0,0">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox x:Name="drapeCheckBox" IsEnabled="False" Margin="0,5,0,0"></CheckBox>
-                    <Label Content="drape objects on imported terrain"/>
+                    <Label x:Name="id3" Content="drape objects on imported terrain"/>
                 </StackPanel>
             </GroupBox>
             <Grid Margin="0,15,10,0">

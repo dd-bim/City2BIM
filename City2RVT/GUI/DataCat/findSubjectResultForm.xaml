@@ -9,7 +9,7 @@
              Height="500" MinHeight="500" MinWidth="500" Width="500"
              Name="findSubjectWindow" SizeChanged="findSubjectWindow_SizeChanged" Title="Query External Data Catalog">
     <StackPanel Margin="10">
-        <Label Content="Search text for subjects"></Label>
+        <Label x:Name="id1" Content="Search text for subjects"></Label>
 
         <Grid Margin="0,0,0,10" >
             <Grid.ColumnDefinitions>
