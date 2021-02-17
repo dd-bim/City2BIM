@@ -279,6 +279,11 @@
     <Compile Include="GUI\XPlan2BIM\XPlan_Parameter.cs" />
     <Compile Include="IFCExport\IfcUtils.cs" />
     <Compile Include="IFCExport\RevitIfcExporter.cs" />
+    <Compile Include="Localization.de.Designer.cs">
+      <DependentUpon>Localization.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -409,6 +414,10 @@
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Localization.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localization.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="meta_json_files\aaa.json" />
     <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
     <EmbeddedResource Include="meta_json_files\xplan.json" />
