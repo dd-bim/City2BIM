@@ -916,7 +916,7 @@ namespace City2RVT {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Longitude [°].
+        ///   Looks up a localized string similar to Longitude [°]:.
         /// </summary>
         internal static string Wpf_GeoRef_Form_id8 {
             get {

@@ -118,322 +118,322 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DataCatalogEditorWindow_id1" xml:space="preserve">
-    <value>save</value>
+    <value>speichern</value>
   </data>
   <data name="DataCatalogEditorWindow_id2" xml:space="preserve">
-    <value>cancel</value>
+    <value>abbrechen</value>
   </data>
   <data name="findSubjectResultForm" xml:space="preserve">
-    <value>Query External Data Catalog</value>
+    <value>Abfrage externer Datenkatalog</value>
   </data>
   <data name="findSubjectResultForm_closeBtn" xml:space="preserve">
-    <value>close</value>
+    <value>schließen</value>
   </data>
   <data name="findSubjectResultForm_id1" xml:space="preserve">
-    <value>Search text for subjects</value>
+    <value>Texteingabe für die Suche nach Themen</value>
   </data>
   <data name="findSubjectResultForm_queryBtn" xml:space="preserve">
-    <value>query</value>
+    <value>abfragen</value>
   </data>
   <data name="findSubjectResultForm_setObjectBtn" xml:space="preserve">
-    <value>set selected object</value>
+    <value>ausgewähltes Objekt setzen</value>
   </data>
   <data name="IfcExportDialog" xml:space="preserve">
     <value>City2RVT IfcExport</value>
   </data>
   <data name="IfcExportDialog_cancelBtn" xml:space="preserve">
-    <value>cancel</value>
+    <value>abbrechen</value>
   </data>
   <data name="IfcExportDialog_exportBtn" xml:space="preserve">
-    <value>export</value>
+    <value>exportieren</value>
   </data>
   <data name="IfcExportDialog_FileLabel" xml:space="preserve">
-    <value>Export File</value>
+    <value>Export-Datei</value>
   </data>
   <data name="IfcExportDialog_geogElemRadioBtn" xml:space="preserve">
     <value>IfcGeographicElement</value>
   </data>
   <data name="IfcExportDialog_id1" xml:space="preserve">
-    <value>Select Alkis / XPlanung Export Type</value>
+    <value>Auswahl Alkis / XPlanung Export-Typ</value>
   </data>
   <data name="IfcExportDialog_saveAsButton" xml:space="preserve">
-    <value>Save As</value>
+    <value>Speichern unter</value>
   </data>
   <data name="IfcExportDialog_siteRadioBtn" xml:space="preserve">
     <value>IfcSite</value>
   </data>
   <data name="ImportDialogAlkis_browseButton" xml:space="preserve">
-    <value>Browse</value>
+    <value>Durchsuchen</value>
   </data>
   <data name="ImportDialogAlkis_cancelButton" xml:space="preserve">
-    <value>cancel</value>
+    <value>abbrechen</value>
   </data>
   <data name="ImportDialogAlkis_clearSelectionBtn" xml:space="preserve">
-    <value>Clear All</value>
+    <value>Alle entfernen</value>
   </data>
   <data name="ImportDialogAlkis_FileLabel" xml:space="preserve">
-    <value>File</value>
+    <value>Datei</value>
   </data>
   <data name="ImportDialogAlkis_id1" xml:space="preserve">
-    <value>Layers to Import</value>
+    <value>zu importierende Layer</value>
   </data>
   <data name="ImportDialogAlkis_id2" xml:space="preserve">
-    <value>Drape on Terrain</value>
+    <value>Auf Gelände projezieren</value>
   </data>
   <data name="ImportDialogAlkis_id3" xml:space="preserve">
-    <value>drape objects on imported terrain</value>
+    <value>Objekte auf importiertes Gelände projezieren</value>
   </data>
   <data name="ImportDialogAlkis_importButton" xml:space="preserve">
-    <value>import</value>
+    <value>importieren</value>
   </data>
   <data name="ImportDialogAlkis_selectAllBtn" xml:space="preserve">
-    <value>Select All</value>
+    <value>Alle auswählen</value>
   </data>
   <data name="ImportXPlanDialog_browseButton" xml:space="preserve">
-    <value>Browse</value>
+    <value>Durchsuchen</value>
   </data>
   <data name="ImportXPlanDialog_cancelButton" xml:space="preserve">
-    <value>cancel</value>
+    <value>abbrechen</value>
   </data>
   <data name="ImportXPlanDialog_clearSelectionBtn" xml:space="preserve">
-    <value>Clear All</value>
+    <value>Alle entfernen</value>
   </data>
   <data name="ImportXPlanDialog_FileLabel" xml:space="preserve">
-    <value>File</value>
+    <value>Datei</value>
   </data>
   <data name="ImportXPlanDialog_id1" xml:space="preserve">
-    <value>Layers to Import</value>
+    <value>zu importierende Layer</value>
   </data>
   <data name="ImportXPlanDialog_id2" xml:space="preserve">
-    <value>Drape on Terrain</value>
+    <value>Auf Gelände projezieren</value>
   </data>
   <data name="ImportXPlanDialog_id3" xml:space="preserve">
-    <value>drape objects on imported terrain</value>
+    <value>Objekte auf importiertes Gelände projezieren</value>
   </data>
   <data name="ImportXPlanDialog_importButton" xml:space="preserve">
-    <value>import</value>
+    <value>importieren</value>
   </data>
   <data name="ImportXPlanDialog_selectAllBtn" xml:space="preserve">
-    <value>Select All</value>
+    <value>Alle auswählen</value>
   </data>
   <data name="LayerSelector" xml:space="preserve">
     <value>LayerSelector</value>
   </data>
   <data name="LayerSelector_apply" xml:space="preserve">
-    <value>apply</value>
+    <value>übernehmen</value>
   </data>
   <data name="LayerSelector_cancel" xml:space="preserve">
-    <value>cancel</value>
+    <value>abbrechen</value>
   </data>
   <data name="LayerSelector_selectAll" xml:space="preserve">
-    <value>select all</value>
+    <value>Alle auswählen</value>
   </data>
   <data name="LayerSelector_unSelectAll" xml:space="preserve">
-    <value>unselect all</value>
+    <value>Alle abwählen</value>
   </data>
   <data name="LoginScreen_id1" xml:space="preserve">
-    <value>Login to External Data Catalog</value>
+    <value>Login zum externen Datenkatalog</value>
   </data>
   <data name="LoginScreen_id2" xml:space="preserve">
     <value>Server-Url</value>
   </data>
   <data name="LoginScreen_id3" xml:space="preserve">
-    <value>Username</value>
+    <value>Benutzername</value>
   </data>
   <data name="LoginScreen_id4" xml:space="preserve">
-    <value>Password</value>
+    <value>Passwort</value>
   </data>
   <data name="LoginScreen_id5" xml:space="preserve">
-    <value>Submit</value>
+    <value>Absenden</value>
   </data>
   <data name="PropertyWindow" xml:space="preserve">
-    <value>Attributes for Object</value>
+    <value>Attribute für das Objekt</value>
   </data>
   <data name="PropertyWindow_id1" xml:space="preserve">
-    <value>save and close</value>
+    <value>speichern und schließen</value>
   </data>
   <data name="PropertyWindow_id2" xml:space="preserve">
-    <value>cancel</value>
+    <value>abbrechen</value>
   </data>
   <data name="Wpf_CityGML_settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="Wpf_CityGML_settingsButton_bt_applyGeoref" xml:space="preserve">
-    <value>Apply</value>
+    <value>Übernehmen</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_code_header" xml:space="preserve">
-    <value>Codelist translation</value>
+    <value>Codelisten-Übersetzung</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_code_lbl8" xml:space="preserve">
-    <value> of codes into its meaning</value>
+    <value>in ihre Bedeutung verwenden</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_code_lbl9" xml:space="preserve">
-    <value>use Codelist for translation</value>
+    <value>Codeliste zur Übersetzung von Codes</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_prop_Bt_browse" xml:space="preserve">
-    <value>Browse...</value>
+    <value>Durchsuchen...</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_prop_header" xml:space="preserve">
-    <value>File settings</value>
+    <value>Datei-Einstellungen</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_prop_lbl6" xml:space="preserve">
-    <value>File:</value>
+    <value>Datei:</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_prop_lbl7" xml:space="preserve">
-    <value>Order of coordinates:</value>
+    <value>Reihenfolge der Koordinaten:</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_prop_rb_XYZ" xml:space="preserve">
-    <value>XYZ / NEH (Northings, Eastings, Height)</value>
+    <value>XYZ / NOH (Nordwert, Ostwert, Höhe)</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_prop_rb_YXZ" xml:space="preserve">
-    <value>YXZ / ENH (Eastings, Northings, Height</value>
+    <value>YXZ / ONH (Ostwert, Nordwert, Höhe</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_bt_editUrl" xml:space="preserve">
-    <value>Edit URL</value>
+    <value>URL bearbeiten</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_check_saveResponse" xml:space="preserve">
-    <value>save response to</value>
+    <value>Antwort speichern unter</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_header" xml:space="preserve">
-    <value>Server Settings</value>
+    <value>Server-Einstellungen</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl1" xml:space="preserve">
     <value>URL:</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl2" xml:space="preserve">
-    <value>Center:</value>
+    <value>Mittelpunkt:</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl3" xml:space="preserve">
-    <value>Lat</value>
+    <value>geogr. Breite</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl4" xml:space="preserve">
-    <value>Lon</value>
+    <value>geogr. Länge</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl5" xml:space="preserve">
-    <value>Extent:</value>
+    <value>räuml. Ausdehnung:</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_Rb_custom" xml:space="preserve">
-    <value>custom</value>
+    <value>benutzerdefiniert</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_server_rb_site" xml:space="preserve">
-    <value>from Site location</value>
+    <value>vom Standort</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_source_header" xml:space="preserve">
-    <value>Source</value>
+    <value>Quelle</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_source_rb_file" xml:space="preserve">
-    <value>CityGML file</value>
+    <value>CityGML-Datei</value>
   </data>
   <data name="Wpf_CityGML_settingsGroupBox_gr_source_rb_server" xml:space="preserve">
     <value>VCS server</value>
   </data>
   <data name="Wpf_CreateMetaJSON" xml:space="preserve">
-    <value>Select theme</value>
+    <value>Thema auswählen</value>
   </data>
   <data name="Wpf_CreateMetaJSON_Btn_Start" xml:space="preserve">
     <value>Start</value>
   </data>
   <data name="Wpf_CreateMetaJSON_Cb_Theme" xml:space="preserve">
-    <value>Select a theme</value>
+    <value>Wähle ein Thema</value>
   </data>
   <data name="Wpf_GeoRef_Form" xml:space="preserve">
-    <value>Georeferencing</value>
+    <value>Georeferenzierung</value>
   </data>
   <data name="Wpf_GeoRef_Form_bt_applyGeoref" xml:space="preserve">
-    <value>Apply</value>
+    <value>Übernehmen</value>
   </data>
   <data name="Wpf_GeoRef_Form_bt_quit" xml:space="preserve">
-    <value>Close</value>
+    <value>Schließen</value>
   </data>
   <data name="Wpf_GeoRef_Form_group10" xml:space="preserve">
-    <value>Postal Address</value>
+    <value>Postanschrift</value>
   </data>
   <data name="Wpf_GeoRef_Form_id1" xml:space="preserve">
-    <value>Address lines:</value>
+    <value>Adresszeilen:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id10" xml:space="preserve">
-    <value>Projected coordinates</value>
+    <value>Projizierte Koordinaten</value>
   </data>
   <data name="Wpf_GeoRef_Form_id11" xml:space="preserve">
-    <value>Eastings [m]:</value>
+    <value>Ostwert [m]:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id12" xml:space="preserve">
-    <value>Northings [m]:</value>
+    <value>Nordwert [m]:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id13" xml:space="preserve">
-    <value>Grid North [°]:</value>
+    <value>Gitternord [°]:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id14" xml:space="preserve">
-    <value>Scale:</value>
+    <value>Maßstab:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id15" xml:space="preserve">
-    <value>EPSG-Code (CRS):</value>
+    <value>EPSG-Code (KRS):</value>
   </data>
   <data name="Wpf_GeoRef_Form_id16" xml:space="preserve">
-    <value>Elevation</value>
+    <value>Höhe</value>
   </data>
   <data name="Wpf_GeoRef_Form_id17" xml:space="preserve">
-    <value>Orthometric Height [m]:</value>
+    <value>Orthometrische Höhe [m]:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id18" xml:space="preserve">
-    <value>Vertical Datum:</value>
+    <value>Höhendatum:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id19" xml:space="preserve">
-    <value>UTM transformation</value>
+    <value>UTM Transformation</value>
   </data>
   <data name="Wpf_GeoRef_Form_id2" xml:space="preserve">
-    <value>Postal Code:</value>
+    <value>Postleitzahl (PLZ):</value>
   </data>
   <data name="Wpf_GeoRef_Form_id20" xml:space="preserve">
-    <value>Calculate</value>
+    <value>Berechnen</value>
   </data>
   <data name="Wpf_GeoRef_Form_id3" xml:space="preserve">
-    <value>Town:</value>
+    <value>Ort:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id4" xml:space="preserve">
-    <value>Region:</value>
+    <value>Bundesland / Kanton:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id5" xml:space="preserve">
-    <value>Country:</value>
+    <value>Land:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id6" xml:space="preserve">
-    <value>Geographic site coordinates</value>
+    <value>Geographische Standortkoordinaten</value>
   </data>
   <data name="Wpf_GeoRef_Form_id7" xml:space="preserve">
-    <value>Latitude [°]:</value>
+    <value>Breite [°]:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id8" xml:space="preserve">
-    <value>Longitude [°]:</value>
+    <value>Länge [°]:</value>
   </data>
   <data name="Wpf_GeoRef_Form_id9" xml:space="preserve">
-    <value>True North [°]:</value>
+    <value>Geogr. Nord [°]:</value>
   </data>
   <data name="Wpf_GeoRef_Form_rb_deg" xml:space="preserve">
-    <value>Deg</value>
+    <value>Grad</value>
   </data>
   <data name="Wpf_GeoRef_Form_rb_dms" xml:space="preserve">
-    <value>DMS</value>
+    <value>DMS (Grad, Min., Sek.)</value>
   </data>
   <data name="Wpf_GeoRef_Form_rb_projToSite" xml:space="preserve">
-    <value>Projection (UTM) to Site (LatLon)</value>
+    <value>Projektion (UTM) zu Standort (Breite/Länge)</value>
   </data>
   <data name="Wpf_GeoRef_Form_rb_siteToProj" xml:space="preserve">
-    <value>Site (LatLon) to Projection (UTM)</value>
+    <value>Standort (Breite/Länge) to Projektion (UTM)</value>
   </data>
   <data name="Wpf_showLayer" xml:space="preserve">
-    <value>Select layer</value>
+    <value>Layer auswählen</value>
   </data>
   <data name="Wpf_showLayer_btn_choose" xml:space="preserve">
-    <value>Choose</value>
+    <value>Auswählen</value>
   </data>
   <data name="Wpf_showLayer_btn_exportjson" xml:space="preserve">
-    <value>Browse</value>
+    <value>Durchsuchen</value>
   </data>
   <data name="Wpf_showLayer_btn_gml" xml:space="preserve">
-    <value>Browse</value>
+    <value>Durchsuchen</value>
   </data>
   <data name="Wpf_showLayer_btn_metajson" xml:space="preserve">
-    <value>Browse</value>
+    <value>Durchsuchen</value>
   </data>
   <data name="Wpf_showLayer_id1" xml:space="preserve">
     <value>GML</value>
@@ -445,33 +445,33 @@
     <value>Export JSON</value>
   </data>
   <data name="Wpf_XPlan2IFC" xml:space="preserve">
-    <value>Export to IFC</value>
+    <value>Export nach IFC</value>
   </data>
   <data name="Wpf_XPlan2IFC_checkboxAsSite" xml:space="preserve">
-    <value>Export surfaces as IfcSite</value>
+    <value>Exportiere Oberflächen als IfcSite</value>
   </data>
   <data name="Wpf_XPlan2IFC_checkboxAsSpace" xml:space="preserve">
-    <value>Export surfaces as IfcSpace</value>
+    <value>Exportiere Oberflächen als IfcSpace</value>
   </data>
   <data name="Wpf_XPlan2IFC_id1" xml:space="preserve">
-    <value>File Location</value>
+    <value>Datei-Speicherort</value>
   </data>
   <data name="Wpf_XPlan2IFC_id2" xml:space="preserve">
-    <value>File name</value>
+    <value>Dateiname</value>
   </data>
   <data name="Wpf_XPlan2IFC_id3" xml:space="preserve">
-    <value>Layer to be exported</value>
+    <value>zu exportierende Layer</value>
   </data>
   <data name="Wpf_XPlan2IFC_id4" xml:space="preserve">
-    <value>Clear Selection</value>
+    <value>Auswahl aufheben</value>
   </data>
   <data name="Wpf_XPlan2IFC_id5" xml:space="preserve">
-    <value>Export to IFC</value>
+    <value>Export nach IFC</value>
   </data>
   <data name="Wpf_XPlan2IFC_id6" xml:space="preserve">
-    <value>Close</value>
+    <value>Schließen</value>
   </data>
   <data name="Wpf_XPlan2IFC_rb_selectAll" xml:space="preserve">
-    <value>Select all</value>
+    <value>Alle auswählen</value>
   </data>
 </root>
