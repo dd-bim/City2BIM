@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 //Include localization
 using System.Globalization;
 
-namespace BIMGISInteropLibs.IFCTerrain
+namespace BIMGISInteropLibs.IfcTerrain
 {
     public static class Common
     {

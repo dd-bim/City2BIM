@@ -9,7 +9,7 @@ using BimGisCad.Collections;                        //MESH --> will be removed
 using BimGisCad.Representation.Geometry.Elementary; //LINE
 using BimGisCad.Representation.Geometry.Composed;   //TIN
 
-namespace BIMGISInteropLibs.IFCTerrain
+namespace BIMGISInteropLibs.IfcTerrain
 {
     /// <summary>
     /// Exchange class for processing tins, break edges and error messages

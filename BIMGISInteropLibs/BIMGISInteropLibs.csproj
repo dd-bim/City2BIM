@@ -223,6 +223,7 @@
     <Compile Include="Geometry\C2BVertex.cs" />
     <Compile Include="Geometry\C2BPoint.cs" />
     <Compile Include="IfcTerrain\Common.cs" />
+    <Compile Include="IfcTerrain\JsonCollection.cs" />
     <Compile Include="IfcTerrain\JsonSettings.cs" />
     <Compile Include="IfcTerrain\Result.cs" />
     <Compile Include="IFC\Ifc2x3\GeometricCurveSet.cs" />
