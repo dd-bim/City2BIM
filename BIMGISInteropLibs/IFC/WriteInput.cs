@@ -26,7 +26,7 @@ namespace BIMGISInteropLibs.IFC
     {
         GCS, SBSM, TFS, TIN
     }
-    
+
     /// <summary>
     /// Enumeration for geometric representation
     /// </summary>

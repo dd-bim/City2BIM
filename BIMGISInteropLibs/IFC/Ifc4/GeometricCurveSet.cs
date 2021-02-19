@@ -10,10 +10,8 @@ using BimGisCad.Representation.Geometry.Composed;
 using BimGisCad.Collections;                    //provides MESH --> will be removed
 
 //embed Xbim                                    //below selected examples that show why these are included
-using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc4.GeometryResource;               //IfcAxis2Placement3D
 using Xbim.Ifc4.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
-
 
 namespace BIMGISInteropLibs.IFC.Ifc4
 {
