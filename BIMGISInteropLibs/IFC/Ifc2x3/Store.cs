@@ -17,7 +17,7 @@ using Xbim.Ifc2x3.RepresentationResource;       //IfcShapeRepresentation
 
 namespace BIMGISInteropLibs.IFC.Ifc2x3
 {
-    public static class Model
+    public static class Store
     {
         public static IfcStore CreateViaMesh(
             string projectName,
