@@ -9,7 +9,7 @@ namespace BIMGISInteropLibs.IFC
     /// <summary>
     /// DUMMY CLASS for further processing with IFC terrain
     /// </summary>
-    class WriteIfc4dot3
+    class Dummy
     {
     }
 }
