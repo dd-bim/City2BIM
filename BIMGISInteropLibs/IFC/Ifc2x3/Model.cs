@@ -6,30 +6,20 @@ using System.Threading.Tasks;
 
 //embed BimGisCad
 using BimGisCad.Representation.Geometry;
-using BimGisCad.Representation.Geometry.Elementary;
 using BimGisCad.Representation.Geometry.Composed;
 using BimGisCad.Collections;                    //provides MESH --> will be removed
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using Xbim.Ifc2x3.GeometricConstraintResource;  //IfcLocalPlacement
 using Xbim.Ifc2x3.GeometryResource;             //IfcAxis2Placement3D
-using Xbim.Ifc2x3.Kernel;                       //IfcProject
-using Xbim.Common.Step21;                       //Enumeration to XbimShemaVersion
-using Xbim.IO;                                  //Enumeration to XbimStoreType
-using Xbim.Common;                              //ProjectUnits (Hint: support imperial (TODO: check if required)
 using Xbim.Ifc2x3.MeasureResource;              //Enumeration for Unit
-using Xbim.Ifc2x3.ProductExtension;             //IfcSite
-using Xbim.Ifc2x3.GeometricModelResource;       //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
-using Xbim.Ifc2x3.TopologyResource;             //IfcOpenShell
 using Xbim.Ifc2x3.RepresentationResource;       //IfcShapeRepresentation
-
 
 namespace BIMGISInteropLibs.IFC.Ifc2x3
 {
     public static class Model
     {
-        public static IfcStore CreateModelViaMesh(
+        public static IfcStore CreateViaMesh(
             string projectName,
             string editorsFamilyName,
             string editorsGivenName,
@@ -50,8 +40,6 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             IfcGeometricRepresentationItem shape;
             switch (surfaceType)
             {
-                case SurfaceType.TFS:
-                    return null;
                 case SurfaceType.SBSM:
                     shape = ShellBasedSurfaceModel.CreateViaMesh(model, sitePlacement.Location, mesh, out representationType, out representationIdentifier);
                     break;
@@ -90,7 +78,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// <param name="refLongitude"></param>
         /// <param name="refElevation"></param>
         /// <returns></returns>
-        public static IfcStore CreateModelViaTin(
+        public static IfcStore CreateViaTin(
             string projectName,
             string editorsFamilyName,
             string editorsGivenName,
@@ -111,8 +99,6 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             IfcGeometricRepresentationItem shape;
             switch (surfaceType)
             {
-                case SurfaceType.TFS:
-                    return null;
                 case SurfaceType.SBSM:
                     shape = ShellBasedSurfaceModel.CreateViaTin(model, sitePlacement.Location, tin, out representationType, out representationIdentifier);
                     break;
