@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using Xbim.IO;                                  //Enumeration to XbimStoreType
+using Xbim.IO;                                  //Enumeration to XbimStoreType //verlagert
 
 namespace BIMGISInteropLibs.IFC.NonSpecific
 {
