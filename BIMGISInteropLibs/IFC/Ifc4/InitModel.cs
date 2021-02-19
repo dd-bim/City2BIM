@@ -37,7 +37,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="editorsOrganisationName">organisation</param>
         /// <param name="project">Return parameter for further processing</param>
         /// <returns>IfcProject</returns>
-        public static IfcStore Create(string projectName,
+        public static Xbim.Ifc.IfcStore Create(string projectName,
             string editorsFamilyName,
             string editorsGivenName,
             string editorsOrganisationName,
@@ -55,7 +55,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 EditorsOrganisationName = editorsOrganisationName
             };
             //write credentials to IfcStore (model)
-            var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc2X3, XbimStoreType.EsentDatabase);
+            var model = Xbim.Ifc.IfcStore.Create(credentials, XbimSchemaVersion.Ifc2X3, XbimStoreType.EsentDatabase);
 
             //Begin a transaction as all changes to a model are ACID
             using (var txn = model.BeginTransaction("Initialise Model"))

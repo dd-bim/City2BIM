@@ -29,7 +29,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
     public class ShellBasedSurfaceModel
     {
         //MESH
-        private static IfcShellBasedSurfaceModel CreateViaMesh(IfcStore model, Vector3 origin, Mesh mesh,
+        public static IfcShellBasedSurfaceModel CreateViaMesh(Xbim.Ifc.IfcStore model, Vector3 origin, Mesh mesh,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {
@@ -85,7 +85,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="representationType">Output - do not change</param>
         /// <param name="representationIdentifier">Output - do not change</param>
         /// <returns>Shape which is written in the IFC file</returns>
-        public static IfcShellBasedSurfaceModel CreateViaTin(IfcStore model, Vector3 origin, Tin tin,
+        public static IfcShellBasedSurfaceModel CreateViaTin(Xbim.Ifc.IfcStore model, Vector3 origin, Tin tin,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {

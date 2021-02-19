@@ -21,9 +21,8 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="identifier"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static IfcShapeRepresentation Create(IfcStore model, IfcGeometricRepresentationItem item, RepresentationIdentifier identifier, RepresentationType type)
+        public static IfcShapeRepresentation Create(Xbim.Ifc.IfcStore model, IfcGeometricRepresentationItem item, RepresentationIdentifier identifier, RepresentationType type)
         {
-            //
             //begin a transaction
             using (var txn = model.BeginTransaction("Create Shaperepresentation"))
             {

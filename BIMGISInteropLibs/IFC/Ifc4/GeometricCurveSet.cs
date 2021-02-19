@@ -32,7 +32,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="representationType"></param>
         /// <param name="representationIdentifier"></param>
         /// <returns></returns>
-        public static IfcGeometricCurveSet CreateViaMesh(IfcStore model, Vector3 origin, Mesh mesh,
+        public static IfcGeometricCurveSet CreateViaMesh(Xbim.Ifc.IfcStore model, Vector3 origin, Mesh mesh,
             double? breakDist,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
@@ -122,7 +122,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="representationType">Output - do not change</param>
         /// <param name="representationIdentifier">Output - do not change</param>
         /// <returns>Shape which is written in the IFC file</returns>
-        public static IfcGeometricCurveSet CreateViaTin(IfcStore model, Vector3 origin, Tin tin,
+        public static IfcGeometricCurveSet CreateViaTin(Xbim.Ifc.IfcStore model, Vector3 origin, Tin tin,
             double? breakDist,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
