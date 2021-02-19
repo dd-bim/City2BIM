@@ -226,7 +226,9 @@
     <Compile Include="IFCTerrain\Result.cs" />
     <Compile Include="IFC\Ifc2x3\GeometricCurveSet.cs" />
     <Compile Include="IFC\Ifc4\GeometricCurveSet.cs" />
+    <Compile Include="IFC\Ifc4\InitModel.cs" />
     <Compile Include="IFC\Ifc4\LocalPlacement.cs" />
+    <Compile Include="IFC\Ifc4\ShapeRepresentation.cs" />
     <Compile Include="IFC\Ifc4\ShellBasedSurfaceModel.cs" />
     <Compile Include="IFC\Ifc4\Site.cs" />
     <Compile Include="IFC\Ifc4\Terrain.cs" />
