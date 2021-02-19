@@ -28,8 +28,56 @@ using Xbim.Ifc4.RepresentationResource;         //IfcShapeRepresentation
 
 namespace BIMGISInteropLibs.IFC.Ifc4
 {
-    class Model
+    public class Store
     {
+        public static IfcStore CreateViaMesh(
+            string projectName,
+            string editorsFamilyName,
+            string editorsGivenName,
+            string editorsOrganisationName,
+            IfcLabel siteName,
+            Axis2Placement3D sitePlacement,
+            Mesh mesh,
+            SurfaceType surfaceType,
+            double? breakDist = null,
+            double? refLatitude = null,
+            double? refLongitude = null,
+            double? refElevation = null)
+        {
+            var model = InitModel.Create(projectName, editorsFamilyName, editorsGivenName, editorsOrganisationName, out var project);
+            var site = Site.Create(model, siteName, sitePlacement, refLatitude, refLongitude, refElevation);
+            RepresentationType representationType;
+            RepresentationIdentifier representationIdentifier;
+            IfcGeometricRepresentationItem shape;
+            switch (surfaceType)
+            {
+                case SurfaceType.TFS:
+                    return null; // shape = createTriangulatedFaceSet(model, sitePlacement.Location, mesh, out representationType, out representationIdentifier);
+                    
+                case SurfaceType.SBSM:
+                    shape = ShellBasedSurfaceModel.CreateViaMesh(model, sitePlacement.Location, mesh, out representationType, out representationIdentifier);
+                    break;
+                default:
+                    shape = GeometricCurveSet.CreateViaMesh(model, sitePlacement.Location, mesh, breakDist, out representationType, out representationIdentifier);
+                    break;
+            }
+            var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
+
+            using (var txn = model.BeginTransaction("Add Site to Project"))
+            {
+                site.Representation = model.Instances.New<IfcProductDefinitionShape>(r => r.Representations.Add(repres));
+                project.AddSite(site);
+
+                model.OwnerHistoryAddObject.CreationDate = DateTime.Now;
+                model.OwnerHistoryAddObject.LastModifiedDate = model.OwnerHistoryAddObject.CreationDate;
+
+                txn.Commit();
+            }
+
+            return model;
+        }
+        
+
         /// <summary>
         /// 
         /// </summary>
