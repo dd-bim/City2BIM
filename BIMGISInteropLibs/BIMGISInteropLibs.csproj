@@ -222,8 +222,9 @@
     <Compile Include="Geometry\C2BSolid.cs" />
     <Compile Include="Geometry\C2BVertex.cs" />
     <Compile Include="Geometry\C2BPoint.cs" />
-    <Compile Include="IFCTerrain\Common.cs" />
-    <Compile Include="IFCTerrain\Result.cs" />
+    <Compile Include="IfcTerrain\Common.cs" />
+    <Compile Include="IfcTerrain\JsonSettings.cs" />
+    <Compile Include="IfcTerrain\Result.cs" />
     <Compile Include="IFC\Ifc2x3\GeometricCurveSet.cs" />
     <Compile Include="IFC\Ifc4\GeometricCurveSet.cs" />
     <Compile Include="IFC\Ifc4\InitModel.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="IFC\Ifc2x3\Site.cs" />
     <Compile Include="IFC\Ifc2x3\Store.cs" />
     <Compile Include="IFC\Ifc4dot3\Dummy.cs" />
+    <Compile Include="IfcTerrain\ConnectionInterface.cs" />
     <Compile Include="IFC\WriteInput.cs" />
     <Compile Include="LandXML\ReaderTerrain.cs" />
     <Compile Include="Logging\LogWriterIfcTerrain.cs" />
