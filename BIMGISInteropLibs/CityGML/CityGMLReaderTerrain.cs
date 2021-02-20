@@ -24,7 +24,7 @@ namespace BIMGISInteropLibs.CityGML
         /// </summary>
         /// <param name="fileName">Location of the CityGML file</param>
         /// <returns>TIN (in the form of result.tin)</returns>
-        public static Result ReadTIN(string fileName)
+        public static Result ReadTin(string fileName)
         {
             //var logger = LogManager.GetCurrentClassLogger(); NLog removed
 

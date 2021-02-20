@@ -20,14 +20,14 @@ using static BIMGISInteropLibs.IfcTerrain.Common;
 
 namespace BIMGISInteropLibs.LandXML
 {
-    class ReaderTerrain
+    public class ReaderTerrain
     {
         /// <summary>
         /// Reading a XML file and processing it as a TIN
         /// </summary>
         /// <param name="fileName">Location of the LandXML file</param>
         /// <returns>TIN - for further processing in IFCTerrain (and Revit)</returns>
-        public static Result ReadTIN(string fileName)
+        public static Result ReadTin(string fileName)
         {
             //create a new result for passing the TIN
             var result = new Result();

@@ -14,6 +14,7 @@ using IxMilia.Dxf.Entities; //entites in dxf file (used for processing of faces)
 //implement BimGisCad
 using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 using BimGisCad.Representation.Geometry.Composed;   //TIN
+using BimGisCad.Collections;                        //MESH
 
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
@@ -77,7 +78,7 @@ namespace BIMGISInteropLibs.DXF
         /// <param name="minDist">minimal distance</param>
         /// <param name="breakline">boolean value whether to process break edges</param>
         /// <returns>TIN (in form of result.Tin)</returns>
-        public static Result ReadDXFTin(DxfFile dxfFile, string layer, string breaklinelayer, double minDist, bool breakline)
+        public static Result ReadDxfTin(DxfFile dxfFile, string layer, string breaklinelayer, double minDist, bool breakline)
         {
             //[TODO]
             //use is3d is not implemented right now
@@ -200,5 +201,74 @@ namespace BIMGISInteropLibs.DXF
             //Transferring the result: for further processing in IFCTerrain or Revit
             return result;
         }
+
+        /// <summary>
+        /// [TODO]: rework reader to processing tin instead of mesh
+        /// </summary>
+        /// <param name="is3d"></param>
+        /// <param name="dxfFile">DXF-File</param>
+        /// <param name="layer"></param>
+        /// <param name="breaklinelayer"></param>
+        /// <param name="minDist"></param>
+        /// <param name="logFilePath"></param>
+        /// <param name="verbosityLevel"></param>
+        /// <param name="breakline"></param>
+        /// <returns>MESH (in form of result.Mesh)</returns>
+        public static Result ReadDxfPoly(bool is3d, DxfFile dxfFile, string layer, string breaklinelayer, double minDist, string logFilePath, string verbosityLevel, bool breakline)
+        {
+            var result = new Result();
+            if (!UnitToMeter.TryGetValue(dxfFile.Header.DefaultDrawingUnits, out double scale))
+            {
+                scale = 1.0;
+            }
+            var pp = new Mesh(is3d, minDist);
+
+            //Logger logger = LogManager.GetCurrentClassLogger();
+
+            foreach (var entity in dxfFile.Entities)
+            {
+                if (entity.Layer == layer)
+                {
+                    switch (entity.EntityType)
+                    {
+                        case DxfEntityType.Vertex:
+                            var vtx = (DxfVertex)entity;
+                            pp.AddPoint(Point3.Create(vtx.Location.X, vtx.Location.Y, vtx.Location.Z));
+                            break;
+                        case DxfEntityType.Line:
+                            var line = (DxfLine)entity;
+                            int p1 = pp.AddPoint(Point3.Create(line.P1.X * scale, line.P1.Y * scale, line.P1.Z * scale));
+                            int p2 = pp.AddPoint(Point3.Create(line.P2.X * scale, line.P2.Y * scale, line.P2.Z * scale));
+                            pp.FixEdge(p1, p2);
+                            break;
+                        case DxfEntityType.Polyline:
+                            var poly = (DxfPolyline)entity;
+                            int last = -1;
+                            foreach (var v in poly.Vertices)
+                            {
+                                int curr = pp.AddPoint(Point3.Create(v.Location.X * scale, v.Location.Y * scale, v.Location.Z * scale));
+                                if (last >= 0)
+                                {
+                                    pp.FixEdge(last, curr);
+                                }
+                                last = curr;
+                            }
+                            break;
+                    }
+                }
+            }
+            if (!pp.Points.Any() || !pp.FixedEdges.Any())
+            {
+                //result.Error = Properties.Resources.errNoLineData;
+                //logger.Error("Error. No line data found");
+                //return result;
+            }
+            result.Mesh = pp;
+
+            //logger.Info("Reading DXF-data successful");
+            //logger.Info(pp.Points.Count + " points, " + pp.FixedEdges.Count + " lines and " + pp.FaceEdges.Count + " faces read");
+            return result;
+        }
+
     }
 }

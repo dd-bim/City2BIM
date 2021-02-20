@@ -82,7 +82,7 @@ namespace BIMGISInteropLibs.REB
         /// </summary>
         /// <param name="fileNames">Location of the REB data set</param>
         /// <returns>RebDaData - Container (must still be converted to a TIN)</returns>
-        public static RebDaData ReadREB(string[] fileNames)
+        public static RebDaData ReadReb(string[] fileNames)
         {
             //Create instance of the container
             var rebData = new RebDaData();
