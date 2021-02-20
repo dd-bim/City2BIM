@@ -11,7 +11,7 @@ using BimGisCad.Representation.Geometry.Elementary;     //Points, Lines, ...
 using BimGisCad.Representation.Geometry.Composed;       //TIN
 
 //Transfer class (Result) for the reader (IFCTerrain + Revit)
-using BIMGISInteropLibs.IFCTerrain;
+using BIMGISInteropLibs.IfcTerrain;
 
 //[TODO]: add logging
 namespace BIMGISInteropLibs.REB

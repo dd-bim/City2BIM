@@ -17,7 +17,7 @@ using BimGisCad.Representation.Geometry.Composed; //TIN
 //NLOG removed...
 
 //Transfer class for the reader (IFCTerrain + Revit)
-using BIMGISInteropLibs.IFCTerrain;
+using BIMGISInteropLibs.IfcTerrain;
 
 namespace BIMGISInteropLibs.GEOgraf
 {

@@ -13,10 +13,10 @@ using BimGisCad.Representation.Geometry.Elementary;     //for points, lines, etc
 using BimGisCad.Representation.Geometry.Composed;       //for TIN processing
 
 //Transfer class (Result) for the reader (IFCTerrain + Revit)
-using BIMGISInteropLibs.IFCTerrain;
+using BIMGISInteropLibs.IfcTerrain;
 
 //Include IfcTerrain - Model for unit conversion
-using static BIMGISInteropLibs.IFCTerrain.Common;
+using static BIMGISInteropLibs.IfcTerrain.Common;
 
 namespace BIMGISInteropLibs.LandXML
 {

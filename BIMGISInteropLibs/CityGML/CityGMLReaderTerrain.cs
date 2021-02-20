@@ -13,7 +13,7 @@ using BimGisCad.Representation.Geometry.Composed;       //TIN
 using BimGisCad.Representation.Geometry.Elementary;     //Points, Lines, etc.
 
 //Transfer class for the reader (IFCTerrain + Revit)
-using BIMGISInteropLibs.IFCTerrain;
+using BIMGISInteropLibs.IfcTerrain;
 
 namespace BIMGISInteropLibs.CityGML
 {
