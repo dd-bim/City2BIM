@@ -20,9 +20,8 @@ using BimGisCad.Collections;                        //MESH
 using BIMGISInteropLibs.IfcTerrain;
 
 namespace BIMGISInteropLibs.DXF
-{
-    
-    class ReaderTerrain
+{    
+    public class ReaderTerrain
     {
 
         /// <summary>

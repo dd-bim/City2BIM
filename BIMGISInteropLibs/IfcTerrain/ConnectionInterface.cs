@@ -13,10 +13,12 @@ using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
+using BIMGISInteropLibs.IFC;
+
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
 
-namespace BIMGISInteropLibs.IFC.IfcTerrain
+namespace BIMGISInteropLibs.IfcTerrain
 {
     public class ConnectionInterface
     {
@@ -266,7 +268,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
             if (jSettings.outIFCType == "IFC2x3")
             {
                 //model (file) let generate via the Writer
-                var model = Ifc2x3.Store.CreateViaMesh(
+                var model = IFC.Ifc2x3.Store.CreateViaMesh(
                     jSettings.projectName,
                     jSettings.editorsFamilyName,
                     jSettings.editorsGivenName,
@@ -281,7 +283,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                 //logger.Debug("IFC site created");
 
                 //access to file writer 
-                Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
 
                 //logging - ifc file is written to path ...
             }
@@ -295,7 +297,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                 //create IFC4 modell
                 var model = jSettings.geoElement
                     //create with geo element
-                    ? Ifc4.Geo.CreateViaMesh(
+                    ? IFC.Ifc4.Geo.CreateViaMesh(
                         jSettings.projectName,
                         jSettings.editorsFamilyName,
                         jSettings.editorsGivenName,
@@ -306,7 +308,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                         writeInput.SurfaceType,
                         breakDist)
                     //with create with geo element
-                    : Ifc4.Store.CreateViaMesh(
+                    : IFC.Ifc4.Store.CreateViaMesh(
                         jSettings.projectName,
                         jSettings.editorsFamilyName,
                         jSettings.editorsGivenName,
@@ -317,7 +319,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                         writeInput.SurfaceType,
                         breakDist);
                 //logger.Debug("IFC Site created"); [TODO]:Logging
-                Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
                 //logger.Info("IFC file writen: " + jSettings.destFileName);
             }
             #endregion IFC4 writer (MESH)
@@ -327,7 +329,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
             else if (jSettings.outIFCType == "IFC2x3TIN")
             {
                 //model (file) let generate via the Writer
-                var model = Ifc2x3.Store.CreateViaTin(
+                var model = IFC.Ifc2x3.Store.CreateViaTin(
                     jSettings.projectName,
                     jSettings.editorsFamilyName,
                     jSettings.editorsGivenName,
@@ -342,7 +344,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                 //logger.Debug("IFC site created");
 
                 //access to file writer 
-                Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
 
                 //logging - ifc file is written to path ...
             }
@@ -356,7 +358,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                 //create IFC4 modell
                 var model = jSettings.geoElement
                     //create with geo element
-                    ? Ifc4.Geo.CreateViaTin(
+                    ? IFC.Ifc4.Geo.CreateViaTin(
                         jSettings.projectName,
                         jSettings.editorsFamilyName,
                         jSettings.editorsGivenName,
@@ -368,7 +370,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                         writeInput.SurfaceType,
                         breakDist)
                     //with create with geo element
-                    : Ifc4.Store.CreateViaTin(
+                    : IFC.Ifc4.Store.CreateViaTin(
                         jSettings.projectName,
                         jSettings.editorsFamilyName,
                         jSettings.editorsGivenName,
@@ -379,7 +381,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
                         writeInput.SurfaceType,
                         breakDist);
                 //logger.Debug("IFC Site created"); [TODO]:Logging
-                Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
                 //logger.Info("IFC file writen: " + jSettings.destFileName);
             }
             #endregion IFC4 writer (TIN)
