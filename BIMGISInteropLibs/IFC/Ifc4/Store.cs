@@ -14,6 +14,7 @@ using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc4.GeometryResource;               //IfcAxis2Placement3D
 using Xbim.Ifc4.MeasureResource;                //IfcLabel
 using Xbim.Ifc4.RepresentationResource;         //IfcShapeRepresentation
+using Xbim.IO;                                  //StorageType
 
 
 namespace BIMGISInteropLibs.IFC.Ifc4
@@ -69,7 +70,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         
 
         /// <summary>
-        /// 
+        /// Building Model Method
         /// </summary>
         /// <param name="projectName"></param>
         /// <param name="editorsFamilyName"></param>
@@ -130,5 +131,19 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             return model;
         }
 
+        /// <summary>
+        /// this method writes the IFC file
+        /// </summary>
+        /// <param name="model">model - created from ifc writer</param>
+        /// <param name="destPath">stoarge location for ifcFile</param>
+        /// <param name="asXML">decides whether to save as XML file</param>
+        public static void WriteFile(IfcStore model, string destPath, bool asXML = false)
+        {
+            //if it is to be saved as an XML file
+            if (asXML)
+            { model.SaveAs(destPath, StorageType.IfcXml); }
+            else
+            { model.SaveAs(destPath, StorageType.Ifc); }
+        }
     }
 }
