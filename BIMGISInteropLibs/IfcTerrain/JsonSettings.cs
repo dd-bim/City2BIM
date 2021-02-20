@@ -15,7 +15,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// storage location of the file to be converted
         /// </summary>
-        public string storeLocation { get; set; }
+        public string filePath { get; set; }
 
         /// <summary>
         /// filetype of the file to be converted
@@ -29,7 +29,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         public string destFileName { get; set; }
 
         /// <summary>
-        /// Sets the IFC version of the output file
+        /// Sets the IFC version of the output file (IFC2x3; IFC4; ~IFC4dot3~)
         /// </summary>
         public string outIFCType { get; set; }
 
