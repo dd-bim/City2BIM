@@ -44,7 +44,7 @@ namespace BIMGISInteropLibs.IFC.IfcTerrain
         /// <param name="refLatitude">TODO</param>
         /// <param name="refLongitude">TODO</param>
         /// <param name="refElevation">TODO</param>
-        public void mapProcess(BIMGISInteropLibs.IfcTerrain.JsonSettings jSettings, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
+        public void mapProcess(JsonSettings jSettings, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
         {
             //The processing is basically done by a reader and a writer (these are included in the corresponding regions)
             #region reader
