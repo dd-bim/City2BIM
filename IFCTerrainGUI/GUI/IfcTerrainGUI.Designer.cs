@@ -1,7 +1,7 @@
 ﻿
 namespace IFCTerrainGUI
 {
-    partial class GUI
+    partial class IfcTerrainGUI
     {
         /// <summary>
         /// Required designer variable.
@@ -29,19 +29,22 @@ namespace IFCTerrainGUI
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IfcTerrainGUI));
             this.pBoxLogo = new System.Windows.Forms.PictureBox();
             this.lblImportSettings = new System.Windows.Forms.Label();
             this.lblExportSettings = new System.Windows.Forms.Label();
             this.tbControlFileSelection = new System.Windows.Forms.TabControl();
-            this.tabPageXml = new System.Windows.Forms.TabPage();
             this.tabPageDxf = new System.Windows.Forms.TabPage();
-            this.tabPageReb = new System.Windows.Forms.TabPage();
-            this.tabPageGrid = new System.Windows.Forms.TabPage();
+            this.btnReadDxf = new System.Windows.Forms.Button();
+            this.tabPageXml = new System.Windows.Forms.TabPage();
+            this.tabPageGrafbat = new System.Windows.Forms.TabPage();
             this.tabPagePostGis = new System.Windows.Forms.TabPage();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPageGrid = new System.Windows.Forms.TabPage();
+            this.tabPageReb = new System.Windows.Forms.TabPage();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pBoxLogo)).BeginInit();
             this.tbControlFileSelection.SuspendLayout();
+            this.tabPageDxf.SuspendLayout();
             this.SuspendLayout();
             // 
             // pBoxLogo
@@ -65,14 +68,28 @@ namespace IFCTerrainGUI
             // 
             this.tbControlFileSelection.Controls.Add(this.tabPageDxf);
             this.tbControlFileSelection.Controls.Add(this.tabPageXml);
-            this.tbControlFileSelection.Controls.Add(this.tabPageReb);
-            this.tbControlFileSelection.Controls.Add(this.tabPageGrid);
+            this.tbControlFileSelection.Controls.Add(this.tabPageGrafbat);
             this.tbControlFileSelection.Controls.Add(this.tabPagePostGis);
-            this.tbControlFileSelection.Controls.Add(this.tabPage1);
+            this.tbControlFileSelection.Controls.Add(this.tabPageGrid);
+            this.tbControlFileSelection.Controls.Add(this.tabPageReb);
             resources.ApplyResources(this.tbControlFileSelection, "tbControlFileSelection");
             this.tbControlFileSelection.Multiline = true;
             this.tbControlFileSelection.Name = "tbControlFileSelection";
             this.tbControlFileSelection.SelectedIndex = 0;
+            // 
+            // tabPageDxf
+            // 
+            this.tabPageDxf.Controls.Add(this.btnReadDxf);
+            resources.ApplyResources(this.tabPageDxf, "tabPageDxf");
+            this.tabPageDxf.Name = "tabPageDxf";
+            this.tabPageDxf.UseVisualStyleBackColor = true;
+            // 
+            // btnReadDxf
+            // 
+            resources.ApplyResources(this.btnReadDxf, "btnReadDxf");
+            this.btnReadDxf.Name = "btnReadDxf";
+            this.btnReadDxf.UseVisualStyleBackColor = true;
+            this.btnReadDxf.Click += new System.EventHandler(this.btnReadDxf_Click);
             // 
             // tabPageXml
             // 
@@ -80,23 +97,11 @@ namespace IFCTerrainGUI
             this.tabPageXml.Name = "tabPageXml";
             this.tabPageXml.UseVisualStyleBackColor = true;
             // 
-            // tabPageDxf
+            // tabPageGrafbat
             // 
-            resources.ApplyResources(this.tabPageDxf, "tabPageDxf");
-            this.tabPageDxf.Name = "tabPageDxf";
-            this.tabPageDxf.UseVisualStyleBackColor = true;
-            // 
-            // tabPageReb
-            // 
-            resources.ApplyResources(this.tabPageReb, "tabPageReb");
-            this.tabPageReb.Name = "tabPageReb";
-            this.tabPageReb.UseVisualStyleBackColor = true;
-            // 
-            // tabPageGrid
-            // 
-            resources.ApplyResources(this.tabPageGrid, "tabPageGrid");
-            this.tabPageGrid.Name = "tabPageGrid";
-            this.tabPageGrid.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.tabPageGrafbat, "tabPageGrafbat");
+            this.tabPageGrafbat.Name = "tabPageGrafbat";
+            this.tabPageGrafbat.UseVisualStyleBackColor = true;
             // 
             // tabPagePostGis
             // 
@@ -104,13 +109,19 @@ namespace IFCTerrainGUI
             this.tabPagePostGis.Name = "tabPagePostGis";
             this.tabPagePostGis.UseVisualStyleBackColor = true;
             // 
-            // tabPage1
+            // tabPageGrid
             // 
-            resources.ApplyResources(this.tabPage1, "tabPage1");
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.tabPageGrid, "tabPageGrid");
+            this.tabPageGrid.Name = "tabPageGrid";
+            this.tabPageGrid.UseVisualStyleBackColor = true;
             // 
-            // GUI
+            // tabPageReb
+            // 
+            resources.ApplyResources(this.tabPageReb, "tabPageReb");
+            this.tabPageReb.Name = "tabPageReb";
+            this.tabPageReb.UseVisualStyleBackColor = true;
+            // 
+            // IfcTerrainGUI
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -118,9 +129,10 @@ namespace IFCTerrainGUI
             this.Controls.Add(this.lblExportSettings);
             this.Controls.Add(this.lblImportSettings);
             this.Controls.Add(this.pBoxLogo);
-            this.Name = "GUI";
+            this.Name = "IfcTerrainGUI";
             ((System.ComponentModel.ISupportInitialize)(this.pBoxLogo)).EndInit();
             this.tbControlFileSelection.ResumeLayout(false);
+            this.tabPageDxf.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -135,8 +147,10 @@ namespace IFCTerrainGUI
         private System.Windows.Forms.TabPage tabPageXml;
         private System.Windows.Forms.TabPage tabPageDxf;
         private System.Windows.Forms.TabPage tabPageReb;
-        private System.Windows.Forms.TabPage tabPageGrid;
+        private System.Windows.Forms.TabPage tabPageGrafbat;
         private System.Windows.Forms.TabPage tabPagePostGis;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPageGrid;
+        private System.Windows.Forms.Button btnReadDxf;
+        private System.Windows.Forms.ColorDialog colorDialog1;
     }
 }

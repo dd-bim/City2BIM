@@ -119,7 +119,7 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="pBoxLogo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 8</value>
+    <value>8, 10</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="pBoxLogo.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
@@ -187,7 +187,7 @@
     <value>Bahnschrift, 11.25pt, style=Bold</value>
   </data>
   <data name="lblExportSettings.Location" type="System.Drawing.Point, System.Drawing">
-    <value>404, 60</value>
+    <value>404, 10</value>
   </data>
   <data name="lblExportSettings.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>4, 0, 4, 0</value>
@@ -212,6 +212,114 @@
   </data>
   <data name="&gt;&gt;lblExportSettings.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.Name" xml:space="preserve">
+    <value>tabPageDxf</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;tabPageXml.Name" xml:space="preserve">
+    <value>tabPageXml</value>
+  </data>
+  <data name="&gt;&gt;tabPageXml.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageXml.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPageXml.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrafbat.Name" xml:space="preserve">
+    <value>tabPageGrafbat</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrafbat.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrafbat.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrafbat.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.Name" xml:space="preserve">
+    <value>tabPagePostGis</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrid.Name" xml:space="preserve">
+    <value>tabPageGrid</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrid.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPageGrid.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;tabPageReb.Name" xml:space="preserve">
+    <value>tabPageReb</value>
+  </data>
+  <data name="&gt;&gt;tabPageReb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageReb.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPageReb.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tbControlFileSelection.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Bahnschrift, 9.75pt</value>
+  </data>
+  <data name="tbControlFileSelection.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 85</value>
+  </data>
+  <data name="tbControlFileSelection.Size" type="System.Drawing.Size, System.Drawing">
+    <value>392, 400</value>
+  </data>
+  <data name="tbControlFileSelection.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.Name" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.Name" xml:space="preserve">
+    <value>btnReadDxf</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.Parent" xml:space="preserve">
+    <value>tabPageDxf</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="tabPageDxf.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 46</value>
@@ -240,14 +348,41 @@
   <data name="&gt;&gt;tabPageDxf.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="btnReadDxf.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="btnReadDxf.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="btnReadDxf.Size" type="System.Drawing.Size, System.Drawing">
+    <value>378, 23</value>
+  </data>
+  <data name="btnReadDxf.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="btnReadDxf.Text" xml:space="preserve">
+    <value>Read "DXF file"</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.Name" xml:space="preserve">
+    <value>btnReadDxf</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.Parent" xml:space="preserve">
+    <value>tabPageDxf</value>
+  </data>
+  <data name="&gt;&gt;btnReadDxf.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="tabPageXml.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 25</value>
+    <value>4, 46</value>
   </data>
   <data name="tabPageXml.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
   <data name="tabPageXml.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 269</value>
+    <value>384, 350</value>
   </data>
   <data name="tabPageXml.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -267,35 +402,59 @@
   <data name="&gt;&gt;tabPageXml.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="tabPageReb.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="tabPageGrafbat.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 46</value>
   </data>
-  <data name="tabPageReb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 248</value>
+  <data name="tabPageGrafbat.Size" type="System.Drawing.Size, System.Drawing">
+    <value>384, 350</value>
   </data>
-  <data name="tabPageReb.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="tabPageGrafbat.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
   </data>
-  <data name="tabPageReb.Text" xml:space="preserve">
-    <value>REB (DA45, DA49, DA58)</value>
+  <data name="tabPageGrafbat.Text" xml:space="preserve">
+    <value>GEOgraf (OUT)</value>
   </data>
-  <data name="&gt;&gt;tabPageReb.Name" xml:space="preserve">
-    <value>tabPageReb</value>
+  <data name="&gt;&gt;tabPageGrafbat.Name" xml:space="preserve">
+    <value>tabPageGrafbat</value>
   </data>
-  <data name="&gt;&gt;tabPageReb.Type" xml:space="preserve">
+  <data name="&gt;&gt;tabPageGrafbat.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPageReb.Parent" xml:space="preserve">
+  <data name="&gt;&gt;tabPageGrafbat.Parent" xml:space="preserve">
     <value>tbControlFileSelection</value>
   </data>
-  <data name="&gt;&gt;tabPageReb.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tabPageGrafbat.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="tabPagePostGis.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 46</value>
+  </data>
+  <data name="tabPagePostGis.Size" type="System.Drawing.Size, System.Drawing">
+    <value>384, 350</value>
+  </data>
+  <data name="tabPagePostGis.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="tabPagePostGis.Text" xml:space="preserve">
+    <value>Database (PostGIS)</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.Name" xml:space="preserve">
+    <value>tabPagePostGis</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPagePostGis.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
   <data name="tabPageGrid.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 46</value>
   </data>
   <data name="tabPageGrid.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 248</value>
+    <value>384, 350</value>
   </data>
   <data name="tabPageGrid.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -313,80 +472,35 @@
     <value>tbControlFileSelection</value>
   </data>
   <data name="&gt;&gt;tabPageGrid.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
-  <data name="tabPagePostGis.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="tabPageReb.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 46</value>
   </data>
-  <data name="tabPagePostGis.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 248</value>
+  <data name="tabPageReb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>384, 350</value>
   </data>
-  <data name="tabPagePostGis.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+  <data name="tabPageReb.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
-  <data name="tabPagePostGis.Text" xml:space="preserve">
-    <value>Database (PostGIS)</value>
+  <data name="tabPageReb.Text" xml:space="preserve">
+    <value>REB (DA45, DA49, DA58)</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.Name" xml:space="preserve">
-    <value>tabPagePostGis</value>
+  <data name="&gt;&gt;tabPageReb.Name" xml:space="preserve">
+    <value>tabPageReb</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.Type" xml:space="preserve">
+  <data name="&gt;&gt;tabPageReb.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.Parent" xml:space="preserve">
+  <data name="&gt;&gt;tabPageReb.Parent" xml:space="preserve">
     <value>tbControlFileSelection</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 67</value>
-  </data>
-  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 227</value>
-  </data>
-  <data name="tabPage1.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;tabPageReb.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="tabPage1.Text" xml:space="preserve">
-    <value>GEOgraf (OUT)</value>
-  </data>
-  <data name="&gt;&gt;tabPage1.Name" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-  <data name="&gt;&gt;tabPage1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage1.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="tbControlFileSelection.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Bahnschrift, 9.75pt</value>
-  </data>
-  <data name="tbControlFileSelection.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 85</value>
-  </data>
-  <data name="tbControlFileSelection.Size" type="System.Drawing.Size, System.Drawing">
-    <value>392, 400</value>
-  </data>
-  <data name="tbControlFileSelection.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.Name" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
+  <metadata name="colorDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -408,8 +522,14 @@
   <data name="$this.Text" xml:space="preserve">
     <value>IFCTerrain GUI</value>
   </data>
+  <data name="&gt;&gt;colorDialog1.Name" xml:space="preserve">
+    <value>colorDialog1</value>
+  </data>
+  <data name="&gt;&gt;colorDialog1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColorDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>GUI</value>
+    <value>IfcTerrainGUI</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
