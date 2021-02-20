@@ -43,7 +43,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 EditorsOrganisationName = editorsOrganisationName
             };
             //write credentials to IfcStore (model)
-            var model = Xbim.Ifc.IfcStore.Create(credentials, XbimSchemaVersion.Ifc2X3, XbimStoreType.EsentDatabase);
+            var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc4, XbimStoreType.EsentDatabase);
 
             //Begin a transaction as all changes to a model are ACID
             using (var txn = model.BeginTransaction("Initialise Model"))
