@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
+    /// <summary>
+    /// Establishes the connection between Reader, Writers, GUI and Command
+    /// </summary>
     public class JsonSettings
     {
         #region unspecific file attributes
