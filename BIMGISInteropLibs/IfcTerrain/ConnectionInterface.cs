@@ -63,19 +63,19 @@ namespace BIMGISInteropLibs.IfcTerrain
             switch (jSettings.fileType)
             {
                 //reader for LandXML
-                case "LandXML":
+                case IfcTerrainFileType.LandXml:
                     //result = LandXML.ReaderTerrain(jSettings.is3D, jSettings.filePath, jSettings.minDist, jSettings.logFilePath, jSettings.verbosityLevel);
                     result = LandXML.ReaderTerrain.ReadTin(jSettings.filePath);
                     //end of the case so it is jumped after file reading (above) out of the switch function
                     break;
 
                 //reader for CityGML
-                case "CityGML":
+                case IfcTerrainFileType.CityGml:
                     result = CityGML.CityGMLReaderTerrain.ReadTin(jSettings.filePath);
                     break;
 
                 //reader for DXF
-                case "DXF":
+                case IfcTerrainFileType.Dxf:
                     //file Reader: output will be used to process terrain information
                     DXF.ReaderTerrain.ReadFile(jSettings.filePath, out DxfFile dxfFile);
 
@@ -94,7 +94,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 //reader for REB    
-                case "REB":
+                case IfcTerrainFileType.Reb:
                     //REB file reader
                     REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(filePath);
                     //use REB data via processing with converter
@@ -102,12 +102,12 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 //reader for Elev.Grid [TODO]: processing result is mesh! have to be changed to tin
-                case "Grid":
+                case IfcTerrainFileType.Grid:
                     result = ElevationGrid.ReaderTerrain.ReadGrid(jSettings.is3D, jSettings.filePath, jSettings.minDist, jSettings.gridSize, jSettings.bBox, jSettings.bbNorth, jSettings.bbEast, jSettings.bbSouth, jSettings.bbWest);
                     break;
 
                 //reader for GRAFBAT
-                case "GRAFBAT":
+                case IfcTerrainFileType.Grafbat:
                     if (jSettings.isTin)
                     {
                         //reader for processing GRAFBAT as TIN via points and triangles 
@@ -123,7 +123,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 //reader for PostGIS
-                case "PostGIS":
+                case IfcTerrainFileType.PostGis:
                     result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings.host, jSettings.port, jSettings.user, jSettings.password, jSettings.database, jSettings.schema, jSettings.tin_table, jSettings.tin_column, jSettings.tinid_column, jSettings.tin_id, jSettings.breakline, jSettings.breakline_table, jSettings.breakline_column, jSettings.breakline_tin_id);
                     break;
             }
