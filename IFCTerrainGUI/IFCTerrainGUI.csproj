@@ -83,5 +83,11 @@
   <ItemGroup>
     <None Include="Resources\DDBIM_Logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
+      <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
+      <Name>BIMGISInteropLibs</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
