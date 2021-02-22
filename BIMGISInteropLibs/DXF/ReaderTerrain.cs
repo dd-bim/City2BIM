@@ -21,6 +21,9 @@ using BIMGISInteropLibs.IfcTerrain;
 
 namespace BIMGISInteropLibs.DXF
 {    
+    /// <summary>
+    /// Reader for DXF file processing includes more classes for read file, process dtm,...
+    /// </summary>
     public class ReaderTerrain
     {
 
