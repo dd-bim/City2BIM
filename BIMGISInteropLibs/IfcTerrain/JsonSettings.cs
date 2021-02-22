@@ -7,6 +7,21 @@ using System.Threading.Tasks;
 namespace BIMGISInteropLibs.IfcTerrain
 {
     /// <summary>
+    /// supported data types for processing with IFCTerrain
+    /// </summary>
+    public enum IfcTerrainFileType
+    {
+        Dxf,
+        LandXml,
+        CityGml,
+        Grafbat,
+        PostGis,
+        Grid,
+        Reb,
+    }
+
+    
+    /// <summary>
     /// Establishes the connection between Reader, Writers, GUI and Command
     /// </summary>
     public class JsonSettings
@@ -23,7 +38,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// filetype of the file to be converted
         /// </summary>
-        public string fileType { get; set; }
+        public IfcTerrainFileType fileType { get; set; }
 
         //Write (IFC)
         /// <summary>
