@@ -136,7 +136,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             //from here are the IFC writers
             #region writer
 
-            //proeject name - Überprüfung, ob dieser vom Nutzer nicht vergeben wurde
+            //proeject name - Check if this has not been assigned by the user
             if (string.IsNullOrEmpty(jSettings.projectName))
             {
                 //project name assigned as placeholder
