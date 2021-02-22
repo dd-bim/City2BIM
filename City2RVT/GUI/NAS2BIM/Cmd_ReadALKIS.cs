@@ -8,6 +8,7 @@ using BIMGISInteropLibs.Alkis;
 using City2RVT.Reader;
 using City2RVT.Builder;
 using City2RVT.GUI.NAS2BIM;
+using BIMGISInteropLibs.OGR;
 
 namespace City2RVT.GUI
 {
@@ -36,17 +37,25 @@ namespace City2RVT.GUI
             if (dialog.StartImport)
             {
                 MetaInformation.createALKISSchema(doc);
-                AlkisReader alkisReader = new AlkisReader(dialog.FilePath);
-                var alkisObjs = alkisReader.AlkisObjects;
+                //AlkisReader alkisReader = new AlkisReader(dialog.FilePath);
+                //var alkisObjs = alkisReader.AlkisObjects;
 
                 var layerNameList = dialog.LayerNamesToImport;
 
+                var ogrReader = new OGRALKISReader(dialog.FilePath);
+                foreach (var layerName in layerNameList)
+                {
+                    var GeoObjs = ogrReader.getGeoObjectsForLayer(ogrReader.getLayerByName(layerName));
+                    var GeoObjBuilder = new GeoObjectBuilder(doc);
+                    GeoObjBuilder.buildGeoObjectsFromList(GeoObjs, dialog.Drape);
+                }
+
                 // https://stackoverflow.com/questions/10745900/filter-a-list-by-another-list-c-sharp :)
                 //filter object list based on usage type string in layer name list
-                List<AX_Object> objsToBuild = alkisObjs.Where(item => layerNameList.Any(category => category.Equals(item.UsageType))).ToList();
+                //List<AX_Object> objsToBuild = alkisObjs.Where(item => layerNameList.Any(category => category.Equals(item.UsageType))).ToList();
 
-                AlkisBuilder alkisBuilder = new AlkisBuilder(doc);
-                alkisBuilder.buildRevitObjectsFromAlkisList(alkisObjs, dialog.Drape);
+                //AlkisBuilder alkisBuilder = new AlkisBuilder(doc);
+                //alkisBuilder.buildRevitObjectsFromAlkisList(alkisObjs, dialog.Drape);
 
             }
 

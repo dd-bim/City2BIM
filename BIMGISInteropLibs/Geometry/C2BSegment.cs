@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BIMGISInteropLibs.Geometry
 {
-    class C2BSegment
+    public class C2BSegment
     {
         public bool isCurve;
         public C2BPoint startPoint;

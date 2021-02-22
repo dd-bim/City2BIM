@@ -9,7 +9,7 @@ using OSGeo.OGR;
 
 namespace BIMGISInteropLibs.OGR
 {
-    class OGRALKISReader
+    public class OGRALKISReader
     {
         private DataSource ds;
 
@@ -77,9 +77,10 @@ namespace BIMGISInteropLibs.OGR
 
                 var geom = currentFeature.GetGeometryRef();
 
-                var segments = OGRUtils.getSegmentsFromGeometry(geom);
+                //var segments = OGRUtils.getSegmentsFromGeometry(geom);
 
-                var geoObject = new GeoObject(usageType, currentFeature.GetFieldAsString("gml_id"), geom.GetGeometryType(), segments, properties);
+                //var geoObject = new GeoObject(usageType, currentFeature.GetFieldAsString("gml_id"), geom.GetGeometryType(), segments, properties);
+                var geoObject = new GeoObject(usageType, currentFeature.GetFieldAsString("gml_id"), geom.GetGeometryType(), geom, properties);
                 geoObjects.Add(geoObject);
             }
 

@@ -9,7 +9,7 @@ using BIMGISInteropLibs.Geometry;
 
 namespace BIMGISInteropLibs.OGR
 {
-    class OGRUtils
+    public class OGRUtils
     {
         public static List<List<C2BSegment>> getSegmentsFromGeometry(OSGeo.OGR.Geometry geom)
         {
@@ -25,6 +25,13 @@ namespace BIMGISInteropLibs.OGR
             }
 
             return returnSegs;
+        }
+
+        private static List<OSGeo.OGR.Geometry> getOuterRingSegmentsFromMultiPolygon(OSGeo.OGR.Geometry geom)
+        {
+
+
+            return null;
         }
 
         private static List<C2BSegment> getOuterRingSegmentsFromPolygon(OSGeo.OGR.Geometry geom)
