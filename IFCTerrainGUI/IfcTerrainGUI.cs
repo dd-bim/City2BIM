@@ -10,45 +10,44 @@ using System.Windows.Forms;
 
 using System.IO; //requiered for file handling
 
-
 using BIMGISInteropLibs.IfcTerrain; //so that functionalities like ConnectionInterface, Result, JsonSeetings are available!
-
 
 namespace IFCTerrainGUI
 {
+    /// <summary>
+    /// Class to interact with the GUI (main control)
+    /// </summary>
     public partial class IfcTerrainGUI : Form
     {
-        //initalize GUI
-        //do not change
+        #region gui settings
+        /// <summary>
+        /// initalize Graphical User Interface (GUI);
+        /// do not change or add something in this function
+        /// </summary>
         public IfcTerrainGUI()
         {
             InitializeComponent();
         }
+
         /// <summary>
         /// JSON (settings) - passing information (will be necessary for further processing)
         /// </summary>
-        public JsonSettings jSettings { get; set; } = new JsonSettings();
-
-
+        public static JsonSettings jSettings { get; set; } = new JsonSettings();
+        #endregion gui settings
 
 
         #region dxf processing
-
+        /// <summary>
+        /// Once the "Read DXF" button has been pressed this function will start
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnReadDxf_Click(object sender, EventArgs e)
         {
+            fileHandling.dxf.openDxf(sender, e);
 
 
-
-            var ofd = new OpenFileDialog
-            {
-                Filter = "DXF Files *.dxf, *.dxb|*.dxf;*.dxb"
-            };
-            //if a file was selected via the filter (above) 
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                
-            }
-            //[TODO]: otherwise there have to be an error massage or hint
+            
         }
 
 
