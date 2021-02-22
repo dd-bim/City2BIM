@@ -35,13 +35,16 @@ namespace IFCTerrainGUI
             this.lblExportSettings = new System.Windows.Forms.Label();
             this.tbControlFileSelection = new System.Windows.Forms.TabControl();
             this.tabPageDxf = new System.Windows.Forms.TabPage();
+            this.lbDxfDtmLayer = new System.Windows.Forms.ListBox();
+            this.lblDtmLayer = new System.Windows.Forms.Label();
+            this.lblSelectDtmLayer = new System.Windows.Forms.Label();
             this.btnReadDxf = new System.Windows.Forms.Button();
             this.tabPageXml = new System.Windows.Forms.TabPage();
             this.tabPageGrafbat = new System.Windows.Forms.TabPage();
             this.tabPagePostGis = new System.Windows.Forms.TabPage();
             this.tabPageGrid = new System.Windows.Forms.TabPage();
             this.tabPageReb = new System.Windows.Forms.TabPage();
-            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            backgroundWorkerDxf = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.pBoxLogo)).BeginInit();
             this.tbControlFileSelection.SuspendLayout();
             this.tabPageDxf.SuspendLayout();
@@ -79,10 +82,29 @@ namespace IFCTerrainGUI
             // 
             // tabPageDxf
             // 
+            this.tabPageDxf.Controls.Add(this.lbDxfDtmLayer);
+            this.tabPageDxf.Controls.Add(this.lblDtmLayer);
+            this.tabPageDxf.Controls.Add(this.lblSelectDtmLayer);
             this.tabPageDxf.Controls.Add(this.btnReadDxf);
             resources.ApplyResources(this.tabPageDxf, "tabPageDxf");
             this.tabPageDxf.Name = "tabPageDxf";
             this.tabPageDxf.UseVisualStyleBackColor = true;
+            // 
+            // lbDxfDtmLayer
+            // 
+            this.lbDxfDtmLayer.FormattingEnabled = true;
+            resources.ApplyResources(this.lbDxfDtmLayer, "lbDxfDtmLayer");
+            this.lbDxfDtmLayer.Name = "lbDxfDtmLayer";
+            // 
+            // lblDtmLayer
+            // 
+            resources.ApplyResources(this.lblDtmLayer, "lblDtmLayer");
+            this.lblDtmLayer.Name = "lblDtmLayer";
+            // 
+            // lblSelectDtmLayer
+            // 
+            resources.ApplyResources(this.lblSelectDtmLayer, "lblSelectDtmLayer");
+            this.lblSelectDtmLayer.Name = "lblSelectDtmLayer";
             // 
             // btnReadDxf
             // 
@@ -121,6 +143,11 @@ namespace IFCTerrainGUI
             this.tabPageReb.Name = "tabPageReb";
             this.tabPageReb.UseVisualStyleBackColor = true;
             // 
+            // backgroundWorkerDxf
+            // 
+            backgroundWorkerDxf.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerDxf_DoWork);
+            backgroundWorkerDxf.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerDXF_RunWorkerCompleted);
+            // 
             // IfcTerrainGUI
             // 
             resources.ApplyResources(this, "$this");
@@ -133,6 +160,7 @@ namespace IFCTerrainGUI
             ((System.ComponentModel.ISupportInitialize)(this.pBoxLogo)).EndInit();
             this.tbControlFileSelection.ResumeLayout(false);
             this.tabPageDxf.ResumeLayout(false);
+            this.tabPageDxf.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -151,6 +179,9 @@ namespace IFCTerrainGUI
         private System.Windows.Forms.TabPage tabPagePostGis;
         private System.Windows.Forms.TabPage tabPageGrid;
         private System.Windows.Forms.Button btnReadDxf;
-        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.Label lblSelectDtmLayer;
+        private System.Windows.Forms.Label lblDtmLayer;
+        private System.Windows.Forms.ListBox lbDxfDtmLayer;
+        public static System.ComponentModel.BackgroundWorker backgroundWorkerDxf;
     }
 }

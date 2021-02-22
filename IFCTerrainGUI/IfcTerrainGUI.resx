@@ -213,140 +213,87 @@
   <data name="&gt;&gt;lblExportSettings.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;tabPageDxf.Name" xml:space="preserve">
+  <data name="lbDxfDtmLayer.HorizontalScrollbar" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lbDxfDtmLayer.ItemHeight" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="lbDxfDtmLayer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 60</value>
+  </data>
+  <data name="lbDxfDtmLayer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>300, 84</value>
+  </data>
+  <data name="lbDxfDtmLayer.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lbDxfDtmLayer.Name" xml:space="preserve">
+    <value>lbDxfDtmLayer</value>
+  </data>
+  <data name="&gt;&gt;lbDxfDtmLayer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbDxfDtmLayer.Parent" xml:space="preserve">
     <value>tabPageDxf</value>
   </data>
-  <data name="&gt;&gt;tabPageDxf.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageDxf.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tabPageDxf.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;lbDxfDtmLayer.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;tabPageXml.Name" xml:space="preserve">
-    <value>tabPageXml</value>
+  <data name="lblDtmLayer.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;tabPageXml.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="lblDtmLayer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 60</value>
   </data>
-  <data name="&gt;&gt;tabPageXml.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
+  <data name="lblDtmLayer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>41, 16</value>
   </data>
-  <data name="&gt;&gt;tabPageXml.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrafbat.Name" xml:space="preserve">
-    <value>tabPageGrafbat</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrafbat.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrafbat.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrafbat.ZOrder" xml:space="preserve">
+  <data name="lblDtmLayer.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.Name" xml:space="preserve">
-    <value>tabPagePostGis</value>
+  <data name="lblDtmLayer.Text" xml:space="preserve">
+    <value>Layer</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;lblDtmLayer.Name" xml:space="preserve">
+    <value>lblDtmLayer</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
+  <data name="&gt;&gt;lblDtmLayer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPagePostGis.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrid.Name" xml:space="preserve">
-    <value>tabPageGrid</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrid.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrid.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tabPageGrid.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;tabPageReb.Name" xml:space="preserve">
-    <value>tabPageReb</value>
-  </data>
-  <data name="&gt;&gt;tabPageReb.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageReb.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tabPageReb.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="tbControlFileSelection.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Bahnschrift, 9.75pt</value>
-  </data>
-  <data name="tbControlFileSelection.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 85</value>
-  </data>
-  <data name="tbControlFileSelection.Size" type="System.Drawing.Size, System.Drawing">
-    <value>392, 400</value>
-  </data>
-  <data name="tbControlFileSelection.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.Name" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;tbControlFileSelection.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;btnReadDxf.Name" xml:space="preserve">
-    <value>btnReadDxf</value>
-  </data>
-  <data name="&gt;&gt;btnReadDxf.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnReadDxf.Parent" xml:space="preserve">
+  <data name="&gt;&gt;lblDtmLayer.Parent" xml:space="preserve">
     <value>tabPageDxf</value>
   </data>
-  <data name="&gt;&gt;btnReadDxf.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="tabPageDxf.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 46</value>
-  </data>
-  <data name="tabPageDxf.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="tabPageDxf.Size" type="System.Drawing.Size, System.Drawing">
-    <value>384, 350</value>
-  </data>
-  <data name="tabPageDxf.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;lblDtmLayer.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="tabPageDxf.Text" xml:space="preserve">
-    <value>CAD (DXF)</value>
+  <data name="lblSelectDtmLayer.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;tabPageDxf.Name" xml:space="preserve">
+  <data name="lblSelectDtmLayer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 30</value>
+  </data>
+  <data name="lblSelectDtmLayer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>319, 16</value>
+  </data>
+  <data name="lblSelectDtmLayer.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="lblSelectDtmLayer.Text" xml:space="preserve">
+    <value>Select DXF Layer for DTM (multiple selection possible)
+</value>
+  </data>
+  <data name="&gt;&gt;lblSelectDtmLayer.Name" xml:space="preserve">
+    <value>lblSelectDtmLayer</value>
+  </data>
+  <data name="&gt;&gt;lblSelectDtmLayer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblSelectDtmLayer.Parent" xml:space="preserve">
     <value>tabPageDxf</value>
   </data>
-  <data name="&gt;&gt;tabPageDxf.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageDxf.Parent" xml:space="preserve">
-    <value>tbControlFileSelection</value>
-  </data>
-  <data name="&gt;&gt;tabPageDxf.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;lblSelectDtmLayer.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="btnReadDxf.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -373,6 +320,33 @@
     <value>tabPageDxf</value>
   </data>
   <data name="&gt;&gt;btnReadDxf.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="tabPageDxf.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 46</value>
+  </data>
+  <data name="tabPageDxf.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="tabPageDxf.Size" type="System.Drawing.Size, System.Drawing">
+    <value>384, 350</value>
+  </data>
+  <data name="tabPageDxf.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="tabPageDxf.Text" xml:space="preserve">
+    <value>CAD (DXF)</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.Name" xml:space="preserve">
+    <value>tabPageDxf</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.Parent" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tabPageDxf.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="tabPageXml.Location" type="System.Drawing.Point, System.Drawing">
@@ -498,7 +472,31 @@
   <data name="&gt;&gt;tabPageReb.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <metadata name="colorDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="tbControlFileSelection.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Bahnschrift, 9.75pt</value>
+  </data>
+  <data name="tbControlFileSelection.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 85</value>
+  </data>
+  <data name="tbControlFileSelection.Size" type="System.Drawing.Size, System.Drawing">
+    <value>392, 400</value>
+  </data>
+  <data name="tbControlFileSelection.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.Name" xml:space="preserve">
+    <value>tbControlFileSelection</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;tbControlFileSelection.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <metadata name="backgroundWorkerDxf.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -522,11 +520,11 @@
   <data name="$this.Text" xml:space="preserve">
     <value>IFCTerrain GUI</value>
   </data>
-  <data name="&gt;&gt;colorDialog1.Name" xml:space="preserve">
-    <value>colorDialog1</value>
+  <data name="&gt;&gt;backgroundWorkerDxf.Name" xml:space="preserve">
+    <value>backgroundWorkerDxf</value>
   </data>
-  <data name="&gt;&gt;colorDialog1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColorDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;backgroundWorkerDxf.Type" xml:space="preserve">
+    <value>System.ComponentModel.BackgroundWorker, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>IfcTerrainGUI</value>
