@@ -100,11 +100,6 @@
   <ItemGroup>
     <Resource Include="GUI\Resources\DDBIM_Logo.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DD_BIM_LOGO.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GUI\DXF\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

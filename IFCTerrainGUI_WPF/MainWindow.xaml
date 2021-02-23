@@ -1,12 +1,11 @@
-﻿<Window x:Class="IFCTerrainGUI_WPF.MainWindow"
+﻿<Window x:Class="IFCTerrainGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IFCTerrainGUI_WPF"
         mc:Ignorable="d"
         Title="IFC Terrain GUI" Height="800
-        " Width="800" FontFamily="Bahnschrift" AutomationProperties.Name="IFCTerrain GUI">
+        " Width="800" FontFamily="Bahnschrift">
     <!--create "master" grid, this includes all elements of the GUI (DO NOT REMOVE!)-->
     <Grid>
         <!--#region Grid Lines -->
@@ -23,7 +22,7 @@
         <!--#endregion Grid Lines -->
 
         <!-- Logo -->
-        <Image x:Name="image" HorizontalAlignment="Left" Margin="0,10,0,0" Width="148" Source="DD_BIM_LOGO.png" Grid.Column="1" Height="44" VerticalAlignment="Top"/>
+        <Image x:Name="image" HorizontalAlignment="Left" Margin="0,10,0,0" Width="148" Source="GUI/Resources/DD_BIM_LOGO.png" Grid.Column="1" Height="44" VerticalAlignment="Top"/>
 
         <!-- Textbox "Import Settings"-->
         <TextBlock x:Name="tbImportSettings" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Text="Import Settings" Height="19" Width="111" Grid.Column="1" Margin="0,54,0,0"/>
@@ -44,9 +43,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Margin="10,10,0,0"  
-                        Width="354" Click="btnReadDxf_Click_1"/>
+                        Width="354"/>
                     <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="100" Margin="115,33,0,0" VerticalAlignment="Top" Width="249"/>
-
                 </Grid>
             </TabItem>
             <!--#endregion DXF-->
