@@ -19,8 +19,85 @@
         <!--Selection field for the import of the different data formats-->
         <TabControl x:Name="tabControlImport" HorizontalAlignment="Left" Width="380" Margin="10,80,0,280">
             <!--#region DXF-->
-            <TabItem x:Name="tabPageDxf"        Header="CAD (DXF)">
-                <!--placeholder for user controls-->
+            <TabItem x:Name="tabPageDxf"        
+                     Header="CAD (DXF)">
+                <Grid 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top" 
+                    Width="360" 
+                    Height="350">
+
+                    <Button
+                        x:Name="btnReadDxf"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Width="360"
+                        Height="20"
+                        Margin="0,5,0,0"
+                        Content="Read 'DXF file'">
+                    </Button>
+
+                    <TextBlock 
+                        x:Name="tbDxfLayerSelect" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top"
+                        Text="Select DTM Layer (multiple selection possible)"
+                        Margin="5,30,0,0">
+                    </TextBlock>
+
+                    <TextBlock 
+                        x:Name="tbDxfLayer" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top"
+                        Text="DXF Layer"
+                        Margin="5,55,0,0">
+                    </TextBlock>
+
+                    <ListBox
+                        x:Name="lbDxfLayer"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Width="270"
+                        Height="80"
+                        Margin="80,55,0,0">
+                    </ListBox>
+                    
+                    <TextBlock
+                        x:Name="tbProcessingVia"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="5,140,0,0"
+                        Text="Processing via...">
+
+                    </TextBlock>
+                    <RadioButton
+                        x:Name="rbDxfFaces"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="120,142,0,0"
+                        Content="Faces">
+                    </RadioButton>
+
+                    <RadioButton
+                        x:Name="rbDxfPointsLines"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="200,142,0,0"
+                        Content="Points/ Faces">
+                    </RadioButton>
+
+                    <Button
+                        x:Name="btnProcessDxf"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Height="20"
+                        Width="360"
+                        Margin="0,0,0,5"
+                        Content="Process DXF">
+                        
+                    </Button>
+                </Grid>
+                
             </TabItem>
             <!--#endregion DXF-->
 
