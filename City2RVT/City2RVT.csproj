@@ -414,10 +414,10 @@
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Localization.de.resx">
+    <EmbeddedResource Include="Localization.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Localization.de.Designer.cs</LastGenOutput>
-    </Resource>
+    </EmbeddedResource>
     <EmbeddedResource Include="meta_json_files\aaa.json" />
     <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
     <EmbeddedResource Include="meta_json_files\xplan.json" />
@@ -485,11 +485,10 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Resource Include="Localization.resx">
+    <EmbeddedResource Include="Localization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Localization.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Localization</CustomToolNamespace>
-    </Resource>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
