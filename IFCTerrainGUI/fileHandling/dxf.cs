@@ -12,19 +12,23 @@ using System.ComponentModel; //include to be able to address background workers
 
 using IxMilia.Dxf;  //include to be able to process DXF files
 
+using IFCTerrainGUI;
+
+
 namespace IFCTerrainGUI.fileHandling
 {
     /// <summary>
     /// Class to support processing (via the GUI)
     /// </summary>
-    public static class dxf
+    public class dxfHandling
     {
         /// <summary>
         /// DXF file opening; if a file was opened successfully, Json settings are made.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public static void openDxf(object sender, EventArgs e)
+        /// <returns>true if a file could be opened</returns>
+        public void openDxf(object sender, EventArgs e)
         {
             //Dialog for opening a file
             var ofd = new OpenFileDialog
@@ -38,22 +42,34 @@ namespace IFCTerrainGUI.fileHandling
             {
                 #region json settings
                 //set file type to dxf
-                IfcTerrainGUI.jSettings.fileType = IfcTerrainFileType.Dxf;
+                MainForm.jSettings.fileType = IfcTerrainFileType.Dxf;
 
                 //stoarge locaction setzen
-                IfcTerrainGUI.jSettings.filePath = ofd.FileName;
+                MainForm.jSettings.filePath = ofd.FileName;
                 #endregion json settings
 
                 #region gui text messages
                 //placeholder
                 #endregion gui text messages
 
-                #region background worker async
-                //background worker start: this lists all DXF entries (from the DXF file) in the ListBox
-                IfcTerrainGUI.backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
-                #endregion background worker async
+                #region start backgroundWorker 
+                
+                //start Background Worker otherwise it wouldn't read dxf file
+                MainForm.backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
+
+                //deactivate gui, so the user can no longer make any entries while the DXF file is being read
+                
+                
+
+                #endregion start backgroundWorker 
+
+              
+              
 
                 #region error handling
+
+
+
                 //placeholder for error handling
                 #endregion error handling
 
@@ -62,9 +78,7 @@ namespace IFCTerrainGUI.fileHandling
                 #endregion logging
             }
             //[TODO]: otherwise there have to be an error massage or hint
-
-
-            return;
+            return; //do not add any program code after that, otherwise it will not be executed
         }
     }
 }

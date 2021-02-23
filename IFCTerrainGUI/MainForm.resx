@@ -213,6 +213,90 @@
   <data name="&gt;&gt;lblExportSettings.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.Name" xml:space="preserve">
+    <value>lbDxfBreaklineLayer</value>
+  </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.Name" xml:space="preserve">
+    <value>lblDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.Name" xml:space="preserve">
+    <value>rbDxfBreakLinesProcessNo</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.Name" xml:space="preserve">
+    <value>rbDxfBreakLinesProcessYes</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.Name" xml:space="preserve">
+    <value>lblDxfProcessBreaklines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="gpDxfBreakLines.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 176</value>
+  </data>
+  <data name="gpDxfBreakLines.Size" type="System.Drawing.Size, System.Drawing">
+    <value>372, 146</value>
+  </data>
+  <data name="gpDxfBreakLines.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="gpDxfBreakLines.Text" xml:space="preserve">
+    <value>BreakLines</value>
+  </data>
+  <data name="&gt;&gt;gpDxfBreakLines.Name" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;gpDxfBreakLines.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;gpDxfBreakLines.Parent" xml:space="preserve">
+    <value>tabPageDxf</value>
+  </data>
+  <data name="&gt;&gt;gpDxfBreakLines.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="lbDxfDtmLayer.HorizontalScrollbar" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -220,10 +304,10 @@
     <value>16</value>
   </data>
   <data name="lbDxfDtmLayer.Location" type="System.Drawing.Point, System.Drawing">
-    <value>78, 60</value>
+    <value>89, 20</value>
   </data>
   <data name="lbDxfDtmLayer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 84</value>
+    <value>274, 84</value>
   </data>
   <data name="lbDxfDtmLayer.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -235,7 +319,7 @@
     <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lbDxfDtmLayer.Parent" xml:space="preserve">
-    <value>tabPageDxf</value>
+    <value>gpBoxDxfDtm</value>
   </data>
   <data name="&gt;&gt;lbDxfDtmLayer.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -244,7 +328,7 @@
     <value>True</value>
   </data>
   <data name="lblDtmLayer.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 60</value>
+    <value>6, 20</value>
   </data>
   <data name="lblDtmLayer.Size" type="System.Drawing.Size, System.Drawing">
     <value>41, 16</value>
@@ -262,38 +346,88 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblDtmLayer.Parent" xml:space="preserve">
-    <value>tabPageDxf</value>
+    <value>gpBoxDxfDtm</value>
   </data>
   <data name="&gt;&gt;lblDtmLayer.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="lblSelectDtmLayer.AutoSize" type="System.Boolean, mscorlib">
+  <data name="rbDxfFaces.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="lblSelectDtmLayer.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="rbDxfFaces.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 110</value>
+  </data>
+  <data name="rbDxfFaces.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 20</value>
+  </data>
+  <data name="rbDxfFaces.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="rbDxfFaces.Text" xml:space="preserve">
+    <value>Read via Faces</value>
+  </data>
+  <data name="&gt;&gt;rbDxfFaces.Name" xml:space="preserve">
+    <value>rbDxfFaces</value>
+  </data>
+  <data name="&gt;&gt;rbDxfFaces.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbDxfFaces.Parent" xml:space="preserve">
+    <value>gpBoxDxfDtm</value>
+  </data>
+  <data name="&gt;&gt;rbDxfFaces.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="rbDxfPointsLines.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbDxfPointsLines.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 110</value>
+  </data>
+  <data name="rbDxfPointsLines.Size" type="System.Drawing.Size, System.Drawing">
+    <value>155, 20</value>
+  </data>
+  <data name="rbDxfPointsLines.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="rbDxfPointsLines.Text" xml:space="preserve">
+    <value>Read via Points / Lines</value>
+  </data>
+  <data name="&gt;&gt;rbDxfPointsLines.Name" xml:space="preserve">
+    <value>rbDxfPointsLines</value>
+  </data>
+  <data name="&gt;&gt;rbDxfPointsLines.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbDxfPointsLines.Parent" xml:space="preserve">
+    <value>gpBoxDxfDtm</value>
+  </data>
+  <data name="&gt;&gt;rbDxfPointsLines.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="gpBoxDxfDtm.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 30</value>
   </data>
-  <data name="lblSelectDtmLayer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>319, 16</value>
+  <data name="gpBoxDxfDtm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>372, 140</value>
   </data>
-  <data name="lblSelectDtmLayer.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="gpBoxDxfDtm.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
   </data>
-  <data name="lblSelectDtmLayer.Text" xml:space="preserve">
-    <value>Select DXF Layer for DTM (multiple selection possible)
-</value>
+  <data name="gpBoxDxfDtm.Text" xml:space="preserve">
+    <value>Select DXF Layer for DTM (multiple selection possible)</value>
   </data>
-  <data name="&gt;&gt;lblSelectDtmLayer.Name" xml:space="preserve">
-    <value>lblSelectDtmLayer</value>
+  <data name="&gt;&gt;gpBoxDxfDtm.Name" xml:space="preserve">
+    <value>gpBoxDxfDtm</value>
   </data>
-  <data name="&gt;&gt;lblSelectDtmLayer.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;gpBoxDxfDtm.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblSelectDtmLayer.Parent" xml:space="preserve">
+  <data name="&gt;&gt;gpBoxDxfDtm.Parent" xml:space="preserve">
     <value>tabPageDxf</value>
   </data>
-  <data name="&gt;&gt;lblSelectDtmLayer.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;gpBoxDxfDtm.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="btnReadDxf.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -320,7 +454,7 @@
     <value>tabPageDxf</value>
   </data>
   <data name="&gt;&gt;btnReadDxf.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="tabPageDxf.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 46</value>
@@ -496,9 +630,141 @@
   <data name="&gt;&gt;tbControlFileSelection.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="backgroundWorkerDxf.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="lbDxfBreaklineLayer.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="lbDxfBreaklineLayer.ItemHeight" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="lbDxfBreaklineLayer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>89, 50</value>
+  </data>
+  <data name="lbDxfBreaklineLayer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>274, 84</value>
+  </data>
+  <data name="lbDxfBreaklineLayer.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.Name" xml:space="preserve">
+    <value>lbDxfBreaklineLayer</value>
+  </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lbDxfBreaklineLayer.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lblDxfBreakLines.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblDxfBreakLines.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 49</value>
+  </data>
+  <data name="lblDxfBreakLines.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 16</value>
+  </data>
+  <data name="lblDxfBreakLines.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="lblDxfBreakLines.Text" xml:space="preserve">
+    <value>Break Lines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.Name" xml:space="preserve">
+    <value>lblDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfBreakLines.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessNo.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessNo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>321, 18</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessNo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>42, 20</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessNo.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessNo.Text" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.Name" xml:space="preserve">
+    <value>rbDxfBreakLinesProcessNo</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessNo.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessYes.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessYes.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 18</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessYes.Size" type="System.Drawing.Size, System.Drawing">
+    <value>46, 20</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessYes.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="rbDxfBreakLinesProcessYes.Text" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.Name" xml:space="preserve">
+    <value>rbDxfBreakLinesProcessYes</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;rbDxfBreakLinesProcessYes.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="lblDxfProcessBreaklines.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblDxfProcessBreaklines.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 20</value>
+  </data>
+  <data name="lblDxfProcessBreaklines.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 16</value>
+  </data>
+  <data name="lblDxfProcessBreaklines.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="lblDxfProcessBreaklines.Text" xml:space="preserve">
+    <value>Process Breaklines?</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.Name" xml:space="preserve">
+    <value>lblDxfProcessBreaklines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.Parent" xml:space="preserve">
+    <value>gpDxfBreakLines</value>
+  </data>
+  <data name="&gt;&gt;lblDxfProcessBreaklines.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -520,14 +786,8 @@
   <data name="$this.Text" xml:space="preserve">
     <value>IFCTerrain GUI</value>
   </data>
-  <data name="&gt;&gt;backgroundWorkerDxf.Name" xml:space="preserve">
-    <value>backgroundWorkerDxf</value>
-  </data>
-  <data name="&gt;&gt;backgroundWorkerDxf.Type" xml:space="preserve">
-    <value>System.ComponentModel.BackgroundWorker, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>IfcTerrainGUI</value>
+    <value>MainForm</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

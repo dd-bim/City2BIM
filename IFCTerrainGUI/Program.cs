@@ -18,7 +18,7 @@ namespace IFCTerrainGUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new IfcTerrainGUI());
+            Application.Run(new MainForm());
         }
     }
 }

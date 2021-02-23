@@ -9,6 +9,8 @@ using BimGisCad.Collections;                        //MESH --> will be removed
 using BimGisCad.Representation.Geometry.Elementary; //LINE
 using BimGisCad.Representation.Geometry.Composed;   //TIN
 
+using IxMilia.Dxf; //for DXF processing
+
 namespace BIMGISInteropLibs.IfcTerrain
 {
     /// <summary>
@@ -16,16 +18,24 @@ namespace BIMGISInteropLibs.IfcTerrain
     /// </summary>
     public class Result
     {
-        //Error - [TODO] check if necessary
+        /// <summary>
+        /// transferclass for error
+        /// </summary>
         public string Error { get; set; } = null;
 
-        //MESH is used to pass a MESH - will be removed in the future
+        /// <summary>
+        /// transfer class of an MESH (WILL BE REMOVED)
+        /// </summary>
         public Mesh Mesh { get; set; } = null;
 
-        //Added for transfer of break edges
+        /// <summary>
+        /// transfer class of break edges
+        /// </summary>
         public Dictionary<int, Line3> Breaklines { get; set; } = null;
-        
-        //Added for transfer of tin
+
+        /// <summary>
+        /// transfer class for tin
+        /// </summary>
         public Tin Tin { get; set; }
     }
 }
