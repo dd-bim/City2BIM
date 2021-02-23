@@ -13,18 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace IFCTerrainGUI
+namespace IFCTerrainGUI.GUI
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaktionslogik für ucTin.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ucTin : UserControl
     {
-        public MainWindow()
+        public ucTin()
         {
             InitializeComponent();
         }
-
-        
     }
 }
