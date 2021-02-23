@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace IFCTerrainGUI_WPF
+namespace IFCTerrainGUI
 {
     /// <summary>
     /// Interaktionslogik für "App.xaml"

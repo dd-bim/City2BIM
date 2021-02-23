@@ -24,10 +24,5 @@ namespace IFCTerrainGUI
         {
             InitializeComponent();
         }
-
-        private void btnReadDxf_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
     }
 }
