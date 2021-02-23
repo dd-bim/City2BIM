@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace City2RVT {
+namespace Localization {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace City2RVT {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Localization {
+    public class Localization {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace City2RVT {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("City2RVT.Localization", typeof(Localization).Assembly);
@@ -51,7 +51,7 @@ namespace City2RVT {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
-        internal static string DataCatalogEditorWindow_id1 {
+        public static string DataCatalogEditorWindow_id1 {
             get {
                 return ResourceManager.GetString("DataCatalogEditorWindow_id1", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
-        internal static string DataCatalogEditorWindow_id2 {
+        public static string DataCatalogEditorWindow_id2 {
             get {
                 return ResourceManager.GetString("DataCatalogEditorWindow_id2", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Query External Data Catalog.
         /// </summary>
-        internal static string findSubjectResultForm {
+        public static string findSubjectResultForm {
             get {
                 return ResourceManager.GetString("findSubjectResultForm", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to close.
         /// </summary>
-        internal static string findSubjectResultForm_closeBtn {
+        public static string findSubjectResultForm_closeBtn {
             get {
                 return ResourceManager.GetString("findSubjectResultForm_closeBtn", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Search text for subjects.
         /// </summary>
-        internal static string findSubjectResultForm_id1 {
+        public static string findSubjectResultForm_id1 {
             get {
                 return ResourceManager.GetString("findSubjectResultForm_id1", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to query.
         /// </summary>
-        internal static string findSubjectResultForm_queryBtn {
+        public static string findSubjectResultForm_queryBtn {
             get {
                 return ResourceManager.GetString("findSubjectResultForm_queryBtn", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to set selected object.
         /// </summary>
-        internal static string findSubjectResultForm_setObjectBtn {
+        public static string findSubjectResultForm_setObjectBtn {
             get {
                 return ResourceManager.GetString("findSubjectResultForm_setObjectBtn", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to City2RVT IfcExport.
         /// </summary>
-        internal static string IfcExportDialog {
+        public static string IfcExportDialog {
             get {
                 return ResourceManager.GetString("IfcExportDialog", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
-        internal static string IfcExportDialog_cancelBtn {
+        public static string IfcExportDialog_cancelBtn {
             get {
                 return ResourceManager.GetString("IfcExportDialog_cancelBtn", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to export.
         /// </summary>
-        internal static string IfcExportDialog_exportBtn {
+        public static string IfcExportDialog_exportBtn {
             get {
                 return ResourceManager.GetString("IfcExportDialog_exportBtn", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Export File.
         /// </summary>
-        internal static string IfcExportDialog_FileLabel {
+        public static string IfcExportDialog_FileLabel {
             get {
                 return ResourceManager.GetString("IfcExportDialog_FileLabel", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to IfcGeographicElement.
         /// </summary>
-        internal static string IfcExportDialog_geogElemRadioBtn {
+        public static string IfcExportDialog_geogElemRadioBtn {
             get {
                 return ResourceManager.GetString("IfcExportDialog_geogElemRadioBtn", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Select Alkis / XPlanung Export Type.
         /// </summary>
-        internal static string IfcExportDialog_id1 {
+        public static string IfcExportDialog_id1 {
             get {
                 return ResourceManager.GetString("IfcExportDialog_id1", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Save As.
         /// </summary>
-        internal static string IfcExportDialog_saveAsButton {
+        public static string IfcExportDialog_saveAsButton {
             get {
                 return ResourceManager.GetString("IfcExportDialog_saveAsButton", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to IfcSite.
         /// </summary>
-        internal static string IfcExportDialog_siteRadioBtn {
+        public static string IfcExportDialog_siteRadioBtn {
             get {
                 return ResourceManager.GetString("IfcExportDialog_siteRadioBtn", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
-        internal static string ImportDialogAlkis_browseButton {
+        public static string ImportDialogAlkis_browseButton {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_browseButton", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
-        internal static string ImportDialogAlkis_cancelButton {
+        public static string ImportDialogAlkis_cancelButton {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_cancelButton", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Clear All.
         /// </summary>
-        internal static string ImportDialogAlkis_clearSelectionBtn {
+        public static string ImportDialogAlkis_clearSelectionBtn {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_clearSelectionBtn", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
-        internal static string ImportDialogAlkis_FileLabel {
+        public static string ImportDialogAlkis_FileLabel {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_FileLabel", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Layers to Import.
         /// </summary>
-        internal static string ImportDialogAlkis_id1 {
+        public static string ImportDialogAlkis_id1 {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_id1", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Drape on Terrain.
         /// </summary>
-        internal static string ImportDialogAlkis_id2 {
+        public static string ImportDialogAlkis_id2 {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_id2", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to drape objects on imported terrain.
         /// </summary>
-        internal static string ImportDialogAlkis_id3 {
+        public static string ImportDialogAlkis_id3 {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_id3", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to import.
         /// </summary>
-        internal static string ImportDialogAlkis_importButton {
+        public static string ImportDialogAlkis_importButton {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_importButton", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Select All.
         /// </summary>
-        internal static string ImportDialogAlkis_selectAllBtn {
+        public static string ImportDialogAlkis_selectAllBtn {
             get {
                 return ResourceManager.GetString("ImportDialogAlkis_selectAllBtn", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
-        internal static string ImportXPlanDialog_browseButton {
+        public static string ImportXPlanDialog_browseButton {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_browseButton", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
-        internal static string ImportXPlanDialog_cancelButton {
+        public static string ImportXPlanDialog_cancelButton {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_cancelButton", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Clear All.
         /// </summary>
-        internal static string ImportXPlanDialog_clearSelectionBtn {
+        public static string ImportXPlanDialog_clearSelectionBtn {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_clearSelectionBtn", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
-        internal static string ImportXPlanDialog_FileLabel {
+        public static string ImportXPlanDialog_FileLabel {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_FileLabel", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Layers to Import.
         /// </summary>
-        internal static string ImportXPlanDialog_id1 {
+        public static string ImportXPlanDialog_id1 {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_id1", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Drape on Terrain.
         /// </summary>
-        internal static string ImportXPlanDialog_id2 {
+        public static string ImportXPlanDialog_id2 {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_id2", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to drape objects on imported terrain.
         /// </summary>
-        internal static string ImportXPlanDialog_id3 {
+        public static string ImportXPlanDialog_id3 {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_id3", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to import.
         /// </summary>
-        internal static string ImportXPlanDialog_importButton {
+        public static string ImportXPlanDialog_importButton {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_importButton", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Select All.
         /// </summary>
-        internal static string ImportXPlanDialog_selectAllBtn {
+        public static string ImportXPlanDialog_selectAllBtn {
             get {
                 return ResourceManager.GetString("ImportXPlanDialog_selectAllBtn", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to LayerSelector.
         /// </summary>
-        internal static string LayerSelector {
+        public static string LayerSelector {
             get {
                 return ResourceManager.GetString("LayerSelector", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to apply.
         /// </summary>
-        internal static string LayerSelector_apply {
+        public static string LayerSelector_apply {
             get {
                 return ResourceManager.GetString("LayerSelector_apply", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
-        internal static string LayerSelector_cancel {
+        public static string LayerSelector_cancel {
             get {
                 return ResourceManager.GetString("LayerSelector_cancel", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to select all.
         /// </summary>
-        internal static string LayerSelector_selectAll {
+        public static string LayerSelector_selectAll {
             get {
                 return ResourceManager.GetString("LayerSelector_selectAll", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to unselect all.
         /// </summary>
-        internal static string LayerSelector_unSelectAll {
+        public static string LayerSelector_unSelectAll {
             get {
                 return ResourceManager.GetString("LayerSelector_unSelectAll", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Login to External Data Catalog.
         /// </summary>
-        internal static string LoginScreen_id1 {
+        public static string LoginScreen_id1 {
             get {
                 return ResourceManager.GetString("LoginScreen_id1", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Server-Url.
         /// </summary>
-        internal static string LoginScreen_id2 {
+        public static string LoginScreen_id2 {
             get {
                 return ResourceManager.GetString("LoginScreen_id2", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Username.
         /// </summary>
-        internal static string LoginScreen_id3 {
+        public static string LoginScreen_id3 {
             get {
                 return ResourceManager.GetString("LoginScreen_id3", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        internal static string LoginScreen_id4 {
+        public static string LoginScreen_id4 {
             get {
                 return ResourceManager.GetString("LoginScreen_id4", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Submit.
         /// </summary>
-        internal static string LoginScreen_id5 {
+        public static string LoginScreen_id5 {
             get {
                 return ResourceManager.GetString("LoginScreen_id5", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Attributes for Object.
         /// </summary>
-        internal static string PropertyWindow {
+        public static string PropertyWindow {
             get {
                 return ResourceManager.GetString("PropertyWindow", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to save and close.
         /// </summary>
-        internal static string PropertyWindow_id1 {
+        public static string PropertyWindow_id1 {
             get {
                 return ResourceManager.GetString("PropertyWindow_id1", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
-        internal static string PropertyWindow_id2 {
+        public static string PropertyWindow_id2 {
             get {
                 return ResourceManager.GetString("PropertyWindow_id2", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static string Wpf_CityGML_settings {
+        public static string Wpf_CityGML_settings {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settings", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
-        internal static string Wpf_CityGML_settingsButton_bt_applyGeoref {
+        public static string Wpf_CityGML_settingsButton_bt_applyGeoref {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsButton_bt_applyGeoref", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Codelist translation.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_code_header {
+        public static string Wpf_CityGML_settingsGroupBox_gr_code_header {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_code_header", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to  of codes into its meaning.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_code_lbl8 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_code_lbl8 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_code_lbl8", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to use Codelist for translation.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_code_lbl9 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_code_lbl9 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_code_lbl9", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Browse....
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_Bt_browse {
+        public static string Wpf_CityGML_settingsGroupBox_gr_prop_Bt_browse {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_Bt_browse", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to File settings.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_header {
+        public static string Wpf_CityGML_settingsGroupBox_gr_prop_header {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_header", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to File:.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_lbl6 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_prop_lbl6 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_lbl6", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Order of coordinates:.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_lbl7 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_prop_lbl7 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_lbl7", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to XYZ / NEH (Northings, Eastings, Height).
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_rb_XYZ {
+        public static string Wpf_CityGML_settingsGroupBox_gr_prop_rb_XYZ {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_rb_XYZ", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to YXZ / ENH (Eastings, Northings, Height.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_prop_rb_YXZ {
+        public static string Wpf_CityGML_settingsGroupBox_gr_prop_rb_YXZ {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_prop_rb_YXZ", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Edit URL.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_bt_editUrl {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_bt_editUrl {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_bt_editUrl", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to save response to.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_check_saveResponse {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_check_saveResponse {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_check_saveResponse", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Server Settings.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_header {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_header {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_header", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to URL:.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_lbl1 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_lbl1 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_lbl1", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Center:.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_lbl2 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_lbl2 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_lbl2", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Lat.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_lbl3 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_lbl3 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_lbl3", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Lon.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_lbl4 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_lbl4 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_lbl4", resourceCulture);
             }
@@ -639,7 +639,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Extent:.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_lbl5 {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_lbl5 {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_lbl5", resourceCulture);
             }
@@ -648,7 +648,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to custom.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_Rb_custom {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_Rb_custom {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_Rb_custom", resourceCulture);
             }
@@ -657,7 +657,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to from Site location.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_server_rb_site {
+        public static string Wpf_CityGML_settingsGroupBox_gr_server_rb_site {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_server_rb_site", resourceCulture);
             }
@@ -666,7 +666,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Source.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_source_header {
+        public static string Wpf_CityGML_settingsGroupBox_gr_source_header {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_source_header", resourceCulture);
             }
@@ -675,7 +675,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to CityGML file.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_source_rb_file {
+        public static string Wpf_CityGML_settingsGroupBox_gr_source_rb_file {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_source_rb_file", resourceCulture);
             }
@@ -684,7 +684,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to VCS server.
         /// </summary>
-        internal static string Wpf_CityGML_settingsGroupBox_gr_source_rb_server {
+        public static string Wpf_CityGML_settingsGroupBox_gr_source_rb_server {
             get {
                 return ResourceManager.GetString("Wpf_CityGML_settingsGroupBox_gr_source_rb_server", resourceCulture);
             }
@@ -693,7 +693,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Select theme.
         /// </summary>
-        internal static string Wpf_CreateMetaJSON {
+        public static string Wpf_CreateMetaJSON {
             get {
                 return ResourceManager.GetString("Wpf_CreateMetaJSON", resourceCulture);
             }
@@ -702,7 +702,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
-        internal static string Wpf_CreateMetaJSON_Btn_Start {
+        public static string Wpf_CreateMetaJSON_Btn_Start {
             get {
                 return ResourceManager.GetString("Wpf_CreateMetaJSON_Btn_Start", resourceCulture);
             }
@@ -711,7 +711,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Select a theme.
         /// </summary>
-        internal static string Wpf_CreateMetaJSON_Cb_Theme {
+        public static string Wpf_CreateMetaJSON_Cb_Theme {
             get {
                 return ResourceManager.GetString("Wpf_CreateMetaJSON_Cb_Theme", resourceCulture);
             }
@@ -720,7 +720,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Georeferencing.
         /// </summary>
-        internal static string Wpf_GeoRef_Form {
+        public static string Wpf_GeoRef_Form {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form", resourceCulture);
             }
@@ -729,7 +729,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_bt_applyGeoref {
+        public static string Wpf_GeoRef_Form_bt_applyGeoref {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_bt_applyGeoref", resourceCulture);
             }
@@ -738,7 +738,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_bt_quit {
+        public static string Wpf_GeoRef_Form_bt_quit {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_bt_quit", resourceCulture);
             }
@@ -747,7 +747,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Postal Address.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_group10 {
+        public static string Wpf_GeoRef_Form_group10 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_group10", resourceCulture);
             }
@@ -756,7 +756,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Address lines:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id1 {
+        public static string Wpf_GeoRef_Form_id1 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id1", resourceCulture);
             }
@@ -765,7 +765,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Projected coordinates.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id10 {
+        public static string Wpf_GeoRef_Form_id10 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id10", resourceCulture);
             }
@@ -774,7 +774,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Eastings [m]:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id11 {
+        public static string Wpf_GeoRef_Form_id11 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id11", resourceCulture);
             }
@@ -783,7 +783,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Northings [m]:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id12 {
+        public static string Wpf_GeoRef_Form_id12 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id12", resourceCulture);
             }
@@ -792,7 +792,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Grid North [°]:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id13 {
+        public static string Wpf_GeoRef_Form_id13 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id13", resourceCulture);
             }
@@ -801,7 +801,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Scale:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id14 {
+        public static string Wpf_GeoRef_Form_id14 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id14", resourceCulture);
             }
@@ -810,7 +810,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to EPSG-Code (CRS):.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id15 {
+        public static string Wpf_GeoRef_Form_id15 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id15", resourceCulture);
             }
@@ -819,7 +819,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Elevation.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id16 {
+        public static string Wpf_GeoRef_Form_id16 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id16", resourceCulture);
             }
@@ -828,7 +828,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Orthometric Height [m]:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id17 {
+        public static string Wpf_GeoRef_Form_id17 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id17", resourceCulture);
             }
@@ -837,7 +837,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Vertical Datum:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id18 {
+        public static string Wpf_GeoRef_Form_id18 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id18", resourceCulture);
             }
@@ -846,7 +846,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to UTM transformation.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id19 {
+        public static string Wpf_GeoRef_Form_id19 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id19", resourceCulture);
             }
@@ -855,7 +855,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Postal Code:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id2 {
+        public static string Wpf_GeoRef_Form_id2 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id2", resourceCulture);
             }
@@ -864,7 +864,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Calculate.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id20 {
+        public static string Wpf_GeoRef_Form_id20 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id20", resourceCulture);
             }
@@ -873,7 +873,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Town:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id3 {
+        public static string Wpf_GeoRef_Form_id3 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id3", resourceCulture);
             }
@@ -882,7 +882,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Region:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id4 {
+        public static string Wpf_GeoRef_Form_id4 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id4", resourceCulture);
             }
@@ -891,7 +891,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Country:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id5 {
+        public static string Wpf_GeoRef_Form_id5 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id5", resourceCulture);
             }
@@ -900,7 +900,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Geographic site coordinates.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id6 {
+        public static string Wpf_GeoRef_Form_id6 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id6", resourceCulture);
             }
@@ -909,7 +909,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Latitude [°]:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id7 {
+        public static string Wpf_GeoRef_Form_id7 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id7", resourceCulture);
             }
@@ -918,7 +918,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Longitude [°]:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id8 {
+        public static string Wpf_GeoRef_Form_id8 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id8", resourceCulture);
             }
@@ -927,7 +927,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to True North [°]:.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_id9 {
+        public static string Wpf_GeoRef_Form_id9 {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_id9", resourceCulture);
             }
@@ -936,7 +936,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Deg.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_rb_deg {
+        public static string Wpf_GeoRef_Form_rb_deg {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_rb_deg", resourceCulture);
             }
@@ -945,7 +945,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to DMS.
         /// </summary>
-        internal static string Wpf_GeoRef_Form_rb_dms {
+        public static string Wpf_GeoRef_Form_rb_dms {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_rb_dms", resourceCulture);
             }
@@ -954,7 +954,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Projection (UTM) to Site (LatLon).
         /// </summary>
-        internal static string Wpf_GeoRef_Form_rb_projToSite {
+        public static string Wpf_GeoRef_Form_rb_projToSite {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_rb_projToSite", resourceCulture);
             }
@@ -963,7 +963,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Site (LatLon) to Projection (UTM).
         /// </summary>
-        internal static string Wpf_GeoRef_Form_rb_siteToProj {
+        public static string Wpf_GeoRef_Form_rb_siteToProj {
             get {
                 return ResourceManager.GetString("Wpf_GeoRef_Form_rb_siteToProj", resourceCulture);
             }
@@ -972,7 +972,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Select layer.
         /// </summary>
-        internal static string Wpf_showLayer {
+        public static string Wpf_showLayer {
             get {
                 return ResourceManager.GetString("Wpf_showLayer", resourceCulture);
             }
@@ -981,7 +981,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Choose.
         /// </summary>
-        internal static string Wpf_showLayer_btn_choose {
+        public static string Wpf_showLayer_btn_choose {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_btn_choose", resourceCulture);
             }
@@ -990,7 +990,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
-        internal static string Wpf_showLayer_btn_exportjson {
+        public static string Wpf_showLayer_btn_exportjson {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_btn_exportjson", resourceCulture);
             }
@@ -999,7 +999,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
-        internal static string Wpf_showLayer_btn_gml {
+        public static string Wpf_showLayer_btn_gml {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_btn_gml", resourceCulture);
             }
@@ -1008,7 +1008,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
-        internal static string Wpf_showLayer_btn_metajson {
+        public static string Wpf_showLayer_btn_metajson {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_btn_metajson", resourceCulture);
             }
@@ -1017,7 +1017,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to GML.
         /// </summary>
-        internal static string Wpf_showLayer_id1 {
+        public static string Wpf_showLayer_id1 {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_id1", resourceCulture);
             }
@@ -1026,7 +1026,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Meta JSON.
         /// </summary>
-        internal static string Wpf_showLayer_id2 {
+        public static string Wpf_showLayer_id2 {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_id2", resourceCulture);
             }
@@ -1035,7 +1035,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Export JSON.
         /// </summary>
-        internal static string Wpf_showLayer_id3 {
+        public static string Wpf_showLayer_id3 {
             get {
                 return ResourceManager.GetString("Wpf_showLayer_id3", resourceCulture);
             }
@@ -1044,7 +1044,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Export to IFC.
         /// </summary>
-        internal static string Wpf_XPlan2IFC {
+        public static string Wpf_XPlan2IFC {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC", resourceCulture);
             }
@@ -1053,7 +1053,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Export surfaces as IfcSite.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_checkboxAsSite {
+        public static string Wpf_XPlan2IFC_checkboxAsSite {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_checkboxAsSite", resourceCulture);
             }
@@ -1062,7 +1062,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Export surfaces as IfcSpace.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_checkboxAsSpace {
+        public static string Wpf_XPlan2IFC_checkboxAsSpace {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_checkboxAsSpace", resourceCulture);
             }
@@ -1071,7 +1071,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to File Location.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_id1 {
+        public static string Wpf_XPlan2IFC_id1 {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_id1", resourceCulture);
             }
@@ -1080,7 +1080,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to File name.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_id2 {
+        public static string Wpf_XPlan2IFC_id2 {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_id2", resourceCulture);
             }
@@ -1089,7 +1089,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Layer to be exported.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_id3 {
+        public static string Wpf_XPlan2IFC_id3 {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_id3", resourceCulture);
             }
@@ -1098,7 +1098,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Clear Selection.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_id4 {
+        public static string Wpf_XPlan2IFC_id4 {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_id4", resourceCulture);
             }
@@ -1107,7 +1107,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Export to IFC.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_id5 {
+        public static string Wpf_XPlan2IFC_id5 {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_id5", resourceCulture);
             }
@@ -1116,7 +1116,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_id6 {
+        public static string Wpf_XPlan2IFC_id6 {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_id6", resourceCulture);
             }
@@ -1125,7 +1125,7 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized string similar to Select all.
         /// </summary>
-        internal static string Wpf_XPlan2IFC_rb_selectAll {
+        public static string Wpf_XPlan2IFC_rb_selectAll {
             get {
                 return ResourceManager.GetString("Wpf_XPlan2IFC_rb_selectAll", resourceCulture);
             }

@@ -4,22 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI.Properties"
+             xmlns:lang="clr-namespace:City2RVT"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-        Height="550" Width="600" Title="Select layer">
+        Height="550" Width="600" Title="{x:Static lang:Localization.Wpf_showLayer}">
     <Grid>
         <ListBox x:Name="lb_layer" HorizontalAlignment="Left" Height="256" Margin="26,190,0,0" VerticalAlignment="Top" Width="440" SelectionChanged="lb_layer_SelectionChanged"
                  MouseDoubleClick="mdc_layer"/>
-        <Button x:Name="btn_gml" Content="Browse" HorizontalAlignment="Left" Margin="481,50,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="4.66,0.8" Click="btn_gml_Click"/>
-        <Button x:Name="btn_metajson" Content="Browse" HorizontalAlignment="Left" Margin="481,88,0,0" VerticalAlignment="Top" Width="75" Click="btn_metajson_Click"/>
+        <Button x:Name="btn_gml" Content="{x:Static lang:Localization.Wpf_showLayer_btn_gml}" HorizontalAlignment="Left" Margin="481,50,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="4.66,0.8" Click="btn_gml_Click"/>
+        <Button x:Name="btn_metajson" Content="{x:Static lang:Localization.Wpf_showLayer_btn_metajson}" HorizontalAlignment="Left" Margin="481,88,0,0" VerticalAlignment="Top" Width="75" Click="btn_metajson_Click"/>
         <TextBox x:Name="tf_gml" HorizontalAlignment="Left" Height="23" Margin="110,50,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="356"/>
         <TextBox x:Name="tf_metajson" HorizontalAlignment="Left" Height="23" Margin="110,88,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="356"/>
-        <Label x:Name="id1" Content="GML" HorizontalAlignment="Left" Margin="26,50,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="id2" Content="Meta JSON" HorizontalAlignment="Left" Margin="26,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.434,-3.712"/>
-        <Button x:Name="btn_exportjson" Content="Browse" HorizontalAlignment="Left" Margin="481,140,0,0" VerticalAlignment="Top" Width="75" Click="btn_exportjson_Click"/>
-        <Label x:Name="id3" Content="Export JSON" HorizontalAlignment="Left" Margin="26,138,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="id1" Content="{x:Static lang:Localization.Wpf_showLayer_id1}" HorizontalAlignment="Left" Margin="26,50,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="id2" Content="{x:Static lang:Localization.Wpf_showLayer_id2}" HorizontalAlignment="Left" Margin="26,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.434,-3.712"/>
+        <Button x:Name="btn_exportjson" Content="{x:Static lang:Localization.Wpf_showLayer_btn_exportjson}" HorizontalAlignment="Left" Margin="481,140,0,0" VerticalAlignment="Top" Width="75" Click="btn_exportjson_Click"/>
+        <Label x:Name="id3" Content="{x:Static lang:Localization.Wpf_showLayer_id3}" HorizontalAlignment="Left" Margin="26,138,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="tf_exportjson" HorizontalAlignment="Left" Height="22" Margin="110,138,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="356"/>
-        <Button x:Name="btn_choose" Content="Choose" HorizontalAlignment="Left" Margin="391,472,0,0" VerticalAlignment="Top" Width="75" Click="btn_choose_Click"/>
+        <Button x:Name="btn_choose" Content="{x:Static lang:Localization.Wpf_showLayer_btn_choose}" HorizontalAlignment="Left" Margin="391,472,0,0" VerticalAlignment="Top" Width="75" Click="btn_choose_Click"/>
 
     </Grid>
 </Window>
