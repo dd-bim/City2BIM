@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI.Properties"
+             xmlns:lang="clr-namespace:City2RVT"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
-        Height="200" Width="200" Title="Select theme">
+        Height="200" Width="200" Title="{x:Static lang:Localization.Wpf_CreateMetaJSON}">
     <Grid>
         <ComboBox Name="Cb_Theme" HorizontalAlignment="Left" Margin="41,39,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="Cb_Theme_SelectionChanged"
-                  IsEditable="True" IsReadOnly="True" Text="Select a theme."/>
-        <Button x:Name="Btn_Start" HorizontalAlignment="Left" Margin="41,89,0,0" VerticalAlignment="Top" Width="120" Click="Btn_Start_Click" Height="25" Content="Start"></Button>
+                  IsEditable="True" IsReadOnly="True" Text="{x:Static lang:Localization.Wpf_CreateMetaJSON_Cb_Theme}"/>
+        <Button x:Name="Btn_Start" HorizontalAlignment="Left" Margin="41,89,0,0" VerticalAlignment="Top" Width="120" Click="Btn_Start_Click" Height="25" Content="{x:Static lang:Localization.Wpf_CreateMetaJSON_Btn_Start}"></Button>
     </Grid>
 </Window>

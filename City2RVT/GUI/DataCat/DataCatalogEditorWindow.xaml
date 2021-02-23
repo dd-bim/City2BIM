@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI.DataCat"
+             xmlns:lang="clr-namespace:City2RVT"
              mc:Ignorable="d" 
              Width="600" MinWidth="600" Height="700" MinHeight="700">
     
@@ -27,8 +28,8 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button x:Name="id1" Margin="10 0 10 0" Content="save" Click="save_Click" Grid.Column="0"></Button>
-            <Button x:Name="id2" Margin="10 0 10 0" Content="cancel" Click="cancel_Click" Grid.Column="1"></Button>
+            <Button x:Name="id1" Margin="10 0 10 0" Content="{x:Static lang:Localization.DataCatalogEditorWindow_id1}" Click="save_Click" Grid.Column="0"></Button>
+            <Button x:Name="id2" Margin="10 0 10 0" Content="{x:Static lang:Localization.DataCatalogEditorWindow_id2}" Click="cancel_Click" Grid.Column="1"></Button>
         </Grid>
     </StackPanel>
     
