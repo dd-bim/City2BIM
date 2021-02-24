@@ -12,20 +12,32 @@ namespace BIMGISInteropLibs.IfcTerrain
     public enum IfcTerrainFileType
     {
         /// <summary>
-        /// Drawing Interchange File Format
+        /// Drawing Interchange File Format (CAD)
         /// </summary>
         Dxf,
         /// <summary>
-        /// 
+        /// XML based to exchange of georeferenced objects
         /// </summary>
         LandXml,
+        /// <summary>
+        /// City Geography Markup Language (OGC)
+        /// </summary>
         CityGml,
         /// <summary>
-        /// GEOgraf A^3 project exchange file format (.out)
+        /// GEOgraf A^3 project exchange file format (.out) [Surveyor]
         /// </summary>
         Grafbat,
+        /// <summary>
+        /// Database connection to a PostgreSQL databank with a PostGIS essay
+        /// </summary>
         PostGis,
+        /// <summary>
+        /// Elevation Grid (raster dataset)
+        /// </summary>
         Grid,
+        /// <summary>
+        /// daten arten (raster dataset)
+        /// </summary>
         Reb,
     }
 
