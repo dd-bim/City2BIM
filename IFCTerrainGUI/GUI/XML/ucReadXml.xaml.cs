@@ -51,22 +51,18 @@ namespace IFCTerrainGUI.GUI.XML
                     case 1:
                         //json settings set the file type (via enumeration from logic)
                         MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXml;
-
-                        //TODO GUI feedback
-                        break; //jumps out here again --> thus add nothing after the break (in case)
+                        break;
 
                     //jump to this case if CityGML was selected
                     case 2:
                         //json settings set the file type (via enumeration from logic)
                         MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.CityGml;
-                        //TODO GUI feedback
                         break;
                 }
 
                 //set the save path of the file to be converted
                 MainWindow.jSettings.filePath = ofd.FileName;
                 //TODO GUI feedback
-
                 //TODO logging
                 return;
             }

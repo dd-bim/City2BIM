@@ -3,14 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:control = "clr-namespace:IFCTerrainGUI.GUI"
+        xmlns:control = "clr-namespace:IFCTerrainGUI.GUI.XML"
         xmlns:local="clr-namespace:IFCTerrainGUI"
+        
         mc:Ignorable="d"
         Title="IFCTerrain GUI" Height="800" Width="800" FontFamily="Bahnschrift" FontSize="14" Background="LightGray" ResizeMode="CanMinimize">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
         <!-- Logo -->
         <Image x:Name="imgDdBimLogo" HorizontalAlignment="Left" Margin="10,10,0,0" Height="40" Source="Resources/DD_BIM_LOGO.png" VerticalAlignment="Top"/>
 
@@ -77,7 +75,7 @@
 
                     </TextBlock>
                     <RadioButton
-                        x:Name="rbDxfFaces"
+                        x:Name="rbDxfFace2s"
                         VerticalAlignment="Top"
                         Margin="130,142,174,0"
                         Content="Faces"
@@ -116,7 +114,20 @@
                     Width="360" 
                     Height="350">
 
-                    <control:ucTin/>
+                    <!--only include the Read LandXML / CityGML button (the logic is also included) -->
+                    <control:ucReadXml/>
+
+                    <!---logic remains in MainWindow-->
+                    <Button
+                        x:Name="btnProcessXml"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Height="20"
+                        Width="360"
+                        Content="Process 'LandXML/ CityGML'"
+                        Margin="0,0,0,5"
+                        Click="btnProcessXml_Click"
+                        />
 
                 </Grid>
             </TabItem>
@@ -126,5 +137,112 @@
             <TabItem x:Name ="tabPageGrid"      Header="Grid (XYZ)"/>
             <TabItem x:Name ="tabPageReb"       Header="REB (DA45, DA49, DA58)"/>
         </TabControl>
+
+
+
+        <Button
+            x:Name="btnTest"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Height="20"
+            Width="50"
+            Content="TEST"
+            Margin="0,0,50,50" Click="btnTest_Click">
+
+        </Button>
+        <!--grid erstellen, um Informationen aus den gelesenen Datein abzubilden-->
+        <Border x:Name="bOut"
+                Height="220"
+                Width="380"
+                BorderBrush="Black" 
+                BorderThickness="1"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="10,495,0,0">
+            <Grid 
+            x:Name="grdFileInfo"
+            Height="220"
+            Width="380"
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Top" 
+            Margin="0,0,0,0"
+            >
+                <!--further logic can then be integrated here-->
+                <TextBlock
+                x:Name="tbFilePath"
+                Height="20"
+                Width="100"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="5,5,0,0"
+                Text="File path"/>
+
+                <TextBox
+                x:Name="tbFilePathInput"
+                Height="20"
+                Width="270"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,5,5,0"
+                IsReadOnly="True"/>
+
+                <TextBlock
+                x:Name="tbFileType"
+                Height="20"
+                Width="100"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="5,35,0,0"
+                Text="File type"
+                />
+
+                <TextBox
+                x:Name="tbFileTypeInput"
+                Height="20"
+                Width="270"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,35,5,0"
+                IsReadOnly="True"/>
+
+                <TextBlock
+                x:Name="tbDtmLayer"
+                Height="20"
+                Width="100"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="5,65,0,0"
+                Text="Layer/ Horizon"
+                />
+
+                <TextBox
+                x:Name="tbDtmLayerInput"
+                Height="20"
+                Width="270"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,65,5,0"
+                IsReadOnly="True"/>
+
+                <TextBlock
+                x:Name="tbGridSize"
+                Height="20"
+                Width="100"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="5,95,0,0"
+                Text="Grid size [m]"/>
+
+                <TextBox
+                x:Name="tbGridSizeInput"
+                Height="20"
+                Width="270"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,95,5,0"
+                IsReadOnly="True"/>
+            </Grid>
+        </Border>
+        
     </Grid>
 </Window>
