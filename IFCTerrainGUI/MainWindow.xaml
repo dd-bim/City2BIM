@@ -8,6 +8,9 @@
         mc:Ignorable="d"
         Title="IFCTerrain GUI" Height="800" Width="800" FontFamily="Bahnschrift" FontSize="14" Background="LightGray" ResizeMode="CanMinimize">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <!-- Logo -->
         <Image x:Name="imgDdBimLogo" HorizontalAlignment="Left" Margin="10,10,0,0" Height="40" Source="Resources/DD_BIM_LOGO.png" VerticalAlignment="Top"/>
 

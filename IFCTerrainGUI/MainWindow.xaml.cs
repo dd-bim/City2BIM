@@ -13,18 +13,30 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+//integrate logic from BIMGISInteropsLibs 
+using BIMGISInteropLibs.IfcTerrain; //used for JsonSettings, ...
+
 namespace IFCTerrainGUI
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// initialize main gui
+        /// </summary>
         public MainWindow()
         {
+            //all components of the GUI are created (never remove)
             InitializeComponent();
         }
 
-        
+        /// <summary>
+        /// create an instance for Json Settings (getter + setter)
+        /// mainly used to create interaction between command / GUI and readers & writers
+        /// </summary>
+        public static JsonSettings jSettings { get; set; } = new JsonSettings();
+
     }
 }
