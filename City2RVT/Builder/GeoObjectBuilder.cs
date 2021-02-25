@@ -6,6 +6,7 @@ using Serilog;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using Autodesk.Revit.UI;
 using OSGeo.OGR;
 
 using BIMGISInteropLibs.OGR;
@@ -20,11 +21,10 @@ namespace City2RVT.Builder
 
         public GeoObjectBuilder(Document doc)
         {
-            GdalConfiguration.ConfigureOgr();
             this.doc = doc;
         }
 
-        public void buildGeoObjectsFromList(List<GeoObject> geoObjects, bool drapeOnTerrain)
+        public void buildGeoObjectsFromList(List<GeoObject> geoObjects, bool drapeOnTerrain, List<string> fieldList)
         {
             
             var queryGroups = from geoObject in geoObjects
@@ -83,21 +83,34 @@ namespace City2RVT.Builder
                     }
                 }
 
-                Schema currentSchema = utils.getSchemaByName(groupName);
-
                 using (Transaction trans = new Transaction(doc, "Create alkisObjs"))
                 {
                     trans.Start();
+                    
+                    Schema currentSchema = utils.getSchemaByName(groupName);
 
+                    if (currentSchema == null)
+                    {
+                        currentSchema = addSchemaForUsageType(groupName, fieldList);
+                    }
+
+                    bool processingErrors = false;
                     foreach (var GeoObj in objList)
                     {
-                        /*
+                        
                         Entity ent = new Entity(currentSchema);
                         foreach(KeyValuePair<string, string> prop in GeoObj.Properties)
                         {
+                            //is needed because some attribute are using the | symbol for long attribute names
+                            if (prop.Key.Contains("|"))
+                            {
+                                string firstPart = prop.Key.Split('|')[0];
+                                ent.Set<string>(firstPart, prop.Value);
+                                continue;
+                            }
                             ent.Set<string>(prop.Key, prop.Value);
                         }
-                        */
+                        
 
                         switch (GeoObj.GeomType)
                         {
@@ -105,7 +118,7 @@ namespace City2RVT.Builder
 
                                 List<C2BSegment> outerSegments = getOuterRingSegmentsFromPolygon(GeoObj.Geom);
                                 var siteSubRegion = createSiteSubRegionFromSegments(outerSegments, RefPlaneId);
-                                //siteSubRegion.TopographySurface.SetEntity(ent);
+                                siteSubRegion.TopographySurface.SetEntity(ent);
                                 break;
 
                             case wkbGeometryType.wkbMultiPolygon:
@@ -114,52 +127,21 @@ namespace City2RVT.Builder
                                 foreach(var poly in outerSegmentsMultiPoly)
                                 {
                                     var currentSiteSubRegion = createSiteSubRegionFromSegments(poly, RefPlaneId);
-                                    //currentSiteSubRegion.TopographySurface.SetEntity(ent);
+                                    currentSiteSubRegion.TopographySurface.SetEntity(ent);
                                 }
                                 break;
                             
                             default:
-                                Log.Warning("Could not create GeoObject. GeometryType is: " + GeoObj.GeomType.ToString());
+                                Log.Warning("Could not create GeoObject. GeometryType is: " + GeoObj.GeomType.ToString() + " gmlId: " + GeoObj.GmlID);
+                                processingErrors = true;
                                 break;
-                        }
-                        
-                        
-                        //var siteSubRegion = createSiteSubRegion(alkisObj, RefPlaneId);
-
-                        //var label = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_TYPE_NAME);
-                        //Parameter nameParam = siteSubRegion.TopographySurface.LookupParameter(label);
-                        //nameParam.Set(groupName);
-                        /*
-                        Parameter nameParam = siteSubRegion.TopographySurface.LookupParameter("Name");
-                        nameParam.Set(groupName);
-
-                        //Add Attributes
-                        Entity ent = new Entity(currentSchema);
-                        var fieldList = currentSchema.ListFields();
-                        var fieldNameList = new List<string>();
-
-                        foreach (var field in fieldList)
-                        {
-                            fieldNameList.Add(field.FieldName);
-                        }
-
-                        Field gmlid = currentSchema.GetField("gmlid");
-                        ent.Set<string>(gmlid, alkisObj.Gmlid);
-
-                        foreach (KeyValuePair<Xml_AttrRep, string> entry in alkisObj.Attributes)
-                        {
-                            if (fieldNameList.Contains(entry.Key.Name))
-                            {
-                                Field currentField = currentSchema.GetField(entry.Key.Name);
-                                ent.Set<string>(currentField, entry.Value);
-                            }
-                        }
-
-                        TopographySurface topoSurface = siteSubRegion.TopographySurface;
-                        topoSurface.SetEntity(ent);
-                        */
+                        }                        
                     }
                     trans.Commit();
+                    if (processingErrors)
+                    {
+                        TaskDialog.Show("Warning", "Some Objects could not be imported into Revit. See log-file for further information");
+                    }
                 }
 
             }
@@ -264,6 +246,27 @@ namespace City2RVT.Builder
 
             return sitesubRegion;
 
+        }
+
+        private Schema addSchemaForUsageType(string schemaName, List<string> fieldList)
+        {
+            SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+            sb.SetSchemaName(schemaName);
+            sb.SetReadAccessLevel(AccessLevel.Public);
+            sb.SetWriteAccessLevel(AccessLevel.Public);
+
+            foreach (var entry in fieldList)
+            {
+                if (entry.Contains("|"))
+                {
+                    string firstPart = entry.Split('|')[0];
+                    sb.AddSimpleField(firstPart, typeof(string));
+                    continue;
+                }
+                sb.AddSimpleField(entry, typeof(string));
+            }
+
+            return sb.Finish();
         }
 
     }
