@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using Autodesk.Revit.UI;
 using City2RVT.GUI.Modify;
 using BIMGISInteropLibs.OGR;
+using Serilog;
 
 namespace City2RVT.GUI.NAS2BIM
 {
@@ -15,6 +16,7 @@ namespace City2RVT.GUI.NAS2BIM
     /// </summary>
     public partial class ImportDialogAlkis : Window
     {
+        private Autodesk.Revit.DB.Document doc { get; set; }
         private List<LayerStatus> layerStatusList { get; set; }
         private bool startImport { set; get; }
         public bool StartImport
@@ -50,8 +52,16 @@ namespace City2RVT.GUI.NAS2BIM
             }
         }
 
-        public ImportDialogAlkis(bool terrainAvailable)
+        public bool UseFilter { get => useFilter; }
+        private bool useFilter { get; set; }
+
+        public OGRSpatialFilter SpatialFilter { get => spatialFilter; }
+
+        private OGRSpatialFilter spatialFilter { get; set; }
+
+        public ImportDialogAlkis(bool terrainAvailable, Autodesk.Revit.DB.Document doc)
         {
+            this.doc = doc;
             this.layerStatusList = new List<LayerStatus>();
             InitializeComponent();
 
@@ -133,6 +143,36 @@ namespace City2RVT.GUI.NAS2BIM
                 else
                 {
                     this.drape = false;
+                }
+
+                if (this.filterCheckBox.IsChecked == true)
+                {
+                    var pbp = utils.getProjectBasePointMeter(doc);
+                    double distance;
+                    
+                    try
+                    {
+                        distance = double.Parse(distanceTextBox.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Cannot parse value for spatial filter \n" + ex.ToString());
+                        TaskDialog.Show("Error", "Is value for distance/radius a number?");
+                        return;
+                    }
+
+                    if (filterTypeBox.SelectedValue.ToString() == "Circle")
+                    {
+                        this.spatialFilter = new OGRCircularSpatialFilter(pbp.X, pbp.Y, distance);
+                    }
+                    else if (filterTypeBox.SelectedValue.ToString() == "Square")
+                    {
+                        this.spatialFilter = new OGRRectangularSpatialFilter(pbp.X, pbp.Y, distance, distance);
+                    }
+                }
+                else
+                {
+                    this.spatialFilter = null;
                 }
 
                 this.filePath = filePathBox.Text;
