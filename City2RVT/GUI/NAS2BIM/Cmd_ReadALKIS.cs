@@ -40,7 +40,7 @@ namespace City2RVT.GUI
                 return Result.Failed;
             }
 
-            var dialog = new ImportDialogAlkis(terrainAvailable);
+            var dialog = new ImportDialogAlkis(terrainAvailable, doc);
             dialog.ShowDialog();
 
             if (dialog.StartImport)
@@ -50,13 +50,15 @@ namespace City2RVT.GUI
 
                 var ogrReader = new OGRALKISReader(dialog.FilePath);
                 var GeoObjBuilder = new GeoObjectBuilder(doc);
+                Log.Information("Starting ALKIS-Import");
                 foreach (var layerName in layerNameList)
                 {
                     var layer = ogrReader.getLayerByName(layerName);
-                    var GeoObjs = ogrReader.getGeoObjectsForLayer(layer);
+                    var GeoObjs = ogrReader.getGeoObjectsForLayer(layer, dialog.SpatialFilter);
+                    Log.Information(string.Format("Total of {0} features in layer {1}", GeoObjs.Count, layerName));
                     var fieldList = ogrReader.getFieldNamesForLayer(layer);
-
                     GeoObjBuilder.buildGeoObjectsFromList(GeoObjs, dialog.Drape, fieldList);
+                    Log.Information(string.Format("Finished importing layer {0}", layerName));
                 }
 
                 ogrReader.destroy();

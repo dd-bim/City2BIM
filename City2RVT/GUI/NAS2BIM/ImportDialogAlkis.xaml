@@ -27,7 +27,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Grid MaxHeight="400" MinHeight="380">
+                    <Grid MaxHeight="400" MinHeight="300">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <ItemsControl x:Name="LayerTable">
                                 <ItemsControl.ItemTemplate>
@@ -58,6 +58,36 @@
                     <CheckBox x:Name="drapeCheckBox" IsEnabled="False" Margin="0,5,0,0"></CheckBox>
                     <Label x:Name="id3" Content="{x:Static lang:Localization.ImportDialogAlkis_id3}"/>
                 </StackPanel>
+            </GroupBox>
+            <GroupBox x:Name="GroupBoxFilter" Header="Spatial Filter" Margin="0,5,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="filterCheckBox" IsEnabled="True" VerticalAlignment="Center" Grid.Row="0" IsChecked="True"></CheckBox>
+                        <Label x:Name="filterLabel" Content="Use Spatial Filter" Grid.Row="0" Grid.Column="1"></Label>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,5,0,0">
+                        <ComboBox x:Name="filterTypeBox" SelectedValuePath="Content" Width="Auto" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <ComboBoxItem IsSelected="True">Circle</ComboBoxItem>
+                            <ComboBoxItem>Square</ComboBoxItem>
+                        </ComboBox>
+                        <Label Content="Radius/Distance [m]: "></Label>
+                        <TextBox x:Name="distanceTextBox" Width="50" VerticalAlignment="Center">200</TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                        
+                    </StackPanel>
+                </Grid>
             </GroupBox>
             <Grid Margin="0,15,10,0">
                 <Grid.ColumnDefinitions>
