@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 using Autodesk.Revit.UI;
 using City2RVT.GUI.Modify;
-using BIMGISInteropLibs.Alkis;
+using BIMGISInteropLibs.OGR;
 
 namespace City2RVT.GUI.NAS2BIM
 {
@@ -75,23 +75,22 @@ namespace City2RVT.GUI.NAS2BIM
 
                     filePathBox.Text = openFileDialog.FileName;
 
-                    AlkisReader alkisReader = new AlkisReader(openFileDialog.FileName);
+                    OGRALKISReader alkisReader = new OGRALKISReader(openFileDialog.FileName);
 
-                    var alkisObjs = alkisReader.AlkisObjects;
-
-                    var avialableLayers = from alkisObj in alkisObjs
-                                          group alkisObj by alkisObj.UsageType into usageGroup
-                                          select usageGroup;
+                    var availableLayers = alkisReader.getLayerList();
 
                     List<LayerStatus> layerStatusList = new List<LayerStatus>();
 
-                    foreach (var usageGroup in avialableLayers)
+                    foreach (var layerName in availableLayers)
                     {
-                        layerStatusList.Add(new LayerStatus { LayerName = usageGroup.Key, Visibility = true });
+                        layerStatusList.Add(new LayerStatus { LayerName = layerName, Visibility = true });
                     }
-
+                    
                     this.layerStatusList = layerStatusList;
+                    
                     LayerTable.ItemsSource = this.layerStatusList;
+
+                    alkisReader.destroy();
                 }
                 catch (Exception ex)
                 {
