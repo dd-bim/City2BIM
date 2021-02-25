@@ -76,6 +76,7 @@
     <Compile Include="GUI\DXF\ucReadDxf.xaml.cs">
       <DependentUpon>ucReadDxf.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
     <Compile Include="GUI\XML\ucReadXml.xaml.cs">
       <DependentUpon>ucReadXml.xaml</DependentUpon>
     </Compile>

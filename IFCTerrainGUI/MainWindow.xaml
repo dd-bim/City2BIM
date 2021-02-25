@@ -3,246 +3,490 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:control = "clr-namespace:IFCTerrainGUI.GUI.XML"
+        xmlns:ucXml = "clr-namespace:IFCTerrainGUI.GUI.XML"
+        xmlns:ucDxf ="clr-namespace:IFCTerrainGUI.GUI.DXF"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         
         mc:Ignorable="d"
-        Title="IFCTerrain GUI" Height="800" Width="800" FontFamily="Bahnschrift" FontSize="14" Background="LightGray" ResizeMode="CanMinimize">
+        Title="IFCTerrain GUI" Height="800" Width="800" FontFamily="Bahnschrift" FontSize="14" Background="#FFF0F0F0" ResizeMode="CanMinimize">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="7"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="7"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="7"/>
+        </Grid.RowDefinitions>
         <!-- Logo -->
-        <Image x:Name="imgDdBimLogo" HorizontalAlignment="Left" Margin="10,10,0,0" Height="40" Source="Resources/DD_BIM_LOGO.png" VerticalAlignment="Top"/>
+        <Image x:Name="imgDdBimLogo" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0" HorizontalAlignment="Center" Source="Resources/DD_BIM_LOGO.png" VerticalAlignment="Top"/>
 
         <!-- Textbox "Import Settings"-->
-        <TextBlock x:Name="tbImportSettings" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Text="Import Settings" Margin="10,55,0,0"/>
+        <TextBlock x:Name="tbImportSettings" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Text="Import Settings" Height="19" Width="111"/>
 
         <!-- Textbox "Export Settings"-->
-        <TextBlock x:Name="tbExportSettings" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Text="Export Settings" Margin="410,55,0,0"/>
+        <TextBlock x:Name="tbExportSettings" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Text="Export Settings" Height="19"/>
 
         <!--Selection field for the import of the different data formats-->
-        <TabControl x:Name="tabControlImport" HorizontalAlignment="Left" Width="380" Margin="10,80,0,280">
+        <TabControl 
+            x:Name="tabControlImport" 
+            Grid.Column="1"
+            Grid.Row="2"
+            Grid.RowSpan="10"            
+            >
             <!--#region DXF-->
             <TabItem x:Name="tabPageDxf"        
                      Header="CAD (DXF)">
-                <Grid 
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top" 
-                    Width="360" 
-                    Height="350">
-
-                    <Button
-                        x:Name="btnReadDxf"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        Width="360"
-                        Height="20"
-                        Margin="0,5,0,0"
-                        Content="Read 'DXF file'"
-                        ToolTip="Open DXF file. Please check that it is no longer opened.">
-                    </Button>
-
-                    <TextBlock 
-                        x:Name="tbDxfLayerSelect" 
-                        HorizontalAlignment="Left" 
-                        VerticalAlignment="Top"
-                        Text="Select DTM Layer (multiple selection possible)"
-                        Margin="5,30,0,0">
-                    </TextBlock>
-
-                    <TextBlock 
-                        x:Name="tbDxfLayer" 
-                        HorizontalAlignment="Left" 
-                        VerticalAlignment="Top"
-                        Text="DXF Layer"
-                        Margin="5,55,0,0">
-                    </TextBlock>
-
-                    <ListBox
-                        x:Name="lbDxfLayer"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Width="270"
-                        Height="80"
-                        Margin="80,55,0,0"
-                        ToolTip="At least one layer must be selected here. Otherwise, the conversion cannot be continued.">
-                    </ListBox>
-
-                    <TextBlock
-                        x:Name="tbProcessingVia"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Margin="5,140,0,0"
-                        Text="Processing via...">
-
-                    </TextBlock>
-                    <RadioButton
-                        x:Name="rbDxfFace2s"
-                        VerticalAlignment="Top"
-                        Margin="130,142,174,0"
-                        Content="Faces"
-                        IsChecked="True" 
-                        ToolTip="Processing will be done via MESH (DXF layer)"/>
-
-                    <RadioButton
-                        x:Name="rbDxfPointsLines"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Margin="210,142,0,0"
-                        Content="Points/ Faces">
-                    </RadioButton>
-
-                    <Button
-                        x:Name="btnProcessDxf"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Height="20"
-                        Width="360"
-                        Margin="0,0,0,5"
-                        Content="Process DXF" 
-                        ToolTip="Apply the settings">
-
-                    </Button>
-                </Grid>
-
+                <ucDxf:ucReadDxf/>
             </TabItem>
             <!--#endregion DXF-->
 
             <!--#region LandXML CityGML -->
-            <TabItem x:Name ="tabPageXml"       Header="TIN (LandXML, CityGML)">
-                <Grid
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top" 
-                    Width="360" 
-                    Height="350">
-
-                    <!--only include the Read LandXML / CityGML button (the logic is also included) -->
-                    <control:ucReadXml/>
-
-                    <!---logic remains in MainWindow-->
-                    <Button
-                        x:Name="btnProcessXml"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Height="20"
-                        Width="360"
-                        Content="Process 'LandXML/ CityGML'"
-                        Margin="0,0,0,5"
-                        Click="btnProcessXml_Click"
-                        />
-
-                </Grid>
+            <TabItem 
+                x:Name ="tabPageXml"       
+                Header="TIN (LandXML, CityGML)"
+                >
+                <ucXml:ucReadXml/>
             </TabItem>
             <!--#endregion LandXML CityGML -->
-            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)"/>
+            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="5"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="45"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="5"/>
+                    </Grid.RowDefinitions>
+                    <Button
+                        x:Name="btnReadGrafbat"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Content="Read 'GEOgraf OUT'">
+                    </Button>
+                    <GroupBox
+                        x:Name="gbGrafbatDtm"
+                        Grid.Column="1"
+                        Grid.Row="3"
+                        Header="Read DTM via ... (select please)"
+                        >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton
+                                x:Name="rbGraftbatReadFaces"
+                                HorizontalAlignment="Center"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                IsChecked="True"
+                                ToolTip="Processing takes place via triangles (must be included in the OUT file)"
+                                >
+                                <RadioButton.Content>
+                                    <TextBlock Text="... Triangles" TextWrapping="Wrap" />
+                                </RadioButton.Content>
+                            </RadioButton>
+                            <RadioButton
+                                x:Name="rbGraftbatReadPointsLines"
+                                HorizontalAlignment="Center"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                >
+                                <RadioButton.Content>
+                                    <TextBlock Text="... Points/ Lines" TextWrapping="Wrap"/>
+                                </RadioButton.Content>
+                            </RadioButton>
+
+                            <RadioButton
+                                x:Name="rbGraftbatReadPoints"
+                                HorizontalAlignment="Center"
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                >
+                                <RadioButton.Content>
+                                    <TextBlock Text="... Points" TextWrapping="Wrap"/>
+                                </RadioButton.Content>
+                            </RadioButton>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox
+                        x:Name="gbPointtypes"
+                        Grid.Column="1"
+                        Grid.Row="5"
+                        Header="Rointtypes"
+                        >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox
+                                x:Name="chkGrafbatFilteringPointtypes"
+                                VerticalAlignment="Center"
+                                AutomationProperties.HelpText="Hier können Sie..">
+                                <TextBlock
+                                    Text="Process only following point types (e.g.: 20,30)"
+                                    TextWrapping="Wrap"
+                                    >
+                                </TextBlock>
+                            </CheckBox>
+                            <TextBox
+                                x:Name="tbPointTypes"
+                                Grid.Column="1"
+                                IsEnabled="False">
+                                
+                            </TextBox>
+                        </Grid>
+                        
+                    </GroupBox>
+                    <GroupBox
+                        Grid.Column="1"
+                        Grid.Row="7"
+                        Header="Horizon">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton
+                                x:Name="rbGrafbatAllHorizons">
+                                <TextBlock Text="Process all horizons" TextWrapping="Wrap"/>
+                            </RadioButton>
+
+                            <RadioButton
+                                x:Name="rbGrafbatHorizonSelect"
+                                Grid.Column="1">
+                                <TextBlock Text="Process only Horizon:" TextWrapping="Wrap"/>
+                            </RadioButton>
+
+                            <TextBox
+                                x:Name="tbGraftbatFilteringHorizon"
+                                Grid.Column="2"
+                                IsEnabled="False"/>
+
+
+
+
+
+
+
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox
+                        Grid.Column="1"
+                        Grid.Row="9"
+                        Header="Point status">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                            x:Name="tbGraftbatPointStatusHint"
+                            Grid.Column="0"
+                            Text="Ignore status 'invalid':">
+                            </TextBlock>
+                            <CheckBox 
+                                Grid.Column="1"
+                                Content="position"
+                                HorizontalAlignment="Center"/>
+                            <CheckBox 
+                                Grid.Column="2"
+                                Content="height"
+                                HorizontalAlignment="Center"/>
+                        </Grid>
+                        
+
+                    </GroupBox>
+                    <GroupBox
+                        Grid.Column="1"
+                        Grid.Row="11"
+                        Header="Breaklines">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="3"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="tbGraftbatBreaklineQuestion" Text="Process Breaklines?" VerticalAlignment="Center" Grid.Row="1"/>
+                            <RadioButton x:Name="rbGraftbatBreaklinesYes" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Content="Yes"/>
+                            <RadioButton x:Name="rbGraftbatBreaklinesNo" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Content="No" IsChecked="True"/>
+                            <TextBlock x:Name="tbGraftbatBreaklinesHint" Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Center" Text="Insert GEOgraf types of breaklines (e.g.: 100,200,...)"/>
+                            <TextBox x:Name="tbGraftbatBreaklinesInput" Grid.Row="3" Grid.ColumnSpan="3" IsEnabled="False"/>
+
+
+
+
+
+                        </Grid>
+
+                    </GroupBox>
+
+                    <Button
+                        Grid.Column="1"
+                        Grid.Row="13"
+                        Content="Process 'GEOgraf OUT'"
+                        ToolTip="Applying the settings (from this tab)">
+                        
+                    </Button>
+                </Grid>
+            </TabItem>
             <TabItem x:Name ="tabPagePostGis"   Header="Database (PostGIS)"/>
             <TabItem x:Name ="tabPageGrid"      Header="Grid (XYZ)"/>
             <TabItem x:Name ="tabPageReb"       Header="REB (DA45, DA49, DA58)"/>
         </TabControl>
 
-
-
-        <Button
-            x:Name="btnTest"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Height="20"
-            Width="50"
-            Content="TEST"
-            Margin="0,0,50,50" Click="btnTest_Click">
-
-        </Button>
-        <!--grid erstellen, um Informationen aus den gelesenen Datein abzubilden-->
-        <Border x:Name="bOut"
-                Height="220"
-                Width="380"
-                BorderBrush="Black" 
-                BorderThickness="1"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="10,495,0,0">
-            <Grid 
-            x:Name="grdFileInfo"
-            Height="220"
-            Width="380"
-            HorizontalAlignment="Left" 
-            VerticalAlignment="Top" 
-            Margin="0,0,0,0"
-            >
-                <!--further logic can then be integrated here-->
-                <TextBlock
-                x:Name="tbFilePath"
-                Height="20"
-                Width="100"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="5,5,0,0"
-                Text="File path"/>
-
-                <TextBox
-                x:Name="tbFilePathInput"
-                Height="20"
-                Width="270"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="0,5,5,0"
-                IsReadOnly="True"/>
-
-                <TextBlock
-                x:Name="tbFileType"
-                Height="20"
-                Width="100"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="5,35,0,0"
-                Text="File type"
-                />
-
-                <TextBox
-                x:Name="tbFileTypeInput"
-                Height="20"
-                Width="270"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="0,35,5,0"
-                IsReadOnly="True"/>
-
-                <TextBlock
-                x:Name="tbDtmLayer"
-                Height="20"
-                Width="100"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="5,65,0,0"
-                Text="Layer/ Horizon"
-                />
-
-                <TextBox
-                x:Name="tbDtmLayerInput"
-                Height="20"
-                Width="270"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="0,65,5,0"
-                IsReadOnly="True"/>
-
-                <TextBlock
-                x:Name="tbGridSize"
-                Height="20"
-                Width="100"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="5,95,0,0"
-                Text="Grid size [m]"/>
-
-                <TextBox
-                x:Name="tbGridSizeInput"
-                Height="20"
-                Width="270"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="0,95,5,0"
-                IsReadOnly="True"/>
-            </Grid>
-        </Border>
         
+
+        <!--grid erstellen, um Informationen aus den gelesenen Datein abzubilden-->
+        
+        <GroupBox 
+            Grid.Column="3"
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            Header="IFC Version"
+            Margin="0,0,0,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Select:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <ComboBox>
+                        <!--default seeting GCS-->
+                        <ComboBoxItem Content="IFC 2x3 (MESH)"/>
+                        <ComboBoxItem Content="IFC 4 (MESH)"/>
+                        <ComboBoxItem Content="IFC 2x3 (TIN)"/>
+                        <ComboBoxItem Content="IFC 4 (TIN)" IsSelected="True"/>
+                        <ComboBoxItem Content="IFC 4.3" IsEnabled="False"/>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+                    <CheckBox VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Content="Export IFCXML" Margin="5,0,0,0"/>
+                    <CheckBox VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Content="IfcGeographicElement" Margin="20,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox 
+            Grid.Column="3"
+            Grid.Row="4"
+            Grid.RowSpan="2"
+            Header="IFC Shape Representation"
+            Margin="0,0,0,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Select: " VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                <StackPanel VerticalAlignment="Center" Grid.Column="1">
+                    <ComboBox>
+                        <!--default seeting GCS-->
+                        <ComboBoxItem Content="IfcGeometricCurveSet" IsSelected="True"/>
+                        <ComboBoxItem Content="IfcShellBasedSurfaceModell"/>
+                        <ComboBoxItem Content="IfcTriangulatedFaceSet"/>
+                        <ComboBoxItem Content="IfcTriangulatedIrregularNetwork" IsEnabled="False"/>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Text="Minimum distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                    <TextBox Width="80" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="[m]" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox
+            Grid.Column="3"
+            Grid.Row="6"
+            Grid.RowSpan="3"
+            Header="Georeferencing"
+            Margin="0,0,0,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox
+            Grid.Column="3"
+            Grid.Row="9"
+            Grid.RowSpan="2"
+            Header="User Settings"
+            Margin="0,0,0,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="1.8*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Text="Organisation Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                <TextBlock Grid.Row="1" Text="Given Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                <TextBlock Grid.Row="2" Text="Family Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="0,2"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,2"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="0,2"/>
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox
+            Grid.Column="3"
+            Grid.Row="11"
+            Grid.RowSpan="2"
+            
+            
+            Header="Metadaten (Placeholder)"
+            Margin="0,0,0,5">
+            
+            
+        </GroupBox>
+
+        <GroupBox
+            Grid.Column="3"
+            Grid.Row="13"
+            Grid.RowSpan="3"
+            Header="Log"
+            Margin="0,0,0,5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <TextBlock 
+                    Text="Choose Verbosity Level:" 
+                    VerticalAlignment="Center"
+                    Margin="5,0,0,0"/>
+
+                <ComboBox Grid.Column="1">
+                    <ComboBoxItem Content="Trace"/>
+                    <ComboBoxItem Content="Debug" IsSelected="True"/>
+                    <ComboBoxItem Content="Info"/>
+                    <ComboBoxItem Content="Warn"/>
+                    <ComboBoxItem Content="Error"/>
+                </ComboBox>
+
+                <TextBox
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0,5,0,0"
+                    IsReadOnly="True">
+
+                </TextBox>
+            </Grid>
+        </GroupBox>
+
+
+        <GroupBox
+            Grid.Row="16"
+            Grid.Column="1"
+            Grid.ColumnSpan="3"
+            Header="Target IFC file location">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button
+                        Content="Choose"
+                        Grid.Column="0"
+                    />
+
+                <TextBox
+                        Margin="5,0,5,0"
+                        Grid.Column="1"
+                        IsReadOnly="True"
+                    />
+                <Button
+                    Content="Run"
+                    Grid.Column="2"
+                    />
+            </Grid>
+        </GroupBox>
+
+        <GroupBox
+            Grid.Column="1"
+            Grid.Row="12"
+            Grid.RowSpan="4"         
+            Header="Current Terrain (Information panel)"
+            Margin="0,0,0,5">
+
+
+        </GroupBox>
     </Grid>
 </Window>

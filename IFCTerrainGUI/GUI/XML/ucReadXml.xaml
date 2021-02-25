@@ -6,15 +6,27 @@
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.XML"
              mc:Ignorable="d" 
             >
-    <Button
-        x:Name="btnReadXml"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Top"
-        Width="360"
-        Height="20"
-        Margin="0,5,0,0"
-        Content="Read 'LandXML/ CityGML'"
-        Click="btnReadXml_Click"
+    <Grid>
+        <Button
+            x:Name="btnReadXml"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Width="360"
+            Height="20"
+            Margin="0,5,0,0"
+            Content="Read 'LandXML/ CityGML'"
+            Click="btnReadXml_Click"
         >
-    </Button>
+        </Button>
+
+        <Button
+            x:Name="btnProcessXml"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Height="20"
+            
+            Content="Process 'LandXML/ CityGML'"
+            Margin="0,0,0,5"
+            />
+    </Grid>
 </UserControl>
