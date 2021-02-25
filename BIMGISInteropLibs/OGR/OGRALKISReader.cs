@@ -15,10 +15,52 @@ namespace BIMGISInteropLibs.OGR
 
         public OGRALKISReader(string filePath)
         {
-            GdalConfiguration.ConfigureOgr();
             var nasDriver = Ogr.GetDriverByName("NAS");
             ds = nasDriver.Open(filePath, 0);
         }
+
+        private List<string> LayerToProcess = new List<string>
+        {
+            //parcels
+            "AX_Flurstueck",
+
+            //buildings
+            "AX_Gebaeude",
+
+            //group "Siedlung"
+            "AX_Wohnbauflaeche",
+            "AX_IndustrieUndGewerbeflaeche",
+            "AX_Halde",
+            "AX_Bergbaubetrieb",
+            "AX_TagebauGrubeSteinbruch",
+            "AX_FlaecheGemischterNutzung",
+            "AX_FlaecheBesondererFunktionalerPraegung",
+            "AX_SportFreizeitUndErholungsflaeche",
+            "AX_Friedhof",
+
+            //group "Verkehr"
+            "AX_Strassenverkehr",
+            "AX_Weg",
+            "AX_Platz",
+            "AX_Bahnverkehr",
+            "AX_Flugverkehr",
+            "AX_Schiffsverkehr",
+
+            //group "Vegetation"
+            "AX_Landwirtschaft",
+            "AX_Wald",
+            "AX_Gehoelz",
+            "AX_Heide",
+            "AX_Moor",
+            "AX_Sumpf",
+            "AX_UnlandVegetationsloseFlaeche",
+
+            //group "Gewaesser"
+            "AX_Fliessgewaesser",
+            "AX_Hafenbecken",
+            "AX_StehendesGewaesser",
+            "AX_Meer"
+        };
 
         public List<string> getLayerList()
         {
@@ -28,6 +70,8 @@ namespace BIMGISInteropLibs.OGR
             {
                 layerList.Add(ds.GetLayerByIndex(i).GetName());
             }
+
+            layerList = layerList.Where(item => LayerToProcess.Contains(item)).ToList();
 
             return layerList;
         }
@@ -85,6 +129,11 @@ namespace BIMGISInteropLibs.OGR
             }
 
             return geoObjects;
+        }
+
+        public void destroy()
+        {
+            ds.Dispose();
         }
     }
 }
