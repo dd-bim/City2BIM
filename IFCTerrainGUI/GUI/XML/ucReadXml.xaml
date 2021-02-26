@@ -5,28 +5,46 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.XML"
              mc:Ignorable="d" 
-            >
-    <Grid>
+             d:DesignHeight="450" d:DesignWidth="400">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
         <Button
             x:Name="btnReadXml"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Width="360"
-            Height="20"
-            Margin="0,5,0,0"
+            Grid.Row="0"
             Content="Read 'LandXML/ CityGML'"
-            Click="btnReadXml_Click"
-        >
+            Click="btnReadXml_Click">
         </Button>
 
         <Button
             x:Name="btnProcessXml"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Height="20"
-            
-            Content="Process 'LandXML/ CityGML'"
-            Margin="0,0,0,5"
+            Grid.Row="3"
+            Content="Process 'LandXML/ CityGML'" 
+            Click="btnProcessXml_Click"
+            IsEnabled="False"
             />
+
+        <StackPanel
+            x:Name="stpXmlSelectBreakline"
+            Orientation="Horizontal"
+            Grid.Row="1"
+            Margin="0,15,0,0"
+            Visibility="Hidden"
+            >
+            <TextBlock Text="Process Breaklines?"/>
+            
+            <RadioButton x:Name="rbXmlBltrue" Content="Yes" Margin="10,0" Checked="rbXmlBltrue_Checked" />
+            
+            <RadioButton x:Name="rbXmlBlfalse" Content="No" Margin="10,0" Checked="rbXmlBlfalse_Checked" />
+
+            
+        </StackPanel>
     </Grid>
 </UserControl>

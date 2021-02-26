@@ -13,12 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using IFCTerrainGUI.GUI.MainWindowLogic;
+
 using Microsoft.Win32; //used for file handling
 
 namespace IFCTerrainGUI.GUI.XML
 {
     /// <summary>
-    /// Interaktionslogik für ucReadXml.xaml
+    /// Interaction logic for ucReadXml.xaml
     /// </summary>
     public partial class ucReadXml : UserControl
     {
@@ -51,22 +53,72 @@ namespace IFCTerrainGUI.GUI.XML
                     case 1:
                         //json settings set the file type (via enumeration from logic)
                         MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXml;
+
+                        //Stack panel visible as user can decide whether to process break edges
+                        stpXmlSelectBreakline.Visibility = Visibility;
                         break;
 
                     //jump to this case if CityGML was selected
                     case 2:
                         //json settings set the file type (via enumeration from logic)
                         MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.CityGml;
+
+                        //activate button process xml (otherwise the processing can't go on)
+                        btnProcessXml.IsEnabled = true;
                         break;
                 }
 
                 //set the save path of the file to be converted
                 MainWindow.jSettings.filePath = ofd.FileName;
-                //TODO GUI feedback
+
                 //TODO logging
                 return;
             }
+        }
 
+        /// <summary>
+        /// is activated as soon as the radio button is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rbXmlBltrue_Checked(object sender, RoutedEventArgs e)
+        {
+            //set settings (break edges) to true (so they should be processed by the reader)
+            MainWindow.jSettings.breakline = true;
+
+            //activate button process xml (otherwise the processing can't go on)
+            btnProcessXml.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// is activated as soon as the radio button is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rbXmlBlfalse_Checked(object sender, RoutedEventArgs e)
+        {
+            //set settings (break edges) to FALSE (so they will not be processed by the reader)
+            MainWindow.jSettings.breakline = false;
+
+            //activate button process xml (otherwise the processing can't go on)
+            btnProcessXml.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// passes to the current GUI (the readed JSON settings)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnProcessXml_Click(object sender, RoutedEventArgs e)
+        {
+            //storage location
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).iPTBFileName, MainWindow.jSettings.filePath);
+
+            //file tpye
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).iPTBFileType, MainWindow.jSettings.fileType.ToString());
+
+            //TODO error handling (enable buttons)
+            ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = true;
         }
     }
 }
