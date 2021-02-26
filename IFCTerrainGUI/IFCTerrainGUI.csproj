@@ -61,6 +61,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ExportSettings\ucIfcGeoRef.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\ucIfcProject.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\ucIfcShape.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\ucIfcVersion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\ucMetadata.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Grafbat\ucReadGraftbat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -79,6 +99,21 @@
     </Compile>
     <Compile Include="GUI\DXF\ucReadDxf.xaml.cs">
       <DependentUpon>ucReadDxf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\ucIfcGeoRef.xaml.cs">
+      <DependentUpon>ucIfcGeoRef.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\ucIfcProject.xaml.cs">
+      <DependentUpon>ucIfcProject.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\ucIfcShape.xaml.cs">
+      <DependentUpon>ucIfcShape.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\ucIfcVersion.xaml.cs">
+      <DependentUpon>ucIfcVersion.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\ucMetadata.xaml.cs">
+      <DependentUpon>ucMetadata.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Grafbat\ucReadGraftbat.xaml.cs">
       <DependentUpon>ucReadGraftbat.xaml</DependentUpon>
