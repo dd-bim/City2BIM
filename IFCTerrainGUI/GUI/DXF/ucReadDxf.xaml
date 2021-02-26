@@ -58,12 +58,15 @@
                        >
                     </TextBlock>
 
-                    <TextBox
+                    <ListBox
+                        x:Name="lbDxfDtmLayer"
                         Grid.Row="1"
                         Grid.Column="1"
                         ToolTip="At least one layer must be selected here. Otherwise, the conversion cannot be continued."/>
 
-                    
+
+
+
 
                     <StackPanel
                         Grid.Column="0"

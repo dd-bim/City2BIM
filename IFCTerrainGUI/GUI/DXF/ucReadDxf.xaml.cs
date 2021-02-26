@@ -18,6 +18,11 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide filepath insert i
 
 using Microsoft.Win32; //used for file handling
 
+using System.ComponentModel; //used for background worker
+
+using BIMGISInteropLibs.DXF; //include to read dxf file
+
+using IxMilia.Dxf; //need to handle dxf files
 
 namespace IFCTerrainGUI.GUI.DXF
 {
@@ -26,8 +31,12 @@ namespace IFCTerrainGUI.GUI.DXF
     /// </summary>
     public partial class ucReadDxf : UserControl
     {
+        /// <summary>
+        /// create instance of the gui
+        /// </summary>
         public ucReadDxf()
         {
+            //init gui panel
             InitializeComponent();
         }
 
@@ -61,8 +70,16 @@ namespace IFCTerrainGUI.GUI.DXF
                 //so the user can not change any settings during the time the background worker is running
                 ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
 
-                //kick off the background worker
-                //TODO ADD
+                #region backgroundWorker
+                //create "do" task and refernz to function
+                backgroundWorkerDxf.DoWork += BackgroundWorkerDxf_DoWork;
+
+                //create the task when the "do task" is completed
+                backgroundWorkerDxf.RunWorkerCompleted += BackgroundWorkerDxf_RunWorkerCompleted;
+
+                //kick off BackgroundWorker
+                backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
+                #endregion backgroundWorker
 
                 #region error handling
                 //TODO: buttons to be released here otherwise the user can't go on
@@ -82,13 +99,71 @@ namespace IFCTerrainGUI.GUI.DXF
                 #endregion gui feedback
                 return; //do not add anything after this
             }
+            return; //do not add anything after this
+        }
+
+        /// <summary>
+        /// BackgroundWorker (DXF): used to read dxf file and list up all layers
+        /// </summary>
+        private readonly BackgroundWorker backgroundWorkerDxf = new BackgroundWorker();
+
+        /// <summary>
+        /// dxf file which is read
+        /// </summary>
+        private DxfFile dxfFile = null;
 
 
+        /// <summary>
+        /// reading dxf file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BackgroundWorkerDxf_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //background task: file reading
+            e.Result = ReaderTerrain.ReadFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
 
         }
 
         /// <summary>
-        /// 
+        /// will be executed as soon as the (DoWorker) has read the dxf file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BackgroundWorkerDxf_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //file name
+            string name = (string)e.Result;
+
+            //delete all items in list box (not in dxf file :) )
+            this.lbDxfDtmLayer.Items.Clear();
+
+            //check if the file could not be read
+            if (string.IsNullOrEmpty(name))
+            {
+                this.dxfFile = null;
+
+                //TODO add throw error + log
+            }
+            //will be executed if the file name is not empty
+            else
+            {
+                //go through all layers (one by one) of select dxf file
+                foreach (var l in this.dxfFile.Layers)
+                {
+                    //list layer name to list box (so the user can select a layer (or more))
+                    this.lbDxfDtmLayer.Items.Add(l.Name);
+                }
+            }
+            //so all items will be listed
+            this.lbDxfDtmLayer.UpdateLayout();
+
+            //Release MainWindow again --> so the user can make entries again
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+        }
+
+        /// <summary>
+        /// TODO
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
