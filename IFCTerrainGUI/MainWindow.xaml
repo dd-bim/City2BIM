@@ -6,17 +6,23 @@
         xmlns:ucXml = "clr-namespace:IFCTerrainGUI.GUI.XML"
         xmlns:ucDxf ="clr-namespace:IFCTerrainGUI.GUI.DXF"
         xmlns:ucGraftbat ="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
+        xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         
         mc:Ignorable="d"
-        Title="IFCTerrain GUI" Height="800" Width="800" FontFamily="Bahnschrift" FontSize="14" ResizeMode="CanMinimize">
+        Title="IFCTerrain GUI" Height="840" Width="800" FontFamily="Bahnschrift" FontSize="14" ResizeMode="CanMinimize">
     <Grid>
+        <!-- add background coloring -->
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FFF0F0F0" Offset="1"/>
                 <GradientStop Color="White"/>
             </LinearGradientBrush>
         </Grid.Background>
+
+        <!--#region grid definition 
+        here the whole grid of the GUI (Main Window) is created
+        -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7"/>
             <ColumnDefinition />
@@ -41,9 +47,13 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="7"/>
         </Grid.RowDefinitions>
+        <!--#endregion grid definition-->
+
+        <!--#region header-->
         <!-- Logo -->
         <Image x:Name="imgDdBimLogo" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0" HorizontalAlignment="Center" Source="Resources/DD_BIM_LOGO.png" VerticalAlignment="Top"/>
 
@@ -53,171 +63,133 @@
         <!-- Textbox "Export Settings"-->
         <TextBlock x:Name="tbExportSettings" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Text="Export Settings"/>
 
+        <!-- Textbox "Documentation" (if the linking is no longer correct, this has to be updated in the used function)-->
         <TextBlock x:Name="tbDocumentation" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Text="Documentation" ToolTip="Here you can access the documentation for further information (external link to github repository)" MouseDown="tbDocumentation_MouseDown" Foreground="#FF223E92" TextDecorations="Underline"/>
 
-        <!--Selection field for the import of the different data formats-->
+        <!--#endregion header-->
+
+        <!--#region Selection field for the import of the different data formats
+        #1 The tabs are created the logic is integrated by referenced user controllers. Changes must be made in the controller!
+        #2 If a new tab is to be created, then this is to be created over a TabItem. 
+        The layout can be created here and should then be swapped out as a user controller for a better overview.
+        -->
         <TabControl 
             x:Name="tabControlImport" 
             Grid.Column="1"
             Grid.Row="2"
-            Grid.RowSpan="10"            
+            Grid.RowSpan="11"            
             >
-            <!--#region DXF-->
+            <!--DXF-->
             <TabItem x:Name="tabPageDxf"        
                      Header="CAD (DXF)">
+                <!--include the controller to read a dxf file (Attention: Background Worker is used here!) Changes have to be done there!!!-->
                 <ucDxf:ucReadDxf/>
             </TabItem>
-            <!--#endregion DXF-->
 
-            <!--#region LandXML CityGML -->
+            <!--XML-->
             <TabItem 
                 x:Name ="tabPageXml"       
                 Header="TIN (LandXML, CityGML)"
                 >
+                <!--include the controller to read a xml file -->
                 <ucXml:ucReadXml/>
             </TabItem>
-            <!--#endregion LandXML CityGML -->
+
+            <!--Grafbat-->
             <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
+                <!-- reference to the user controller (logic is outsourced there)-->
                 <ucGraftbat:ucReadGraftbat/>
             </TabItem>
-            <TabItem x:Name ="tabPagePostGis"   Header="Database (PostGIS)"/>
-            <TabItem x:Name ="tabPageGrid"      Header="Grid (XYZ)"/>
-            <TabItem x:Name ="tabPageReb"       Header="REB (DA45, DA49, DA58)"/>
+
+            <!--PostGIS-->
+            <TabItem 
+                x:Name ="tabPagePostGis"   
+                Header="Database (PostGIS)"/>
+
+            <!--ElevationGrid-->
+            <TabItem 
+                x:Name ="tabPageGrid"      
+                Header="Grid (XYZ)"/>
+
+            <!--REB-->
+            <TabItem 
+                x:Name ="tabPageReb"       
+                Header="REB (DA45, DA49, DA58)"/>
+
+            <!-- more tabs (if needed) have to be added here-->
         </TabControl>
+        <!--#endregion Selection field for the import of the different data formats-->
 
-
-
-        <!--grid erstellen, um Informationen aus den gelesenen Datein abzubilden-->
-
+        <!-- add Group Box for IFC - Version
+        placeholder for panel
+        -->
         <GroupBox 
             Grid.Column="3"
             Grid.Row="2"
             Grid.RowSpan="2"
             Header="IFC Version"
             Margin="0,0,0,5">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="5*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
 
-                <TextBlock Text="Select:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <ComboBox>
-                        <!--default seeting GCS-->
-                        <ComboBoxItem Content="IFC 2x3 (MESH)"/>
-                        <ComboBoxItem Content="IFC 4 (MESH)"/>
-                        <ComboBoxItem Content="IFC 2x3 (TIN)"/>
-                        <ComboBoxItem Content="IFC 4 (TIN)" IsSelected="True"/>
-                        <ComboBoxItem Content="IFC 4.3" IsEnabled="False"/>
-                    </ComboBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
-                    <CheckBox VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Content="Export IFCXML" Margin="5,0,0,0"/>
-                    <CheckBox VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Content="IfcGeographicElement" Margin="20,0,0,0"/>
-                </StackPanel>
-            </Grid>
+            <!-- add user controler for Setting the IFC version-->
+            <ucExportSettings:ucIfcVersion/>
         </GroupBox>
 
+        <!-- add Group Box for Shape representation
+        placeholder for panel
+        -->
         <GroupBox 
             Grid.Column="3"
             Grid.Row="4"
             Grid.RowSpan="2"
             Header="IFC Shape Representation"
             Margin="0,0,0,5">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="5*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
 
-                </Grid.RowDefinitions>
-
-                <TextBlock Text="Select: " VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-                <StackPanel VerticalAlignment="Center" Grid.Column="1">
-                    <ComboBox>
-                        <!--default seeting GCS-->
-                        <ComboBoxItem Content="IfcGeometricCurveSet" IsSelected="True"/>
-                        <ComboBoxItem Content="IfcShellBasedSurfaceModell"/>
-                        <ComboBoxItem Content="IfcTriangulatedFaceSet"/>
-                        <ComboBoxItem Content="IfcTriangulatedIrregularNetwork" IsEnabled="False"/>
-                    </ComboBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock Text="Minimum distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                    <TextBox Width="80" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="[m]" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Grid>
+            <!-- add user controler-->
+            <ucExportSettings:ucIfcShape/>
         </GroupBox>
 
+        <!-- add group box for georef -->
         <GroupBox
             Grid.Column="3"
             Grid.Row="6"
             Grid.RowSpan="3"
             Header="Georeferencing"
             Margin="0,0,0,5">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-            </Grid>
+
+            <!-- add the user controller-->
+
         </GroupBox>
 
+        <!-- IfcProject Settings -->
+        <GroupBox
+            Grid.Column="3"
+            Grid.Row="11"
+            Grid.RowSpan="3"
+            Header="User Settings"
+            Margin="0,0,0,5">
+            <!-- reference to user controler -->
+            <ucExportSettings:ucIfcProject/>
+        </GroupBox>
+
+        <!-- group box for meta data settings (placeholder only) -->
         <GroupBox
             Grid.Column="3"
             Grid.Row="9"
             Grid.RowSpan="2"
-            Header="User Settings"
-            Margin="0,0,0,5">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="1.8*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="Organisation Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                <TextBlock Grid.Row="1" Text="Given Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                <TextBlock Grid.Row="2" Text="Family Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="0,2"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,2"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="0,2"/>
-
-            </Grid>
-        </GroupBox>
-
-        <GroupBox
-            Grid.Column="3"
-            Grid.Row="11"
-            Grid.RowSpan="2"
-            
-            
             Header="Metadaten (Placeholder)"
             Margin="0,0,0,5">
-
-
+            <ucExportSettings:ucMetadata/>
         </GroupBox>
 
+        <!-- Logging container -->
         <GroupBox
             Grid.Column="3"
-            Grid.Row="13"
+            Grid.Row="14"
             Grid.RowSpan="3"
-            Header="Log"
+            Header="Logging"
             Margin="0,0,0,5">
+
+            <!-- do not outsource so all user controllers can easily access it-->
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
@@ -252,9 +224,9 @@
             </Grid>
         </GroupBox>
 
-
+        <!-- storage of the converted data (ifc file, ifc xml, config, log) -->
         <GroupBox
-            Grid.Row="16"
+            Grid.Row="17"
             Grid.Column="1"
             Grid.ColumnSpan="3"
             Header="Target IFC file location">
@@ -287,13 +259,18 @@
             </Grid>
         </GroupBox>
 
+        <!-- info panel -->
         <GroupBox
             Grid.Column="1"
-            Grid.Row="12"
+            Grid.Row="13"
             Grid.RowSpan="4"         
             Header="Current Terrain (Information panel)"
             Margin="0,0,0,5">
 
+            <!-- 
+            only visible settings (didn't need for processing)
+            do not outsource
+            -->
             <Grid>
 
                 <Grid.ColumnDefinitions>
@@ -316,12 +293,9 @@
                     <TextBox x:Name="iPTBGridSize" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="iPTBLayerBreakLine" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                 </StackPanel>
-
             </Grid>
-
-
-
-
         </GroupBox>
+
+        <!-- the main grid ends here (no more code to add from here on)-->
     </Grid>
 </Window>
