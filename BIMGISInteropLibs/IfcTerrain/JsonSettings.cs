@@ -14,15 +14,15 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Drawing Interchange File Format (CAD)
         /// </summary>
-        Dxf,
+        DXF,
         /// <summary>
         /// XML based to exchange of georeferenced objects
         /// </summary>
-        LandXml,
+        LandXML,
         /// <summary>
         /// City Geography Markup Language (OGC)
         /// </summary>
-        CityGml,
+        CityGML,
         /// <summary>
         /// GEOgraf A^3 project exchange file format (.out) [Surveyor]
         /// </summary>
@@ -30,7 +30,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Database connection to a PostgreSQL databank with a PostGIS essay
         /// </summary>
-        PostGis,
+        PostGIS,
         /// <summary>
         /// Elevation Grid (raster dataset)
         /// </summary>
@@ -38,7 +38,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// daten arten (raster dataset)
         /// </summary>
-        Reb,
+        REB,
     }
 
     

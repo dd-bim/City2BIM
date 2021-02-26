@@ -63,19 +63,19 @@ namespace BIMGISInteropLibs.IfcTerrain
             switch (jSettings.fileType)
             {
                 //reader for LandXML
-                case IfcTerrainFileType.LandXml:
+                case IfcTerrainFileType.LandXML:
                     //result = LandXML.ReaderTerrain(jSettings.is3D, jSettings.filePath, jSettings.minDist, jSettings.logFilePath, jSettings.verbosityLevel);
                     result = LandXML.ReaderTerrain.ReadTin(jSettings.filePath);
                     //end of the case so it is jumped after file reading (above) out of the switch function
                     break;
 
                 //reader for CityGML
-                case IfcTerrainFileType.CityGml:
+                case IfcTerrainFileType.CityGML:
                     result = CityGML.CityGMLReaderTerrain.ReadTin(jSettings.filePath);
                     break;
 
                 //reader for DXF
-                case IfcTerrainFileType.Dxf:
+                case IfcTerrainFileType.DXF:
                     //file Reader: output will be used to process terrain information
                     DXF.ReaderTerrain.ReadFile(jSettings.filePath, out DxfFile dxfFile);
 
@@ -94,7 +94,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 //reader for REB    
-                case IfcTerrainFileType.Reb:
+                case IfcTerrainFileType.REB:
                     //REB file reader
                     REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(filePath);
                     //use REB data via processing with converter
@@ -123,7 +123,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 //reader for PostGIS
-                case IfcTerrainFileType.PostGis:
+                case IfcTerrainFileType.PostGIS:
                     result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings.host, jSettings.port, jSettings.user, jSettings.password, jSettings.database, jSettings.schema, jSettings.tin_table, jSettings.tin_column, jSettings.tinid_column, jSettings.tin_id, jSettings.breakline, jSettings.breakline_table, jSettings.breakline_column, jSettings.breakline_tin_id);
                     break;
             }
