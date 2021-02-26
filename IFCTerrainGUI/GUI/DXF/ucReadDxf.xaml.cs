@@ -137,10 +137,12 @@ namespace IFCTerrainGUI.GUI.DXF
 
             //delete all items in list box (not in dxf file :) )
             this.lbDxfDtmLayer.Items.Clear();
+            this.lbDxfBreaklineLayer.Items.Clear();
 
             //check if the file could not be read
             if (string.IsNullOrEmpty(name))
             {
+                //set dxf file to "empty"
                 this.dxfFile = null;
 
                 //TODO add throw error + log
@@ -151,12 +153,16 @@ namespace IFCTerrainGUI.GUI.DXF
                 //go through all layers (one by one) of select dxf file
                 foreach (var l in this.dxfFile.Layers)
                 {
-                    //list layer name to list box (so the user can select a layer (or more))
+                    //list layer name to list boxes (so the user can select a layer (or more))
                     this.lbDxfDtmLayer.Items.Add(l.Name);
+                    this.lbDxfBreaklineLayer.Items.Add(l.Name);
                 }
             }
             //so all items will be listed
             this.lbDxfDtmLayer.UpdateLayout();
+            this.lbDxfBreaklineLayer.UpdateLayout();
+
+            //TODO Logging idea ... count of layer readed (listbox.items.count())
 
             //Release MainWindow again --> so the user can make entries again
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;

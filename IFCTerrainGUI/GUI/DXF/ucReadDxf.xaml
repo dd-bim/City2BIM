@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.DXF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="400">
+             d:DesignHeight="450" d:DesignWidth="400"
+             >
     <Grid>
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
@@ -58,10 +59,24 @@
                        >
                     </TextBlock>
 
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Text="Hint"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        ToolTip="With the 'Ctrl'-button you can make a multiple selection." 
+                        Foreground="#FF1E43EC" 
+                        FontStyle="Italic"
+                        Margin="0,5"
+                        />
+
                     <ListBox
                         x:Name="lbDxfDtmLayer"
                         Grid.Row="1"
-                        Grid.Column="1"/>
+                        Grid.Column="1" 
+                        SelectionMode="Extended"
+                        />
 
                     <StackPanel
                         Grid.Column="0"
@@ -82,7 +97,7 @@
                         <RadioButton
                             Content="Points / Lines"
                             VerticalAlignment="Center"
-                            ToolTip="Processing will be done via MESH (DXF layer)"
+                            ToolTip="Processing will be done via Points and Lines (DXF layer)"
                             Margin="20,0,0,0"/>
                     </StackPanel>
 
@@ -136,10 +151,10 @@
                         TextWrapping="Wrap">
                     </TextBlock>
 
-                    <TextBox
+                    <ListBox
+                        x:Name="lbDxfBreaklineLayer"
                         Grid.Row="1"
-                        Grid.Column="1"
-                        ToolTip="At least one layer must be selected here. Otherwise, the conversion cannot be continued."/>
+                        Grid.Column="1"/>
 
                 </Grid>
             </GroupBox>
