@@ -52,7 +52,7 @@ namespace IFCTerrainGUI.GUI.XML
                     //jump to this case if LandXML was selected
                     case 1:
                         //json settings set the file type (via enumeration from logic)
-                        MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXml;
+                        MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXML;
 
                         //Stack panel visible as user can decide whether to process break edges
                         stpXmlSelectBreakline.Visibility = Visibility;
@@ -61,7 +61,7 @@ namespace IFCTerrainGUI.GUI.XML
                     //jump to this case if CityGML was selected
                     case 2:
                         //json settings set the file type (via enumeration from logic)
-                        MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.CityGml;
+                        MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.CityGML;
 
                         //activate button process xml (otherwise the processing can't go on)
                         btnProcessXml.IsEnabled = true;
