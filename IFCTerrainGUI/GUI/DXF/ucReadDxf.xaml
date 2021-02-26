@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400">
     <Grid>
-        <Grid>
+        <Grid Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -18,7 +18,6 @@
                 <RowDefinition Height="20"/>
                 <RowDefinition/>
                 <RowDefinition/>
-
                 <RowDefinition Height="20"/>
             </Grid.RowDefinitions>
 
@@ -26,7 +25,7 @@
                 x:Name="btnReadDxf"
                 Grid.ColumnSpan="3"
                 Content="Read 'DXF file'"
-                ToolTip="Open DXF file. Please check that it is no longer opened."/>
+                ToolTip="Open DXF file. Please check that it is no longer opened." Click="btnReadDxf_Click"/>
 
             <GroupBox
                 Grid.Row="1"
@@ -100,14 +99,59 @@
                 Grid.ColumnSpan="3"
                 Margin="0,0,0,5"
                 Header="Breaklines">
-                
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="0"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="Processing Breaklines?"/>
+
+
+                        <RadioButton
+                            Content="Yes"
+                            VerticalAlignment="Center"
+                            Margin="20,0,0,0"
+                            ToolTip="Processing of breaklines is possible. Please select a layer."/>
+                        <RadioButton
+                            Content="No"
+                            VerticalAlignment="Center"
+                            ToolTip="There will be no processing of breaklines"
+                            Margin="20,0,0,0"/>
+                    </StackPanel>
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Text="Select Breakline Layer (only single selection possible)"
+                        TextWrapping="Wrap">
+                    </TextBlock>
+
+                    <TextBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        ToolTip="At least one layer must be selected here. Otherwise, the conversion cannot be continued."/>
+
+                </Grid>
             </GroupBox>
             <Button
+                x:Name="btnProcessDxf"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Grid.Row="5"
-                Content="Process 'DXF' file">
-                
+                Content="Process 'DXF' file" Click="btnProcessDxf_Click"
+                IsEnabled="False">
             </Button>
         </Grid>
     </Grid>
