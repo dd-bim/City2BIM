@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="IFCTerrainGUI.GUI.ExportSettings.ucIfcVersion"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Select:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <ComboBox>
+                <!--default seeting GCS-->
+                <ComboBoxItem Content="IFC 2x3 (MESH)"/>
+                <ComboBoxItem Content="IFC 4 (MESH)"/>
+                <ComboBoxItem Content="IFC 2x3 (TIN)"/>
+                <ComboBoxItem Content="IFC 4 (TIN)" IsSelected="True"/>
+                <ComboBoxItem Content="IFC 4.3" IsEnabled="False"/>
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <CheckBox VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Content="Export IFCXML" Margin="5,0,0,0"/>
+            <CheckBox VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Content="IfcGeographicElement" Margin="20,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
