@@ -18,6 +18,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //used to outsource auxiliary functions
 //integrate logic from BIMGISInteropsLibs 
 using BIMGISInteropLibs.IfcTerrain; //used for JsonSettings, ...
 
+using System.IO; //used for file handling (e.g. open directory)
+
+
 namespace IFCTerrainGUI
 {
     /// <summary>
@@ -40,18 +43,12 @@ namespace IFCTerrainGUI
         /// </summary>
         public static JsonSettings jSettings { get; set; } = new JsonSettings();
 
-        
-  
-
-
-        /// <summary>
-        /// only dev test button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnTest_Click(object sender, RoutedEventArgs e)
+        private void tbDocumentation_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //MainWindowBib.setTextBoxText(tbFilePathInput, jSettings.filePath);
+            //direct Link to GITHUB - Repro so it should be accessable for "all"
+            string docuPath = "https://github.com/dd-bim/IfcTerrain/blob/master/README.md";
+            //opens link
+            System.Diagnostics.Process.Start(docuPath);
         }
     }
 }
