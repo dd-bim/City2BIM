@@ -61,6 +61,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\Grafbat\ucReadGraftbat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\XML\ucReadXml.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -75,6 +79,9 @@
     </Compile>
     <Compile Include="GUI\DXF\ucReadDxf.xaml.cs">
       <DependentUpon>ucReadDxf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Grafbat\ucReadGraftbat.xaml.cs">
+      <DependentUpon>ucReadGraftbat.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
     <Compile Include="GUI\XML\ucReadXml.xaml.cs">
