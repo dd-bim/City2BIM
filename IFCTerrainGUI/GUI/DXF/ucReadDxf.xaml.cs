@@ -169,13 +169,83 @@ namespace IFCTerrainGUI.GUI.DXF
         }
 
         /// <summary>
+        /// Executed when break edge processing was enabled
+        /// </summary>
+        private void rbDxfBreaklinesTrue_Checked(object sender, RoutedEventArgs e)
+        {
+            //disable start button (so the user can't go on --> first of all a breakline layer have to be selected)
+            ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = false;
+
+            //activate list box so the user can select a layer (where the breaklines are stored
+            this.lbDxfBreaklineLayer.IsEnabled = true;
+
+            //btn process dxf enable (Reason: the user has made a decision because of the breaking edges)
+            this.btnProcessDxf.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Executed when break edge processing was not enabled
+        /// </summary>
+        private void rbDxfBreaklinesFalse_Checked(object sender, RoutedEventArgs e)
+        {
+            //disable list box (not needed)
+            this.lbDxfBreaklineLayer.IsEnabled = false;
+
+            //btn process dxf enable (Reason: the user has made a decision because of the breaking edges)
+            this.btnProcessDxf.IsEnabled = true;
+        }
+
+        /// <summary>
         /// TODO
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnProcessDxf_Click(object sender, RoutedEventArgs e)
         {
+            //
+            if(this.lbDxfDtmLayer.SelectedIndex >= 0)
+            {
+                //array of selected layers                
+                string[] dxfSelectedItems = lbDxfDtmLayer.SelectedItems.OfType<string>().ToArray();
+
+                //text box output (pnly for user information)
+                foreach (string item in lbDxfDtmLayer.SelectedItems)
+                {
+                    ((MainWindow)Application.Current.MainWindow).iPTBPLayerDtm.Text += item + "; ";
+
+
+
+                    MainWindow.jSettings.breakline_layer += item + ";"; 
+                    
+                }
+            }
+            
+            //
             MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).iPTBFileType, "DXF");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void lbDxfDtmLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //
+            var listSelectedItems = ((ListBox)sender).SelectedItems;
+
+            //as soon as at least one "item" has been selected
+            if (listSelectedItems.Count > 0)
+            {
+                //activate so that selection for break edges is possible
+                gbDxfBreakline.IsEnabled = true;
+            }
+            
+            //
+            else
+            {
+                //if no item is selected, the selection for break edges is disabled
+                gbDxfBreakline.IsEnabled = false;
+
+                //button dxf processing deactivate
+                btnProcessDxf.IsEnabled = false;
+            }
         }
     }
 }

@@ -75,7 +75,10 @@
                         x:Name="lbDxfDtmLayer"
                         Grid.Row="1"
                         Grid.Column="1" 
-                        SelectionMode="Extended"
+                        ItemsSource="{Binding DxfLayerSource}"
+                        SelectionMode="Extended" 
+                        
+                        SelectionChanged="lbDxfDtmLayer_SelectionChanged"
                         />
 
                     <StackPanel
@@ -107,11 +110,13 @@
             </GroupBox>
 
             <GroupBox
+                x:Name="gbDxfBreakline"
                 Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Margin="0,0,0,5"
-                Header="Breaklines">
+                Header="Breaklines"
+                IsEnabled="False">
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -134,15 +139,18 @@
 
 
                         <RadioButton
+                            x:Name="rbDxfBreaklinesTrue"
                             Content="Yes"
                             VerticalAlignment="Center"
                             Margin="20,0,0,0"
-                            ToolTip="Processing of breaklines is possible. Please select a layer."/>
+                            ToolTip="Processing of breaklines is possible. Please select a layer." Checked="rbDxfBreaklinesTrue_Checked"/>
                         <RadioButton
+                            x:Name="rbDxfBreaklinesFalse"
                             Content="No"
                             VerticalAlignment="Center"
                             ToolTip="There will be no processing of breaklines"
-                            Margin="20,0,0,0"/>
+                            Margin="20,0,0,0" Checked="rbDxfBreaklinesFalse_Checked"
+                            />
                     </StackPanel>
 
                     <TextBlock
@@ -154,7 +162,9 @@
                     <ListBox
                         x:Name="lbDxfBreaklineLayer"
                         Grid.Row="1"
-                        Grid.Column="1"/>
+                        Grid.Column="1"
+                        IsEnabled="False"
+                        />
 
                 </Grid>
             </GroupBox>

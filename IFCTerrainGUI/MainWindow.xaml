@@ -286,7 +286,7 @@
                     <TextBlock x:Name="iPLayerBreakLine" Text="Layer (Breaklines)" Height="20" VerticalAlignment="Center" Margin="5,5,0,0"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" IsEnabled="False">
+                <StackPanel Grid.Column="1">
                     <TextBox x:Name="iPTBFileName" Height="20" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
                     <TextBox x:Name="iPTBFileType" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="iPTBPLayerDtm" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
