@@ -130,6 +130,8 @@
     <Compile Include="Geometry\C2BPoint.cs" />
     <Compile Include="OGR\GeoObject.cs" />
     <Compile Include="OGR\OGRALKISReader.cs" />
+    <Compile Include="OGR\OGRGMLReader.cs" />
+    <Compile Include="OGR\OGRReader.cs" />
     <Compile Include="OGR\OGRUtils.cs" />
     <Compile Include="Semantic\Xml_AttrRep.cs" />
     <Compile Include="Semantic\Read_GmlDictionary.cs" />
