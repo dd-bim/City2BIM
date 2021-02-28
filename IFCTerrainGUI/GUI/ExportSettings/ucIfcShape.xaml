@@ -5,32 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="380">
+             d:DesignHeight="50" d:DesignWidth="380">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="5*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-
-        </Grid.RowDefinitions>
-
-        <TextBlock Text="Select: " VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-        <StackPanel VerticalAlignment="Center" Grid.Column="1">
-            <ComboBox>
+        <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Horizontal">
+            <ComboBox Width="200">
                 <!--default seeting GCS-->
                 <ComboBoxItem Content="IfcGeometricCurveSet" IsSelected="True"/>
                 <ComboBoxItem Content="IfcShellBasedSurfaceModell"/>
                 <ComboBoxItem Content="IfcTriangulatedFaceSet"/>
                 <ComboBoxItem Content="IfcTriangulatedIrregularNetwork" IsEnabled="False"/>
             </ComboBox>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Orientation="Horizontal">
-            <TextBlock Text="Minimum distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
-            <TextBox Width="80" Margin="5,0,0,0" VerticalAlignment="Center"/>
+
+            <TextBlock Text="Min. distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
+            <TextBox Width="30" Margin="5,0,0,0" VerticalAlignment="Center"/>
             <TextBlock Text="[m]" Margin="5,0,0,0" VerticalAlignment="Center"/>
         </StackPanel>
     </Grid>
