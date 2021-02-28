@@ -18,6 +18,12 @@ namespace BIMGISInteropLibs.Geometry
             startPoint = start;
             endPoint = end;
             midPoint = mid;
+
+            if (midPoint != null)
+            {
+                isCurve = true;
+            }
+
         }
     }
 }
