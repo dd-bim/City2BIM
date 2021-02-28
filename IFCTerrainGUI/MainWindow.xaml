@@ -126,7 +126,6 @@
         <GroupBox 
             Grid.Column="3"
             Grid.Row="2"
-            Grid.RowSpan="2"
             Header="IFC Version"
             Margin="0,0,0,5">
 
@@ -139,10 +138,9 @@
         -->
         <GroupBox 
             Grid.Column="3"
-            Grid.Row="4"
-            Grid.RowSpan="2"
+            Grid.Row="3"
             Header="IFC Shape Representation"
-            Margin="0,0,0,5">
+            >
 
             <!-- add user controler-->
             <ucExportSettings:ucIfcShape/>
@@ -151,12 +149,13 @@
         <!-- add group box for georef -->
         <GroupBox
             Grid.Column="3"
-            Grid.Row="6"
-            Grid.RowSpan="3"
+            Grid.Row="4"
+            Grid.RowSpan="4"
             Header="Georeferencing"
             Margin="0,0,0,5">
 
             <!-- add the user controller-->
+            <ucExportSettings:ucIfcGeoRef/>
 
         </GroupBox>
 
@@ -174,8 +173,8 @@
         <!-- group box for meta data settings (placeholder only) -->
         <GroupBox
             Grid.Column="3"
-            Grid.Row="9"
-            Grid.RowSpan="2"
+            Grid.Row="8"
+            Grid.RowSpan="3"
             Header="Metadaten (Placeholder)"
             Margin="0,0,0,5">
             <ucExportSettings:ucMetadata/>
@@ -278,20 +277,20 @@
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock x:Name="iPFileName" Text="File name" Height="20" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                    <TextBlock x:Name="iPFileType" Text="File type" Height="20" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="iPLayerDtm" Text="Layer/ Horizon" Height="20" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="iPGridSize" Text="Grid size [m]" Height="20" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="iPLayerBreakLine" Text="Layer (Breaklines)" Height="20" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock x:Name="iPFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="iPFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
+                    <TextBlock x:Name="iPLayerDtm" Text="Layer/ Horizon" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                    <TextBlock x:Name="iPGridSize" Text="Grid size [m]" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                    <TextBlock x:Name="iPLayerBreakLine" Text="Layer (Breaklines)" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1">
-                    <TextBox x:Name="iPTBFileName" Height="20" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBFileType" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBPLayerDtm" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBGridSize" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBLayerBreakLine" Height="20" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="iPTBFileName" Height="25" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
+                    <TextBox x:Name="iPTBFileType" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="iPTBPLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="iPTBGridSize" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="iPTBLayerBreakLine" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                 </StackPanel>
             </Grid>
         </GroupBox>

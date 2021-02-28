@@ -86,6 +86,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ExportSettings\ucLoGeoRef30.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ExportSettings\ucMetadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -120,6 +124,9 @@
     </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcVersion.xaml.cs">
       <DependentUpon>ucIfcVersion.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\ucLoGeoRef30.xaml.cs">
+      <DependentUpon>ucLoGeoRef30.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\ucMetadata.xaml.cs">
       <DependentUpon>ucMetadata.xaml</DependentUpon>
