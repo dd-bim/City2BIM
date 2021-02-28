@@ -130,9 +130,15 @@ namespace City2RVT.Builder
                                     currentSiteSubRegion.TopographySurface.SetEntity(ent);
                                 }
                                 break;
+
+                            case wkbGeometryType.wkbCurvePolygon:
+                                List<C2BSegment> outerSegmentsCurvePoly = getOuterRingSegmentsFromCurvePolygon(GeoObj.Geom);
+                                var siteSubRegionCurvePoly = createSiteSubRegionFromSegments(outerSegmentsCurvePoly, RefPlaneId);
+                                siteSubRegionCurvePoly.TopographySurface.SetEntity(ent);
+                                break;
                             
                             default:
-                                Log.Warning("Could not create GeoObject. GeometryType is: " + GeoObj.GeomType.ToString() + " gmlId: " + GeoObj.GmlID);
+                                Log.Error("Could not create GeoObject. GeometryType is: " + GeoObj.GeomType.ToString() + " gmlId: " + GeoObj.GmlID);
                                 processingErrors = true;
                                 break;
                         }                        
@@ -153,6 +159,36 @@ namespace City2RVT.Builder
         private static List<C2BPoint> createRefSurfacePointsForObjGroup(List<GeoObject> objList)
         {
             List<Calc.Point> pointList = new List<Calc.Point>();
+            var geometryCollection = new OSGeo.OGR.Geometry(wkbGeometryType.wkbGeometryCollection);
+
+            foreach (var geoObject in objList)
+            {
+                geometryCollection.AddGeometry(geoObject.Geom);
+            }
+
+            var convexHull = geometryCollection.ConvexHull();
+
+            if (convexHull.HasCurveGeometry(0) != 0)
+            {
+                convexHull = convexHull.GetLinearGeometry(0, null);
+            }
+
+            var outerRing = convexHull.GetGeometryRef(0);
+
+            double[] geoPoint = { 0, 0 };
+
+            //count()-1 needed since no duplicate points are allowed in revit topo surface creation
+            for (int i = 0; i < outerRing.GetPointCount()-1; i++)
+            {
+                outerRing.GetPoint_2D(i, geoPoint);
+                pointList.Add(new Calc.Point(geoPoint[0], geoPoint[1]));
+            }
+
+            var C2BPtList = pointList.Select(p => new C2BPoint(p.x, p.y, 0));
+            return C2BPtList.ToList();
+
+            /*
+            List<Calc.Point> pointList = new List<Calc.Point>();
             
             foreach (var geoObject in objList)
             {
@@ -170,7 +206,7 @@ namespace City2RVT.Builder
             var C2BPtList = convexHull.Select(p => new C2BPoint(p.x, p.y, 0));
 
             return C2BPtList.ToList();
-
+            */
         }
 
         private static List<List<C2BSegment>> getOuterRingSegmentsFromMultiPolygon(OSGeo.OGR.Geometry geom)
@@ -204,6 +240,65 @@ namespace City2RVT.Builder
                 C2BPoint endSeg = new C2BPoint(geoPoint[0], geoPoint[1], 0);
 
                 segments.Add(new C2BSegment(startSeg, endSeg));
+            }
+
+            return segments;
+        }
+
+        private static List<C2BSegment> getOuterRingSegmentsFromCurvePolygon(OSGeo.OGR.Geometry geom)
+        {
+            List<C2BSegment> segments = new List<C2BSegment>();
+
+            var outerRing = geom.GetGeometryRef(0);
+
+            double[] geoPoint = { 0, 0, 0 };
+
+            for (int i=0; i<outerRing.GetGeometryCount(); i++)
+            {
+                var sectionGeom = outerRing.GetGeometryRef(i);
+                
+                switch (sectionGeom.GetGeometryType())
+                {
+                    case wkbGeometryType.wkbCircularString:
+
+                        //The number of control points in the arc string must be 2 * numArc + 1.
+                        int nrOfPoints = sectionGeom.GetPointCount();
+                        int nrOfArcSegments = (nrOfPoints - 1) / 2;
+
+                        for (int j = 0; j < nrOfArcSegments; j+=2)
+                        {
+                            sectionGeom.GetPoint(j, geoPoint);
+                            var startPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                            sectionGeom.GetPoint(j + 1, geoPoint);
+                            var midPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                            sectionGeom.GetPoint(j + 2, geoPoint);
+                            var endPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                            segments.Add(new C2BSegment(startPoint, endPoint, midPoint));
+                        }
+
+                        break;
+                    case wkbGeometryType.wkbLineString:
+
+                        for (var j = 1; j < outerRing.GetPointCount(); j++)
+                        {
+                            outerRing.GetPoint(j - 1, geoPoint);
+                            C2BPoint startSeg = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                            outerRing.GetPoint(j, geoPoint);
+                            C2BPoint endSeg = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                            segments.Add(new C2BSegment(startSeg, endSeg));
+                        }
+
+                        break;
+
+                    default:
+                        Log.Error(string.Format("Could not process geometry within CurvePolygon! Geometry is of type {0}", sectionGeom.GetGeometryType()));
+                        break;
+                }
             }
 
             return segments;
