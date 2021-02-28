@@ -50,5 +50,10 @@ namespace IFCTerrainGUI
             //opens link
             System.Diagnostics.Process.Start(docuPath);
         }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            //
+        }
     }
 }
