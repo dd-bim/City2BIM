@@ -112,10 +112,10 @@ namespace IFCTerrainGUI.GUI.XML
         private void btnProcessXml_Click(object sender, RoutedEventArgs e)
         {
             //storage location
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).iPTBFileName, MainWindow.jSettings.filePath);
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
 
             //file tpye
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).iPTBFileType, MainWindow.jSettings.fileType.ToString());
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, MainWindow.jSettings.fileType.ToString());
 
             //TODO error handling (enable buttons)
             ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = true;

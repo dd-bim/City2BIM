@@ -280,19 +280,19 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <TextBlock x:Name="iPFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="iPFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="iPLayerDtm" Text="Layer/ Horizon" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="iPGridSize" Text="Grid size [m]" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="iPLayerBreakLine" Text="Layer (Breaklines)" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                    <TextBlock x:Name="ipFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="ipFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
+                    <TextBlock x:Name="ipLayerDtm" Text="Layer/ Horizon" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                    <TextBlock x:Name="ipFileSpecific" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                    <TextBlock x:Name="ipFileSpecific2" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1">
-                    <TextBox x:Name="iPTBFileName" Height="25" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBFileType" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBPLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBGridSize" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="iPTBLayerBreakLine" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="tbFileName" Height="25" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
+                    <TextBox x:Name="tbFileType" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="tbLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="tbFileSpecific" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="tbFileSpecific2" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                 </StackPanel>
             </Grid>
         </GroupBox>

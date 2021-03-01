@@ -91,10 +91,10 @@ namespace IFCTerrainGUI.GUI.DXF
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).iPTBFileName, MainWindow.jSettings.filePath);
+                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
 
                 //conversion to string, because stored as enumeration
-                ((MainWindow)Application.Current.MainWindow).iPTBFileType.Text = MainWindow.jSettings.fileType.ToString();
+                ((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
 
                 #endregion gui feedback
                 return; //do not add anything after this
@@ -179,8 +179,8 @@ namespace IFCTerrainGUI.GUI.DXF
             //activate list box so the user can select a layer (where the breaklines are stored
             this.lbDxfBreaklineLayer.IsEnabled = true;
 
-            //btn process dxf enable (Reason: the user has made a decision because of the breaking edges)
-            this.btnProcessDxf.IsEnabled = true;
+            //btn process dxf disable (Reason: the user has made a decision because of the breaking edges)
+            this.btnProcessDxf.IsEnabled = false;
         }
 
         /// <summary>
@@ -196,38 +196,74 @@ namespace IFCTerrainGUI.GUI.DXF
         }
 
         /// <summary>
-        /// TODO
+        /// Logic that is executed as soon as the "process key" is pressed
         /// </summary>
         private void btnProcessDxf_Click(object sender, RoutedEventArgs e)
         {
-            //
-            if(this.lbDxfDtmLayer.SelectedIndex >= 0)
+            //blank text boxes otherwise (all layers are added if the process button was clicked multiple times in one session)
+            ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = null;
+            ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = null;
+
+            //blank json settings 
+            MainWindow.jSettings.layer = null;
+
+            //is executed as soon as a DXF layer is selected
+            if (this.lbDxfDtmLayer.SelectedIndex >= 0)
             {
                 //array of selected layers                
                 string[] dxfSelectedItems = lbDxfDtmLayer.SelectedItems.OfType<string>().ToArray();
 
-                //text box output (pnly for user information)
+                //text box output dtm layer (only for user information) (loop through each selected item in the list)
                 foreach (string item in lbDxfDtmLayer.SelectedItems)
                 {
-                    ((MainWindow)Application.Current.MainWindow).iPTBPLayerDtm.Text += item + "; ";
+                    //passed to json settings
+                    MainWindow.jSettings.layer += item + ";";
 
-
-
-                    MainWindow.jSettings.breakline_layer += item + ";"; 
+                    //visual output on the GUI (layer selection)
+                    ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
                     
+                    //TODO (gui logging / file logging)
+                }
+
+                //will be executed if "yes" was selected for break edge processing d
+                if (rbDxfBreaklinesTrue.IsChecked == true)
+                {
+                    //(even if only one layer was selected), otherwise system variables are output
+                    foreach (string item in lbDxfBreaklineLayer.SelectedItems)
+                    {
+                        #region json settings
+                        //passed to json settings - breakline (bool)
+                        MainWindow.jSettings.breakline = true;
+
+                        //passed to json settings - breakline (layer)
+                        MainWindow.jSettings.breakline_layer = item.ToString();
+                        #endregion json settings
+
+                        #region gui (user information)
+                        //information panel 
+                        ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breakline - Layer";
+                        //information panel output break line layer
+                        ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
+                        #endregion gui (user information)
+                    }
+                    return;
+                }
+                //execute, because in a session the break edge processing can also be deactivated again
+                else
+                {
+                    //passed to json settings - breakline (bool = false); reason: user hasn't selected breakline processing
+                    MainWindow.jSettings.breakline = false;
                 }
             }
-            
-            //
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).iPTBFileType, "DXF");
+            return;
         }
 
         /// <summary>
-        /// 
+        /// is executed as soon as the selection has been changed in the ListBox lbDxfDtmLayer
         /// </summary>
         private void lbDxfDtmLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //
+            //save all selected items as variable
             var listSelectedItems = ((ListBox)sender).SelectedItems;
 
             //as soon as at least one "item" has been selected
@@ -236,8 +272,8 @@ namespace IFCTerrainGUI.GUI.DXF
                 //activate so that selection for break edges is possible
                 gbDxfBreakline.IsEnabled = true;
             }
-            
-            //
+
+            //if no item is selected --> required for file handling
             else
             {
                 //if no item is selected, the selection for break edges is disabled
@@ -245,6 +281,27 @@ namespace IFCTerrainGUI.GUI.DXF
 
                 //button dxf processing deactivate
                 btnProcessDxf.IsEnabled = false;
+            }
+        }
+
+        /// <summary>
+        /// is executed as soon as the selection has been changed in the ListBox lbDxfBreaklineLayer
+        /// </summary>
+        private void lbDxfBreaklineLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //save selected item as variable
+            var listSelectedItem = ((ListBox)sender).SelectedItems;
+
+            //as one "item" has been selected
+            if (listSelectedItem.Count != 0)
+            {
+                //activate btn process
+                btnProcessDxf.IsEnabled = true;
+            }
+            else
+            {
+                //deactivate btn process
+                btnProcessDxf.IsEnabled = true;
             }
         }
     }

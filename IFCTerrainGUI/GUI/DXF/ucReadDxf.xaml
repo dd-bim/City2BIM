@@ -163,7 +163,7 @@
                         x:Name="lbDxfBreaklineLayer"
                         Grid.Row="1"
                         Grid.Column="1"
-                        IsEnabled="False"
+                        IsEnabled="False" SelectionChanged="lbDxfBreaklineLayer_SelectionChanged"
                         />
 
                 </Grid>
