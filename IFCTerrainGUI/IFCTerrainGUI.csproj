@@ -15,6 +15,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -78,11 +80,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ExportSettings\ucIfcShape.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\ucIfcVersion.xaml">
+    <Page Include="GUI\ExportSettings\ucIfcVersionShape.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,11 +117,8 @@
     <Compile Include="GUI\ExportSettings\ucIfcProject.xaml.cs">
       <DependentUpon>ucIfcProject.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ExportSettings\ucIfcShape.xaml.cs">
-      <DependentUpon>ucIfcShape.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\ucIfcVersion.xaml.cs">
-      <DependentUpon>ucIfcVersion.xaml</DependentUpon>
+    <Compile Include="GUI\ExportSettings\ucIfcVersionShape.xaml.cs">
+      <DependentUpon>ucIfcVersionShape.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\ucLoGeoRef30.xaml.cs">
       <DependentUpon>ucLoGeoRef30.xaml</DependentUpon>

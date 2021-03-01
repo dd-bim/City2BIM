@@ -123,28 +123,31 @@
         <!-- add Group Box for IFC - Version
         placeholder for panel
         -->
-        <GroupBox 
+        <Grid 
             Grid.Column="3"
             Grid.Row="2"
+            Grid.RowSpan="2">
+            <!-- add user controler version + shape-->
+
+            <ucExportSettings:ucIfcVersionShape/>
+
+        </Grid>
+        
+        <!--<GroupBox 
+            Grid.Column="3"
+            Grid.Row="2"
+            Grid.RowSpan="2"
             Header="IFC Version"
-            Margin="0,0,0,5">
+            Margin="0,0,0,5">-->
 
             <!-- add user controler for Setting the IFC version-->
-            <ucExportSettings:ucIfcVersion/>
-        </GroupBox>
+            <!--<ucExportSettings:ucIfcVersion/>-->
+        <!--</GroupBox>-->
 
         <!-- add Group Box for Shape representation
         placeholder for panel
         -->
-        <GroupBox 
-            Grid.Column="3"
-            Grid.Row="3"
-            Header="IFC Shape Representation"
-            >
-
-            <!-- add user controler-->
-            <ucExportSettings:ucIfcShape/>
-        </GroupBox>
+        
 
         <!-- add group box for georef -->
         <GroupBox

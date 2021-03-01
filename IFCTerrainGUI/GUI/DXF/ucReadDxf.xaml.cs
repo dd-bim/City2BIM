@@ -122,7 +122,6 @@ namespace IFCTerrainGUI.GUI.DXF
         {
             //background task: file reading
             e.Result = ReaderTerrain.ReadFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
-
         }
 
         /// <summary>
