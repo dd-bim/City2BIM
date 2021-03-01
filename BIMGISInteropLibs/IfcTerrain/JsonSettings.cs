@@ -40,7 +40,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         REB,
     }
-
     
     /// <summary>
     /// Establishes the connection between Reader, Writers, GUI and Command
@@ -70,12 +69,12 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Sets the IFC version of the output file (IFC2x3; IFC4; ~IFC4dot3~)
         /// </summary>
-        public string outIFCType { get; set; }
+        public IFC.IfcVersion outIFCType { get; set; }
 
         /// <summary>
         /// Sets the file format of the output file (Step/XML)
         /// </summary>
-        public string outFileType { get; set; }
+        public IFC.IfcFileType outFileType { get; set; }
 
         /// <summary>
         /// [TODO] Destination location for the log file
@@ -124,7 +123,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary> 
         ///Sets the terrain model type for the output IFC file: GCS=GeometricCurveSet; SBSM=ShellBasesSurfaceModel; TFS=TriangulatedFaceSet
         /// </summary>
-        public string surfaceType { get; set; }
+        public IFC.SurfaceType surfaceType { get; set; }
 
         /// <summary>
         /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not

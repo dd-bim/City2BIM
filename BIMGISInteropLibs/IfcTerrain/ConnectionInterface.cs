@@ -226,12 +226,12 @@ namespace BIMGISInteropLibs.IfcTerrain
             //interface for IFC shape representation on the basis of which the Shape - Representation are controlled
             writeInput.SurfaceType = SurfaceType.TFS; //standard case
             //Query whether another shape representation is desired
-            if (jSettings.surfaceType == "GCS")
+            if (jSettings.surfaceType == SurfaceType.GCS)
             {
                 //set shape repr. to GCS
                 writeInput.SurfaceType = SurfaceType.GCS;
             }
-            else if (jSettings.surfaceType == "SBSM")
+            else if (jSettings.surfaceType == SurfaceType.SBSM)
             {
                 //set shape repr. to SBSM
                 writeInput.SurfaceType = SurfaceType.SBSM;
@@ -246,12 +246,12 @@ namespace BIMGISInteropLibs.IfcTerrain
 
             #region ifc xml / step file
             //Standard file type to STEP (Reason: supported by IFC2 *AND* IFC4, etc.)
-            writeInput.FileType = FileType.Step;
+            writeInput.FileType = IfcFileType.Step;
 
             //query whether an XML file is to be written additionally (IFC4 only)
-            if (jSettings.outFileType == "XML")
+            if (jSettings.outFileType == IfcFileType.XML)
             {
-                writeInput.FileType = FileType.XML;
+                writeInput.FileType = IfcFileType.XML;
             }
 
             /* TODO (Logging)
@@ -265,7 +265,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             //(processing via MESH [TODO]: is to be replaced by TIN - writer (below))
             #region IFC2x3 writer (MESH)
             //Query whether output IFC file should be version IFC2x3
-            if (jSettings.outIFCType == "IFC2x3")
+            if (jSettings.outIFCType == IfcVersion.IFC2x3)
             {
                 //model (file) let generate via the Writer
                 var model = IFC.Ifc2x3.Store.CreateViaMesh(
@@ -283,14 +283,14 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //logger.Debug("IFC site created");
 
                 //access to file writer 
-                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
 
                 //logging - ifc file is written to path ...
             }
             #endregion IFC2x3 writer (MESH)
 
             #region IFC4 writer (MESH)
-            else if (jSettings.outIFCType == "IFC4")
+            else if (jSettings.outIFCType == IfcVersion.IFC4)
             {
                 //logger.Debug("Geographical Element: " + jSettings.geoElement); [TODO]:Logging
 
@@ -319,14 +319,14 @@ namespace BIMGISInteropLibs.IfcTerrain
                         writeInput.SurfaceType,
                         breakDist);
                 //logger.Debug("IFC Site created"); [TODO]:Logging
-                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
                 //logger.Info("IFC file writen: " + jSettings.destFileName);
             }
             #endregion IFC4 writer (MESH)
 
             #region IFC2x3 writer (TIN)
             //Query whether output IFC file should be version IFC2x3
-            else if (jSettings.outIFCType == "IFC2x3TIN")
+            else if (jSettings.outIFCType == IfcVersion.IFC2x3Tin)
             {
                 //model (file) let generate via the Writer
                 var model = IFC.Ifc2x3.Store.CreateViaTin(
@@ -344,14 +344,14 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //logger.Debug("IFC site created");
 
                 //access to file writer 
-                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
 
                 //logging - ifc file is written to path ...
             }
             #endregion IFC2x3 writer (TIN)
 
             #region IFC4 writer (TIN)
-            else if (jSettings.outIFCType == "IFC4TIN")
+            else if (jSettings.outIFCType == IfcVersion.IFC4Tin)
             {
                 //logger.Debug("Geographical Element: " + jSettings.geoElement); [TODO]:Logging
 
@@ -381,7 +381,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                         writeInput.SurfaceType,
                         breakDist);
                 //logger.Debug("IFC Site created"); [TODO]:Logging
-                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == FileType.XML);
+                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
                 //logger.Info("IFC file writen: " + jSettings.destFileName);
             }
             #endregion IFC4 writer (TIN)

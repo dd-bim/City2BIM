@@ -10,14 +10,30 @@ using BimGisCad.Representation.Geometry;
 namespace BIMGISInteropLibs.IFC
 {
     //TODO check if this is still necessary when using Xbim
+    
     /// <summary>
-    /// Enumeration for IFCTypes
+    /// 
     /// </summary>
-    public enum IFCType { IFC2x3, IFC4 }
+    public enum IfcVersion{ 
+        /// <summary>
+        /// IfcVersion 2x3
+        /// </summary>
+        IFC2x3, 
+        /// <summary>
+        /// Ifc Version 4
+        /// </summary>
+        IFC4,
+        IFC2x3Tin,
+        IFC4Tin,
+        /// <summary>
+        /// Placeholder for future implementation
+        /// </summary>
+        IFC4dot3
+    }
     /// <summary>
     /// Enumeration for IFC-File-Types
     /// </summary>
-    public enum FileType { Step, XML }
+    public enum IfcFileType { Step, XML }
 
     /// <summary>
     /// Enumeration for shape representation
@@ -56,12 +72,12 @@ namespace BIMGISInteropLibs.IFC
         /// <summary>
         /// getter and setter for IFCTypes
         /// </summary>
-        public IFCType IFCType { get; set; }
+        public IfcVersion IFCType { get; set; }
         
         /// <summary>
         /// getter and setter for file types
         /// </summary>
-        public FileType FileType { get; set; }
+        public IfcFileType FileType { get; set; }
 
         /// <summary>
         /// getter and setter for placment
