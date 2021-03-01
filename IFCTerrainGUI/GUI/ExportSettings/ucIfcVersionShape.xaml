@@ -25,7 +25,7 @@
                     <ComboBoxItem x:Name="ifc4Tin" Content="IFC 4 (TIN)"/>
                     <ComboBoxItem x:Name="ifc4dot3" Content="IFC 4.3" IsEnabled="False"/>
                 </ComboBox>
-                <CheckBox x:Name="chkIfcXml" VerticalAlignment="Center" Content="IfcXML" Margin="7,0,0,0" ToolTip="Check if you want to export Ifc-XML files."/>
+                <CheckBox x:Name="chkIfcXml" VerticalAlignment="Center" Content="IfcXML" Margin="7,0,0,0" ToolTip="Check if you want to export Ifc-XML files." IsChecked="False" Checked="chkIfcXml_Checked" Unchecked="chkIfcXml_Unchecked"/>
                 <CheckBox x:Name="chkIfcGeoEl" VerticalAlignment="Center" Content="IfcGeographicalElement" Margin="7,0,0,0" IsEnabled="False" ToolTip="Only available under version Ifc 4!" ToolTipService.ShowOnDisabled="True" Checked="chkIfcGeoEl_Checked" Unchecked="chkIfcGeoEl_Unchecked"/>
             </StackPanel>
 

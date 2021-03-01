@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using System.Text.RegularExpressions;
+using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
@@ -25,8 +25,6 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         public ucIfcVersionShape()
         {
             InitializeComponent();
-
-            //MainWindow.jSettings.outFileType =
         }
         
         /// <summary>
@@ -124,14 +122,39 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             }
         }
 
+
+        /// <summary>
+        /// execute ifcGeoElement was selected (apply JSON settings)
+        /// </summary>
         private void chkIfcGeoEl_Checked(object sender, RoutedEventArgs e)
         {
+            //bool to tro --> export ifc geo element
             MainWindow.jSettings.geoElement = true;
         }
 
+        /// <summary>
+        /// execute ifcGeoElement was uncheked (apply JSON settings)
+        /// </summary>
         private void chkIfcGeoEl_Unchecked(object sender, RoutedEventArgs e)
         {
+            //bool to false --> no ifc geo element
             MainWindow.jSettings.geoElement = false;
+        }
+
+        /// <summary>
+        /// execute ifcXml was checked (apply to json settings --> write xml)
+        /// </summary>
+        private void chkIfcXml_Checked(object sender, RoutedEventArgs e)
+        {
+            MainWindow.jSettings.outFileType = BIMGISInteropLibs.IFC.IfcFileType.XML;
+        }
+
+        /// <summary>
+        /// execute ifcXml was checked (apply to json settings --> write "only" step)
+        /// </summary>
+        private void chkIfcXml_Unchecked(object sender, RoutedEventArgs e)
+        {
+            MainWindow.jSettings.outFileType = BIMGISInteropLibs.IFC.IfcFileType.Step;
         }
     }
 }
