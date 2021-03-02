@@ -46,8 +46,8 @@
                 </ComboBox>
 
                 <TextBlock Text="Min. distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                <TextBox x:Name="tbGridSize" Width="30" Margin="5,0,0,0" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
-                
+                <TextBox x:Name="tbMinDist" x:FieldModifier="public" Width="30" Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding Path=MinDistInput}" PreviewTextInput="NumberValidationTextBox" IsEnabled="False"/>
+
                 <TextBlock Text="[m]" Margin="5,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
         </GroupBox>
