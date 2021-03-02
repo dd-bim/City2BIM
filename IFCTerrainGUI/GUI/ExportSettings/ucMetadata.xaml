@@ -5,14 +5,45 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="400">
+             d:DesignHeight="280" d:DesignWidth="385">
     <Grid>
-        <TextBlock
-            Text="Placeholder"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            ToolTip="Draft follows; Goal: Export IfcPropertySets with metadata."
-            />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
 
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <CheckBox x:Name="chkMetadata" Content="Export Metadata" HorizontalAlignment="Center" Grid.ColumnSpan="2" VerticalAlignment="Center" Checked="chkMetadata_Checked" Unchecked="chkMetadata_Unchecked" />
+        <Grid x:Name="grdProjectSettings" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="1.8*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Project Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
+            <TextBlock Grid.Row="1" Text="Organisation Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
+            <TextBlock Grid.Row="2" Text="Given Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
+            <TextBlock Grid.Row="3" Text="Family Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
+            <TextBox x:Name="tbProjectName" x:FieldModifier="public" Grid.Row="0" Grid.Column="1" Margin="0,2"/>
+            <TextBox x:Name="tbOrganisationName" Grid.Row="1" Grid.Column="1" Margin="0,2"/>
+            <TextBox x:Name="tbGivenName" Grid.Row="2" Grid.Column="1" Margin="0,2"/>
+            <TextBox x:Name="tbFamilyName" Grid.Row="3" Grid.Column="1" Margin="0,2"/>
+        </Grid>
+
+
+        
+        <Button x:Name="btnMetadataApply" Grid.Row="3" Grid.ColumnSpan="2" Content="Apply" Click="btnMetadataApply_Click"/>
     </Grid>
 </UserControl>
