@@ -8,10 +8,11 @@
         xmlns:ucGraftbat ="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
         xmlns:local="clr-namespace:IFCTerrainGUI"
-        
         mc:Ignorable="d"
         Title="IFCTerrain GUI" Height="840" Width="800" FontFamily="Bahnschrift" FontSize="14" ResizeMode="CanMinimize">
     <Grid>
+        
+
         <!-- add background coloring -->
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -96,7 +97,7 @@
             </TabItem>
 
             <!--Grafbat-->
-            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
+            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)" IsEnabled="False">
                 <!-- reference to the user controller (logic is outsourced there)-->
                 <ucGraftbat:ucReadGraftbat/>
             </TabItem>
@@ -104,17 +105,20 @@
             <!--PostGIS-->
             <TabItem 
                 x:Name ="tabPagePostGis"   
-                Header="Database (PostGIS)"/>
+                Header="Database (PostGIS)"
+                IsEnabled="False"/>
 
             <!--ElevationGrid-->
             <TabItem 
                 x:Name ="tabPageGrid"      
-                Header="Grid (XYZ)"/>
+                Header="Grid (XYZ)"
+                IsEnabled="False"/>
 
             <!--REB-->
             <TabItem 
                 x:Name ="tabPageReb"       
-                Header="REB (DA45, DA49, DA58)"/>
+                Header="REB (DA45, DA49, DA58)"
+                IsEnabled="False"/>
 
             <!-- more tabs (if needed) have to be added here-->
         </TabControl>
@@ -132,22 +136,6 @@
             <ucExportSettings:ucIfcVersionShape/>
 
         </Grid>
-        
-        <!--<GroupBox 
-            Grid.Column="3"
-            Grid.Row="2"
-            Grid.RowSpan="2"
-            Header="IFC Version"
-            Margin="0,0,0,5">-->
-
-            <!-- add user controler for Setting the IFC version-->
-            <!--<ucExportSettings:ucIfcVersion/>-->
-        <!--</GroupBox>-->
-
-        <!-- add Group Box for Shape representation
-        placeholder for panel
-        -->
-        
 
         <!-- add group box for georef -->
         <GroupBox
@@ -162,22 +150,11 @@
 
         </GroupBox>
 
-        <!-- IfcProject Settings -->
-        <GroupBox
-            Grid.Column="3"
-            Grid.Row="11"
-            Grid.RowSpan="3"
-            Header="User Settings"
-            Margin="0,0,0,5">
-            <!-- reference to user controler -->
-            <ucExportSettings:ucIfcProject/>
-        </GroupBox>
-
         <!-- group box for meta data settings (placeholder only) -->
         <GroupBox
             Grid.Column="3"
             Grid.Row="8"
-            Grid.RowSpan="3"
+            Grid.RowSpan="6"
             Header="Metadaten (Placeholder)"
             Margin="0,0,0,5">
             <ucExportSettings:ucMetadata/>
@@ -241,23 +218,25 @@
                 </Grid.ColumnDefinitions>
 
                 <Button
-                        Content="Choose"
-                        Grid.Column="0"
-                        Height="20"
+                    x:Name="btnChooseStorageLocation"
+                    Content="Choose"
+                    Grid.Column="0"
+                    Height="20" Click="btnChooseStorageLocation_Click"
                     />
 
                 <TextBox
-                        Margin="5,0,5,0"
-                        Grid.Column="1"
-                        IsReadOnly="True"
-                        Height="20"
+                    x:Name="tbIfcDir"
+                    Margin="5,0,5,0"
+                    Grid.Column="1"
+                    IsReadOnly="True"
+                    Height="20"
+                    Background="#FFDDDDDD"
                     />
                 <Button
                     x:Name="btnStart"
                     Content="Start"
                     Grid.Column="2"
                     Height="20"
-                    IsEnabled="False"
                     Click="btnStart_Click"
                     />
             </Grid>
