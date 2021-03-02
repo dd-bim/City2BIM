@@ -107,7 +107,8 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             switch (surfaceType)
             {
                 case SurfaceType.TFS:
-                    return null;
+                    shape = TriangulatedFaceSet.CreateViaTin(model, sitePlacement.Location, tin, out representationType, out representationIdentifier);
+                    break;
                 case SurfaceType.SBSM:
                     shape = ShellBasedSurfaceModel.CreateViaTin(model, sitePlacement.Location, tin, out representationType, out representationIdentifier);
                     break;
