@@ -68,12 +68,12 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             {
                 MainWindow.jSettings.outIFCType = BIMGISInteropLibs.IFC.IfcVersion.IFC2x3Tin;
             }
-            //IfcVersion 4 (using TIN
+            //IfcVersion 4 (using TIN)
             else if (this.ifc4Tin.IsSelected)
             {
                 MainWindow.jSettings.outIFCType = BIMGISInteropLibs.IFC.IfcVersion.IFC4Tin;
             }
-            //
+            //IfcVersion 4.3 (Placeholder)
             else if (this.ifc4dot3.IsSelected)
             {
                 //PLACEHOLDER
