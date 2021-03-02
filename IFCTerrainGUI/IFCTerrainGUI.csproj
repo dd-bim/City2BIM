@@ -42,6 +42,9 @@
     <Reference Include="IxMilia.Dxf, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IxMilia.Dxf.0.8.0\lib\netstandard2.0\IxMilia.Dxf.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -73,10 +76,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\ExportSettings\ucIfcGeoRef.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\ucIfcProject.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -113,9 +112,6 @@
     </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcGeoRef.xaml.cs">
       <DependentUpon>ucIfcGeoRef.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\ucIfcProject.xaml.cs">
-      <DependentUpon>ucIfcProject.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcVersionShape.xaml.cs">
       <DependentUpon>ucIfcVersionShape.xaml</DependentUpon>
