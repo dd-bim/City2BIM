@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:City2RVT.GUI"
+        xmlns:lang="clr-namespace:City2RVT"
         mc:Ignorable="d"
-        Title="Georeferencing" Height="670" Width="1000">
+        Title="{x:Static lang:Localization.Wpf_GeoRef_Form}" Height="670" Width="1000">
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="230" />
@@ -17,9 +18,9 @@
             <ColumnDefinition Width="720.5" />
             <ColumnDefinition Width="270" />
         </Grid.ColumnDefinitions>
-        <Button Content="Apply" Name="bt_applyGeoref" Margin="74,0,76,70" Height="30" Width="120" Click="Bt_applyGeoref_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="1" />
-        <Button Content="Close" Name="bt_quit" HorizontalAlignment="Center" Margin="74,0,76,20" VerticalAlignment="Bottom" Height="30" Width="120" Click="Bt_quit_Click" Grid.Column="1" Grid.Row="3" />
-        <GroupBox Name="group10" Header="Postal Address" HorizontalAlignment="Left" Height="220" Margin="10,0,0,0" VerticalAlignment="Top" Width="700" Grid.Row="0">
+        <Button Content="{x:Static lang:Localization.Wpf_GeoRef_Form_bt_applyGeoref}" Name="bt_applyGeoref" Margin="74,0,76,70" Height="30" Width="120" Click="Bt_applyGeoref_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="1" />
+        <Button Content="{x:Static lang:Localization.Wpf_GeoRef_Form_bt_quit}" Name="bt_quit" HorizontalAlignment="Center" Margin="74,0,76,20" VerticalAlignment="Bottom" Height="30" Width="120" Click="Bt_quit_Click" Grid.Column="1" Grid.Row="3" />
+        <GroupBox Name="group10" Header="{x:Static lang:Localization.Wpf_GeoRef_Form_group10}" HorizontalAlignment="Left" Height="220" Margin="10,0,0,0" VerticalAlignment="Top" Width="700" Grid.Row="0">
             <Grid Name="grid_ct10" HorizontalAlignment="Left" Height="200" Margin="90,0,0,0" VerticalAlignment="Top" Width="600">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="125" />
@@ -33,11 +34,11 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
-                <Label Content="Address lines:" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
-                <Label Content="Postal Code:" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
-                <Label Content="Town:" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
-                <Label Content="Region:" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
-                <Label Content="Country:" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id1" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id1}" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id2" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id2}" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id3" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id3}" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id4" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id4}" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id5" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id5}" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
                 <TextBox Name="tb_adr0" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Margin="13,0,37,0" />
                 <TextBox Name="tb_adr1" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Margin="13,0,37,0" />
                 <TextBox Name="tb_plz" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
@@ -46,7 +47,7 @@
                 <TextBox Name="tb_country" Grid.Column="3" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Geographic site coordinates" HorizontalAlignment="Left" Height="120" Margin="10,0,0,0" VerticalAlignment="Top" Width="700" Grid.Row="1">
+        <GroupBox x:Name="id6" Header="{x:Static lang:Localization.Wpf_GeoRef_Form_id6}" HorizontalAlignment="Left" Height="120" Margin="10,0,0,0" VerticalAlignment="Top" Width="700" Grid.Row="1">
             <Grid Name="grid_ct20" HorizontalAlignment="Left" Height="100" Margin="90,0,0,0" VerticalAlignment="Top" Width="600">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="125" />
@@ -58,17 +59,17 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
-                <Label Content="Latitude [°]:" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" />
-                <Label Content="Longitude [°]:" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" />
-                <Label Content="True North [°]:" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" />
+                <Label x:Name="id7" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id7}" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" />
+                <Label x:Name="id8" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id8}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" />
+                <Label x:Name="id9" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id9}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" />
                 <TextBox Name="tb_lat" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
                 <TextBox Name="tb_lon" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
                 <TextBox Name="tb_trueNorth" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
-                <RadioButton Name="rb_deg" IsChecked="True" Content="Deg" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Checked="Rb_deg_Checked" Unchecked="Rb_deg_Checked" />
-                <RadioButton Name="rb_dms" Content="DMS" Grid.Column="2" HorizontalAlignment="Left" Margin="65,0,0,0" VerticalAlignment="Center"/>
+                <RadioButton Name="rb_deg" IsChecked="True" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_rb_deg}" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Checked="Rb_deg_Checked" Unchecked="Rb_deg_Checked" />
+                <RadioButton Name="rb_dms" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_rb_dms}" Grid.Column="2" HorizontalAlignment="Left" Margin="65,0,0,0" VerticalAlignment="Center"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Projected coordinates" HorizontalAlignment="Left" Margin="10,6,0,5" Width="700" Grid.Row="2">
+        <GroupBox x:Name="id10" Header="{x:Static lang:Localization.Wpf_GeoRef_Form_id10}" HorizontalAlignment="Left" Margin="10,6,0,5" Width="700" Grid.Row="2">
             <Grid HorizontalAlignment="Left" Height="150" Margin="90,0,0,0" VerticalAlignment="Top" Width="600">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="125" />
@@ -81,11 +82,11 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
-                <Label Content="Eastings [m]:" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
-                <Label Content="Northings [m]:" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
-                <Label Content="Grid North [°]:" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
-                <Label Content="Scale:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110"/>
-                <Label Content="EPSG-Code (CRS):" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Margin="8,14,7,10" />
+                <Label x:Name="id11" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id11}" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id12" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id12}" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id13" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id13}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" />
+                <Label x:Name="id14" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id14}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110"/>
+                <Label x:Name="id15" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id15}" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Margin="8,14,7,10" />
                 <TextBox Name="tb_eastings50" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
                 <TextBox Name="tb_northings50" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
                 <TextBox Name="tb_rotation50" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150"/>
@@ -93,7 +94,7 @@
                 <ComboBox Grid.Column="3" Name="cb_epsg" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Width="150" IsEditable="True" SelectionChanged="Cb_epsg_SelectionChanged"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Elevation" HorizontalAlignment="Left" Height="80" Margin="10,0,0,0" VerticalAlignment="Top" Width="700" Grid.Row="3">
+        <GroupBox x:Name="id16" Header="{x:Static lang:Localization.Wpf_GeoRef_Form_id16}" HorizontalAlignment="Left" Height="80" Margin="10,0,0,0" VerticalAlignment="Top" Width="700" Grid.Row="3">
             <Grid Name="grid_elevation" HorizontalAlignment="Left" Height="50" Margin="90,5,0,0" VerticalAlignment="Top" Width="600">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="125" />
@@ -104,17 +105,17 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
-                <Label Content="Vertical Datum:" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" Margin="0,13" RenderTransformOrigin="0.564,0.385" />
+                <Label x:Name="id18" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id18}" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110" Height="26" Margin="0,13" RenderTransformOrigin="0.564,0.385" />
                 <ComboBox Grid.Column="3" x:Name="cb_vertDatum" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" IsEditable="True"/>
                 <TextBox x:Name="tb_elev" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="130" Margin="33,16,12,16" />
-                <Label Content="Orthometric Height [m]:" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="140" Height="26" Grid.ColumnSpan="2" />
+                <Label x:Name="id17" Content="{x:Static lang:Localization.Wpf_GeoRef_Form_id17}" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="140" Height="26" Grid.ColumnSpan="2" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="UTM transformation" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,55,0,0" Width="250" Height="160" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
+        <GroupBox x:Name="id19" Header="UTM transformation" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,55,0,0" Width="250" Height="160" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
             <StackPanel Height="128" VerticalAlignment="Bottom">
                 <RadioButton Name="rb_siteToProj" IsChecked="True" Content="Site (LatLon) to Projection (UTM)" Margin="10,20,10,10"/>
                 <RadioButton Name="rb_projToSite" Content="Projection (UTM) to Site (LatLon)" Margin="10,10,10,10"/>
-                <Button Content="Calculate" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,15,0,0" Height="30" Width="100" Click="Bt_calculate_Click" />
+                <Button x:Name="id20" Content="Calculate" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,15,0,0" Height="30" Width="100" Click="Bt_calculate_Click" />
             </StackPanel>
         </GroupBox>
         <Image x:Name="georef10_pic" HorizontalAlignment="Left" VerticalAlignment="Center" Height="80" Margin="22,76,0,75" Width="75" Stretch="UniformToFill" Grid.Row="0" />

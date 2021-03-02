@@ -1,0 +1,477 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataCatalogEditorWindow_id1" xml:space="preserve">
+    <value>save</value>
+  </data>
+  <data name="DataCatalogEditorWindow_id2" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="findSubjectResultForm" xml:space="preserve">
+    <value>Query External Data Catalog</value>
+  </data>
+  <data name="findSubjectResultForm_closeBtn" xml:space="preserve">
+    <value>close</value>
+  </data>
+  <data name="findSubjectResultForm_id1" xml:space="preserve">
+    <value>Search text for subjects</value>
+  </data>
+  <data name="findSubjectResultForm_queryBtn" xml:space="preserve">
+    <value>query</value>
+  </data>
+  <data name="findSubjectResultForm_setObjectBtn" xml:space="preserve">
+    <value>set selected object</value>
+  </data>
+  <data name="IfcExportDialog" xml:space="preserve">
+    <value>City2RVT IfcExport</value>
+  </data>
+  <data name="IfcExportDialog_cancelBtn" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="IfcExportDialog_exportBtn" xml:space="preserve">
+    <value>export</value>
+  </data>
+  <data name="IfcExportDialog_FileLabel" xml:space="preserve">
+    <value>Export File</value>
+  </data>
+  <data name="IfcExportDialog_geogElemRadioBtn" xml:space="preserve">
+    <value>IfcGeographicElement</value>
+  </data>
+  <data name="IfcExportDialog_id1" xml:space="preserve">
+    <value>Select Alkis / XPlanung Export Type</value>
+  </data>
+  <data name="IfcExportDialog_saveAsButton" xml:space="preserve">
+    <value>Save As</value>
+  </data>
+  <data name="IfcExportDialog_siteRadioBtn" xml:space="preserve">
+    <value>IfcSite</value>
+  </data>
+  <data name="ImportDialogAlkis_browseButton" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ImportDialogAlkis_cancelButton" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="ImportDialogAlkis_clearSelectionBtn" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="ImportDialogAlkis_FileLabel" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ImportDialogAlkis_id1" xml:space="preserve">
+    <value>Layers to Import</value>
+  </data>
+  <data name="ImportDialogAlkis_id2" xml:space="preserve">
+    <value>Drape on Terrain</value>
+  </data>
+  <data name="ImportDialogAlkis_id3" xml:space="preserve">
+    <value>drape objects on imported terrain</value>
+  </data>
+  <data name="ImportDialogAlkis_importButton" xml:space="preserve">
+    <value>import</value>
+  </data>
+  <data name="ImportDialogAlkis_selectAllBtn" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="ImportXPlanDialog_browseButton" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ImportXPlanDialog_cancelButton" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="ImportXPlanDialog_clearSelectionBtn" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="ImportXPlanDialog_FileLabel" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ImportXPlanDialog_id1" xml:space="preserve">
+    <value>Layers to Import</value>
+  </data>
+  <data name="ImportXPlanDialog_id2" xml:space="preserve">
+    <value>Drape on Terrain</value>
+  </data>
+  <data name="ImportXPlanDialog_id3" xml:space="preserve">
+    <value>drape objects on imported terrain</value>
+  </data>
+  <data name="ImportXPlanDialog_importButton" xml:space="preserve">
+    <value>import</value>
+  </data>
+  <data name="ImportXPlanDialog_selectAllBtn" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="LayerSelector" xml:space="preserve">
+    <value>LayerSelector</value>
+  </data>
+  <data name="LayerSelector_apply" xml:space="preserve">
+    <value>apply</value>
+  </data>
+  <data name="LayerSelector_cancel" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="LayerSelector_selectAll" xml:space="preserve">
+    <value>select all</value>
+  </data>
+  <data name="LayerSelector_unSelectAll" xml:space="preserve">
+    <value>unselect all</value>
+  </data>
+  <data name="LoginScreen_id1" xml:space="preserve">
+    <value>Login to External Data Catalog</value>
+  </data>
+  <data name="LoginScreen_id2" xml:space="preserve">
+    <value>Server-Url</value>
+  </data>
+  <data name="LoginScreen_id3" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="LoginScreen_id4" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LoginScreen_id5" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="PropertyWindow" xml:space="preserve">
+    <value>Attributes for Object</value>
+  </data>
+  <data name="PropertyWindow_id1" xml:space="preserve">
+    <value>save and close</value>
+  </data>
+  <data name="PropertyWindow_id2" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="Wpf_CityGML_settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Wpf_CityGML_settingsButton_bt_applyGeoref" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_code_header" xml:space="preserve">
+    <value>Codelist translation</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_code_lbl8" xml:space="preserve">
+    <value> of codes into its meaning</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_code_lbl9" xml:space="preserve">
+    <value>use Codelist for translation</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_prop_Bt_browse" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_prop_header" xml:space="preserve">
+    <value>File settings</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_prop_lbl6" xml:space="preserve">
+    <value>File:</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_prop_lbl7" xml:space="preserve">
+    <value>Order of coordinates:</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_prop_rb_XYZ" xml:space="preserve">
+    <value>XYZ / NEH (Northings, Eastings, Height)</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_prop_rb_YXZ" xml:space="preserve">
+    <value>YXZ / ENH (Eastings, Northings, Height</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_bt_editUrl" xml:space="preserve">
+    <value>Edit URL</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_check_saveResponse" xml:space="preserve">
+    <value>save response to</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_header" xml:space="preserve">
+    <value>Server Settings</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl1" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl2" xml:space="preserve">
+    <value>Center:</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl3" xml:space="preserve">
+    <value>Lat</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl4" xml:space="preserve">
+    <value>Lon</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_lbl5" xml:space="preserve">
+    <value>Extent:</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_Rb_custom" xml:space="preserve">
+    <value>custom</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_server_rb_site" xml:space="preserve">
+    <value>from Site location</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_source_header" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_source_rb_file" xml:space="preserve">
+    <value>CityGML file</value>
+  </data>
+  <data name="Wpf_CityGML_settingsGroupBox_gr_source_rb_server" xml:space="preserve">
+    <value>VCS server</value>
+  </data>
+  <data name="Wpf_CreateMetaJSON" xml:space="preserve">
+    <value>Select theme</value>
+  </data>
+  <data name="Wpf_CreateMetaJSON_Btn_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Wpf_CreateMetaJSON_Cb_Theme" xml:space="preserve">
+    <value>Select a theme</value>
+  </data>
+  <data name="Wpf_GeoRef_Form" xml:space="preserve">
+    <value>Georeferencing</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_bt_applyGeoref" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_bt_quit" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_group10" xml:space="preserve">
+    <value>Postal Address</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id1" xml:space="preserve">
+    <value>Address lines:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id10" xml:space="preserve">
+    <value>Projected coordinates</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id11" xml:space="preserve">
+    <value>Eastings [m]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id12" xml:space="preserve">
+    <value>Northings [m]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id13" xml:space="preserve">
+    <value>Grid North [°]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id14" xml:space="preserve">
+    <value>Scale:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id15" xml:space="preserve">
+    <value>EPSG-Code (CRS):</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id16" xml:space="preserve">
+    <value>Elevation</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id17" xml:space="preserve">
+    <value>Orthometric Height [m]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id18" xml:space="preserve">
+    <value>Vertical Datum:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id19" xml:space="preserve">
+    <value>UTM transformation</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id2" xml:space="preserve">
+    <value>Postal Code:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id20" xml:space="preserve">
+    <value>Calculate</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id3" xml:space="preserve">
+    <value>Town:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id4" xml:space="preserve">
+    <value>Region:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id5" xml:space="preserve">
+    <value>Country:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id6" xml:space="preserve">
+    <value>Geographic site coordinates</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id7" xml:space="preserve">
+    <value>Latitude [°]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id8" xml:space="preserve">
+    <value>Longitude [°]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_id9" xml:space="preserve">
+    <value>True North [°]:</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_deg" xml:space="preserve">
+    <value>Deg</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_dms" xml:space="preserve">
+    <value>DMS</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_projToSite" xml:space="preserve">
+    <value>Projection (UTM) to Site (LatLon)</value>
+  </data>
+  <data name="Wpf_GeoRef_Form_rb_siteToProj" xml:space="preserve">
+    <value>Site (LatLon) to Projection (UTM)</value>
+  </data>
+  <data name="Wpf_showLayer" xml:space="preserve">
+    <value>Select layer</value>
+  </data>
+  <data name="Wpf_showLayer_btn_choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="Wpf_showLayer_btn_exportjson" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Wpf_showLayer_btn_gml" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Wpf_showLayer_btn_metajson" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Wpf_showLayer_id1" xml:space="preserve">
+    <value>GML</value>
+  </data>
+  <data name="Wpf_showLayer_id2" xml:space="preserve">
+    <value>Meta JSON</value>
+  </data>
+  <data name="Wpf_showLayer_id3" xml:space="preserve">
+    <value>Export JSON</value>
+  </data>
+  <data name="Wpf_XPlan2IFC" xml:space="preserve">
+    <value>Export to IFC</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_checkboxAsSite" xml:space="preserve">
+    <value>Export surfaces as IfcSite</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_checkboxAsSpace" xml:space="preserve">
+    <value>Export surfaces as IfcSpace</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id1" xml:space="preserve">
+    <value>File Location</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id2" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id3" xml:space="preserve">
+    <value>Layer to be exported</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id4" xml:space="preserve">
+    <value>Clear Selection</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id5" xml:space="preserve">
+    <value>Export to IFC</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_id6" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Wpf_XPlan2IFC_rb_selectAll" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+</root>
