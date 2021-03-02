@@ -116,8 +116,6 @@ namespace IFCTerrainGUI.GUI.DXF
         /// <summary>
         /// reading dxf file
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void BackgroundWorkerDxf_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task: file reading
@@ -127,8 +125,6 @@ namespace IFCTerrainGUI.GUI.DXF
         /// <summary>
         /// will be executed as soon as the (DoWorker) has read the dxf file
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void BackgroundWorkerDxf_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //file name
@@ -216,7 +212,9 @@ namespace IFCTerrainGUI.GUI.DXF
                 foreach (string item in lbDxfDtmLayer.SelectedItems)
                 {
                     //passed to json settings
-                    MainWindow.jSettings.layer += item + ";";
+                    //MainWindow.jSettings.layer += item + ";";
+
+                    MainWindow.jSettings.layer = item;
 
                     //visual output on the GUI (layer selection)
                     ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
@@ -252,6 +250,16 @@ namespace IFCTerrainGUI.GUI.DXF
                 {
                     //passed to json settings - breakline (bool = false); reason: user hasn't selected breakline processing
                     MainWindow.jSettings.breakline = false;
+                }
+
+                //
+                if (rbDxfFaces.IsChecked == true)
+                {
+                    MainWindow.jSettings.isTin = true;
+                }
+                else
+                {
+                    MainWindow.jSettings.isTin = false;
                 }
             }
             return;

@@ -76,7 +76,7 @@
                         Grid.Row="1"
                         Grid.Column="1" 
                         ItemsSource="{Binding DxfLayerSource}"
-                        SelectionMode="Extended" 
+                        SelectionMode="Single" 
                         
                         SelectionChanged="lbDxfDtmLayer_SelectionChanged"
                         />
@@ -92,12 +92,14 @@
                         
                         
                         <RadioButton
+                            x:Name="rbDxfFaces"
                             Content="Faces"
                             IsChecked="True"
                             VerticalAlignment="Center"
                             Margin="20,0,0,0"
                             ToolTip="Processing will be done via MESH (DXF layer)"/>
                         <RadioButton
+                            x:Name="rbDxfPointsLines"
                             Content="Points / Lines"
                             VerticalAlignment="Center"
                             ToolTip="Processing will be done via Points and Lines (DXF layer)"
