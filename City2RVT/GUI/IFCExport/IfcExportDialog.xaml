@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI.IFCExport"
+             xmlns:lang="clr-namespace:City2RVT"
              mc:Ignorable="d" 
              d:DesignHeight="230" d:DesignWidth="800" Width="550" MinHeight="240" Height="240"
-             Title="City2RVT IfcExport">
+             Title="{x:Static lang:Localization.IfcExportDialog}">
     <Border Padding="10">
         <StackPanel>
             <Grid Margin="0,5,0,15">
@@ -16,9 +17,9 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Label x:Name="FileLabel" Content="Export File" Grid.Column="0"/>
+                <Label x:Name="FileLabel" Content="{x:Static lang:Localization.IfcExportDialog_FileLabel}" Grid.Column="0"/>
                 <TextBox x:Name="filePathBox" Grid.Column="1"/>
-                <Button x:Name="saveAsButton" Content="Save As" Grid.Column="2" Margin="10,0,0,0" Click="saveAsButton_Click"/>
+                <Button x:Name="saveAsButton" Content="{x:Static lang:Localization.IfcExportDialog_saveAsButton}" Grid.Column="2" Margin="10,0,0,0" Click="saveAsButton_Click"/>
             </Grid>
             <!--
             <GroupBox Header="Layers to Export" Margin="0,15,0,0">
@@ -52,10 +53,10 @@
                     </Grid>
                 </Grid>
             </GroupBox> -->
-            <GroupBox Header="Select Alkis / XPlanung Export Type" Margin="0, 15, 0, 0">
+            <GroupBox x:Name="id1" Header="{x:Static lang:Localization.IfcExportDialog_id1}" Margin="0, 15, 0, 0">
                 <StackPanel x:Name="ExportTypePanel">
-                    <RadioButton x:Name="geogElemRadioBtn" IsChecked="True" GroupName="exportTypeRadio" Margin="5,5,0,0" Content="IfcGeographicElement"></RadioButton>
-                    <RadioButton x:Name="siteRadioBtn" GroupName="exportTypeRadio" Margin="5,5,0,0" Content="IfcSite"></RadioButton>
+                    <RadioButton x:Name="geogElemRadioBtn" IsChecked="True" GroupName="exportTypeRadio" Margin="5,5,0,0" Content="{x:Static lang:Localization.IfcExportDialog_geogElemRadioBtn}"></RadioButton>
+                    <RadioButton x:Name="siteRadioBtn" GroupName="exportTypeRadio" Margin="5,5,0,0" Content="{x:Static lang:Localization.IfcExportDialog_siteRadioBtn}"></RadioButton>
                 </StackPanel>
             </GroupBox>
             <Grid Margin="0,30,0,5">
@@ -63,8 +64,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="exportBtn" Content="export" Click="exportBtn_click" Margin="0" HorizontalAlignment="Left" Width="60"/>
-                <Button x:Name="cancelBtn" Grid.Column="1" Content="cancel" Margin="0" Click="cancelBtn_click" HorizontalAlignment="Right" Width="60"/>
+                <Button x:Name="exportBtn" Content="{x:Static lang:Localization.IfcExportDialog_exportBtn}" Click="exportBtn_click" Margin="0" HorizontalAlignment="Left" Width="60"/>
+                <Button x:Name="cancelBtn" Grid.Column="1" Content="{x:Static lang:Localization.IfcExportDialog_cancelBtn}" Margin="0" Click="cancelBtn_click" HorizontalAlignment="Right" Width="60"/>
             </Grid>
         </StackPanel>
 

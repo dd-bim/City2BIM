@@ -4,27 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
+             xmlns:lang="clr-namespace:City2RVT"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="612.262"
              Height="450" Width="700"
-        Title="Export to IFC" Icon="/City2RVT;component/img/IFC_32px_96dpi.ico">
+        Title="{x:Static lang:Localization.Wpf_XPlan2IFC}" Icon="/City2RVT;component/img/IFC_32px_96dpi.ico">
     <Grid Margin="10,10,0,0">
-        <Button Content="Export to IFC" HorizontalAlignment="Left" Margin="497,319,0,0" 
+        <Button x:Name="id5" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_id5}" HorizontalAlignment="Left" Margin="497,319,0,0" 
                 VerticalAlignment="Top" Width="97" Click="Button_Click_IfcExport"/>
         <TextBox Name="ifc_Location" HorizontalAlignment="Left" Height="23" Margin="134,20,0,0" 
                  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_Location_TextChanged"/>
         <TextBox Name="ifc_name_textbox" HorizontalAlignment="Left" Height="23" 
                  Margin="134,57,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" TextChanged="ifc_name_textbox_TextChanged"/>
         <Label Content="File name" HorizontalAlignment="Left" Margin="29,13,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="File Location" HorizontalAlignment="Left" Margin="31,20,0,0" 
+        <Button x:Name="id1" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_id1}" HorizontalAlignment="Left" Margin="31,20,0,0" 
                 VerticalAlignment="Top" Width="75" Click="Button_Click_SetIfcLocation"/>
-        <Label Content="File name" HorizontalAlignment="Left" Margin="31,57,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label x:Name="id2" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_id2}" HorizontalAlignment="Left" Margin="31,57,0,0" VerticalAlignment="Top" Width="75"/>
         <ListBox Name="ifcExportListbox" HorizontalAlignment="Left" Height="259" Margin="134,121,0,0" VerticalAlignment="Top" Width="331" SelectionMode="Multiple" SelectionChanged="ifcExportListbox_SelectionChanged"/>
-        <Label Content="Layer to be exported" HorizontalAlignment="Left" Margin="134,95,0,0" VerticalAlignment="Top"/>
-        <RadioButton Name="rb_selectAll" Content="Select all" HorizontalAlignment="Left" Margin="497,121,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
-        <Button Content="Clear Selection" HorizontalAlignment="Left" Margin="497,141,0,0" VerticalAlignment="Top" Width="97" Click="Button_Click"/>
-        <Button Content="Close" HorizontalAlignment="Left" Margin="497,360,0,0" VerticalAlignment="Top" Width="97" Click="close_dialoge_button"/>
-        <CheckBox Name="checkboxAsSite" Content="Export surfaces as IfcSite" HorizontalAlignment="Left" Margin="497,265,0,0" VerticalAlignment="Top" IsChecked="True" Checked="checkboxAsSite_Checked"/>
-        <CheckBox Name="checkboxAsSpace" Content="Export surfaces as IfcSpace" HorizontalAlignment="Left" Margin="497,285,0,0" VerticalAlignment="Top" Checked="checkboxAsSpace_Checked"/>
+        <Label x:Name="id3" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_id3}" HorizontalAlignment="Left" Margin="134,95,0,0" VerticalAlignment="Top"/>
+        <RadioButton Name="rb_selectAll" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_rb_selectAll}" HorizontalAlignment="Left" Margin="497,121,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+        <Button x:Name="id4" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_id4}" HorizontalAlignment="Left" Margin="497,141,0,0" VerticalAlignment="Top" Width="97" Click="Button_Click"/>
+        <Button x:Name="id6" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_id6}" HorizontalAlignment="Left" Margin="497,360,0,0" VerticalAlignment="Top" Width="97" Click="close_dialoge_button"/>
+        <CheckBox Name="checkboxAsSite" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_checkboxAsSite}" HorizontalAlignment="Left" Margin="497,265,0,0" VerticalAlignment="Top" IsChecked="True" Checked="checkboxAsSite_Checked"/>
+        <CheckBox Name="checkboxAsSpace" Content="{x:Static lang:Localization.Wpf_XPlan2IFC_checkboxAsSpace}" HorizontalAlignment="Left" Margin="497,285,0,0" VerticalAlignment="Top" Checked="checkboxAsSpace_Checked"/>
     </Grid>
 </Window>

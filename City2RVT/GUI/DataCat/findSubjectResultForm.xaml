@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:City2RVT.GUI.DataCat"
+             xmlns:lang="clr-namespace:City2RVT"
              xmlns:DataCat="clr-namespace:City2RVT.ExternalDataCatalog"
              mc:Ignorable="d" 
              Height="500" MinHeight="500" MinWidth="500" Width="500"
-             Name="findSubjectWindow" SizeChanged="findSubjectWindow_SizeChanged" Title="Query External Data Catalog">
+             Name="findSubjectWindow" SizeChanged="findSubjectWindow_SizeChanged" Title="{x:Static lang:Localization.findSubjectResultForm}">
     <StackPanel Margin="10">
-        <Label Content="Search text for subjects"></Label>
+        <Label x:Name="id1" Content="{x:Static lang:Localization.findSubjectResultForm_id1}"></Label>
 
         <Grid Margin="0,0,0,10" >
             <Grid.ColumnDefinitions>
@@ -18,7 +19,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBox Padding="2" x:Name="SearchBox" Grid.Column="0" Margin="0 0 10 0" KeyDown="SearchBox_KeyDown"></TextBox>
-            <Button Name="queryBtn" Content="query" Grid.Column="1" Click="queryBtn_click"></Button>
+            <Button Name="queryBtn" Content="{x:Static lang:Localization.findSubjectResultForm_queryBtn}" Grid.Column="1" Click="queryBtn_click"></Button>
 
         </Grid>
 
@@ -46,8 +47,8 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Name="setObjectBtn" Content="set selected object" Click="setObjectBtn_Click"></Button>
-            <Button Name="closeBtn" Content="close" Grid.Column="2" Click="closeBtn_Click"></Button>
+            <Button Name="setObjectBtn" Content="{x:Static lang:Localization.findSubjectResultForm_setObjectBtn}" Click="setObjectBtn_Click"></Button>
+            <Button Name="closeBtn" Content="{x:Static lang:Localization.findSubjectResultForm_closeBtn}" Grid.Column="2" Click="closeBtn_Click"></Button>
 
         </Grid>
 
