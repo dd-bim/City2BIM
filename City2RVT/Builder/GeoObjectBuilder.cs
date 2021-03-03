@@ -193,14 +193,11 @@ namespace City2RVT.Builder
                     trans.Commit();
                     if (processingErrors)
                     {
-                        TaskDialog.Show("Warning", "Some Objects could not be imported into Revit. See log-file for further information");
+                        TaskDialog.Show("Warning", string.Format("Some Objects of layer {0} could not be imported into Revit. See log-file for further information", groupName));
                     }
                 }
 
             }
-
-
-
         }
 
         private static List<C2BPoint> createRefSurfacePointsForObjGroup(List<GeoObject> objList)
@@ -234,26 +231,6 @@ namespace City2RVT.Builder
             var C2BPtList = pointList.Select(p => new C2BPoint(p.x, p.y, 0));
             return C2BPtList.ToList();
 
-            /*
-            List<Calc.Point> pointList = new List<Calc.Point>();
-            
-            foreach (var geoObject in objList)
-            {
-                double[] geoPoint = { 0, 0 };
-
-                for (int i=0; i<geoObject.Geom.GetPointCount(); i++)
-                {
-                    geoObject.Geom.GetPoint_2D(i, geoPoint);
-                    pointList.Add(new Calc.Point(geoPoint[0], geoPoint[1]));
-                }
-            }
-
-            var convexHull = Calc.ConvexHull.MakeHull(pointList);
-
-            var C2BPtList = convexHull.Select(p => new C2BPoint(p.x, p.y, 0));
-
-            return C2BPtList.ToList();
-            */
         }
 
         private static List<List<C2BSegment>> getOuterRingSegmentsFromMultiPolygon(OSGeo.OGR.Geometry geom)
