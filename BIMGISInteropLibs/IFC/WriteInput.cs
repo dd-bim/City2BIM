@@ -9,10 +9,8 @@ using BimGisCad.Representation.Geometry;
 
 namespace BIMGISInteropLibs.IFC
 {
-    //TODO check if this is still necessary when using Xbim
-    
     /// <summary>
-    /// 
+    /// Enumeration for supported IfcVersions
     /// </summary>
     public enum IfcVersion{ 
         /// <summary>
@@ -68,11 +66,6 @@ namespace BIMGISInteropLibs.IFC
         /// Storage location
         /// </summary>
         public string Filename { get; set; } //TODO: rename in fileLocation
-
-        /// <summary>
-        /// getter and setter for IFCTypes
-        /// </summary>
-        public IfcVersion IFCType { get; set; }
         
         /// <summary>
         /// getter and setter for file types
