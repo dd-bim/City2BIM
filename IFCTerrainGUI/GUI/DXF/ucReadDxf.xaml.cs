@@ -77,11 +77,11 @@ namespace IFCTerrainGUI.GUI.DXF
                 backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
                 #endregion backgroundWorker
 
-                #region error handling
+                #region error handling [TODO]
                 //TODO: buttons to be released here otherwise the user can't go on
                 #endregion error handling
 
-                #region logging
+                #region logging [TODO]
                 //TODO: add logging
                 #endregion logging
 
