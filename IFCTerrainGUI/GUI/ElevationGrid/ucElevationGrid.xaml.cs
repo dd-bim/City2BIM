@@ -73,6 +73,7 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
 
                 //enable stack panel for bounding box 
                 stpGridBB.IsEnabled = true;
+                chkGridBB.IsEnabled = true;
             }
         }
 
@@ -130,16 +131,16 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
                 ((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will be used.";
 
                 //set bb north to json
-                MainWindow.jSettings.bbNorth = Convert.ToDouble(tbBBNorth);
+                MainWindow.jSettings.bbNorth = Convert.ToDouble(tbBBNorth.Text);
 
                 //set bb north to json
-                MainWindow.jSettings.bbEast = Convert.ToDouble(tbBBEast);
+                MainWindow.jSettings.bbEast = Convert.ToDouble(tbBBEast.Text);
 
                 //set bb north to json
-                MainWindow.jSettings.bbSouth = Convert.ToDouble(tbBBSouth);
+                MainWindow.jSettings.bbSouth = Convert.ToDouble(tbBBSouth.Text);
                 
                 //set bb north to json
-                MainWindow.jSettings.bbWest = Convert.ToDouble(tbBBWest);
+                MainWindow.jSettings.bbWest = Convert.ToDouble(tbBBWest.Text);
             }
             else
             {
