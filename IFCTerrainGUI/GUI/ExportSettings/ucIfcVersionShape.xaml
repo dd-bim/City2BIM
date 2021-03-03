@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="IFCTerrainGUI.GUI.ExportSettings.ucIfcVersionShape"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+             xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="95" d:DesignWidth="385">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <GroupBox
+            Header="IFC Version">
+            
+            <!-- stack panel -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <ComboBox x:Name="cbIfcVersion" Width="100" VerticalAlignment="Center" SelectionChanged="cbIfcVersion_SelectionChanged">
+                    <!--default seeting GCS-->
+                    <ComboBoxItem x:Name="ifc2x3" Content="IFC 2x3 (MESH)"/>
+                    <ComboBoxItem x:Name="ifc4" Content="IFC 4 (MESH)"/>
+                    <ComboBoxItem x:Name="ifc2x3Tin" Content="IFC 2x3 (TIN)"/>
+                    <ComboBoxItem x:Name="ifc4Tin" Content="IFC 4 (TIN)"/>
+                    <ComboBoxItem x:Name="ifc4dot3" Content="IFC 4.3" IsEnabled="False"/>
+                </ComboBox>
+                <CheckBox x:Name="chkIfcXml" VerticalAlignment="Center" Content="IfcXML" Margin="7,0,0,0" ToolTip="Check if you want to export Ifc-XML files." IsChecked="False" Checked="chkIfcXml_Checked" Unchecked="chkIfcXml_Unchecked"/>
+                <CheckBox x:Name="chkIfcGeoEl" VerticalAlignment="Center" Content="IfcGeographicalElement" Margin="7,0,0,0" IsEnabled="False" ToolTip="Only available under version Ifc 4!" ToolTipService.ShowOnDisabled="True" Checked="chkIfcGeoEl_Checked" Unchecked="chkIfcGeoEl_Unchecked"/>
+            </StackPanel>
+
+        </GroupBox>
+
+        <GroupBox 
+            Grid.Row="1"
+            Header="IFC Shape Representation"
+            >
+
+            <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Horizontal">
+                <ComboBox x:Name="cbShapeRepres" Width="200" SelectionChanged="cbShapeRepres_SelectionChanged">
+                    <!--default seeting GCS-->
+                    <ComboBoxItem x:Name="ifcGCS" Content="IfcGeometricCurveSet"/>
+                    <ComboBoxItem x:Name="ifcSBSM" Content="IfcShellBasedSurfaceModell"/>
+                    <ComboBoxItem x:Name="ifcTFS" Content="IfcTriangulatedFaceSet" IsEnabled="False"/>
+                    <ComboBoxItem x:Name="ifcTIN" Content="IfcTriangulatedIrregularNetwork" IsEnabled="False"/>
+                </ComboBox>
+
+                <TextBlock Text="Min. distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                <TextBox x:Name="tbMinDist" x:FieldModifier="public" Width="30" Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding Path=MinDistInput}" PreviewTextInput="NumberValidationTextBox" IsEnabled="False"/>
+
+                <TextBlock Text="[m]" Margin="5,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+        </GroupBox>
+            
+    </Grid>
+</UserControl>

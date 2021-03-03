@@ -1,0 +1,180 @@
+﻿<UserControl x:Class="IFCTerrainGUI.GUI.Grafbat.ucReadGraftbat"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Button
+            x:Name="btnReadGrafbat"
+            Grid.Row="0"
+            Content="Read 'GEOgraf OUT'">
+        </Button>
+        <GroupBox
+            x:Name="gbGrafbatDtm"
+            Grid.Row="1"
+            Header="Read DTM via ... (select please)">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <RadioButton
+                    x:Name="rbGraftbatReadFaces"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsChecked="True"
+                    ToolTip="Processing takes place via triangles (must be included in the OUT file)">
+                    <RadioButton.Content>
+                        <TextBlock Text="... Triangles" TextWrapping="Wrap" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton
+                    x:Name="rbGraftbatReadPointsLines"
+                    HorizontalAlignment="Center"
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
+                    <RadioButton.Content>
+                        <TextBlock Text="... Points/ Lines" TextWrapping="Wrap"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton
+                    x:Name="rbGraftbatReadPoints"
+                    HorizontalAlignment="Center"
+                    Grid.Column="2"
+                    VerticalAlignment="Center">
+                    <RadioButton.Content>
+                        <TextBlock Text="... Points" TextWrapping="Wrap"/>
+                    </RadioButton.Content>
+                </RadioButton>
+            </Grid>
+        </GroupBox>
+        
+        <!-- point type filter -->
+        <GroupBox
+            x:Name="gbPointtypes"
+            Grid.Row="2"
+            Header="Pointtypes">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <CheckBox
+                    x:Name="chkGrafbatFilteringPointtypes"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="Process only following point types (e.g.: 20,30)"
+                        TextWrapping="Wrap">
+                    </TextBlock>
+                </CheckBox>
+                <TextBox
+                    x:Name="tbPointTypes"
+                    Grid.Column="1"
+                    IsEnabled="False">
+                </TextBox>
+            </Grid>
+        </GroupBox>
+        
+        <!-- horizon filter -->
+        <GroupBox
+            Grid.Row="3"
+            Header="Horizon">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <RadioButton x:Name="rbGrafbatAllHorizons">
+                    <TextBlock Text="Process all horizons" TextWrapping="Wrap"/>
+                </RadioButton>
+
+                <RadioButton x:Name="rbGrafbatHorizonSelect" Grid.Column="1" ToolTip="Please insert the number of the horizon into the textfield!">
+                    <TextBlock Text="Process only horizon" TextWrapping="Wrap"/>
+                </RadioButton>
+
+                <TextBox
+                    x:Name="tbGraftbatFilteringHorizon"
+                    Grid.Column="2"
+                    IsEnabled="False"
+                    ToolTip="The following characters are suitable for separating the horizons: ',' ';' '/' "/>
+            </Grid>
+        </GroupBox>
+
+        <!-- point status -->
+        <GroupBox
+            Grid.Row="4"
+            Header="Point status">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    x:Name="tbGraftbatPointStatusHint"
+                    Grid.Column="0"
+                    Text="Ignore status 'invalid':">
+                </TextBlock>
+                <CheckBox 
+                    Grid.Column="1"
+                    Content="position"
+                    HorizontalAlignment="Center"/>
+                <CheckBox 
+                    Grid.Column="2"
+                    Content="height"
+                    HorizontalAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- break edge processing -->
+        <GroupBox
+            Grid.Column="1"
+            Grid.Row="5"
+            Header="Breaklines">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="tbGraftbatBreaklineQuestion" Text="Process Breaklines?" VerticalAlignment="Center" Grid.Row="1"/>
+                <RadioButton x:Name="rbGraftbatBreaklinesYes" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Content="Yes"/>
+                <RadioButton x:Name="rbGraftbatBreaklinesNo" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Content="No" IsChecked="True"/>
+                <TextBlock x:Name="tbGraftbatBreaklinesHint" Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Center" Text="Insert GEOgraf types of breaklines (e.g.: 100,200,...)"/>
+                <TextBox x:Name="tbGraftbatBreaklinesInput" Grid.Row="3" Grid.ColumnSpan="3" IsEnabled="False"/>
+            </Grid>
+        </GroupBox>
+
+        <!--button to apply the settings-->
+        <Button
+            Grid.Row="6"
+            Content="Process 'GEOgraf OUT'"
+            ToolTip="Applying the settings (from this tab)">
+        </Button>
+    </Grid>
+</UserControl>

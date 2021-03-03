@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="IFCTerrainGUI.GUI.ExportSettings.ucIfcGeoRef"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+             
+             mc:Ignorable="d" 
+             d:DesignHeight="140" d:DesignWidth="385">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Please select the desired level of georeferencing:" HorizontalAlignment="Center"/>
+
+        <TabControl
+            Grid.Row="1"
+            Grid.ColumnSpan="2">
+            <TabItem Header="Level 30">
+                <!-- add controler for LoGeoRef 30-->
+                <local:ucLoGeoRef30/>
+
+            </TabItem>
+            <!-- placeholder need to be filled-->
+            <TabItem Header="Level 40" IsEnabled="False"/>
+            <TabItem Header="Level 50" IsEnabled="False"/>
+
+        </TabControl>
+        
+        
+    </Grid>
+</UserControl>
