@@ -26,6 +26,33 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
             var rect = tbName.GetRectFromCharacterIndex(tbName.CaretIndex);
             tbName.ScrollToHorizontalOffset(rect.Right);
         }
+        
+        public enum indispensableTasks
+        {
+            fileOpening,
+            selectIfcVersion,
+            selectIfcShhape,
 
+        }
+
+        /// <summary>
+        /// Used to enable or disable conversion process! (especially start button)
+        /// </summary>
+        public static bool readyState(bool taskInput)
+        {
+            task = taskInput;
+
+
+            if(task)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool task { get; set; }
     }
 }

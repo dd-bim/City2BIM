@@ -15,13 +15,9 @@ using System.Windows.Shapes;
 
 //Include user-specific libraries from here onwards
 using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide filepath insert into tb
-
 using Microsoft.Win32; //used for file handling
-
 using System.ComponentModel; //used for background worker
-
 using BIMGISInteropLibs.DXF; //include to read dxf file
-
 using IxMilia.Dxf; //need to handle dxf files
 
 namespace IFCTerrainGUI.GUI.DXF
@@ -190,87 +186,7 @@ namespace IFCTerrainGUI.GUI.DXF
             this.btnProcessDxf.IsEnabled = true;
         }
 
-        /// <summary>
-        /// Logic that is executed as soon as the "process key" is pressed
-        /// </summary>
-        private void btnProcessDxf_Click(object sender, RoutedEventArgs e)
-        {
-            //blank text boxes otherwise (all layers are added if the process button was clicked multiple times in one session)
-            ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = null;
-            ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = null;
-
-            //blank json settings 
-            MainWindow.jSettings.layer = null;
-
-            //is executed as soon as a DXF layer is selected
-            if (this.lbDxfDtmLayer.SelectedIndex >= 0)
-            {
-                //array of selected layers                
-                string[] dxfSelectedItems = lbDxfDtmLayer.SelectedItems.OfType<string>().ToArray();
-
-                //text box output dtm layer (only for user information) (loop through each selected item in the list)
-                foreach (string item in lbDxfDtmLayer.SelectedItems)
-                {
-                    //passed to json settings
-                    //MainWindow.jSettings.layer += item + ";";
-
-                    MainWindow.jSettings.layer = item;
-
-                    //visual output on the GUI (layer selection)
-                    ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
-                    
-                    //TODO (gui logging / file logging)
-                }
-
-                //will be executed if "yes" was selected for break edge processing d
-                if (rbDxfBreaklinesTrue.IsChecked == true)
-                {
-                    //(even if only one layer was selected), otherwise system variables are output
-                    foreach (string item in lbDxfBreaklineLayer.SelectedItems)
-                    {
-                        #region json settings
-                        //passed to json settings - breakline (bool)
-                        MainWindow.jSettings.breakline = true;
-
-                        //passed to json settings - breakline (layer)
-                        MainWindow.jSettings.breakline_layer = item.ToString();
-                        #endregion json settings
-
-                        #region gui (user information)
-                        //information panel 
-                        ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breakline - Layer";
-                        //information panel output break line layer
-                        ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
-                        #endregion gui (user information)
-                    }
-                    return;
-                }
-                //execute, because in a session the break edge processing can also be deactivated again
-                else
-                {
-                    //passed to json settings - breakline (bool = false); reason: user hasn't selected breakline processing
-                    MainWindow.jSettings.breakline = false;
-                }
-
-                //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
-                if (rbDxfFaces.IsChecked == true)
-                {
-                    //processing faces (true)
-                    MainWindow.jSettings.isTin = true;
-                }
-                else
-                {
-                    //processing points / lines (false)
-                    MainWindow.jSettings.isTin = false;
-                }
-                /*
-                 * Sollte es erforderlich sein mehr Unterscheidungen zu implementieren, so sollten die Fallunterschheidungen über Cases laufen
-                 * und in der JSON settings über eine Enumeration umgestzt werden
-                 */ 
-            }
-            return;
-        }
-
+        
         /// <summary>
         /// is executed as soon as the selection has been changed in the ListBox lbDxfDtmLayer
         /// </summary>
@@ -317,5 +233,87 @@ namespace IFCTerrainGUI.GUI.DXF
                 btnProcessDxf.IsEnabled = true;
             }
         }
+
+        /// <summary>
+        /// Logic that is executed as soon as the "process key" is pressed
+        /// </summary>
+        private void btnProcessDxf_Click(object sender, RoutedEventArgs e)
+        {
+            //blank text boxes otherwise (all layers are added if the process button was clicked multiple times in one session)
+            ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = null;
+            ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = null;
+
+            //blank json settings 
+            MainWindow.jSettings.layer = null;
+
+            //is executed as soon as a DXF layer is selected
+            if (this.lbDxfDtmLayer.SelectedIndex >= 0)
+            {
+                //array of selected layers                
+                string[] dxfSelectedItems = lbDxfDtmLayer.SelectedItems.OfType<string>().ToArray();
+
+                //text box output dtm layer (only for user information) (loop through each selected item in the list)
+                foreach (string item in lbDxfDtmLayer.SelectedItems)
+                {
+                    //passed to json settings
+                    //MainWindow.jSettings.layer += item + ";";
+
+                    MainWindow.jSettings.layer = item;
+
+                    //visual output on the GUI (layer selection)
+                    ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
+
+                    //TODO (gui logging / file logging)
+                }
+
+                //will be executed if "yes" was selected for break edge processing d
+                if (rbDxfBreaklinesTrue.IsChecked == true)
+                {
+                    //(even if only one layer was selected), otherwise system variables are output
+                    foreach (string item in lbDxfBreaklineLayer.SelectedItems)
+                    {
+                        #region json settings
+                        //passed to json settings - breakline (bool)
+                        MainWindow.jSettings.breakline = true;
+
+                        //passed to json settings - breakline (layer)
+                        MainWindow.jSettings.breakline_layer = item.ToString();
+                        #endregion json settings
+
+                        #region gui (user information)
+                        //information panel 
+                        ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breakline - Layer";
+                        //information panel output break line layer
+                        ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
+                        #endregion gui (user information)
+                    }
+                    return;
+                }
+                //execute, because in a session the break edge processing can also be deactivated again
+                else
+                {
+                    //passed to json settings - breakline (bool = false); reason: user hasn't selected breakline processing
+                    MainWindow.jSettings.breakline = false;
+                }
+
+                //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
+                if (rbDxfFaces.IsChecked == true)
+                {
+                    //processing faces (true)
+                    MainWindow.jSettings.isTin = true;
+                }
+                else
+                {
+                    //processing points / lines (false)
+                    MainWindow.jSettings.isTin = false;
+                }
+                /*
+                 * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
+                 * and be converted in the JSON settings via an enumeration.
+                 */
+            }
+            return;
+        }
+
     }
 }

@@ -50,6 +50,13 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 this.chkIfcGeoEl.IsEnabled = true;
                 this.ifcTFS.IsEnabled = true;
             }
+
+            //check if an item was selected
+            if (cbIfcVersion.SelectedIndex != -1)
+            {
+                //MainWindowLogic.MainWindowBib.task(true);
+            }
+
             #endregion error handling
 
             #region json settings
