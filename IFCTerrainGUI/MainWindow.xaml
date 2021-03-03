@@ -7,6 +7,7 @@
         xmlns:ucDxf ="clr-namespace:IFCTerrainGUI.GUI.DXF"
         xmlns:ucGraftbat ="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+        xmlns:ucGrid ="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" Height="840" Width="800" FontFamily="Bahnschrift" FontSize="14" ResizeMode="CanMinimize">
@@ -111,8 +112,9 @@
             <!--ElevationGrid-->
             <TabItem 
                 x:Name ="tabPageGrid"      
-                Header="Grid (XYZ)"
-                IsEnabled="False"/>
+                Header="Grid (XYZ)">
+                <ucGrid:ucElevationGrid/>
+            </TabItem>
 
             <!--REB-->
             <TabItem 
