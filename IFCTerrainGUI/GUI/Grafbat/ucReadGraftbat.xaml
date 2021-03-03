@@ -22,7 +22,7 @@
         <Button
             x:Name="btnReadGrafbat"
             Grid.Row="0"
-            Content="Read 'GEOgraf OUT'">
+            Content="Read 'GEOgraf OUT'" Click="btnReadGrafbat_Click">
         </Button>
         <GroupBox
             x:Name="gbGrafbatDtm"
@@ -58,7 +58,9 @@
                     x:Name="rbGraftbatReadPoints"
                     HorizontalAlignment="Center"
                     Grid.Column="2"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    IsEnabled="False"
+                    ToolTip="currently not supported">
                     <RadioButton.Content>
                         <TextBlock Text="... Points" TextWrapping="Wrap"/>
                     </RadioButton.Content>
@@ -70,7 +72,8 @@
         <GroupBox
             x:Name="gbPointtypes"
             Grid.Row="2"
-            Header="Pointtypes">
+            Header="Pointtypes"
+            IsEnabled="False">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -95,7 +98,8 @@
         <!-- horizon filter -->
         <GroupBox
             Grid.Row="3"
-            Header="Horizon">
+            Header="Horizon"
+            IsEnabled="False">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -121,7 +125,8 @@
         <!-- point status -->
         <GroupBox
             Grid.Row="4"
-            Header="Point status">
+            Header="Point status"
+            IsEnabled="False">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -148,7 +153,8 @@
         <GroupBox
             Grid.Column="1"
             Grid.Row="5"
-            Header="Breaklines">
+            Header="Breaklines"
+            IsEnabled="False">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -172,9 +178,11 @@
 
         <!--button to apply the settings-->
         <Button
+            x:Name="btnProcessGraftbat"
             Grid.Row="6"
             Content="Process 'GEOgraf OUT'"
-            ToolTip="Applying the settings (from this tab)">
+            IsEnabled="False"
+            ToolTip="Applying the settings (from this tab)" Click="btnProcessGraftbat_Click">
         </Button>
     </Grid>
 </UserControl>

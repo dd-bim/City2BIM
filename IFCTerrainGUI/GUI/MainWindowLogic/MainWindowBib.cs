@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Windows; //used to communicate with main window
-
 using System.Windows.Controls; //TextBox
 
 namespace IFCTerrainGUI.GUI.MainWindowLogic
@@ -82,4 +81,10 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
         public static bool selectGeoRef { get; set; }
 
     }
+
+    /*
+     * Add gui logging here!
+     * PLACEHOLDER
+     * 
+     */
 }
