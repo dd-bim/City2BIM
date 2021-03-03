@@ -97,7 +97,7 @@
             </TabItem>
 
             <!--Grafbat-->
-            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)" IsEnabled="False">
+            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
                 <!-- reference to the user controller (logic is outsourced there)-->
                 <ucGraftbat:ucReadGraftbat/>
             </TabItem>
