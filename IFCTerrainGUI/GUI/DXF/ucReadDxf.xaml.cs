@@ -262,7 +262,7 @@ namespace IFCTerrainGUI.GUI.DXF
 
                     //visual output on the GUI (layer selection)
                     ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
-
+                    
                     //TODO (gui logging / file logging)
                 }
 

@@ -48,6 +48,7 @@ namespace IFCTerrainGUI
             backgroundWorkerIfc.RunWorkerCompleted += BackgroundWorkerIfc_RunWorkerCompleted;
         }
 
+
         /// <summary>
         /// create an instance for Json Settings (getter + setter)
         /// mainly used to create interaction between command / GUI and readers & writers
@@ -143,7 +144,7 @@ namespace IFCTerrainGUI
         {
             //Interface between GUI, reader and writer
             ConnectionInterface conInt = new ConnectionInterface();
-            
+
             //start mapping process which currently begins with the selection of the file reader
             conInt.mapProcess(jSettings);
         }

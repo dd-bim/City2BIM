@@ -26,7 +26,7 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
             var rect = tbName.GetRectFromCharacterIndex(tbName.CaretIndex);
             tbName.ScrollToHorizontalOffset(rect.Right);
         }
-        
+
         public enum indispensableTasks
         {
             fileOpening,

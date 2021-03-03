@@ -66,7 +66,7 @@ namespace BIMGISInteropLibs.IFC
         /// Storage location
         /// </summary>
         public string Filename { get; set; } //TODO: rename in fileLocation
-        
+
         /// <summary>
         /// getter and setter for file types
         /// </summary>
