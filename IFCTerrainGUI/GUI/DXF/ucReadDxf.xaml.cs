@@ -287,7 +287,6 @@ namespace IFCTerrainGUI.GUI.DXF
                         ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
                         #endregion gui (user information)
                     }
-                    return;
                 }
                 //execute, because in a session the break edge processing can also be deactivated again
                 else
@@ -311,6 +310,12 @@ namespace IFCTerrainGUI.GUI.DXF
                  * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
                  * and be converted in the JSON settings via an enumeration.
                  */
+
+                //set task (file opening) to true
+                MainWindowBib.taskfileOpening = true;
+
+                //check if all task are allready done
+                MainWindowBib.readyState();
             }
             return;
         }

@@ -75,10 +75,22 @@ namespace IFCTerrainGUI
                 //set filepath to jSettings
                 jSettings.destFileName = sfd.FileName;
 
+                //set task (file opening) to true
+                MainWindowBib.selectStoreLocation = true;
+
+                //check if all task are allready done
+                MainWindowBib.readyState();
+
                 //TODO LOGGING
             }
             else
             {
+                //set task (file opening) to true
+                MainWindowBib.selectStoreLocation = false;
+                
+                //check to deactivate start button
+                MainWindowBib.readyState();
+
                 //TODO LOGGING (GUI LOGGING)
             }
             return;

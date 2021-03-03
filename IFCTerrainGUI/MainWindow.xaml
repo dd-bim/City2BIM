@@ -238,6 +238,7 @@
                     Grid.Column="2"
                     Height="20"
                     Click="btnStart_Click"
+                    IsEnabled="False"
                     />
             </Grid>
         </GroupBox>

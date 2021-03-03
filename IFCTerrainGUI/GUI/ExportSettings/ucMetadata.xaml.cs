@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -34,11 +36,17 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         }
 
         /// <summary>
-        /// Lock text boxes
+        /// Lock text boxes & error handling
         /// </summary>
         private void chkMetadata_Unchecked(object sender, RoutedEventArgs e)
         {
             grdProjectSettings.IsEnabled = false;
+
+            //set task (file opening) to true
+            MainWindowBib.selectMetadata = true;
+
+            //check if all task are allready done
+            MainWindowBib.readyState();
         }
 
         /// <summary>
@@ -80,6 +88,13 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             {
                 MainWindow.jSettings.editorsFamilyName = "Family name [Placeholder]";
             }
+
+            //set task (file opening) to true
+            MainWindowBib.selectMetadata = true;
+
+            //check if all task are allready done
+            MainWindowBib.readyState();
+
             return;
         }        
     }
