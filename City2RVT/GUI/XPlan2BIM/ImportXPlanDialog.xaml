@@ -28,7 +28,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Grid MaxHeight="400" MinHeight="300">
+                    <Grid MaxHeight="300" MinHeight="300">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <ItemsControl x:Name="LayerTable">
                                 <ItemsControl.ItemTemplate>
@@ -72,7 +72,7 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="filterCheckBox" IsEnabled="True" VerticalAlignment="Center" Grid.Row="0" IsChecked="True"></CheckBox>
+                        <CheckBox x:Name="filterCheckBox" IsEnabled="True" VerticalAlignment="Center" Grid.Row="0" IsChecked="False"></CheckBox>
                         <Label x:Name="filterLabel" Content="Use Spatial Filter" Grid.Row="0" Grid.Column="1"></Label>
                     </StackPanel>
 
