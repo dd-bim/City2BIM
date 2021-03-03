@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>        
         <!-- select project center (will be calculated) should be used or manual input-->
         <StackPanel>
-            <RadioButton x:Name="rbLoGeoRef30Default" Margin="5,5,0,0" IsChecked="True" Checked="rbLoGeoRef30Default_Checked" Unchecked="rbLoGeoRef30Default_Unchecked">
+            <RadioButton x:Name="rbLoGeoRef30Default" Margin="5,5,0,0" IsChecked="{x:Null}"  Checked="rbLoGeoRef30Default_Checked" Unchecked="rbLoGeoRef30Default_Unchecked">
                 <TextBlock Text="Default
                                        (project center)" TextWrapping="Wrap"/>
             </RadioButton>
