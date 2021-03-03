@@ -252,15 +252,21 @@ namespace IFCTerrainGUI.GUI.DXF
                     MainWindow.jSettings.breakline = false;
                 }
 
-                //
+                //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
                 if (rbDxfFaces.IsChecked == true)
                 {
+                    //processing faces (true)
                     MainWindow.jSettings.isTin = true;
                 }
                 else
                 {
+                    //processing points / lines (false)
                     MainWindow.jSettings.isTin = false;
                 }
+                /*
+                 * Sollte es erforderlich sein mehr Unterscheidungen zu implementieren, so sollten die Fallunterschheidungen über Cases laufen
+                 * und in der JSON settings über eine Enumeration umgestzt werden
+                 */ 
             }
             return;
         }
