@@ -17,15 +17,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //used to outsource auxiliary functions
 
 //integrate logic from BIMGISInteropsLibs 
 using BIMGISInteropLibs.IfcTerrain; //used for JsonSettings, ...
-
 using System.IO; //used for file handling (e.g. open directory)
-
-using IFCTerrainGUI.GUI.ExportSettings; //used for export handling (user controler)
-
 using Newtonsoft.Json; //used for serialize the json file
-
 using Microsoft.Win32;  //file handing (storage location)
-
 using System.ComponentModel; //used for background worker
 
 namespace IFCTerrainGUI
