@@ -35,7 +35,7 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
         public static bool readyState()
         {
             //if all tasks are true
-            if (taskfileOpening && selectIfcShape && selectIfcVersion && selectMetadata && selectStoreLocation)
+            if (taskfileOpening && selectIfcShape && selectIfcVersion && selectMetadata && selectStoreLocation && selectGeoRef)
             {
                 //enable start button
                 ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = true;
@@ -75,5 +75,11 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
         /// task to check if storage location have been set
         /// </summary>
         public static bool selectStoreLocation { get; set; }
+
+        /// <summary>
+        /// task to check if georef have been set
+        /// </summary>
+        public static bool selectGeoRef { get; set; }
+
     }
 }
