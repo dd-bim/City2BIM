@@ -115,28 +115,75 @@ namespace City2RVT.Builder
                         switch (GeoObj.GeomType)
                         {
                             case wkbGeometryType.wkbPolygon:
-
-                                List<C2BSegment> outerSegments = getOuterRingSegmentsFromPolygon(GeoObj.Geom);
-                                var siteSubRegion = createSiteSubRegionFromSegments(outerSegments, RefPlaneId);
-                                siteSubRegion.TopographySurface.SetEntity(ent);
-                                break;
+                                { 
+                                    List<C2BSegment> outerSegments = getOuterRingSegmentsFromPolygon(GeoObj.Geom);
+                                    var siteSubRegion = createSiteSubRegionFromSegments(outerSegments, RefPlaneId);
+                                    siteSubRegion.TopographySurface.SetEntity(ent);
+                                    break;
+                                }
 
                             case wkbGeometryType.wkbMultiPolygon:
-                                
-                                List<List<C2BSegment>> outerSegmentsMultiPoly = getOuterRingSegmentsFromMultiPolygon(GeoObj.Geom);
-                                foreach(var poly in outerSegmentsMultiPoly)
-                                {
-                                    var currentSiteSubRegion = createSiteSubRegionFromSegments(poly, RefPlaneId);
-                                    currentSiteSubRegion.TopographySurface.SetEntity(ent);
+                                { 
+                                    List<List<C2BSegment>> outerSegmentsMultiPoly = getOuterRingSegmentsFromMultiPolygon(GeoObj.Geom);
+                                    foreach(var poly in outerSegmentsMultiPoly)
+                                    {
+                                        var currentSiteSubRegion = createSiteSubRegionFromSegments(poly, RefPlaneId);
+                                        currentSiteSubRegion.TopographySurface.SetEntity(ent);
+                                    }
+                                    break;
                                 }
-                                break;
-
-                            case wkbGeometryType.wkbCurvePolygon:
-                                List<C2BSegment> outerSegmentsCurvePoly = getOuterRingSegmentsFromCurvePolygon(GeoObj.Geom);
-                                var siteSubRegionCurvePoly = createSiteSubRegionFromSegments(outerSegmentsCurvePoly, RefPlaneId);
-                                siteSubRegionCurvePoly.TopographySurface.SetEntity(ent);
-                                break;
                             
+                            case wkbGeometryType.wkbCurvePolygon:
+                                { 
+                                    List<C2BSegment> outerSegmentsCurvePoly = getOuterRingSegmentsFromCurvePolygon(GeoObj.Geom);
+                                    var siteSubRegionCurvePoly = createSiteSubRegionFromSegments(outerSegmentsCurvePoly, RefPlaneId);
+                                    siteSubRegionCurvePoly.TopographySurface.SetEntity(ent);
+                                    break;
+                                }
+                            case wkbGeometryType.wkbMultiSurface:
+                                {
+                                    for (int i=0; i<GeoObj.Geom.GetGeometryCount(); i++)
+                                    {
+                                        var subGeom = GeoObj.Geom.GetGeometryRef(i);
+                                        
+                                        switch (subGeom.GetGeometryType())
+                                        {
+                                            case wkbGeometryType.wkbPolygon:
+                                                {
+                                                    List<C2BSegment> outerSegments = getOuterRingSegmentsFromPolygon(subGeom);
+                                                    var siteSubRegion = createSiteSubRegionFromSegments(outerSegments, RefPlaneId);
+                                                    siteSubRegion.TopographySurface.SetEntity(ent);
+                                                    break;
+                                                }
+                                            case wkbGeometryType.wkbMultiPolygon:
+                                                {
+                                                    List<List<C2BSegment>> outerSegmentsMultiPoly = getOuterRingSegmentsFromMultiPolygon(subGeom);
+                                                    foreach (var poly in outerSegmentsMultiPoly)
+                                                    {
+                                                        var currentSiteSubRegion = createSiteSubRegionFromSegments(poly, RefPlaneId);
+                                                        currentSiteSubRegion.TopographySurface.SetEntity(ent);
+                                                    }
+                                                    break;
+                                                }
+
+                                            case wkbGeometryType.wkbCurvePolygon:
+                                                {
+                                                    List<C2BSegment> outerSegmentsCurvePoly = getOuterRingSegmentsFromCurvePolygon(subGeom);
+                                                    var siteSubRegionCurvePoly = createSiteSubRegionFromSegments(outerSegmentsCurvePoly, RefPlaneId);
+                                                    siteSubRegionCurvePoly.TopographySurface.SetEntity(ent);
+                                                    break;
+                                                }
+                                            default:
+                                                Log.Error("Could not create GeoObject from MultiSurface. GeometryType is: " + GeoObj.GeomType.ToString() + " gmlId: " + GeoObj.GmlID);
+                                                processingErrors = true;
+                                                break;
+                                        }
+
+                                    }
+
+                                    break;
+                                }
+
                             default:
                                 Log.Error("Could not create GeoObject. GeometryType is: " + GeoObj.GeomType.ToString() + " gmlId: " + GeoObj.GmlID);
                                 processingErrors = true;
@@ -265,15 +312,15 @@ namespace City2RVT.Builder
                         int nrOfPoints = sectionGeom.GetPointCount();
                         int nrOfArcSegments = (nrOfPoints - 1) / 2;
 
-                        for (int j = 0; j < nrOfArcSegments; j+=2)
+                        for (int j = 0, l = 0; j < nrOfArcSegments; j++, l += 2)
                         {
-                            sectionGeom.GetPoint(j, geoPoint);
+                            sectionGeom.GetPoint(l, geoPoint);
                             var startPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
 
-                            sectionGeom.GetPoint(j + 1, geoPoint);
+                            sectionGeom.GetPoint(l + 1, geoPoint);
                             var midPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
 
-                            sectionGeom.GetPoint(j + 2, geoPoint);
+                            sectionGeom.GetPoint(l + 2, geoPoint);
                             var endPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
 
                             segments.Add(new C2BSegment(startPoint, endPoint, midPoint));
@@ -282,12 +329,12 @@ namespace City2RVT.Builder
                         break;
                     case wkbGeometryType.wkbLineString:
 
-                        for (var j = 1; j < outerRing.GetPointCount(); j++)
+                        for (var j = 1; j < sectionGeom.GetPointCount(); j++)
                         {
-                            outerRing.GetPoint(j - 1, geoPoint);
+                            sectionGeom.GetPoint(j - 1, geoPoint);
                             C2BPoint startSeg = new C2BPoint(geoPoint[0], geoPoint[1], 0);
 
-                            outerRing.GetPoint(j, geoPoint);
+                            sectionGeom.GetPoint(j, geoPoint);
                             C2BPoint endSeg = new C2BPoint(geoPoint[0], geoPoint[1], 0);
 
                             segments.Add(new C2BSegment(startSeg, endSeg));
@@ -311,13 +358,13 @@ namespace City2RVT.Builder
             {
                 if (seg.isCurve)
                 {
-                    var unprojectedPntStart = Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, false, null);
+                    var unprojectedPntStart = Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
                     var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
 
-                    var unprojectedPntMid = Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, false, null);
+                    var unprojectedPntMid = Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, true, null);
                     var revitPntMid = Revit_Build.GetRevPt(unprojectedPntMid);
 
-                    var unprojectedPntEnd = Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, false, null);
+                    var unprojectedPntEnd = Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
                     var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
 
                     revitSegmentCurves.Add(Arc.Create(revitPntStart, revitPntEnd, revitPntMid));
