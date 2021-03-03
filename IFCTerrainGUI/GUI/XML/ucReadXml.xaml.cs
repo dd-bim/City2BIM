@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic;
+using IFCTerrainGUI.GUI.MainWindowLogic; //error handling (btn start)
 
 using Microsoft.Win32; //used for file handling
 
