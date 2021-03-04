@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
              mc:Ignorable="d" 
              d:DesignHeight="525" d:DesignWidth="385">
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="50"/>

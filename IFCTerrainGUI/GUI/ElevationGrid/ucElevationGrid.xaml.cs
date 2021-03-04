@@ -20,7 +20,7 @@ using Microsoft.Win32; //used for file handling
 namespace IFCTerrainGUI.GUI.ElevationGrid
 {
     /// <summary>
-    /// Interaktionslogik für ucElevationGrid.xaml
+    /// Interaction logic for ucElevationGrid.xaml
     /// </summary>
     public partial class ucElevationGrid : UserControl
     {
@@ -128,6 +128,7 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
                 //bounding box will be used
                 MainWindow.jSettings.bBox = true;
 
+                //set text to info panel
                 ((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will be used.";
 
                 //set bb north to json
@@ -144,6 +145,7 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             }
             else
             {
+                //set text to info panel
                 ((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will not be used.";
 
                 //bounding box will not be used
@@ -151,15 +153,16 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             }
             #endregion set json settings
 
-            //
+            //set text to info panel
             ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
 
+            //set json settings grid size
             MainWindow.jSettings.gridSize = Convert.ToInt32(tbGridSize.Text);
 
-            //
+            //input in info panel
             ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = MainWindow.jSettings.gridSize.ToString();
 
-            //
+            //set text in info panel
             ((MainWindow)Application.Current.MainWindow).ipFileSpecific2.Text = "Bounding Box";
 
             //error handling
