@@ -168,9 +168,6 @@ namespace IFCTerrainGUI
 
             //TODO logging
         }
-
-
-
         #endregion background worker
 
 
