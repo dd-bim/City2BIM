@@ -35,11 +35,11 @@ namespace IFCTerrainGUI.GUI.DXF
             //init gui panel
             InitializeComponent();
 
-                            //create "do" task and refernz to function
-                backgroundWorkerDxf.DoWork += BackgroundWorkerDxf_DoWork;
+            //create "do" task and refernz to function
+            backgroundWorkerDxf.DoWork += BackgroundWorkerDxf_DoWork;
 
-                //create the task when the "do task" is completed
-                backgroundWorkerDxf.RunWorkerCompleted += BackgroundWorkerDxf_RunWorkerCompleted;
+            //create the task when the "do task" is completed
+            backgroundWorkerDxf.RunWorkerCompleted += BackgroundWorkerDxf_RunWorkerCompleted;
         }
 
         /// <summary>
@@ -107,7 +107,6 @@ namespace IFCTerrainGUI.GUI.DXF
         /// dxf file which is read
         /// </summary>
         private DxfFile dxfFile = null;
-
 
         /// <summary>
         /// reading dxf file
