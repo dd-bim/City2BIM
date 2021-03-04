@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
+using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
 
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
@@ -50,6 +51,17 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 this.chkIfcGeoEl.IsEnabled = true;
                 this.ifcTFS.IsEnabled = true;
             }
+
+            //check if an item was selected
+            if (cbIfcVersion.SelectedIndex != -1)
+            {
+                //set task to true
+                MainWindowBib.selectIfcVersion = true;
+
+                //check if all required tasks are performed
+                MainWindowBib.readyState();
+            }
+
             #endregion error handling
 
             #region json settings
@@ -119,6 +131,16 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             else if (this.ifcTIN.IsSelected)
             {
                 MainWindow.jSettings.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.TIN;
+            }
+
+            //check if an item was selected
+            if (cbShapeRepres.SelectedIndex != -1)
+            {
+                //set task to true
+                MainWindowBib.selectIfcShape = true;
+
+                //check if all required tasks are performed
+                MainWindowBib.readyState();
             }
         }
 

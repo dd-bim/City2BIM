@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 
+using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -34,7 +36,14 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         {
             //in this case set to default (background: the project center will be used)
             MainWindow.jSettings.customOrigin = false;
+
+            //set task (file opening) to true
+            MainWindowBib.selectGeoRef = true;
+
+            //check if all task are allready done
+            MainWindowBib.readyState();
         }
+
 
         private void rbLoGeoRef30User_Checked(object sender, RoutedEventArgs e)
         {
@@ -48,6 +57,12 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         {
             spLoGeoRef30Values.IsEnabled = true;
             btnLoGeoRef30Apply.IsEnabled = true;
+            
+            //set task (file opening) to false: user have to apply settings
+            MainWindowBib.selectGeoRef = false;
+
+            //check if all task are allready done
+            MainWindowBib.readyState();
         }
 
         private void rbLoGeoRef30User_Unchecked(object sender, RoutedEventArgs e)
@@ -78,6 +93,12 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             MainWindow.jSettings.xOrigin = Convert.ToDouble(tbLoGeoRef30ValueX.Text);
             MainWindow.jSettings.yOrigin = Convert.ToDouble(tbLoGeoRef30ValueY.Text);
             MainWindow.jSettings.zOrigin = Convert.ToDouble(tbLoGeoRef30ValueZ.Text);
+
+            //set task (file opening) to true (user applyed)
+            MainWindowBib.selectGeoRef = true;
+
+            //check if all task are allready done
+            MainWindowBib.readyState();
         }
     }
 }

@@ -17,15 +17,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //used to outsource auxiliary functions
 
 //integrate logic from BIMGISInteropsLibs 
 using BIMGISInteropLibs.IfcTerrain; //used for JsonSettings, ...
-
 using System.IO; //used for file handling (e.g. open directory)
-
-using IFCTerrainGUI.GUI.ExportSettings; //used for export handling (user controler)
-
 using Newtonsoft.Json; //used for serialize the json file
-
 using Microsoft.Win32;  //file handing (storage location)
-
 using System.ComponentModel; //used for background worker
 
 namespace IFCTerrainGUI
@@ -43,6 +37,7 @@ namespace IFCTerrainGUI
             //all components of the GUI are created (never remove)
             InitializeComponent();
 
+            //add tasks for background worker (konversion)
             backgroundWorkerIfc.DoWork += BackgroundWorkerIfc_DoWork;
             backgroundWorkerIfc.RunWorkerCompleted += BackgroundWorkerIfc_RunWorkerCompleted;
         }
@@ -80,10 +75,22 @@ namespace IFCTerrainGUI
                 //set filepath to jSettings
                 jSettings.destFileName = sfd.FileName;
 
+                //set task (file opening) to true
+                MainWindowBib.selectStoreLocation = true;
+
+                //check if all task are allready done
+                MainWindowBib.readyState();
+
                 //TODO LOGGING
             }
             else
             {
+                //set task (file opening) to true
+                MainWindowBib.selectStoreLocation = false;
+                
+                //check to deactivate start button
+                MainWindowBib.readyState();
+
                 //TODO LOGGING (GUI LOGGING)
             }
             return;
@@ -131,27 +138,29 @@ namespace IFCTerrainGUI
 
         #region background worker
         /// <summary>
-        /// BackgroundWorker (IFC): used to ...
+        /// BackgroundWorker (IFC): used to start the conversion to IFC file
         /// </summary>
         private readonly BackgroundWorker backgroundWorkerIfc = new BackgroundWorker();
 
 
         /// <summary>
-        /// 
+        /// start conversion (using the JSON settings)
         /// </summary>
         private void BackgroundWorkerIfc_DoWork(object sender, DoWorkEventArgs e)
         {
-
+            //Interface between GUI, reader and writer
             ConnectionInterface conInt = new ConnectionInterface();
+
+            //start mapping process which currently begins with the selection of the file reader
             conInt.mapProcess(jSettings);
         }
 
 
         /// <summary>
-        /// 
+        /// Executed after the conversion is done
+        /// TODO: catching errors & output to user
+        /// TODO: LOGGING
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void BackgroundWorkerIfc_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //release the MainWindow (conversion is completed)
@@ -159,9 +168,6 @@ namespace IFCTerrainGUI
 
             //TODO logging
         }
-
-
-
         #endregion background worker
 
 

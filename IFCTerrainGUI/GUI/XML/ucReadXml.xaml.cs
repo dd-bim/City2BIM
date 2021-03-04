@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic;
+using IFCTerrainGUI.GUI.MainWindowLogic; //error handling (btn start)
 
 using Microsoft.Win32; //used for file handling
 
@@ -117,8 +117,11 @@ namespace IFCTerrainGUI.GUI.XML
             //file tpye
             MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, MainWindow.jSettings.fileType.ToString());
 
-            //TODO error handling (enable buttons)
-            ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = true;
+            //set task (file opening) to true
+            MainWindowBib.taskfileOpening = true;
+
+            //check if all task are allready done
+            MainWindowBib.readyState();
         }
     }
 }
