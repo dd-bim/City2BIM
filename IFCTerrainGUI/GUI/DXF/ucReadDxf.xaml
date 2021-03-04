@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.DXF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="400"
+             d:DesignHeight="525" d:DesignWidth="385"
              >
     <Grid>
         <Grid Margin="5">
