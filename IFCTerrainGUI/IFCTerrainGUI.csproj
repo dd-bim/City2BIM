@@ -99,6 +99,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\REB\ucReadReb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\XML\ucReadXml.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +137,9 @@
       <DependentUpon>ucReadGraftbat.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
+    <Compile Include="GUI\REB\ucReadReb.xaml.cs">
+      <DependentUpon>ucReadReb.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XML\ucReadXml.xaml.cs">
       <DependentUpon>ucReadXml.xaml</DependentUpon>
     </Compile>
@@ -183,8 +190,6 @@
       <Name>BIMGISInteropLibs</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GUI\REB\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
