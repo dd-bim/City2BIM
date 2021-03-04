@@ -9,6 +9,7 @@
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
         xmlns:ucGrid ="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
         xmlns:ucReb ="clr-namespace:IFCTerrainGUI.GUI.REB"
+        xmlns:ucPostGIS ="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" Height="840" Width="800" FontFamily="Bahnschrift" FontSize="14" ResizeMode="CanMinimize">
@@ -107,8 +108,12 @@
             <!--PostGIS-->
             <TabItem 
                 x:Name ="tabPagePostGis"   
-                Header="Database (PostGIS)"
-                IsEnabled="False"/>
+                Header="Database (PostGIS)">
+                
+                <!-- add user controler for postgis reading-->
+                <ucPostGIS:ucReadPostGis/>
+
+            </TabItem>
 
             <!--ElevationGrid-->
             <TabItem 
