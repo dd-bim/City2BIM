@@ -519,6 +519,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\bimgiscadlib\BimGisCad\BimGisCad.csproj">
+      <Project>{1fb77307-2323-460b-8037-cf042eefd903}</Project>
+      <Name>BimGisCad</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>
