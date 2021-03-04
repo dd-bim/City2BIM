@@ -135,6 +135,14 @@ namespace City2RVT.Builder
                             
                             case wkbGeometryType.wkbCurvePolygon:
                                 { 
+                                    if (GeoObj.Geom.HasCurveGeometry(1) == 0)
+                                    {
+                                        List<C2BSegment> outerSegments = getOuterRingSegmentsFromPolygon(GeoObj.Geom);
+                                        var siteSubRegion = createSiteSubRegionFromSegments(outerSegments, RefPlaneId);
+                                        siteSubRegion.TopographySurface.SetEntity(ent);
+                                        break;
+                                    }
+
                                     List<C2BSegment> outerSegmentsCurvePoly = getOuterRingSegmentsFromCurvePolygon(GeoObj.Geom);
                                     var siteSubRegionCurvePoly = createSiteSubRegionFromSegments(outerSegmentsCurvePoly, RefPlaneId);
                                     siteSubRegionCurvePoly.TopographySurface.SetEntity(ent);
