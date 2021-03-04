@@ -34,6 +34,12 @@ namespace IFCTerrainGUI.GUI.DXF
         {
             //init gui panel
             InitializeComponent();
+
+                            //create "do" task and refernz to function
+                backgroundWorkerDxf.DoWork += BackgroundWorkerDxf_DoWork;
+
+                //create the task when the "do task" is completed
+                backgroundWorkerDxf.RunWorkerCompleted += BackgroundWorkerDxf_RunWorkerCompleted;
         }
 
         /// <summary>
@@ -67,12 +73,6 @@ namespace IFCTerrainGUI.GUI.DXF
                 ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
 
                 #region backgroundWorker
-                //create "do" task and refernz to function
-                backgroundWorkerDxf.DoWork += BackgroundWorkerDxf_DoWork;
-
-                //create the task when the "do task" is completed
-                backgroundWorkerDxf.RunWorkerCompleted += BackgroundWorkerDxf_RunWorkerCompleted;
-
                 //kick off BackgroundWorker
                 backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
                 #endregion backgroundWorker
