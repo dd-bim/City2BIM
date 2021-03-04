@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="IFCTerrainGUI.GUI.PostGIS.ucReadPostGis"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
+             mc:Ignorable="d" 
+             d:DesignHeight="525" d:DesignWidth="379">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <!--group box database connection-->
+            <GroupBox Header="Database Connection">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1.3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <!-- first row with host and port-->
+                    <TextBlock Text="Hostname" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbHost" x:FieldModifier="public" Grid.Column="1" TextChanged="tb_TextChanged"/>
+                    <TextBlock Text="Port" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbPort" Grid.Column="3" TextChanged="tb_TextChanged"/>
+
+                    <!-- second row with username and password-->
+                    <TextBlock Text="Username" Grid.Row="2" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbUser" Grid.Column="1" Grid.Row="2" TextChanged="tb_TextChanged"/>
+                    <TextBlock Text="Password" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="5,0"/>
+                    
+                    <!-- use password box so pw is not visible-->
+                    <PasswordBox x:Name="tbPwd" Grid.Column="3" Grid.Row="2" PasswordChar="*"/>
+
+                    <!-- third row with database and schema-->
+                    <TextBlock Text="Database" Grid.Row="4" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbDatabase" Grid.Column="1" Grid.Row="4" TextChanged="tb_TextChanged"/>
+                    <TextBlock Text="Schema" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbSchema" Grid.Column="3" Grid.Row="4" TextChanged="tb_TextChanged"/>
+
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="TIN Geometry">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- first row with host and port-->
+                    <TextBlock Text="Table" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbTinTable" Grid.ColumnSpan="2" Margin="69,0,2,0"/>
+                    <TextBlock Text="Column" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbTinColumn" Grid.Column="3"/>
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox Header="TIN Identifier">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- first row with host and port-->
+                    <TextBlock Text="Column" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbTinIdColumn" Grid.Column="1" TextChanged="tb_TextChanged"/>
+                    <TextBlock Text="Value" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBox x:Name="tbTinIdValue" Grid.Column="3" TextChanged="tb_TextChanged"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Breaklines">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.7*"/>
+                        <ColumnDefinition/>
+
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+
+                    <!--  -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                        <TextBlock Text="Process Breaklines?" Margin="0,0,5,0"/>
+                        <RadioButton x:Name="rbProcessBlTrue" Content="Yes" Margin="2" Checked="rbProcessBlTrue_Checked"/>
+                        <RadioButton x:Name="rbProcessBlFalse" Content="No" Margin="2" IsChecked="{x:Null}" Checked="rbProcessBlFalse_Checked"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="2" Text="Table" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+                    <TextBlock Grid.Row="4" Text="Column (geometry)" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+                    <TextBlock Grid.Row="6" Text="Column (TIN-ID)" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+
+                    <TextBox x:Name="tbBlTable" Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" TextChanged="tb_TextChanged" IsEnabled="False"/>
+                    <TextBox x:Name="tbBlGeomColumn" Grid.Row="4" Grid.Column="1" Margin="5,0,0,0" TextChanged="tb_TextChanged" IsEnabled="False"/>
+                    <TextBox x:Name="tbBlTinIdColumn" Grid.Row="6" Grid.Column="1" Margin="5,0,0,0" TextChanged="tb_TextChanged" IsEnabled="False"/>
+                </Grid>
+            </GroupBox>
+
+            <Button x:Name="btnPostGisExampleTin" Content="Load example (TerrainTwin) - only TIN" Margin="0,5" Click="btnPostGisExampleTin_Click"/>
+            <Button x:Name="btnPostGisExampelTinBl" Content="Load example (TerrainTwin) - with break lines" Click="btnPostGisExampelTinBl_Click"/>
+
+
+
+        </StackPanel>
+        <Button x:Name="btnProcessPostGis" Grid.Row="2" Content="Process 'PostGIS'" IsEnabled="False" Click="btnProcessPostGis_Click" />
+    </Grid>
+</UserControl>

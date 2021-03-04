@@ -92,6 +92,10 @@ namespace BIMGISInteropLibs.ElevationGrid
 
             //!!!überprüfen ob 0 oder 1 !!!
             var grid = new List<Dictionary<int, Point3>>();
+            for (int rowcount = 0; rowcount <= yCount; rowcount++)
+            {
+                grid.Add(new Dictionary<int, Point3>());
+            }
 
             //Create dictionary to process TIN [TODO]
             var tinGrid = new List<Dictionary<int, int>>();
@@ -139,10 +143,10 @@ namespace BIMGISInteropLibs.ElevationGrid
                         grid[yGrid].Add(xGrid, p);
 
                         //Add point to TIN via PNR
-                        tinB.AddPoint(pnr, p);
+                        //tinB.AddPoint(pnr, p);
 
                         //Fill TIN grid & increment the point number, because with the next line the next point follows
-                        tinGrid[pnr++].Add(yGrid, xGrid);
+                        //tinGrid[pnr++].Add(yGrid, xGrid);
                     }
                 }
             }
