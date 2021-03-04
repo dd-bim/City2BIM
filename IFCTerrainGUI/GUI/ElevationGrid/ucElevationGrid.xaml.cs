@@ -238,16 +238,12 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             {
                 //set to true
                 bbNorth = true;
-                //check if all fields are not empty
-                readyState();
             }
             //if tb north is empty
             else
             {
                 //set to FALSE
                 bbNorth = false;
-                //check if all fields are not empty
-                readyState();
             }
 
             //check if tb east is not empty
@@ -255,15 +251,12 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             {
                 //set to true
                 bbEast = true;
-                readyState();
             }
             //if tb east is empty
             else
             {
                 //set to FALSE
                 bbEast = false;
-                //check if all fields are not empty
-                readyState();
             }
 
             //check if tb south is not empty
@@ -271,15 +264,12 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             {
                 //set to true
                 bbSouth = true;
-                readyState();
             }
             //if tb south is empty
             else
             {
                 //set to FALSE
                 bbSouth = false;
-                //check if all fields are not empty
-                readyState();
             }
 
 
@@ -288,15 +278,12 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             {
                 //set to true
                 bbWest = true;
-                readyState();
             }
             //if tb west is empty
             else
             {
                 //set to FALSE
                 bbWest = false;
-                //check if all fields are not empty
-                readyState();
             }
 
             //check if GRID SIZE is not empty
@@ -304,16 +291,16 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             {
                 //set to true
                 gridSize = true;
-                readyState();
             }
             //if tb west is empty
             else
             {
                 //set to FALSE
                 gridSize = false;
-                //check if all fields are not empty
-                readyState();
             }
+
+            //check if all fields are not empty
+            readyState();
         }
         #endregion textbox changes to check if all four values are set
     }
