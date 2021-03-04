@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFCTerrainGUI", "IFCTerrain
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BimGisCad", "..\bimgiscadlib\BimGisCad\BimGisCad.csproj", "{5A901B30-2B49-467C-9792-4F4063FA1BE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFCTerrainCommand", "IFCTerrainCommand\IFCTerrainCommand.csproj", "{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,14 @@ Global
 		{5A901B30-2B49-467C-9792-4F4063FA1BE1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A901B30-2B49-467C-9792-4F4063FA1BE1}.Release|x64.ActiveCfg = Release|x64
 		{5A901B30-2B49-467C-9792-4F4063FA1BE1}.Release|x64.Build.0 = Release|x64
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Debug|x64.Build.0 = Debug|Any CPU
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
