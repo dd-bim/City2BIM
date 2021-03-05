@@ -7,6 +7,9 @@
         xmlns:ucDxf ="clr-namespace:IFCTerrainGUI.GUI.DXF"
         xmlns:ucGraftbat ="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+        xmlns:ucGrid ="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
+        xmlns:ucReb ="clr-namespace:IFCTerrainGUI.GUI.REB"
+        xmlns:ucPostGIS ="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" Height="840" Width="800" FontFamily="Bahnschrift" FontSize="14" ResizeMode="CanMinimize">
@@ -97,7 +100,7 @@
             </TabItem>
 
             <!--Grafbat-->
-            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)" IsEnabled="False">
+            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
                 <!-- reference to the user controller (logic is outsourced there)-->
                 <ucGraftbat:ucReadGraftbat/>
             </TabItem>
@@ -105,21 +108,33 @@
             <!--PostGIS-->
             <TabItem 
                 x:Name ="tabPagePostGis"   
-                Header="Database (PostGIS)"
-                IsEnabled="False"/>
+                Header="Database (PostGIS)">
+                
+                <!-- add user controler for postgis reading-->
+                <ucPostGIS:ucReadPostGis/>
+
+            </TabItem>
 
             <!--ElevationGrid-->
             <TabItem 
                 x:Name ="tabPageGrid"      
-                Header="Grid (XYZ)"
-                IsEnabled="False"/>
+                Header="Grid (XYZ)">
+
+                <!-- add user controler for reading reb data -->
+                <ucGrid:ucElevationGrid/>
+                
+            </TabItem>
 
             <!--REB-->
             <TabItem 
                 x:Name ="tabPageReb"       
-                Header="REB (DA45, DA49, DA58)"
-                IsEnabled="False"/>
+                Header="REB (DA45, DA49, DA58)">
 
+                <!-- add user controler for reading reb data -->
+                <ucReb:ucReadReb/>
+
+
+            </TabItem>
             <!-- more tabs (if needed) have to be added here-->
         </TabControl>
         <!--#endregion Selection field for the import of the different data formats-->
@@ -132,9 +147,7 @@
             Grid.Row="2"
             Grid.RowSpan="2">
             <!-- add user controler version + shape-->
-
             <ucExportSettings:ucIfcVersionShape/>
-
         </Grid>
 
         <!-- add group box for georef -->
@@ -144,10 +157,9 @@
             Grid.RowSpan="4"
             Header="Georeferencing"
             Margin="0,0,0,5">
-
+            
             <!-- add the user controller-->
             <ucExportSettings:ucIfcGeoRef/>
-
         </GroupBox>
 
         <!-- group box for meta data settings (placeholder only) -->
@@ -238,6 +250,7 @@
                     Grid.Column="2"
                     Height="20"
                     Click="btnStart_Click"
+                    IsEnabled="False"
                     />
             </Grid>
         </GroupBox>

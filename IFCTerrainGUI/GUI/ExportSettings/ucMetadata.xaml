@@ -19,7 +19,7 @@
             <RowDefinition/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <CheckBox x:Name="chkMetadata" Content="Export Metadata" HorizontalAlignment="Center" Grid.ColumnSpan="2" VerticalAlignment="Center" Checked="chkMetadata_Checked" Unchecked="chkMetadata_Unchecked" />
+        <CheckBox x:Name="chkMetadata" Content="Export Metadata" HorizontalAlignment="Center" Grid.ColumnSpan="2" VerticalAlignment="Center" Checked="chkMetadata_Checked" Unchecked="chkMetadata_Unchecked" IsChecked="{x:Null}"/>
         <Grid x:Name="grdProjectSettings" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

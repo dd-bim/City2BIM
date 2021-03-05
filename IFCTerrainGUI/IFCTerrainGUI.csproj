@@ -75,6 +75,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ElevationGrid\ucElevationGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ExportSettings\ucIfcGeoRef.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -95,6 +99,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\PostGIS\ucReadPostGis.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\REB\ucReadReb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\XML\ucReadXml.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -109,6 +121,9 @@
     </Compile>
     <Compile Include="GUI\DXF\ucReadDxf.xaml.cs">
       <DependentUpon>ucReadDxf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ElevationGrid\ucElevationGrid.xaml.cs">
+      <DependentUpon>ucElevationGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcGeoRef.xaml.cs">
       <DependentUpon>ucIfcGeoRef.xaml</DependentUpon>
@@ -126,6 +141,12 @@
       <DependentUpon>ucReadGraftbat.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
+    <Compile Include="GUI\PostGIS\ucReadPostGis.xaml.cs">
+      <DependentUpon>ucReadPostGis.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\REB\ucReadReb.xaml.cs">
+      <DependentUpon>ucReadReb.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XML\ucReadXml.xaml.cs">
       <DependentUpon>ucReadXml.xaml</DependentUpon>
     </Compile>

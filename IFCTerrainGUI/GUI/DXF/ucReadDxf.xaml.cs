@@ -15,13 +15,9 @@ using System.Windows.Shapes;
 
 //Include user-specific libraries from here onwards
 using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide filepath insert into tb
-
 using Microsoft.Win32; //used for file handling
-
 using System.ComponentModel; //used for background worker
-
 using BIMGISInteropLibs.DXF; //include to read dxf file
-
 using IxMilia.Dxf; //need to handle dxf files
 
 namespace IFCTerrainGUI.GUI.DXF
@@ -38,6 +34,12 @@ namespace IFCTerrainGUI.GUI.DXF
         {
             //init gui panel
             InitializeComponent();
+
+            //create "do" task and refernz to function
+            backgroundWorkerDxf.DoWork += BackgroundWorkerDxf_DoWork;
+
+            //create the task when the "do task" is completed
+            backgroundWorkerDxf.RunWorkerCompleted += BackgroundWorkerDxf_RunWorkerCompleted;
         }
 
         /// <summary>
@@ -71,21 +73,15 @@ namespace IFCTerrainGUI.GUI.DXF
                 ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
 
                 #region backgroundWorker
-                //create "do" task and refernz to function
-                backgroundWorkerDxf.DoWork += BackgroundWorkerDxf_DoWork;
-
-                //create the task when the "do task" is completed
-                backgroundWorkerDxf.RunWorkerCompleted += BackgroundWorkerDxf_RunWorkerCompleted;
-
                 //kick off BackgroundWorker
                 backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
                 #endregion backgroundWorker
 
-                #region error handling
+                #region error handling [TODO]
                 //TODO: buttons to be released here otherwise the user can't go on
                 #endregion error handling
 
-                #region logging
+                #region logging [TODO]
                 //TODO: add logging
                 #endregion logging
 
@@ -111,7 +107,6 @@ namespace IFCTerrainGUI.GUI.DXF
         /// dxf file which is read
         /// </summary>
         private DxfFile dxfFile = null;
-
 
         /// <summary>
         /// reading dxf file
@@ -190,6 +185,54 @@ namespace IFCTerrainGUI.GUI.DXF
             this.btnProcessDxf.IsEnabled = true;
         }
 
+        
+        /// <summary>
+        /// is executed as soon as the selection has been changed in the ListBox lbDxfDtmLayer
+        /// </summary>
+        private void lbDxfDtmLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //save all selected items as variable
+            var listSelectedItems = ((ListBox)sender).SelectedItems;
+
+            //as soon as at least one "item" has been selected
+            if (listSelectedItems.Count > 0)
+            {
+                //activate so that selection for break edges is possible
+                gbDxfBreakline.IsEnabled = true;
+            }
+
+            //if no item is selected --> required for file handling
+            else
+            {
+                //if no item is selected, the selection for break edges is disabled
+                gbDxfBreakline.IsEnabled = false;
+
+                //button dxf processing deactivate
+                btnProcessDxf.IsEnabled = false;
+            }
+        }
+
+        /// <summary>
+        /// is executed as soon as the selection has been changed in the ListBox lbDxfBreaklineLayer
+        /// </summary>
+        private void lbDxfBreaklineLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //save selected item as variable
+            var listSelectedItem = ((ListBox)sender).SelectedItems;
+
+            //as one "item" has been selected
+            if (listSelectedItem.Count != 0)
+            {
+                //activate btn process
+                btnProcessDxf.IsEnabled = true;
+            }
+            else
+            {
+                //deactivate btn process
+                btnProcessDxf.IsEnabled = true;
+            }
+        }
+
         /// <summary>
         /// Logic that is executed as soon as the "process key" is pressed
         /// </summary>
@@ -243,7 +286,6 @@ namespace IFCTerrainGUI.GUI.DXF
                         ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
                         #endregion gui (user information)
                     }
-                    return;
                 }
                 //execute, because in a session the break edge processing can also be deactivated again
                 else
@@ -252,64 +294,30 @@ namespace IFCTerrainGUI.GUI.DXF
                     MainWindow.jSettings.breakline = false;
                 }
 
-                //
+                //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
                 if (rbDxfFaces.IsChecked == true)
                 {
+                    //processing faces (true)
                     MainWindow.jSettings.isTin = true;
                 }
                 else
                 {
+                    //processing points / lines (false)
                     MainWindow.jSettings.isTin = false;
                 }
+                /*
+                 * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
+                 * and be converted in the JSON settings via an enumeration.
+                 */
+
+                //set task (file opening) to true
+                MainWindowBib.taskfileOpening = true;
+
+                //check if all task are allready done
+                MainWindowBib.readyState();
             }
             return;
         }
 
-        /// <summary>
-        /// is executed as soon as the selection has been changed in the ListBox lbDxfDtmLayer
-        /// </summary>
-        private void lbDxfDtmLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //save all selected items as variable
-            var listSelectedItems = ((ListBox)sender).SelectedItems;
-
-            //as soon as at least one "item" has been selected
-            if (listSelectedItems.Count > 0)
-            {
-                //activate so that selection for break edges is possible
-                gbDxfBreakline.IsEnabled = true;
-            }
-
-            //if no item is selected --> required for file handling
-            else
-            {
-                //if no item is selected, the selection for break edges is disabled
-                gbDxfBreakline.IsEnabled = false;
-
-                //button dxf processing deactivate
-                btnProcessDxf.IsEnabled = false;
-            }
-        }
-
-        /// <summary>
-        /// is executed as soon as the selection has been changed in the ListBox lbDxfBreaklineLayer
-        /// </summary>
-        private void lbDxfBreaklineLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //save selected item as variable
-            var listSelectedItem = ((ListBox)sender).SelectedItems;
-
-            //as one "item" has been selected
-            if (listSelectedItem.Count != 0)
-            {
-                //activate btn process
-                btnProcessDxf.IsEnabled = true;
-            }
-            else
-            {
-                //deactivate btn process
-                btnProcessDxf.IsEnabled = true;
-            }
-        }
     }
 }

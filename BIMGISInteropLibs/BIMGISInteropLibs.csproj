@@ -68,9 +68,6 @@
     <ApplicationIcon>DD_BIM_ICON.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BimGisCad">
-      <HintPath>..\..\bimgiscadlib\BimGisCad\bin\Debug\netstandard2.0\BimGisCad.dll</HintPath>
-    </Reference>
     <Reference Include="gdalconst_csharp, Version=1.0.7372.36899, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\GDAL.2.4.4\lib\net40\gdalconst_csharp.dll</HintPath>
     </Reference>
@@ -315,6 +312,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\bimgiscadlib\BimGisCad\BimGisCad.csproj">
+      <Project>{5a901b30-2b49-467c-9792-4f4063fa1be1}</Project>
+      <Name>BimGisCad</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\bimgiscad\BimGisCad\BimGisCad.csproj">
+      <Project>{30da5e36-0eb4-4dd1-8384-77ecebe9692a}</Project>
+      <Name>BimGisCad</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Xbim.Geometry.Engine.Interop.5.1.403\build\net472\Xbim.Geometry.Engine.Interop.targets" Condition="Exists('..\packages\Xbim.Geometry.Engine.Interop.5.1.403\build\net472\Xbim.Geometry.Engine.Interop.targets')" />
