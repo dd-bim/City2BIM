@@ -168,7 +168,7 @@ Guide / Anleitung als Markdown:
 
 - via Serilog
 - derzeit nur für CityGml-Daten
-- gespeichert im lokalen Profil: %appdata%/Local/City2BIM
+- gespeichert im lokalen Profil: %LOCALAPPDATA%/City2BIM
 - enthält Schrankenwerte
 - enthält Statistik (Erfolgsrate)
 - enthält Protokoll zu überführten Gebäuden (bei Solids mit Statistik zu Geometrieoperationen)
