@@ -56,6 +56,13 @@ namespace BIMGISInteropLibs.OGR
 
             while ((currentFeature = layer.GetNextFeature()) != null)
             {
+                if (currentFeature.GetGeometryRef() == null ||
+                    currentFeature.GetGeometryRef().GetGeometryType() == wkbGeometryType.wkbPoint ||
+                    currentFeature.GetGeometryRef().GetGeometryType() == wkbGeometryType.wkbMultiPoint)
+                {
+                    continue;
+                }
+
                 var properties = new Dictionary<string, string>();
 
                 for (int i = 0; i < currentFeature.GetFieldCount(); i++)
