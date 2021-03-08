@@ -62,8 +62,18 @@ namespace City2RVT.GUI
                     var GeoObjs = gmlReader.getGeoObjectsForLayer(layer, dialog.SpatialFilter);
                     Log.Information(string.Format("Total of {0} features in layer {1}", GeoObjs.Count, layerName));
                     var fieldList = gmlReader.getFieldNamesForLayer(layer);
-                    geoObjBuilder.buildGeoObjectsFromList(GeoObjs, dialog.Drape, fieldList);
-                    Log.Information(string.Format("Finished importing layer {0}", layerName));
+                    try
+                    {
+                        geoObjBuilder.buildGeoObjectsFromList(GeoObjs, dialog.Drape, fieldList);
+                        Log.Information(string.Format("Finished importing layer {0}", layerName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(string.Format("Error during import of layer {0}", layerName));
+                        TaskDialog.Show("Error", ex.ToString());
+                        Log.Error(ex.ToString());
+                        continue;
+                    }
                 }
 
                 gmlReader.destroy();
