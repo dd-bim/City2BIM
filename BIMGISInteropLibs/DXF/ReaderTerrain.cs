@@ -19,6 +19,10 @@ using BimGisCad.Collections;                        //MESH
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
+//Logging
+using BIMGISInteropLibs.Logging;
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 namespace BIMGISInteropLibs.DXF
 {    
     /// <summary>
@@ -26,7 +30,6 @@ namespace BIMGISInteropLibs.DXF
     /// </summary>
     public class ReaderTerrain
     {
-
         /// <summary>
         /// Dictionary for DxfUnits - need for different unit import
         /// </summary>
@@ -59,6 +62,9 @@ namespace BIMGISInteropLibs.DXF
                 using (var fs = new FileStream(fileName, FileMode.Open))
                 {
                     dxfFile = DxfFile.Load(fs);
+                    
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "DXF file has been read (" + fileName + ")"));
+                    
                     return true;
                 }
             }
@@ -67,6 +73,9 @@ namespace BIMGISInteropLibs.DXF
             catch
             {
                 dxfFile = null;
+                
+                LogWriter.Entries.Add(new LogPair(LogType.error, "DXF file could not be read (" + fileName + ")"));
+                
                 return false;
             }
         }
@@ -94,15 +103,15 @@ namespace BIMGISInteropLibs.DXF
             if (!UnitToMeter.TryGetValue(dxfFile.Header.DefaultDrawingUnits, out double scale))
             {
                 scale = 1.0;
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Set scale to: " + scale.ToString()));
             }
 
             //TIN-Builder initalise
             var tinB = Tin.CreateBuilder(true);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Initialize a TIN builder."));
 
             //Dictionary for "saving" breaklines
             Dictionary<int, Line3> breaklines = new Dictionary<int, Line3>(); 
-
-            //Logger logger = LogManager.GetCurrentClassLogger(); 
 
             int processedBreaklines = 0;
 
@@ -125,13 +134,17 @@ namespace BIMGISInteropLibs.DXF
                     {
                         //Add points & increment one point number at a time
                         tinB.AddPoint(pnr++, p1);
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y +"; z= " + p1.Z +")"));
                         tinB.AddPoint(pnr++, p2);
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")"));
                         tinB.AddPoint(pnr++, p3);
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")"));
 
                         //Loop to create the triangle
                         for (int i = pnr - 3; i < pnr; i++)
                         {
                             tinB.AddTriangle(i++, i++, i++);
+                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Triangle set."));
                         }
                     }
                 }
@@ -156,6 +169,7 @@ namespace BIMGISInteropLibs.DXF
                             try
                             {
                                 breaklines.Add(processedBreaklines++, l);
+                                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Breakline added ( xA= " + l.Position.X + "; yA= "+l.Position.Y + "; zA= " + l.Position.Z+ "; xE= " + l.Direction.X + "; yE= " + l.Direction.Y+ "; zE= "+l.Direction.Z+ ")"));
                             }
                             catch
                             {
@@ -189,18 +203,19 @@ namespace BIMGISInteropLibs.DXF
 
             //Generate TIN from TIN Builder
             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Creating TIN via TIN builder."));
+
             //Result describe
             result.Tin = tin;
 
             //Describe result for break edges
             result.Breaklines = breaklines;
 
-            //logging [TODO]
-            //logger.Info("Reading DXF-data successful");
-            //logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.info, "Reading DXF data successful."));
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
 
-            //Transferring the result: for further processing in IFCTerrain or Revit
+            //Transferring the result: for further processing in IFCTerrain or ~Revit~
             return result;
         }
 
@@ -216,7 +231,7 @@ namespace BIMGISInteropLibs.DXF
         /// <param name="verbosityLevel"></param>
         /// <param name="breakline"></param>
         /// <returns>MESH (in form of result.Mesh)</returns>
-        public static Result ReadDxfPoly(bool is3d, DxfFile dxfFile, string layer, string breaklinelayer, double minDist, string logFilePath, string verbosityLevel, bool breakline)
+        public static Result ReadDxfPoly(bool is3d, DxfFile dxfFile, string layer, string breaklinelayer, double minDist, string logFilePath, bool breakline)
         {
             var result = new Result();
             if (!UnitToMeter.TryGetValue(dxfFile.Header.DefaultDrawingUnits, out double scale))
@@ -271,6 +286,5 @@ namespace BIMGISInteropLibs.DXF
             //logger.Info(pp.Points.Count + " points, " + pp.FixedEdges.Count + " lines and " + pp.FaceEdges.Count + " faces read");
             return result;
         }
-
     }
 }

@@ -71,8 +71,10 @@ namespace IFCTerrainGUI.GUI.REB
                 //so the user can not change any settings during the time the background worker is running
                 ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
 
+                //set mouse cursor to wait
+                Mouse.OverrideCursor = Cursors.Wait;
+                
                 #region backgroundWorker
-
                 fileName[0] = ofd.FileName;
                 //kick off BackgroundWorker
                 backgroundWorkerReb.RunWorkerAsync(ofd.FileName);
@@ -149,6 +151,9 @@ namespace IFCTerrainGUI.GUI.REB
 
             //release complete gui again
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+
+            //set mouse cursor to default
+            Mouse.OverrideCursor = null;
 
             //release selection
             this.lbRebSelect.IsEnabled = true;

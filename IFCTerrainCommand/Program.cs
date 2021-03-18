@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BIMGISInteropLibs.IfcTerrain.Model; //needed for json collection
-using Newtonsoft.Json;  //need for convert json
+using Newtonsoft.Json;              //need for convert json
+using System.IO;                    //need for file handling
+using BIMGISInteropLibs.IfcTerrain; //need for jSettings
 
 namespace IFCTerrainCommand
 {
@@ -18,12 +19,12 @@ namespace IFCTerrainCommand
         {
             //path of json files
             string jPath = args[0];
-            
+
             //read json as text
             string jText = System.IO.File.ReadAllText(jPath);
 
             //create collection from each json file
-            JsonCollection jColl = JsonConvert.DeserializeObject<JsonCollection>(jText);
+            JsonSettings jSettings = JsonConvert.DeserializeObject<JsonSettings>(jText);
 
             //set to default values
             double? breakDist = 0.0;
@@ -32,14 +33,13 @@ namespace IFCTerrainCommand
             double? refElevation = 0.0;
 
             //create new instance of the ConnectionInterface
-            var conn = new BIMGISInteropLibs.IfcTerrain.ConnectionInterface();
+            var conn = new ConnectionInterface();
 
-            //loop through all json settings
-            foreach (BIMGISInteropLibs.IfcTerrain.JsonSettings jSettings in jColl.JsonSettings)
-            {
-                //start mapping process
-                conn.mapProcess(jSettings, breakDist, refLatitude, refLongitude, refElevation);
-            }
+
+            conn.mapProcess(jSettings, breakDist, refLatitude, refLongitude, refElevation);
+
+            
+            
         }
     }
 }

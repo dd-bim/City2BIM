@@ -3,47 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:metadata ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
-             d:DesignHeight="280" d:DesignWidth="385">
+             d:DesignHeight="234" d:DesignWidth="385">
+    <!--main controler for meta data (only include user controler)-->
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+        <TabControl Grid.Row="1">
+            <TabItem Header="IFC project settings">
+                <!-- add user controler: ifc project-->
+                <metadata:ucMetaIfcProject/>
+            </TabItem>
 
-        </Grid.ColumnDefinitions>
+            <TabItem Header="IFC Property Set" IsEnabled="False">
+                <metadata:ucMetaIfcPropertySets/>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-        <CheckBox x:Name="chkMetadata" Content="Export Metadata" HorizontalAlignment="Center" Grid.ColumnSpan="2" VerticalAlignment="Center" Checked="chkMetadata_Checked" Unchecked="chkMetadata_Unchecked" IsChecked="{x:Null}"/>
-        <Grid x:Name="grdProjectSettings" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="1.8*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+            </TabItem>
 
-            <TextBlock Grid.Row="0" Text="Project Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
-            <TextBlock Grid.Row="1" Text="Organisation Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
-            <TextBlock Grid.Row="2" Text="Given Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
-            <TextBlock Grid.Row="3" Text="Family Name:" VerticalAlignment="Center" Margin="3,0,0,0"/>
-            <TextBox x:Name="tbProjectName" x:FieldModifier="public" Grid.Row="0" Grid.Column="1" Margin="0,2"/>
-            <TextBox x:Name="tbOrganisationName" Grid.Row="1" Grid.Column="1" Margin="0,2"/>
-            <TextBox x:Name="tbGivenName" Grid.Row="2" Grid.Column="1" Margin="0,2"/>
-            <TextBox x:Name="tbFamilyName" Grid.Row="3" Grid.Column="1" Margin="0,2"/>
-        </Grid>
+            <TabItem Header="JSON export">
+                <metadata:ucMetaJson/>
 
-
+            </TabItem>
+        </TabControl>
         
-        <Button x:Name="btnMetadataApply" Grid.Row="3" Grid.ColumnSpan="2" Content="Apply" Click="btnMetadataApply_Click"/>
+        
     </Grid>
 </UserControl>

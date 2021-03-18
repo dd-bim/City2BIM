@@ -2,10 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
-             d:DesignHeight="92" d:DesignWidth="380">
+             d:DesignHeight="185" d:DesignWidth="373" FontFamily="Bahnschhrift">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -17,40 +17,34 @@
         </Grid.RowDefinitions>        
         <!-- select project center (will be calculated) should be used or manual input-->
         <StackPanel>
-            <RadioButton x:Name="rbLoGeoRef30Default" Margin="5,5,0,0" IsChecked="{x:Null}"  Checked="rbLoGeoRef30Default_Checked" Unchecked="rbLoGeoRef30Default_Unchecked">
+            <RadioButton x:Name="rbLoGeoRef30Default" Margin="5,5,0,0" Checked="rbLoGeoRef30Default_Checked" Unchecked="rbLoGeoRef30Default_Unchecked">
                 <TextBlock Text="Default
                                        (project center)" TextWrapping="Wrap"/>
             </RadioButton>
             <RadioButton x:Name="rbLoGeoRef30User" Content="User specific" Margin="5,5,0,0" Checked="rbLoGeoRef30User_Checked" Unchecked="rbLoGeoRef30User_Unchecked"/>
         </StackPanel>
-        <Grid Grid.Column="1">
+        <Grid x:Name="inputGrid" Grid.Column="1" Margin="5" IsEnabled="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="20"/>
-                <!-- placeholder otherwise the other rows wouldn't size correctly-->
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.RowSpan="4">
-                <TextBlock Text="X [m]: " Margin="0,2,0,0" Height="20"/>
-                <TextBlock Text="Y [m]: " Margin="0,2,0,0" Height="20"/>
-                <TextBlock Text="Z [m]: " Margin="0,2,0,0" Height="20"/>
-            </StackPanel>
 
+            <TextBlock Text="X [m]:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox x:Name="tbLoGeoRef30ValueX" Grid.Row="0" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged"></TextBox>
 
-            <StackPanel x:Name="spLoGeoRef30Values" IsEnabled="False" Grid.Column="1" Grid.RowSpan="4">
-                <TextBox x:Name="tbLoGeoRef30ValueX" Margin="0,0,0,0" Height="20" PreviewTextInput="tbLoGeoRef30_PreviewTextInput"/>
-                <TextBox x:Name="tbLoGeoRef30ValueY" Margin="0,2,0,0" Height="20" PreviewTextInput="tbLoGeoRef30_PreviewTextInput"/>
-                <TextBox x:Name="tbLoGeoRef30ValueZ" Margin="0,2,0,0" Height="20" PreviewTextInput="tbLoGeoRef30_PreviewTextInput"/>
-                
-            </StackPanel>
+            <TextBlock Text="Y [m]:" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox x:Name="tbLoGeoRef30ValueY" Grid.Row="1" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged"></TextBox>
 
-
+            <TextBlock Text="Z [m]:" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox x:Name="tbLoGeoRef30ValueZ" Grid.Row="2" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged"></TextBox>
         </Grid>
-        <Button x:Name="btnLoGeoRef30Apply" Grid.Row="1" Grid.Column="1" Content="Apply" Click="btnLoGeoRef30Apply_Click" IsEnabled="False" ToolTip="Is only required for 'user speciic'!" ToolTipService.ShowOnDisabled="True"/>
+        <Button x:Name="btnLoGeoRef30Apply" Grid.Row="1" Grid.ColumnSpan="2" Content="Apply settings [Level of Georef. 30]" Click="btnLoGeoRef30Apply_Click" IsEnabled="False" ToolTip="Apply the settings for LoGeoRef30!" ToolTipService.ShowOnDisabled="True"/>
     </Grid>
 </UserControl>

@@ -13,11 +13,12 @@ using System.IO;
 //BimGisCad - Bibliothek einbinden (TIN)
 using BimGisCad.Representation.Geometry.Composed; //TIN
 
-//Logging
-//NLOG removed...
-
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
+
+//Logging
+using BIMGISInteropLibs.Logging;
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 namespace BIMGISInteropLibs.GEOgraf
 {
@@ -53,21 +54,24 @@ namespace BIMGISInteropLibs.GEOgraf
         /// <returns>TIN - for processing in IFCTerrain or Revit</returns>
         public static Result ReadOutData(string filePath, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumberMap)
         {
-            //Logger
-            //Logger logger = LogManager.GetCurrentClassLogger();
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] start reading."));
 
-            //Result definieren damit Tin übergeben werden kann
+            //Result define so that TIN can be passed
             Result result = new Result();
 
-            //Anlegen eines neuen Builder für TIN            
+            //Create a new builder for TIN            
             var tinB = Tin.CreateBuilder(true);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] start reading."));
 
-            //Übergabeklassen
+            //init transfer classes
             pointIndex2NumberMap = null;
             triangleIndex2NumberMap = null;
 
+            //check if file exsists 
             if (File.Exists(filePath))
             {
+                //pass through each line of the file
                 foreach (var line in File.ReadAllLines(filePath))
                 {
                     var values = line.Split(new[] { ',' });
@@ -80,27 +84,31 @@ namespace BIMGISInteropLibs.GEOgraf
                         && int.TryParse(values[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statPos)
                         && int.TryParse(values[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statHeight))
                     {
-                        //Punkt dem TIN hinzufügen, hier wird nur PNR + Koordinaten benötigt
+                        //Add point to TIN builder, here only PNR + coordinates are needed
                         tinB.AddPoint(pnr, x, y, z);
-                        //Punkt erstellen
+
+                        //logging
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Point (" + (pnr) + ") set (x= " + x + "; y= " + y + "; z= " + z + ")"));
+
+                        //Create point
                         OPoint point = new OPoint(pnr, pointtype, x, y, z, statPos, statHeight);
-                        //Punkt (Value) über Key (Punktnummer) in Punktliste einfügen
+                        //Insert point (Value) via Key (Point number) into point list
                         pointList[pnr] = point;
                     }
 
-                    //Horizont auslesen
+                    //Read horizon
                     if (line.StartsWith("HNR") && values.Length > 13
                         && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hornr))
                     {
-                        //Abfragen, ob 2D (false) oder 3D (true)
+                        //Query whether 2D (false) or 3D (true)
                         bool is3D = values[4].Equals("1") ? true : false;
-                        //Horizont bilden
-                        OHorizon horizon = new OHorizon(hornr, values[3].ToString(), is3D); //BEMERKUNG: Encoding von ANSI nicht berücksichtigt!
-                        //Horizont der Horizontliste hinzufügen
+                        //Form horizon
+                        OHorizon horizon = new OHorizon(hornr, values[3].ToString(), is3D); //NOTE: Encoding of ANSI not considered!
+                        //Add horizon to the horizon list
                         horList[hornr] = horizon;
                     }
-                    
-                    //Dreiecke auslesen
+
+                    //Read triangles
                     if (line.StartsWith("DG") && values.Length > 9
                         && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int tn)
                         && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hnr)
@@ -115,17 +123,31 @@ namespace BIMGISInteropLibs.GEOgraf
                         bool eb = !string.IsNullOrEmpty(values[8]);
                         bool ec = !string.IsNullOrEmpty(values[9]);
 
-                        //Dreieck dem TIN hinzufügen
+                        //Add triangle to TIN builder
                         tinB.AddTriangle(tn, va, vb, vc, na, nb, nc, ea, eb, ec, true);
-                        
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Triangle ("+tn+") set (P1= " + (va) + "; P2= " + (vb) + "; P3= " + (vc) + ")"));
+
                         OTriangle triangle = new OTriangle(tn, horList[hnr], pointList[va], pointList[vb], pointList[vc], na, nb, nc, ea, eb, ec);
                         triList[tn] = triangle;
                     }
                 }
             }
+            //if file path isn't valid
+            else
+            {
+                //error handling??? result.error???
+
+                //error logging
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[Grafbat] File path ("+filePath+") could not be read!"));
+            }
+            //handover tin from tin builder
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Create TIN via TIN builder."));
             result.Tin = tinB.ToTin(out pointIndex2NumberMap, out triangleIndex2NumberMap);
-            //logger.Info("Reading GEOgraf OUT successful");
-            //logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
+
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.info, "Reading Grafbat data successful."));
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
+
             return result;
         }
     }

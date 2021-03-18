@@ -66,11 +66,16 @@ namespace IFCTerrainGUI.GUI.DXF
 
                 //set JSON settings of file path
                 MainWindow.jSettings.filePath = ofd.FileName;
+
+                //set JSON settings of file name
+                MainWindow.jSettings.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)
                 //so the user can not change any settings during the time the background worker is running
                 ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
+                //change cursor to wait animation (for user feedback)
+                Mouse.OverrideCursor = Cursors.Wait;
 
                 #region backgroundWorker
                 //kick off BackgroundWorker
@@ -87,7 +92,7 @@ namespace IFCTerrainGUI.GUI.DXF
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
+                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.fileName);
 
                 //conversion to string, because stored as enumeration
                 ((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
@@ -156,6 +161,9 @@ namespace IFCTerrainGUI.GUI.DXF
 
             //Release MainWindow again --> so the user can make entries again
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+            //change cursor to default
+            Mouse.OverrideCursor = null;
+
         }
 
         /// <summary>

@@ -15,6 +15,10 @@ using BimGisCad.Representation.Geometry.Elementary;     //Points, Lines, etc.
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
+//Logging
+using BIMGISInteropLibs.Logging;
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 namespace BIMGISInteropLibs.CityGML
 {
     class CityGMLReaderTerrain
@@ -30,6 +34,7 @@ namespace BIMGISInteropLibs.CityGML
 
             //TIN-Builder
             var tinB = Tin.CreateBuilder(true);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Create TIN builder"));
             int pnr = 0;
 
             //create new result to be able to transfer later
@@ -74,11 +79,14 @@ namespace BIMGISInteropLibs.CityGML
                                         {
                                             //first Add points to tin with point index (pnr)
                                             tinB.AddPoint(pnr++, pt1);
+                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr - 1) + ") set (x= " + pt1.X + "; y= " + pt1.Y + "; z= " + pt1.Z + ")"));
                                             tinB.AddPoint(pnr++, pt2);
+                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr - 1) + ") set (x= " + pt2.X + "; y= " + pt2.Y + "; z= " + pt2.Z + ")"));
                                             tinB.AddPoint(pnr++, pt3);
-
+                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr - 1) + ") set (x= " + pt3.X + "; y= " + pt3.Y + "; z= " + pt3.Z + ")"));
                                             //adding Triangle to TIN-Builder (Referencing to point numbers just used)
                                             tinB.AddTriangle(pnr - 3, pnr - 2, pnr - 1, true);
+                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Triangle set (P1= " + (pnr-3) + "; P2= " + (pnr - 2) + "; P3= " + (pnr - 1) + ")"));
                                         }
                                         reader.Read(); // <-- check! is this necessary here? [TODO]
                                     }
@@ -91,30 +99,34 @@ namespace BIMGISInteropLibs.CityGML
                                     }
                                     */
 
-                                    //logging [TODO]
-                                    //logger.Info("Reading GML-data successful");
-                                    //logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
-
                                     //Generate TIN from TIN Builder
                                     Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
+                                    //logging
+                                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Create TIN via TIN builder."));
+                                    //handover tin to result
                                     result.Tin = tin;
-
+                                    //logging
+                                    LogWriter.Entries.Add(new LogPair(LogType.info, "Reading CityGML data successful."));
+                                    LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
                                     //Result handed over
                                     return result;
                                 }
                             }
                         }
                     }
+
                     //result.Error = string.Format(Properties.Resources.errNoTIN, Path.GetFileName(fileName));
-                    //logger.Error("No TIN-data found");
+                    LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] No TIN data found"));
                     return result;
                 }
             }
-            //[TODO]: Pass error message and "Error" and add logging
+            //[TODO]: Pass error message and "Error"
             catch
             {
                 //result.Error = string.Format(Properties.Resources.errFileNotReadable, Path.GetFileName(fileName));
-                //logger.Error("File not readable");
+                
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] File not readable"));
+
                 return result;
             }
         } //End ReadTIN

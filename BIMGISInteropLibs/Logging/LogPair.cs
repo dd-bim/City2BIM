@@ -14,5 +14,5 @@
                 this.message = message;
             }
     }
-    public enum LogType { error, info, warning }
+    public enum LogType { error, info, warning, verbose, debug }
 }
