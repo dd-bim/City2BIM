@@ -254,7 +254,6 @@
     <Compile Include="IfcTerrain\ConnectionInterface.cs" />
     <Compile Include="IFC\WriteInput.cs" />
     <Compile Include="LandXML\ReaderTerrain.cs" />
-    <Compile Include="Logging\LogWriterIfcTerrain.cs" />
     <Compile Include="PostGIS\ReaderTerrain.cs" />
     <Compile Include="REB\ReaderTerrain.cs" />
     <Compile Include="OGR\GeoObject.cs" />

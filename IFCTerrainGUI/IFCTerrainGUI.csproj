@@ -37,6 +37,13 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>DD_BIM_ICON.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IxMilia.Dxf, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -44,6 +51,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.10.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -79,6 +89,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\Metadata\metadata_din_spec_91391_2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\Metadata\ucMetaIfcProject.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\Metadata\ucMetaIfcPropertySets.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\Metadata\ucMetaJson.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ExportSettings\ucIfcGeoRef.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -87,7 +117,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ExportSettings\ucLoGeoRef30.xaml">
+    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef30.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef40.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef50.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -125,14 +163,35 @@
     <Compile Include="GUI\ElevationGrid\ucElevationGrid.xaml.cs">
       <DependentUpon>ucElevationGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml.cs">
+      <DependentUpon>metadata_din_18740_6.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\Metadata\metadata_din_spec_91391_2.xaml.cs">
+      <DependentUpon>metadata_din_spec_91391_2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\Metadata\ucMetaIfcProject.xaml.cs">
+      <DependentUpon>ucMetaIfcProject.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\Metadata\ucMetaIfcPropertySets.xaml.cs">
+      <DependentUpon>ucMetaIfcPropertySets.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\Metadata\ucMetaJson.xaml.cs">
+      <DependentUpon>ucMetaJson.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcGeoRef.xaml.cs">
       <DependentUpon>ucIfcGeoRef.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcVersionShape.xaml.cs">
       <DependentUpon>ucIfcVersionShape.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ExportSettings\ucLoGeoRef30.xaml.cs">
+    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef30.xaml.cs">
       <DependentUpon>ucLoGeoRef30.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef40.xaml.cs">
+      <DependentUpon>ucLoGeoRef40.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef50.xaml.cs">
+      <DependentUpon>ucLoGeoRef50.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\ucMetadata.xaml.cs">
       <DependentUpon>ucMetadata.xaml</DependentUpon>
@@ -197,6 +256,8 @@
       <Name>BIMGISInteropLibs</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="DD_BIM_ICON.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

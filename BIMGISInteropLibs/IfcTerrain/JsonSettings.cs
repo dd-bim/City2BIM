@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BIMGISInteropLibs.Logging; //include for verbosity level
+
 namespace BIMGISInteropLibs.IfcTerrain
 {
     /// <summary>
@@ -40,7 +42,33 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         REB,
     }
-    
+
+    public enum LoGeoRef
+    {
+        /// <summary>
+        /// Level of Georeferencing 30 - mainly use of a coordinate <para/>
+        /// Need: IfcCartesianPoint; IfcDirection (x,y); IfcAxis2Placement3D; IfcLocalPlacement <para/>
+        /// Stored in: IfcSite
+        /// </summary>
+        LoGeoRef30 = 30,
+
+
+        /// <summary>
+        /// Level of Georefencing 40 - mainly use a coordinate and rotation <para/>
+        /// Need: IfcCartesianPoint; IfcDirection (x,y); IfcAxis2Placement3D; IfcGeometricRepresentationContext <para/>
+        /// Stored in: IfcProject
+        /// </summary>
+        LoGeoRef40 = 40,
+
+
+        /// <summary>
+        /// Level of Georefencing 50 - mainly use a coordinate and rotation <para/>
+        /// Need: IfcGeometricRepresentationContext, IfcProjectedCRS, IfcSIUnit <para/>
+        /// Stored in: IfcProject IfcMapConversion
+        /// </summary>
+        LoGeoRef50 = 50
+    }
+
     /// <summary>
     /// Establishes the connection between Reader, Writers, GUI and Command
     /// </summary>
@@ -54,6 +82,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// storage location of the file to be converted
         /// </summary>
         public string filePath { get; set; }
+
+        /// <summary>
+        /// name of the file to be converted (without path)
+        /// </summary>
+        public string fileName { get; set; }
 
         /// <summary>
         /// filetype of the file to be converted
@@ -80,11 +113,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// [TODO] Destination location for the log file
         /// </summary>
         public string logFilePath { get; set; }
-        
+
         /// <summary>
         /// Setting of user defined verbosityLevel (TRACE, INFO, DEBUG, ...)
         /// </summary>
-        public string verbosityLevel { get; set; }
+        public LogType verbosityLevel { get; set; }
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
@@ -107,7 +140,22 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// The editors organization name in the output IFC file
         /// </summary>
         public string editorsOrganisationName { get; set; }
+
+        /// <summary>
+        /// Decide whether metadata should be exported as a separate JSON file
+        /// </summary>
+        public bool exportMetadataFile { get; set; }
         #endregion
+
+        /// <summary>
+        /// Decide whether metadata (according to DIN SPEC 91391-2) should be exported
+        /// </summary>
+        public bool exportMetadataDin91391 { get; set; }
+
+        /// <summary>
+        /// Decide whether metadata (according to DIN 18740-6) should be exported
+        /// </summary>
+        public bool exportMetadataDin18740 { get; set; }
 
         #region only used for processing [Settings]
         /// <summary>
@@ -136,6 +184,8 @@ namespace BIMGISInteropLibs.IfcTerrain
         //below the required attributes to process the georeferencing
         #region GeoRef - Attributes
 
+        public LoGeoRef logeoref { get; set; }
+
         /// <summary>
         /// Describes whether the project coordinate origin should be set to the user defined position or not.
         /// </summary>
@@ -156,10 +206,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public double zOrigin { get; set; }
         #endregion
-        #endregion
+
+        #endregion unspecific file attributes
 
         #region file specific attributes
-        
+
         //for dxf processing
         #region DXF
         /// <summary>
@@ -324,5 +375,138 @@ namespace BIMGISInteropLibs.IfcTerrain
         public string breakline_tin_id { get; set; }
         #endregion
         #endregion
+    }
+
+    /// <summary>
+    /// storage for json settings (according to standard: DIN SPEC 91391-2)
+    /// </summary>
+    public class JsonSettings_DIN_SPEC_91391_2
+    {
+        /// <summary>
+        /// unique Identificator (obligatory)
+        /// </summary>
+        public Guid id { get; set; }
+
+        /// <summary>
+        /// file name (obligatory)
+        /// </summary>
+        public string name { get; set; }
+
+        /// <summary>
+        /// type (e.g.: DTM) (obligatory)
+        /// </summary>
+        public string type { get; set; }
+
+        /// <summary>
+        /// supplementary description (opitonal)
+        /// </summary>
+        public string description { get; set; }
+
+        /// <summary>
+        /// creation date (opitonal)
+        /// </summary>
+        public string created { get; set; }
+
+        /// <summary>
+        /// [leave emtpy] upload date (opitonal)
+        /// </summary>
+        public string uploaded { get; set; }
+
+        /// <summary>
+        /// refernz to creator of the container (optional)
+        /// </summary>
+        public string creator { get; set; }
+
+        /// <summary>
+        /// [leave empty!] refernz to sender of the container (optional)
+        /// </summary>
+        public string sender { get; set; }
+
+        /// <summary>
+        /// [leave empty]: refenz(es) to to receiver (multiple possible) (optional)
+        /// </summary>
+        public string[] recipients { get; set; }
+
+        /// <summary>
+        /// revision number (obligatory)
+        /// </summary>
+        public string revision { get; set; }
+
+        /// <summary>
+        /// version number (optional)
+        /// </summary>
+        public string version { get; set; }
+
+        /// <summary>
+        /// [leave empty]: status of container
+        /// </summary>
+        public string status { get; set; }
+
+        /// <summary>
+        /// [leave empty]: contents of the container
+        /// </summary>
+        public string content { get; set; }
+
+        /// <summary>
+        /// [leave empty]: reference to location (download address)
+        /// </summary>
+        public string location { get; set; }
+
+        /// <summary>
+        /// project id (obligatory)
+        /// </summary>
+        public string projectId { get; set; }
+
+        /// <summary>
+        /// reference to schema (for more metadata) (optional)
+        /// </summary>
+        public string metaScheme { get; set; }
+
+        /// <summary>
+        /// mime type eg.: application/x-step
+        /// </summary>
+        public string mimeType { get; set; }
+    }
+
+    /// <summary>
+    /// storage for json settings (according to standard: DIN 18740-6)
+    /// </summary>
+    public class JsonSettings_DIN_18740_6
+    {
+        /// <summary>
+        /// model typ - here dtm (german: Modelltyp; nur DGM) [Verweis auf: 91391-2?]
+        /// </summary>
+        public string modelType { get; set; }
+
+        /// <summary>
+        /// data structure - here mesh (german: Datenstruktur; nur Dreiecksvermaschung)
+        /// </summary>
+        public string dataStructure { get; set; }
+
+        /// <summary>
+        /// date of the dataset (german: Erfassungsdatum)
+        /// </summary>
+        public string topicality { get; set; }
+
+        /// <summary>
+        /// position reference system (german: Lagereferenzsystem)
+        /// </summary>
+        public string positionReferenceSystem { get; set; }
+
+        /// <summary>
+        /// altitude reference system (german: Höhenreferenzsystem)
+        /// </summary>
+        public string altitudeReferenceSystem { get; set; }
+
+        /// <summary>
+        /// projection
+        /// </summary>
+        public string projection { get; set; }
+
+        /// <summary>
+        /// spatial expansion (german: Gebietsausdehnung)
+        /// </summary>
+        public string spatialExpansion { get; set; }
+
     }
 }

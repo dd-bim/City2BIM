@@ -16,20 +16,13 @@ using System.Windows.Shapes;
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
-    /// Interaktionslogik für ucMetadata.xaml
+    /// Interaktionslogik für ucLoGeoRef50.xaml
     /// </summary>
-    public partial class ucMetadata : UserControl
+    public partial class ucLoGeoRef50 : UserControl
     {
-        public ucMetadata()
+        public ucLoGeoRef50()
         {
             InitializeComponent();
         }
-
-        /*
-         * PLACEHOLDER
-         * all logic is seperated into user controler
-         * these are in the "Metadata" folder
-         */
-                
     }
 }

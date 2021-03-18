@@ -71,23 +71,8 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
 
                 //TODO logging that default value ("1" m) has been set
 
-                //enable stack panel for bounding box 
-                stpGridBB.IsEnabled = true;
                 chkGridBB.IsEnabled = true;
             }
-        }
-
-        /// <summary>
-        /// include regular expressions so that only numbers can be entered
-        /// Note: blanks can also be entered (these must still be removed)
-        /// </summary>
-        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
-        {
-            //regular expression
-            Regex regex = new Regex("[^0-9][,.]+");
-
-            //check if input corresponds to a regular expression
-            e.Handled = regex.IsMatch(e.Text);
         }
 
         /// <summary>
@@ -95,14 +80,14 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
         /// </summary>
         private void chkGridBB_Checked(object sender, RoutedEventArgs e)
         {
-            //enable for input in textboxes
-            stpGridBB.IsEnabled = true;
+            //enable input fields for bounding box
+            tbBBNorth.IsEnabled = tbBBEast.IsEnabled = tbBBSouth.IsEnabled = tbBBWest.IsEnabled = true;
 
             //diable process button grid --> user need to input in bounding box
             btnProcessGrid.IsEnabled = false;
 
             //check if all textboxes may allready are filled 
-            readyState();
+            readyCheck();
         }
 
         /// <summary>
@@ -110,11 +95,11 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
         /// </summary>
         private void chkGridBB_Unchecked(object sender, RoutedEventArgs e)
         {
-            //disable input fields (not needed anymore)
-            stpGridBB.IsEnabled = false;
+            //disable input fields for bounding box
+            tbBBNorth.IsEnabled = tbBBEast.IsEnabled = tbBBSouth.IsEnabled = tbBBWest.IsEnabled = false;
 
             //check all textboxes
-            readyState();
+            readyCheck();
         }
 
         /// <summary>
@@ -177,10 +162,10 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
         /// <summary>
         /// Check that all required tb fields are not empty (via booleans)
         /// </summary>
-        private bool readyState()
+        private bool readyCheck()
         {
             //if all tbs checker set to true
-            if (bbNorth && bbEast && bbSouth && bbWest && gridSize)
+            if (bbNorth && bbEast && bbSouth && bbWest && gridSize && (validationError == 0))
             {
                 //enable process grid button
                 btnProcessGrid.IsEnabled = true;
@@ -226,6 +211,11 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
         /// boolean value - to check if tb GRID SIZE is not empty
         /// </summary>
         private bool gridSize { get; set; }
+
+        /// <summary>
+        /// counter of validation errors
+        /// </summary>
+        private int validationError { get; set; }
 
         #region textbox changes to check if all four values are set
         /// <summary>
@@ -300,7 +290,42 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             }
 
             //check if all fields are not empty
-            readyState();
+            readyCheck();
+        }
+
+        /// <summary>
+        /// will be executed as soon as a validation error occurs
+        /// Application: deactivate the apply button if necessary
+        /// </summary>
+        private void tbNum_Error(object sender, ValidationErrorEventArgs e)
+        {
+            //if event is null
+            if (e == null)
+            {
+                //output error
+                throw new Exception("Unexpected event args");
+            }
+            //loop through whether error is present or not
+            switch (e.Action)
+            {
+                //if there is an error --> count up
+                case ValidationErrorEventAction.Added:
+                    {
+                        validationError++;
+                        break;
+                    }
+                //for each removed error --> count down
+                case ValidationErrorEventAction.Removed:
+                    {
+                        validationError--;
+                        break;
+                    }
+                //error output
+                default:
+                    {
+                        throw new Exception("Unknown action");
+                    }
+            }
         }
         #endregion textbox changes to check if all four values are set
     }

@@ -12,10 +12,11 @@
         xmlns:ucPostGIS ="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
-        Title="IFCTerrain GUI" Height="840" Width="800" FontFamily="Bahnschrift" FontSize="14" ResizeMode="CanMinimize">
+        Title="IFCTerrain GUI" 
+        Height="840" Width="800" Icon="DD_BIM_ICON.ico"
+        FontFamily="Bahnschrift" FontSize="12"
+        ResizeMode="CanMinimize" >
     <Grid>
-        
-
         <!-- add background coloring -->
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -68,7 +69,7 @@
         <TextBlock x:Name="tbExportSettings" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Text="Export Settings"/>
 
         <!-- Textbox "Documentation" (if the linking is no longer correct, this has to be updated in the used function)-->
-        <TextBlock x:Name="tbDocumentation" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Text="Documentation" ToolTip="Here you can access the documentation for further information (external link to github repository)" MouseDown="tbDocumentation_MouseDown" Foreground="#FF223E92" TextDecorations="Underline"/>
+        <TextBlock x:Name="tbDocumentation" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="16" Text="Documentation" ToolTip="Here you can access the documentation for further information (external link to github repository)" MouseDown="tbDocumentation_MouseDown" Foreground="#FF223E92" TextDecorations="Underline" Cursor="Help"/>
 
         <!--#endregion header-->
 
@@ -154,7 +155,7 @@
         <GroupBox
             Grid.Column="3"
             Grid.Row="4"
-            Grid.RowSpan="4"
+            Grid.RowSpan="5"
             Header="Georeferencing"
             Margin="0,0,0,5">
             
@@ -165,9 +166,9 @@
         <!-- group box for meta data settings (placeholder only) -->
         <GroupBox
             Grid.Column="3"
-            Grid.Row="8"
-            Grid.RowSpan="6"
-            Header="Metadaten (Placeholder)"
+            Grid.Row="9"
+            Grid.RowSpan="5"
+            Header="Metadata"
             Margin="0,0,0,5">
             <ucExportSettings:ucMetadata/>
         </GroupBox>
@@ -197,12 +198,11 @@
                     VerticalAlignment="Center"
                     Margin="5,0,0,0"/>
 
-                <ComboBox Grid.Column="1">
-                    <ComboBoxItem Content="Trace"/>
-                    <ComboBoxItem Content="Debug" IsSelected="True"/>
-                    <ComboBoxItem Content="Info"/>
-                    <ComboBoxItem Content="Warn"/>
-                    <ComboBoxItem Content="Error"/>
+                <ComboBox x:Name="selectVerbosityLevel" Grid.Column="1" SelectionChanged="selectVerbosityLevel_SelectionChanged">
+                    <ComboBoxItem x:Name="minVerbose" Content="Verbose" ToolTip="VERBOSE is the noisiest level. Recommended: for development (if needed)"/>
+                    <ComboBoxItem x:Name="minDebug" Content="Debug" ToolTip="Recommend: for development"/>
+                    <ComboBoxItem x:Name="minInformation" Content="Information" ToolTip="Write more information for the whole process. Recommend: for advanced user"/>
+                    <ComboBoxItem x:Name="minWarning" Content="Warning" ToolTip="Default - Setting."/>
                 </ComboBox>
 
                 <TextBox
@@ -221,7 +221,7 @@
             Grid.Row="17"
             Grid.Column="1"
             Grid.ColumnSpan="3"
-            Header="Target IFC file location">
+            Header="Target file location" FontSize="14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -233,7 +233,8 @@
                     x:Name="btnChooseStorageLocation"
                     Content="Choose"
                     Grid.Column="0"
-                    Height="20" Click="btnChooseStorageLocation_Click"
+                    Height="25" Click="btnChooseStorageLocation_Click"
+                    ToolTip="Please select the location for the IFC file (includes config and metadata if necessary)!"
                     />
 
                 <TextBox
@@ -241,15 +242,18 @@
                     Margin="5,0,5,0"
                     Grid.Column="1"
                     IsReadOnly="True"
-                    Height="20"
+                    Height="25"
                     Background="#FFDDDDDD"
+                    VerticalContentAlignment="Center"
                     />
                 <Button
                     x:Name="btnStart"
                     Content="Start"
                     Grid.Column="2"
-                    Height="20"
+                    Height="25"
                     Click="btnStart_Click"
+                    ToolTip="Please set all the required settings first. Once these have been made, this button will be enabled."
+                    ToolTipService.ShowOnDisabled="True"
                     IsEnabled="False"
                     />
             </Grid>

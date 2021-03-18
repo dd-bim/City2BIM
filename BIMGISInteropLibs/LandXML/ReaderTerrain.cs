@@ -18,6 +18,10 @@ using BIMGISInteropLibs.IfcTerrain;
 //Include IfcTerrain - Model for unit conversion
 using static BIMGISInteropLibs.IfcTerrain.Common;
 
+//Logging
+using BIMGISInteropLibs.Logging;
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 namespace BIMGISInteropLibs.LandXML
 {
     public class ReaderTerrain
@@ -32,8 +36,6 @@ namespace BIMGISInteropLibs.LandXML
             //create a new result for passing the TIN
             var result = new Result();
 
-            //var logger = LogManager.GetCurrentClassLogger(); removed - is to be replaced by Serilog
-
             //[TODO]: Adding the error trapping
             try
             {
@@ -46,11 +48,14 @@ namespace BIMGISInteropLibs.LandXML
 
                     //TIN-Builder erzeugen
                     var tinB = Tin.CreateBuilder(true);
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[LandXML] TIN builder created."));
 
                     //Create PNR "artificially" & used for Indexing in TIN
                     int pnr = 0;
 
                     bool insideTin = false;
+
+                    //TODO- What do this?
                     reader.MoveToContent();
                     
                     // Parse the file and display each of the nodes.
@@ -60,7 +65,7 @@ namespace BIMGISInteropLibs.LandXML
                         {
                             switch (reader.LocalName)
                             {
-                                case "Metric": //WHY IS METRIC MISSING?
+                                case "Metric": //TODO WHY IS METRIC MISSING?
                                 case "Imperial":
                                     el = XElement.ReadFrom(reader) as XElement;
                                     if (el != null)
@@ -84,8 +89,13 @@ namespace BIMGISInteropLibs.LandXML
                                         if (att != null && Point3.Create(
                                             el.Value.Replace(',', '.').Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries), out var pt))
                                         {
+                                            //create point via BIMGISCADLib
                                             Point3 point = Point3.Create(pt.Y, pt.X, pt.Z);
+                                            //add point to tin builder
                                             tinB.AddPoint(pnr, point);
+                                            //logging
+                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[LandXML] Point (" + (pnr) + ") set (x= " + point.X + "; y= " + point.Y + "; z= " + point.Z + ")"));
+                                            //add to point indicies
                                             pntIds.Add(att.Value, pnr++);
                                         }
                                     }
@@ -102,6 +112,9 @@ namespace BIMGISInteropLibs.LandXML
                                         {
                                             //Add the triangle over indexing the point numbers based on the IF loop above.
                                             tinB.AddTriangle(p1, p2, p3);
+
+                                            //logging
+                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[LandXML] Triangle set (P1= " + (p1) + "; P2= " + (p2) + "; P3= " + (p3) + ")"));
                                         }
                                     }
                                     break;
@@ -121,29 +134,35 @@ namespace BIMGISInteropLibs.LandXML
                             }
                             */
 
-                            //Logging [TODO]
-                            //logger.Info("Reading LandXML-Data successful");
-                            //logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
-
                             //Generate TIN from TIN Builder
                             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
+                            LogWriter.Entries.Add(new LogPair(LogType.debug, "[LandXML] TIN created via TIN builder."));
+
+                            //return tin to result
                             result.Tin = tin;
+
+                            //Logging
+                            LogWriter.Entries.Add(new LogPair(LogType.info, "Reading LandXML data successful."));
+                            LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
 
                             return result;
                         }
                         else
-                        { reader.Read(); } //[TODO]
+                        { reader.Read(); } //[TODO] <-- check this???
                     }
                 }
             }
             catch
             {
                 //result.Error = string.Format(Properties.Resources.errFileNotReadable, Path.GetFileName(fileName));
-                //logger.Error("File not readable");
+
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[LandXML] File not readable."));
+
                 return result;
             }
             //result.Error = string.Format(Properties.Resources.errNoTIN, Path.GetFileName(fileName));
-            //logger.Error("No TIN-data found");
+
+            LogWriter.Entries.Add(new LogPair(LogType.error, "[LandXML] No TIN data found."));
             return result;
         } //End ReadTIN
     }

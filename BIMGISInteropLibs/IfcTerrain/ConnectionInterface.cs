@@ -15,8 +15,12 @@ using BIMGISInteropLibs.IfcTerrain;
 
 using BIMGISInteropLibs.IFC;
 
+using BIMGISInteropLibs.Logging; //logging
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
+
+using System.Windows; //include for error message box
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -37,7 +41,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// breaklines (result of the specific file reader) [TODO]
         /// </summary>
         public Dictionary<int, Line3> Breaklines { get; private set; } = null;
-
+      
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer
         /// </summary>
@@ -48,6 +52,8 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <param name="refElevation">TODO</param>
         public void mapProcess(JsonSettings jSettings, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
         {
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Mapping process started."));
+
             //The processing is basically done by a reader and a writer (these are included in the corresponding regions)
             #region reader
             //initalize transfer class
@@ -89,7 +95,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     {
                         //TODO: change to tin processing
                         //processing points and lines (via mesh)
-                        result = DXF.ReaderTerrain.ReadDxfPoly(jSettings.is3D, dxfFile, jSettings.layer, jSettings.breakline_layer, jSettings.minDist, jSettings.logFilePath, jSettings.verbosityLevel, jSettings.breakline);
+                        result = DXF.ReaderTerrain.ReadDxfPoly(jSettings.is3D, dxfFile, jSettings.layer, jSettings.breakline_layer, jSettings.minDist, jSettings.logFilePath, jSettings.breakline);
                     }
                     break;
 
@@ -124,11 +130,34 @@ namespace BIMGISInteropLibs.IfcTerrain
 
                 //reader for PostGIS
                 case IfcTerrainFileType.PostGIS:
-                    result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings.host, jSettings.port, jSettings.user, jSettings.password, jSettings.database, jSettings.schema, jSettings.tin_table, jSettings.tin_column, jSettings.tinid_column, jSettings.tin_id, jSettings.breakline, jSettings.breakline_table, jSettings.breakline_column, jSettings.breakline_tin_id);
+                    result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings.host, jSettings.port, jSettings.user, jSettings.password, jSettings.database, jSettings.schema, jSettings.tin_table, jSettings.tin_column, jSettings.tinid_column, jSettings.tin_id, jSettings.breakline, jSettings.breakline_table, jSettings.breakline_column, jSettings.breakline_tin_id, jSettings);
                     break;
             }
             //so that from the reader (TIN, Error, Mesh) is passed to respective "classes"
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "Reading file completed."));
+
             this.Tin = result.Tin;      //pass the TIN
+
+            //tin error handler
+            if(this.Tin.NumTriangles.Equals(0))
+            {
+                //log error message
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[READER]no DTM could be read on the basis of the input data. The DTM is empty! - Processing canceled!"));
+
+                //write log file
+                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
+                
+                //Messagebox
+                MessageBox.Show("The TIN is empty! - Processing canceled!", "TIN is empty", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                return;
+            }
+            else
+            {
+                //log reading results
+                LogWriter.Entries.Add(new LogPair(LogType.info, "TIN read: " + Tin.Points.Count + " points; " + Tin.NumTriangles + " triangles;"));
+            }
+
             this.Mesh = result.Mesh;    //pass the MESH (will be removed) [TODO]
             #endregion import data via type selection
 
@@ -142,6 +171,9 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //project name assigned as placeholder
                 jSettings.projectName = "Name of project";
                 //so that a user can also adjust it later on
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.warning, "Project name have been set as placeholder."));
             }
 
             #region placement / georef
@@ -154,6 +186,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             {
                 //Placement is set via input values
                 writeInput.Placement.Location = Vector3.Create(jSettings.xOrigin, jSettings.yOrigin, jSettings.zOrigin);
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using origin: X= "+ jSettings.xOrigin + "; Y= "+jSettings.yOrigin + "; Z= "+ jSettings.zOrigin));
             }
             //Alternative: determine the "BoundingBox", and define the center (x,y,z) as the coordinate origin.
             else
@@ -218,6 +251,8 @@ namespace BIMGISInteropLibs.IfcTerrain
 
                     //set center point as placement
                     writeInput.Placement.Location = Vector3.Create(MidX, MidY, MidZ);
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "Project center point was calculated and set."));
+                    LogWriter.Entries.Add(new LogPair(LogType.debug, "Project center: X= " + MidX + "; Y= " + MidY + "; Z= " + MidZ));
                 }
             }
             #endregion placement / georef
@@ -242,25 +277,28 @@ namespace BIMGISInteropLibs.IfcTerrain
                 writeInput.SurfaceType = SurfaceType.TIN;
             }
             */
+
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Writer is using shape representation: " + writeInput.SurfaceType.ToString()));
             #endregion shape representation
 
             #region ifc xml / step file
-            //Standard file type to STEP (Reason: supported by IFC2 *AND* IFC4, etc.)
+            //Standard file type to STEP (Reason: supported by IFC2x3 *AND* IFC4, etc.)
             writeInput.FileType = IfcFileType.Step;
 
             //query whether an XML file is to be written additionally (IFC4 only)
             if (jSettings.outFileType == IfcFileType.XML)
             {
                 writeInput.FileType = IfcFileType.XML;
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output IfcXml"));
             }
-
-            /* TODO (Logging)
-             * logger.Debug("Writing IFC with:");
-             * logger.Debug("IFC Version: " + jSettings.outIFCType);
-             * logger.Debug("Surfacetype: " + jSettings.surfaceType);
-             * logger.Debug("Filetype: " + jSettings.fileType); 
-             */
             #endregion ifc xml / step file
+
+            //Logging
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "Writing IFC with:"));
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "--> IFC Version " + jSettings.outIFCType));
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "--> Surfacetype " + jSettings.surfaceType));
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "--> Filetype " + jSettings.fileType));
 
             //(processing via MESH [TODO]: is to be replaced by TIN - writer (below))
             #region IFC2x3 writer (MESH)
@@ -382,14 +420,33 @@ namespace BIMGISInteropLibs.IfcTerrain
                         breakDist);
                 //logger.Debug("IFC Site created"); [TODO]:Logging
                 IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
+                LogWriter.Entries.Add(new LogPair(LogType.info, "IFC file writen: " + jSettings.destFileName));
                 //logger.Info("IFC file writen: " + jSettings.destFileName);
             }
             #endregion IFC4 writer (TIN)
 
-            #endregion writer
 
-            //TODO logging: end of log file
-            //logger.Info("----------------------------------------------");
+
+            #region logging
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC writer completed."));
+
+            //if user didn't select a verbosity level
+            if (string.IsNullOrEmpty(jSettings.verbosityLevel.ToString()))
+            {
+                //set verbosity level to "default" (currently: verbose)
+                jSettings.verbosityLevel = LogType.info;
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level set to " + jSettings.verbosityLevel.ToString()));
+            }
+
+            LogWriter.Entries.Add(new LogPair(LogType.info, "--------------------------------------------------"));
+
+            //write to logging file
+            LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
+            #endregion logging
+            #endregion writer
         }
     }
 }

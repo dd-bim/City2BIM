@@ -169,6 +169,9 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void chkIfcXml_Checked(object sender, RoutedEventArgs e)
         {
             MainWindow.jSettings.outFileType = BIMGISInteropLibs.IFC.IfcFileType.XML;
+
+            //set settings for DIN SPEC 91391
+            MainWindow.jSettings91391.mimeType = "application/x-step";
         }
 
         /// <summary>
@@ -177,6 +180,9 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void chkIfcXml_Unchecked(object sender, RoutedEventArgs e)
         {
             MainWindow.jSettings.outFileType = BIMGISInteropLibs.IFC.IfcFileType.Step;
+
+            //set settings for DIN SPEC 91391
+            MainWindow.jSettings91391.mimeType = "application/xml";
         }
     }
 }

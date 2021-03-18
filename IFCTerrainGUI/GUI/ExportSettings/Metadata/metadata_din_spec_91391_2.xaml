@@ -1,0 +1,63 @@
+﻿<Window x:Class="IFCTerrainGUI.GUI.ExportSettings.Metadata.metadata_din_spec_91391_2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
+        mc:Ignorable="d"
+        Title="Metadata - DIN SPEC 91391-2" 
+        Height="350" Width="400" 
+        FontFamily="Bahnschrift" FontSize="12"
+        ResizeMode="CanMinimize">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <!-- info text -->
+        <TextBlock Text="Here you can assign metadata (according to DIN 91391-2)." Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
+       
+        <TextBlock Text="unique Identificator" Grid.Row="2" VerticalAlignment="Center"/>
+        <TextBlock Text="Description" Grid.Row="3" Grid.RowSpan="2" VerticalAlignment="Center"/>
+        <TextBlock Text="Creator" Grid.Row="5" VerticalAlignment="Center"/>
+        <TextBlock Text="Revision" Grid.Row="6" VerticalAlignment="Center"/>
+        <TextBlock Text="Version" Grid.Row="7" VerticalAlignment="Center"/>
+        <TextBlock Text="Project ID" Grid.Row="8" VerticalAlignment="Center"/>
+        <TextBlock Text="Meta Scheme" Grid.Row="9" VerticalAlignment="Center"/>
+        
+
+
+        <!-- input fields -->
+        <TextBox x:Name="tbUUID" Grid.Row="2" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsReadOnly="True"/>
+
+        <TextBox x:Name="tbDescription" Grid.Row="3" Grid.RowSpan="2" Grid.Column="1" Margin="0,1" TextAlignment="Left" TextWrapping="Wrap"/>
+
+        <TextBox x:Name="tbCreator" Grid.Row="5" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+
+        <TextBox x:Name="tbRevision" Grid.Row="6" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+        
+        <TextBox x:Name="tbVersion" Grid.Row="7" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+
+        <TextBox x:Name="tbProjectId" Grid.Row="8" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+
+        <TextBox x:Name="tbMetaShema" Grid.Row="9" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+
+
+        <!--apply button-->
+        <Button x:Name="btnApplyMetadata913912" Grid.Row="19" Grid.ColumnSpan="2" Content="Apply and Close - Window" Click="btnApplyMetadata913912_Click"/>
+    </Grid>
+</Window>

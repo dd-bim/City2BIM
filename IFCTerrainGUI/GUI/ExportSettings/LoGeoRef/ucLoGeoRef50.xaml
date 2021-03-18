@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="IFCTerrainGUI.GUI.ExportSettings.ucLoGeoRef50"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:num="http://gu.se/NumericInput"
+             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+             mc:Ignorable="d" 
+             d:DesignHeight="163" d:DesignWidth="373">
+    <Grid IsEnabled="False">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="1" Content="Apply settings [Level of Georef. 50]" IsEnabled="False" ToolTip="Apply the settings for LoGeoRef50!" ToolTipService.ShowOnDisabled="True"/>
+    </Grid>
+</UserControl>

@@ -19,8 +19,13 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //used to outsource auxiliary functions
 using BIMGISInteropLibs.IfcTerrain; //used for JsonSettings, ...
 using System.IO; //used for file handling (e.g. open directory)
 using Newtonsoft.Json; //used for serialize the json file
+using Newtonsoft.Json.Linq;
 using Microsoft.Win32;  //file handing (storage location)
 using System.ComponentModel; //used for background worker
+
+using BIMGISInteropLibs.Logging;
+
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 namespace IFCTerrainGUI
 {
@@ -40,14 +45,26 @@ namespace IFCTerrainGUI
             //add tasks for background worker (konversion)
             backgroundWorkerIfc.DoWork += BackgroundWorkerIfc_DoWork;
             backgroundWorkerIfc.RunWorkerCompleted += BackgroundWorkerIfc_RunWorkerCompleted;
-        }
 
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "GUI initialized."));
+        }
+        /// <summary>
+        /// create an instance for Json Settings (getter + setter) <para/>
+        /// mainly used to create interaction between command / GUI and readers & writers <para/>
+        /// </summary>
+        public static JsonSettings jSettings = new JsonSettings();
 
         /// <summary>
-        /// create an instance for Json Settings (getter + setter)
-        /// mainly used to create interaction between command / GUI and readers & writers
+        /// create an instance for JSON Settings (getter + setter) <para/>
+        /// mainly used to export metadata acording to DIN SPEC 91391-2 <para/>
         /// </summary>
-        public static JsonSettings jSettings { get; set; } = new JsonSettings();
+        public static JsonSettings_DIN_SPEC_91391_2 jSettings91391 { get; set; } = new JsonSettings_DIN_SPEC_91391_2();
+
+        /// <summary>
+        /// create an instance for JSON Settings (getter + setter) <para/>
+        /// mainly used to export metadata acording to DIN SPEC 18740-6 <para/>
+        /// </summary>
+        public static JsonSettings_DIN_18740_6 jSettings18740 { get; set; } = new JsonSettings_DIN_18740_6();
 
         /// <summary>
         /// opens documentation
@@ -74,14 +91,19 @@ namespace IFCTerrainGUI
 
                 //set filepath to jSettings
                 jSettings.destFileName = sfd.FileName;
-
+                
                 //set task (file opening) to true
                 MainWindowBib.selectStoreLocation = true;
 
                 //check if all task are allready done
                 MainWindowBib.readyState();
 
-                //TODO LOGGING
+                //set logging path
+                string logPath = System.IO.Path.GetDirectoryName(jSettings.destFileName);
+                jSettings.logFilePath = logPath;
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Storage location set to: " + jSettings.logFilePath));
             }
             else
             {
@@ -91,7 +113,8 @@ namespace IFCTerrainGUI
                 //check to deactivate start button
                 MainWindowBib.readyState();
 
-                //TODO LOGGING (GUI LOGGING)
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.warning, "[GUI] Storage location was not set."));
             }
             return;
         }
@@ -102,35 +125,103 @@ namespace IFCTerrainGUI
         {
             //json settings set 3D to true [TODO]
             jSettings.is3D = true;
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'is3D'-value to default (true)"));
+
             //json settings set minDist to 1.0 (default value) [TODO]
             jSettings.minDist = 1.0;
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'minDist'-value to default (1.0 m)"));
+
+            //read export specific settings
+            //get filepath
+            string dirPath = System.IO.Path.GetDirectoryName(jSettings.destFileName);
+            string dirName = System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName);
+            
+            string fileType = jSettings.fileType.ToString();
+            string ifcVersion = jSettings.outIFCType.ToString();
+            string shape = jSettings.surfaceType.ToString();
+
+            #region metadata
+            //will be executed if user select export of meta data
+            if (jSettings.exportMetadataFile)
+            {
+                try
+                {
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] export started."));
+                    //init vars for export settings
+                    var export913912 = new JProperty("DIN SPEC 91391-2", "NOT EXPORTED");
+                    var export187406 = new JProperty("DIN 18740-6", "NOT EXPORTED");
+
+                    //check if metadata should be exported according to DIN 91391-2
+                    if (jSettings.exportMetadataDin91391)
+                    {
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata]***DIN SPEC 91391-2***"));
+                        //Assignment all obligatory variables
+                        //set file name
+                        jSettings91391.name = System.IO.Path.GetFileName(jSettings.destFileName);
+
+                        //set mime type
+                        jSettings91391.mimeType = "application/x-step";
+
+                        //set export string
+                        export913912 = new JProperty("DIN SEPC 91391-2", JObject.FromObject(jSettings91391));
+
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
+
+                    }
+
+                    //check if metadata should be exported according to DIN 18740-6
+                    if (jSettings.exportMetadataDin18740)
+                    {
+                        //set export string
+                        export187406 = new JProperty("DIN 18740-6", JObject.FromObject(jSettings18740));
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] ***DIN 18740-6***"));
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
+                    }
+
+                    //build objects (here you can add, if needed more objects)
+                    JObject meta = new JObject(export913912,export187406);
+                   
+                    //write it to json file (TODO: add path)
+                    //File.WriteAllText(@"D:\test.json", meta.ToString());
+                    File.WriteAllText(dirPath +@"\"+ dirName +"_metadata.json" , meta.ToString());
+
+                    LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][Metadata] exported metadata to following path: " + dirPath));
+
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
+                    LogWriter.Entries.Add(new LogPair(LogType.error, "Metadata - processing: " + ex.Message.ToString()));
+                }
+            }
+
+            #endregion metadata
 
             //serialize json file
             try
             {
-                //get filepath
-                string dirPath = System.IO.Path.GetDirectoryName(jSettings.destFileName);
-                
-                //convert to json object
-                string jExportText = JsonConvert.SerializeObject(jSettings);
+                LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][JsonSettings] start serializing json"));
 
-                
-                string fileType = jSettings.fileType.ToString();
-                string ifcVersion = jSettings.outIFCType.ToString();
-                string shape = jSettings.surfaceType.ToString();
+                //convert to json object
+                string jExportText = JsonConvert.SerializeObject(jSettings, Formatting.Indented);
+
+                //export json settings
                 File.WriteAllText(dirPath + @"\config_" + fileType + "_" + ifcVersion + "_" + shape + ".json", jExportText);
-                
-                //TODO Logging
+
+                LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][JsonSettings] exported to following path: " + dirPath));
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
 
-                //TODO LOGGING
+                LogWriter.Entries.Add(new LogPair(LogType.error, "Json Config - processing: " + ex.Message.ToString()));
             }
             
             //lock MainWindow 
             this.IsEnabled = false;
+
+            //set mouse cursor to wait
+            Mouse.OverrideCursor = Cursors.Wait;
 
             //kick off background worker ifc
             backgroundWorkerIfc.RunWorkerAsync();
@@ -142,7 +233,6 @@ namespace IFCTerrainGUI
         /// </summary>
         private readonly BackgroundWorker backgroundWorkerIfc = new BackgroundWorker();
 
-
         /// <summary>
         /// start conversion (using the JSON settings)
         /// </summary>
@@ -151,10 +241,12 @@ namespace IFCTerrainGUI
             //Interface between GUI, reader and writer
             ConnectionInterface conInt = new ConnectionInterface();
 
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
+
             //start mapping process which currently begins with the selection of the file reader
             conInt.mapProcess(jSettings);
         }
-
 
         /// <summary>
         /// Executed after the conversion is done
@@ -166,10 +258,36 @@ namespace IFCTerrainGUI
             //release the MainWindow (conversion is completed)
             this.IsEnabled = true;
 
-            //TODO logging
+            //set mouse cursor to default
+            Mouse.OverrideCursor = null;
         }
         #endregion background worker
 
+        /// <summary>
+        /// swtiching verbosity levels
+        /// </summary>
+        private void selectVerbosityLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //check and set the choosen verbo level into json settings
+            if (minVerbose.IsSelected)
+            {
+                jSettings.verbosityLevel = LogType.verbose;
+            }
+            else if (minDebug.IsSelected)
+            {
+                jSettings.verbosityLevel = LogType.debug;
+            }
+            else if (minInformation.IsSelected)
+            {
+                jSettings.verbosityLevel = LogType.info;
+            }
+            else if(minWarning.IsSelected)
+            {
+                jSettings.verbosityLevel = LogType.warning;
+            }
 
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level changed to: " + jSettings.verbosityLevel.ToString()));
+        }
     }
 }
