@@ -69,6 +69,7 @@
                         Foreground="#FF1E43EC" 
                         FontStyle="Italic"
                         Margin="0,5"
+                        Visibility="Hidden"
                         />
 
                     <ListBox
@@ -103,7 +104,8 @@
                             Content="Points / Lines"
                             VerticalAlignment="Center"
                             ToolTip="Processing will be done via Points and Lines (DXF layer)"
-                            Margin="20,0,0,0"/>
+                            Margin="20,0,0,0"
+                            IsEnabled="False"/>
                     </StackPanel>
 
 

@@ -48,7 +48,8 @@
                     x:Name="rbGraftbatReadPointsLines"
                     HorizontalAlignment="Center"
                     Grid.Column="1"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    IsEnabled="False">
                     <RadioButton.Content>
                         <TextBlock Text="... Points/ Lines" TextWrapping="Wrap"/>
                     </RadioButton.Content>

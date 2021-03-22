@@ -13,12 +13,12 @@
                 <local:ucLoGeoRef30/>
             </TabItem>
 
-            <TabItem Header="Level 40 [DRAFT]">
+            <TabItem Header="Level 40 [DRAFT]" IsEnabled="False">
                 <!-- add controler for LoGeoRef 40-->
                 <local:ucLoGeoRef40/>
             </TabItem>
             
-            <TabItem Header="Level 50 [DRAFT]">
+            <TabItem Header="Level 50 [DRAFT]" IsEnabled="False">
                 <!-- add controler for LoGeoRef 50-->
                 <local:ucLoGeoRef50/>
             </TabItem>

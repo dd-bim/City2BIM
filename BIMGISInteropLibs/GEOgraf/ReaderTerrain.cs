@@ -62,7 +62,7 @@ namespace BIMGISInteropLibs.GEOgraf
 
             //Create a new builder for TIN            
             var tinB = Tin.CreateBuilder(true);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] start reading."));
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Tin builder created."));
 
             //init transfer classes
             pointIndex2NumberMap = null;

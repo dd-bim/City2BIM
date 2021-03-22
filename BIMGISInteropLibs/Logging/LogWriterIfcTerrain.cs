@@ -84,7 +84,7 @@ namespace BIMGISInteropLibs.Logging
                 //differentiation into the individual log types and set output message
                 switch (log.Type)
                 {
-                    case (LogType.error): 
+                    case (LogType.error):
                         {
                             results.Error(log.Message);
                             break;

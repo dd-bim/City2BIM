@@ -126,10 +126,10 @@ namespace BIMGISInteropLibs.DXF
                 if (entity.Layer == layer && entity is Dxf3DFace face)
                 {
                     //query the four points of the face and pass them to variable p1 ... p4 passed
-                    var p1 = Point3.Create(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale);
-                    var p2 = Point3.Create(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale);
-                    var p3 = Point3.Create(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale);
-                    var p4 = Point3.Create(face.FourthCorner.X * scale, face.FourthCorner.Y * scale, face.FourthCorner.Z * scale);
+                    var p1 = Point3.Create(Math.Round(face.FirstCorner.X * scale,3),Math.Round(face.FirstCorner.Y * scale,3), Math.Round(face.FirstCorner.Z * scale,3));
+                    var p2 = Point3.Create(Math.Round(face.SecondCorner.X * scale,3), Math.Round(face.SecondCorner.Y * scale,3), Math.Round(face.SecondCorner.Z * scale,3));
+                    var p3 = Point3.Create(Math.Round(face.ThirdCorner.X * scale,3), Math.Round(face.ThirdCorner.Y * scale,3), Math.Round(face.ThirdCorner.Z * scale,3));
+                    var p4 = Point3.Create(Math.Round(face.FourthCorner.X * scale,3), Math.Round(face.FourthCorner.Y * scale,3), Math.Round(face.FourthCorner.Z * scale,3));
                     if (Vector3.Norm2(p4 - p3) < minDistSq)
                     {
                         //Add points & increment one point number at a time
