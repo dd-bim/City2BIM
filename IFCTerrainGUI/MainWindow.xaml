@@ -119,7 +119,8 @@
             <!--ElevationGrid-->
             <TabItem 
                 x:Name ="tabPageGrid"      
-                Header="Grid (XYZ)">
+                Header="Grid (XYZ)"
+                IsEnabled="False">
 
                 <!-- add user controler for reading reb data -->
                 <ucGrid:ucElevationGrid/>
@@ -201,7 +202,7 @@
                 <ComboBox x:Name="selectVerbosityLevel" Grid.Column="1" SelectionChanged="selectVerbosityLevel_SelectionChanged">
                     <ComboBoxItem x:Name="minVerbose" Content="Verbose" ToolTip="VERBOSE is the noisiest level. Recommended: for development (if needed)"/>
                     <ComboBoxItem x:Name="minDebug" Content="Debug" ToolTip="Recommend: for development"/>
-                    <ComboBoxItem x:Name="minInformation" Content="Information" ToolTip="Write more information for the whole process. Recommend: for advanced user"/>
+                    <ComboBoxItem x:Name="minInformation" Content="Information" ToolTip="Write more information for the whole process. Recommend: for advanced user" IsSelected="True"/>
                     <ComboBoxItem x:Name="minWarning" Content="Warning" ToolTip="Default - Setting."/>
                 </ComboBox>
 

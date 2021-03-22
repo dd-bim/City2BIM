@@ -19,10 +19,10 @@
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <ComboBox x:Name="cbIfcVersion" Width="100" VerticalAlignment="Center" SelectionChanged="cbIfcVersion_SelectionChanged">
                     <!--default seeting GCS-->
-                    <ComboBoxItem x:Name="ifc2x3" Content="IFC 2x3 (MESH)"/>
-                    <ComboBoxItem x:Name="ifc4" Content="IFC 4 (MESH)"/>
-                    <ComboBoxItem x:Name="ifc2x3Tin" Content="IFC 2x3 (TIN)"/>
-                    <ComboBoxItem x:Name="ifc4Tin" Content="IFC 4 (TIN)"/>
+                    <ComboBoxItem x:Name="ifc2x3" Content="IFC 2x3 (MESH)" IsEnabled="False" Visibility="Collapsed"/>
+                    <ComboBoxItem x:Name="ifc4" Content="IFC 4 (MESH)" IsEnabled="False" Visibility="Collapsed"/>
+                    <ComboBoxItem x:Name="ifc2x3Tin" Content="IFC 2x3"/>
+                    <ComboBoxItem x:Name="ifc4Tin" Content="IFC 4"/>
                     <ComboBoxItem x:Name="ifc4dot3" Content="IFC 4.3" IsEnabled="False"/>
                 </ComboBox>
                 <CheckBox x:Name="chkIfcXml" VerticalAlignment="Center" Content="IfcXML" Margin="7,0,0,0" ToolTip="Check if you want to export Ifc-XML files." IsChecked="False" Checked="chkIfcXml_Checked" Unchecked="chkIfcXml_Unchecked"/>

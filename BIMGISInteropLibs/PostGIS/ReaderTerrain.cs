@@ -19,7 +19,12 @@ using BimGisCad.Representation.Geometry.Composed;   //TIN
 using BIMGISInteropLibs.IfcTerrain;
 
 //[TODO #1]Revise reader into smaller structure
-//[TODO #2]Logging
+//Logging
+using BIMGISInteropLibs.Logging;
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
+using System.Windows; //include for message box (error handling db connection)
+
 //[TOOD #3]add error handling + tests
 namespace BIMGISInteropLibs.PostGIS
 {
@@ -43,17 +48,21 @@ namespace BIMGISInteropLibs.PostGIS
         /// <param name="bl_table">Tabelle, dass die Bruchkanten enthält</param>
         /// <param name="bl_tinid">Column in which the TIN-ID is kept (needed to create JOIN to TIN-Table)</param>
         /// <returns>TIN via Result for terrain processing (IFCTerrain/Revit)</returns>
-        public static Result ReadPostGIS(string Host, int Port, string User, string Password, string DBname, string schema, string tintable, string tincolumn, string tinidcolumn, int tinid, bool postgis_bl, string bl_column, string bl_table, string bl_tinid)
+        public static Result ReadPostGIS(string Host, int Port, string User, string Password, string DBname, string schema, string tintable, string tincolumn, string tinidcolumn, int tinid, bool postgis_bl, string bl_column, string bl_table, string bl_tinid, JsonSettings jSettings)
         {
             //TODO dynamic scaling
             double scale = 1.0;
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] processing started."));
+
             var result = new Result();
 
             //create TIN Builder
             var tinB = Tin.CreateBuilder(true);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] create TIN builder."));
 
             //Container to store breaklines
             Dictionary<int, Line3> breaklines = new Dictionary<int, Line3>();
+                       
 
             try
             {
@@ -68,40 +77,47 @@ namespace BIMGISInteropLibs.PostGIS
                         DBname
                         );
 
-                //TIN Request
-                using (var conn = new NpgsqlConnection(connString))
+
+                var conn = new NpgsqlConnection(connString);
+                conn.Open();
+                LogWriter.Entries.Add(new LogPair(LogType.info, "[PostGIS] Connected to Database."));
+                   
+                NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
+
+                
+                //TODO: Check whether other query options exist
+
+
+                
+                //select request for tin without breaklines via TIN ID
+                
+                string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + tinid;
+                    
+
+                
+                //select request for breaklines via TIN ID + JOIN
+                
+                string bl_select = null;
+                
+                if (postgis_bl == true)
                 {
-                    //Establish database connection
-                    conn.Open();
-
-                    NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
-
-                    //TODO: Check whether other query options exist
-
-                    //select request for tin without breaklines via TIN ID
-                    string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + tinid;
-
-                    //select request for breaklines via TIN ID + JOIN
-                    string bl_select = null;
-                    if (postgis_bl == true)
+                    bl_select = "SELECT ST_AsEWKT(" + bl_table + "." + bl_column + ") FROM " + schema + "." + bl_table + " JOIN " + schema + "." + tintable + " ON (" + bl_table + "." + bl_tinid + " = " + tintable + "." + tinidcolumn + ") WHERE " + tintable + "." + tinidcolumn + " = " + tinid;
+                }
+                //Query TIN
+                using (var command = new NpgsqlCommand(tin_select, conn))
+                {
+                    var reader = command.ExecuteReader();
+                    LogWriter.Entries.Add(new LogPair(LogType.debug, "[PostGIS] Request sent to database: \n" + tin_select));
+                    while (reader.Read())
                     {
-                        bl_select = "SELECT ST_AsEWKT(" + bl_table + "." + bl_column + ") FROM " + schema + "." + bl_table + " JOIN " + schema + "." + tintable + " ON (" + bl_table + "." + bl_tinid + " = " + tintable + "." + tinidcolumn + ") WHERE " + tintable + "." + tinidcolumn + " = " + tinid;
-                    }
-                    //TIN abfragen
-                    using (var command = new NpgsqlCommand(tin_select, conn))
-                    {
-                        var reader = command.ExecuteReader();
-                        //Logger.Info("The following REQUEST have been sent: \n" + tin_select);
-                        while (reader.Read())
-                        {
-                            //read column --> as EWKT
-                            string geom_string = (reader.GetValue(0)).ToString();
-                            
-                            //Split - CRS & TIN
-                            string[] geom_split = geom_string.Split(';');
+                        //read column --> as EWKT
+                        string geom_string = (reader.GetValue(0)).ToString();
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] reading from table via 'EWKT'"));
 
-                            //String for EPSG - Code [TODO]: Check if EPSG code can be used for processing to metadata
-                            string tin_epsg = geom_split[0];
+                        //Split - CRS & TIN
+                        string[] geom_split = geom_string.Split(';');
+                        //String for EPSG - Code [TODO]: Check if EPSG code can be used for processing to metadata
+                        string tin_epsg = geom_split[0];
 
                             //whole TIN 
                             string tin_gesamt = geom_split[1];
@@ -157,6 +173,7 @@ namespace BIMGISInteropLibs.PostGIS
 
                                 //Add points & increment one point number at a time
                                 tinB.AddPoint(pnr++, p1);
+                                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr) + ") set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")"));
                                 tinB.AddPoint(pnr++, p2);
                                 tinB.AddPoint(pnr++, p3);
 
@@ -170,13 +187,14 @@ namespace BIMGISInteropLibs.PostGIS
                         }
                         //Close DB connection --> allows to establish further connections
                         conn.Close();
-                    }
+                    
                     //TIN generate from TIN builder
                     Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
                     //hand over tin to result
                     result.Tin = tin;
 
                     //*** BREAKLINE PROCESSING ***
+                    /*
                     //Query whether break edges are to be processed
                     if (postgis_bl)
                     {
@@ -192,7 +210,8 @@ namespace BIMGISInteropLibs.PostGIS
                         {
                             //execute the (breakline) request string
                             var reader = command.ExecuteReader();
-                            //Logger.Info("The following REQUEST have been sent: \n" + bl_select);
+                            
+                            LogWriter.Entries.Add(new LogPair(LogType.debug, "[PostGIS] Request sent to database: \n" + bl_select));
 
                             while (reader.Read())
                             {
@@ -269,20 +288,31 @@ namespace BIMGISInteropLibs.PostGIS
 
                         //close database connection
                         conn.Close();
+                    
+                     
                     }
                     //process logging
                     //Logger.Info("All database connections have been disconnected.");
                     //Logger.Info("Reading PostGIS successful");
                     //Logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
+                */
+                    }
+                   
                 }
-            }
             catch (Exception e)
             {
-                //TODO: add log with Exception
-                Console.WriteLine(e.ToString());
-                //Logger.Error("Database connection failed!");
+                //log error message
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[PostGIS]: " +  e.Message));
+
+                //write log file
+                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
+
+                //
+                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error" , MessageBoxButton.OK, MessageBoxImage.Error);
+
+
             }
-            Console.ReadLine();
+            
             return result;
         }
     }
