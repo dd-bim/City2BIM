@@ -9,10 +9,8 @@ using OSGeo.OGR;
 
 namespace BIMGISInteropLibs.OGR
 {
-    public class OGRALKISReader
+    public class OGRALKISReader : OGRReader
     {
-        private DataSource ds;
-
         public OGRALKISReader(string filePath)
         {
             var nasDriver = Ogr.GetDriverByName("NAS");
@@ -62,7 +60,7 @@ namespace BIMGISInteropLibs.OGR
             "AX_Meer"
         };
 
-        public List<string> getLayerList()
+        public override List<string> getLayerList()
         {
             List<string> layerList = new List<string>();
 
@@ -76,26 +74,7 @@ namespace BIMGISInteropLibs.OGR
             return layerList;
         }
 
-        public Layer getLayerByName(string layerName)
-        {
-            return ds.GetLayerByName(layerName);
-        }
-
-        public List<string> getFieldNamesForLayer(Layer layer)
-        {
-            List<string> fieldNames = new List<string>();
-
-            var featureDefn = layer.GetLayerDefn();
-
-            for (int i=0; i<featureDefn.GetFieldCount(); i++)
-            {
-                fieldNames.Add(featureDefn.GetFieldDefn(i).GetName());
-            }
-
-            return fieldNames;
-        }
-
-        public List<GeoObject> getGeoObjectsForLayer(Layer layer, OGRSpatialFilter filter=null)
+        public override List<GeoObject> getGeoObjectsForLayer(Layer layer, OGRSpatialFilter filter=null)
         {
             List<GeoObject> geoObjects = new List<GeoObject>();
             string usageType = layer.GetName();
@@ -131,9 +110,5 @@ namespace BIMGISInteropLibs.OGR
             return geoObjects;
         }
 
-        public void destroy()
-        {
-            ds.Dispose();
-        }
     }
 }

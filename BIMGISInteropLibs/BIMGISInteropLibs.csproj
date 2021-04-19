@@ -259,6 +259,8 @@
     <Compile Include="REB\ReaderTerrain.cs" />
     <Compile Include="OGR\GeoObject.cs" />
     <Compile Include="OGR\OGRALKISReader.cs" />
+    <Compile Include="OGR\OGRGMLReader.cs" />
+    <Compile Include="OGR\OGRReader.cs" />
     <Compile Include="OGR\OGRUtils.cs" />
     <Compile Include="Semantic\Xml_AttrRep.cs" />
     <Compile Include="Semantic\Read_GmlDictionary.cs" />
@@ -314,10 +316,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\bimgiscadlib\BimGisCad\BimGisCad.csproj">
       <Project>{5a901b30-2b49-467c-9792-4f4063fa1be1}</Project>
-      <Name>BimGisCad</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\bimgiscad\BimGisCad\BimGisCad.csproj">
-      <Project>{30da5e36-0eb4-4dd1-8384-77ecebe9692a}</Project>
       <Name>BimGisCad</Name>
     </ProjectReference>
   </ItemGroup>

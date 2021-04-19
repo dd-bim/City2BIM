@@ -32,7 +32,7 @@ namespace BIMGISInteropLibs.OGR
         public GeoObject(string usageType, string gmlID, OSGeo.OGR.wkbGeometryType geomType, OSGeo.OGR.Geometry geom ,Dictionary<string, string> properties)
         {
             this.usageType = usageType;
-            this.gmlId = gmlId;
+            this.gmlId = gmlID;
             this.GeomType = geomType;
             this.geom = geom;
             this.properties = properties;
