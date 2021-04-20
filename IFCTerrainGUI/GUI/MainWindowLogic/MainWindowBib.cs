@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//
 using System.Windows; //used to communicate with main window
 using System.Windows.Controls; //TextBox
 
@@ -15,7 +16,7 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
     public class MainWindowBib
     {
         /// <summary>
-        /// Function to assign text to a textbox;
+        /// Function to assign text to a textbox<para/>
         /// Note: this scrolls to the end of the text box so that the end of the file path is displayed
         /// </summary>
         /// <param name="tbName">Text box identifier</param>
@@ -29,6 +30,19 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
         }
 
         /// <summary>
+        /// function to set gui logging messages
+        /// </summary>
+        /// <param name="guiText"></param>
+        public static void setGuiLog(string guiText)
+        {
+            //set list box
+            var lstBox = ((MainWindow)Application.Current.MainWindow).tbGuiLogging;
+            
+            //set item to list box
+            lstBox.Items.Add(guiText);
+        }
+
+        /// <summary>
         /// Check that all required tasks have been performed
         /// </summary>
         public static bool readyState()
@@ -38,6 +52,9 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
             {
                 //enable start button
                 ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = true;
+
+                //set gui log
+                setGuiLog("All required tasks set. Conversion can be started!");
 
                 //return
                 return true;
@@ -79,12 +96,5 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
         /// task to check if georef have been set
         /// </summary>
         public static bool selectGeoRef { get; set; }
-
     }
-
-    /*
-     * Add gui logging here!
-     * PLACEHOLDER
-     * 
-     */
 }

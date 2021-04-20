@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BimGisCad", "..\bimgiscadli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFCTerrainCommand", "IFCTerrainCommand\IFCTerrainCommand.csproj", "{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIMGISInteropsLibs.Tests", "BIMGISInteropsLibs.Tests\BIMGISInteropsLibs.Tests.csproj", "{13312D7B-4674-4E86-BBB0-925A3E4E742C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,14 @@ Global
 		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|x64.ActiveCfg = Release|Any CPU
 		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|x64.Build.0 = Release|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|x64.Build.0 = Debug|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|x64.ActiveCfg = Release|Any CPU
+		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:metadata ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
+             xmlns:meta ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
              d:DesignHeight="234" d:DesignWidth="385">
@@ -12,16 +12,11 @@
         <TabControl Grid.Row="1">
             <TabItem Header="IFC project settings">
                 <!-- add user controler: ifc project-->
-                <metadata:ucMetaIfcProject/>
+                <meta:ucMetaIfcProject/>
             </TabItem>
 
-            <TabItem Header="IFC Property Set" IsEnabled="False">
-                <metadata:ucMetaIfcPropertySets/>
-
-            </TabItem>
-
-            <TabItem Header="JSON export">
-                <metadata:ucMetaJson/>
+            <TabItem Header="Metadata export">
+                <meta:ucMetaIfcJson/>
 
             </TabItem>
         </TabControl>

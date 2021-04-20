@@ -5,43 +5,54 @@ using System.Text;
 using System.Threading.Tasks;
 
 //embed BimGisCad
-using BimGisCad.Representation.Geometry.Elementary;
-using BimGisCad.Representation.Geometry.Composed;
-using BimGisCad.Collections;                    //provides MESH --> will be removed
+using BimGisCad.Representation.Geometry.Elementary; //provides Vector
+using BimGisCad.Representation.Geometry.Composed;   //provides TIN
+using BimGisCad.Collections;                        //provides MESH
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc4.GeometryResource;               //IfcAxis2Placement3D
 using Xbim.Ifc4.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
 
+//Transfer class for the reader (IFCTerrain)
+using BIMGISInteropLibs.IfcTerrain;
+
+//embed logging
+using BIMGISInteropLibs.Logging; //access to log writer
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 namespace BIMGISInteropLibs.IFC.Ifc4
 {
     /// <summary>
-    /// Class for creating GCS via MESH (which will be removed) and TIN
+    /// Classes for creating IfcGCS via TIN / MESH
     /// </summary>
     public class GeometricCurveSet
     {
         /// <summary>
-        /// Create GCS using MESH (will be removed)
+        /// Create IfcGCS shape representation (MESH)
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="origin"></param>
-        /// <param name="mesh"></param>
-        /// <param name="breakDist"></param>
-        /// <param name="representationType"></param>
-        /// <param name="representationIdentifier"></param>
-        /// <returns></returns>
-        public static IfcGeometricCurveSet CreateViaMesh(Xbim.Ifc.IfcStore model, Vector3 origin, Mesh mesh,
+        public static IfcGeometricCurveSet CreateViaMesh(Xbim.Ifc.IfcStore model, Vector3 origin, Result result,
             double? breakDist,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {
+            //get MESH from result class
+            Mesh mesh = result.Mesh;
+
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation creation started..."));
 
             //begin a transaction
-            using (var txn = model.BeginTransaction("Create DTM"))
+            using (var txn = model.BeginTransaction("Create DTM (IfcGCS)"))
             {
-
-                // CartesianPoints erzeugen
+                // IfcCartesianPoints create //TODO: filter points that are not included in the DTM
                 var cps = mesh.Points.Select(p => model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(p.X - origin.X, p.Y - origin.Y, p.Z - origin.Z))).ToList();
+
+                //passing to results (points)
+                int numPoints = cps.Count;
+                result.wPoints = numPoints;
+
+                //passing to results (faces)
+                int numEdges = 0;
 
                 // DTM
                 var dtm = model.Instances.New<IfcGeometricCurveSet>(g =>
@@ -50,7 +61,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     g.Elements.AddRange(cps);
                     if (breakDist is double dist)
                     {
-                        // Hilfsfunktion zum Punkte auf Kante erzeugen
+                        //Auxiliary function to create points on edge
                         void addEdgePoints(Point3 start, Point3 dest)
                         {
                             var dir = dest - start;
@@ -70,14 +81,14 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                             }
                         }
 
-                        // evtl. Bruchlinien erzeugen
+                        //possibly create break lines
                         foreach (var edge in mesh.FixedEdges)
                         {
                             addEdgePoints(mesh.Points[edge.Idx1], mesh.Points[edge.Idx2]);
                             edges.Add(edge);
                         }
 
-                        // Kanten der Faces (falls vorhanden und ohne Doppelung)
+                        //Edges of the faces (if present and without duplication)
                         foreach (var edge in mesh.EdgeIndices.Keys)
                         {
                             if (!edges.Contains(TupleIdx.Flipped(edge)) && edges.Add(edge))
@@ -87,25 +98,42 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     }
                     else
                     {
-                        // evtl. Bruchlinien erzeugen
+                        //possibly create break lines
                         foreach (var edge in mesh.FixedEdges)
                         {
                             g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[edge.Idx1], cps[edge.Idx2] })));
                             edges.Add(edge);
                         }
 
-                        // Kanten der Faces (falls vorhanden und ohne Doppelung)
+                        //Edges of the faces (if present and without duplication)
                         foreach (var edge in mesh.EdgeIndices.Keys)
                         {
                             if (!edges.Contains(TupleIdx.Flipped(edge)) && edges.Add(edge))
-                            { g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[edge.Idx1], cps[edge.Idx2] }))); }
+                            { 
+                                g.Elements.Add(model.Instances.New<IfcPolyline>(p => 
+                                p.Points.AddRange(new[] 
+                                { 
+                                    cps[edge.Idx1], 
+                                    cps[edge.Idx2] 
+                                })));
+                            }
+                            //count up processed edge
+                            numEdges++;
                         }
                     }
                 });
+                //pass for processing results (log)
+                result.wFaces = numEdges / 3;
 
-                txn.Commit();
+                //write to remaining output parameter
                 representationIdentifier = RepresentationIdentifier.SurveyPoints;
                 representationType = RepresentationType.GeometricCurveSet;
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation created."));
+
+                //commit transaction
+                txn.Commit();
                 return dtm;
             }
         }
@@ -120,19 +148,29 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="representationType">Output - do not change</param>
         /// <param name="representationIdentifier">Output - do not change</param>
         /// <returns>Shape which is written in the IFC file</returns>
-        public static IfcGeometricCurveSet CreateViaTin(Xbim.Ifc.IfcStore model, Vector3 origin, Tin tin,
+        public static IfcGeometricCurveSet CreateViaTin(Xbim.Ifc.IfcStore model, Vector3 origin, Result result,
             double? breakDist,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {
-            //init Logger
-            //Logger logger = LogManager.GetCurrentClassLogger();
+            //get TIN from result class
+            Tin tin = result.Tin;
+
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation creation started..."));
 
             //begin a transaction
             using (var txn = model.BeginTransaction("Create DTM"))
             {
                 //IfcCartesianPoints create //TODO: filter points that are not included in the DTM
                 var cps = tin.Points.Select(p => model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(p.X - origin.X, p.Y - origin.Y, p.Z - origin.Z))).ToList();
+
+                //passing to results (points)
+                int numPoints = cps.Count;
+                result.wPoints = numPoints;
+
+                //passing to results (faces)
+                int numFaces = 0;
 
                 //create IfcGCS instance
                 var dtm = model.Instances.New<IfcGeometricCurveSet>(g =>
@@ -191,18 +229,24 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                             //last edge
                             g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[tri[2]], cps[tri[0]] })));
                         }
+
+                        //count up processed edge
+                        numFaces++;
                     }
                 });
-                //Number of triangle edges - used for logging only
-                int numEdges = dtm.Elements.Count - cps.Count;
 
-                //ersetzen
-                //logger.Debug("Processed: " + cps.Count + " points; " + numEdges + " edges (of " + numEdges / 3 + " triangels)"); //nach dem commit von txn loggen .. nur für Debugging hier stehen lassen
+                //pass for processing results (log)
+                result.wFaces = numFaces;
 
-                //commit transaktion - ACID (otherwise rollback)
-                txn.Commit();
+                //write two remaining output parameter
                 representationIdentifier = RepresentationIdentifier.SurveyPoints;
                 representationType = RepresentationType.GeometricCurveSet;
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation created."));
+
+                //commit transaction - ACID (otherwise rollback)
+                txn.Commit();
                 return dtm;
             }
         }

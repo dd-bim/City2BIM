@@ -12,6 +12,10 @@ using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc2x3.MeasureResource;              //Enumeration for Unit
 using Xbim.Ifc2x3.ProductExtension;             //IfcSite
 
+//Logging
+using BIMGISInteropLibs.Logging;                                 //need for LogPair
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 namespace BIMGISInteropLibs.IFC.Ifc2x3
 {
     /// <summary>
@@ -32,6 +36,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// <returns>IfcSite</returns>
         public static IfcSite Create(IfcStore model,
              string name,
+             IFC.LoGeoRef loGeoRef,
              Axis2Placement3D placement = null,
              double? refLatitude = null,
              double? refLongitude = null,
@@ -47,27 +52,35 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     //set terrain designation
                     s.Name = name;
                     s.CompositionType = compositionType; //DO NOT CHANGE
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Name ('" + s.Name + "') set."));
 
                     //set latitude and longitude
                     if (refLatitude.HasValue)
                     {
                         s.RefLatitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLatitude.Value);
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Latitude ('" + s.RefLatitude.Value + "') set."));
                     }
                     if (refLongitude.HasValue)
                     {
                         s.RefLongitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLongitude.Value);
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Longitude ('" + s.RefLongitude.Value + "') set."));
                     }
                     s.RefElevation = refElevation;
 
                     //get placement
                     placement = placement ?? Axis2Placement3D.Standard;
-                    //set placement to site
-                    s.ObjectPlacement = LocalPlacement.Create(model, placement);
+
+                    if(loGeoRef == IFC.LoGeoRef.LoGeoRef30)
+                    {
+                        //set local placement to site
+                        s.ObjectPlacement = LoGeoRef.Level30.Create(model, placement);
+                    }
+                    
                 });
                 //commit transaction (acccording to ACID) otherwise the site would not be provided
                 txn.Commit();
-                //TODO: LOGGING
-                //Log.Information("IfcSite created");
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Transaction commited."));
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "[IfcSite] Site created."));
                 return site;
             }
         }

@@ -48,8 +48,25 @@ namespace BIMGISInteropLibs.PostGIS
         /// <param name="bl_table">Tabelle, dass die Bruchkanten enthält</param>
         /// <param name="bl_tinid">Column in which the TIN-ID is kept (needed to create JOIN to TIN-Table)</param>
         /// <returns>TIN via Result for terrain processing (IFCTerrain/Revit)</returns>
-        public static Result ReadPostGIS(string Host, int Port, string User, string Password, string DBname, string schema, string tintable, string tincolumn, string tinidcolumn, int tinid, bool postgis_bl, string bl_column, string bl_table, string bl_tinid, JsonSettings jSettings)
+        public static Result ReadPostGIS(JsonSettings jSettings)
         {
+            string Host = jSettings.host;
+            int Port = jSettings.port;
+            string User = jSettings.user;
+            string Password = jSettings.password;
+            string DBname = jSettings.database;
+            string schema = jSettings.schema;
+            string tintable = jSettings.tin_table;
+            string tincolumn = jSettings.tin_column;
+            string tinidcolumn = jSettings.tinid_column;
+            int tinid = jSettings.tin_id;
+
+            bool postgis_bl = jSettings.breakline;
+            string bl_column = jSettings.breakline_column;
+            string bl_table = jSettings.breakline_table;
+            string bl_tinid = jSettings.breakline_tin_id;
+
+            
             //TODO dynamic scaling
             double scale = 1.0;
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] processing started."));
@@ -63,7 +80,6 @@ namespace BIMGISInteropLibs.PostGIS
             //Container to store breaklines
             Dictionary<int, Line3> breaklines = new Dictionary<int, Line3>();
                        
-
             try
             {
                 //prepare string for database connection
@@ -193,6 +209,10 @@ namespace BIMGISInteropLibs.PostGIS
                     //hand over tin to result
                     result.Tin = tin;
 
+                    //add to results (stats)
+                    result.rPoints = tin.Points.Count;
+                    result.rFaces = tin.NumTriangles;
+
                     //*** BREAKLINE PROCESSING ***
                     /*
                     //Query whether break edges are to be processed
@@ -296,7 +316,7 @@ namespace BIMGISInteropLibs.PostGIS
                     //Logger.Info("Reading PostGIS successful");
                     //Logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
                 */
-                    }
+                }
                    
                 }
             catch (Exception e)

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 //embed BimGisCad
 using BimGisCad.Representation.Geometry;            //Axis
 using BimGisCad.Representation.Geometry.Composed;   //TIN
-using BimGisCad.Representation.Geometry.Elementary;
-using BimGisCad.Collections;                        //MESH (will be removed soon tm)
+using BimGisCad.Representation.Geometry.Elementary; //Vector, Points, ...
+using BimGisCad.Collections;                        //MESH
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
@@ -18,6 +18,12 @@ using Xbim.Ifc4.Interfaces;                     //IfcElementComposition (ENUM)
 using Xbim.Ifc4.GeometryResource;               //Shape
 using Xbim.Ifc4.GeometricConstraintResource;    //IfcLocalPlacement
 
+//embed IfcTerrain logic
+using BIMGISInteropLibs.IfcTerrain; //used for handling json settings
+
+//Logging
+using BIMGISInteropLibs.Logging;                                 //need for LogPair
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 namespace BIMGISInteropLibs.IFC.Ifc4
 {
@@ -36,6 +42,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <returns>IfcSite</returns>
         public static IfcSite Create(IfcStore model,
              string name,
+             IFC.LoGeoRef loGeoRef,
              Axis2Placement3D placement = null,
              double? refLatitude = null,
              double? refLongitude = null,
@@ -44,25 +51,42 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         {
             using (var txn = model.BeginTransaction("Create Site"))
             {
+                //init model
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Transaction started."));
                 var site = model.Instances.New<IfcSite>(s =>
                 {
+                    //set site name
                     s.Name = name;
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Name ('" + s.Name + "') set."));
+
+                    //set angle
                     s.CompositionType = compositionType;
                     if (refLatitude.HasValue)
                     {
                         s.RefLatitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLatitude.Value);
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Latitude ('" + s.RefLatitude.Value + "') set."));
                     }
                     if (refLongitude.HasValue)
                     {
                         s.RefLongitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLongitude.Value);
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Longitude ('" + s.RefLongitude.Value + "') set."));
                     }
+
                     s.RefElevation = refElevation;
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Elevation ('" + s.RefElevation.ToString() + "') set."));
 
                     placement = placement ?? Axis2Placement3D.Standard;
-                    s.ObjectPlacement = LocalPlacement.Create(model, placement);
-                });
 
+                    //ifc LoGeoRef 30 create with local placement
+                    if (loGeoRef == IFC.LoGeoRef.LoGeoRef30)
+                    {
+                        s.ObjectPlacement = LoGeoRef.Level30.Create(model, placement);
+                    }
+
+                });
                 txn.Commit();
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Transaction commited."));
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "[IfcSite] Site created."));
                 return site;
             }
         }
@@ -70,109 +94,127 @@ namespace BIMGISInteropLibs.IFC.Ifc4
 
     public class Geo
     {
-        public static IfcStore CreateViaMesh(
-            string projectName,
-            string editorsFamilyName,
-            string editorsGivenName,
-            string editorsOrganisationName,
-            IfcLabel siteName,
-            Axis2Placement3D sitePlacement,
-            Mesh mesh,
-            SurfaceType surfaceType,
-            double? breakDist = null,
-             double? refLatitude = null,
-             double? refLongitude = null,
-             double? refElevation = null)
-        {
-            var model = InitModel.Create(projectName, editorsFamilyName, editorsGivenName, editorsOrganisationName, out var project);
-            var site = Site.Create(model, siteName, sitePlacement, refLatitude, refLongitude, refElevation);
-            RepresentationType representationType;
-            RepresentationIdentifier representationIdentifier;
-            IfcGeometricRepresentationItem shape;
-            switch (surfaceType)
-            {
-                case SurfaceType.TFS:
-                    shape = TriangulatedFaceSet.CreateViaMesh(model, sitePlacement.Location, mesh, out representationType, out representationIdentifier);
-                    break;
-                case SurfaceType.SBSM:
-                    shape = ShellBasedSurfaceModel.CreateViaMesh(model, sitePlacement.Location, mesh, out representationType, out representationIdentifier);
-                    break;
-                default:
-                    shape = GeometricCurveSet.CreateViaMesh(model, sitePlacement.Location, mesh, breakDist, out representationType, out representationIdentifier);
-                    break;
-            }
-            var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
-            
-            var terrain = Terrain.Create(model, "TIN", null, null, repres);
-
-            using (var txn = model.BeginTransaction("Add Site to Project"))
-            {
-                site.AddElement(terrain);
-                var lp = terrain.ObjectPlacement as IfcLocalPlacement;
-                lp.PlacementRelTo = site.ObjectPlacement;
-                project.AddSite(site);
-
-                model.OwnerHistoryAddObject.CreationDate = DateTime.Now;
-                model.OwnerHistoryAddObject.LastModifiedDate = model.OwnerHistoryAddObject.CreationDate;
-
-                txn.Commit();
-            }
-
-            return model;
-        }
-
-        public static IfcStore CreateViaTin(
-             string projectName,
-             string editorsFamilyName,
-             string editorsGivenName,
-             string editorsOrganisationName,
-             //double? minDist,
-             IfcLabel siteName,
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="siteName"></param>
+        /// <param name="jSt"></param>
+        /// <param name="loGeoRef"></param>
+        /// <param name="sitePlacement"></param>
+        /// <param name="tin"></param>
+        /// <param name="mesh"></param>
+        /// <param name="breaklines"></param>
+        /// <param name="surfaceType"></param>
+        /// <param name="breakDist"></param>
+        /// <param name="refLatitude"></param>
+        /// <param name="refLongitude"></param>
+        /// <param name="refElevation"></param>
+        /// <returns></returns>
+        public static IfcStore Create(
+             JsonSettings jSt,
+             IFC.LoGeoRef loGeoRef,
              Axis2Placement3D sitePlacement,
-             Tin tin,
-             Dictionary<int, Line3> breaklines,
+             Result result,
              SurfaceType surfaceType,
              double? breakDist = null,
-              double? refLatitude = null,
-              double? refLongitude = null,
+             double? refLatitude = null,
+             double? refLongitude = null,
               double? refElevation = null)
         {
-            var model = InitModel.Create(projectName, editorsFamilyName, editorsGivenName, editorsOrganisationName, out var project);
-            //var model = createandInitModel(projectName, editorsFamilyName, editorsGivenName, editorsOrganisationName, out var project);
+            //site name
+            IfcLabel siteName = jSt.siteName;
 
-            var site = Site.Create(model, siteName, sitePlacement, refLatitude, refLongitude, refElevation);
+            //init model
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Initalize IfcModel"));
+            var model = InitModel.Create(jSt.projectName, jSt.editorsFamilyName, jSt.editorsGivenName, jSt.editorsOrganisationName, out var project);
+            
+            //site
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Initalize IfcSite"));
+            var site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
+            
+            //needed (do not remove or change!)
             RepresentationType representationType;
             RepresentationIdentifier representationIdentifier;
+
+            //set Representation shape
             IfcGeometricRepresentationItem shape;
-            switch (surfaceType)
+
+            //Case discrimination for different shape representations
+            //distinction whether TIN (true) or MESH (false)
+            if (jSt.isTin) //TIN processing
             {
-                case SurfaceType.TFS:
-                    shape = TriangulatedFaceSet.CreateViaTin(model, sitePlacement.Location, tin, out representationType, out representationIdentifier);
-                    break;
-                case SurfaceType.SBSM:
-                    shape = ShellBasedSurfaceModel.CreateViaTin(model, sitePlacement.Location, tin, out representationType, out representationIdentifier);
-                    break;
-                default:
-                    shape = GeometricCurveSet.CreateViaTin(model, sitePlacement.Location, tin, breakDist, out representationType, out representationIdentifier);
-                    break;
+                //distinction which shape representation
+                switch (surfaceType)
+                {
+                    //IfcTFS
+                    case SurfaceType.TFS:
+                        shape = TriangulatedFaceSet.CreateViaTin(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                        break;
+                    //IfcSBSM
+                    case SurfaceType.SBSM:
+                        shape = ShellBasedSurfaceModel.CreateViaTin(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                        break;
+                    //IfcGCS (default)
+                    default:
+                        shape = GeometricCurveSet.CreateViaTin(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
+                        break;
+                }
             }
+            else //MESH processing
+            {
+                //distinction which shape representation
+                switch (surfaceType)
+                {
+                    //IfcTFS
+                    case SurfaceType.TFS:
+                        shape = TriangulatedFaceSet.CreateViaMesh(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                        break;
+                    //IfcSBSM
+                    case SurfaceType.SBSM:
+                        shape = ShellBasedSurfaceModel.CreateViaMesh(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                        break;
+                    //IfcGCS (default)
+                    default:
+                        shape = GeometricCurveSet.CreateViaMesh(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
+                        break;
+                }
+            }
+            //write Shape Representation to model
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Write shape representation to IfcModel..."));
             var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
+            
             //var terrain = createTerrain(model, "TIN", mesh.Id, null, repres);
             var terrain = Terrain.Create(model, "TIN", null, null, repres);
 
+            //add site to IfcProject entity
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Add site to IfcProject entity..."));
+            
+            //start transaction
             using (var txn = model.BeginTransaction("Add Site to Project"))
             {
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Transaction started."));
+                
+                //add to entity IfcSite
                 site.AddElement(terrain);
+
+                //TODO
+                //add local placement
                 var lp = terrain.ObjectPlacement as IfcLocalPlacement;
                 lp.PlacementRelTo = site.ObjectPlacement;
+                
+                //add site to IfcProject
                 project.AddSite(site);
 
+                //update owner history entity
                 model.OwnerHistoryAddObject.CreationDate = DateTime.Now;
                 model.OwnerHistoryAddObject.LastModifiedDate = model.OwnerHistoryAddObject.CreationDate;
 
+                //commit otherwise no update / add
                 txn.Commit();
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Transaction commited."));
             }
 
+            //return model
             return model;
         }
     }

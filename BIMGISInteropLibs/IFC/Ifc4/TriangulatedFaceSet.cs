@@ -5,13 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 
 //embed BimGisCad
-using BimGisCad.Representation.Geometry.Elementary;
-using BimGisCad.Representation.Geometry.Composed;
-using BimGisCad.Collections;                    //provides MESH --> will be removed
+using BimGisCad.Representation.Geometry.Elementary; //provides Vector
+using BimGisCad.Representation.Geometry.Composed;   //provides TIN
+using BimGisCad.Collections;                        //provides MESH
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc4.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
+
+//Transfer class for the reader (IFCTerrain)
+using BIMGISInteropLibs.IfcTerrain;
+
+//logging
+using BIMGISInteropLibs.Logging;                                    //access to log writer
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
 
 namespace BIMGISInteropLibs.IFC.Ifc4
 {
@@ -21,22 +28,26 @@ namespace BIMGISInteropLibs.IFC.Ifc4
     public class TriangulatedFaceSet
     {
         /// <summary>
-        /// will be removed
+        /// Creating DTM via IfcTFS (processing a MESH)
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="origin"></param>
-        /// <param name="mesh"></param>
-        /// <param name="representationType"></param>
-        /// <param name="representationIdentifier"></param>
-        /// <returns></returns>
-        public static IfcTriangulatedFaceSet CreateViaMesh(IfcStore model, Vector3 origin, Mesh mesh,
+        public static IfcTriangulatedFaceSet CreateViaMesh(IfcStore model, Vector3 origin, Result result,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {
+            //get MESH from result class
+            Mesh mesh = result.Mesh;
+
+            //error checking if mesh is not correctly, can not be processed
             if (mesh.MaxFaceCorners != 3 || mesh.MinFaceCorners != 3)
             { throw new Exception("Mesh is not Triangular"); }
+
+            //start transaction for IfcTFS
             using (var txn = model.BeginTransaction("Create TIN"))
             {
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation started..."));
+
+                //init empty dictionary
                 var vmap = new Dictionary<int, int>();
                 var cpl = model.Instances.New<IfcCartesianPointList3D>(c =>
                 {
@@ -53,11 +64,22 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     }
                 });
 
+                //return stats to result class
+                result.wPoints = cpl.CoordList.Count;
+
+                //TFS write --> need cpl
                 var tfs = model.Instances.New<IfcTriangulatedFaceSet>(t =>
                 {
-                    t.Closed = false; // nur bei Volumenkörpern
+                    //Attribute #3 - Closed (IfcBoolean) 
+                    t.Closed = false; //set to true only for closed surface (never the case for DTM)
+
+                    //Attribute #5 - PnIndex
                     t.Coordinates = cpl;
+
+                    //Attribute #4 - CoordIndex (maximum length = number of triangles)
                     int cnt = 0;
+
+                    //create mesh via edge vertices
                     foreach (int fe in mesh.FaceEdges)
                     {
                         var fi = t.CoordIndex.GetAt(cnt++);
@@ -65,11 +87,20 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                         fi.Add(vmap[mesh.EdgeVertices[mesh.EdgeNexts[fe]]]);
                         fi.Add(vmap[mesh.EdgeVertices[mesh.EdgeNexts[mesh.EdgeNexts[fe]]]]);
                     }
-                });
+                    //Attribut #5 - Number of Triangels (will be read; not explicit)
 
-                txn.Commit();
+                    //return stats to result class
+                    result.wFaces = int.Parse(t.NumberOfTriangles.Value.ToString());
+                });
+                //describe the representation
                 representationIdentifier = RepresentationIdentifier.Body;
                 representationType = RepresentationType.Tessellation;
+
+                //commit otherwise will be roll back
+                txn.Commit();
+                
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation created."));
 
                 return tfs;
             }
@@ -79,23 +110,20 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <summary>
         /// Creating DTM via IfcTFS (processing a TIN)
         /// </summary>
-        /// <param name="model">Location for all information that will be inserted into the IFC file</param>
-        /// <param name="origin">Provided by IfcLocalPlacement</param>
-        /// <param name="tin">Provided by File-Reader</param>
-        /// <param name="representationType">Output - do not change</param>
-        /// <param name="representationIdentifier">Output - do not change</param>
-        /// <returns>Shape which is written in the IFC file</returns>
-        public static IfcTriangulatedFaceSet CreateViaTin(IfcStore model, Vector3 origin, Tin tin,
-            //double? breakDist, //Ist dies jetzt noch relevant?
+        public static IfcTriangulatedFaceSet CreateViaTin(IfcStore model, Vector3 origin, Result result,
+            //double? breakDist, //currently not aviable
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {
-            //init logger [TODO]
-            //Logger logger = LogManager.GetCurrentClassLogger();
+            //get TIN from result class
+            Tin tin = result.Tin;
 
             //start transaction (ACID) - need to be commited
             using (var txn = model.BeginTransaction("Create TIN"))
             {
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation started..."));
+
                 //init empty dictionary
                 var vmap = new Dictionary<int, int>();
 
@@ -110,20 +138,20 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                         
                         //get current point
                         var pt = tin.Points[i];
-                        //add point to coordlist wit x y z values
+
+                        //add point to coordlist with x y z values
                         var coo = c.CoordList.GetAt(j++);
                         coo.Add(pt.X - origin.X);
                         coo.Add(pt.Y - origin.Y);
                         coo.Add(pt.Z - origin.Z);
                     }
-
                 });
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "CoordList created."));
 
-                //TFS writ --> need cpl
+                //TFS write --> need cpl
                 var tfs = model.Instances.New<IfcTriangulatedFaceSet>(t =>
                 {
-                    //Attribute #2 - Normals
-
                     //Attribute #3 - Closed (IfcBoolean) 
                     t.Closed = false; //set to true only for closed surface (never the case for DTM)
 
@@ -142,22 +170,24 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                         fi.Add(vmap[tri[2]]);
                     }
 
-                    //Attribut #5 - Number of Triangels (wird ausgelesen)
-                    //[TODO]Logging number of triangles so it can compared with the result of the respective reader
-                    //logger.Debug("There were " + cpl.CoordList.Count + " Points; " + t.NumberOfTriangles + " Triangles processed.");
-                    //logger.Info("Result (Points): " + cpl.CoordList.Count + " of " + tin.Points.Count + " processed");
-                    //logger.Info("Result (Triangles): " + t.NumberOfTriangles + " of " + tin.NumTriangles + " processed");
+                    //Attribut #5 - Number of Triangels (will be read; not explicit)
+
+                    //Logging number of triangles --> write to result class
+                    result.wPoints = cpl.CoordList.Count;
+                    result.wFaces = int.Parse(t.NumberOfTriangles.Value.ToString());
                 });
+                //describe the representation
+                representationIdentifier = RepresentationIdentifier.Body;
+                representationType = RepresentationType.Tessellation;
 
                 //Create tin commit otherwise the changes will not be incorporated (ACID)
                 txn.Commit();
 
-                //describe the representation
-                representationIdentifier = RepresentationIdentifier.Body;
-                representationType = RepresentationType.Tessellation;
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation created."));
+                
                 return tfs;
             }
-
         }
     }
 }

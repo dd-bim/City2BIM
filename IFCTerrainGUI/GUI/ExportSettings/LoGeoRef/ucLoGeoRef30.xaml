@@ -7,44 +7,55 @@
              mc:Ignorable="d" 
              d:DesignHeight="185" d:DesignWidth="373" FontFamily="Bahnschhrift">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="1.6*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="80"/>
             <RowDefinition/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>        
+        <!-- set infofield -->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Here you can save (confirm to LoGeoRef30) &#x0a; the georeferencing in the entity 'IfcSite'." TextWrapping="Wrap" TextAlignment="Center"/>
+
         <!-- select project center (will be calculated) should be used or manual input-->
-        <StackPanel>
-            <RadioButton x:Name="rbLoGeoRef30Default" Margin="5,5,0,0" Checked="rbLoGeoRef30Default_Checked" Unchecked="rbLoGeoRef30Default_Unchecked">
-                <TextBlock Text="Default
-                                       (project center)" TextWrapping="Wrap"/>
-            </RadioButton>
-            <RadioButton x:Name="rbLoGeoRef30User" Content="User specific" Margin="5,5,0,0" Checked="rbLoGeoRef30User_Checked" Unchecked="rbLoGeoRef30User_Unchecked"/>
-        </StackPanel>
-        <Grid x:Name="inputGrid" Grid.Column="1" Margin="5" IsEnabled="False">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
+        <GroupBox Header="Origin - Coordinate" Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel >
+                    <RadioButton x:Name="rbLoGeoRef30Default" Margin="5,5,0,0" Checked="rbLoGeoRef30Default_Checked" Unchecked="rbLoGeoRef30Default_Unchecked" Content="Default (project center)" ToolTip="X,Y,Z - values are calculated from the data set."/>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+                    <RadioButton x:Name="rbLoGeoRef30User" Content="User specific" Margin="5,5,0,0" ToolTip="Input of X, Y, Z values." Checked="rbLoGeoRef30User_Checked" Unchecked="rbLoGeoRef30User_Unchecked"/>
+                </StackPanel>
 
-            <TextBlock Text="X [m]:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox x:Name="tbLoGeoRef30ValueX" Grid.Row="0" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged"></TextBox>
+                <Grid x:Name="inputGrid" Grid.Column="1" IsEnabled="False">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Y [m]:" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox x:Name="tbLoGeoRef30ValueY" Grid.Row="1" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged"></TextBox>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
-            <TextBlock Text="Z [m]:" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox x:Name="tbLoGeoRef30ValueZ" Grid.Row="2" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged"></TextBox>
-        </Grid>
-        <Button x:Name="btnLoGeoRef30Apply" Grid.Row="1" Grid.ColumnSpan="2" Content="Apply settings [Level of Georef. 30]" Click="btnLoGeoRef30Apply_Click" IsEnabled="False" ToolTip="Apply the settings for LoGeoRef30!" ToolTipService.ShowOnDisabled="True"/>
+                    <TextBlock Text="X [m]:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef30ValueX" Grid.Row="0" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"></TextBox>
+
+                    <TextBlock Text="Y [m]:" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef30ValueY" Grid.Row="1" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"></TextBox>
+
+                    <TextBlock Text="Z [m]:" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef30ValueZ" Grid.Row="2" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"></TextBox>
+                </Grid>
+            </Grid>
+        </GroupBox>
+
+        <!-- apply button -->
+        <Button x:Name="btnLoGeoRef30Apply" Grid.Row="3" Grid.ColumnSpan="2" Content="Apply settings [Level of Georef. 30]" Click="btnLoGeoRef30Apply_Click" IsEnabled="False" ToolTip="Apply the settings for LoGeoRef30!" ToolTipService.ShowOnDisabled="True"/>
     </Grid>
 </UserControl>

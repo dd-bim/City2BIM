@@ -10,17 +10,17 @@ using BimGisCad.Representation.Geometry;            //Axis2Placement3D
 using BimGisCad.Representation.Geometry.Composed;   //TIN
 using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 
-//Transfer class for the reader (IFCTerrain + Revit)
-using BIMGISInteropLibs.IfcTerrain;
+//embed IFC
+using BIMGISInteropLibs.IFC;    //IFC-Writer
 
-using BIMGISInteropLibs.IFC;
-
+//embed for Logging
 using BIMGISInteropLibs.Logging; //logging
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
 
-using System.Windows; //include for error message box
+using System.Windows; //include for output error messagebox
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -41,16 +41,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// breaklines (result of the specific file reader) [TODO]
         /// </summary>
         public Dictionary<int, Line3> Breaklines { get; private set; } = null;
-      
+
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer
         /// </summary>
-        /// <param name="jSettings">JsonSettings read from Command or GUI</param>
-        /// <param name="breakDist">TODO</param>
-        /// <param name="refLatitude">TODO</param>
-        /// <param name="refLongitude">TODO</param>
-        /// <param name="refElevation">TODO</param>
-        public void mapProcess(JsonSettings jSettings, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
+        public Result mapProcess(JsonSettings jSettings, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
         {
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "Mapping process started."));
 
@@ -71,13 +66,13 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //reader for LandXML
                 case IfcTerrainFileType.LandXML:
                     //result = LandXML.ReaderTerrain(jSettings.is3D, jSettings.filePath, jSettings.minDist, jSettings.logFilePath, jSettings.verbosityLevel);
-                    result = LandXML.ReaderTerrain.ReadTin(jSettings.filePath);
+                    result = LandXML.ReaderTerrain.ReadTin(jSettings);
                     //end of the case so it is jumped after file reading (above) out of the switch function
                     break;
 
                 //reader for CityGML
                 case IfcTerrainFileType.CityGML:
-                    result = CityGML.CityGMLReaderTerrain.ReadTin(jSettings.filePath);
+                    result = CityGML.CityGMLReaderTerrain.ReadTin(jSettings);
                     break;
 
                 //reader for DXF
@@ -89,13 +84,12 @@ namespace BIMGISInteropLibs.IfcTerrain
                     if (jSettings.isTin)
                     {
                         //Tin - Reader (if dxf file contains faces)
-                        result = DXF.ReaderTerrain.ReadDxfTin(dxfFile, jSettings.layer, jSettings.breakline_layer, jSettings.minDist, jSettings.breakline);
+                        result = DXF.ReaderTerrain.ReadDxfTin(dxfFile, jSettings);
                     }
                     else
                     {
-                        //TODO: change to tin processing
                         //processing points and lines (via mesh)
-                        result = DXF.ReaderTerrain.ReadDxfPoly(jSettings.is3D, dxfFile, jSettings.layer, jSettings.breakline_layer, jSettings.minDist, jSettings.logFilePath, jSettings.breakline);
+                        result = DXF.ReaderTerrain.ReadDxfPoly(dxfFile, jSettings);
                     }
                     break;
 
@@ -103,13 +97,14 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.REB:
                     //REB file reader
                     REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(filePath);
+
                     //use REB data via processing with converter
-                    result = REB.ReaderTerrain.ConvertRebToTin(rebData, jSettings.horizon);
+                    result = REB.ReaderTerrain.ConvertRebToTin(rebData, jSettings);
                     break;
 
-                //reader for Elev.Grid [TODO]: processing result is mesh! have to be changed to tin
+                //reader for Elev.Grid: processing result is mesh!
                 case IfcTerrainFileType.Grid:
-                    result = ElevationGrid.ReaderTerrain.ReadGrid(jSettings.is3D, jSettings.filePath, jSettings.minDist, jSettings.gridSize, jSettings.bBox, jSettings.bbNorth, jSettings.bbEast, jSettings.bbSouth, jSettings.bbWest);
+                    result = ElevationGrid.ReaderTerrain.ReadGrid(jSettings);
                     break;
 
                 //reader for GRAFBAT
@@ -117,7 +112,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     if (jSettings.isTin)
                     {
                         //reader for processing GRAFBAT as TIN via points and triangles 
-                        result = GEOgraf.ReadOUT.ReadOutData(jSettings.filePath, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumerMap);
+                        result = GEOgraf.ReadOUT.ReadOutData(jSettings, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumerMap);
                     }
                     /*
                     else
@@ -130,38 +125,50 @@ namespace BIMGISInteropLibs.IfcTerrain
 
                 //reader for PostGIS
                 case IfcTerrainFileType.PostGIS:
-                    result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings.host, jSettings.port, jSettings.user, jSettings.password, jSettings.database, jSettings.schema, jSettings.tin_table, jSettings.tin_column, jSettings.tinid_column, jSettings.tin_id, jSettings.breakline, jSettings.breakline_table, jSettings.breakline_column, jSettings.breakline_tin_id, jSettings);
+                    result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings);
                     break;
             }
             //so that from the reader (TIN, Error, Mesh) is passed to respective "classes"
             LogWriter.Entries.Add(new LogPair(LogType.debug, "Reading file completed."));
 
-            this.Tin = result.Tin;      //pass the TIN
+            //passing results from reader to local var 
+            this.Tin = result.Tin;      //passing tin
+            this.Mesh = result.Mesh;    //passing mesh
 
             //tin error handler
-            if(this.Tin.NumTriangles.Equals(0))
+            if (jSettings.isTin)
             {
-                //log error message
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[READER]no DTM could be read on the basis of the input data. The DTM is empty! - Processing canceled!"));
+                if (this.Tin.NumTriangles.Equals(0))
+                {
+                    //log error message
+                    LogWriter.Entries.Add(new LogPair(LogType.error, "[READER] no DTM could be read on the basis of the input data. The DTM is empty! - Processing canceled!"));
 
-                //write log file
-                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
-                
-                //Messagebox
-                MessageBox.Show("The TIN is empty! - Processing canceled!", "TIN is empty", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //write log file
+                    LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
 
-                return;
+                    //Messagebox
+                    MessageBox.Show("The TIN is empty! - Processing canceled!", "TIN is empty", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    return result;
+                }
             }
+
+            //mesh error handler
+            else if (!jSettings.isTin)
+            {
+                //log reading results
+                LogWriter.Entries.Add(new LogPair(LogType.info, "MESH read: " + Mesh.Points.Count + " points; " + Mesh.FaceEdges.Count + " triangles;"));
+            }
+            //if tin has been readed succesfully
             else
             {
                 //log reading results
                 LogWriter.Entries.Add(new LogPair(LogType.info, "TIN read: " + Tin.Points.Count + " points; " + Tin.NumTriangles + " triangles;"));
             }
-
-            this.Mesh = result.Mesh;    //pass the MESH (will be removed) [TODO]
             #endregion import data via type selection
-
             #endregion reader
+
+
             //from here are the IFC writers
             #region writer
 
@@ -189,7 +196,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "Using origin: X= "+ jSettings.xOrigin + "; Y= "+jSettings.yOrigin + "; Z= "+ jSettings.zOrigin));
             }
             //Alternative: determine the "BoundingBox", and define the center (x,y,z) as the coordinate origin.
-            else
+            else if(jSettings.isTin)
             {
                 //initialize the variables to describe them
                 double MinX = 0;
@@ -251,9 +258,26 @@ namespace BIMGISInteropLibs.IfcTerrain
 
                     //set center point as placement
                     writeInput.Placement.Location = Vector3.Create(MidX, MidY, MidZ);
+
+                    //logging
                     LogWriter.Entries.Add(new LogPair(LogType.verbose, "Project center point was calculated and set."));
                     LogWriter.Entries.Add(new LogPair(LogType.debug, "Project center: X= " + MidX + "; Y= " + MidY + "; Z= " + MidZ));
                 }
+            }
+            //case mesh (not needed to calculate min or max values)
+            else if(!jSettings.isTin)
+            {
+                //get center point via readed mesh
+                double MidX = (this.Mesh.MinX + this.Mesh.MaxX) / 2;
+                double MidY = (this.Mesh.MinY + this.Mesh.MaxY) / 2;
+                double MidZ = (this.Mesh.MinZ + this.Mesh.MaxZ) / 2;
+
+                //set center point as placement
+                writeInput.Placement.Location = Vector3.Create(MidX, MidY, MidZ);
+                
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Project center point was calculated and set."));
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "Project center: X= " + MidX + "; Y= " + MidY + "; Z= " + MidZ));
             }
             #endregion placement / georef
 
@@ -283,14 +307,25 @@ namespace BIMGISInteropLibs.IfcTerrain
             #endregion shape representation
 
             #region ifc xml / step file
-            //Standard file type to STEP (Reason: supported by IFC2x3 *AND* IFC4, etc.)
-            writeInput.FileType = IfcFileType.Step;
+            
 
             //query whether an XML file is to be written additionally (IFC4 only)
-            if (jSettings.outFileType == IfcFileType.XML)
+            if (jSettings.outFileType == IfcFileType.ifcXML)
             {
-                writeInput.FileType = IfcFileType.XML;
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output IfcXml"));
+                writeInput.FileType = IfcFileType.ifcXML;
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output ifcXML"));
+            }
+            else if (jSettings.outFileType == IfcFileType.ifcZip)
+            {
+                writeInput.FileType = IfcFileType.ifcZip;
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output ifcZIP"));
+            }
+            else
+            {
+                //Standard file type to STEP (Reason: supported by IFC2x3 *AND* IFC4, etc.)
+                writeInput.FileType = IfcFileType.Step;
+
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output STEP"));
             }
             #endregion ifc xml / step file
 
@@ -300,135 +335,72 @@ namespace BIMGISInteropLibs.IfcTerrain
             LogWriter.Entries.Add(new LogPair(LogType.debug, "--> Surfacetype " + jSettings.surfaceType));
             LogWriter.Entries.Add(new LogPair(LogType.debug, "--> Filetype " + jSettings.fileType));
 
-            //(processing via MESH [TODO]: is to be replaced by TIN - writer (below))
-            #region IFC2x3 writer (MESH)
+            //region for ifc writer control
+            #region IFC2x3 writer
+            
             //Query whether output IFC file should be version IFC2x3
             if (jSettings.outIFCType == IfcVersion.IFC2x3)
             {
                 //model (file) let generate via the Writer
-                var model = IFC.Ifc2x3.Store.CreateViaMesh(
-                    jSettings.projectName,
-                    jSettings.editorsFamilyName,
-                    jSettings.editorsGivenName,
-                    jSettings.editorsOrganisationName,
-                    "Site with Terrain", //TODO: check, if this is required (or whether it can be created automatically)
-                    writeInput.Placement,
-                    this.Mesh,
-                    writeInput.SurfaceType,
-                    breakDist);
-
-                //TODO LOGGING
-                //logger.Debug("IFC site created");
-
-                //access to file writer 
-                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
-
-                //logging - ifc file is written to path ...
-            }
-            #endregion IFC2x3 writer (MESH)
-
-            #region IFC4 writer (MESH)
-            else if (jSettings.outIFCType == IfcVersion.IFC4)
-            {
-                //logger.Debug("Geographical Element: " + jSettings.geoElement); [TODO]:Logging
-
-                //create IFC4 modell
-                var model = jSettings.geoElement
-                    //create with geo element
-                    ? IFC.Ifc4.Geo.CreateViaMesh(
-                        jSettings.projectName,
-                        jSettings.editorsFamilyName,
-                        jSettings.editorsGivenName,
-                        jSettings.editorsOrganisationName,
-                        "Site with Terrain",
-                        writeInput.Placement,
-                        this.Mesh,
-                        writeInput.SurfaceType,
-                        breakDist)
-                    //with create with geo element
-                    : IFC.Ifc4.Store.CreateViaMesh(
-                        jSettings.projectName,
-                        jSettings.editorsFamilyName,
-                        jSettings.editorsGivenName,
-                        jSettings.editorsOrganisationName,
-                        "Site with Terrain",
-                        writeInput.Placement,
-                        this.Mesh,
-                        writeInput.SurfaceType,
-                        breakDist);
-                //logger.Debug("IFC Site created"); [TODO]:Logging
-                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
-                //logger.Info("IFC file writen: " + jSettings.destFileName);
-            }
-            #endregion IFC4 writer (MESH)
-
-            #region IFC2x3 writer (TIN)
-            //Query whether output IFC file should be version IFC2x3
-            else if (jSettings.outIFCType == IfcVersion.IFC2x3Tin)
-            {
-                //model (file) let generate via the Writer
                 var model = IFC.Ifc2x3.Store.CreateViaTin(
-                    jSettings.projectName,
-                    jSettings.editorsFamilyName,
-                    jSettings.editorsGivenName,
-                    jSettings.editorsOrganisationName,
-                    "Site with Terrain", //TODO: check, if this is required (or whether it can be created automatically)
+                    jSettings,
                     writeInput.Placement,
-                    this.Tin,
+                    result,
                     writeInput.SurfaceType,
                     breakDist);
 
-                //TODO LOGGING
-                //logger.Debug("IFC site created");
-
                 //access to file writer 
-                IFC.Ifc2x3.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
+                IFC.Ifc2x3.Store.WriteFile(model, jSettings);
 
-                //logging - ifc file is written to path ...
+                //logging file info
+                LogWriter.Entries.Add(new LogPair(LogType.info, "IFC file writen: " + jSettings.destFileName));
+
+                //logging stat
+                double numPoints = (double)result.wPoints / (double)result.rPoints;
+                double numFaces = (double)result.wFaces / (double)result.rFaces;
+                LogWriter.Entries.Add(new LogPair(LogType.info, "There were " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " %) and " + result.wFaces + " Triangles (" + Math.Round(numFaces * 100, 2) + " %) processed."));
+
             }
             #endregion IFC2x3 writer (TIN)
 
             #region IFC4 writer (TIN)
-            else if (jSettings.outIFCType == IfcVersion.IFC4Tin)
+            else if (jSettings.outIFCType == IfcVersion.IFC4)
             {
-                //logger.Debug("Geographical Element: " + jSettings.geoElement); [TODO]:Logging
-
                 //create IFC4 modell
                 var model = jSettings.geoElement
                     //create with geo element
-                    ? IFC.Ifc4.Geo.CreateViaTin(
-                        jSettings.projectName,
-                        jSettings.editorsFamilyName,
-                        jSettings.editorsGivenName,
-                        jSettings.editorsOrganisationName,
-                        "Site with Terrain",
+                    ? IFC.Ifc4.Geo.Create(
+                        jSettings,
+                        jSettings.logeoref,
                         writeInput.Placement,
-                        this.Tin,
-                        this.Breaklines, //TODO: ATTETION DRAFT Version of Breaklines
+                        result,
                         writeInput.SurfaceType,
                         breakDist)
-                    //with create with geo element
+                    //create withOUT geo element
                     : IFC.Ifc4.Store.CreateViaTin(
-                        jSettings.projectName,
-                        jSettings.editorsFamilyName,
-                        jSettings.editorsGivenName,
-                        jSettings.editorsOrganisationName,
-                        "Site with Terrain",
+                        jSettings,
+                        jSettings_DIN91931,
+                        jSettings.logeoref,
                         writeInput.Placement,
-                        this.Tin,
+                        result,
                         writeInput.SurfaceType,
                         breakDist);
-                //logger.Debug("IFC Site created"); [TODO]:Logging
-                IFC.Ifc4.Store.WriteFile(model, jSettings.destFileName, writeInput.FileType == IfcFileType.XML);
+
+                //access to file writer
+                IFC.Ifc4.Store.WriteFile(model, jSettings);
+                
+                //logging file info
                 LogWriter.Entries.Add(new LogPair(LogType.info, "IFC file writen: " + jSettings.destFileName));
-                //logger.Info("IFC file writen: " + jSettings.destFileName);
+
+                //logging stat
+                double numPoints = (double)result.wPoints / (double)result.rPoints;
+                double numFaces = (double)result.wFaces / (double)result.rFaces;
+                LogWriter.Entries.Add(new LogPair(LogType.info, "There were "+ result.wPoints + " points ("+ Math.Round(numPoints*100, 2) + " %) and " + result.wFaces + " Triangles ("+ Math.Round(numFaces*100, 2) + " %) processed."));
+                
             }
             #endregion IFC4 writer (TIN)
 
-
-
             #region logging
-            //logging
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC writer completed."));
 
             //if user didn't select a verbosity level
@@ -440,13 +412,16 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level set to " + jSettings.verbosityLevel.ToString()));
             }
-
+            
+            //log placeholder line
             LogWriter.Entries.Add(new LogPair(LogType.info, "--------------------------------------------------"));
 
-            //write to logging file
+            //write to log file
             LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
             #endregion logging
             #endregion writer
+
+            return result;
         }
     }
 }

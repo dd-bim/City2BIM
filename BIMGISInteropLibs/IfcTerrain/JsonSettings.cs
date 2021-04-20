@@ -43,32 +43,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         REB,
     }
 
-    public enum LoGeoRef
-    {
-        /// <summary>
-        /// Level of Georeferencing 30 - mainly use of a coordinate <para/>
-        /// Need: IfcCartesianPoint; IfcDirection (x,y); IfcAxis2Placement3D; IfcLocalPlacement <para/>
-        /// Stored in: IfcSite
-        /// </summary>
-        LoGeoRef30 = 30,
-
-
-        /// <summary>
-        /// Level of Georefencing 40 - mainly use a coordinate and rotation <para/>
-        /// Need: IfcCartesianPoint; IfcDirection (x,y); IfcAxis2Placement3D; IfcGeometricRepresentationContext <para/>
-        /// Stored in: IfcProject
-        /// </summary>
-        LoGeoRef40 = 40,
-
-
-        /// <summary>
-        /// Level of Georefencing 50 - mainly use a coordinate and rotation <para/>
-        /// Need: IfcGeometricRepresentationContext, IfcProjectedCRS, IfcSIUnit <para/>
-        /// Stored in: IfcProject IfcMapConversion
-        /// </summary>
-        LoGeoRef50 = 50
-    }
-
     /// <summary>
     /// Establishes the connection between Reader, Writers, GUI and Command
     /// </summary>
@@ -110,17 +84,22 @@ namespace BIMGISInteropLibs.IfcTerrain
         public IFC.IfcFileType outFileType { get; set; }
 
         /// <summary>
-        /// [TODO] Destination location for the log file
+        /// Destination location for the log file
         /// </summary>
         public string logFilePath { get; set; }
 
         /// <summary>
-        /// Setting of user defined verbosityLevel (TRACE, INFO, DEBUG, ...)
+        /// Setting of user defined verbosityLevel
         /// </summary>
         public LogType verbosityLevel { get; set; }
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
+        /// <summary>
+        /// the site name in the out put IFC file (IfcSite)
+        /// </summary>
+        public string siteName { get; set; }
+        
         /// <summary>
         /// the project name in the output IFC file (IfcProject)
         /// </summary>
@@ -142,9 +121,15 @@ namespace BIMGISInteropLibs.IfcTerrain
         public string editorsOrganisationName { get; set; }
 
         /// <summary>
-        /// Decide whether metadata should be exported as a separate JSON file
+        /// Decide whether metadata should be exported as a separate JSON file<para/>
+        /// TODO: support of IFCTerrain Command
         /// </summary>
         public bool exportMetadataFile { get; set; }
+
+        /// <summary>
+        /// Decide whehter metadata should be stored as IfcPropertySets
+        /// </summary>
+        public bool outIfcPropertySet { get; set; }
         #endregion
 
         /// <summary>
@@ -184,7 +169,10 @@ namespace BIMGISInteropLibs.IfcTerrain
         //below the required attributes to process the georeferencing
         #region GeoRef - Attributes
 
-        public LoGeoRef logeoref { get; set; }
+        /// <summary>
+        /// Decides which level of georef to use
+        /// </summary>
+        public IFC.LoGeoRef logeoref { get; set; }
 
         /// <summary>
         /// Describes whether the project coordinate origin should be set to the user defined position or not.
@@ -205,6 +193,48 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// z - value of a user defined georeferencing
         /// </summary>
         public double zOrigin { get; set; }
+
+        /// <summary>
+        /// [LoGeoRef40] true north rotation
+        /// </summary>
+        public double trueNorth { get; set; }
+
+        #region LoGeoRef50
+        /// <summary>
+        /// [LoGeoRef50] scale
+        /// </summary>
+        public double scale { get; set; }
+
+        /// <summary>
+        /// [LoGeoRef50] Name of the CRS (EPSG-Code)
+        /// </summary>
+        public int crsName { get; set; }
+
+        /// <summary>
+        /// [LoGeoRef50] Description to the CRS
+        /// </summary>
+        public string crsDescription { get; set; }
+
+        /// <summary>
+        /// [LoGeoRef50] name of the geodetic datum
+        /// </summary>
+        public string geodeticDatum { get; set; }
+
+        /// <summary>
+        /// [LoGeoRef50] name of the vertical datum
+        /// </summary>
+        public string verticalDatum { get; set; }
+
+        /// <summary>
+        /// [LoGeoRef50] name of the projection name
+        /// </summary>
+        public string projectionName { get; set; }
+
+        /// <summary>
+        /// [LoGeoRef50] projection zone
+        /// </summary>
+        public string projectionZone { get; set; }
+        #endregion LoGeoRef50
         #endregion
 
         #endregion unspecific file attributes

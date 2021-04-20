@@ -120,6 +120,9 @@ namespace IFCTerrainGUI.GUI.XML
             //set task (file opening) to true
             MainWindowBib.taskfileOpening = true;
 
+            //set json settings isTin to true
+            MainWindow.jSettings.isTin = true;
+
             //check if all task are allready done
             MainWindowBib.readyState();
         }

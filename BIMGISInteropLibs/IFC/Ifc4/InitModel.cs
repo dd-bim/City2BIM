@@ -14,6 +14,9 @@ using Xbim.Ifc4.Interfaces;                     //Enumeration for Unit
 
 namespace BIMGISInteropLibs.IFC.Ifc4
 {
+    /// <summary>
+    /// class to create IfcProject
+    /// </summary>
     public static class InitModel
     {
         /// <summary>
@@ -25,7 +28,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="editorsOrganisationName">organisation</param>
         /// <param name="project">Return parameter for further processing</param>
         /// <returns>IfcProject</returns>
-        public static Xbim.Ifc.IfcStore Create(string projectName,
+        public static IfcStore Create(string projectName,
             string editorsFamilyName,
             string editorsGivenName,
             string editorsOrganisationName,
@@ -34,7 +37,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             //first we need to set up some credentials for ownership of data in the new model
             var credentials = new XbimEditorCredentials
             {
-                ApplicationDevelopersName = "HTW Dresden for DDBIM",
+                ApplicationDevelopersName = "HTW Dresden [DD BIM]",
                 ApplicationFullName = System.Reflection.Assembly.GetExecutingAssembly().FullName,
                 ApplicationIdentifier = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
                 ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
@@ -57,7 +60,11 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 //set project Name
                 project.Name = projectName;
 
+                //set unit for Length to metre
                 project.UnitsInContext.SetOrChangeSiUnit(IfcUnitEnum.LENGTHUNIT, IfcSIUnitName.METRE, null);
+
+                //unit for angle remains unchanged and is output as "rad"
+                
                 //now commit the changes, else they will be rolled back at the end of the scope of the using statement
                 txn.Commit();
             }

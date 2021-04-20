@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="IFCTerrainGUI.GUI.ExportSettings.Metadata.ucMetaIfcJson"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
+             mc:Ignorable="d" 
+             d:DesignHeight="213" d:DesignWidth="373">
+    <Grid Margin="2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        
+        <!-- DIN SPEC 91391-2 -->
+        <CheckBox x:Name="chkDin91391Export" Grid.Row="0" Content="DIN SPEC 91391-2" VerticalContentAlignment="Center" Checked="chkDin91391Export_Checked" Unchecked="chkDin91391Export_Unchecked"/>
+        <Button x:Name="btnOpenWindowMetadata913912" Grid.Row="0" Grid.Column="1" Content="Open input for 'DIN 91391-2'" Height="20" VerticalContentAlignment="Center" Click="btnOpenWindowMetadata913912_Click" IsEnabled="False"/>
+
+        <!-- DIN 18740-6 -->
+        <CheckBox x:Name="chkDin18740Export" Grid.Row="1" Content="DIN 18740-6" VerticalContentAlignment="Center" Checked="chkDin18740Export_Checked" Unchecked="chkDin18740Export_Unchecked"/>
+        <Button x:Name="btnOpenWindowMetadata187406" Grid.Row="1" Grid.Column="1" Content="Open input for 'DIN 18740-6'" Height="20" VerticalContentAlignment="Center" Click="btnOpenWindowMetadata187406_Click" IsEnabled="False"/>
+
+        <!-- Export Options -->
+        <GroupBox
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            Header="Export / Storage options"
+            Margin="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <CheckBox x:Name="chkJsonExport" Content="JSON export" VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="Select if you want to output a separate JSON file." TextWrapping="Wrap" VerticalAlignment="Center"/>
+                <CheckBox Grid.Row="1" x:Name="chkIfcPropertySet" Content="IFC Property Set" VerticalContentAlignment="Center" ToolTip="[DRAFT - Version]"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Select if you want to output metadata as IFC Property Set." TextWrapping="Wrap" VerticalAlignment="Center"/>
+                
+            </Grid>
+            
+
+        </GroupBox>
+       
+
+        <!-- apply button user can set all settings -->
+        <Button x:Name="btnAplly" Content="Apply 'Metadata export'" Grid.Row="4" Grid.ColumnSpan="2" Click="btnAplly_Click"/>
+    </Grid>
+</UserControl>

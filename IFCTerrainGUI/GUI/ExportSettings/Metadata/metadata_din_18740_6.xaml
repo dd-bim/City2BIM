@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
         mc:Ignorable="d"
-        Title="Metadata" 
+        Title="Metadata - DIN 18740-6" 
         Height="450" Width="500" 
         FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize">
+        ResizeMode="CanMinimize" Closing="Window_Closing">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1.1*"/>
@@ -34,7 +34,7 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <!-- info text -->
-        <TextBlock Text="Here you can assign metadata (according to DIN 18740-6)." Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
+        <TextBlock Text="Here you can assign metadata (according to DIN 18740-6)." Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" FontSize="14"/>
         <TextBlock Text="at least the following information must be provided!" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <TextBlock Text="Moddelltyp" Grid.Row="2" VerticalAlignment="Center"/>
         <TextBlock Text="Datenstruktur" Grid.Row="3" VerticalAlignment="Center"/>
@@ -59,8 +59,8 @@
         </ComboBox>
 
         <ComboBox x:Name="selectedRep" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem x:Name="itemIsoline" Content="Isoline" IsSelected="True"/>
-            <ComboBoxItem x:Name="itemShading" Content="Shading"/>
+            <ComboBoxItem x:Name="itemIsoline" Content="Isoline" Visibility="Collapsed"/>
+            <ComboBoxItem x:Name="itemShading" Content="Shading" IsSelected="True"/>
         </ComboBox>
 
 
@@ -94,12 +94,12 @@
 
         <TextBox x:Name="tbInputProjection" Grid.Row="9" Grid.Column="2" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False"/>
 
-        <CheckBox Grid.Row="10" Grid.Column="1" VerticalContentAlignment="Center" Content="export Bounding Box" IsEnabled="False"/>
+        <CheckBox Grid.Row="10" Grid.Column="1" VerticalContentAlignment="Center" Content="export Bounding Box" IsEnabled="False" ToolTip="[Currently not supported]" ToolTipService.ShowOnDisabled="True"/>
 
-        <TextBox Grid.Row="11" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False"/>
-        <TextBox Grid.Row="12" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False"/>
+        <TextBox Grid.Row="11" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False" ToolTip="[Currently not supported]" ToolTipService.ShowOnDisabled="True"/>
+        <TextBox Grid.Row="12" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False" ToolTip="[Currently not supported]" ToolTipService.ShowOnDisabled="True"/>
         
         <!--apply button-->
-        <Button x:Name="btnApplyMetadata187406" Grid.Row="19" Grid.Column="1" Content="Apply and Close - Window" Click="btnApplyMetadata187406_Click"/>
+        <Button x:Name="btnApplyMetadata187406" Grid.Row="19" Grid.ColumnSpan="3" Content="Apply and Close - Window" Click="btnApplyMetadata187406_Click"/>
     </Grid>
 </Window>

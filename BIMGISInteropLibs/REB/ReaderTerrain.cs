@@ -177,8 +177,11 @@ namespace BIMGISInteropLibs.REB
         /// <param name="rebData">REB data set</param>
         /// <param name="horizon">Horizon to be processed</param>
         /// <returns>TIN via Result for processing in IFCTerrain (and Revit)</returns>
-        public static Result ConvertRebToTin(RebDaData rebData, int horizon)
+        public static Result ConvertRebToTin(RebDaData rebData, JsonSettings jSettings)
         {
+            //read horizon from json settings
+            int horizon = jSettings.horizon;
+
             //var mesh = new Mesh(is3D, minDist); remove
             var tinB = Tin.CreateBuilder(true);
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Create TIN builder"));
@@ -186,7 +189,7 @@ namespace BIMGISInteropLibs.REB
             //Container for tin
             var result = new Result();
             
-            //create point map [TODO] check whether revision makes sense
+            //create point map check whether revision makes sense
             var pmap = new Dictionary<long, int>();
 
             //create artificial point index
@@ -199,18 +202,7 @@ namespace BIMGISInteropLibs.REB
                 tinB.AddPoint(points++, kv.Value); //add tin builder
                 LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Point (" + (points-1) + ") set (x= " + kv.Value.X + "; y= " + kv.Value.Y + "; z= " + kv.Value.Z + ")"));
             }
-            /* rework ... SOLUTION?
-            if(rebData.Lines.TryGetValue(horizon, out var lines))
-            {
-                foreach(var line in lines)
-                {
-                    if(pmap.TryGetValue(line.P1, out int v1)
-                        && pmap.TryGetValue(line.P2, out int v2))
-                    {
-                        mesh.FixEdge(v1, v2);
-                    }
-                }
-            }*/
+            //reb triangle
             if (rebData.Tris.TryGetValue(horizon, out var tris))
             {
                 //traverse each triangle in the REB data set
@@ -224,13 +216,6 @@ namespace BIMGISInteropLibs.REB
                         //Create triangle over the references to the point indices
                         tinB.AddTriangle(v1, v2, v3, true);
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Triangle set (P1= " + (v1) + "; P2= " + (v2) + "; P3= " + (v3) + ")"));
-
-                        //TODO: add Tin error handling
-                        //var pos = mesh.AddFace(new[] { v1, v2, v3 });
-                        //if (!pos.HasValue)
-                        //{
-                        //Console.WriteLine($"Missed {v1} {v2} {v3}");
-                        //}
                     }
                 }
             }
@@ -238,13 +223,18 @@ namespace BIMGISInteropLibs.REB
             //Generate TIN from TIN Builder
             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Create TIN via TIN builder."));
+            
             //Add TIN to the Result
             result.Tin = tin;
 
             //logging
             LogWriter.Entries.Add(new LogPair(LogType.info, "Reading REB data successful."));
             LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
-            
+
+            //add to results (to gui logging)
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
+
             return result;
         }
     }

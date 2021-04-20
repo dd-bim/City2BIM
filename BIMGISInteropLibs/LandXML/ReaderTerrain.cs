@@ -18,6 +18,9 @@ using BIMGISInteropLibs.IfcTerrain;
 //Include IfcTerrain - Model for unit conversion
 using static BIMGISInteropLibs.IfcTerrain.Common;
 
+//embed for error handling
+using System.Windows; //error handling (message box)
+
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
@@ -31,8 +34,10 @@ namespace BIMGISInteropLibs.LandXML
         /// </summary>
         /// <param name="fileName">Location of the LandXML file</param>
         /// <returns>TIN - for further processing in IFCTerrain (and Revit)</returns>
-        public static Result ReadTin(string fileName)
+        public static Result ReadTin(JsonSettings jSettings)
         {
+            string filePath = jSettings.filePath;
+
             //create a new result for passing the TIN
             var result = new Result();
 
@@ -40,7 +45,7 @@ namespace BIMGISInteropLibs.LandXML
             try
             {
                 //Invoke XML reader based on location
-                using (var reader = XmlReader.Create(fileName))
+                using (var reader = XmlReader.Create(filePath))
                 {
                     XElement el;
                     double? scale = null; //[TODO] Automate scaling based on input data
@@ -125,21 +130,16 @@ namespace BIMGISInteropLibs.LandXML
                         }
                         else if (insideTin && reader.NodeType == XmlNodeType.EndElement && reader.Name == "Definition")
                         {
-                            /* Adding a check: whether TIN is damaged, if any. [TODO]
-                            if(!mesh.Points.Any() || !mesh.FaceEdges.Any())
-                            {
-                                result.Error = string.Format(Properties.Resources.errNoTINData, Path.GetFileName(fileName));
-                                logger.Error("No TIN-data found");
-                                return result;
-                            }
-                            */
-
                             //Generate TIN from TIN Builder
                             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
                             LogWriter.Entries.Add(new LogPair(LogType.debug, "[LandXML] TIN created via TIN builder."));
 
                             //return tin to result
                             result.Tin = tin;
+
+                            //add to results (logging stats)
+                            result.rPoints = tin.Points.Count;
+                            result.rFaces = tin.NumTriangles;
 
                             //Logging
                             LogWriter.Entries.Add(new LogPair(LogType.info, "Reading LandXML data successful."));
@@ -148,21 +148,18 @@ namespace BIMGISInteropLibs.LandXML
                             return result;
                         }
                         else
-                        { reader.Read(); } //[TODO] <-- check this???
+                        { reader.Read(); }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                //result.Error = string.Format(Properties.Resources.errFileNotReadable, Path.GetFileName(fileName));
-
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[LandXML] File not readable."));
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[LandXML] file could not be read (" + jSettings.fileName + ")"));
+                MessageBox.Show("LandXML file could not be read: \n" + ex.Message, "LandXML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 return result;
             }
-            //result.Error = string.Format(Properties.Resources.errNoTIN, Path.GetFileName(fileName));
-
-            LogWriter.Entries.Add(new LogPair(LogType.error, "[LandXML] No TIN data found."));
             return result;
         } //End ReadTIN
     }

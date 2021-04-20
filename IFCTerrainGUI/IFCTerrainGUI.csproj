@@ -49,8 +49,8 @@
     <Reference Include="IxMilia.Dxf, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IxMilia.Dxf.0.8.0\lib\netstandard2.0\IxMilia.Dxf.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.10.0\lib\net46\Serilog.dll</HintPath>
@@ -89,6 +89,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -101,15 +105,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ExportSettings\Metadata\ucMetaIfcPropertySets.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\Metadata\ucMetaJson.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\ucIfcGeoRef.xaml">
+    <Page Include="GUI\ExportSettings\Metadata\ucMetaIfcJson.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -163,6 +159,9 @@
     <Compile Include="GUI\ElevationGrid\ucElevationGrid.xaml.cs">
       <DependentUpon>ucElevationGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml.cs">
+      <DependentUpon>LoGeoRef50_CRS_Metadata.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml.cs">
       <DependentUpon>metadata_din_18740_6.xaml</DependentUpon>
     </Compile>
@@ -172,14 +171,8 @@
     <Compile Include="GUI\ExportSettings\Metadata\ucMetaIfcProject.xaml.cs">
       <DependentUpon>ucMetaIfcProject.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ExportSettings\Metadata\ucMetaIfcPropertySets.xaml.cs">
-      <DependentUpon>ucMetaIfcPropertySets.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\Metadata\ucMetaJson.xaml.cs">
-      <DependentUpon>ucMetaJson.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\ucIfcGeoRef.xaml.cs">
-      <DependentUpon>ucIfcGeoRef.xaml</DependentUpon>
+    <Compile Include="GUI\ExportSettings\Metadata\ucMetaIfcJson.xaml.cs">
+      <DependentUpon>ucMetaIfcJson.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcVersionShape.xaml.cs">
       <DependentUpon>ucIfcVersionShape.xaml</DependentUpon>

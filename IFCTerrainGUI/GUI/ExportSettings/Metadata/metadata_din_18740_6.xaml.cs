@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using IFCTerrainGUI.GUI.MainWindowLogic; //error handler
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -72,9 +74,15 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 MainWindow.jSettings18740.projection = this.selectProjection.SelectionBoxItem.ToString() + "; " + this.tbInputProjection.Text.ToString();
             }
-                     
+
+            //gui logging (user information)
+            ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("Metadata DIN 18740-6 adopted!");
+
             //unlock MainWindow
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+
+            //check state
+            MainWindowBib.readyState();
 
             //close current window
             Close();
@@ -116,6 +124,19 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 //disable textbox
                 tbInputAltitude.IsEnabled = false;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //unlock MainWindow
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+
+            //TODO error handler, if input failed
         }
     }
 }

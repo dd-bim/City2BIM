@@ -15,6 +15,9 @@ using BimGisCad.Representation.Geometry.Elementary;     //Points, Lines, etc.
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
+//embed for error handling
+using System.Windows; //error handling (message box)
+
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
@@ -28,9 +31,10 @@ namespace BIMGISInteropLibs.CityGML
         /// </summary>
         /// <param name="fileName">Location of the CityGML file</param>
         /// <returns>TIN (in the form of result.tin)</returns>
-        public static Result ReadTin(string fileName)
+        public static Result ReadTin(JsonSettings jSettings)
         {
-            //var logger = LogManager.GetCurrentClassLogger(); NLog removed
+            //read file name from settings
+            string fileName = jSettings.filePath;
 
             //TIN-Builder
             var tinB = Tin.CreateBuilder(true);
@@ -88,23 +92,21 @@ namespace BIMGISInteropLibs.CityGML
                                             tinB.AddTriangle(pnr - 3, pnr - 2, pnr - 1, true);
                                             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Triangle set (P1= " + (pnr-3) + "; P2= " + (pnr - 2) + "; P3= " + (pnr - 1) + ")"));
                                         }
-                                        reader.Read(); // <-- check! is this necessary here? [TODO]
+                                        reader.Read();
                                     }
-                                    /* Check if TIN is "error free" Add a new TIN
-                                    if(!tin.Points.Any() || !tin.FaceEdges.Any())
-                                    {
-                                        result.Error = string.Format(Properties.Resources.errNoTINData, Path.GetFileName(fileName));
-                                        logger.Error("No TIN-data found");
-                                        return result;
-                                    }
-                                    */
-
                                     //Generate TIN from TIN Builder
                                     Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
+                                    
                                     //logging
                                     LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Create TIN via TIN builder."));
+                                    
                                     //handover tin to result
                                     result.Tin = tin;
+
+                                    //add to results (stats)
+                                    result.rPoints = tin.Points.Count;
+                                    result.rFaces = tin.NumTriangles;
+
                                     //logging
                                     LogWriter.Entries.Add(new LogPair(LogType.info, "Reading CityGML data successful."));
                                     LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
@@ -114,19 +116,23 @@ namespace BIMGISInteropLibs.CityGML
                             }
                         }
                     }
+                    else
+                    {
+                        //error logging
+                        LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] file (" + jSettings.fileName + ") no TIN data found!"));
+                        MessageBox.Show("CityGML file contains no TIN data!", "CityGML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    
 
-                    //result.Error = string.Format(Properties.Resources.errNoTIN, Path.GetFileName(fileName));
-                    LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] No TIN data found"));
                     return result;
                 }
             }
             //[TODO]: Pass error message and "Error"
-            catch
+            catch (Exception ex)
             {
-                //result.Error = string.Format(Properties.Resources.errFileNotReadable, Path.GetFileName(fileName));
-                
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] File not readable"));
-
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] file could not be read (" + jSettings.fileName + ")"));
+                MessageBox.Show("CityGML file could not be read: \n" + ex.Message, "LandXML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
                 return result;
             }
         } //End ReadTIN

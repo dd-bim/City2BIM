@@ -31,15 +31,18 @@ namespace BIMGISInteropLibs.ElevationGrid
         /// <param name="bbSouth">Boundary (South)</param>
         /// <param name="bbWest">Boundary (West)</param>
         /// <returns>TIN for processing in IFCTerrain (and Revit)</returns>
-        public static Result ReadGrid(bool is3d, string fileName, double minDist, int size, bool bBox, double bbNorth, double bbEast, double bbSouth, double bbWest)
+        public static Result ReadGrid(JsonSettings jSettings)
         {
+            //read from json settings
+            bool is3d = jSettings.is3D;
+            double minDist = jSettings.minDist;
+            string fileName = jSettings.filePath;
+            int size = jSettings.gridSize;
+            
             //Return variable initalize
             var result = new Result();
 
             var mesh = new BimGisCad.Collections.Mesh(is3d, minDist); //will be replaced by TIN
-
-            //create a TIN builder
-            var tinB = Tin.CreateBuilder(true);
 
             #region Read File for extent
             //Counter for counting the processed lines
@@ -103,9 +106,16 @@ namespace BIMGISInteropLibs.ElevationGrid
 
             //create another file reader to trim points based on BB box 
             System.IO.StreamReader file2 = new System.IO.StreamReader(fileName);
+
+            //read from json settings
+            bool bBox = jSettings.bBox;
+
+            double bbNorth = jSettings.bbNorth;
+            double bbEast = jSettings.bbEast;
+            double bbSouth = jSettings.bbSouth;
+            double bbWest = jSettings.bbWest;
+
             
-            //Create point number artificially, for indexing
-            int pnr = 0; 
             while ((line = file2.ReadLine()) != null)
             {
                 //Line is split
@@ -204,6 +214,9 @@ namespace BIMGISInteropLibs.ElevationGrid
 
             //Return of a MESH [TODO]: Revise so that a TIN is returned.
             result.Mesh = mesh;
+
+            result.rPoints = mesh.Points.Count;
+            result.rFaces = mesh.FaceEdges.Count;
             return result;
         }
     }

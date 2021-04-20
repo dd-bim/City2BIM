@@ -19,11 +19,6 @@ namespace BIMGISInteropLibs.IfcTerrain
     public class Result
     {
         /// <summary>
-        /// transferclass for error
-        /// </summary>
-        public string Error { get; set; } = null;
-
-        /// <summary>
         /// transfer class of an MESH (WILL BE REMOVED)
         /// </summary>
         public Mesh Mesh { get; set; } = null;
@@ -37,5 +32,35 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// transfer class for tin
         /// </summary>
         public Tin Tin { get; set; }
+
+        /// <summary>
+        /// Number of points read
+        /// </summary>
+        public int rPoints { get; set; }
+
+        /// <summary>
+        /// Number of points processed
+        /// </summary>
+        public int wPoints { get; set; }
+
+        /// <summary>
+        /// Number of lines read
+        /// </summary>
+        public int rLines { get; set; }
+
+        /// <summary>
+        /// Number of lines processed
+        /// </summary>
+        public int wLines { get; set; }
+        
+        /// <summary>
+        /// Number of lines read
+        /// </summary>
+        public int rFaces { get; set; }
+
+        /// <summary>
+        /// Number of lines processed
+        /// </summary>
+        public int wFaces { get; set; }
     }
 }

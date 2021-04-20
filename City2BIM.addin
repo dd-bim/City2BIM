@@ -7,7 +7,7 @@
        <Text>City2BIM</Text> 
        <Description>PlugIn for integration 3D city models</Description>
        <VisibilityMode>AlwaysVisible</VisibilityMode>
-       <Assembly>City2RVT\City2RVT.dll</Assembly>
+       <Assembly>D:\01_Studium\02_Master\99_Masterarbeit\03_Softwareentwicklung\00_Repository\city2bim\City2RVT\bin\Release\City2RVT.dll</Assembly>
        <AddInId>666b8cc1-fc58-4780-a728-bba30ffb0fed</AddInId>
 	   <VendorId>HTWDresden</VendorId>
 	   <VendorDescription>Faculty of Spatial Information</VendorDescription>

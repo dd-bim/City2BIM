@@ -15,10 +15,14 @@ using System.Windows.Shapes;
 
 using IFCTerrainGUI.GUI.MainWindowLogic; //include for error handling (ready checker)
 
+//logging
+using BIMGISInteropLibs.Logging; //access to log writer
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
-    /// Interaktionslogik für ucMetaIfcProject.xaml
+    /// Interaction logic for ucMetaIfcProject.xaml
     /// </summary>
     public partial class ucMetaIfcProject : UserControl
     {
@@ -39,12 +43,21 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
              * #3 if #2 is the case: set default values (placeholder)
              */
 
+            //site name
+            MainWindow.jSettings.siteName = tbSiteName.Text.ToString();
+            if (string.IsNullOrEmpty(MainWindow.jSettings.siteName))
+            {
+                MainWindow.jSettings.siteName = "Site with Terrain";
+            }
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Site name set to: " + MainWindow.jSettings.projectName));
+
             //project name
             MainWindow.jSettings.projectName = tbProjectName.Text.ToString();
             if (string.IsNullOrEmpty(MainWindow.jSettings.projectName))
             {
                 MainWindow.jSettings.projectName = "Project Titel [Placeholder]";
             }
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Project name set to: " + MainWindow.jSettings.projectName));
 
             //organisation name
             MainWindow.jSettings.editorsOrganisationName = tbOrganisationName.Text.ToString();
@@ -52,6 +65,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 MainWindow.jSettings.editorsOrganisationName = "Organisation [Placeholder]";
             }
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Organisation name set to: " + MainWindow.jSettings.editorsOrganisationName));
 
             //given name
             MainWindow.jSettings.editorsGivenName = tbGivenName.Text.ToString();
@@ -59,39 +73,27 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 MainWindow.jSettings.editorsGivenName = "Given name [Placeholder]";
             }
-
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Given name set to: " + MainWindow.jSettings.editorsGivenName));
+            
             //family name
             MainWindow.jSettings.editorsFamilyName = tbFamilyName.Text.ToString();
             if (string.IsNullOrEmpty(MainWindow.jSettings.editorsFamilyName))
             {
                 MainWindow.jSettings.editorsFamilyName = "Family name [Placeholder]";
+                
             }
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Family name set to: " + MainWindow.jSettings.editorsFamilyName));
 
             //set task (file opening) to true
             MainWindowBib.selectMetadata = true;
 
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata - IfcProject set."));
+            MainWindowBib.setGuiLog("Metadata - IfcProject set.");
+
             //check if all task are allready done
             MainWindowBib.readyState();
-
             return;
-        }
-
-        private void chkMetadata_Checked(object sender, RoutedEventArgs e)
-        {
-            //button apply disable
-            //btnMetadataApply.IsEnabled = false;
-
-            //enable input fields
-            tbProjectName.IsEnabled = tbOrganisationName.IsEnabled = tbGivenName.IsEnabled = tbFamilyName.IsEnabled = true;
-        }
-
-        private void chkMetadata_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //button apply disable
-            //btnMetadataApply.IsEnabled = true;
-
-            //enable input fields
-            tbProjectName.IsEnabled = tbOrganisationName.IsEnabled = tbGivenName.IsEnabled = tbFamilyName.IsEnabled = false;
         }
     }
 }

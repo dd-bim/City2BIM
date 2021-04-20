@@ -52,8 +52,11 @@ namespace BIMGISInteropLibs.GEOgraf
         /// <param name="pointIndex2NumberMap"></param>
         /// <param name="triangleIndex2NumberMap"></param>
         /// <returns>TIN - for processing in IFCTerrain or Revit</returns>
-        public static Result ReadOutData(string filePath, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumberMap)
+        public static Result ReadOutData(JsonSettings jSettings, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumberMap)
         {
+            //read from json settings
+            string filePath = jSettings.filePath;
+
             //logging
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] start reading."));
 
@@ -140,9 +143,17 @@ namespace BIMGISInteropLibs.GEOgraf
                 //error logging
                 LogWriter.Entries.Add(new LogPair(LogType.error, "[Grafbat] File path ("+filePath+") could not be read!"));
             }
+
             //handover tin from tin builder
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Create TIN via TIN builder."));
-            result.Tin = tinB.ToTin(out pointIndex2NumberMap, out triangleIndex2NumberMap);
+            Tin tin = tinB.ToTin(out pointIndex2NumberMap, out triangleIndex2NumberMap);
+
+            //Result describe
+            result.Tin = tin;
+
+            //add to results (stats)
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
 
             //logging
             LogWriter.Entries.Add(new LogPair(LogType.info, "Reading Grafbat data successful."));
