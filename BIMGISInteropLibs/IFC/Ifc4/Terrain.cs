@@ -14,7 +14,6 @@ using Xbim.Ifc4.ProductExtension;               //IfcSite
 using Xbim.Ifc4.Interfaces;                     //Enum for Units
 using Xbim.Ifc4.RepresentationResource;         //IfcShapeRepresentation
 
-
 namespace BIMGISInteropLibs.IFC.Ifc4
 {
     /// <summary>
@@ -25,7 +24,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">storage for the whole ifc file</param>
         /// <param name="name"></param>
         /// <param name="tag"></param>
         /// <param name="placement"></param>
@@ -36,17 +35,18 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             //begin a transaction
             using (var txn = model.BeginTransaction("Create Terrain"))
             {
-                // Gelände
+                // terrain
                 var terrain = model.Instances.New<IfcGeographicElement>(s =>
                 {
                     s.Name = name;
                     s.PredefinedType = IfcGeographicElementTypeEnum.TERRAIN;
                     s.Tag = tag;
                     placement = placement ?? Axis2Placement3D.Standard;
-                    s.ObjectPlacement = LocalPlacement.Create(model, placement);
+                    s.ObjectPlacement = LoGeoRef.Level30.Create(model, placement);
                     s.Representation = model.Instances.New<IfcProductDefinitionShape>(r => r.Representations.Add(representation));
                 });
 
+                //commit transaction
                 txn.Commit();
 
                 return terrain;

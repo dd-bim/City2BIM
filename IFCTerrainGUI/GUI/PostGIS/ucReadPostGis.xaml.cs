@@ -20,7 +20,7 @@ using Microsoft.Win32; //used for file handling
 namespace IFCTerrainGUI.GUI.PostGIS
 {
     /// <summary>
-    /// Interaktionslogik für ucReadPostGis.xaml
+    /// Interaction logic for ucReadPostGis.xaml
     /// </summary>
     public partial class ucReadPostGis : UserControl
     {
@@ -73,8 +73,8 @@ namespace IFCTerrainGUI.GUI.PostGIS
             //set tin id (value)
             MainWindow.jSettings.tin_id = Convert.ToInt32(this.tbTinIdValue.Text);
 
-            #region dtm
-            #endregion dtm
+            //set is TIN
+            MainWindow.jSettings.isTin = true;
 
             #region breaklines
             //check if breaklines should be processed
@@ -115,14 +115,10 @@ namespace IFCTerrainGUI.GUI.PostGIS
 
             //return info to breaklines
             ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breaklines";
-            
 
-
+            //gui logging (user information)
+            MainWindowBib.setGuiLog("PostGIS settings applyed.");
             #endregion gui feedback
-
-
-
-
 
             #region error handling
             //set task (file opening) to true
@@ -244,9 +240,21 @@ namespace IFCTerrainGUI.GUI.PostGIS
 
         #endregion breaklines
         #endregion input fields checker
-        
+
         /// <summary>
-        /// wird ausgeführt sobald ein Textfeld geändert wird
+        /// check the textbox input if it corresponds to the regex
+        /// </summary>
+        private void tbPort_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //regex only numbers (no comma or dot)
+            Regex regex = new Regex("^[0-9]*$");
+
+            //if not valid no input follows
+            e.Handled = !regex.IsMatch(e.Text);
+        }
+
+        /// <summary>
+        /// is executed as soon as a text field is changed
         /// </summary>
         private void tb_TextChanged(object sender, TextChangedEventArgs e)
         {

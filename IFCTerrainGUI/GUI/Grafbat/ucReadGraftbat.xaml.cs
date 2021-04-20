@@ -48,6 +48,9 @@ namespace IFCTerrainGUI.GUI.Grafbat
                 //enable process button [TODO]: check if need to be relocated 
                 btnProcessGraftbat.IsEnabled = true;
 
+                //gui logging (user information)
+                MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
+
                 //TODO logging
 
                 return;
@@ -87,6 +90,9 @@ namespace IFCTerrainGUI.GUI.Grafbat
             #region error handling
             //set task (file opening) to true
             MainWindowBib.taskfileOpening = true;
+
+            //gui logging (user information)
+            MainWindowBib.setGuiLog("Grafbat settings applyed.");
 
             //check if all task are allready done
             MainWindowBib.readyState();

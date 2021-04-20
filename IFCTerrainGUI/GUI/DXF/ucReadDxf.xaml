@@ -98,12 +98,13 @@
                             IsChecked="True"
                             VerticalAlignment="Center"
                             Margin="20,0,0,0"
-                            ToolTip="Processing will be done via MESH (DXF layer)"/>
+                            ToolTip="Processing will be done via 3D Faces (DXF layer)"/>
                         <RadioButton
                             x:Name="rbDxfPointsLines"
                             Content="Points / Lines"
                             VerticalAlignment="Center"
-                            ToolTip="Processing will be done via Points and Lines (DXF layer)"
+                            ToolTip="Processing will be done via Points and Lines (DXF layer). [Currently not available]"
+                            ToolTipService.ShowOnDisabled="True"
                             Margin="20,0,0,0"
                             IsEnabled="False"/>
                     </StackPanel>

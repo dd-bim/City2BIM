@@ -1,0 +1,50 @@
+﻿<Window x:Class="IFCTerrainGUI.GUI.ExportSettings.LoGeoRef50_CRS_Metadata"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+        mc:Ignorable="d"
+        Title="LoGeoRef50 - CRS Metadata" 
+        Height="350" Width="400"
+        FontFamily="Bahnschrift" FontSize="12"
+        ResizeMode="CanMinimize" Closing="Window_Closing">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <!--info texts-->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Hier können Sie die für LoGeoRef50 benötigten Metadaten vergeben." HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="1" Text="CRS - Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+        <TextBlock Grid.Row="2" Grid.RowSpan="2" Text="Description:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+        <TextBlock Grid.Row="4" Text="Geodetic datum:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+        <TextBlock Grid.Row="5" Text="Vertical datum:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+        <TextBlock Grid.Row="6" Text="Projection name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+        <TextBlock Grid.Row="7" Text="Projection zone:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+
+        <!-- input fields -->
+        <TextBox x:Name="tbCrsName" Grid.Row="1" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox x:Name="tbDescription" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Margin="0,1" TextAlignment="Left" TextWrapping="Wrap"/>
+        <TextBox x:Name="tbGeodeticDatum" Grid.Row="4" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbVerticalDatum" Grid.Row="5" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbProjectionName" Grid.Row="6" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbProjectionZone" Grid.Row="7" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+
+        <!--Button to set settings and close window-->
+        <Button x:Name="btnApplyCrsMetadata" Grid.Row="9" Grid.ColumnSpan="2" Content="Apply and close - Window" Click="btnApplyCrsMetadata_Click"/>
+
+    </Grid>
+</Window>

@@ -19,7 +19,7 @@
         <StackPanel x:Name="stpGridSize" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False" Height="20">
             <TextBlock Text="Grid size:" Margin="0,0,5,0" VerticalAlignment="Center"/>
             <!--<num:IntBox x:Name="tbGridSize" Width="50" TextChanged="tbBB_TextChanged" TextAlignment="Center" ValidationTrigger="PropertyChanged" Validation.Error="tbNum_Error"/>-->
-            <TextBox x:Name="tbGridSize" Width="50" TextChanged="tbBB_TextChanged" TextAlignment="Center" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="tbGridSize" Width="50" TextChanged="tbBB_TextChanged" TextAlignment="Center" VerticalContentAlignment="Center" PreviewTextInput="tbGridSize_PreviewTextInput" />
             <TextBlock Text="m" Margin="5,0,0,0" VerticalAlignment="Center"/>
         </StackPanel>
 
@@ -58,11 +58,11 @@
                 <TextBlock Grid.Row="4" Text="West [m]:"    VerticalAlignment="Center"/>
 
                 <!--input fields below-->
-                <TextBox x:Name="tbBBNorth" Grid.Row="1" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False"/>
-                <TextBox x:Name="tbBBEast" Grid.Row="2" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False"/>
-                <TextBox x:Name="tbBBSouth" Grid.Row="3" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False"/>
-                <TextBox x:Name="tbBBWest" Grid.Row="4" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False"/>
-            
+                <TextBox x:Name="tbBBNorth" Grid.Row="1" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False" PreviewTextInput="tbBB_PreviewTextInput"/>
+                <TextBox x:Name="tbBBEast" Grid.Row="2" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False" PreviewTextInput="tbBB_PreviewTextInput"/>
+                <TextBox x:Name="tbBBSouth" Grid.Row="3" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False" PreviewTextInput="tbBB_PreviewTextInput"/>
+                <TextBox x:Name="tbBBWest" Grid.Row="4" Grid.Column="1" Height="20" VerticalContentAlignment="Center" TextChanged="tbBB_TextChanged" IsEnabled="False" PreviewTextInput="tbBB_PreviewTextInput"/>
+                
             </Grid>
             
         </GroupBox>

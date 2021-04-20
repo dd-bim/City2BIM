@@ -15,6 +15,10 @@ namespace IFCTerrainCommand
     /// </summary>
     static class Program
     {
+        /// <summary>
+        /// main programm (currently only this programm)
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             //path of json files
@@ -35,11 +39,12 @@ namespace IFCTerrainCommand
             //create new instance of the ConnectionInterface
             var conn = new ConnectionInterface();
 
+            //start mapping process
+            //TODO: add jSettings for metadata to IfcPropertySet
+            conn.mapProcess(jSettings, null ,breakDist, refLatitude, refLongitude, refElevation);
 
-            conn.mapProcess(jSettings, breakDist, refLatitude, refLongitude, refElevation);
-
-            
-            
+            //finish programm
+            return;
         }
     }
 }

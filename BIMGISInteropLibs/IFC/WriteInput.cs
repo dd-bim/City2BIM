@@ -21,8 +21,6 @@ namespace BIMGISInteropLibs.IFC
         /// Ifc Version 4
         /// </summary>
         IFC4,
-        IFC2x3Tin,
-        IFC4Tin,
         /// <summary>
         /// Placeholder for future implementation
         /// </summary>
@@ -31,7 +29,7 @@ namespace BIMGISInteropLibs.IFC
     /// <summary>
     /// Enumeration for IFC-File-Types
     /// </summary>
-    public enum IfcFileType { Step, XML }
+    public enum IfcFileType { Step, ifcXML, ifcZip }
 
     /// <summary>
     /// Enumeration for shape representation
@@ -58,15 +56,38 @@ namespace BIMGISInteropLibs.IFC
     }
 
     /// <summary>
+    /// Enumeration to identify Level of GeoRef
+    /// </summary>
+    public enum LoGeoRef
+    {
+        /// <summary>
+        /// Level of Georeferencing 30 - mainly use of a coordinate <para/>
+        /// Need: IfcCartesianPoint; IfcDirection (x,y); IfcAxis2Placement3D; IfcLocalPlacement <para/>
+        /// Stored in: IfcSite
+        /// </summary>
+        LoGeoRef30 = 30,
+
+        /// <summary>
+        /// Level of Georefencing 40 - mainly use a coordinate and rotation <para/>
+        /// Need: IfcCartesianPoint; IfcDirection (x,y); IfcAxis2Placement3D; IfcGeometricRepresentationContext <para/>
+        /// Stored in: IfcProject
+        /// </summary>
+        LoGeoRef40 = 40,
+
+        /// <summary>
+        /// Level of Georefencing 50 - mainly use a coordinate and rotation <para/>
+        /// Need: IfcGeometricRepresentationContext, IfcProjectedCRS, IfcSIUnit <para/>
+        /// Stored in: IfcProject IfcMapConversion
+        /// </summary>
+        LoGeoRef50 = 50
+    }
+
+
+    /// <summary>
     /// Connection Interface for IFC-Writer (used in IFCTerrain)
     /// </summary>
     public class WriteInput
     {
-        /// <summary>
-        /// Storage location
-        /// </summary>
-        public string Filename { get; set; } //TODO: rename in fileLocation
-
         /// <summary>
         /// getter and setter for file types
         /// </summary>
@@ -81,10 +102,5 @@ namespace BIMGISInteropLibs.IFC
         /// getter and setter for surfaceTypes
         /// </summary>
         public SurfaceType SurfaceType { get; set; }
-
-        //TODO check the usage of the following getter and setter
-        public double? BreakDist { get; set; }
-
-        public bool WriteGeo { get; set; }
     }
 }

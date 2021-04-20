@@ -17,15 +17,12 @@
             
             <!-- stack panel -->
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <ComboBox x:Name="cbIfcVersion" Width="100" VerticalAlignment="Center" SelectionChanged="cbIfcVersion_SelectionChanged">
+                <ComboBox x:Name="cbIfcVersion" Width="100" VerticalAlignment="Center" SelectionChanged="cbIfcVersion_SelectionChanged" ToolTip="Please select IFC schema version. The supported functionalities differ!">
                     <!--default seeting GCS-->
-                    <ComboBoxItem x:Name="ifc2x3" Content="IFC 2x3 (MESH)" IsEnabled="False" Visibility="Collapsed"/>
-                    <ComboBoxItem x:Name="ifc4" Content="IFC 4 (MESH)" IsEnabled="False" Visibility="Collapsed"/>
-                    <ComboBoxItem x:Name="ifc2x3Tin" Content="IFC 2x3"/>
-                    <ComboBoxItem x:Name="ifc4Tin" Content="IFC 4"/>
+                    <ComboBoxItem x:Name="ifc2x3" Content="IFC 2x3"/>
+                    <ComboBoxItem x:Name="ifc4" Content="IFC 4"/>
                     <ComboBoxItem x:Name="ifc4dot3" Content="IFC 4.3" IsEnabled="False"/>
                 </ComboBox>
-                <CheckBox x:Name="chkIfcXml" VerticalAlignment="Center" Content="IfcXML" Margin="7,0,0,0" ToolTip="Check if you want to export Ifc-XML files." IsChecked="False" Checked="chkIfcXml_Checked" Unchecked="chkIfcXml_Unchecked"/>
                 <CheckBox x:Name="chkIfcGeoEl" VerticalAlignment="Center" Content="IfcGeographicalElement" Margin="7,0,0,0" IsEnabled="False" ToolTip="Only available under version Ifc 4!" ToolTipService.ShowOnDisabled="True" Checked="chkIfcGeoEl_Checked" Unchecked="chkIfcGeoEl_Unchecked"/>
             </StackPanel>
 
@@ -37,7 +34,7 @@
             >
 
             <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Horizontal">
-                <ComboBox x:Name="cbShapeRepres" Width="200" SelectionChanged="cbShapeRepres_SelectionChanged">
+                <ComboBox x:Name="cbShapeRepres" Width="200" SelectionChanged="cbShapeRepres_SelectionChanged" ToolTip="Please select one of the supported shape representations. &#x0a;Keep in mind: not all software can handle all shape representations.">
                     <!--default seeting GCS-->
                     <ComboBoxItem x:Name="ifcGCS" Content="IfcGeometricCurveSet"/>
                     <ComboBoxItem x:Name="ifcSBSM" Content="IfcShellBasedSurfaceModell"/>
@@ -46,7 +43,7 @@
                 </ComboBox>
 
                 <TextBlock Text="Min. distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                <TextBox x:Name="tbMinDist" x:FieldModifier="public" Width="30" Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding Path=MinDistInput}" PreviewTextInput="NumberValidationTextBox" IsEnabled="False"/>
+                <TextBox x:Name="tbMinDist" x:FieldModifier="public" Width="30" Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding Path=MinDistInput}" PreviewTextInput="NumberValidationTextBox" IsEnabled="False" ToolTip="[Currently not available!] Outlook: thinning out meshes" ToolTipService.ShowOnDisabled="True"/>
 
                 <TextBlock Text="[m]" Margin="5,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>

@@ -34,7 +34,7 @@
                     <TextBlock Text="Hostname" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBox x:Name="tbHost" x:FieldModifier="public" Grid.Column="1" TextChanged="tb_TextChanged"/>
                     <TextBlock Text="Port" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
-                    <TextBox x:Name="tbPort" Grid.Column="3" TextChanged="tb_TextChanged"/>
+                    <TextBox x:Name="tbPort" Grid.Column="3" TextChanged="tb_TextChanged" PreviewTextInput="tbPort_PreviewTextInput"/>
                    
                     <!-- second row with username and password-->
                     <TextBlock Text="Username" Grid.Row="2" VerticalAlignment="Center" Margin="5,0"/>

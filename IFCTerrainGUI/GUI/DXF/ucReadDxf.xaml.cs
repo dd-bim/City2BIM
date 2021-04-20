@@ -20,6 +20,10 @@ using System.ComponentModel; //used for background worker
 using BIMGISInteropLibs.DXF; //include to read dxf file
 using IxMilia.Dxf; //need to handle dxf files
 
+//embed for file logging
+using BIMGISInteropLibs.Logging;                                    //acess to logger
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
+
 namespace IFCTerrainGUI.GUI.DXF
 {
     /// <summary>
@@ -87,7 +91,11 @@ namespace IFCTerrainGUI.GUI.DXF
                 #endregion error handling
 
                 #region logging [TODO]
-                //TODO: add logging
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File ("+ ofd.FileName +") selected!"));
+
+                //gui logging (user information)
+                MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
                 #region gui feedback
@@ -120,6 +128,7 @@ namespace IFCTerrainGUI.GUI.DXF
         {
             //background task: file reading
             e.Result = ReaderTerrain.ReadFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - started!"));
         }
 
         /// <summary>
@@ -140,7 +149,10 @@ namespace IFCTerrainGUI.GUI.DXF
                 //set dxf file to "empty"
                 this.dxfFile = null;
 
-                //TODO add throw error + log
+                //file logging allready in reader done - do not add (redundant)
+
+                //gui logging (user information)
+                ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("[ERROR] DXF layer not available. Processing stopped!");
             }
             //will be executed if the file name is not empty
             else
@@ -148,22 +160,31 @@ namespace IFCTerrainGUI.GUI.DXF
                 //go through all layers (one by one) of select dxf file
                 foreach (var l in this.dxfFile.Layers)
                 {
-                    //list layer name to list boxes (so the user can select a layer (or more))
-                    this.lbDxfDtmLayer.Items.Add(l.Name);
-                    this.lbDxfBreaklineLayer.Items.Add(l.Name);
+                    //do not list, if layer is empty
+                    if(l.Handle != 0)
+                    {
+                        //list layer name to list boxes (so the user can select a layer (or more))
+                        this.lbDxfDtmLayer.Items.Add(l.Name);
+                        this.lbDxfBreaklineLayer.Items.Add(l.Name);
+                    }
                 }
             }
-            //so all items will be listed
+            //so all items will be listed and applyed to gui
             this.lbDxfDtmLayer.UpdateLayout();
             this.lbDxfBreaklineLayer.UpdateLayout();
 
-            //TODO Logging idea ... count of layer readed (listbox.items.count())
-
             //Release MainWindow again --> so the user can make entries again
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+
             //change cursor to default
             Mouse.OverrideCursor = null;
 
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - completed!"));
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - readed layers: " + lbDxfDtmLayer.Items.Count));
+
+            //gui logging (user information)
+            MainWindowBib.setGuiLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
         }
 
         /// <summary>
@@ -263,14 +284,16 @@ namespace IFCTerrainGUI.GUI.DXF
                 foreach (string item in lbDxfDtmLayer.SelectedItems)
                 {
                     //passed to json settings
-                    //MainWindow.jSettings.layer += item + ";";
+                    //MainWindow.jSettings.layer += item + ";"; [DRAFT for Multi-Layer support]
 
+                    //set selected items to json settings
                     MainWindow.jSettings.layer = item;
 
                     //visual output on the GUI (layer selection)
                     ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
-                    
-                    //TODO (gui logging / file logging)
+
+                    //logging
+                    LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Layer selection: " + item));
                 }
 
                 //will be executed if "yes" was selected for break edge processing d
@@ -303,6 +326,10 @@ namespace IFCTerrainGUI.GUI.DXF
                 }
 
                 //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
+                /*
+                 * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
+                 * and be converted in the JSON settings via an enumeration.
+                 */
                 if (rbDxfFaces.IsChecked == true)
                 {
                     //processing faces (true)
@@ -313,19 +340,19 @@ namespace IFCTerrainGUI.GUI.DXF
                     //processing points / lines (false)
                     MainWindow.jSettings.isTin = false;
                 }
-                /*
-                 * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
-                 * and be converted in the JSON settings via an enumeration.
-                 */
 
                 //set task (file opening) to true
                 MainWindowBib.taskfileOpening = true;
 
                 //check if all task are allready done
                 MainWindowBib.readyState();
+
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
+
+                //gui logging (user information)
+                MainWindowBib.setGuiLog("DXF settings applyed.");
             }
             return;
         }
-
     }
 }

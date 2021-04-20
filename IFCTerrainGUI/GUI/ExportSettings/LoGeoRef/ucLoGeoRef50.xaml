@@ -6,12 +6,76 @@
              xmlns:num="http://gu.se/NumericInput"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
-             d:DesignHeight="163" d:DesignWidth="373">
-    <Grid IsEnabled="False">
+             d:DesignHeight="187" d:DesignWidth="373">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Button Grid.Row="1" Content="Apply settings [Level of Georef. 50]" IsEnabled="False" ToolTip="Apply the settings for LoGeoRef50!" ToolTipService.ShowOnDisabled="True"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Origin: Translation + Rotation" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.8*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <StackPanel >
+                    <RadioButton x:Name="rbLoGeoRef50Default" Margin="5,5,0,0" Content="Default (project center)" ToolTip="X,Y,Z - values are calculated from the data set." Checked="rbLoGeoRef50Default_Checked" Unchecked="rbLoGeoRef50Default_Unchecked"/>
+                    <RadioButton x:Name="rbLoGeoRef50User" Content="User specific" Margin="5,5,0,0" ToolTip="Input of X, Y, Z values." Checked="rbLoGeoRef50User_Checked" Unchecked="rbLoGeoRef50User_Unchecked"/>
+                </StackPanel>
+
+                <Grid x:Name="inputGrid" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="X [m]:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef50ValueX" Grid.Row="0" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput"/>
+
+                    <TextBlock Text="Y [m]:" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef50ValueY" Grid.Row="1" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput" />
+
+                    <TextBlock Text="Z [m]:" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef50ValueZ" Grid.Row="2" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput"/>
+
+                </Grid>
+                <!-- rotation -->
+                <CheckBox x:Name="chkRotationLevel50" Grid.Row="1" Height="20" Content="Enable Input - Rotation" VerticalContentAlignment="Center" HorizontalAlignment="Left" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values." Checked="chkRotationLevel50_Checked" Unchecked="chkRotationLevel50_Unchecked"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Rotation [°]:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0" />
+                <TextBox x:Name="tbRotationLevel50" Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" IsEnabled="False" Height="20" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput" TextChanged="tbInput_TextChanged"/>
+
+                <!-- scale -->
+                <CheckBox x:Name="chkScaleLevel50" Grid.Row="2" Height="20" Content="Enable Input - Scale" VerticalContentAlignment="Center" HorizontalAlignment="Left" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values." Checked="chkScaleLevel50_Checked" Unchecked="chkScaleLevel50_Unchecked"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Scale:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+                <TextBox x:Name="tbScaleLevel50" Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" IsEnabled="False" Height="20" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput" TextChanged="tbInput_TextChanged"/>
+            </Grid>
+        </GroupBox>
+
+
+
+
+
+        <Button x:Name="btnOpenCrsMetadata" Grid.Row="1" Grid.ColumnSpan="2" Content="CRS Metadata" Margin="0,4" IsEnabled="True" Click="btnOpenCrsMetadata_Click"/>
+
+        <Button x:Name="btnApplyLoGeoRef50" Grid.Row="2" Grid.ColumnSpan="2" Content="Apply settings [Level of Georef. 50]" ToolTip="Apply the settings for LoGeoRef50!" ToolTipService.ShowOnDisabled="True" Click="btnApplyLoGeoRef50_Click" IsEnabled="False"/>
     </Grid>
 </UserControl>

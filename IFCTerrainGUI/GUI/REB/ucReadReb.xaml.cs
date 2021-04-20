@@ -18,6 +18,10 @@ using Microsoft.Win32; //used for file handling
 using BIMGISInteropLibs.REB; //include to read reb file
 using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide filepath insert into tb & for error handling (GUI)
 
+//embed for file logging
+using BIMGISInteropLibs.Logging;                                    //acess to logger
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
+
 namespace IFCTerrainGUI.GUI.REB
 {
     /// <summary>
@@ -84,8 +88,12 @@ namespace IFCTerrainGUI.GUI.REB
                 //TODO: buttons to be released here otherwise the user can't go on
                 #endregion error handling
 
-                #region logging [TODO]
-                //TODO: add logging
+                #region logging
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
+
+                //gui logging (user information)
+                MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
                 #region gui feedback
@@ -136,7 +144,8 @@ namespace IFCTerrainGUI.GUI.REB
                     //list the horizon
                     this.lbRebSelect.Items.Add(horizon);
                 }
-                //TODO add reading log
+                //gui logging (user information)
+                MainWindowBib.setGuiLog("Readed reb layers: " + lbRebSelect.Items.Count);
             }
             //if the file could not be read
             else
@@ -151,6 +160,9 @@ namespace IFCTerrainGUI.GUI.REB
 
             //release complete gui again
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+
+            //set to json settings
+            MainWindow.jSettings.isTin = true;
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
@@ -197,13 +209,14 @@ namespace IFCTerrainGUI.GUI.REB
             //visual output on the GUI (layer selection) (need to convert to string!)
             ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
 
-            //TODO gui logging
-
             //set task (file opening) to true
             MainWindowBib.taskfileOpening = true;
 
             //check if all task are allready done
             MainWindowBib.readyState();
+
+            //gui logging (user information)
+            MainWindowBib.setGuiLog("REB settings applyed.");
 
             return;
         }

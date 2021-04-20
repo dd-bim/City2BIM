@@ -24,38 +24,74 @@ using Xbim.Ifc2x3.GeometricModelResource;       //IfcShellBasedSurfaceModel or I
 using Xbim.Ifc2x3.TopologyResource;             //IfcOpenShell
 using Xbim.Ifc2x3.RepresentationResource;       //IfcShapeRepresentation
 
+//Transfer class for the reader (IFCTerrain)
+using BIMGISInteropLibs.IfcTerrain;
+
+//embed logging
+using BIMGISInteropLibs.Logging; //access to log writer
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 namespace BIMGISInteropLibs.IFC.Ifc2x3
 {
+    /// <summary>
+    /// shape representation class <para/>
+    /// Shell Based Surface Model (SBSM)
+    /// </summary>
     public static class ShellBasedSurfaceModel
     {
-        public static IfcShellBasedSurfaceModel CreateViaMesh(IfcStore model, Vector3 origin, Mesh mesh,
+        /// <summary>
+        /// Creates a DTM via IfcSBSM (processing a mesh)
+        /// </summary>
+        public static IfcShellBasedSurfaceModel CreateViaMesh(IfcStore model, Vector3 origin, Result result,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {
-            //Serilog.Log.Logger = new LoggerConfiguration()
-            //   .MinimumLevel.Debug()
-            //   .WriteTo.File(System.Configuration.ConfigurationManager.AppSettings["LogFilePath"])
-            //   .CreateLogger();
+            //get MESH from result class
+            Mesh mesh = result.Mesh;
 
+            //error handling
             if (mesh.MaxFaceCorners < 3)
             {
-                //Log.Error("Creation of IfcShellBasedSurfaceModel unsuccessful. Mesh has no Faces");
+                //log error
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[IFC-Writer] MESH has no Faces!"));
+
+                //output error (TODO: MESSAGE window?)
                 throw new Exception("Mesh has no Faces");
             }
+
+            //logging
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation creation started..."));
+
+            //start transaction
             using (var txn = model.BeginTransaction("Create Mesh"))
             {
+                //creating the libraries
                 var vmap = new Dictionary<int, int>();
                 var cpl = new List<IfcCartesianPoint>();
+
+                //loop to read all mesh points and create IfcCartesianPoints
                 for (int i = 0, j = 0; i < mesh.Points.Count; i++)
                 {
                     if (mesh.VertexEdges[i] < 0)
                     { continue; }
+                    //add to dictionary
                     vmap.Add(i, j);
+
+                    //get point from mesh and match it to local var
                     var pt = mesh.Points[i];
+                    
+                    //add to ifc entity
                     cpl.Add(model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(pt.X - origin.X, pt.Y - origin.Y, pt.Z - origin.Z)));
                     j++;
                 }
 
+                //input for stats (will be logged / gui logged)
+                result.wPoints = cpl.Count;
+
+                //init numFaces for processing results (logging)
+                int numFaces = 0;
+
+                //create shape model
                 var sbsm = model.Instances.New<IfcShellBasedSurfaceModel>(s =>
                     s.SbsmBoundary.Add(model.Instances.New<IfcOpenShell>(o => o.CfsFaces
                         .AddRange(mesh.FaceEdges.Select(fe => model.Instances.New<IfcFace>(x => x.Bounds
@@ -70,13 +106,27 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                                         curr = mesh.EdgeNexts[curr];
                                     } while (curr != fe && p.Polygon.Count < mesh.MaxFaceCorners);
                                 });
+
+                                //count up
+                                numFaces++;
+
+                                //clockwise orientation (set to true)
                                 b.Orientation = true;
                             }))))))));
 
-                txn.Commit();
+                //pass processed number of faces to result
+                result.wFaces = numFaces;
+
+                //write identifier (otherwise shape is not valid)
                 representationIdentifier = RepresentationIdentifier.Body;
                 representationType = RepresentationType.SurfaceModel;
-                //Log.Information("IfcShellBasedSurfaceModel created");
+                
+                //finish transaction
+                txn.Commit();
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation created."));
+
                 return sbsm;
             }
         }
@@ -84,21 +134,20 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// <summary>
         /// Creates a DTM via IfcSBSM (processing a tin)
         /// </summary>
-        /// <param name="model">Location for all information that will be inserted into the IFC file</param>
-        /// <param name="origin">Provided by IfcLocalPlacement</param>
-        /// <param name="tin">Provided by the different terrain readers</param>
-        /// <param name="breakDist"></param>
-        /// <param name="representationType">Output - do not change</param>
-        /// <param name="representationIdentifier">Output - do not change</param>
         /// <returns>Shape which is written in the IFC file</returns>
-        public static IfcShellBasedSurfaceModel CreateViaTin(IfcStore model, Vector3 origin, Tin tin,
+        public static IfcShellBasedSurfaceModel CreateViaTin(IfcStore model, Vector3 origin, Result result,
             out RepresentationType representationType,
             out RepresentationIdentifier representationIdentifier)
         {
-            //TODO: add logging
+            //get TIN from result class
+            Tin tin = result.Tin;
+
             //start with the transaction (cf. ACID)
             using (var txn = model.BeginTransaction("Create Tin"))
             {
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation creation started..."));
+
                 //Point indexing 
                 var vmap = new Dictionary<int, int>();
 
@@ -114,6 +163,15 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     j++;
                 }
 
+                //input for stats (will be logged / gui logged)
+                result.wPoints = cpl.Count;
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "CoordList created."));
+
+                //init numFaces for processing results (logging)
+                int numFaces = 0;
+
                 //write Shape Representation
                 var sbsm = model.Instances.New<IfcShellBasedSurfaceModel>(s =>
                     s.SbsmBoundary.Add(model.Instances.New<IfcOpenShell>(o => o.CfsFaces
@@ -127,23 +185,29 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                                     p.Polygon.Add(cpl[vmap[tri[1]]]);
                                     p.Polygon.Add(cpl[vmap[tri[2]]]);
                                 });
+                                
+                                //count up
+                                numFaces++;
+
                                 //Clockwise orientation (true)
                                 b.Orientation = true;
                             }))))))));
 
-                //logger.Debug("Processed: " + );
-                //Import transaction (according to ACID)
-                txn.Commit();
+                //pass processed number of faces to result
+                result.wFaces = numFaces;
+
                 //write two remaining output parameter
                 representationIdentifier = RepresentationIdentifier.Body;
                 representationType = RepresentationType.SurfaceModel;
 
-                //TRASHLÖSUNG below: //used only for Logging
-                long numTri = ((sbsm.Model.Instances.Count - vmap.Count) / 3) - 10;
-                //logger.Debug("Processed: " + vmap.Count + " points; " + numTri + " triangels)");
+                //finish transaction
+                txn.Commit();
+
+                //logging
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation created."));
+
                 return sbsm;
             }
         }
-
     }
 }

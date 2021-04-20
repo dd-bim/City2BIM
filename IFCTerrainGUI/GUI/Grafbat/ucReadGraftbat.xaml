@@ -61,7 +61,8 @@
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     IsEnabled="False"
-                    ToolTip="currently not supported">
+                    ToolTip="currently not supported"
+                    Visibility="Hidden">
                     <RadioButton.Content>
                         <TextBlock Text="... Points" TextWrapping="Wrap"/>
                     </RadioButton.Content>

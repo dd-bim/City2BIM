@@ -7,83 +7,68 @@
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
              d:DesignHeight="185" d:DesignWidth="373" FontFamily="Bahnschrift">
-    <Grid ToolTip="CURRENTLY DRAFT / DEV ONLY" ToolTipService.ShowOnDisabled="True">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="80"/>
             <RowDefinition/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Coordinate Reference System: World Coordinate System" TextAlignment="Center" VerticalAlignment="Center"/>
+        <!-- set infofield -->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Here you can save (confirm to LoGeoRef40) the georeferencing &#x0a; in the entity 'IfcProject'. [CRS: WGS84; EPSG: 4326]" TextWrapping="Wrap" TextAlignment="Center"/>
         <!-- select project center (will be calculated) should be used or manual input-->
-        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+        <!-- select project center (will be calculated) should be used or manual input-->
+        <GroupBox Header="WCS Origin - Coordinate" Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-            
-            <GroupBox Grid.Row="1" Header="WCS - Origin">
+                <StackPanel >
+                    <RadioButton x:Name="rbLoGeoRef40Default" Margin="5,5,0,0" Checked="rbLoGeoRef40Default_Checked" Unchecked="rbLoGeoRef40Default_Unchecked" Content="Default (project center)" ToolTip="X,Y,Z - values are calculated from the data set."/>
+                    <RadioButton x:Name="rbLoGeoRef40User" Content="User specific" Margin="5,5,0,0" ToolTip="Input of X, Y, Z values." Checked="rbLoGeoRef40User_Checked" Unchecked="rbLoGeoRef40User_Unchecked"/>
+                </StackPanel>
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                <Grid x:Name="inputGrid" Grid.Column="1" IsEnabled="False">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <RadioButton Grid.ColumnSpan="2" Content="Default (project center)" ToolTip="X,Y,Z - values are calculated from the data set." VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                    <RadioButton Grid.ColumnSpan="2" Grid.Row="1" Content="User specific" ToolTip="Input of X, Y, Z values." VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                    <StackPanel Grid.Row="2" Margin="2">
-                        <TextBlock Text="X [m]:" Margin="0,5,0,0"/>
-                        <TextBlock Text="Y [m]:" Margin="0,10,0,0"/>
-                        <TextBlock Text="Z [m]:" Margin="0,10,0,0"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="2" Grid.Column="2" Margin="2">
-                        <TextBox Height="20" VerticalContentAlignment="Center"/>
-                        <TextBox Height="20" Margin="0,5" VerticalContentAlignment="Center"/>
-                        <TextBox Height="20" VerticalContentAlignment="Center"/>
 
-                    </StackPanel>
-                </Grid>
-            </GroupBox>
-
-            <GroupBox Grid.Row="1" Grid.Column="1" Header="WCS - Rotation">
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="1.9*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20"/>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="20"/>
                         <RowDefinition Height="20"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.ColumnSpan="2" Text="Input rotation" TextAlignment="Center" VerticalAlignment="Center"/>
-                    <StackPanel Grid.Row="1" Margin="2" VerticalAlignment="Center">
-                        <TextBlock Text="X - axis:" Margin="0,0,0,0"/>
-                        <TextBlock Text="Y - axis:" Margin="0,12,0,0"/>
 
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="2" VerticalAlignment="Center">
-                        <TextBox Height="20"/>
-                        <TextBox Height="20" Margin="0,5,0,0"/>
-                    </StackPanel>
+                    <TextBlock Text="X [m]:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef40ValueX" Grid.Row="0" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput"></TextBox>
 
-                    <TextBlock Text="True North Rotation" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center" TextAlignment="Center"/>
-                    <TextBlock Text="XY - plane:" Grid.Row="3" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" Height="20" VerticalContentAlignment="Center"/>
+                    <TextBlock Text="Y [m]:" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef40ValueY" Grid.Row="1" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput"></TextBox>
+
+                    <TextBlock Text="Z [m]:" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tbLoGeoRef40ValueZ" Grid.Row="2" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput"></TextBox>
                 </Grid>
+            </Grid>
+        </GroupBox>
 
+        <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Header="WCS Origin - Rotation">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="0.7*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
 
-            </GroupBox>
-
-        </Grid>
-        <Button Grid.Row="2" Grid.ColumnSpan="2" Content="Apply settings [Level of Georef. 40]" IsEnabled="False" ToolTip="Apply the settings for LoGeoRef40!" ToolTipService.ShowOnDisabled="True"/>
+                <CheckBox x:Name="chkRotationLevel40" Content="Enable Input - Rotation" VerticalContentAlignment="Center" HorizontalAlignment="Center" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values." Checked="chkRotationLevel40_Checked" Unchecked="chkRotationLevel40_Unchecked"/>
+                <TextBlock Grid.Column="1" Text="Rotation [°]:" VerticalAlignment="Center"/>
+                <TextBox x:Name="tbRotationLevel40" Grid.Column="2" VerticalAlignment="Center" VerticalContentAlignment="Center" IsEnabled="False" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput"/>
+            </Grid>
+        </GroupBox>
+        
+        <Button x:Name="btnLoGeoRef40Apply" Grid.Row="3" Grid.ColumnSpan="2" Content="Apply settings [Level of Georef. 40]" IsEnabled="False" ToolTip="Apply the settings for LoGeoRef40!" ToolTipService.ShowOnDisabled="True" Click="btnLoGeoRef40Apply_Click"/>
     </Grid>
 </UserControl>

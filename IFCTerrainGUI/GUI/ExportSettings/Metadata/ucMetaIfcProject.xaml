@@ -12,7 +12,8 @@
             <ColumnDefinition Width="1.8*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="25"/>
@@ -21,20 +22,21 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="1" Text="Here you can make settings that are saved directly in the IFC file (IFCProject)." TextAlignment="Center" TextWrapping="Wrap"/>
-        <CheckBox x:Name="chkMetadata" Content="Export" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" ToolTip="Enable. Otherwise default values will be set." Checked="chkMetadata_Checked" Unchecked="chkMetadata_Unchecked"/>
+        <TextBlock Grid.ColumnSpan="2" Text="Here you can make settings that are saved in the IFCProject entity." TextAlignment="Center" TextWrapping="Wrap"/>
 
         <!-- text blocks (visual information) -->
-        <TextBlock Grid.Row="1" Text="Project Name:" VerticalAlignment="Center" Margin="7,0,0,0"/>
-        <TextBlock Grid.Row="2" Text="Organisation Name:" VerticalAlignment="Center" Margin="7,0,0,0"/>
-        <TextBlock Grid.Row="3" Text="Given Name:" VerticalAlignment="Center" Margin="7,0,0,0"/>
-        <TextBlock Grid.Row="4" Text="Family Name:" VerticalAlignment="Center" Margin="7,0,0,0"/>
+        <TextBlock Grid.Row="1" Text="Site Name" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Title of IfcSite entity"/>
+        <TextBlock Grid.Row="2" Text="Project Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcProject"/>
+        <TextBlock Grid.Row="3" Text="Organisation Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcOwnerHistory"/>
+        <TextBlock Grid.Row="4" Text="Given Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcOwnerHistory"/>
+        <TextBlock Grid.Row="5" Text="Family Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcOwnerHistory"/>
 
         <!-- text boxex (input fields) -->
-        <TextBox x:Name="tbProjectName" Grid.Row="1" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center" IsEnabled="False"/>
-        <TextBox x:Name="tbOrganisationName" Grid.Row="2" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center" IsEnabled="False"/>
-        <TextBox x:Name="tbGivenName" Grid.Row="3" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center" IsEnabled="False"/>
-        <TextBox x:Name="tbFamilyName" Grid.Row="4" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center" IsEnabled="False"/>
+        <TextBox x:Name="tbSiteName" Grid.Row="1" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbProjectName" Grid.Row="2" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbOrganisationName" Grid.Row="3" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbGivenName" Grid.Row="4" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbFamilyName" Grid.Row="5" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
 
 
         <Button x:Name="btnMetadataApply" Grid.Row="7" Grid.ColumnSpan="2" Content="Apply 'IFC project settings'" Click="btnMetadataApply_Click" VerticalAlignment="Center"/>

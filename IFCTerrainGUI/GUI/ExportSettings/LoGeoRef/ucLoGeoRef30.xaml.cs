@@ -69,8 +69,8 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
         private void rbLoGeoRef30User_Unchecked(object sender, RoutedEventArgs e)
         {
-            //disable input fields (not needed)
-            
+            //disable input fields
+            inputGrid.IsEnabled = false;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void btnLoGeoRef30Apply_Click(object sender, RoutedEventArgs e)
         {
             //set json settings (use of level of georef 30)
-            MainWindow.jSettings.logeoref = BIMGISInteropLibs.IfcTerrain.LoGeoRef.LoGeoRef30;
+            MainWindow.jSettings.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef30;
 
             //if custom origin: set values of input fields to json settings
             if (MainWindow.jSettings.customOrigin)
@@ -93,6 +93,12 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //set task (file opening) to true (user applyed)
             MainWindowBib.selectGeoRef = true;
 
+            //set gui log
+            MainWindowBib.setGuiLog("LoGeoRef30 set.");
+
+            //set task (file opening) to true
+            MainWindowBib.selectGeoRef = true;
+
             //check if all task are allready done
             MainWindowBib.readyState();
         }
@@ -103,7 +109,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private bool readyCheck()
         {
             //if all tasks are true
-            if (valueXset && valueYset && valueZset && (validationError == 0))
+            if (valueXset && valueYset && valueZset)
             {
                 //enable apply button
                 btnLoGeoRef30Apply.IsEnabled = true;
@@ -134,10 +140,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         /// </summary>
         private bool valueZset { get; set; }
 
-        /// <summary>
-        /// counter of validation errors
-        /// </summary>
-        private int validationError { get; set; }
+        
 
         /// <summary>
         /// function for error handling to set bool settings (for ready checker)
@@ -182,45 +185,23 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 //set to FALSE
                 valueZset = false;
             }
-
             //check if all fields are not empty any more
             readyCheck();
         }
 
-
         /// <summary>
-        /// will be executed as soon as a validation error occurs
-        /// Application: deactivate the apply button if necessary
+        /// check the textboxes (bounding box values) input if it corresponds to the regex
         /// </summary>
-        private void tbNum_Error(object sender, ValidationErrorEventArgs e)
+        private void tbLoGeoRef30Value_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            //if event is null
-            if (e == null)
-            {
-                //output error
-                throw new Exception("Unexpected event args");
-            }
-            //loop through whether error is present or not
-            switch (e.Action)
-            {
-                //if there is an error --> count up
-                case ValidationErrorEventAction.Added:
-                    {
-                        validationError++;
-                        break;
-                    }
-                //for each removed error --> count down
-                case ValidationErrorEventAction.Removed:
-                    {
-                        validationError--;
-                        break;
-                    }
-                //error output
-                default:
-                    {
-                        throw new Exception("Unknown action");
-                    }
-            }
+            //regex only numbers (no comma or dot)
+            Regex regex = new Regex("^[a-zA-Z]*$");
+
+            //if not valid no input follows
+            e.Handled = regex.IsMatch(e.Text);
         }
+
+
+        
     }
 }

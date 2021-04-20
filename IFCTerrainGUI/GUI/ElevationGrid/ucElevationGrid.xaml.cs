@@ -17,6 +17,10 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 using Microsoft.Win32; //used for file handling
 
+//embed for file logging
+using BIMGISInteropLibs.Logging;                                    //acess to logger
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
+
 namespace IFCTerrainGUI.GUI.ElevationGrid
 {
     /// <summary>
@@ -26,6 +30,7 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
     {
         public ucElevationGrid()
         {
+            //init gui uc panel
             InitializeComponent();
         }
 
@@ -51,9 +56,11 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
                 MainWindow.jSettings.filePath = ofd.FileName;
                 #endregion JSON settings
 
-                #region logging [TODO]
-                //TODO: add logging
-                #endregion logging [TODO]
+                #region logging
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
+
+                ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("File selected! --> Please make settings and confirm.");
+                #endregion logging
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
@@ -68,8 +75,6 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
 
                 //set default value
                 tbGridSize.Text = "1";
-
-                //TODO logging that default value ("1" m) has been set
 
                 chkGridBB.IsEnabled = true;
             }
@@ -144,6 +149,9 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             //set json settings grid size
             MainWindow.jSettings.gridSize = Convert.ToInt32(tbGridSize.Text);
 
+            //set json setting tin
+            MainWindow.jSettings.isTin = false;
+
             //input in info panel
             ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = MainWindow.jSettings.gridSize.ToString();
 
@@ -156,7 +164,6 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
 
             //check if all task are allready done
             MainWindowBib.readyState();
-
         }
        
         /// <summary>
@@ -292,41 +299,30 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
             //check if all fields are not empty
             readyCheck();
         }
+        #endregion textbox changes to check if all values are set
 
         /// <summary>
-        /// will be executed as soon as a validation error occurs
-        /// Application: deactivate the apply button if necessary
+        /// check the textbox input if it corresponds to the regex
         /// </summary>
-        private void tbNum_Error(object sender, ValidationErrorEventArgs e)
+        private void tbGridSize_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            //if event is null
-            if (e == null)
-            {
-                //output error
-                throw new Exception("Unexpected event args");
-            }
-            //loop through whether error is present or not
-            switch (e.Action)
-            {
-                //if there is an error --> count up
-                case ValidationErrorEventAction.Added:
-                    {
-                        validationError++;
-                        break;
-                    }
-                //for each removed error --> count down
-                case ValidationErrorEventAction.Removed:
-                    {
-                        validationError--;
-                        break;
-                    }
-                //error output
-                default:
-                    {
-                        throw new Exception("Unknown action");
-                    }
-            }
+            //regex only numbers (no comma or dot)
+            Regex regex = new Regex("^[0-9]*$");
+
+            //if not valid no input follows
+            e.Handled = !regex.IsMatch(e.Text);
         }
-        #endregion textbox changes to check if all four values are set
+
+        /// <summary>
+        /// check the textboxes (bounding box values) input if it corresponds to the regex
+        /// </summary>
+        private void tbBB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //regex only numbers (no comma or dot)
+            Regex regex = new Regex("^[a-zA-Z]*$");
+
+            //if not valid no input follows
+            e.Handled = regex.IsMatch(e.Text);
+        }
     }
 }
