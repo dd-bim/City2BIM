@@ -12,6 +12,7 @@ using System.IO;
 
 //BimGisCad - Bibliothek einbinden (TIN)
 using BimGisCad.Representation.Geometry.Composed; //TIN
+using BimGisCad.Representation.Geometry.Elementary;
 
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
@@ -42,7 +43,7 @@ namespace BIMGISInteropLibs.GEOgraf
         #endregion
 
         #region DictionaryCollection - Bruchkanten
-        //EMPTY
+        public static Dictionary<int, Line3> breakLineList = new Dictionary<int, Line3>();
         #endregion
 
         /// <summary>
@@ -70,6 +71,13 @@ namespace BIMGISInteropLibs.GEOgraf
             //init transfer classes
             pointIndex2NumberMap = null;
             triangleIndex2NumberMap = null;
+            /*
+            //breakline
+            bool breakline = jSettings.breakline;
+            int bl_layer = int.Parse(jSettings.breakline_layer);
+
+            //
+            double scale = 1.0; //TODO dynamic*/
 
             //check if file exsists 
             if (File.Exists(filePath))
@@ -98,6 +106,38 @@ namespace BIMGISInteropLibs.GEOgraf
                         //Insert point (Value) via Key (Point number) into point list
                         pointList[pnr] = point;
                     }
+                    //TODO
+                    /*
+                    if (line.StartsWith("LI") && breakline == true
+                       && values.Length > 11
+                       && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int ln)
+                       && int.TryParse(values[0].Substring(12), out int la)
+                       && int.TryParse(values[1].Substring(3), out int lb)
+                       && int.TryParse(values[2].Substring(0, values[2].IndexOf('.')), out int linetype))
+                    {
+                        if(linetype == bl_layer)
+                        {
+                            //build line from points
+                            OLine oLine = new OLine(pointList[la], pointList[lb], linetype);
+
+                            Point3 p1 = Point3.Create(oLine.PNr1.X, oLine.PNr1.Y, oLine.PNr1.Z);
+                            Point3 p2 = Point3.Create(oLine.PNr2.X, oLine.PNr2.Y, oLine.PNr2.Z);
+
+                            Vector3 v12 = Vector3.Create(p2);
+                            Direction3 d12 = Direction3.Create(v12, scale);
+
+                            
+                            try
+                            {
+                                //insert line in breakline list
+                                Line3 l = Line3.Create(p1, d12);
+                            }
+                            catch
+                            {
+                                //todo error
+                            }
+                        }
+                    }*/
 
                     //Read horizon
                     if (line.StartsWith("HNR") && values.Length > 13

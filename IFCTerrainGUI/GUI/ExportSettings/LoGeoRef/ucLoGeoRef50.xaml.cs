@@ -60,10 +60,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //if not valid no input follows
             e.Handled = regex.IsMatch(e.Text);
         }
-
-
-
-
+        
         #region user origin
         /// <summary>
         ///  Changing the selection off (is initalized by default)
@@ -128,22 +125,22 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         /// </summary>
 
         /// <summary>
-        /// task to check if all required fields are set (and not empty) [Error Handling]
+        /// task to check if all required fields are set (and not empty) [TODO: Error Handling]
         /// </summary>
         private void readyCheck()
         {
             //if all tasks are true
-            if (valueXset && valueYset && valueZset && !chkRotationLevel50.IsChecked == true && !chkScaleLevel50.IsChecked == true)
+            if (valueXset && valueYset && valueZset && !chkScaleLevel50.IsChecked == true)
             {
                 //enable apply button
                 btnApplyLoGeoRef50.IsEnabled = true;
             }
-            else if (valueRotationset && rbLoGeoRef50Default.IsChecked == true && !chkScaleLevel50.IsChecked == true)
+            else if (valueXset && valueYset && valueZset)
             {
                 //enable apply button
                 btnApplyLoGeoRef50.IsEnabled = true;
             }
-            else if (valueScaleset && rbLoGeoRef50Default.IsChecked == true && !chkRotationLevel50.IsChecked == true)
+            else if (valueScaleset && rbLoGeoRef50Default.IsChecked == true)
             {
                 //enable apply button
                 btnApplyLoGeoRef50.IsEnabled = true;
@@ -172,7 +169,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         /// <summary>
         /// check if value rotation is set
         /// </summary>
-        private bool valueRotationset { get; set; }
+        //private bool valueRotationset { get; set; }
 
         /// <summary>
         /// check if value scale is set
@@ -222,7 +219,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 //set to FALSE
                 valueZset = false;
             }
-
+            /*
             //check if tb roation is not empty
             if (!string.IsNullOrEmpty(tbRotationLevel50.Text))
             {
@@ -234,7 +231,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             {
                 //set to FALSE
                 valueRotationset = false;
-            }
+            }*/
 
             //check if tb sclae is not empty
             if (!string.IsNullOrEmpty(tbScaleLevel50.Text))
@@ -290,7 +287,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             if (this.chkScaleLevel50.IsChecked == true)
             {
                 //set rotation to json settings
-                MainWindow.jSettings.scale = Double.Parse(tbRotationLevel50.Text, CultureInfo.CurrentCulture);
+                MainWindow.jSettings.scale = Double.Parse(tbScaleLevel50.Text);
             }
             else
             {
@@ -317,7 +314,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             tbRotationLevel50.IsEnabled = true;
 
             //set task to false
-            valueRotationset = false;
+            //valueRotationset = false;
 
             //check if all fields are not empty any more
             readyCheck();
@@ -332,7 +329,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             tbRotationLevel50.IsEnabled = false;
 
             //set task to true
-            valueRotationset = true;
+            //valueRotationset = true;
 
             //check if all fields are not empty any more
             readyCheck();
