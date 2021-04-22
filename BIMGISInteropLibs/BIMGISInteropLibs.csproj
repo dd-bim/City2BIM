@@ -238,6 +238,7 @@
     <Compile Include="IFC\Ifc2x3\LoGeoRef\Level40.cs" />
     <Compile Include="IFC\Ifc2x3\PropertySet.cs" />
     <Compile Include="IFC\Ifc4\GeometricCurveSet.cs" />
+    <Compile Include="IFC\Ifc4\Breakline.cs" />
     <Compile Include="IFC\Ifc4\InitModel.cs" />
     <Compile Include="IFC\Ifc4\LoGeoRef\Level30.cs" />
     <Compile Include="IFC\Ifc4\LoGeoRef\Level40.cs" />

@@ -36,7 +36,7 @@
         <TextBlock Grid.Row="7" Text="Projection zone:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
 
         <!-- input fields -->
-        <TextBox x:Name="tbCrsName" Grid.Row="1" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox x:Name="tbCrsName" Grid.Row="1" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" PreviewTextInput="tbCrsName_PreviewTextInput"/>
         <TextBox x:Name="tbDescription" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Margin="0,1" TextAlignment="Left" TextWrapping="Wrap"/>
         <TextBox x:Name="tbGeodeticDatum" Grid.Row="4" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
         <TextBox x:Name="tbVerticalDatum" Grid.Row="5" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>

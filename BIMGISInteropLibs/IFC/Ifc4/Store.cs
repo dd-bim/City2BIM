@@ -137,6 +137,26 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             //create IfcShapeRepresentation entity
             var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
 
+            //TODO Breaklines
+            /*
+            using (var txn = model.BeginTransaction("Breaklines"))
+            {
+                //query if breaklines should be processed
+                if (jSt.breakline)
+                {
+                    //Breakline.Create();
+
+                    txn.Commit();
+                }
+                else
+                {
+                    //rollback transaction
+                    txn.RollBack();
+                }
+            }
+            */
+
+
             //add site entity to model
             using (var txn = model.BeginTransaction("Add Site to Project"))
             {
@@ -175,6 +195,9 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     txn.RollBack();
                 }
             }
+
+
+            
             
             return model;
         }

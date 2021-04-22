@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using IFCTerrainGUI.GUI.MainWindowLogic;
+using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
@@ -113,6 +114,22 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
             //Close window
             Close();
+        }
+
+        /// <summary>
+        /// regex for input of crs (only epsg code)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tbCrsName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+
+            //regex only numbers (no comma or dot)
+            Regex regex = new Regex("^[0-9]*$");
+
+            //if not valid no input follows
+            e.Handled = !regex.IsMatch(e.Text);
+
         }
     }
 }
