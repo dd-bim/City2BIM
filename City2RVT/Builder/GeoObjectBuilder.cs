@@ -18,10 +18,14 @@ namespace City2RVT.Builder
     class GeoObjectBuilder
     {
         private readonly Document doc;
+        private readonly View3D view3D;
 
         public GeoObjectBuilder(Document doc)
         {
             this.doc = doc;
+            //get default 3d view --> required for reference intersector between dem and gis-data 
+            this.view3D = new FilteredElementCollector(doc).OfClass(typeof(View3D)).ToElements()
+                                .Cast<View3D>().FirstOrDefault(v => v != null && !v.IsTemplate && v.Name.Equals("{3D}"));
         }
 
         public void buildGeoObjectsFromList(List<GeoObject> geoObjects, bool drapeOnTerrain, List<string> fieldList)
@@ -192,12 +196,49 @@ namespace City2RVT.Builder
                                     break;
                                 }
 
+                            case wkbGeometryType.wkbCompoundCurve:
+                                {
+                                    List<C2BSegment> lineSegs = getSegmentsFromCompoundCurve(GeoObj.Geom);
+                                    var modelCurveList = createModelCurveFromSegments(lineSegs, drapeOnTerrain, terrainID);
+                                    foreach (var modelCurve in modelCurveList)
+                                    {
+                                        modelCurve.SetEntity(ent);
+                                    }
+                                    
+                                    break;
+                                }
+
+                            case wkbGeometryType.wkbLineString:
+                                {
+                                    if (GeoObj.Geom.HasCurveGeometry(1) == 1)
+                                    {
+                                        Log.Error("Could not create GeoObject. Object has curve geometry in wkbLineString. This is not implemented");
+                                    }
+                                    var segments = getSegmentsFromLinearLineString(GeoObj.Geom);
+                                    var modelCurveList = createModelCurveFromSegments(segments, drapeOnTerrain, terrainID);
+                                    foreach (var modelCurve in modelCurveList)
+                                    {
+                                        modelCurve.SetEntity(ent);
+                                    }
+
+                                    break;
+                                }
+
                             default:
                                 Log.Error("Could not create GeoObject. GeometryType is: " + GeoObj.GeomType.ToString() + " gmlId: " + GeoObj.GmlID);
                                 processingErrors = true;
                                 break;
                         }                        
                     }
+
+                    // delete refPlane if for object type only line geometrys are added --> modeld as model lines --> no topography surfaces needed
+                    var refTopoSurface = this.doc.GetElement(RefPlaneId) as TopographySurface;
+                    if (refTopoSurface.GetHostedSubRegionIds().Count < 1)
+                    {
+                        refTopoSurface.Pinned = false;
+                        var deletedElementIds = this.doc.Delete(RefPlaneId);
+                    }
+
                     trans.Commit();
                     if (processingErrors)
                     {
@@ -226,6 +267,8 @@ namespace City2RVT.Builder
             }
 
             var outerRing = convexHull.GetGeometryRef(0);
+
+            // TODO: Buffer convex hull geometry to be on the save side for intersections
 
             double[] geoPoint = { 0, 0 };
 
@@ -336,6 +379,79 @@ namespace City2RVT.Builder
             return segments;
         }
 
+        private static List<C2BSegment> getSegmentsFromCompoundCurve(OSGeo.OGR.Geometry geom)
+        {
+            List<C2BSegment> segments = new List<C2BSegment>();
+            double[] geoPoint = { 0, 0 };
+
+            List<C2BSegment> segs = new List<C2BSegment>();
+            for (int i=0; i<geom.GetGeometryCount(); i++)
+            {
+                var sectionGeom = geom.GetGeometryRef(i);
+
+                switch (sectionGeom.GetGeometryType())
+                {
+                    case wkbGeometryType.wkbCircularString:
+                        segs = getSegmentsFromCircularLineString(sectionGeom);
+                        break;
+
+                    case wkbGeometryType.wkbLineString:
+                        segs = getSegmentsFromLinearLineString(sectionGeom);
+                        break;
+
+                    default:
+                        Log.Error(string.Format("Could not process geometry from Compound Curve!"));
+                        break;
+                }
+                segments.AddRange(segs);
+            }
+            return segments;
+        }
+
+        private static List<C2BSegment> getSegmentsFromLinearLineString(OSGeo.OGR.Geometry geom)
+        {
+            List<C2BSegment> segments = new List<C2BSegment>();
+            double[] geoPoint = { 0, 0 };
+
+            for (var j = 1; j < geom.GetPointCount(); j++)
+            {
+                geom.GetPoint(j - 1, geoPoint);
+                C2BPoint startSeg = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                geom.GetPoint(j, geoPoint);
+                C2BPoint endSeg = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                segments.Add(new C2BSegment(startSeg, endSeg));
+            }
+
+            return segments;
+        }
+
+        private static List<C2BSegment> getSegmentsFromCircularLineString (OSGeo.OGR.Geometry geom)
+        {
+            List<C2BSegment> segments = new List<C2BSegment>();
+            double[] geoPoint = { 0, 0 };
+
+            //The number of control points in the arc string must be 2 * numArc + 1.
+            int nrOfPoints = geom.GetPointCount();
+            int nrOfArcSegments = (nrOfPoints - 1) / 2;
+
+            for (int j = 0, l = 0; j < nrOfArcSegments; j++, l += 2)
+            {
+                geom.GetPoint(l, geoPoint);
+                var startPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                geom.GetPoint(l + 1, geoPoint);
+                var midPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                geom.GetPoint(l + 2, geoPoint);
+                var endPoint = new C2BPoint(geoPoint[0], geoPoint[1], 0);
+
+                segments.Add(new C2BSegment(startPoint, endPoint, midPoint));
+            }
+            return segments;
+        }
+
         private SiteSubRegion createSiteSubRegionFromSegments(List<C2BSegment> segments, ElementId hostId)
         {
             List<Curve> revitSegmentCurves = new List<Curve>();
@@ -373,6 +489,128 @@ namespace City2RVT.Builder
 
             return sitesubRegion;
 
+        }
+
+        private List<ModelCurve> createModelCurveFromSegments(List<C2BSegment> segments, bool drapeOnTerrain, ElementId terrainId)
+        {
+            List<ModelCurve> curveList = new List<ModelCurve>();
+            if (drapeOnTerrain)
+            {
+                foreach (var seg in segments)
+                {
+                    if (seg.isCurve)
+                    {
+                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
+
+                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
+
+                        var unprojectedPntMid = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, true, null);
+                        var revitPntMid = Revit_Build.GetRevPt(unprojectedPntMid);
+
+                        XYZ upDirection = new XYZ(0.0, 0.0, 1.0);
+
+                        ReferenceIntersector rfi = new ReferenceIntersector(terrainId, FindReferenceTarget.All, this.view3D);
+                        ReferenceWithContext nearestIntersection = rfi.FindNearest(revitPntStart, upDirection);
+
+                        Reference reference = nearestIntersection.GetReference();
+                        var intersectionPointStart = reference.GlobalPoint;
+
+                        nearestIntersection = rfi.FindNearest(revitPntEnd, upDirection);
+                        reference = nearestIntersection.GetReference();
+                        var intersectionPointEnd = reference.GlobalPoint;
+
+                        nearestIntersection = rfi.FindNearest(revitPntMid, upDirection);
+                        reference = nearestIntersection.GetReference();
+                        var intersectionPointMid = reference.GlobalPoint;
+
+                        Arc result = Arc.Create(intersectionPointStart, intersectionPointEnd, intersectionPointMid);
+
+                        Plane plane = Plane.CreateByThreePoints(intersectionPointMid, intersectionPointEnd, intersectionPointStart);
+                        SketchPlane skPlane = SketchPlane.Create(doc, plane);
+                        ModelArc arc = doc.Create.NewModelCurve(result, skPlane) as ModelArc;
+
+                        curveList.Add(arc);
+                    }
+                    else
+                    {
+                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
+
+                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
+
+                        XYZ upDirection = new XYZ(0.0, 0.0, 1.0);
+
+                        ReferenceIntersector rfi = new ReferenceIntersector(terrainId, FindReferenceTarget.All, this.view3D);
+                        ReferenceWithContext nearestIntersection = rfi.FindNearest(revitPntStart, upDirection);
+
+                        Reference reference = nearestIntersection.GetReference();
+                        var intersectionPointStart = reference.GlobalPoint;
+
+                        nearestIntersection = rfi.FindNearest(revitPntEnd, upDirection);
+                        reference = nearestIntersection.GetReference();
+                        var intersectionPointEnd = reference.GlobalPoint;
+
+                        Line result = Line.CreateBound(intersectionPointStart, intersectionPointEnd);
+
+                        XYZ normal = intersectionPointStart.CrossProduct(intersectionPointEnd);
+                        XYZ origin = intersectionPointStart;
+
+                        Plane plane = Plane.CreateByNormalAndOrigin(normal, origin);
+                        SketchPlane skPlane = SketchPlane.Create(doc, plane);
+                        ModelLine line = doc.Create.NewModelCurve(result, skPlane) as ModelLine;
+
+                        curveList.Add(line);
+                    }
+                }
+            }
+            else
+            {
+                foreach(var seg in segments)
+                {
+                    if (seg.isCurve)
+                    {
+                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
+
+                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
+
+                        var unprojectedPntMid = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, true, null);
+                        var revitPntMid = Revit_Build.GetRevPt(unprojectedPntMid);
+
+                        Arc result = Arc.Create(revitPntStart, revitPntEnd, revitPntMid);
+
+                        Plane plane = Plane.CreateByThreePoints(revitPntStart, revitPntMid, revitPntEnd);
+                        SketchPlane skPlane = SketchPlane.Create(doc, plane);
+                        ModelArc arc = doc.Create.NewModelCurve(result, skPlane) as ModelArc;
+
+                        curveList.Add(arc);
+                    }
+                    else
+                    {
+                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
+
+                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
+
+                        Line result = Line.CreateBound(revitPntStart, revitPntEnd);
+
+                        XYZ normal = revitPntEnd.CrossProduct(revitPntStart);
+                        XYZ origin = revitPntEnd;
+
+                        Plane plane = Plane.CreateByNormalAndOrigin(normal, origin);
+                        SketchPlane skPlane = SketchPlane.Create(doc, plane);
+                        ModelLine line = doc.Create.NewModelCurve(result, skPlane) as ModelLine;
+
+                        curveList.Add(line);
+                    }
+                }
+            }
+            return curveList;
         }
 
         private Schema addSchemaForUsageType(string schemaName, List<string> fieldList)
