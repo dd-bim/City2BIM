@@ -319,8 +319,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\bimgiscadlib\BimGisCad\BimGisCad.csproj">
-      <Project>{5a901b30-2b49-467c-9792-4f4063fa1be1}</Project>
+    <ProjectReference Include="..\BimGisCad\BimGisCad.csproj">
+      <Project>{4dafbbd2-ad9c-4e52-9219-7e4f6e30866b}</Project>
       <Name>BimGisCad</Name>
     </ProjectReference>
   </ItemGroup>
