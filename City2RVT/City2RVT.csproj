@@ -336,6 +336,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourcePictures.resx</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Resource_MetaJSONs.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -422,7 +423,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="img\HideLayerIcon_32px_96dpi.png" />
-    <None Include="img\Vermesser32.png" />
+    <None Include="img\Vermesser32.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="img\Attribute32.png" />
     <Content Include="GdalConfiguration.vb" />
     <Content Include="Surveyorsplan2Revit\NLog.config">
@@ -443,17 +446,14 @@
       <SubType>Designer</SubType>
     </None>
     <Resource Include="img\IFC_32px_96dpi.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\XPlan_32px.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Content Include="img\XPlan_32px.png" />
     <Resource Include="img\HideLayerIcon_32px_96dpi.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="GUI\Modify\HideLayerIcon_32px_96dpi.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <None Include="app.config" />
     <None Include="bin\Debug\ALKIS_32px_96dpi.png" />
@@ -464,7 +464,7 @@
     <None Include="bin\Debug\Georef_32px_96dpi.png" />
     <None Include="bin\Debug\IFC_32px_96dpi.png" />
     <Content Include="Geographic.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="GUI\Georeferencing\img\Georef_96dpi.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef10.png" />
@@ -477,7 +477,7 @@
     <Content Include="img\DTM_32px_96dpi.png" />
     <Content Include="img\Georef_32px_96dpi.png" />
     <Resource Include="img\IFC_32px_96dpi.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
@@ -506,6 +506,7 @@
     <EmbeddedResource Include="ResourcePictures.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource_MetaJSONs.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -519,10 +520,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\bimgiscadlib\BimGisCad\BimGisCad.csproj">
-      <Project>{1fb77307-2323-460b-8037-cf042eefd903}</Project>
-      <Name>BimGisCad</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>

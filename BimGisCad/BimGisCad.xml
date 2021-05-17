@@ -1,0 +1,3857 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BimGisCad</name>
+    </assembly>
+    <members>
+        <member name="T:BimGisCad.Attribute">
+            <summary>
+            Klasse für Attribute
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Attribute.#ctor(System.String,System.Object)">
+            <summary>
+            Konstruktor
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="P:BimGisCad.Attribute.Key">
+            <summary>
+            Schlüssel
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Attribute.Value">
+            <summary>
+            Wert
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Attribute.Create(System.String,System.Object)">
+            <summary>
+            Builder
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Attribute.Create(BimGisCad.Attribute)">
+            <summary>
+            Builder
+            </summary>
+            <param name="attribute"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Attribute.CreateWithValue(BimGisCad.Attribute,System.Object)">
+            <summary>
+            Builder
+            </summary>
+            <param name="attribute"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Collections.TupleIdx">
+            <summary>
+            Tuple zweier Indexwerte
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Collections.TupleIdx.Idx1">
+            <summary>
+            Index 1
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Collections.TupleIdx.Idx2">
+            <summary>
+            Index 2
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Collections.TupleIdx.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Konstruktor
+            </summary>
+            <param name="idx1">Index 1</param>
+            <param name="idx2">Index 2</param>
+        </member>
+        <member name="M:BimGisCad.Collections.TupleIdx.Equals(System.Object)">
+            <summary>
+            Vergleich anhand der sortierten Indizes
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.TupleIdx.Equals(BimGisCad.Collections.TupleIdx)">
+            <summary>
+            Vergleich anhand der sortierten Indizes
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.TupleIdx.GetHashCode">
+            <summary>
+            Hashcode
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.TupleIdx.op_Equality(BimGisCad.Collections.TupleIdx,BimGisCad.Collections.TupleIdx)">
+            <summary>
+            Vergleich
+            </summary>
+            <param name="tup1"></param>
+            <param name="tup2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.TupleIdx.op_Inequality(BimGisCad.Collections.TupleIdx,BimGisCad.Collections.TupleIdx)">
+            <summary>
+            Vergleich (Ungleich)
+            </summary>
+            <param name="tup1"></param>
+            <param name="tup2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.TupleIdx.Flipped(BimGisCad.Collections.TupleIdx)">
+            <summary>
+            Gibt neues Tuple mit getauschten Indizes zurück
+            </summary>
+            <param name="edge"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Collections.Mesh">
+            <summary>
+            Klasse für vernetzte Flächen
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.IsShape">
+            <summary>
+            Umschließen die Flächen eine Körper (wichtig bei der Bestimmung identischer Punkte)
+            Wenn kein Shape wird Z-Wert ignoriert
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.Points">
+            <summary>
+            Punkte (Vertices) des Mesh
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.VertexEdges">
+            <summary>
+            Index einer abgehenden Halbkante der Punkte
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.EdgeVertices">
+            <summary>
+            Index des Startvertex der Halbkanten
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.EdgeNexts">
+            <summary>
+            Index der Folgehalbkante der Halbkanten
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.EdgeFaces">
+            <summary>
+            Index des Faces der Halbkanten
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.EdgeIndices">
+            <summary>
+            Map der Halbkanten mit Indices der Anfangs- und Endvertices und zugeordnetem Index in Liste
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.FixedEdges">
+            <summary>
+            Set der unveränderlichen Kanten
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.FaceEdges">
+            <summary>
+            Index einer Halbkante der Faces
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MaxFaceCorners">
+            <summary>
+            Maximale Anzahl von Ecken/Kanten aller enthaltenen Faces
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MinFaceCorners">
+            <summary>
+            Minimale Anzahl von Ecken/Kanten aller enthaltenen Faces
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MinX">
+            <summary>
+            Minimaler X-Wert
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MaxX">
+            <summary>
+            Maximaler X-Wert
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MinY">
+            <summary>
+            Minimaler Y-Wert
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MaxY">
+            <summary>
+            Maximaler Y-Wert
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MinZ">
+            <summary>
+            Minimaler Z-Wert
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.Mesh.MaxZ">
+            <summary>
+            Maximaler Z-Wert
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Collections.Mesh.#ctor(System.Boolean,System.Double)">
+            <summary>
+            Konstruktor
+            </summary>
+            <param name="isShape">Begrenzen Flächen einen Körper</param>
+            <param name="minDist">Mindestabstand unterschiedlicher Punkte</param>
+        </member>
+        <member name="M:BimGisCad.Collections.Mesh.#ctor(BimGisCad.Collections.Mesh)">
+            <summary>
+            Konstruktor als Kopie
+            </summary>
+            <param name="mesh">zu kopierendes Mesh</param>
+        </member>
+        <member name="M:BimGisCad.Collections.Mesh.AddPoint(BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+            Fügt einen Punkt dem Mesh als Vertex hinzu
+            </summary>
+            <param name="point">Punkt</param>
+            <returns>Index des Vertex</returns>
+        </member>
+        <member name="M:BimGisCad.Collections.Mesh.FixEdge(System.Int32,System.Int32)">
+            <summary>
+            Fixiert eine Kante
+            </summary>
+            <param name="point1">Index des ersten Punktes/Vertex</param>
+            <param name="point2">Index des zweiten Punktes/Vertex</param>
+        </member>
+        <member name="M:BimGisCad.Collections.Mesh.AddFace(System.Collections.Generic.IReadOnlyList{BimGisCad.Representation.Geometry.Elementary.Point3})">
+            <summary>
+            Fügt neues Face hinzu
+            </summary>
+            <param name="points">Eckpunkte</param>
+            <returns>Faceindex wenn erzeugt</returns>
+        </member>
+        <member name="M:BimGisCad.Collections.Mesh.AddFace(System.Collections.Generic.IReadOnlyDictionary{System.Int32,System.Int32},System.Collections.Generic.IReadOnlyList{System.Int32})">
+            <summary>
+            Fügt neues Face hinzu
+            </summary>
+            <param name="pointIdToVertexMap">Mapping der Punktnummern zum Index</param>
+            <param name="pointIds">Punktnummern der Eckpunkte</param>
+            <returns>Faceindex wenn erzeugt</returns>
+        </member>
+        <member name="M:BimGisCad.Collections.Mesh.AddFace(System.Collections.Generic.IReadOnlyList{System.Int32})">
+            <summary>
+            Fügt neues Face hinzu
+            </summary>
+            <param name="vertices">Indices der Eckpunkte(Vertices)</param>
+            <returns>Faceindex wenn erzeugt</returns>
+        </member>
+        <member name="T:BimGisCad.Collections.MeshHe2">
+            <summary>
+            Klasse für 2D Netze aufgebaut mit Halbkanten
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Collections.MeshHe2.HEdge">
+            <summary>
+            Halbkante
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Collections.MeshHe2.Polygon">
+            <summary>
+            Polygon
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.MeshHe2.Polygon.Exterior">
+            <summary>
+            Äußere Begrenzung
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.MeshHe2.Polygon.Interiors">
+            <summary>
+            Innere Begrenzungen (Löcher)
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.MeshHe2.Points">
+            <summary>
+            Punkte
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.MeshHe2.PointHEdges">
+            <summary>
+            Alle Abgehenden Kanten des Punktes
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.MeshHe2.Polygons">
+            <summary>
+            Polygone
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Collections.MeshHe2.#ctor(System.Double)">
+            <summary>
+            Konstruktor
+            </summary>
+            <param name="minDist">Mindestabstand unterschiedlicher Punkte</param>
+        </member>
+        <member name="M:BimGisCad.Collections.MeshHe2.Create(System.Double,System.Collections.Generic.IReadOnlyList{System.Collections.Generic.IReadOnlyList{BimGisCad.Representation.Geometry.Elementary.Point2}},System.Boolean)">
+            <summary>
+            Erzeugt Mesh aus Umringen
+            </summary>
+            <param name="minDist">Mindestabstand von Punkten</param>
+            <param name="rings">Umringe</param>
+            <param name="removeTwins">Doppelte Kanten entfernen</param>
+            <returns>Erfolgreich?</returns>
+        </member>
+        <member name="M:BimGisCad.Collections.MeshHe2.GetHEdge(System.Collections.Generic.IReadOnlyList{System.Collections.Generic.HashSet{BimGisCad.Collections.MeshHe2.HEdge}},System.Int32,System.Int32)">
+            <summary>
+            Halbkante zwischen Punkten oder null
+            </summary>
+            <param name="pointHEdges"></param>
+            <param name="p1"></param>
+            <param name="p2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.MeshHe2.WriteVtk(System.String)">
+            <summary>
+            Schreibt mesh in simple VTK-Datei
+            </summary>
+            <param name="fileName">Dateiname</param>
+        </member>
+        <member name="M:BimGisCad.Collections.MeshHe2.WriteSvg(System.String,System.String,System.String,System.String)">
+            <summary>
+            Schreibt mesh in einfache SVG-Datei
+            </summary>
+            <param name="fileName">Dateiname</param>
+            <param name="fill"></param>
+            <param name="stroke"></param>
+            <param name="stroke_width"></param>
+        </member>
+        <member name="T:BimGisCad.Collections.PriorityQueue`2">
+            <summary>
+            Queue um Werte nach zugehörigen Prioritätswerten zu sortieren
+            </summary>
+            <typeparam name="T">Datentyp</typeparam>
+            <typeparam name="U">Prioritätstyp (muss sortierbar sein, z.B. int oder double)</typeparam>
+        </member>
+        <member name="M:BimGisCad.Collections.PriorityQueue`2.#ctor">
+            <summary>
+            Konstruktur
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Collections.PriorityQueue`2.Enqueue(`0,`1)">
+            <summary>
+            Fügt einen Wert hinzu
+            </summary>
+            <param name="item">Datenwert</param>
+            <param name="priority">Prioritätswert</param>
+        </member>
+        <member name="M:BimGisCad.Collections.PriorityQueue`2.Dequeue(`1@)">
+            <summary>
+            Gibt Datenwert mit niedrigster Priorität zurück, und entfernt ihn aus der Liste
+            </summary>
+            <param name="priority">Prioritätswert</param>
+            <returns>Datenwert</returns>
+        </member>
+        <member name="P:BimGisCad.Collections.PriorityQueue`2.PeekItem">
+            <summary>
+            Datenwert mit niedrigster Priorität
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.PriorityQueue`2.PeekPriority">
+            <summary>
+            Niedrigste Priorität
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Collections.PriorityQueue`2.Count">
+            <summary>
+            Anzahl der Elemente
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Collections.UniqueCollection`1">
+            <summary>
+            Liste für unsortierte Typen welche von IUnique erben. Garantiert wird das jedes Element (Id) nur einmal vertreten ist
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:BimGisCad.Collections.UniqueCollection`1.Item(System.String)">
+            <summary>
+            Element mittels Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueCollection`1.Contains(`0)">
+            <summary>
+            Prüfen auf Vorhandensein
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueCollection`1.Contains(System.String)">
+            <summary>
+            Prüfen auf Vorhandensein
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueCollection`1.SetItem(`0)">
+            <summary>
+            Hinzufügen oder Ändern eines Elements
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueCollection`1.Add(`0)">
+            <summary>
+            Hinzufügen eines neuen Elements, oder false falls vorhanden
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueCollection`1.Remove(`0)">
+            <summary>
+            Entfernt Element
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueCollection`1.Create(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Builder aus vorhandener Collection
+            </summary>
+            <param name="items"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueCollection`1.Create">
+            <summary>
+            Leere Liste
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Collections.UniqueList`1">
+            <summary>
+             Geordnete (indizierte) Liste für Typen welche von IUnique erben. Garantiert wird das jedes
+             Element (Id) nur einmal vertreten ist und Reihenfolge bleibt
+            </summary>
+            <typeparam name="T">  </typeparam>
+        </member>
+        <member name="P:BimGisCad.Collections.UniqueList`1.Item(System.String)">
+            <summary>
+            Element mit Identifier
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="P:BimGisCad.Collections.UniqueList`1.Item(System.Int32)">
+            <summary>
+            Element mit Index
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.TryGetValue(System.String,`0@)">
+            <summary>
+            Element, wenn vorhanden
+            </summary>
+            <param name="id"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.IndexOf(`0)">
+            <summary>
+            Index eines Elements, oder -1
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Contains(`0)">
+            <summary>
+            Vorhanden?
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Contains(System.String)">
+            <summary>
+            Vorhanden?
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.SetItem(`0)">
+            <summary>
+            Fügt neues Element hinzu oder ändert Element mit selber Id
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Add(`0)">
+            <summary>
+            Fügt neues Element hinzu, falls nicht vorhanden
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Insert(System.Int32,`0)">
+            <summary>
+            Ändert Element an Position, falls nicht vorhanden
+            </summary>
+            <param name="index"></param>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Clear">
+            <summary>
+            Leert Liste
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Remove(`0)">
+            <summary>
+            Entfernt Element
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.RemoveAt(System.Int32)">
+            <summary>
+            Entfernt Element an Position
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="P:BimGisCad.Collections.UniqueList`1.Count">
+            <summary>
+            Anzahl der Elemente
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Create">
+            <summary>
+            Builder leer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Create(System.Collections.Generic.IList{`0})">
+            <summary>
+            Builder aus vorhandener Liste
+            </summary>
+            <param name="items"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.Create(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Builder aus vorhandener Aufzählung
+            </summary>
+            <param name="items"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Collections.UniqueList`1.GetEnumerator">
+            <summary>
+            Enumerator
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Object">
+            <summary>
+            Eigenständiges Objekt
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Object.#ctor(System.String,System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute})">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="attributes"></param>
+        </member>
+        <member name="P:BimGisCad.Object.Representations">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Object.Create(System.String,System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute})">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="attributes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Object.Create(System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute})">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <param name="attributes"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.ProjectType">
+            <summary>
+            Mögliche Projekttypen
+            </summary>
+        </member>
+        <member name="F:BimGisCad.ProjectType.BIM">
+            <summary>
+            BIM Projekt (z.B. IFC basiert)
+            </summary>
+        </member>
+        <member name="F:BimGisCad.ProjectType.GIS">
+            <summary>
+            GIS Projekt (z.B. GML basiert)
+            </summary>
+        </member>
+        <member name="F:BimGisCad.ProjectType.CAD">
+            <summary>
+            CAD Projekt (z.B. DXF basiert)
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Project">
+            <summary>
+            Definiert ein Projekt (in der Regel eine Datei)
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Project.#ctor(System.String,System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute},BimGisCad.ProjectType,System.Uri,BimGisCad.Collections.UniqueCollection{BimGisCad.Object},BimGisCad.Collections.UniqueCollection{BimGisCad.RelationShip},System.Collections.Generic.HashSet{BimGisCad.Representation.Context})">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="attributes"></param>
+            <param name="type"></param>
+            <param name="uri"></param>
+            <param name="objects"></param>
+            <param name="relations"></param>
+            <param name="representationContexts"></param>
+        </member>
+        <member name="P:BimGisCad.Project.Type">
+            <summary>
+            Projekttyp
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Project.Uri">
+            <summary>
+            Datei oder URL Adresse der Originaldatei
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Project.Objects">
+            <summary>
+            Zugehörige Objekte (Modell)
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Project.Relations">
+            <summary>
+            Zugehörige Beziehungen
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Project.RepresentationContexts">
+            <summary>
+            Alle Darstellungen
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Project.Create(System.String,System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute},BimGisCad.ProjectType,System.Uri,BimGisCad.Collections.UniqueCollection{BimGisCad.Object},BimGisCad.Collections.UniqueCollection{BimGisCad.RelationShip},System.Collections.Generic.HashSet{BimGisCad.Representation.Context})">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="attributes"></param>
+            <param name="type"></param>
+            <param name="uri"></param>
+            <param name="objects"></param>
+            <param name="relations"></param>
+            <param name="representationContexts"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Project.Create(System.String,BimGisCad.ProjectType,System.Uri)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+            <param name="uri"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:BimGisCad.RelationShip">
+            <summary>
+            Beziehung zwischen Objekten
+            </summary>
+        </member>
+        <member name="M:BimGisCad.RelationShip.#ctor(System.String,System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute},BimGisCad.Object,BimGisCad.Collections.UniqueCollection{BimGisCad.Object})">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="attributes"></param>
+            <param name="relating"></param>
+            <param name="related"></param>
+        </member>
+        <member name="P:BimGisCad.RelationShip.Relating">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.RelationShip.Related">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.RelationShip.Create(System.String,System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute},BimGisCad.Object,BimGisCad.Collections.UniqueCollection{BimGisCad.Object})">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="attributes"></param>
+            <param name="relating"></param>
+            <param name="related"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.RelationShip.Create(System.String,BimGisCad.Object,BimGisCad.Collections.UniqueCollection{BimGisCad.Object})">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <param name="relating"></param>
+            <param name="related"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Context">
+            <summary>
+            Übergeordneter Rahmen 
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Context.#ctor(BimGisCad.Representation.Geometry.Axis2Placement3D,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="placement"></param>
+            <param name="precision"></param>
+        </member>
+        <member name="P:BimGisCad.Representation.Context.Placement">
+            <summary>
+            Übergeordnetes "Vermessungs"-Koordinatensystem
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Context.Precision">
+            <summary>
+            minimaler Streckenunterschied 
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Context.PrecisionSquared">
+            <summary>
+            minimaler Streckenunterschied 
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Axis">
+            <summary>
+            Achsen Aufzählung
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Axis.X">
+            <summary>
+            X Achse
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Axis.Y">
+            <summary>
+            Y-Achse
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Axis.Z">
+            <summary>
+            Z-Achse
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.AxisPlane">
+            <summary>
+            Aufzählung möglicher Ebenen eines Koordinatensystems
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.AxisPlane.XY">
+            <summary>
+            Ebene zwischen X und Y Achse
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.AxisPlane.YZ">
+            <summary>
+            Ebene zwischen Y und Z Achse
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.AxisPlane.ZX">
+            <summary>
+            Ebene zwischen Z und X Achse
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Axis2Placement2D">
+            <summary>
+             Lokales Koordinatensystem in 2D Kontext
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.#ctor(System.Nullable{BimGisCad.Representation.Geometry.Elementary.Vector2},System.Nullable{BimGisCad.Representation.Geometry.Elementary.Direction2})">
+            <summary>
+            Konstruktor aus Referenzpunkt und Referenzrichtung
+            </summary>
+            <param name="location"></param>
+            <param name="refDirection"></param>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement2D.Location">
+            <summary>
+            Referenzpunkt
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement2D.RefDirection">
+            <summary>
+            Referenzrichtung
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement2D.YAxis">
+            <summary>
+            Y-Achse
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement2D,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+            Rotiert Übergeordneten Richtung in das System
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement2D,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            Rotiert Übergeordneten Vektor in das System
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement2D,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Transformiert Übergeordneten Punkt in das System
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement2D,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+            Rotiert Lokale Richtung in das Übergeordnete System
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement2D,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            Rotiert Lokalen Vektor in das Übergeordnete System
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement2D,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Transformiert Lokalen Punkt in das Übergeordnete System
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.Create(System.Nullable{BimGisCad.Representation.Geometry.Elementary.Direction2})">
+            <summary>
+            Builder mit Referenzpunkt 0,0
+            </summary>
+            <param name="refDirection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.Create(BimGisCad.Representation.Geometry.Elementary.Vector2,System.Nullable{BimGisCad.Representation.Geometry.Elementary.Direction2})">
+            <summary>
+            Builder
+            </summary>
+            <param name="location"></param>
+            <param name="refDirection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement2D.Combine(BimGisCad.Representation.Geometry.Axis2Placement2D[])">
+            <summary>
+            Kombiniert mindestens zwei Systeme zu einem, Reihenfolge vom Kleinen ins Große (Ergebnis des kombinierten Systems ToGlobal, entspricht sys2.ToGlobal(sys1.ToGlobal(x)))
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Axis2Placement3D">
+            <summary>
+             Lokales Koordinatensystem in 2D Kontext 1D Punkte beziehen sich auf Z-Achse 2D Punkte auf XY-Ebene
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement3D.Standard">
+            <summary>
+             Globales Koordinatensystem
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.#ctor(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,System.Boolean)">
+            <summary>
+            Konstructor
+            </summary>
+            <param name="location"></param>
+            <param name="axis"></param>
+            <param name="refDirection"></param>
+            <param name="reCalcRefDirection"></param>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement3D.Location">
+            <summary>
+            Referenzpunkt
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement3D.RefDirection">
+            <summary>
+            Referenzrichtung
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement3D.YAxis">
+            <summary>
+            Y-Achse
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Axis2Placement3D.Axis">
+            <summary>
+            Z-Achse
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.Create">
+            <summary>
+             Erzeugt Standardsystem
+            </summary>
+            <returns>  </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.Create(BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Erzeugt Standardsystem mit Translationsvektor
+            </summary>
+            <param name="translation"> Translationsvektor </param>
+            <returns>  </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.Create(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Erzeugt 3D-System im Ursprung
+            </summary>
+            <param name="axis"> Z Achse </param>
+            <param name="refDirection"> X Achse </param>
+            <returns>  </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.Create(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Erzeugt 3D-System
+            </summary>
+            <param name="location"> Location</param>
+            <param name="axis"> Z Achse </param>
+            <param name="refDirection"> X Achse </param>
+            <returns>  </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.GetAxes(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.AxisPlane,BimGisCad.Representation.Geometry.Elementary.Direction3@,BimGisCad.Representation.Geometry.Elementary.Direction3@)">
+            <summary>
+            Achsen einer Ebene
+            </summary>
+            <param name="sys"></param>
+            <param name="axisPlane"></param>
+            <param name="axis1"></param>
+            <param name="axis2"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.AxisPlane)">
+            <summary>
+            Rotiert Übergeordneten Richtung in das System (2D)
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+            <param name="axisPlane"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.AxisPlane)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+            <param name="axisPlane"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.AxisPlane)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+            <param name="axisPlane"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToLocal(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="reference"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.AxisPlane)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+            <param name="axisPlane"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.AxisPlane)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+            <param name="axisPlane"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.AxisPlane)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+            <param name="axisPlane"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.ToReference(BimGisCad.Representation.Geometry.Axis2Placement3D,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+            
+            </summary>
+            <param name="system"></param>
+            <param name="local"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Axis2Placement3D.Combine(BimGisCad.Representation.Geometry.Axis2Placement3D[])">
+            <summary>
+            Kombiniert mindestens zwei Systeme zu einem, Reihenfolge vom Kleinen ins Große (Ergebnis des kombinierten Systems ToGlobal, entspricht sys2.ToGlobal(sys1.ToGlobal(x)))
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Composed.MultiPoint2">
+            <summary>
+            Gemittelter 2D Punkt
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.MultiPoint2.#ctor(System.Double,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Konstruktor
+            </summary>
+            <param name="minDist">Mindestabstand unterschiedlicher Punkte</param>
+            <param name="point">Punkt</param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.MultiPoint2.Add(BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Fügt neuen Punkt hinzu, wenn innerhalb des Mindestabstandes
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.MultiPoint2.X">
+            <summary>
+            Gemitteltes X
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.MultiPoint2.Y">
+            <summary>
+            Gemitteltes Y
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.MultiPoint2.Point">
+            <summary>
+            Gemittelter Punkt
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Composed.PolyLine2">
+            <summary>
+            2D Polylinie
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.PolyLine2.IsClosed">
+            <summary>
+            Polylinien mit mehr als 2 Eckpunkten (also mehr als 3 Punkten) und identischem Anfangs- und Endpunkt
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.PolyLine2.IsCCW">
+            <summary>
+            Gegen Uhrzeigersinn orientiert und geschlossen
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.PolyLine2.Close">
+            <summary>
+            Kopiert Anfangspunkt an das Ende, wenn nötig
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.PolyLine2.RemoveShortEdges">
+            <summary>
+            Entfernt zu kurze Kanten
+            </summary>
+            <returns>Anzahl Entfernte Punkte</returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.PolyLine2.Create(System.Double,BimGisCad.Representation.Geometry.Elementary.Point2[])">
+            <summary>
+            Erzeugt Polylinie aus gegebenen Punkten
+            </summary>
+            <param name="mindist"></param>
+            <param name="points">Polygonpunkte</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.PolyLine2.Create(System.Double,System.Collections.Generic.IEnumerable{BimGisCad.Representation.Geometry.Elementary.Point2})">
+            <summary>
+            Erzeugt Polylinie aus gegebenen Punkten,
+            </summary>
+            <param name="mindist"></param>
+            <param name="points">Polygonpunkte</param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Composed.Segment2">
+            <summary>
+            2D Segment
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.#ctor(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Konstruktor mit 2 Punkten
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.Segment2.Start">
+            <summary>
+            Start
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.Segment2.Direction">
+            <summary>
+            Richtung
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.Segment2.End">
+            <summary>
+            Ende
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Composed.Segment2.Length">
+            <summary>
+            Länge des Segments
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.Create(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Erzeugt 2D-Segment
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.LocalPos(BimGisCad.Representation.Geometry.Composed.Segment2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Lokale Position eines Punktes (x auf Linie (- vor start), y Abstand (- rechts))
+            </summary>
+            <param name="segment"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.CrossDistance(BimGisCad.Representation.Geometry.Composed.Segment2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Querabstand eines Punktes zum Segment(- rechts)
+            </summary>
+            <param name="segment"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.LineDistance(BimGisCad.Representation.Geometry.Composed.Segment2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Längsabstand eines Punktes (- davor)
+            </summary>
+            <param name="segment"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.SideOf(BimGisCad.Representation.Geometry.Composed.Segment2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Seite eines Punktes (- rechts)
+            </summary>
+            <param name="segment"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.Intersect(BimGisCad.Representation.Geometry.Composed.Segment2,BimGisCad.Representation.Geometry.Composed.Segment2)">
+            <summary>
+            Prüft ob 2 Segmente sich schneiden, es muss vorher ausgeschlossen werden, dass ein Endpunkt des einen Segments zu nah an das andere Segment kommt
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Composed.Segment2.Coincident(BimGisCad.Representation.Geometry.Composed.Segment2,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="mindist"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Common">
+            <summary>
+            Hilfsklasse mit allgemeinen Methoden
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Common.EPS">
+            <summary>
+             Double Machine Epsilon
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Common.RSQRT3">
+            <summary>
+             1 / (Wurzel 3)
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Common.TRIGTOL">
+            <summary>
+             kleinstmöglicher Trig/Det Wert
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Common.TRIGTOL_SQUARED">
+            <summary>
+            Quadrierter kleinstmöglicher Trig/Det Wert
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Common.MINDIST">
+            <summary>
+             Kleinstmögliche Strecke
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Common.MINDIST_SQUARED">
+            <summary>
+             Quadrierte Kleinstmögliche Strecke
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Common.RHODEG">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.IsValidNorm(System.Double,System.Double)">
+            <summary>
+            Prüft ob eine Norm gültig ist (Not NaN und >= MinDist)
+            </summary>
+            <param name="norm"></param>
+            <param name="mindist">kleinstmögliche Strecke</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.IsValidNormSquared(System.Double,System.Double)">
+            <summary>
+            Prüft ob eine quadrierte Norm gültig ist (Not NaN und >= MinDist)
+            </summary>
+            <param name="norm2"></param>
+            <param name="mindistSquared">quadrierte kleinstmögliche Strecke</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.IsNearlyZero(System.Double,System.Double)">
+            <summary>
+            Abstand ist kleiner als kleinstmögliche Strecke
+            </summary>
+            <param name="dist"></param>
+            <param name="mindist">kleinstmögliche Strecke</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.IsNearlyZeroSquared(System.Double,System.Double)">
+            <summary>
+            Quadrierter Abstand ist kleiner als quadrierte kleinstmögliche Strecke
+            </summary>
+            <param name="dist"></param>
+            <param name="mindistSquared">quadrierte kleinstmögliche Strecke</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.Norm(System.Double,System.Double)">
+            <summary>
+             Sichere Normberechnung, vermeidet unnötige Überläufe
+            </summary>
+            <param name="x"> Kathete </param>
+            <param name="y"> Kathete </param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.Norm(System.Double,System.Double,System.Double)">
+            <summary>
+             Sichere Normberechnung, vermeidet unnötige Überläufe
+            </summary>
+            <param name="x"> Kathete </param>
+            <param name="y"> Kathete </param>
+            <param name="z"> Kathete </param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.DoubleTryParse(System.Collections.Generic.IList{System.String},System.Double[]@,System.Int32,System.Int32)">
+            <summary>
+            Erzeugt ein DoubleArray aus einem StringArray
+            </summary>
+            <param name="strings">Array mit Strings der Zahlen</param>
+            <param name="doubles">Geparste Strings</param>
+            <param name="startIndex">Position der ersten Zahl in strings</param>
+            <param name="length">Länge des DoubleArrays</param>
+            <returns>Erfolgreich geparst?</returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.SortAsc(System.Double@,System.Double@)">
+            <summary>
+            Sortiert zwei Zahlen aufsteigend
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.SortDesc(System.Double@,System.Double@)">
+            <summary>
+            Sortiert zwei Zahlen absteigend
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.SortAsc(System.Double@,System.Double@,System.Double@)">
+            <summary>
+            Sortiert 3 Zahlen aufsteigend
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="c"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.SortDesc(System.Double@,System.Double@,System.Double@)">
+            <summary>
+            Sortiert 3 Zahlen absteigend
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="c"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Common.SortAsc(System.Double@,System.Double@,System.Double@,System.Double@)">
+            <summary>
+            Sortiert 4 Zahlen aufsteigend
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="c"></param>
+            <param name="d"></param>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Direction2">
+            <summary>
+             2-Dimensionaler Richtungsvektor (Einheitsvektor)
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction2.UnitX">
+            <summary>
+             Richtung der X-Achse eines Koordinatensystems
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction2.UnitY">
+            <summary>
+             Richtung der Y-Achse eines Koordinatensystems
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction2.NaN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.#ctor(System.Double,System.Double)">
+            <summary>
+             Konstruktor mit Einzelwerten
+            </summary>
+            <param name="x"> X-Koordinate </param>
+            <param name="y"> Y-Koordinate </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Direction2.X">
+            <summary>
+             X-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Direction2.Y">
+            <summary>
+             Y-Koordinate
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction2.Zero">
+            <summary>
+             Richtung mit Winkel = 0 (X-Achse)
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction2.Sin">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction2.Cos">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Create(BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Create(System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Create(System.Double,System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Create(BimGisCad.Representation.Geometry.Elementary.Vector2,System.Nullable{System.Double})">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Create(System.Double,System.Double,System.Nullable{System.Double})">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32,System.Nullable{System.Double})">
+            <summary>
+            
+            </summary>
+            <param name="xy"></param>
+            <param name="startIndex"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Create(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="azimuth"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Azimuth(BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Richtungswinkel
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_UnaryNegation(BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Negation
+            </summary>
+            <param name="d"> Zu negierende Richtung </param>
+            <returns> Negierte Richtung </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Richtungssubtraktion
+            </summary>
+            <param name="a"> Minuend </param>
+            <param name="b"> Subtrahend </param>
+            <returns> Differenz </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Richtungssubtraktion
+            </summary>
+            <param name="a"> Minuend </param>
+            <param name="b"> Subtrahend </param>
+            <returns> Differenz </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Richtungssubtraktion
+            </summary>
+            <param name="a"> Minuend </param>
+            <param name="b"> Subtrahend </param>
+            <returns> Differenz </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Addition(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Richtungsaddition
+            </summary>
+            <param name="a"> 1. Summand </param>
+            <param name="b"> 2. Summand </param>
+            <returns> Summe </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Addition(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Richtungsaddition (Rotation)
+            </summary>
+            <param name="a"> 1. Summand </param>
+            <param name="b"> 2. Summand </param>
+            <returns> Summe </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Addition(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Richtungsaddition (Rotation um Ursprung)
+            </summary>
+            <param name="a"> 1. Summand </param>
+            <param name="b"> 2. Summand </param>
+            <returns> Summe </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Multiply(System.Double,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Skalar </param>
+            <param name="b"> Vektor </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Direction2,System.Double)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Reverse(BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Umkehrung der Richtung
+            </summary>
+            <param name="d"> Umzukehrende Richtung </param>
+            <returns> Umgekehrte Richtung </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Bisector(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Mittlere Richtung zweier Richtungen
+            </summary>
+            <param name="a"> 1. Richtung </param>
+            <param name="b"> 2. Richtung </param>
+            <returns> Mittlere Richtung </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.AreCollinear(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Sind 2 Richtungen kollinear
+            </summary>
+            <param name="a"> Richtung 1 </param>
+            <param name="b"> Richtung 2 </param>
+            <returns> Senkrecht? </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Dot(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Dot(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Det(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Det(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Det(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Projection(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Projiziert Vektor auf Richtung
+            </summary>
+            <param name="direction"> Richtung </param>
+            <param name="vector">    Vektor </param>
+            <returns> Projizierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.ArePerp(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Sind 2 Richtungen Senkrecht zueinander
+            </summary>
+            <param name="a"> Richtung 1 </param>
+            <param name="b"> Richtung 2 </param>
+            <returns> Senkrecht? </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Perp(BimGisCad.Representation.Geometry.Elementary.Direction2,System.Boolean)">
+            <summary>
+             Senkrechte zur Richtung
+            </summary>
+            <param name="d">         Richtung </param>
+            <param name="clockwise"> im Uhrzeigersinn (default false) </param>
+            <returns> Senkrechte </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction2.Coincident(BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Direction3">
+            <summary>
+             3-Dimensionaler Richtungsvektor (Einheitsvektor)
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction3.UnitX">
+            <summary>
+             Richtung der X-Achse eines Standardkoordinatensystems
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction3.UnitY">
+            <summary>
+             Richtung der Y-Achse eines Standardkoordinatensystems
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction3.UnitZ">
+            <summary>
+             Richtung der Z-Achse eines Standardkoordinatensystems
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction3.NaN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+             Konstruktor mit Einzelwerten
+            </summary>
+            <param name="x"> X-Koordinate </param>
+            <param name="y"> Y-Koordinate </param>
+            <param name="z"> Z-Koordinate </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Direction3.X">
+            <summary>
+             X-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Direction3.Y">
+            <summary>
+             Y-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Direction3.Z">
+            <summary>
+             Z-Koordinate
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Direction3.Zero">
+            <summary>
+             Richtung mit Winkel = 0 (X-Achse)
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Create(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Create(BimGisCad.Representation.Geometry.Elementary.Vector3,System.Nullable{System.Double})">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Create(System.Double,System.Double,System.Double,System.Nullable{System.Double})">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32,System.Nullable{System.Double})">
+            <summary>
+            
+            </summary>
+            <param name="xyz"></param>
+            <param name="startIndex"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Create(System.Double,System.Double)">
+            <summary>
+             Erzeugt Richtungsvektor aus Richtungs- und Zenitwinkel
+            </summary>
+            <param name="azimuth">     Richtungswinkel </param>
+            <param name="inclination"> Zenitwinkel </param>
+            <returns> Richtungsvektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Create(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Erzeugt Richtungsvektor aus Richtungs- und Zenitwinkel
+            </summary>
+            <param name="azimuth">     Richtungswinkel </param>
+            <param name="inclination"> Zenitwinkel </param>
+            <returns> Richtungsvektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.op_Multiply(System.Double,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Skalar </param>
+            <param name="b"> Vektor </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Direction3,System.Double)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Dot(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Dot(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Dot(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Cross(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Kreuzprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Kreuzprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Cross(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Kreuzprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Kreuzprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Cross(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Kreuzprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Kreuzprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Det(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Determinante einer 3x3 Matrix aus drei Vektoren (Spatprodukt)
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <param name="c"> 3. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Det(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Determinante einer 3x3 Matrix aus drei Vektoren (Spatprodukt)
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <param name="c"> 3. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Det(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Determinante einer 3x3 Matrix aus drei Vektoren (Spatprodukt)
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <param name="c"> 3. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.RotateRow(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            Multipliziert Zeilenvektor mit Matrix[rx,ry,rz] (rx ry und rz müssen orthonormal sein!)
+            </summary>
+            <param name="row"></param>
+            <param name="rx"></param>
+            <param name="ry"></param>
+            <param name="rz"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.RotateRow(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            
+            </summary>
+            <param name="row"></param>
+            <param name="rx"></param>
+            <param name="ry"></param>
+            <param name="rz"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.RotateRow(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            
+            </summary>
+            <param name="row"></param>
+            <param name="rx"></param>
+            <param name="ry"></param>
+            <param name="rz"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.RotateCol(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            Multipliziert Matrix[rx,ry,rz] mit Spaltenvektor (rx ry und rz müssen orthonormal sein!)
+            </summary>
+            <param name="rx"></param>
+            <param name="ry"></param>
+            <param name="rz"></param>
+            <param name="col"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.RotateCol(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="rx"></param>
+            <param name="ry"></param>
+            <param name="rz"></param>
+            <param name="col"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.RotateCol(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+            
+            </summary>
+            <param name="rx"></param>
+            <param name="ry"></param>
+            <param name="rz"></param>
+            <param name="col"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Azimuth(BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Richtungswinkel
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Inclination(BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Zenitwinkel
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Reverse(BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Umkehrung der Richtung
+            </summary>
+            <param name="d"> Umzukehrende Richtung </param>
+            <returns> Umgekehrte Richtung </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Bisector(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Mittlere Richtung zweier Richtungen
+            </summary>
+            <param name="a"> 1. Richtung </param>
+            <param name="b"> 2. Richtung </param>
+            <returns> Mittlere Richtung </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Projection(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Projiziert Vektor auf Richtung
+            </summary>
+            <param name="direction"> Richtung </param>
+            <param name="vector">    Vektor </param>
+            <returns> Projizierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.AreCollinear(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Sind 2 Richtungen kollinear
+            </summary>
+            <param name="a"> Richtung 1 </param>
+            <param name="b"> Richtung 2 </param>
+            <returns> Senkrecht? </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.ArePerp(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Sind 2 Richtungen Senkrecht zueinander
+            </summary>
+            <param name="a"> Richtung 1 </param>
+            <param name="b"> Richtung 2 </param>
+            <returns> Senkrecht? </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Perp(BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Beliebige Senkrechte zur Richtung
+            </summary>
+            <param name="dir"> Richtung </param>
+            <returns> Senkrechte </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Perp(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3@,BimGisCad.Representation.Geometry.Elementary.Direction3@)">
+            <summary>
+             Beliebige Senkrechten zur Richtung
+            </summary>
+            <param name="dirX"> Richtung </param>
+            <param name="dirY"> Richtung </param>
+            <param name="dirZ"> Richtung </param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Perp(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Senkrechte zur 1. Richtung in Ebene der 2 Richtungen
+            </summary>
+            <param name="fixedDir"> Feste Richtung </param>
+            <param name="planeDir"> Richtung in Ebene </param>
+            <returns>  </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Direction3.Coincident(BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Line2">
+            <summary>
+             2-Dimensionale Gerade (ungerichtet!)
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.#ctor(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Konstruktor mit Ursprung und Richtung
+            </summary>
+            <param name="position">  Ursprung </param>
+            <param name="direction"> Richtung </param>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Line2.Position">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Line2.Direction">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Line2.PointEqu">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.Create(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Line2@)">
+            <summary>
+             Erzeugt 2D-Gerade
+            </summary>
+            <param name="position"> Punkt auf Gerade </param>
+            <param name="vec"> Vektor </param>
+            <param name="line"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.Create(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Line2@)">
+            <summary>
+             Erzeugt 2D-Gerade
+            </summary>
+            <param name="p1"> 1. Punkt auf Gerade </param>
+            <param name="p2"> 2. Punkt auf Gerade </param>
+            <param name="line"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.Create(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Erzeugt 2D-Gerade
+            </summary>
+            <param name="p1"> 1. Punkt auf Gerade </param>
+            <param name="p2"> 2. Punkt auf Gerade </param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.Create(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Erzeugt 2D-Gerade
+            </summary>
+            <param name="position"> Punkt auf Gerade </param>
+            <param name="dir">Richtung </param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.Touches(BimGisCad.Representation.Geometry.Elementary.Line2,BimGisCad.Representation.Geometry.Elementary.Point2,System.Double)">
+            <summary>
+            Prüft ob Punkt auf der Geraden liegt
+            </summary>
+            <param name="line"></param>
+            <param name="point"></param>
+            <param name="minDist"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.PointOnLine(BimGisCad.Representation.Geometry.Elementary.Line2,System.Double)">
+            <summary>
+             Berechnet Punkt aus Strecke auf Gerade
+            </summary>
+            <param name="line">     Gerade </param>
+            <param name="distance"> Strecke auf Gerade </param>
+            <returns> Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.PointOnLine(BimGisCad.Representation.Geometry.Elementary.Line2,BimGisCad.Representation.Geometry.Elementary.Point1)">
+            <summary>
+             Berechnet Punkt aus Abstandspunkt auf Gerade
+            </summary>
+            <param name="line">  Gerade </param>
+            <param name="point"> Abstandspunkt </param>
+            <returns> Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.DistanceToLine(BimGisCad.Representation.Geometry.Elementary.Line2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Positiver Abstand eines Punktes zur Geraden
+            </summary>
+            <param name="line">  Gerade </param>
+            <param name="point"> Punkt </param>
+            <returns> Positiver Abstand zu Gerade </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.PerpendicularFoot(BimGisCad.Representation.Geometry.Elementary.Line2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary> 
+             Lotfusspunkts eines Punktes auf der Geraden 
+            </summary>
+            <param name="line"> Gerade </param>
+            <param name="point"> Punkt </param> 
+            <returns> Lotfusspunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line2.Coincident(BimGisCad.Representation.Geometry.Elementary.Line2,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="mindist"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Line3">
+            <summary>
+             3-Dimensionale Gerade (ungerichtet!)
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.#ctor(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Konstruktor mit Ursprung und Richtung
+            </summary>
+            <param name="position">  Ursprung </param>
+            <param name="direction"> Richtung </param>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Line3.Position">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Line3.Direction">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Line3.PointEqu">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.Create(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Erzeugt 3D-Gerade
+            </summary>
+            <param name="position"> Punkt auf Gerade </param>
+            <param name="dir">      Richtung </param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.Create(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Line3@)">
+            <summary>
+             Erzeugt 3D-Gerade
+            </summary>
+            <param name="position"> Punkt auf Gerade </param>
+            <param name="vec">      Vektor </param>
+            <param name="line"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.Create(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Line3@)">
+            <summary>
+             Erzeugt 3D-Gerade
+            </summary>
+            <param name="p1"> 1. Punkt auf Gerade </param>
+            <param name="p2"> 2. Punkt auf Gerade </param>
+            <param name="line"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.Create(BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Line3@)">
+            <summary>
+             Schnittgerade zweier Ebenen, falls nicht parallel
+            </summary>
+            <param name="a"> 1. Ebene </param>
+            <param name="b"> 2. Ebene </param>
+            <param name="line"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.Touches(BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Prüft ob Punkt auf der Geraden liegt
+            </summary>
+            <param name="line">   </param>
+            <param name="point">  </param>
+            <returns>  </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.PointOnLine(BimGisCad.Representation.Geometry.Elementary.Line3,System.Double)">
+            <summary>
+             Berechnet Punkt aus Strecke auf Gerade
+            </summary>
+            <param name="line">     Gerade </param>
+            <param name="distance"> Strecke auf Gerade </param>
+            <returns> Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.PointOnLine(BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Point1)">
+            <summary>
+             Berechnet Punkt aus Abstandspunkt auf Gerade
+            </summary>
+            <param name="line">  Gerade </param>
+            <param name="point"> Abstandspunkt </param>
+            <returns> Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.DistanceToLine(BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Positiver Abstand eines Punktes zur Geraden
+            </summary>
+            <param name="line">  Gerade </param>
+            <param name="point"> Punkt </param>
+            <returns> Positiver Abstand zu Gerade </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.PerpendicularDistanceToPosition(BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Abstand des Lotfusspunkts eines Punktes zum Punkt auf der Geraden (negativer Wert
+             bedeutet Lotfusspunkt befindet sich vor Position)
+            </summary>
+            <param name="line">  Gerade </param>
+            <param name="point"> Punkt </param>
+            <returns> Lotfusspunkt-Abstand zu Position </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.LineToLineDistance(BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Line3)">
+            <summary>
+             Kuerzester Abstand zwischen 2 Geraden (ohne Vorzeichen)
+            </summary>
+            <param name="a"> 1. Gerade </param>
+            <param name="b"> 2. Gerade </param>
+            <returns> Positiver Abstand </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Line3.Coincident(BimGisCad.Representation.Geometry.Elementary.Line3,System.Double)">
+            <summary>
+             Geometrischer Vergleich
+            </summary>
+            <param name="other">  </param>
+            <param name="mindist"></param>
+            <returns>  </returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Plane">
+            <summary>
+             3-Dimensionale Ebene (ungerichtet!)
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Plane.Position">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Plane.Normal">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Plane.D">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Plane.PointEqu">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Plane.Touches(BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Point3,System.Double)">
+            <summary>
+            Prüft ob Punkt auf der Ebene liegt
+            </summary>
+            <param name="plane"></param>
+            <param name="point"></param>
+            <param name="mindist"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Plane.DistanceToPlane(BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Abstand eines Punktes zur Ebene
+            </summary>
+            <param name="plane"> Plane </param>
+            <param name="point"> Punkt </param>
+            <returns> Abstand zu Ebene </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Plane.Create(System.Boolean,BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Plane@)">
+            <summary>
+            Ebene durch durch Punkte, wenn nicht kollinear, 
+            Normale der Ebene zeigt in Richtung der Halbebene in der der Umring gegen den Uhrzeigersinn verläuft
+            der Ursprung ist der Schwerpunkt oder Punkt a (je nach originAtA)
+            Die lokale X-Achse, geht von a nach b (originA = true) oder vom Schwerpunkt nach a
+            </summary>
+            <param name="originA">Ursprung bei Punkt a, sonst Schwerpunkt</param>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="c"></param>
+            <param name="plane"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Plane.Create(System.Boolean,System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Point3},BimGisCad.Representation.Geometry.Elementary.Plane@,System.Double@)">
+            <summary>
+            Ebene durch durch Polygon aus Punkten, wenn nicht kollinear und mindestens 3, 
+            Normale der Ebene zeigt in Richtung der Halbebene in der der Umring gegen den Uhrzeigersinn verläuft
+            Der Schwerpunkt ist der Flächenschwerpunkt oder der erste Punkt
+            Die lokale X-Achse zeigt vom ersten zum zweiten Punkt (originFirst = true) oder vom Schwerpunkt nach Punkt 1
+            </summary>
+            <param name="originFirst"></param>
+            <param name="points">Punkte</param>
+            <param name="plane"></param>
+            <param name="vv">Quadratsumme der Verbesserungen</param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Plane.Coincident(BimGisCad.Representation.Geometry.Elementary.Plane,System.Double)">
+            <summary>
+            Geometrischer Vergleich, (kein Vergleich der lokalen X Achse!)
+            </summary>
+            <param name="other"></param>
+            <param name="mindist"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Point1">
+            <summary>
+             1-Dimensionaler Punkt
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Point1.Zero">
+            <summary>
+             Punkt im Ursprung
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.#ctor(System.Double)">
+            <summary>
+             Konstruktor mit Wert
+            </summary>
+            <param name="z"> Koordinate </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Point1.Z">
+            <summary>
+            Z-Koordinate
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.Create(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.Create(BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="z"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Point1,BimGisCad.Representation.Geometry.Elementary.Point1)">
+            <summary>
+             Differenzvektor zwischen zwei Punkten
+            </summary>
+            <param name="a"> 1. Punkt </param>
+            <param name="b"> 2. Punkt </param>
+            <returns> Differenzvektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Point1,BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+             Translation eines Punktes (Subtraktion)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Translationsvektor </param>
+            <returns> Translierter Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.op_Addition(BimGisCad.Representation.Geometry.Elementary.Point1,BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+             Translation eines Punktes (Addition)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Translationsvektor </param>
+            <returns> Translierter Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.Centroid(BimGisCad.Representation.Geometry.Elementary.Point1,BimGisCad.Representation.Geometry.Elementary.Point1)">
+            <summary>
+             Mittelpunkt zweier Punkte
+            </summary>
+            <param name="a"> 1. Punkt </param>
+            <param name="b"> 2. Punkt </param>
+            <returns> Mittelpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.Centroid(System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Point1},System.Boolean,System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Vector1}@)">
+            <summary>
+             Berechnet den Schwerpunkt einer Punktliste, bei Bedarf die Vektoren vom Schwerpunkt zu
+             den Punkten
+            </summary>
+            <param name="points">      Punktliste </param>
+            <param name="fillVectors"> Vektoren berechnen </param>
+            <param name="vectors">     Vektoren </param>
+            <returns> Schwerpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point1.Coincident(BimGisCad.Representation.Geometry.Elementary.Point1,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="minDist">kleinstmöglicher Abstand</param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Point2">
+            <summary>
+             2-Dimensionaler Punkt
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Point2.Zero">
+            <summary>
+             Punkt im Ursprung
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.#ctor(System.Double,System.Double)">
+            <summary>
+             Konstruktor mit Einzelwerten
+            </summary>
+            <param name="x"> X-Koordinate </param>
+            <param name="y"> Y-Koordinate </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Point2.X">
+            <summary>
+             X-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Point2.Y">
+            <summary>
+             Y-Koordinate
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Point2.PointEqu">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Create(BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Create(System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Create(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="xy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="xy"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Create(System.Collections.Generic.IReadOnlyList{BimGisCad.Representation.Geometry.Linear.ILinear2},BimGisCad.Representation.Geometry.Elementary.Point2@,System.Double@)">
+            <summary>
+            
+            </summary>
+            <param name="linears"></param>
+            <param name="point"></param>
+            <param name="vv"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Create(BimGisCad.Representation.Geometry.Elementary.Line2,BimGisCad.Representation.Geometry.Elementary.Line2,BimGisCad.Representation.Geometry.Elementary.Point2@)">
+            <summary>
+            
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Create(System.Collections.Generic.IList{System.String},BimGisCad.Representation.Geometry.Elementary.Point2@,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="strings"></param>
+            <param name="point"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Differenzvektor zwischen zwei Punkten
+            </summary>
+            <param name="a"> 1. Punkt </param>
+            <param name="b"> 2. Punkt </param>
+            <returns> Differenzvektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Translation eines Punktes (Subtraktion)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Translationsvektor </param>
+            <returns> Translierter Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.op_Addition(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Translation eines Punktes (Addition)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Translationsvektor </param>
+            <returns> Translierter Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.op_Addition(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Translation eines Punktes (Addition)
+            </summary>
+            <param name="a"> Translationsvektor </param>
+            <param name="b"> Punkt </param>
+            <returns> Translierter Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.op_Multiply(System.Double,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Skalar </param>
+            <param name="b"> Punkt </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Point2,System.Double)">
+            <summary>
+             Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Skalar </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Dot(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Dot(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Dot(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Dot(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Det(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Det(BimGisCad.Representation.Geometry.Elementary.Direction2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Det(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Direction2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Det(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Centroid(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+             Mittelpunkt zweier Punkte
+            </summary>
+            <param name="a"> 1. Punkt </param>
+            <param name="b"> 2. Punkt </param>
+            <returns> Mittelpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Centroid(System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Point2})">
+            <summary>
+             Berechnet den Schwerpunkt einer Punktliste, bei Bedarf die Vektoren vom Schwerpunkt zu
+             den Punkten
+            </summary>
+            <param name="points">      Punktliste </param>
+            <returns> Schwerpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Centroid(System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Point2},System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Vector2}@)">
+            <summary>
+             Berechnet den Schwerpunkt einer Punktliste, bei Bedarf die Vektoren vom Schwerpunkt zu
+             den Punkten
+            </summary>
+            <param name="points">      Punktliste </param>
+            <param name="vectors">     Vektoren </param>
+            <returns> Schwerpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.SignedDistance(BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2,BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            Abstand eines Punktes (- rechts)
+            </summary>
+            <param name="lineStart"></param>
+            <param name="lineEnd"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.Coincident(BimGisCad.Representation.Geometry.Elementary.Point2,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="minDist">kleinstmöglicher Abstand</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point2.ToCSVString(BimGisCad.Representation.Geometry.Elementary.Point2)">
+            <summary>
+            
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Point3">
+            <summary>
+             3-Dimensionaler Punkt
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Point3.Zero">
+            <summary>
+             Punkt im Ursprung
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+             Konstruktor mit Einzelwerten
+            </summary>
+            <param name="x"> X-Koordinate </param>
+            <param name="y"> Y-Koordinate </param>
+            <param name="z"> Z-Koordinate </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Point3.X">
+            <summary>
+             X-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Point3.Y">
+            <summary>
+             Y-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Point3.Z">
+            <summary>
+             Z-Koordinate
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Point3.PointEqu">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(System.Double,System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="xyz"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="xyz"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Point3@)">
+            <summary>
+            Punkt als Schnittpunkt, wenn möglich
+            </summary>
+            <param name="plane"></param>
+            <param name="line"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Plane,BimGisCad.Representation.Geometry.Elementary.Point3@)">
+            <summary>
+            Punkt als Schnittpunkt, wenn möglich
+            </summary>
+            <param name="a">Ebene 1</param>
+            <param name="b">Ebene 2</param>
+            <param name="c">Ebene 3</param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Line3,BimGisCad.Representation.Geometry.Elementary.Point3@)">
+            <summary>
+            Punkt als Schnittpunkt, wenn möglich
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(System.Collections.Generic.IReadOnlyList{BimGisCad.Representation.Geometry.Linear.ILinear3},BimGisCad.Representation.Geometry.Elementary.Point3@,System.Double@)">
+            <summary>
+            
+            </summary>
+            <param name="linears"></param>
+            <param name="point"></param>
+            <param name="vv"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Create(System.Collections.Generic.IList{System.String},BimGisCad.Representation.Geometry.Elementary.Point3@,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="strings"></param>
+            <param name="point"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.op_Explicit(BimGisCad.Representation.Geometry.Elementary.Point3)~BimGisCad.Representation.Geometry.Elementary.Vector3">
+            <summary>
+            
+            </summary>
+            <param name="point"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Differenzvektor zwischen zwei Punkten
+            </summary>
+            <param name="a"> 1. Punkt </param>
+            <param name="b"> 2. Punkt </param>
+            <returns> Differenzvektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Translation eines Punktes (Subtraktion)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Translationsvektor </param>
+            <returns> Translierter Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.op_Addition(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Translation eines Punktes (Addition)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Translationsvektor </param>
+            <returns> Translierter Punkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.op_Multiply(System.Double,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Skalar </param>
+            <param name="b"> Punkt </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Point3,System.Double)">
+            <summary>
+             Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Punkt </param>
+            <param name="b"> Skalar </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Dot(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Dot(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Dot(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Dot(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Dot(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Centroid(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Mittelpunkt zweier Punkte
+            </summary>
+            <param name="a"> 1. Punkt </param>
+            <param name="b"> 2. Punkt </param>
+            <returns> Mittelpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Centroid(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+             Berechnet den Schwerpunkt
+            </summary>
+            <param name="a"> 1. Punkt </param>
+            <param name="b"> 2. Punkt </param>
+            <param name="c"> 3. Punkt </param>
+            <returns> Schwerpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.DistanceSq(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+            
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Distance(BimGisCad.Representation.Geometry.Elementary.Point3,BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+            
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Centroid(System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Point3})">
+            <summary>
+             Berechnet den Schwerpunkt einer Punktliste, bei Bedarf die Vektoren vom Schwerpunkt zu
+             den Punkten
+            </summary>
+            <param name="points">      Punktliste </param>
+            <returns> Schwerpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Centroid(System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Point3},System.Collections.Generic.IList{BimGisCad.Representation.Geometry.Elementary.Vector3}@)">
+            <summary>
+             Berechnet den Schwerpunkt einer Punktliste, bei Bedarf die Vektoren vom Schwerpunkt zu
+             den Punkten
+            </summary>
+            <param name="points">      Punktliste </param>
+            <param name="vectors">     Vektoren </param>
+            <returns> Schwerpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.Coincident(BimGisCad.Representation.Geometry.Elementary.Point3,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="minDist">kleinstmöglicher Abstand</param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Point3.ToCSVString(BimGisCad.Representation.Geometry.Elementary.Point3)">
+            <summary>
+            
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Quaternion">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Quaternion.Zero">
+            <summary>
+            Keine Rotation
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Quaternion.S">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Quaternion.X">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Quaternion.Y">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Quaternion.Z">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Quaternion,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            Rotiert vektor mit Quaternion
+            </summary>
+            <param name="q"></param>
+            <param name="v"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Quaternion,BimGisCad.Representation.Geometry.Elementary.Quaternion)">
+            <summary>
+            Multiplikation
+            </summary>
+            <param name="q1"></param>
+            <param name="q2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.XAxis(BimGisCad.Representation.Geometry.Elementary.Quaternion)">
+            <summary>
+            
+            </summary>
+            <param name="q"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.YAxis(BimGisCad.Representation.Geometry.Elementary.Quaternion)">
+            <summary>
+            
+            </summary>
+            <param name="q"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.ZAxis(BimGisCad.Representation.Geometry.Elementary.Quaternion)">
+            <summary>
+            
+            </summary>
+            <param name="q"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.Normalized(BimGisCad.Representation.Geometry.Elementary.Quaternion)">
+            <summary>
+            
+            </summary>
+            <param name="q"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.Conj(BimGisCad.Representation.Geometry.Elementary.Quaternion)">
+            <summary>
+            
+            </summary>
+            <param name="q"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.Transform(BimGisCad.Representation.Geometry.Elementary.Quaternion,BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="rotation"></param>
+            <param name="translation"></param>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.Create(BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3,BimGisCad.Representation.Geometry.Elementary.Direction3)">
+            <summary>
+            
+            </summary>
+            <param name="xAxis"></param>
+            <param name="yAxis"></param>
+            <param name="zAxis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Quaternion.Create(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Vector1">
+            <summary>
+             1-Dimensionaler Vektor (Skalarwert)
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector1.Zero">
+            <summary>
+             Vektor mit Wert 0
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector1.Unit">
+            <summary>
+            Einheitsvektor
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector1.NaN">
+            <summary>
+            Ungültiger Vektor
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector1.PositiveInfinity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector1.NegativeInfinity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.#ctor(System.Double)">
+            <summary>
+             Konstruktor
+            </summary>
+            <param name="z"> Wert </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Vector1.Z">
+            <summary>
+            Z-Koordinate
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Create(BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Create(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="z"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Norm(BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Norm2(BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.IsNaN(BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.IsValidNorm(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.TryGetNorm(BimGisCad.Representation.Geometry.Elementary.Vector1,System.Double@)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Normalized(BimGisCad.Representation.Geometry.Elementary.Vector1,BimGisCad.Representation.Geometry.Elementary.Vector1@)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Normalized(BimGisCad.Representation.Geometry.Elementary.Vector1,System.Double,BimGisCad.Representation.Geometry.Elementary.Vector1@)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="norm"></param>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.op_UnaryNegation(BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+             Negation
+            </summary>
+            <param name="vector"> Zu negierender Vektor </param>
+            <returns> Negierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Vector1,BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+             Vektor Subtraktion
+            </summary>
+            <param name="a"> Minuend </param>
+            <param name="b"> Subtrahend </param>
+            <returns> Differenz </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.op_Addition(BimGisCad.Representation.Geometry.Elementary.Vector1,BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+             Vektor Addition
+            </summary>
+            <param name="a"> 1. Summand </param>
+            <param name="b"> 2. Summand </param>
+            <returns> Summe </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.op_Multiply(System.Double,BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Skalar </param>
+            <param name="b"> Vektor </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Vector1,System.Double)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.op_Division(BimGisCad.Representation.Geometry.Elementary.Vector1,System.Double)">
+            <summary>
+             Vektor Skalierung (Division)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar (Divisor) </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Dot(BimGisCad.Representation.Geometry.Elementary.Vector1,BimGisCad.Representation.Geometry.Elementary.Vector1)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector1.Coincident(BimGisCad.Representation.Geometry.Elementary.Vector1,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="minDist">kleinstmöglicher Abstand</param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Vector2">
+            <summary>
+             2-Dimensionaler Vektor
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector2.Zero">
+            <summary>
+             Vektor mit Norm 0
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector2.UnitX">
+            <summary>
+            Richtung der X-Achse
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector2.UnitY">
+            <summary>
+            Richtung der Y-Achse
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector2.NaN">
+            <summary>
+            Ungültiger Vektor
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector2.PositiveInfinity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector2.NegativeInfinity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.#ctor(System.Double,System.Double)">
+            <summary>
+             Konstruktor mit Einzelwerten
+            </summary>
+            <param name="x"> X-Koordinate </param>
+            <param name="y"> Y-Koordinate </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Vector2.X">
+            <summary>
+             X-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Vector2.Y">
+            <summary>
+             Y-Koordinate
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Create(BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Create(System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Create(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="xy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="xy"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Norm(BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Norm2(BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.IsNaN(BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.TryGetNorm(BimGisCad.Representation.Geometry.Elementary.Vector2,System.Double@)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Normalized(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Vector2@)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Normalized(BimGisCad.Representation.Geometry.Elementary.Vector2,System.Double,BimGisCad.Representation.Geometry.Elementary.Vector2@)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="norm"></param>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.op_UnaryNegation(BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Negation
+            </summary>
+            <param name="vector"> Zu negierender Vektor </param>
+            <returns> Negierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Vektor Subtraktion
+            </summary>
+            <param name="a"> Minuend </param>
+            <param name="b"> Subtrahend </param>
+            <returns> Differenz </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.op_Addition(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Vektor Addition
+            </summary>
+            <param name="a"> 1. Summand </param>
+            <param name="b"> 2. Summand </param>
+            <returns> Summe </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.op_Multiply(System.Double,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Skalar </param>
+            <param name="b"> Vektor </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Vector2,System.Double)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.op_Division(BimGisCad.Representation.Geometry.Elementary.Vector2,System.Double)">
+            <summary>
+             Vektor Skalierung (Division)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar (Divisor) </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Dot(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Det(BimGisCad.Representation.Geometry.Elementary.Vector2,BimGisCad.Representation.Geometry.Elementary.Vector2)">
+            <summary>
+             Determinante einer 2x2 Matrix aus zwei Vektoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector2.Coincident(BimGisCad.Representation.Geometry.Elementary.Vector2,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="minDist">kleinstmöglicher Abstand</param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Elementary.Vector3">
+            <summary>
+             3-Dimensionaler Vektor
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector3.Zero">
+            <summary>
+             Vektor mit Magnitude 0
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector3.UnitX">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector3.UnitY">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector3.UnitZ">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector3.NaN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector3.PositiveInfinity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Elementary.Vector3.NegativeInfinity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+             Konstruktor mit Einzelwerten
+            </summary>
+            <param name="x"> X-Koordinate </param>
+            <param name="y"> Y-Koordinate </param>
+            <param name="z"> Z-Koordinate </param>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Vector3.X">
+            <summary>
+             X-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Vector3.Y">
+            <summary>
+             Y-Koordinate
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Elementary.Vector3.Z">
+            <summary>
+             Z-Koordinate
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Create(BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Create(System.Double,System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Create(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="xyz"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Create(System.Collections.Generic.IReadOnlyList{System.Double},System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="xyz"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.IsNaN(BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Norm(BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Norm2(BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.TryGetNorm(BimGisCad.Representation.Geometry.Elementary.Vector3,System.Double@)">
+            <summary>
+            
+            </summary>
+            <param name="vector"></param>
+            <param name="norm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Normalized(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3@)">
+            <summary>
+             Normalisierung des Vektors (Magnitude = 1)
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Normalized(BimGisCad.Representation.Geometry.Elementary.Vector3,System.Double,BimGisCad.Representation.Geometry.Elementary.Vector3@)">
+            <summary>
+             Normalisierung des Vektors (Magnitude = 1)
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.op_UnaryNegation(BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Negation
+            </summary>
+            <param name="vector"> Zu negierender Vektor </param>
+            <returns> Negierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.op_Subtraction(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Vektor Subtraktion
+            </summary>
+            <param name="a"> Minuend </param>
+            <param name="b"> Subtrahend </param>
+            <returns> Differenz </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.op_Addition(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Vektor Addition
+            </summary>
+            <param name="a"> 1. Summand </param>
+            <param name="b"> 2. Summand </param>
+            <returns> Summe </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.op_Multiply(System.Double,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Skalar </param>
+            <param name="b"> Vektor </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.op_Multiply(BimGisCad.Representation.Geometry.Elementary.Vector3,System.Double)">
+            <summary>
+             Vektor Skalierung (Multiplikation)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.op_Division(BimGisCad.Representation.Geometry.Elementary.Vector3,System.Double)">
+            <summary>
+             Vektor Skalierung (Division)
+            </summary>
+            <param name="a"> Vektor </param>
+            <param name="b"> Skalar (Divisor) </param>
+            <returns> Skalierter Vektor </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Dot(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Skalarprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Skalarprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Cross(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Kreuzprodukt
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Kreuzprodukt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Det(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Determinante einer 3x3 Matrix aus drei Vektoren (Spatprodukt)
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <param name="c"> 3. Vektor </param>
+            <returns> Determinante </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Mean(BimGisCad.Representation.Geometry.Elementary.Vector3,BimGisCad.Representation.Geometry.Elementary.Vector3)">
+            <summary>
+             Mittelwert zweier Vectoren
+            </summary>
+            <param name="a"> 1. Vektor </param>
+            <param name="b"> 2. Vektor </param>
+            <returns> Mittelpunkt </returns>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Elementary.Vector3.Coincident(BimGisCad.Representation.Geometry.Elementary.Vector3,System.Double)">
+            <summary>
+            Geometrischer Vergleich
+            </summary>
+            <param name="other"></param>
+            <param name="minDist">kleinstmöglicher Abstand</param>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Linear.ILinear">
+            <summary>
+            Schnittstelle für Solve
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.ILinear.PointEqu">
+            <summary>
+            Gleichung für Punktberechnung
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Linear.ILinear2">
+            <summary>
+            2D
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Linear.ILinear3">
+            <summary>
+            3D
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Linear.Solve2">
+            <summary>
+            Löst Gleichungen mit 2 Unbekannten
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve2.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve2.VV">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve2.N">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve2.X">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve2.Determinant">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve2.Variance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve2.Condition">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve2.AddRows(System.Double[][])">
+            <summary>
+            
+            </summary>
+            <param name="rows"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve2.Solve">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Linear.Solve3">
+            <summary>
+            Löst Gleichungen mit 3 Unbekannten
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve3.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve3.VV">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve3.N">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve3.X">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve3.Determinant">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve3.Variance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve3.Condition">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve3.AddRows(System.Double[][])">
+            <summary>
+            
+            </summary>
+            <param name="rows"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve3.Solve">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Linear.Solve4">
+            <summary>
+            Löst Gleichungen mit 4 Unbekannten
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve4.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve4.VV">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve4.N">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve4.X">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve4.Determinant">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve4.Variance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Representation.Geometry.Linear.Solve4.Condition">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve4.AddRows(System.Double[][])">
+            <summary>
+            
+            </summary>
+            <param name="rows"></param>
+        </member>
+        <member name="M:BimGisCad.Representation.Geometry.Linear.Solve4.Solve">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BimGisCad.Representation.Geometry.Side">
+            <summary>
+            Aufzählung möglicher Seiten
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Side.Neg">
+            <summary>
+            Negative Seite
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Side.On">
+            <summary>
+            Auf Element
+            </summary>
+        </member>
+        <member name="F:BimGisCad.Representation.Geometry.Side.Pos">
+            <summary>
+            Positive Seite
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Representation.IRepresentation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Root">
+            <summary>
+            Oberstes Modell Objekt
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Root.#ctor(System.String,System.String,BimGisCad.Collections.UniqueCollection{BimGisCad.Attribute})">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="attributes"></param>
+        </member>
+        <member name="P:BimGisCad.Root.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:BimGisCad.Root.Attributes">
+            <summary>
+            Attribute (in der Regel alles was nicht Geometrie und Topologie ist)
+            </summary>
+        </member>
+        <member name="T:BimGisCad.Unique">
+            <summary>
+            Interface für Objekte mit Identifier
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Unique.GetId">
+            <summary>
+            Erzeugt Id basierend auf Microsoft GUID
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BimGisCad.Unique.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="P:BimGisCad.Unique.Id">
+            <summary>
+            Identifier
+            </summary>
+        </member>
+        <member name="M:BimGisCad.Unique.Equals(BimGisCad.Unique)">
+            <summary>
+            Vergleich anhand der Id
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
