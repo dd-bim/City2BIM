@@ -5,6 +5,7 @@ using BIMGISInteropLibs.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using System.Collections.ObjectModel;
 using City2RVT.GUI;
 using Autodesk.Revit.DB.ExtensibleStorage;
@@ -20,13 +21,18 @@ namespace City2RVT.Builder
         private readonly List<CityGml_Bldg> buildings;
         private readonly Dictionary<CityGml_Surface.FaceType, ElementId> colors;
 
+        private readonly CityGml_Codelist.Codelist CodeTranslation;
 
-        public RevitCityBuilder(Document doc, List<CityGml_Bldg> buildings, C2BPoint gmlCorner)
+        public RevitCityBuilder(Document doc, List<CityGml_Bldg> buildings, C2BPoint gmlCorner, HashSet<BIMGISInteropLibs.Semantic.Xml_AttrRep> attributes, CityGml_Codelist.Codelist codeType = CityGml_Codelist.Codelist.none)
         {
             this.doc = doc;
             this.buildings = buildings;
             this.gmlCorner = gmlCorner;
+            this.CodeTranslation = codeType;
             this.colors = CreateColorAsMaterial();
+
+            createCityGMLSchema(this.doc, attributes);
+
         }
 
 
@@ -165,10 +171,22 @@ namespace City2RVT.Builder
                     var citySchema = utils.getSchemaByName("CityGMLImportSchema");
                     Entity entity = new Entity(citySchema);
 
-                    foreach (var attribute in bldgAttributes)
+                    if (this.CodeTranslation == CityGml_Codelist.Codelist.none)
                     {
-                        Field currentField = citySchema.GetField(attribute.Key.Name);
-                        entity.Set<string>(currentField, attribute.Value);
+                        foreach (var attribute in bldgAttributes)
+                        {
+                            Field currentField = citySchema.GetField(attribute.Key.Name);
+                            entity.Set<string>(currentField, attribute.Value);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var attribute in bldgAttributes)
+                        {
+                            string value = CheckForCodeTranslation(attribute.Key.Name, attribute.Value, this.CodeTranslation);
+                            Field currentField = citySchema.GetField(attribute.Key.Name);
+                            entity.Set<string>(currentField, value);
+                        }
                     }
 
                     ds.SetEntity(entity);
@@ -602,7 +620,7 @@ namespace City2RVT.Builder
                                     break;
 
                                 case (Xml_AttrRep.AttrType.stringAttribute):
-                                    p.Set(CheckForCodeTranslation(aName.Name, val, Prop_CityGML_settings.CodelistName));
+                                    p.Set(CheckForCodeTranslation(aName.Name, val, this.CodeTranslation));
                                     break;
 
                                 default:
@@ -824,7 +842,82 @@ namespace City2RVT.Builder
 
             return colorList;
         }
+
+        private bool createCityGMLSchema(Document doc, HashSet<BIMGISInteropLibs.Semantic.Xml_AttrRep> attributes)
+        {
+            var citySchema = utils.getSchemaByName("CityGMLImportSchema");
+
+            if (citySchema == null) {
+
+                //Create internal revit extensible storage scheme "CityGMLImportSchema" or check if already exists
+                using (Transaction trans = new Transaction(doc, "CityGML Schema Creation"))
+                {
+                    trans.Start();
+
+                    var existingSchemaList = Schema.ListSchemas();
+
+                    //check if schema already exists
+                    foreach (var schema in existingSchemaList)
+                    {
+                        if (schema.SchemaName == "CityGMLImportSchema")
+                        {
+                            trans.RollBack();
+                            return true;
+                        }
+                    }
+
+                    HashSet<string> attrNames = new HashSet<string>();
+
+                    //make sure no duplicates are in attribute name list
+                    foreach (var attribute in attributes)
+                    {
+                        attrNames.Add(attribute.Name);
+                    }
+
+                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                    sb.SetSchemaName("CityGMLImportSchema");
+                    sb.SetReadAccessLevel(AccessLevel.Public);
+                    sb.SetWriteAccessLevel(AccessLevel.Public);
+
+                    foreach (var attribute in attrNames)
+                    {
+                        FieldBuilder fb = sb.AddSimpleField(attribute, typeof(string));
+                    }
+
+                    //finish schema creation and commit transaction
+                    sb.Finish();
+                    trans.Commit();
+
+                }
+            }
+            return false;  
+        }
     }
 
     #endregion Attributes and Colors to Revit
+
+    public class CityGMLImportSettings
+    {
+        public CitySource ImportSource;
+        public CityGeometry ImportGeomType;
+        public CoordOrder CoordOrder;
+        public CityGml_Codelist.Codelist CodeTranslate;
+        public XDocument XDoc;
+        public double[] CenterCoords;
+        public double Extent;
+        public bool saveResponse;
+        public string FilePath;
+        public string serverURL;
+        public string FolderPath;
+
+
+        public CityGMLImportSettings()
+        {
+
+        }
+    }
+
+    public enum CitySource { File, Server}
+    public enum CityGeometry { Solid, Faces}
+    public enum CoordOrder { ENH, NEH}
 }

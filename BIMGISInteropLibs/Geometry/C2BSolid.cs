@@ -561,7 +561,7 @@ namespace BIMGISInteropLibs.Geometry
 
             }
 
-            logEntries.Add(new LogPair(LogType.info, "- Number of Level Cuts = " + ctLevelCuts));
+            logEntries.Add(new LogPair(LogType.info, "- Number of plane intersections = " + ctLevelCuts));
 
             double dMax = 0.0;
 
