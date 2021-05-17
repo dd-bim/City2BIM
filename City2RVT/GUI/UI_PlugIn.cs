@@ -53,30 +53,10 @@ namespace City2RVT.GUI
             #region City2BIM panel
 
             //---------------------City2BIM panel------------------------------------------------------------
-
             RibbonPanel panelCityGML = application.CreateRibbonPanel(tabName, "City2BIM");
-            PulldownButton btCityGml = panelCityGML.AddItem(new PulldownButtonData("LoadCityGML", "Import City Model...")) as PulldownButton;
-            btCityGml.ToolTip = "Import functionality for CityGML data.";
-            btCityGml.LargeImage = getBitmapFromResx(ResourcePictures.citygml_32px_96dpi);
-
-            PushButtonData btSolid = new PushButtonData("LoadCityGMLSolids", "... as Solids",
-            thisAssemblyPath, "City2RVT.GUI.Cmd_ReadCityGMLSolids")
-            {
-                ToolTip = "Imports one Solid representation for each Building(part) to Revit category Entourage."
-            };
-
-            PushButtonData btSurfaces = new PushButtonData("LoadCityGMLFaces", "... as Surfaces",
-            thisAssemblyPath, "City2RVT.GUI.Cmd_ReadCityGMLFaces")
-            {
-                ToolTip = "Imports every Surface to the matching Revit category Wall, Roof or Slab."
-            };
-
-            btCityGml.AddPushButton(btSurfaces);
-            btCityGml.AddPushButton(btSolid);
-
-            PushButton btCitySettings = panelCityGML.AddItem(new PushButtonData("OpenCityGMLSettings", "Settings", thisAssemblyPath, "City2RVT.GUI.Cmd_OpenSettings")) as PushButton;
-            btCitySettings.ToolTip = "Import settings for city model.";
-            btCitySettings.LargeImage = getBitmapFromResx(ResourcePictures.citygml_set_32px);
+            PushButton btCityGML = panelCityGML.AddItem(new PushButtonData("ImportCityGML", "Import CityGML data", thisAssemblyPath, "City2RVT.GUI.City2BIM.Cmd_ImportCityGML")) as PushButton;
+            btCityGML.ToolTip = "Import CityGML data";
+            btCityGML.LargeImage = getBitmapFromResx(ResourcePictures.citygml_32px_96dpi);
 
             //-------------------------------------------------------------------------------------------------
 
@@ -92,18 +72,6 @@ namespace City2RVT.GUI
 
             #endregion ALKIS panel
 
-
-            #region IFC Export panel
-
-            RibbonPanel panelIFC = application.CreateRibbonPanel(tabName, "IFC Export");
-
-            PushButton buttonIFC = panelIFC.AddItem(new PushButtonData("IFC_Exporter", "Export data to IFC-file",
-            thisAssemblyPath, "City2RVT.GUI.Cmd_ExportIFC")) as PushButton;
-            buttonIFC.ToolTip = "Export functionality for writing IFC files.";
-            buttonIFC.LargeImage = getBitmapFromResx(ResourcePictures.IFC_32px_96dpi);
-
-            #endregion IFC Export panel
-
             #region XPlanung panel
 
             RibbonPanel panelXplanung = application.CreateRibbonPanel(tabName, "XPlanung");
@@ -111,10 +79,11 @@ namespace City2RVT.GUI
             thisAssemblyPath, "City2RVT.GUI.Cmd_ImportXPlan")) as PushButton;
             buttonXPlan.ToolTip = "Import functionality for XPlanung files.";
             buttonXPlan.LargeImage = getBitmapFromResx(ResourcePictures.XPlan_32px);
-            
+
 
 
             #endregion XPlanung panel
+
 
             #region modify panel
 
@@ -135,6 +104,17 @@ namespace City2RVT.GUI
             buttonProperty.LargeImage = getBitmapFromResx(ResourcePictures.Attribute32);
 
             #endregion property panel
+
+            #region IFC Export panel
+
+            RibbonPanel panelIFC = application.CreateRibbonPanel(tabName, "IFC Export");
+
+            PushButton buttonIFC = panelIFC.AddItem(new PushButtonData("IFC_Exporter", "Export data to IFC-file",
+            thisAssemblyPath, "City2RVT.GUI.Cmd_ExportIFC")) as PushButton;
+            buttonIFC.ToolTip = "Export functionality for writing IFC files.";
+            buttonIFC.LargeImage = getBitmapFromResx(ResourcePictures.IFC_32px_96dpi);
+
+            #endregion IFC Export panel
 
             #region survPlan panel
 
