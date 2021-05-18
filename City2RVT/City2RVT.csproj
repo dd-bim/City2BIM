@@ -232,6 +232,9 @@
     <Compile Include="ExternalDataCatalog\ExternalDataClient.cs" />
     <Compile Include="ExternalDataCatalog\ExternalDataUtils.cs" />
     <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="GUI\City2BIM\CityGML_ImportUI.xaml.cs">
+      <DependentUpon>CityGML_ImportUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatLogin.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatSubjQuery.cs" />
@@ -292,10 +295,10 @@
     <Compile Include="GUI\XPlan2BIM\XPlan_Parameter.cs" />
     <Compile Include="IFCExport\IfcUtils.cs" />
     <Compile Include="IFCExport\RevitIfcExporter.cs" />
-    <Compile Include="Localization.de.Designer.cs">
-      <DependentUpon>Localization.de.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
+    <Compile Include="Localization.Designer.cs">
+      <DependentUpon>Localization.resx</DependentUpon>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -315,7 +318,7 @@
     <Compile Include="GUI\City2BIM\Wpf_CityGML_settings.xaml.cs">
       <DependentUpon>Wpf_CityGML_settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\City2BIM\Cmd_OpenSettings.cs" />
+    <Compile Include="GUI\City2BIM\Cmd_ImportCityGML.cs" />
     <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLFaces.cs" />
     <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLSolids.cs" />
     <Compile Include="GUI\DTM2BIM\Cmd_ReadTerrainXYZ.cs" />
@@ -327,11 +330,6 @@
     <Compile Include="GUI\NAS2BIM\Prop_NAS_settings.cs" />
     <Compile Include="GUI\NAS2BIM\Cmd_ReadALKIS.cs" />
     <Compile Include="GUI\UI_PlugIn.cs" />
-    <Compile Include="Localization.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Localization.resx</DependentUpon>
-    </Compile>
     <Compile Include="ResourcePictures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -365,6 +363,10 @@
     <Compile Include="utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="GUI\City2BIM\CityGML_ImportUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -431,9 +433,9 @@
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Localization.de.resx">
+    <EmbeddedResource Include="Localization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Localization.de.Designer.cs</LastGenOutput>
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="meta_json_files\aaa.json" />
     <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
@@ -498,10 +500,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourcePictures.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

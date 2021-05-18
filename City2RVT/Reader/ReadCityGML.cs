@@ -148,12 +148,12 @@ namespace City2RVT.Reader
                 }
 
                 //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu (Achtung: ReadXMLDoc muss vorher ausgeführt werden)
-                RevitCityBuilder cityModel = new Builder.RevitCityBuilder(doc, gmlBuildings, lowerCorner);
+                //RevitCityBuilder cityModel = new Builder.RevitCityBuilder(doc, gmlBuildings, lowerCorner);
 
-                if (solid)
-                    cityModel.CreateBuildings();
-                else
-                    cityModel.CreateBuildingsWithFaces();
+                //if (solid)
+                //    cityModel.CreateBuildings();
+                //else
+                //    cityModel.CreateBuildingsWithFaces();
 
 
                 Revit_Semantic citySem = new Builder.Revit_Semantic(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
