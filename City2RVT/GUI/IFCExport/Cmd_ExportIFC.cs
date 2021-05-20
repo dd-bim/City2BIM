@@ -52,6 +52,7 @@ namespace City2RVT.GUI
                         var site = model.Instances.OfType<IfcSite>().FirstOrDefault();
 
                         exporter.exportSurfaces(model, dialog.ExportType, site);
+                        exporter.exportModelCurves(model);
 
                         if (cityGMLBuildingList.Count > 0)
                         {
