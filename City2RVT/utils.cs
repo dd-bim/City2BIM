@@ -176,6 +176,19 @@ namespace City2RVT
             return true;
         }
 
+        public static List<Schema> getHTWSchemas(Document doc)
+        {
+            var schemaList = Schema.ListSchemas();
+            List<Schema> htwSchemas = new List<Schema>();
+            foreach (var s in schemaList)
+            {
+                if (s.VendorId == "HTWDRESDEN")
+                {
+                    htwSchemas.Add(s);
+                }
+            }
+            return htwSchemas;
+        }
     }
 
     public static class IfcGuid

@@ -360,6 +360,44 @@ namespace City2RVT.IFCExport
             }
         }
 
+        public void exportModelCurves(IfcStore model)
+        {
+            var elementIdList = new List<ElementId>();
+            var htwSchemaList = utils.getHTWSchemas(this.doc);
+            FilteredElementCollector modelCurveCollector = new FilteredElementCollector(this.doc);
 
+            //Filter ModelCurves --> ModelLines and ModelArcs
+            ElementClassFilter modelCurveFilter = new ElementClassFilter(typeof(CurveElement));
+            
+            foreach (var schema in htwSchemaList)
+            {
+                //Filter elements that have a HTWDD Schema entity associated with
+                ExtensibleStorageFilter storageFilter = new ExtensibleStorageFilter(schema.GUID);
+
+                LogicalAndFilter combinedFilter = new LogicalAndFilter(modelCurveFilter, storageFilter);
+
+                elementIdList.AddRange(modelCurveCollector.WherePasses(combinedFilter).ToElementIds());
+            }
+
+            if (elementIdList.Count > 0)
+            {
+                foreach (var elementId in elementIdList)
+                {
+                    var modelCurve = this.doc.GetElement(elementId) as ModelCurve;
+                    var schemattributes = utils.getSchemaAttributesForElement(modelCurve);
+                    var usageType = Schema.Lookup(modelCurve.GetEntitySchemaGuids().First()).SchemaName;
+                    
+                    if (schemattributes.Count > 0)
+                    {
+                        IfcUtils.addIfcGeographicElementFromModelLine(model, modelCurve, usageType, schemattributes);
+                    }
+                    else
+                    {
+                        IfcUtils.addIfcGeographicElementFromModelLine(model, modelCurve, usageType);
+                    }
+                }
+
+            }
+        }
     }
 }
