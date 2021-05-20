@@ -619,6 +619,7 @@ namespace City2RVT.Builder
             sb.SetSchemaName(schemaName);
             sb.SetReadAccessLevel(AccessLevel.Public);
             sb.SetWriteAccessLevel(AccessLevel.Public);
+            sb.SetVendorId("HTWDresden");
 
             foreach (var entry in fieldList)
             {

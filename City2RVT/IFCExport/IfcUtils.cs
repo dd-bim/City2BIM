@@ -229,5 +229,99 @@ namespace City2RVT.IFCExport
 
             return sbsm;
         }
+
+        private static IfcCurve createIfcCurveFromModelLine(IfcStore model, ModelCurve modelCurve)
+        {
+            //check if modelCurve is straigth modelline
+            if (typeof(ModelLine).IsInstanceOfType(modelCurve))
+            {
+                var modelLine = modelCurve as ModelLine;
+                XYZ startPointRevit = modelLine.GeometryCurve.GetEndPoint(0).Multiply(0.3048); //convert from feet to meter
+                XYZ endPointRevit = modelLine.GeometryCurve.GetEndPoint(1).Multiply(0.3048);
+
+                var startPoint = model.Instances.New<IfcCartesianPoint>();
+                startPoint.SetXYZ(startPointRevit.X, startPointRevit.Y, startPointRevit.Z);
+                var endPoint = model.Instances.New<IfcCartesianPoint>();
+                endPoint.SetXYZ(endPointRevit.X, endPointRevit.Y, endPointRevit.Z);
+
+                var ifcPolyLine = model.Instances.New<IfcPolyline>();
+                ifcPolyLine.Points.AddRange(new IfcCartesianPoint[] { startPoint, endPoint });
+
+                return ifcPolyLine;
+            }
+
+            //check if modelCurve is arc --> kurvengeometrie
+            else if (typeof(ModelArc).IsInstanceOfType(modelCurve))
+            {
+                var arc = modelCurve as ModelArc;
+
+                var startPointRevit = arc.GeometryCurve.GetEndPoint(0).Multiply(0.3048);
+                var endPointRevit = arc.GeometryCurve.GetEndPoint(1).Multiply(0.3048);
+                var midPointRevit = arc.GeometryCurve.Evaluate(0.5, true).Multiply(0.3048);
+
+                var coordinates = model.Instances.New<IfcCartesianPointList3D>();
+                coordinates.CoordList.GetAt(0).AddRange(new List<IfcLengthMeasure>{ startPointRevit.X, startPointRevit.Y, startPointRevit.Z});
+                coordinates.CoordList.GetAt(1).AddRange(new List<IfcLengthMeasure> { midPointRevit.X, midPointRevit.Y, midPointRevit.Z });
+                coordinates.CoordList.GetAt(2).AddRange(new List<IfcLengthMeasure> { endPointRevit.X, endPointRevit.Y, endPointRevit.Z });
+
+                var indexList = new List<IfcPositiveInteger>{1, 2, 3 };
+                var arcIndex = new IfcArcIndex(indexList);
+
+                var ipc = model.Instances.New<IfcIndexedPolyCurve>();
+                ipc.Points = coordinates;
+                ipc.Segments.Add(arcIndex);
+                
+                return ipc;
+            }
+
+            return null;
+
+        }
+
+        public static void addIfcGeographicElementFromModelLine(IfcStore model, ModelCurve modelCurve, string usageType, List<Dictionary<string, Dictionary<string, string>>> optionalProperties = null)
+        {
+            var curve = createIfcCurveFromModelLine(model, modelCurve);
+
+            var modelContext = model.Instances.OfType<IfcGeometricRepresentationContext>().FirstOrDefault();
+            var shape = model.Instances.New<IfcShapeRepresentation>();
+            shape.ContextOfItems = modelContext;
+            shape.RepresentationType = "Curve3D";
+            shape.RepresentationIdentifier = "Body";
+            shape.Items.Add(curve);
+
+            var representation = model.Instances.New<IfcProductDefinitionShape>();
+            representation.Representations.Add(shape);
+
+            var geogElement = model.Instances.New<IfcGeographicElement>();
+            geogElement.Representation = representation;
+
+            var site = model.Instances.OfType<IfcSite>().FirstOrDefault();
+            var siteObjPlcmt = site.ObjectPlacement;
+
+            var localPlcmtGeogElement = model.Instances.New<IfcLocalPlacement>();
+            localPlcmtGeogElement.PlacementRelTo = siteObjPlcmt;
+            localPlcmtGeogElement.RelativePlacement = getStandardAxis2Placement3D(model);
+
+            geogElement.ObjectPlacement = localPlcmtGeogElement;
+            geogElement.Name = usageType;
+
+            //add geog element to spatial structure at site level
+            site.AddElement(geogElement);
+
+            //add attributes if any
+            if (optionalProperties != null && optionalProperties.Count > 0)
+            {
+                foreach (var attributeCollection in optionalProperties)
+                {
+                    var pSet = createPropertySetFromDict(model, attributeCollection);
+
+                    var pSetRel = model.Instances.New<IfcRelDefinesByProperties>(r =>
+                    {
+                        r.RelatingPropertyDefinition = pSet;
+                    });
+                    pSetRel.RelatedObjects.Add(geogElement);
+                }
+            }
+        }
     }
 }
