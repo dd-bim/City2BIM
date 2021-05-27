@@ -425,6 +425,7 @@ namespace BIMGISInteropLibs.CityGML
                     {
                         var surface = new CityGml_Surface();
 
+                        /*
                         var faceID = polys[i].Attribute(allns["gml"] + "id").Value;
 
                         if (faceID == null)
@@ -438,6 +439,7 @@ namespace BIMGISInteropLibs.CityGML
                                 faceID = bldgEl.Attribute(allns["gml"] + "id").Value + "_" + i;
                             }
                         }
+                        */
 
                         surface.Facetype = CityGml_Surface.FaceType.unknown;
                         surface.SurfaceAttributes = new ReadSemValues().ReadAttributeValuesSurface(polys[i], attributes, CityGml_Surface.FaceType.unknown);
