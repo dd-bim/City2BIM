@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>City2RVT</RootNamespace>
     <AssemblyName>City2RVT</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -521,10 +522,6 @@
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\City2IFC\City2IFC.csproj">
-      <Project>{702fb5ff-ea0f-442e-b7f0-5777b7b824c9}</Project>
-      <Name>City2IFC</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
