@@ -56,6 +56,7 @@ Friedrich-List-Platz 1
 
 - Tim Kaiser, M.Eng.
 - Enrico Romanschek, M.Eng.
+- Marcus Schröder, M.Eng.
 
 **Former project staff:**
 
