@@ -37,7 +37,7 @@ If you have found an bug or have suggestions for improvement, please feel free t
 
 ### Support
 
-|                                          |                                                              |
+| in association with                      | supported by                                                 |
 | ---------------------------------------- | ------------------------------------------------------------ |
 | <img src="doc/pic/vcs.png" width="200"/> | <img src="doc/pic/BMWi_4C_Gef_en.jpg" align=center width="200"/> |
 
