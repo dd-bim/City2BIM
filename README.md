@@ -39,11 +39,11 @@ If you have found an bug or have suggestions for improvement, please feel free t
 
 | in association with                                          | supported by                                                 |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [![virtualcitySystems](City2BIM\doc\pic\vcs.png)](https://www.virtualcitysystems.de/) | <img src="City2BIM/doc/pic/BMWi_4C_Gef_en.jpg" align=center style="width: 200px;"/> |
+| [![virtualcitySystems](doc/pic/vcs.png)](https://www.virtualcitysystems.de/) | <img src="doc/pic/BMWi_4C_Gef_en.jpg" align=center style="width: 200px;"/> |
 
 ## Contact
 
- ![HTWDD_Logo](City2BIM\doc\pic\logo_htwdd.jpg)  
+ ![HTWDD_Logo](doc/pic/logo_htwdd.jpg)  
 
 **HTW Dresden**
 **Faculty Geoinformation**
