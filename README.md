@@ -50,7 +50,7 @@ If you have found an bug or have suggestions for improvement, please feel free t
 Friedrich-List-Platz 1
 01069 Dresden
 
-**Project head:** Prof. Dr.-Ing. Christian Clemen (<christian.clemen@htw-dresden.de>)
+**Project head:** Prof. Dr.-Ing. Christian Clemen
 
 **Project staff:**
 
