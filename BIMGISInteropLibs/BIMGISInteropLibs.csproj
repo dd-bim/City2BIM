@@ -218,6 +218,7 @@
     <Compile Include="CityGML\CityGMLReaderTerrain.cs" />
     <Compile Include="DXF\ReaderTerrain.cs" />
     <Compile Include="ElevationGrid\ReaderTerrain.cs" />
+    <Compile Include="EPSG\Request.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GEOgraf\OHorizon.cs" />
     <Compile Include="GEOgraf\OLine.cs" />
