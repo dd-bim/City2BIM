@@ -95,7 +95,7 @@ namespace BIMGISInteropLibs.ProjCRS
         /// <summary>
         /// request class for epsg codes
         /// </summary>
-        public static Root get(int epsgCode)
+        public static Root get(int epsgCode, out bool requestSucessful)
         {
             //set http client
             var client = new RestClient("https://apps.epsg.org/api");
@@ -115,12 +115,15 @@ namespace BIMGISInteropLibs.ProjCRS
                 //set root class (build object)
                 Root root = JsonConvert.DeserializeObject<Root>(response.Content);
 
+                //set to true so processing will continue
+                requestSucessful = true;
+
                 //return response content
                 return root;
             }
-            //TODO -> error handling
             else
             {
+                requestSucessful = false;
                 return null;
             }
         }
