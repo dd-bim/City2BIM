@@ -224,7 +224,9 @@
     <Compile Include="CityGML\CityGMLReaderTerrain.cs" />
     <Compile Include="DXF\ReaderTerrain.cs" />
     <Compile Include="ElevationGrid\ReaderTerrain.cs" />
-    <Compile Include="EPSG\Request.cs" />
+    <Compile Include="EPSG\Datum.cs" />
+    <Compile Include="EPSG\GeodeticCRS.cs" />
+    <Compile Include="EPSG\ProjCRS.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GEOgraf\OHorizon.cs" />
     <Compile Include="GEOgraf\OLine.cs" />
