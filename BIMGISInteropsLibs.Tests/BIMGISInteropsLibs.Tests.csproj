@@ -71,10 +71,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\bimgiscadlib\BimGisCad\BimGisCad.csproj">
-      <Project>{5a901b30-2b49-467c-9792-4f4063fa1be1}</Project>
-      <Name>BimGisCad</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>
