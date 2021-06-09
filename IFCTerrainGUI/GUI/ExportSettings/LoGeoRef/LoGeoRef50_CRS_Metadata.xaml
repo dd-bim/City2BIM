@@ -8,7 +8,7 @@
         Title="LoGeoRef50 - CRS Metadata" 
         Height="350" Width="400"
         FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize" Closing="Window_Closing">
+        ResizeMode="CanMinimize" Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
