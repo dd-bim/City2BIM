@@ -67,15 +67,17 @@
                 <CheckBox x:Name="chkScaleLevel50" Grid.Row="1" Height="20" Content="Enable Input - Scale" VerticalContentAlignment="Center" HorizontalAlignment="Left" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values." Checked="chkScaleLevel50_Checked" Unchecked="chkScaleLevel50_Unchecked"/>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Scale:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
                 <TextBox x:Name="tbScaleLevel50" Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" IsEnabled="False" Height="20" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput" TextChanged="tbInput_TextChanged"/>
+                
+                <!-- epsg -->
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
+                    <TextBlock Text="Input EPSG-Code:" Height="20" Width="100" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                    <TextBox x:Name="tbEpsgCode" VerticalContentAlignment="Center" Height="20" Width="100" Margin="0,0,10,0"/>
+                    <Button x:Name="requestEPSG" Grid.Row="2" Grid.Column="2" Content="Apply EPSG code" Height="20" Click="requestEPSG_Click" Padding="5,0,5,0"/>
+                </StackPanel>
             </Grid>
         </GroupBox>
 
-
-
-
-
-        <Button x:Name="btnOpenCrsMetadata" Grid.Row="1" Grid.ColumnSpan="2" Content="CRS Metadata" Margin="0,4" IsEnabled="True" Click="btnOpenCrsMetadata_Click"/>
-
+        <Button x:Name="btnOpenCrsMetadata" Grid.Row="1" Grid.ColumnSpan="2" Content="Show Metadata" Margin="0,4" IsEnabled="True" Click="btnOpenCrsMetadata_Click"/>
         <Button x:Name="btnApplyLoGeoRef50" Grid.Row="2" Grid.ColumnSpan="2" Content="Apply settings [Level of Georef. 50]" ToolTip="Apply the settings for LoGeoRef50!" ToolTipService.ShowOnDisabled="True" Click="btnApplyLoGeoRef50_Click" IsEnabled="False"/>
     </Grid>
 </UserControl>
