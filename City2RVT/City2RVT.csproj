@@ -231,6 +231,8 @@
     <Compile Include="Calc\UTMcalc.cs" />
     <Compile Include="ExternalDataCatalog\ExternalDataClient.cs" />
     <Compile Include="ExternalDataCatalog\ExternalDataUtils.cs" />
+    <Compile Include="ExternalDataCatalog\IfcClassification.cs" />
+    <Compile Include="ExternalDataCatalog\IfcClassificationReference.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GUI\City2BIM\CityGML_ImportUI.xaml.cs">
       <DependentUpon>CityGML_ImportUI.xaml</DependentUpon>
