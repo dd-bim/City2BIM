@@ -183,11 +183,18 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 //Query if metadata should be exported as IfcPropertySet?
                 if (jSt.outIfcPropertySet)
                 {
-                    //Methode to store Metadata according to DIN 91391-2
-                    PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
-
-                    //Methode to store Metadata according to DIN 18740-6
-                    PropertySet.CreatePSetMetaDin18740(model, jsonSettings_DIN_18740_6);
+                    //switch between cases for metadata export
+                    if (jSt.exportMetadataDin91391)
+                    {
+                        //Methode to store Metadata according to DIN 91391-2
+                        PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
+                    }                  
+                    //case 2: din 18740
+                    if (jSt.exportMetadataDin18740)
+                    {
+                        //Methode to store Metadata according to DIN 18740-6
+                        PropertySet.CreatePSetMetaDin18740(model, jsonSettings_DIN_18740_6);
+                    }
 
                     //commit transaction
                     txn.Commit();
