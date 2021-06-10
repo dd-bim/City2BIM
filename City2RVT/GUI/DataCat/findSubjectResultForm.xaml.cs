@@ -9,6 +9,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using Newtonsoft.Json;
 
 using City2RVT.ExternalDataCatalog;
 
@@ -40,8 +41,8 @@ namespace City2RVT.GUI.DataCat
 
             else
             {
-                var response = Prop_Revit.DataClient.querySubjects(searchText);
-                trvFindResult.ItemsSource = response.data.findSubjects.nodes;
+                var responseWithHierarchy = Prop_Revit.DataClient.querySubjectsWithHierarchy(searchText);
+                trvFindResult.ItemsSource = responseWithHierarchy.data.findSubjects.nodes;
             }
         }
 
@@ -87,7 +88,7 @@ namespace City2RVT.GUI.DataCat
                     attrDict.Add(prop.name, "");
                 }
 
-                var schemaObj = new ExternalDataSchemaObject(node.name, attrDict);
+                var schemaObj = new ExternalDataSchemaObject(node.name, attrDict, node.ifcClassification);
 
                 var editor = new DataCatalogEditorWindow(schemaObj.prepareForEditorWindow());
                 editor.ShowDialog();
@@ -119,6 +120,8 @@ namespace City2RVT.GUI.DataCat
                             }
 
                             revitEntity.Set<IDictionary<string, string>>("data", data);
+                            var classificationAsJSONString = JsonConvert.SerializeObject(node.ifcClassification);
+                            revitEntity.Set<string>("ifcClassification", classificationAsJSONString);
                             revitElement.SetEntity(revitEntity);
 
                         }
@@ -129,6 +132,8 @@ namespace City2RVT.GUI.DataCat
                             data.Add(node.name, editor.getDataAsJsonString());
                             revitEntity = new Entity(externalSchema);
                             revitEntity.Set<IDictionary<string, string>>("data", data);
+                            var classificationAsJSONString = JsonConvert.SerializeObject(node.ifcClassification);
+                            revitEntity.Set<string>("ifcClassification", classificationAsJSONString);
                             revitElement.SetEntity(revitEntity);
                         }
 
