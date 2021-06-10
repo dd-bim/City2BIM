@@ -368,7 +368,6 @@ namespace City2RVT.IFCExport
             List<IfcClassification> classList = new List<IfcClassification>();
             List<IfcClassificationReference> refClassList = new List<IfcClassificationReference>();
 
-            //******* neu
             List<Autodesk.Revit.DB.ExtensibleStorage.Entity> entityList = new List<Entity>();
             List<IfcClassification> classifications = new List<IfcClassification>();
             List<IfcClassificationReference> classRefs = new List<IfcClassificationReference>();
@@ -379,26 +378,22 @@ namespace City2RVT.IFCExport
                 var revitEntity = doc.GetElement(entry.Value).GetEntity(externalDataSchema);
                 entityList.Add(revitEntity);
 
-                //foreach (var entity in entityList)
-                //{
-                    var currentClassification = JsonConvert.DeserializeObject<IfcClassification>(revitEntity.Get<string>("ifcClassification"));
-                    classifications.Add(currentClassification);
+                var currentClassification = JsonConvert.DeserializeObject<IfcClassification>(revitEntity.Get<string>("ifcClassification"));
+                classifications.Add(currentClassification);
 
-                    foreach (var classRef in currentClassification.RefList)
+                foreach (var classRef in currentClassification.RefList)
+                {
+                    classRefs.Add(classRef);
+
+                    if (IfcClassRefId2RevitUniqueId.ContainsKey(classRef.ID))
                     {
-                        classRefs.Add(classRef);
-
-                        if (IfcClassRefId2RevitUniqueId.ContainsKey(classRef.ID))
-                        {
-                            IfcClassRefId2RevitUniqueId[classRef.ID].Add(entry.Value);
-                        }
-                        else
-                        {
-                            IfcClassRefId2RevitUniqueId.Add(classRef.ID, new List<string> { entry.Value });
-                        }
+                        IfcClassRefId2RevitUniqueId[classRef.ID].Add(entry.Value);
                     }
-
-                //}
+                    else
+                    {
+                        IfcClassRefId2RevitUniqueId.Add(classRef.ID, new List<string> { entry.Value });
+                    }
+                }
             }
 
             var uniqueClassifications = classifications.GroupBy(c => c.ID).Select(c => c.First()).ToList();
@@ -430,8 +425,7 @@ namespace City2RVT.IFCExport
                     cls.Source = uniqueClassifications.Where(c => c.ID == entry.Key).First().Source;
                     cls.Location = uniqueClassifications.Where(c => c.ID == entry.Key).First().Location;
                     cls.Edition = uniqueClassifications.Where(c => c.ID == entry.Key).First().Edition;
-                    //cls.EditionDate = uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate;
-                    cls.EditionDate = uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate != null ? uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate :  ;
+                    cls.EditionDate = uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate;
                 });
 
                 
@@ -443,7 +437,6 @@ namespace City2RVT.IFCExport
                         err.Name = uniqueClassificationReferences.Where(cr => cr.ID == classRef).First().Name;
                         err.Location = uniqueClassificationReferences.Where(cr => cr.ID == classRef).First().Location;
                         err.ReferencedSource = topReference;
-                        //err.ClassificationRefForObjects.a
                     });
 
                     var affectedRevitUniqueIds = IfcClassRefId2RevitUniqueId[classRef];
