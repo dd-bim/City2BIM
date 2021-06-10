@@ -65,10 +65,10 @@ namespace City2RVT.GUI
                     }
                     model.SaveAs(dialog.ExportPath);
                 }
-            }
 
-            Log.Information("finished custom IFC export");
-            TaskDialog.Show("Information", "IFC export finished!");
+                Log.Information("finished custom IFC export");
+                TaskDialog.Show("Information", "IFC export finished!");
+            }
 
             return Result.Succeeded;
         }
