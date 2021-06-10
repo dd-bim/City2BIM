@@ -430,11 +430,21 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
                     //disable button
                     btnOpenCrsMetadata.IsEnabled = true;
+
+                    //create new instance of window
+                    LoGeoRef50_CRS_Metadata windowCrsMeta = new LoGeoRef50_CRS_Metadata();
+
+                    //change cursor to default
+                    Mouse.OverrideCursor = null;
+
+                    //open window
+                    windowCrsMeta.ShowDialog();
+
                 }
             }
             catch
             {
-                //disable button
+                //enable button
                 btnOpenCrsMetadata.IsEnabled = true;
 
                 //gui logging (user information)
