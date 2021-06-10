@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
+using City2RVT;
 
 namespace City2RVT.ExternalDataCatalog
 {
@@ -40,6 +41,50 @@ namespace City2RVT.ExternalDataCatalog
                               }
                             }"" ";
 
+            string payload = @"{{""query"" : {0}, ""variables"": {{ ""searchText"": ""{1}""}} }}";
+            payload = string.Format(payload, query, searchText);
+            return payload;
+        }
+
+        public static string getSubjectSearchAndHierarchyQueryAsRawJson(string searchText)
+        {
+            string query = @"""query findSubjectQuery($searchText: String!) {
+                                findSubjects(input: {query: $searchText}) {
+                                    nodes {
+                                        id
+                                        name
+                                    properties {
+                                        id
+                                        name
+                                    }
+                                    collectedBy {
+                                        nodes {
+                                            relatingCollection {
+                                                name
+                                                id
+                                                versionId
+                                                versionDate
+                                                collectedBy {
+                                                    nodes {
+                                                        relatingCollection {
+                                                            name
+                                                            id
+                                                            versionId
+                                                            versionDate
+                                                            collectedBy {
+                                                                nodes {
+                                                                    name
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                   }
+                                }
+                            }""";
             string payload = @"{{""query"" : {0}, ""variables"": {{ ""searchText"": ""{1}""}} }}";
             payload = string.Format(payload, query, searchText);
             return payload;
@@ -90,6 +135,7 @@ namespace City2RVT.ExternalDataCatalog
                 schemaBuilder.SetWriteAccessLevel(AccessLevel.Public);
 
                 schemaBuilder.AddMapField("data", typeof(string), typeof(string));
+                schemaBuilder.AddSimpleField("ifcClassification", typeof(string));
 
                 externalSchema = schemaBuilder.Finish();
 
@@ -146,6 +192,29 @@ namespace City2RVT.ExternalDataCatalog
         public string id { get; set; }
         public string name { get; set; }
         public ObservableCollection<Property> properties { get; set; }
+
+        public IfcClassification ifcClassification {get; set;}
+
+        public void addIfcClassificationReference(List<HierarchyEntry> hierarchyEntries)
+        {
+            var topCatalogue = hierarchyEntries[hierarchyEntries.Count - 1];
+            IfcClassification ifcClassification = new IfcClassification{ ID = topCatalogue.Id, Name = topCatalogue.Name, Edition = topCatalogue.Version, EditionDate = topCatalogue.VersionDate, Location = Prop_Revit.DataClient.BaseUrl.ToString()};
+
+            List<IfcClassificationReference> refList = new List<IfcClassificationReference>();
+            //hierarchyEntries.Reverse();
+            for (int i=0; i<hierarchyEntries.Count-1; i++)
+            {
+                refList.Add(new IfcClassificationReference
+                {
+                    ID = hierarchyEntries[i].Id,
+                    Name = hierarchyEntries[i].Name,
+                    Location = Prop_Revit.DataClient.BaseHost,
+                    ReferencedSource = hierarchyEntries[i + 1].Id
+                });
+            }
+            ifcClassification.RefList = refList;
+            this.ifcClassification = ifcClassification;
+        }
     }
 
     public class FindSubjects
@@ -163,15 +232,31 @@ namespace City2RVT.ExternalDataCatalog
         public DataFind data { get; set; }
     }
 
+    public class HierarchyEntry { 
+    
+        public string Name { get; set; }
+        public string Id { get; set;}
+        public string Version { get; set; }
+        public string VersionDate { get; set; }
+
+        public HierarchyEntry()
+        {
+
+        }
+            
+    }
+
     public class ExternalDataSchemaObject
     {
         public string ObjectType { get; set; }
         public Dictionary<string, string> Properties { get; set; }
+        public IfcClassification IfcClassification { get; set; }
 
-        public ExternalDataSchemaObject(string objectType, Dictionary<string, string> props)
+        public ExternalDataSchemaObject(string objectType, Dictionary<string, string> props, IfcClassification ifcClassification)
         {
             this.ObjectType = objectType;
             this.Properties = props;
+            this.IfcClassification = ifcClassification;
         }
 
         public Dictionary<string, Dictionary<string, string>> prepareForEditorWindow()
