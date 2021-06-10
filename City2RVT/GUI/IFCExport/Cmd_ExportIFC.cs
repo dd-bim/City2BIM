@@ -28,7 +28,6 @@ namespace City2RVT.GUI
             Document doc = uiDoc.Document;
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-
             var cityGMLBuildingList = utils.getIfc2CityGMLGuidDic(doc);
 
             var dialog = new IfcExportDialog();
@@ -65,10 +64,11 @@ namespace City2RVT.GUI
                     }
                     model.SaveAs(dialog.ExportPath);
                 }
-            }
 
-            Log.Information("finished custom IFC export");
-            TaskDialog.Show("Information", "IFC export finished!");
+                Log.Information("finished custom IFC export");
+                TaskDialog.Show("Information", "IFC export finished!");
+
+            }
 
             return Result.Succeeded;
         }
