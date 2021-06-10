@@ -205,7 +205,7 @@ namespace IFCTerrainGUI
 
                         //set export string
                         export913912 = new JProperty("DIN SEPC 91391-2", JObject.FromObject(jSettings91391));
-
+                        
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
 
                     }
@@ -286,7 +286,7 @@ namespace IFCTerrainGUI
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
 
             //start mapping process which currently begins with the selection of the file reader
-            result = conInt.mapProcess(jSettings, jSettings91391);
+            result = conInt.mapProcess(jSettings, jSettings91391, jSettings18740);
         }
 
         /// <summary>
