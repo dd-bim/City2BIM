@@ -39,7 +39,7 @@ If you have found an bug or have suggestions for improvement, please feel free t
 
 | in association with                                          | supported by                                                 |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <img src="BIMGISInteropLibs/Resources/LandingPage/vcs.jpg width="200"/> | <img src="BIMGISInteropLibs/Resources/LandingPage/BMWi_4C_Gef_en.jpg" align=center width="200"/> |
+| <img src="BIMGISInteropLibs/Resources/LandingPage/vcs.png" width="200"/> | <img src="BIMGISInteropLibs/Resources/LandingPage/BMWi_4C_Gef_en.jpg" align=center width="200"/> |
 
 ## Contact
 
