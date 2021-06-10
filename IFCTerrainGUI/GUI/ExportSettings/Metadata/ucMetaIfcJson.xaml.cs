@@ -100,7 +100,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 MainWindow.jSettings.exportMetadataDin18740 = true;
             }
-
+            /*
             //if non of those should not be exported set json settings (too)
             else
             {
@@ -109,6 +109,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 MainWindow.jSettings.exportMetadataDin91391 = false;
                 MainWindow.jSettings.exportMetadataDin18740 = false;
             }
+            */
 
             //set task (metadata) to true
             MainWindowBib.selectMetadata = true;
