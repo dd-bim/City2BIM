@@ -45,7 +45,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer
         /// </summary>
-        public Result mapProcess(JsonSettings jSettings, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
+        public Result mapProcess(JsonSettings jSettings, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
         {
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "Mapping process started."));
 
@@ -344,6 +344,8 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //model (file) let generate via the Writer
                 var model = IFC.Ifc2x3.Store.CreateViaTin(
                     jSettings,
+                    jSettings_DIN91931,
+                    jSettings_DIN18740,
                     writeInput.Placement,
                     result,
                     writeInput.SurfaceType,
@@ -380,6 +382,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     : IFC.Ifc4.Store.CreateViaTin(
                         jSettings,
                         jSettings_DIN91931,
+                        jSettings_DIN18740,
                         jSettings.logeoref,
                         writeInput.Placement,
                         result,

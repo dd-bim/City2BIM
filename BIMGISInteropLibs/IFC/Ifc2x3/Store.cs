@@ -33,6 +33,8 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// <returns></returns>
         public static IfcStore CreateViaTin(
             JsonSettings jSt,
+            JsonSettings_DIN_SPEC_91391_2 jsonSettings_DIN_SPEC,
+            JsonSettings_DIN_18740_6 jsonSettings_DIN_18740_6,
             Axis2Placement3D sitePlacement,
             Result result,
             SurfaceType surfaceType,
@@ -131,6 +133,28 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
 
                 //commit otherwise would not update / add
                 txn.Commit();
+            }
+
+            //start transaction to create property set
+            using (var txn = model.BeginTransaction("Ifc Property Set"))
+            {
+                //Query if metadata should be exported as IfcPropertySet?
+                if (jSt.outIfcPropertySet)
+                {
+                    //Methode to store Metadata according to DIN 91391-2
+                    PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
+
+                    //Methode to store Metadata according to DIN 18740-6
+                    PropertySet.CreatePSetMetaDin18740(model, jsonSettings_DIN_18740_6);
+
+                    //commit transaction
+                    txn.Commit();
+                }
+                else
+                {
+                    //rollback transaction not need to store pr
+                    txn.RollBack();
+                }
             }
 
             return model;
