@@ -41,7 +41,7 @@ namespace IFCTerrainCommand
 
             //start mapping process
             //TODO: add jSettings for metadata to IfcPropertySet
-            conn.mapProcess(jSettings, null ,breakDist, refLatitude, refLongitude, refElevation);
+            conn.mapProcess(jSettings, null ,null ,breakDist, refLatitude, refLongitude, refElevation);
 
             //finish programm
             return;

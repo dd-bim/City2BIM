@@ -19,6 +19,8 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //embed for error handling
 
 using System.Globalization; //included to use culture info (parsing double values)
 
+using BIMGISInteropLibs.ProjCRS;//included to request epsg codes
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -363,6 +365,97 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
             //check if all fields are not empty any more
             readyCheck();
+        }
+
+        /// <summary>
+        /// request button for epsg codes
+        /// </summary>
+        private void requestEPSG_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: error handler (integer and not more as 5 numbers)
+
+            //change cursor to wait animation (for user feedback)
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //lock MainWindow a so the user can't make any entries
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
+
+            try
+            {
+                //get epsg code
+                int epsgCode = int.Parse(tbEpsgCode.Text);
+
+                //send request
+                var projCRS = BIMGISInteropLibs.ProjCRS.Request.get(epsgCode, out bool isValid);
+
+                //disable button
+                btnOpenCrsMetadata.IsEnabled = false;
+
+                if (isValid)
+                {
+                    //EPSG Code
+                    MainWindow.jSettings.crsName = projCRS.Code;
+
+                    //CRS Description (example only)
+                    MainWindow.jSettings.crsDescription = projCRS.Name;
+
+                    //split for getting name and zone
+                    string[] projection = projCRS.Name.Split('/');
+
+                    //projection name
+                    MainWindow.jSettings.projectionName = projection[0];
+
+                    //projection zone
+                    MainWindow.jSettings.projectionZone = projection[1].Remove(0, 1);
+
+                    int code = projCRS.BaseCoordRefSystem.Code;
+
+                    //send request for geodetic coord ref
+                    var geoCRS = BIMGISInteropLibs.GeodeticCRS.GeodeticCRS.get(code);
+
+                    //geodetic datum
+                    MainWindow.jSettings.geodeticDatum = geoCRS.Datum.Name;
+
+                    //get geoCRS EPSG Code
+                    code = geoCRS.Datum.Code;
+
+                    //send datum request
+                    var datum = BIMGISInteropLibs.Datum.Datum.get(code);
+
+                    //vertical datum (need other request)
+                    MainWindow.jSettings.verticalDatum = datum.Ellipsoid.Name;
+
+                    //gui logging (user information)
+                    MainWindowBib.setGuiLog("EPSG code readed.");
+
+                    //disable button
+                    btnOpenCrsMetadata.IsEnabled = true;
+
+                    //create new instance of window
+                    LoGeoRef50_CRS_Metadata windowCrsMeta = new LoGeoRef50_CRS_Metadata();
+
+                    //change cursor to default
+                    Mouse.OverrideCursor = null;
+
+                    //open window
+                    windowCrsMeta.ShowDialog();
+
+                }
+            }
+            catch
+            {
+                //enable button
+                btnOpenCrsMetadata.IsEnabled = true;
+
+                //gui logging (user information)
+                MainWindowBib.setGuiLog("EPSG code invalid please try again!\nOr use manual input!");
+
+            }
+            //change cursor to default
+            Mouse.OverrideCursor = null;
+
+            //Release MainWindow again --> so the user can make entries again
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
         }
     }
 }

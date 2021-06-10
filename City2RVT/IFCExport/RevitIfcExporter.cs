@@ -426,6 +426,7 @@ namespace City2RVT.IFCExport
                     cls.Location = uniqueClassifications.Where(c => c.ID == entry.Key).First().Location;
                     cls.Edition = uniqueClassifications.Where(c => c.ID == entry.Key).First().Edition;
                     cls.EditionDate = uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate;
+                    cls.EditionDate = uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate;
                 });
 
                 

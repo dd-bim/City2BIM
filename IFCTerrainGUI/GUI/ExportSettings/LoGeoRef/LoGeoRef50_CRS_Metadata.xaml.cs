@@ -131,5 +131,29 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             e.Handled = !regex.IsMatch(e.Text);
 
         }
+
+        /// <summary>
+        /// insert the readed epsg codes [TODO: add error handler for, that epsg code is requested before]
+        /// </summary>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //set crs name (epsg code)
+            tbCrsName.Text = MainWindow.jSettings.crsName.ToString();
+
+            //set description
+            tbDescription.Text = MainWindow.jSettings.crsDescription.ToString();
+
+            //set geodetic datum
+            tbGeodeticDatum.Text = MainWindow.jSettings.geodeticDatum;
+
+            //set vertical datum
+            tbVerticalDatum.Text = MainWindow.jSettings.verticalDatum;
+
+            //set projection name
+            tbProjectionName.Text = MainWindow.jSettings.projectionName;
+
+            //set projection zone
+            tbProjectionZone.Text = MainWindow.jSettings.projectionZone;
+        }
     }
 }
