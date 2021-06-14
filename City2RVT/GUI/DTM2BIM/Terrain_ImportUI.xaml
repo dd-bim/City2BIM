@@ -6,11 +6,13 @@
              xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
              xmlns:uC="clr-namespace:City2RVT.GUI.DTM2BIM.userControler"
              mc:Ignorable="d" 
-             d:DesignHeight="650" 
-             d:DesignWidth="800"
+             Height="650" 
+             Width="800"
              Title="Import Terrain Data"
              ResizeMode="NoResize">
     <Grid Margin="5">
+        
+        <!--grid definitions for gui layout-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -21,7 +23,6 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
-
         <!-- Textbox "File Settings"-->
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="File Settings"/>
 
@@ -31,11 +32,12 @@
         <!-- Tab Manager-->
         <TabControl Grid.Row="1">
             <TabItem Header="CAD (DXF)">
-                <!-- user controler-->
-                <uC:ucReadDxf/>
+                <!-- user controler dxf-->
+                <uC:ReadDxf/>
             </TabItem>
             <TabItem Header="TIN (LandXML, CityGML)">
-                <!-- user controler-->
+                <!-- user controler xml-->
+                <uC:ReadXml/>
             </TabItem>
             <TabItem Header="GEOgraf (OUT)">
                 <!-- user controler-->
