@@ -77,6 +77,8 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
                 tbGridSize.Text = "1";
 
                 chkGridBB.IsEnabled = true;
+
+                chkCalculateTin.IsEnabled = true;
             }
         }
 
@@ -108,11 +110,62 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
         }
 
         /// <summary>
+        /// will be executed as soon as the checkbox is selected
+        /// </summary>
+        private void chkCalculateTin_Checked(object sebder, RoutedEventArgs e)
+        {
+            //Reset grid size text field
+            tbGridSize.Text = "";
+            tbGridSize.IsEnabled = false;
+
+            //Check all textboxes
+            readyCheck();
+        }
+
+        /// <summary>
+        /// will be executed as soon as the checkbox is not selected anymore
+        /// </summary>
+        private void chkCalculateTin_Unchecked(object sebder, RoutedEventArgs e)
+        {
+            //Reset grid size text field
+            tbGridSize.Text = "1";
+            tbGridSize.IsEnabled = true;
+
+            //Check all textboxes
+            readyCheck();
+        }
+
+        /// <summary>
         /// will be executed as soon the user klicked the process button
         /// </summary>
         private void btnProcessGrid_Click(object sender, RoutedEventArgs e)
         {
             #region set json settings
+            if(chkCalculateTin.IsChecked == true)
+            {
+                //TIN will be calculated
+                MainWindow.jSettings.calculateTin = true;
+
+                //set text to info panel
+                ((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "TIN will be calculated";
+
+                //set json setting tin
+                MainWindow.jSettings.isTin = true;
+            }
+            else
+            {
+                //MESh willbe calculated
+                MainWindow.jSettings.calculateTin = false;
+
+                //set text to info panel
+                ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
+
+                //set json settings grid size
+                MainWindow.jSettings.gridSize = Convert.ToInt32(tbGridSize.Text);
+
+                //set json setting tin
+                MainWindow.jSettings.isTin = false;
+            }
             if (chkGridBB.IsChecked == true)
             {
                 //bounding box will be used
@@ -142,15 +195,6 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
                 MainWindow.jSettings.bBox = false;
             }
             #endregion set json settings
-
-            //set text to info panel
-            ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
-
-            //set json settings grid size
-            MainWindow.jSettings.gridSize = Convert.ToInt32(tbGridSize.Text);
-
-            //set json setting tin
-            MainWindow.jSettings.isTin = false;
 
             //input in info panel
             ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = MainWindow.jSettings.gridSize.ToString();
@@ -184,6 +228,11 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
                 //enable process grid button
                 btnProcessGrid.IsEnabled = true;
                 //return
+                return true;
+            }
+            else if (chkCalculateTin.IsChecked == true)
+            {
+                btnProcessGrid.IsEnabled = true;
                 return true;
             }
             else
