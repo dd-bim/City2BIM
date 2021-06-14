@@ -46,11 +46,16 @@
                 <!-- user controler-->
             </TabItem>
             <TabItem Header="Grid (XYZ)">
-                <!-- user controler-->
+                <!-- user controler grid-->
+                <uC:ReadGrid/>
             </TabItem>
             <TabItem Header="REB (DA45, DA49, DA58)">
                 <!-- user controler-->
             </TabItem>
         </TabControl>
+
+        <!-- import button (for execution)-->
+        <Button Grid.Row="2" Grid.ColumnSpan="2" Content="Import" Margin="0,5" FontSize="16" FontWeight="Bold" IsEnabled="False"/>
+
     </Grid>
 </Window>
