@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace City2RVT.GUI.DTM2BIM
+namespace City2RVT.GUI.DTM2BIM.userControler
 {
     /// <summary>
-    /// Interaktionslogik für Terrain_ImportUI.xaml
+    /// Interaktionslogik für ucReadDxf.xaml
     /// </summary>
-    public partial class Terrain_ImportUI : Window
+    public partial class ucReadDxf : UserControl
     {
-        public Terrain_ImportUI()
+        public ucReadDxf()
         {
             InitializeComponent();
         }
