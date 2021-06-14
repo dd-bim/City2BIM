@@ -261,6 +261,9 @@
     <Compile Include="GUI\DTM2BIM\userControler\ReadGrid.xaml.cs">
       <DependentUpon>ReadGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\DTM2BIM\userControler\ReadREB.xaml.cs">
+      <DependentUpon>ReadREB.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\DTM2BIM\userControler\ReadXml.xaml.cs">
       <DependentUpon>ReadXml.xaml</DependentUpon>
     </Compile>
@@ -409,6 +412,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\DTM2BIM\userControler\ReadGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\DTM2BIM\userControler\ReadREB.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

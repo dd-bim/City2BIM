@@ -50,7 +50,8 @@
                 <uC:ReadGrid/>
             </TabItem>
             <TabItem Header="REB (DA45, DA49, DA58)">
-                <!-- user controler-->
+                <!-- user controler reb-->
+                <uC:ReadREB/>
             </TabItem>
         </TabControl>
 
