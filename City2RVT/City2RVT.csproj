@@ -429,6 +429,9 @@
     <Folder Include="GUI\Surveyorsplan2Revit\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="City2RVT.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="img\HideLayerIcon_32px_96dpi.png" />
     <None Include="img\Vermesser32.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -537,6 +540,7 @@
     <Error Condition="!Exists('..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)" "$(AppData)\Autodesk\Revit\Addins\2021\"</PostBuildEvent>
+    <PostBuildEvent>robocopy /XO $(TargetDir) $(ProgramData)\Autodesk\Revit\Addins\2021 /S
+exit 0</PostBuildEvent>
   </PropertyGroup>
 </Project>
