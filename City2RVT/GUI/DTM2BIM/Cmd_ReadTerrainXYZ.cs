@@ -1,6 +1,8 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
+using City2RVT.GUI.DTM2BIM; //include for terrain gui
+
 namespace City2RVT.GUI
 {
     /*/TODO DTM2BIM
@@ -20,11 +22,17 @@ namespace City2RVT.GUI
         {
             Document doc = revit.Application.ActiveUIDocument.Document;
 
-            Prop_GeoRefSettings.SetInitialSettings(doc); ;
+            Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            var process = new Reader.ReadTerrain(doc);
+            var dialog = new Terrain_ImportUI();
+
+            dialog.ShowDialog();
+
+            //var process = new Reader.ReadTerrain(doc);
 
             return Result.Succeeded;
         }
+
+        
     }
 }
