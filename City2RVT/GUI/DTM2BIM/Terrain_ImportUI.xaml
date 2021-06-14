@@ -40,7 +40,8 @@
                 <uC:ReadXml/>
             </TabItem>
             <TabItem Header="GEOgraf (OUT)">
-                <!-- user controler-->
+                <!-- user controler grafbat-->
+                <uC:ReadGrafbat/>
             </TabItem>
             <TabItem Header="Database (PostGIS)">
                 <!-- user controler postgis-->
