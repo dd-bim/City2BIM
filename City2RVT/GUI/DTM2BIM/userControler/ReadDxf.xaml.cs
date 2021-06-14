@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace City2RVT.GUI.DTM2BIM.userControler
 {
     /// <summary>
-    /// Interaktionslogik für ucReadDxf.xaml
+    /// Interaktionslogik für ReadDxf.xaml
     /// </summary>
-    public partial class ucReadDxf : UserControl
+    public partial class ReadDxf : UserControl
     {
-        public ucReadDxf()
+        public ReadDxf()
         {
             InitializeComponent();
         }
