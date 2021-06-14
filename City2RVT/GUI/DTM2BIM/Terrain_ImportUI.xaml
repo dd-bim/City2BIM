@@ -43,7 +43,8 @@
                 <!-- user controler-->
             </TabItem>
             <TabItem Header="Database (PostGIS)">
-                <!-- user controler-->
+                <!-- user controler postgis-->
+                <uC:ReadPostGis/>
             </TabItem>
             <TabItem Header="Grid (XYZ)">
                 <!-- user controler grid-->
