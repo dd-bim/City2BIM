@@ -138,9 +138,11 @@
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
@@ -427,6 +429,9 @@
     <Folder Include="GUI\Surveyorsplan2Revit\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="City2RVT.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="img\HideLayerIcon_32px_96dpi.png" />
     <None Include="img\Vermesser32.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -534,4 +539,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>robocopy /XO $(TargetDir) $(ProgramData)\Autodesk\Revit\Addins\2021 /S
+exit 0</PostBuildEvent>
+  </PropertyGroup>
 </Project>
