@@ -252,6 +252,7 @@
     <Compile Include="GUI\DataCat\LoginScreen.xaml.cs">
       <DependentUpon>LoginScreen.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\DTM2BIM\TerrainSettings.cs" />
     <Compile Include="GUI\DTM2BIM\Terrain_ImportUI.xaml.cs">
       <DependentUpon>Terrain_ImportUI.xaml</DependentUpon>
     </Compile>
@@ -347,7 +348,7 @@
     <Compile Include="GUI\City2BIM\Cmd_ImportCityGML.cs" />
     <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLFaces.cs" />
     <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLSolids.cs" />
-    <Compile Include="GUI\DTM2BIM\Cmd_ReadTerrainXYZ.cs" />
+    <Compile Include="GUI\DTM2BIM\Cmd_ReadTerrain.cs" />
     <Compile Include="GUI\Georeferencing\Cmd_GeoRefUI.cs" />
     <Compile Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml.cs">
       <DependentUpon>Wpf_GeoRef_Form.xaml</DependentUpon>
