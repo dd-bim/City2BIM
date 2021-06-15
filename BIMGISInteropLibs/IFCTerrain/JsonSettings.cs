@@ -92,6 +92,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// Setting of user defined verbosityLevel
         /// </summary>
         public LogType verbosityLevel { get; set; }
+
+        /// <summary>
+        /// Decision to calculate a TIN of the input data
+        /// </summary>
+        public bool calculateTin { get; set; }
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
