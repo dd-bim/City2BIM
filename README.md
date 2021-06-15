@@ -25,7 +25,7 @@ Here you can find our latest releases:
   - [**Setup.msi**](https://github.com/dd-bim/City2BIM/releases/download/v1.5.0/Setup_Revit_2020.msi) (easy and fast support)
   - Source code ([***.zip**](https://github.com/dd-bim/City2BIM/archive/refs/tags/v1.5.0.zip); [***.tar.gz**](https://github.com/dd-bim/City2BIM/archive/refs/tags/v1.5.0.tar.gz)) (for developer)
 
-- [**IFCTerrain**](https://github.com/dd-bim/City2BIM/releases/download/v1.5.0/IFCTerrain.zip) (Version 1.4 - direct download)
+- [**IFCTerrain**](https://github.com/dd-bim/City2BIM/releases/download/v1.5.0/IFCTerrain_1.4.1.zip) (Version 1.4.1 - direct download)
 
 ---
 
