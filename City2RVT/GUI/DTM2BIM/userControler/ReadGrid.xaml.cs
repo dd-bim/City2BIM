@@ -24,5 +24,15 @@ namespace City2RVT.GUI.DTM2BIM.userControler
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// open grid file
+        /// </summary>
+        private void btnReadGrid_Click(object sender, RoutedEventArgs e)
+        {
+            //read grid
+            
+
+        }
     }
 }

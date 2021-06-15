@@ -13,7 +13,7 @@
             <RowDefinition/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Button x:Name="btnReadGrid" Content="Read 'Grid' file"/>
+        <Button x:Name="btnReadGrid" Content="Read 'Grid' file" Click="btnReadGrid_Click"/>
         <Button x:Name="btnProcessGrid" Grid.Row="3" Content="Process 'Grid'" IsEnabled="False"/>
 
         <StackPanel x:Name="stpGridSize" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False" Height="20">
