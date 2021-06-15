@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-using City2RVT.GUI.DTM2BIM; //include for terrain gui
+using City2RVT.GUI.DTM2BIM; //include for terrain gui (Remove by sucess)
 
 namespace City2RVT.GUI
 {
@@ -20,19 +20,29 @@ namespace City2RVT.GUI
         // The main Execute method (inherited from IExternalCommand) must be public
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            //get revit document
             Document doc = revit.Application.ActiveUIDocument.Document;
 
+            //get georef settings based on revit document
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
+            //init dialog for revit import
             var dialog = new Terrain_ImportUI();
 
+            //show dialog to user (user need to do settings) 
             dialog.ShowDialog();
+
+
+            
+
+
 
             //var process = new Reader.ReadTerrain(doc);
 
+
+
+            
             return Result.Succeeded;
         }
-
-        
     }
 }
