@@ -22,6 +22,14 @@
             <TextBlock Text="m" Margin="5,0,0,0" VerticalAlignment="Center"/>
         </StackPanel>
 
+        <CheckBox 
+            Grid.Row="1"
+            Content="calculate TIN" Margin="0,5,0,0" 
+            VerticalAlignment="Center" 
+            HorizontalAlignment="Right" 
+            IsEnabled="False"
+            ToolTip="Use this option to calculate a TIN of the (irregular) XYZ-Dataset."/>
+        
         <GroupBox
             Grid.Row="2"
             Header="Bounding Box"
