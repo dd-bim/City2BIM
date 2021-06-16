@@ -29,7 +29,8 @@ namespace City2RVT.GUI
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
             //init user controler (otherwise will not be able to init the window)
-            uC.Dxf.Read dxfReader = new uC.Dxf.Read();
+            uC.Dxf.Read ucDxf = new uC.Dxf.Read();
+            uC.Grid.Read ucGrid = new uC.Grid.Read();
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();
@@ -37,8 +38,6 @@ namespace City2RVT.GUI
             //show main window to user (start dialog for settings)
             terrainUI.Show();
 
-            
-            
             //var process = new Reader.ReadTerrain(doc);
 
             return Result.Succeeded;

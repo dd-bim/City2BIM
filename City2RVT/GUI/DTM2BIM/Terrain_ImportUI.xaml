@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Dxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
+             xmlns:Grid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
              xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
              mc:Ignorable="d" 
              Height="650" 
@@ -52,7 +53,7 @@
             </TabItem>
             <TabItem Header="Grid (XYZ)">
                 <!-- user controler grid-->
-                
+                <Grid:Read/>
 
             </TabItem>
             <TabItem Header="REB (DA45, DA49, DA58)">
