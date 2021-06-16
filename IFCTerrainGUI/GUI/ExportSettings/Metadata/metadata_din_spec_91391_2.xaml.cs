@@ -65,7 +65,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
 
             //check state
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
 
             //close current window
             Close();

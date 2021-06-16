@@ -19,6 +19,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //include for error handling (ready che
 using BIMGISInteropLibs.Logging; //access to log writer
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -44,55 +47,54 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
              */
 
             //site name
-            MainWindow.jSettings.siteName = tbSiteName.Text.ToString();
-            if (string.IsNullOrEmpty(MainWindow.jSettings.siteName))
+            init.config.siteName = tbSiteName.Text.ToString();
+            if (string.IsNullOrEmpty(init.config.siteName))
             {
-                MainWindow.jSettings.siteName = "Site with Terrain";
+                init.config.siteName = "Site with Terrain";
             }
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Site name set to: " + MainWindow.jSettings.projectName));
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Site name set to: " + init.config.projectName));
 
             //project name
-            MainWindow.jSettings.projectName = tbProjectName.Text.ToString();
-            if (string.IsNullOrEmpty(MainWindow.jSettings.projectName))
+            init.config.projectName = tbProjectName.Text.ToString();
+            if (string.IsNullOrEmpty(init.config.projectName))
             {
-                MainWindow.jSettings.projectName = "Project Titel [Placeholder]";
+                init.config.projectName = "Project Titel [Placeholder]";
             }
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Project name set to: " + MainWindow.jSettings.projectName));
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Project name set to: " + init.config.projectName));
 
             //organisation name
-            MainWindow.jSettings.editorsOrganisationName = tbOrganisationName.Text.ToString();
-            if (string.IsNullOrEmpty(MainWindow.jSettings.editorsOrganisationName))
+            init.config.editorsOrganisationName = tbOrganisationName.Text.ToString();
+            if (string.IsNullOrEmpty(init.config.editorsOrganisationName))
             {
-                MainWindow.jSettings.editorsOrganisationName = "Organisation [Placeholder]";
+                init.config.editorsOrganisationName = "Organisation [Placeholder]";
             }
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Organisation name set to: " + MainWindow.jSettings.editorsOrganisationName));
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Organisation name set to: " + init.config.editorsOrganisationName));
 
             //given name
-            MainWindow.jSettings.editorsGivenName = tbGivenName.Text.ToString();
-            if (string.IsNullOrEmpty(MainWindow.jSettings.editorsGivenName))
+            init.config.editorsGivenName = tbGivenName.Text.ToString();
+            if (string.IsNullOrEmpty(init.config.editorsGivenName))
             {
-                MainWindow.jSettings.editorsGivenName = "Given name [Placeholder]";
+                init.config.editorsGivenName = "Given name [Placeholder]";
             }
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Given name set to: " + MainWindow.jSettings.editorsGivenName));
-            
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Given name set to: " + init.config.editorsGivenName));
+
             //family name
-            MainWindow.jSettings.editorsFamilyName = tbFamilyName.Text.ToString();
-            if (string.IsNullOrEmpty(MainWindow.jSettings.editorsFamilyName))
+            init.config.editorsFamilyName = tbFamilyName.Text.ToString();
+            if (string.IsNullOrEmpty(init.config.editorsFamilyName))
             {
-                MainWindow.jSettings.editorsFamilyName = "Family name [Placeholder]";
-                
+                init.config.editorsFamilyName = "Family name [Placeholder]";
             }
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Family name set to: " + MainWindow.jSettings.editorsFamilyName));
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Family name set to: " + init.config.editorsFamilyName));
 
             //set task (file opening) to true
-            MainWindowBib.selectMetadata = true;
+            GuiHandler.GuiSupport.selectMetadata = true;
 
             //logging
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata - IfcProject set."));
             MainWindowBib.setGuiLog("Metadata - IfcProject set.");
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
             return;
         }
     }
