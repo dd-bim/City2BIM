@@ -348,10 +348,10 @@ namespace GuiHandler.userControler.Dxf
                 }
 
                 //set task (file opening) to true
-                //MainWindowBib.taskfileOpening = true;
+                GuiSupport.taskfileOpening = true;
 
                 //check if all task are allready done
-                //MainWindowBib.readyState();
+                GuiSupport.readyState();
 
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
 
