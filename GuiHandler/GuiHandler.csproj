@@ -77,10 +77,6 @@
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\City2RVT\City2RVT.csproj">
-      <Project>{be8f677a-59a8-4ea5-89c8-706e6c6a07a4}</Project>
-      <Name>City2RVT</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
