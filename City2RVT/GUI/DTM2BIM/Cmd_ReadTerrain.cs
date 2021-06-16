@@ -3,6 +3,8 @@ using Autodesk.Revit.UI;
 
 using City2RVT.GUI.DTM2BIM; //include for terrain gui (Remove by sucess)
 
+using uC = GuiHandler.userControler;
+
 namespace City2RVT.GUI
 {
     /*/TODO DTM2BIM
@@ -27,21 +29,21 @@ namespace City2RVT.GUI
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
             //init dialog for revit import
-            var dialog = new Terrain_ImportUI();
+            //var dialog = new Terrain_ImportUI();
 
-            //show dialog to user (user need to do settings) 
-            dialog.ShowDialog();
+            //init user controler (otherwise will not be able to init the window)
+            uC.Dxf.Read dxfReader = new uC.Dxf.Read();
 
+            //init main window
+            Terrain_ImportUI terrainUI = new Terrain_ImportUI();
+
+            //show main window to user (start dialog for settings)
+            terrainUI.Show();
 
             
-
-
-
+            
             //var process = new Reader.ReadTerrain(doc);
 
-
-
-            
             return Result.Succeeded;
         }
     }
