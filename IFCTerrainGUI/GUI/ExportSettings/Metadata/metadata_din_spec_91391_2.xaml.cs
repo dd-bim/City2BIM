@@ -14,6 +14,9 @@ using System.Windows.Shapes;
 
 using IFCTerrainGUI.GUI.MainWindowLogic; //gui logging
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -28,35 +31,35 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             //create guid
             Guid guid = Guid.NewGuid();
             //#1 set guid
-            MainWindow.jSettings91391.id = guid;
+            init.config91391.id = guid;
             tbUUID.Text = guid.ToString();
         }
 
         private void btnApplyMetadata913912_Click(object sender, RoutedEventArgs e)
         {
             //#2 set type
-            MainWindow.jSettings91391.type = "DTM";
+            init.config91391.type = "DTM";
 
             //#3 set description
-            MainWindow.jSettings91391.description = this.tbDescription.Text;
+            init.config91391.description = this.tbDescription.Text;
 
             //#4 set creation date (set always the current day)
-            MainWindow.jSettings91391.created = DateTime.Now.ToShortDateString();
+            init.config91391.created = DateTime.Now.ToShortDateString();
 
             //#5 set creator
-            MainWindow.jSettings91391.creator = this.tbCreator.Text;
+            init.config91391.creator = this.tbCreator.Text;
 
             //#6 set revision
-            MainWindow.jSettings91391.revision = this.tbRevision.Text;
+            init.config91391.revision = this.tbRevision.Text;
 
             //#6 set version
-            MainWindow.jSettings91391.version = this.tbVersion.Text;
+            init.config91391.version = this.tbVersion.Text;
 
             //#7 ser project id
-            MainWindow.jSettings91391.projectId = this.tbProjectId.Text;
+            init.config91391.projectId = this.tbProjectId.Text;
 
             //#8 meta scheme
-            MainWindow.jSettings91391.metaScheme = this.tbMetaShema.Text;
+            init.config91391.metaScheme = this.tbMetaShema.Text;
 
             //gui logging (user information)
             ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("Metadata DIN 91391-2 adopted!");

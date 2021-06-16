@@ -14,6 +14,9 @@ using System.Windows.Shapes;
 
 using IFCTerrainGUI.GUI.MainWindowLogic; //error handler
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -34,45 +37,44 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
         {
             //set json settings (DIN 18740 - 6)
             //#1 - model type 
-            MainWindow.jSettings18740.modelType = this.selectModelType.SelectionBoxItem.ToString();
+            init.config18740.modelType = this.selectModelType.SelectionBoxItem.ToString();
 
             //#2 - data structure
-            MainWindow.jSettings18740.dataStructure = this.selectDataStructure.SelectionBoxItem.ToString();
+            init.config18740.dataStructure = this.selectDataStructure.SelectionBoxItem.ToString();
 
             //#3 topicality
             if(this.entryDate.SelectedDate == null)
             {
-                MainWindow.jSettings18740.topicality = DateTime.Now.ToShortDateString();
+                init.config18740.topicality = DateTime.Now.ToShortDateString();
             }
             else
             {
-                MainWindow.jSettings18740.topicality = this.entryDate.SelectedDate.Value.ToShortDateString();
+                init.config18740.topicality = this.entryDate.SelectedDate.Value.ToShortDateString();
             }
 
-
             //#4 position reference system
-            MainWindow.jSettings18740.positionReferenceSystem = this.selectPosRef.SelectionBoxItem.ToString() + "; " + this.tbInputPosRef.Text.ToString();
+            init.config18740.positionReferenceSystem = this.selectPosRef.SelectionBoxItem.ToString() + "; " + this.tbInputPosRef.Text.ToString();
 
             //#5 altitude reference system
             if (itemAltitudeUser.IsSelected)
             {
                 //only output user input
-                MainWindow.jSettings18740.altitudeReferenceSystem = this.tbInputAltitude.Text.ToString();
+                init.config18740.altitudeReferenceSystem = this.tbInputAltitude.Text.ToString();
             }
             else
             {
-                MainWindow.jSettings18740.altitudeReferenceSystem = this.selectAltitudeRef.SelectionBoxItem.ToString() + "; " + this.tbInputAltitude.Text.ToString();
+                init.config18740.altitudeReferenceSystem = this.selectAltitudeRef.SelectionBoxItem.ToString() + "; " + this.tbInputAltitude.Text.ToString();
             }
 
             //#6 projection
             if (itemProjectUser.IsSelected)
             {
                 //only output user input
-                MainWindow.jSettings18740.projection = this.tbInputProjection.Text.ToString();
+                init.config18740.projection = this.tbInputProjection.Text.ToString();
             }
             else
             {
-                MainWindow.jSettings18740.projection = this.selectProjection.SelectionBoxItem.ToString() + "; " + this.tbInputProjection.Text.ToString();
+                init.config18740.projection = this.selectProjection.SelectionBoxItem.ToString() + "; " + this.tbInputProjection.Text.ToString();
             }
 
             //gui logging (user information)
