@@ -2,9 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ucGrid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
              xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
-             xmlns:uC="clr-namespace:City2RVT.GUI.DTM2BIM.userControler"
              mc:Ignorable="d" 
              Height="650" 
              Width="800"
@@ -35,27 +35,28 @@
         <TabControl Grid.Row="1" Grid.RowSpan="3">
             <TabItem Header="CAD (DXF)">
                 <!-- user controler dxf-->
-                <uC:ReadDxf/>
+                
             </TabItem>
             <TabItem Header="TIN (LandXML, CityGML)">
                 <!-- user controler xml-->
-                <uC:ReadXml/>
+               
             </TabItem>
             <TabItem Header="GEOgraf (OUT)">
                 <!-- user controler grafbat-->
-                <uC:ReadGrafbat/>
+                
             </TabItem>
             <TabItem Header="Database (PostGIS)">
                 <!-- user controler postgis-->
-                <uC:ReadPostGis/>
+                
             </TabItem>
             <TabItem Header="Grid (XYZ)">
                 <!-- user controler grid-->
-                <uC:ReadGrid/>
+                <ucGrid:Read/>
+
             </TabItem>
             <TabItem Header="REB (DA45, DA49, DA58)">
                 <!-- user controler reb-->
-                <uC:ReadREB/>
+              
             </TabItem>
         </TabControl>
 
