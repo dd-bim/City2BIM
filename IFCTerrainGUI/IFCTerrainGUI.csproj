@@ -81,10 +81,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="GUI\ElevationGrid\ucElevationGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -148,9 +144,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GUI\ElevationGrid\ucElevationGrid.xaml.cs">
-      <DependentUpon>ucElevationGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml.cs">
       <DependentUpon>LoGeoRef50_CRS_Metadata.xaml</DependentUpon>

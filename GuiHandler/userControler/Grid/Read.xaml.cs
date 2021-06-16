@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 using Microsoft.Win32; //used for file handling
 
@@ -21,16 +20,18 @@ using Microsoft.Win32; //used for file handling
 using BIMGISInteropLibs.Logging;                                    //acess to logger
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
 
-namespace IFCTerrainGUI.GUI.ElevationGrid
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+namespace GuiHandler.userControler.Grid
 {
     /// <summary>
-    /// Interaction logic for ucElevationGrid.xaml
+    /// Interaktionslogik für Read.xaml
     /// </summary>
-    public partial class ucElevationGrid : UserControl
+    public partial class Read : UserControl
     {
-        public ucElevationGrid()
+        public Read()
         {
-            //init gui uc panel
             InitializeComponent();
         }
 
@@ -50,24 +51,24 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
                 #region JSON settings
                 //set JSON settings of file format 
                 //(Referencing to the BIMGISInteropsLibs, for which fileTypes an enumeration is used).
-                MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grid;
+                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grid;
 
                 //set JSON settings of file path
-                MainWindow.jSettings.filePath = ofd.FileName;
+                init.config.filePath = ofd.FileName;
                 #endregion JSON settings
 
                 #region logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
-                ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("File selected! --> Please make settings and confirm.");
+                //((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
+                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
 
                 //conversion to string, because stored as enumeration
-                ((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
+                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = init.config.fileType.ToString();
                 #endregion gui feedback
 
                 //enable grid size field
@@ -141,75 +142,75 @@ namespace IFCTerrainGUI.GUI.ElevationGrid
         private void btnProcessGrid_Click(object sender, RoutedEventArgs e)
         {
             #region set json settings
-            if(chkCalculateTin.IsChecked == true)
+            if (chkCalculateTin.IsChecked == true)
             {
                 //TIN will be calculated
-                MainWindow.jSettings.calculateTin = true;
+                init.config.calculateTin = true;
 
                 //set text to info panel
-                ((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "TIN will be calculated";
+                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "TIN will be calculated";
 
                 //set json setting tin
-                MainWindow.jSettings.isTin = true;
+                init.config.isTin = true;
             }
             else
             {
                 //MESh willbe calculated
-                MainWindow.jSettings.calculateTin = false;
+                init.config.calculateTin = false;
 
                 //set text to info panel
-                ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
+                //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
 
                 //set json settings grid size
-                MainWindow.jSettings.gridSize = Convert.ToInt32(tbGridSize.Text);
+                init.config.gridSize = Convert.ToInt32(tbGridSize.Text);
 
                 //set json setting tin
-                MainWindow.jSettings.isTin = false;
+                init.config.isTin = false;
             }
             if (chkGridBB.IsChecked == true)
             {
                 //bounding box will be used
-                MainWindow.jSettings.bBox = true;
+                init.config.bBox = true;
 
                 //set text to info panel
-                ((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will be used.";
+                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will be used.";
 
                 //set bb north to json
-                MainWindow.jSettings.bbNorth = Convert.ToDouble(tbBBNorth.Text);
+                init.config.bbNorth = Convert.ToDouble(tbBBNorth.Text);
 
                 //set bb north to json
-                MainWindow.jSettings.bbEast = Convert.ToDouble(tbBBEast.Text);
+                init.config.bbEast = Convert.ToDouble(tbBBEast.Text);
 
                 //set bb north to json
-                MainWindow.jSettings.bbSouth = Convert.ToDouble(tbBBSouth.Text);
-                
+                init.config.bbSouth = Convert.ToDouble(tbBBSouth.Text);
+
                 //set bb north to json
-                MainWindow.jSettings.bbWest = Convert.ToDouble(tbBBWest.Text);
+                init.config.bbWest = Convert.ToDouble(tbBBWest.Text);
             }
             else
             {
                 //set text to info panel
-                ((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will not be used.";
+                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will not be used.";
 
                 //bounding box will not be used
-                MainWindow.jSettings.bBox = false;
+                init.config.bBox = false;
             }
             #endregion set json settings
 
             //input in info panel
-            ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = MainWindow.jSettings.gridSize.ToString();
+            //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = init.config.gridSize.ToString();
 
             //set text in info panel
-            ((MainWindow)Application.Current.MainWindow).ipFileSpecific2.Text = "Bounding Box";
+            //((MainWindow)Application.Current.MainWindow).ipFileSpecific2.Text = "Bounding Box";
 
             //error handling
             //set task (file opening) to true
-            MainWindowBib.taskfileOpening = true;
+            GuiHandler.GuiSupport.taskfileOpening = true;
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            //TODO
         }
-       
+
         /// <summary>
         /// Check that all required tb fields are not empty (via booleans)
         /// </summary>

@@ -3,13 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ucXml = "clr-namespace:IFCTerrainGUI.GUI.XML"
-        xmlns:ucGraftbat ="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
-        xmlns:ucGrid ="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
-        xmlns:ucReb ="clr-namespace:IFCTerrainGUI.GUI.REB"
-        xmlns:ucPostGIS ="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
-        xmlns:ucTEST ="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
+        xmlns:ucDxf ="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
+        xmlns:ucGrid ="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -89,7 +85,7 @@
                      Header="CAD (DXF)">
                 <!--include the controller to read a dxf file (Attention: Background Worker is used here!) Changes have to be done there!!!-->
                 <!--<ucDxf:ucReadDxf/>-->
-                <ucTEST:Read/>
+                <ucDxf:Read/>
             </TabItem>
 
             <!--XML-->
@@ -122,9 +118,8 @@
                 x:Name ="tabPageGrid"      
                 Header="Grid (XYZ)"
                 IsEnabled="True">
-
                 <!-- add user controler for reading reb data -->
-                <!--<ucGrid:ucElevationGrid/>-->
+                <ucGrid:Read/>
                 
             </TabItem>
 
