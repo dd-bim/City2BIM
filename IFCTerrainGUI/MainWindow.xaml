@@ -10,6 +10,7 @@
         xmlns:ucGrid ="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
         xmlns:ucReb ="clr-namespace:IFCTerrainGUI.GUI.REB"
         xmlns:ucPostGIS ="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
+        xmlns:ucTEST ="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -88,7 +89,8 @@
             <TabItem x:Name="tabPageDxf"        
                      Header="CAD (DXF)">
                 <!--include the controller to read a dxf file (Attention: Background Worker is used here!) Changes have to be done there!!!-->
-                <ucDxf:ucReadDxf/>
+                <!--<ucDxf:ucReadDxf/>-->
+                <ucTEST:Read/>
             </TabItem>
 
             <!--XML-->
@@ -316,7 +318,7 @@
 
                 <StackPanel Grid.Column="1">
                     <TextBox x:Name="tbFileName" Height="25" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileType" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="tbFileType" x:FieldModifier="public" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="tbLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="tbFileSpecific" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="tbFileSpecific2" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
