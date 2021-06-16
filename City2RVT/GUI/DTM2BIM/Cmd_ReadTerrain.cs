@@ -28,9 +28,6 @@ namespace City2RVT.GUI
             //get georef settings based on revit document
             Prop_GeoRefSettings.SetInitialSettings(doc);
 
-            //init dialog for revit import
-            //var dialog = new Terrain_ImportUI();
-
             //init user controler (otherwise will not be able to init the window)
             uC.Dxf.Read dxfReader = new uC.Dxf.Read();
 
