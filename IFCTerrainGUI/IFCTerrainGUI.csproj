@@ -81,10 +81,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="GUI\DXF\ucReadDxf.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="GUI\ElevationGrid\ucElevationGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -152,9 +148,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GUI\DXF\ucReadDxf.xaml.cs">
-      <DependentUpon>ucReadDxf.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ElevationGrid\ucElevationGrid.xaml.cs">
       <DependentUpon>ucElevationGrid.xaml</DependentUpon>
