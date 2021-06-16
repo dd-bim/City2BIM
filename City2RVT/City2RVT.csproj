@@ -255,24 +255,6 @@
     <Compile Include="GUI\DTM2BIM\Terrain_ImportUI.xaml.cs">
       <DependentUpon>Terrain_ImportUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DTM2BIM\userControler\ReadDxf.xaml.cs">
-      <DependentUpon>ReadDxf.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DTM2BIM\userControler\ReadGrafbat.xaml.cs">
-      <DependentUpon>ReadGrafbat.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DTM2BIM\userControler\ReadGrid.xaml.cs">
-      <DependentUpon>ReadGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DTM2BIM\userControler\ReadPostGis.xaml.cs">
-      <DependentUpon>ReadPostGis.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DTM2BIM\userControler\ReadREB.xaml.cs">
-      <DependentUpon>ReadREB.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DTM2BIM\userControler\ReadXml.xaml.cs">
-      <DependentUpon>ReadXml.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
     <Compile Include="GUI\GUI_helper.cs" />
     <Compile Include="GUI\IFCExport\IfcExportDialog.xaml.cs">
@@ -410,30 +392,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\DTM2BIM\Terrain_ImportUI.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DTM2BIM\userControler\ReadDxf.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DTM2BIM\userControler\ReadGrafbat.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DTM2BIM\userControler\ReadGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DTM2BIM\userControler\ReadPostGis.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DTM2BIM\userControler\ReadREB.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DTM2BIM\userControler\ReadXml.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
