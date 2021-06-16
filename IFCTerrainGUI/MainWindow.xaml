@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ucXml = "clr-namespace:IFCTerrainGUI.GUI.XML"
-        xmlns:ucDxf ="clr-namespace:IFCTerrainGUI.GUI.DXF"
         xmlns:ucGraftbat ="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
         xmlns:ucGrid ="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
@@ -99,13 +98,13 @@
                 Header="TIN (LandXML, CityGML)"
                 >
                 <!--include the controller to read a xml file -->
-                <ucXml:ucReadXml/>
+                <!--<ucXml:ucReadXml/>-->
             </TabItem>
 
             <!--Grafbat-->
             <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
                 <!-- reference to the user controller (logic is outsourced there)-->
-                <ucGraftbat:ucReadGraftbat/>
+                <!--<ucGraftbat:ucReadGraftbat/>-->
             </TabItem>
 
             <!--PostGIS-->
@@ -114,7 +113,7 @@
                 Header="Database (PostGIS)">
                 
                 <!-- add user controler for postgis reading-->
-                <ucPostGIS:ucReadPostGis/>
+                <!--<ucPostGIS:ucReadPostGis/>-->
 
             </TabItem>
 
@@ -125,7 +124,7 @@
                 IsEnabled="True">
 
                 <!-- add user controler for reading reb data -->
-                <ucGrid:ucElevationGrid/>
+                <!--<ucGrid:ucElevationGrid/>-->
                 
             </TabItem>
 
@@ -135,7 +134,7 @@
                 Header="REB (DA45, DA49, DA58)">
 
                 <!-- add user controler for reading reb data -->
-                <ucReb:ucReadReb/>
+                <!--<ucReb:ucReadReb/>-->
 
 
             </TabItem>
