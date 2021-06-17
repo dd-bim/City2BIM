@@ -22,6 +22,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide filepath insert i
 using BIMGISInteropLibs.Logging;                                    //acess to logger
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.REB
 {
     /// <summary>
@@ -65,10 +68,10 @@ namespace IFCTerrainGUI.GUI.REB
                 #region JSON settings
                 //set JSON settings of file format 
                 //(Referencing to the BIMGISInteropsLibs, for which fileTypes an enumeration is used).
-                MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.REB;
+                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.REB;
 
                 //set JSON settings of file path
-                MainWindow.jSettings.filePath = ofd.FileName;
+                init.config.filePath = ofd.FileName;
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)
@@ -98,10 +101,10 @@ namespace IFCTerrainGUI.GUI.REB
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
+                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
 
                 //conversion to string, because stored as enumeration
-                ((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
+                ((MainWindow)Application.Current.MainWindow).tbFileType.Text = init.config.fileType.ToString();
                 #endregion gui feedback
             }
         }
@@ -162,7 +165,7 @@ namespace IFCTerrainGUI.GUI.REB
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
 
             //set to json settings
-            MainWindow.jSettings.isTin = true;
+            init.config.isTin = true;
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
@@ -198,22 +201,22 @@ namespace IFCTerrainGUI.GUI.REB
         private void btnProcessReb_Click(object sender, RoutedEventArgs e)
         {
             //blank json settings 
-            MainWindow.jSettings.layer = null;
+            init.config.layer = null;
 
             //get selected horizon
             int horizon = (int)this.lbRebSelect.SelectedItem;
 
             //passed to json settings
-            MainWindow.jSettings.horizon = horizon;
+            init.config.horizon = horizon;
 
             //visual output on the GUI (layer selection) (need to convert to string!)
             ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
 
             //set task (file opening) to true
-            MainWindowBib.taskfileOpening = true;
+            GuiHandler.GuiSupport.taskfileOpening = true;
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
 
             //gui logging (user information)
             MainWindowBib.setGuiLog("REB settings applyed.");

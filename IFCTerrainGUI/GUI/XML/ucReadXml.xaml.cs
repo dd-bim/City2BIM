@@ -17,6 +17,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //error handling (btn start)
 
 using Microsoft.Win32; //used for file handling
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.XML
 {
     /// <summary>
@@ -52,7 +55,7 @@ namespace IFCTerrainGUI.GUI.XML
                     //jump to this case if LandXML was selected
                     case 1:
                         //json settings set the file type (via enumeration from logic)
-                        MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXML;
+                        init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXML;
 
                         //Stack panel visible as user can decide whether to process break edges
                         stpXmlSelectBreakline.Visibility = Visibility;
@@ -61,7 +64,7 @@ namespace IFCTerrainGUI.GUI.XML
                     //jump to this case if CityGML was selected
                     case 2:
                         //json settings set the file type (via enumeration from logic)
-                        MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.CityGML;
+                        init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.CityGML;
 
                         //activate button process xml (otherwise the processing can't go on)
                         btnProcessXml.IsEnabled = true;
@@ -69,7 +72,7 @@ namespace IFCTerrainGUI.GUI.XML
                 }
 
                 //set the save path of the file to be converted
-                MainWindow.jSettings.filePath = ofd.FileName;
+                init.config.filePath = ofd.FileName;
 
                 //TODO logging
                 return;
@@ -84,7 +87,7 @@ namespace IFCTerrainGUI.GUI.XML
         private void rbXmlBltrue_Checked(object sender, RoutedEventArgs e)
         {
             //set settings (break edges) to true (so they should be processed by the reader)
-            MainWindow.jSettings.breakline = true;
+            init.config.breakline = true;
 
             //activate button process xml (otherwise the processing can't go on)
             btnProcessXml.IsEnabled = true;
@@ -98,7 +101,7 @@ namespace IFCTerrainGUI.GUI.XML
         private void rbXmlBlfalse_Checked(object sender, RoutedEventArgs e)
         {
             //set settings (break edges) to FALSE (so they will not be processed by the reader)
-            MainWindow.jSettings.breakline = false;
+            init.config.breakline = false;
 
             //activate button process xml (otherwise the processing can't go on)
             btnProcessXml.IsEnabled = true;
@@ -112,19 +115,19 @@ namespace IFCTerrainGUI.GUI.XML
         private void btnProcessXml_Click(object sender, RoutedEventArgs e)
         {
             //storage location
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
 
             //file tpye
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, MainWindow.jSettings.fileType.ToString());
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, init.config.fileType.ToString());
 
             //set task (file opening) to true
-            MainWindowBib.taskfileOpening = true;
+            GuiHandler.GuiSupport.taskfileOpening = true;
 
             //set json settings isTin to true
-            MainWindow.jSettings.isTin = true;
+            init.config.isTin = true;
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
     }
 }

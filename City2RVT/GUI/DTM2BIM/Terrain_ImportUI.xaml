@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
              mc:Ignorable="d" 
              Height="650" 
-             Width="800"
+             Width="400"
              Title="Import Terrain Data"
              ResizeMode="NoResize">
     <Grid Margin="5">
@@ -16,7 +16,7 @@
         <!--grid definitions for gui layout-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="0"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -30,7 +30,7 @@
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="File Settings"/>
 
         <!-- Textbox "Import Settings"-->
-        <TextBlock  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="Import Settings"/>
+        <TextBlock  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="Import Settings" Visibility="Hidden"/>
         
         <!-- Tab Manager-->
         <TabControl Grid.Row="1" Grid.RowSpan="3">
@@ -63,13 +63,14 @@
         </TabControl>
 
         <!-- import button (for execution)-->
-        <Button Grid.Row="4" Grid.ColumnSpan="2" Content="Import" Margin="0,5" FontSize="16" FontWeight="Bold" IsEnabled="False"/>
+        <Button x:Name="btnStartImport" Grid.Row="4" Grid.ColumnSpan="2" Content="Import" Margin="0,5" FontSize="16" FontWeight="Bold" Click="btnStartImport_Click"/>
 
         <!-- bounding box input-->
         <GroupBox
             Grid.Row="1"
             Grid.Column="1"
             Header="Bounding Box"
+            Visibility="Collapsed"
             >
             
         </GroupBox>
@@ -79,6 +80,7 @@
             Grid.Row="2"
             Grid.Column="1"
             Header="Metadata"
+            Visibility="Hidden"
             >
 
         </GroupBox>
@@ -88,6 +90,7 @@
             Grid.Row="3"
             Grid.Column="1"
             Header="Logging"
+            Visibility="Hidden"
             >
 
         </GroupBox>

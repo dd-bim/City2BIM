@@ -16,6 +16,9 @@ using System.Windows.Shapes;
 using Microsoft.Win32; //used for file handling
 using IFCTerrainGUI.GUI.MainWindowLogic; //error handling (btn start)
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.Grafbat
 {
     /// <summary>
@@ -40,10 +43,10 @@ namespace IFCTerrainGUI.GUI.Grafbat
             if (ofd.ShowDialog() == true)
             {
                 //set the save path of the file to be converted
-                MainWindow.jSettings.filePath = ofd.FileName;
+                init.config.filePath = ofd.FileName;
 
                 //set the save path of the file to be converted
-                MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat;
+                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat;
 
                 //enable process button [TODO]: check if need to be relocated 
                 btnProcessGraftbat.IsEnabled = true;
@@ -65,10 +68,10 @@ namespace IFCTerrainGUI.GUI.Grafbat
         {
             #region gui info panel
             // storage location
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
 
             //file tpye
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, MainWindow.jSettings.fileType.ToString());
+            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, init.config.fileType.ToString());
             #endregion gui info panel
 
             #region selection [include TODO!]
@@ -76,12 +79,12 @@ namespace IFCTerrainGUI.GUI.Grafbat
             //Selection "Faces"
             if (rbGraftbatReadFaces.IsChecked == true)
             {
-                MainWindow.jSettings.isTin = true;
+                init.config.isTin = true;
             }
             //Selection "Points / Lines"
             else if (rbGraftbatReadPointsLines.IsChecked == true)
             {
-                MainWindow.jSettings.isTin = false;
+                init.config.isTin = false;
             }
             //Selection "Points"
             //[TODO]: must be revised ... Reader + ConnectionInterface!
@@ -89,13 +92,13 @@ namespace IFCTerrainGUI.GUI.Grafbat
 
             #region error handling
             //set task (file opening) to true
-            MainWindowBib.taskfileOpening = true;
+            GuiHandler.GuiSupport.taskfileOpening = true;
 
             //gui logging (user information)
             MainWindowBib.setGuiLog("Grafbat settings applyed.");
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
             #endregion error handling
         }
     }

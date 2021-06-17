@@ -49,10 +49,12 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
         {
             if (boolen)
             {
+                //enable start button
                 ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = true;
             }
             else
             {
+                //disable start button
                 ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = false;
             }
             return;
