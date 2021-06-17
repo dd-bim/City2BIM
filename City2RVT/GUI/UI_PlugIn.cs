@@ -120,6 +120,7 @@ namespace City2RVT.GUI
 
             // Code für Integrieren von Surveyorsplan2Revit. Klappt aber noch nicht, daher für Release auskommentiert.
             //----------------------------------------------------------------------
+            /*
             RibbonPanel panelSurveyorsPlan = application.CreateRibbonPanel(tabName, "Surveyorsplan2Revit");
 
             PushButton buttonsurvPlan = panelSurveyorsPlan.AddItem(new PushButtonData("Surveyorsplan2Revit", "Surveyorsplan2Revit", thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.importLageplan")) as PushButton;
@@ -129,14 +130,15 @@ namespace City2RVT.GUI
             PushButton buttonattribute = panelSurveyorsPlan.AddItem(new PushButtonData("Attribute", "Attribute", thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.Attributes")) as PushButton;
             buttonattribute.ToolTip = "Show and edit properties.";
             buttonattribute.LargeImage = getBitmapFromResx(ResourcePictures.Attribute32);
-
+            */
             #endregion survPlan panel
-
+            
             #region DataCat panel
+            /*
             RibbonPanel panelDataCat = application.CreateRibbonPanel(tabName, "DataCat");
             PushButton loginDataCat = panelDataCat.AddItem(new PushButtonData("LoginBtn", "Login", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatLogin")) as PushButton;
             PushButton querySubjects = panelDataCat.AddItem(new PushButtonData("QuerySubjBtn", "Subj", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatSubjQuery")) as PushButton;
-
+            */
             #endregion DataCat panel
 
             return Result.Succeeded;
