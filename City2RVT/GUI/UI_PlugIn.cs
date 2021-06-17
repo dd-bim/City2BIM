@@ -44,7 +44,7 @@ namespace City2RVT.GUI
             #region Terrain panel
 
             RibbonPanel panelTerrain = application.CreateRibbonPanel(tabName, "DTM2BIM");
-            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Get Terrain data", thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrainXYZ")) as PushButton;
+            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Import Terrain data", thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrain")) as PushButton;
             buttonDTM.ToolTip = "Import functionality for Digital Terrain Models out of XYZ data (regular grid)";
             buttonDTM.LargeImage = getBitmapFromResx(ResourcePictures.DTM_32px_96dpi);
 
