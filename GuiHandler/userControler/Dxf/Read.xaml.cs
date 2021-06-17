@@ -82,6 +82,7 @@ namespace GuiHandler.userControler.Dxf
                 //lock current MainWindow (because Background Worker is triggered)
                 //so the user can not change any settings during the time the background worker is running
                 IsEnabled = false;
+
                 //change cursor to wait animation (for user feedback)
                 Mouse.OverrideCursor = Cursors.Wait;
 

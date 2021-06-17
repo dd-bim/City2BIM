@@ -180,7 +180,7 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Grid.Row="5"
-                Content="Process 'DXF' file" Click="btnProcessDxf_Click"
+                Content="Apply 'DXF' file settings" Click="btnProcessDxf_Click"
                 IsEnabled="False">
             </Button>
         </Grid>
