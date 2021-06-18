@@ -54,11 +54,6 @@ namespace BIMGISInteropLibs.IfcTerrain
             //initalize transfer class
             var result = new Result();
 
-            //File location of the file to be converted 
-            //[TODO]: check if: string filePath = jSettings.filePath; would work! 
-            string[] filePath = new string[1];
-            filePath[0] = jSettings.filePath;
-
             #region import data via type selection
             //In the following a mapping is made on the basis of the data type, so that the respective reader is called up
             switch (jSettings.fileType)
@@ -96,7 +91,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //reader for REB    
                 case IfcTerrainFileType.REB:
                     //REB file reader
-                    REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(filePath);
+                    REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(jSettings.filePath);
 
                     //use REB data via processing with converter
                     result = REB.ReaderTerrain.ConvertRebToTin(rebData, jSettings);

@@ -46,7 +46,7 @@ namespace IFCTerrainGUI.GUI.REB
         /// <summary>
         /// string to process reb files
         /// </summary>
-        private string[] fileName = new string[1];
+        //private string[] fileName = new string[1];
 
         /// <summary>
         /// container for reb Data
@@ -82,7 +82,7 @@ namespace IFCTerrainGUI.GUI.REB
                 Mouse.OverrideCursor = Cursors.Wait;
                 
                 #region backgroundWorker
-                fileName[0] = ofd.FileName;
+                
                 //kick off BackgroundWorker
                 backgroundWorkerReb.RunWorkerAsync(ofd.FileName);
                 #endregion backgroundWorker
@@ -121,7 +121,7 @@ namespace IFCTerrainGUI.GUI.REB
         private void BackgroundWorkerReb_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task
-            e.Result = ReaderTerrain.ReadReb(fileName);
+            e.Result = ReaderTerrain.ReadReb(init.config.fileName);
         }
 
         /// <summary>
