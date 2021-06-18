@@ -79,7 +79,14 @@ namespace BIMGISInteropLibs.RvtTerrain
             //init empty point list
             dynamic dgmPtList = new List<C2BPoint>();
 
-            if (config.isTin)
+            bool asMesh = true;
+
+            if (resTerrain.Mesh == null)
+            {
+                asMesh = false;
+            }
+
+            if (asMesh)
             {
                 foreach (Point3 p in resTerrain.Mesh.Points)
                 {
@@ -88,7 +95,7 @@ namespace BIMGISInteropLibs.RvtTerrain
             }
             else
             {
-                foreach (Point3 p in resTerrain.Mesh.Points)
+                foreach (Point3 p in resTerrain.Tin.Points)
                 {
                     {
                         dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));

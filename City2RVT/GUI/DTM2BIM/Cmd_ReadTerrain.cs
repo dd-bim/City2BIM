@@ -43,6 +43,7 @@ namespace City2RVT.GUI
             //init user controler (otherwise will not be able to init the window)
             uC.Dxf.Read ucDxf = new uC.Dxf.Read();
             uC.Grid.Read ucGrid = new uC.Grid.Read();
+            uC.Reb.Read ucReb = new uC.Reb.Read();
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();
@@ -62,7 +63,10 @@ namespace City2RVT.GUI
                 rev.CreateDTM(res);
 
                 //var process = new Reader.ReadTerrain(doc);
-                
+
+                //show info dialog (may update to better solution)
+                TaskDialog.Show("DTM import", "DTM import finished!");
+
                 //process successfuly
                 return Autodesk.Revit.UI.Result.Succeeded;
             }

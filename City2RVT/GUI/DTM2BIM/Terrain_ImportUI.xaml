@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Dxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
              xmlns:Grid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
+             xmlns:Reb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
              xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
              mc:Ignorable="d" 
              Height="650" 
@@ -58,7 +59,7 @@
             </TabItem>
             <TabItem Header="REB (DA45, DA49, DA58)">
                 <!-- user controler reb-->
-              
+                <Reb:Read/>
             </TabItem>
         </TabControl>
 

@@ -6,6 +6,7 @@
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
         xmlns:ucDxf ="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
         xmlns:ucGrid ="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
+        xmlns:ucReb ="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -127,11 +128,8 @@
             <TabItem 
                 x:Name ="tabPageReb"       
                 Header="REB (DA45, DA49, DA58)">
-
                 <!-- add user controler for reading reb data -->
-                <!--<ucReb:ucReadReb/>-->
-
-
+                <ucReb:Read/>
             </TabItem>
             <!-- more tabs (if needed) have to be added here-->
         </TabControl>
