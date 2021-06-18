@@ -20,6 +20,6 @@
         <Button x:Name="btnReadReb" Grid.ColumnSpan="2" Content="Read 'REB' file" Click="btnReadReb_Click"/>
         <ListBox x:Name="lbRebSelect" Grid.Row="1" Grid.Column="1" Margin="0,5" SelectionChanged="lbRebSelect_SelectionChanged" IsEnabled="False"/>
         <TextBlock Grid.Row="1" Margin="5" Text="Select Horizon"/>
-        <Button x:Name="btnProcessReb" Grid.Row="2" Grid.ColumnSpan="2" Content="Process 'REB' file" Click="btnProcessReb_Click" IsEnabled="False"/>
+        <Button x:Name="btnProcessReb" Grid.Row="2" Grid.ColumnSpan="2" Content="Apply 'REB' file settings" Click="btnProcessReb_Click" IsEnabled="False"/>
     </Grid>
 </UserControl>
