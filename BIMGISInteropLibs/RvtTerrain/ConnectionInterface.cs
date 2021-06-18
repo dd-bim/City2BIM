@@ -77,8 +77,16 @@ namespace BIMGISInteropLibs.RvtTerrain
                 case IfcTerrainFileType.Grafbat:
                     resTerrain = GEOgraf.ReadOUT.ReadOutData(config, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumerMap);
                     break;
-            }
 
+                //XML
+                case IfcTerrainFileType.LandXML:
+                    resTerrain = LandXML.ReaderTerrain.ReadTin(config);
+                    break;
+
+                case IfcTerrainFileType.CityGML:
+                    resTerrain = CityGML.CityGMLReaderTerrain.ReadTin(config);
+                    break;
+            }
 
             //init empty point list
             dynamic dgmPtList = new List<C2BPoint>();

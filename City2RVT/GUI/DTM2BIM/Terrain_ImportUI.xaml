@@ -1,20 +1,20 @@
 ﻿<Window x:Class="City2RVT.GUI.DTM2BIM.Terrain_ImportUI"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:Dxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
-             xmlns:Grid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
-             xmlns:Reb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
-             xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
-             xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
-             mc:Ignorable="d" 
-             Height="650" 
-             Width="400"
-             Title="Import Terrain Data"
-             ResizeMode="NoResize">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:Dxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
+        xmlns:Grid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
+        xmlns:Reb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
+        xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
+        xmlns:Xml="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
+        xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
+        mc:Ignorable="d" 
+        Height="650" 
+        Width="400"
+        Title="Import Terrain Data"
+        ResizeMode="NoResize">
     <Grid Margin="5">
-        
         <!--grid definitions for gui layout-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -43,7 +43,7 @@
             </TabItem>
             <TabItem Header="TIN (LandXML, CityGML)">
                 <!-- user controler xml-->
-               
+                <Xml:Read/>
             </TabItem>
             <TabItem Header="GEOgraf (OUT)">
                 <!-- user controler grafbat-->
