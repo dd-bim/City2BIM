@@ -241,6 +241,7 @@
       <DependentUpon>CityGML_ImportUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
+    <Compile Include="GUI\Cmd_Documentation.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatLogin.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatSubjQuery.cs" />
     <Compile Include="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
@@ -445,6 +446,7 @@
     </None>
     <None Include="img\Attribute32.png" />
     <Content Include="GdalConfiguration.vb" />
+    <Content Include="img\HelpIcon_64px.png" />
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -520,6 +522,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource_MetaJSONs.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
