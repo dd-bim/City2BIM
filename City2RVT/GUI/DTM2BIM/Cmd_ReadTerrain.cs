@@ -44,6 +44,7 @@ namespace City2RVT.GUI
             uC.Dxf.Read ucDxf = new uC.Dxf.Read();
             uC.Grid.Read ucGrid = new uC.Grid.Read();
             uC.Reb.Read ucReb = new uC.Reb.Read();
+            uC.Grafbat.Read ucGrafbat = new uC.Grafbat.Read();
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();

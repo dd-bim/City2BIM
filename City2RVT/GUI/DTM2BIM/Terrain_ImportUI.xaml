@@ -6,6 +6,7 @@
              xmlns:Dxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
              xmlns:Grid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
              xmlns:Reb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
+             xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
              xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
              mc:Ignorable="d" 
              Height="650" 
@@ -46,7 +47,7 @@
             </TabItem>
             <TabItem Header="GEOgraf (OUT)">
                 <!-- user controler grafbat-->
-                
+                <Grafbat:Read/>
             </TabItem>
             <TabItem Header="Database (PostGIS)">
                 <!-- user controler postgis-->
