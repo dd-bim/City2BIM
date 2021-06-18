@@ -121,10 +121,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\Grafbat\ucReadGraftbat.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="GUI\PostGIS\ucReadPostGis.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -170,9 +166,6 @@
     </Compile>
     <Compile Include="GUI\ExportSettings\ucMetadata.xaml.cs">
       <DependentUpon>ucMetadata.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Grafbat\ucReadGraftbat.xaml.cs">
-      <DependentUpon>ucReadGraftbat.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
     <Compile Include="GUI\PostGIS\ucReadPostGis.xaml.cs">

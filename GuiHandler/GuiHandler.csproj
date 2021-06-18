@@ -60,6 +60,9 @@
     <Compile Include="userControler\Dxf\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
+    <Compile Include="userControler\Grafbat\Read.xaml.cs">
+      <DependentUpon>Read.xaml</DependentUpon>
+    </Compile>
     <Compile Include="userControler\Grid\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
@@ -69,6 +72,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="userControler\Dxf\Read.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="userControler\Grafbat\Read.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
