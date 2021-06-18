@@ -53,28 +53,19 @@ namespace City2RVT.GUI
             if(terrainUI.startTerrainImport)
             {
                 //start mapping process
-                //var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config);
+                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config);
 
                 //
-                //var rev = new Builder.RevitTopoSurfaceBuilder(doc);
-                //rev.CreateDTM(res);
+                var rev = new Builder.RevitTopoSurfaceBuilder(doc);
+                rev.CreateDTM(res);
 
-                var process = new Reader.ReadTerrain(doc);
-
-
+                //var process = new Reader.ReadTerrain(doc);
+                return Autodesk.Revit.UI.Result.Succeeded;
             }
             else
             {
-                TaskDialog.Show("Import canceld!", "The import has been canceld by user.");
+                return Autodesk.Revit.UI.Result.Cancelled;
             }
-
-            
-
-
-
-            
-
-            return Autodesk.Revit.UI.Result.Succeeded;
         }
-    }    
+    }
 }
