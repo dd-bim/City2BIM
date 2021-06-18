@@ -153,9 +153,9 @@ namespace City2RVT {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap HelpIcon_64px {
+        public static System.Drawing.Bitmap HelpIcon_32px {
             get {
-                object obj = ResourceManager.GetObject("HelpIcon_64px", resourceCulture);
+                object obj = ResourceManager.GetObject("HelpIcon_32px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

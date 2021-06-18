@@ -446,7 +446,7 @@
     </None>
     <None Include="img\Attribute32.png" />
     <Content Include="GdalConfiguration.vb" />
-    <Content Include="img\HelpIcon_64px.png" />
+    <Content Include="img\HelpIcon_32px.png" />
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
