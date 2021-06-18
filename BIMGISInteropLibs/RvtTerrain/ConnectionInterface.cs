@@ -73,27 +73,24 @@ namespace BIMGISInteropLibs.RvtTerrain
                     //use REB data via processing with converter
                     resTerrain = REB.ReaderTerrain.ConvertRebToTin(rebData, config);
                     break;
+
+                case IfcTerrainFileType.Grafbat:
+                    resTerrain = GEOgraf.ReadOUT.ReadOutData(config, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumerMap);
+                    break;
             }
 
 
             //init empty point list
             dynamic dgmPtList = new List<C2BPoint>();
 
-            bool asMesh = true;
-
-            if (resTerrain.Mesh == null)
-            {
-                asMesh = false;
-            }
-
-            if (asMesh)
+            if (resTerrain.Tin.Points == null)
             {
                 foreach (Point3 p in resTerrain.Mesh.Points)
                 {
                     dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));
                 }
             }
-            else
+            else if (resTerrain.Mesh == null)
             {
                 foreach (Point3 p in resTerrain.Tin.Points)
                 {
@@ -101,6 +98,11 @@ namespace BIMGISInteropLibs.RvtTerrain
                         dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));
                     }
                 }
+            }
+            else
+            {
+                //TODO error catcher
+                return null;
             }
             
 
