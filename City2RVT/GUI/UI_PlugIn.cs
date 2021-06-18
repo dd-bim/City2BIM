@@ -145,7 +145,7 @@ namespace City2RVT.GUI
             RibbonPanel panelDocu = application.CreateRibbonPanel(tabName, "Documentation");
             PushButton buttonDoc = panelDocu.AddItem(new PushButtonData("Doc", "Help!", thisAssemblyPath, "City2RVT.GUI.Cmd_Documentation")) as PushButton;
             buttonDoc.ToolTip = "Open documentation (GitHub)";
-            buttonDoc.LargeImage = getBitmapFromResx(ResourcePictures.HelpIcon_64px);
+            buttonDoc.LargeImage = getBitmapFromResx(ResourcePictures.HelpIcon_32px);
             #endregion Documentation
 
             return Result.Succeeded;
