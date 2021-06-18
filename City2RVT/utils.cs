@@ -189,6 +189,53 @@ namespace City2RVT
             }
             return htwSchemas;
         }
+
+        public static DataStorage getRefPlaneDataStorageObject(Document doc)
+        {
+            DataStorage refPlaneDataStorage;
+            var refPlaneSchema = utils.getSchemaByName("HTWDD_RefPlaneSchema");
+
+            if (refPlaneSchema == null)
+            {
+                using (Transaction trans = new Transaction (doc, "create Schema"))
+                {
+                    trans.Start();
+                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                    sb.SetSchemaName("HTWDD_RefPlaneSchema");
+                    sb.SetReadAccessLevel(AccessLevel.Public);
+                    sb.SetWriteAccessLevel(AccessLevel.Public);
+                    sb.SetVendorId("HTWDresden");
+
+                    sb.AddMapField("RefPlaneElementIdToString", typeof(ElementId), typeof(string));
+
+                    refPlaneSchema = sb.Finish();
+                    trans.Commit();
+                }
+            }
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            ExtensibleStorageFilter filter = new ExtensibleStorageFilter(refPlaneSchema.GUID);
+
+            var resultElements = collector.WherePasses(filter).ToList();
+
+            if (resultElements.Count > 0)
+            {
+                return resultElements.FirstOrDefault() as DataStorage;
+            }
+
+            else
+            {
+                using (Transaction trans = new Transaction(doc, "getOrCreateRefPlaneObject"))
+                {
+                    trans.Start();
+                    Entity ent = new Entity(refPlaneSchema);
+                    refPlaneDataStorage = DataStorage.Create(doc);
+                    refPlaneDataStorage.SetEntity(ent);
+                    trans.Commit();
+                }
+                return refPlaneDataStorage;
+            }
+        }
     }
 
     public static class IfcGuid

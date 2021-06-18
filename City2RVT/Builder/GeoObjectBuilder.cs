@@ -37,6 +37,8 @@ namespace City2RVT.Builder
 
             ElementId terrainID = utils.getHTWDDTerrainID(doc);
 
+            var refPlaneDataStorage = utils.getRefPlaneDataStorageObject(doc);
+
             foreach (var group in queryGroups)
             {
                 ElementId RefPlaneId = (terrainID == null) ? null : terrainID;
@@ -56,8 +58,13 @@ namespace City2RVT.Builder
                         TopographySurface refSurf = TopographySurface.Create(doc, RevitPts);
                         refSurf.Pinned = true;
 
-                        Parameter nameParam = refSurf.LookupParameter("Name");
-                        nameParam.Set("RefPlane_" + groupName);
+                        //Parameter nameParam = refSurf.LookupParameter("Name");
+                        //nameParam.Set("RefPlane_" + groupName);
+                        var entity = refPlaneDataStorage.GetEntity(utils.getSchemaByName("HTWDD_RefPlaneSchema"));
+                        IDictionary<ElementId, string> value = entity.Get <IDictionary<ElementId, string>>("RefPlaneElementIdToString");
+                        value.Add(refSurf.Id, groupName);
+                        entity.Set<IDictionary<ElementId, string>>("RefPlaneElementIdToString", value);
+                        refPlaneDataStorage.SetEntity(entity);
 
                         RefPlaneId = refSurf.Id;
                         trans.Commit();
@@ -79,8 +86,14 @@ namespace City2RVT.Builder
                         //var label = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_TYPE_NAME);
                         //Parameter nameParam = copiedRefSurf.LookupParameter(label);
                         //nameParam.Set("RefPlane_" + groupName);
-                        Parameter nameParam = copiedRefSurf.LookupParameter("Name");
-                        nameParam.Set("RefPlane_" + groupName);
+                        //Parameter nameParam = copiedRefSurf.LookupParameter("Name");
+                        //nameParam.Set("RefPlane_" + groupName);
+
+                        var entity = refPlaneDataStorage.GetEntity(utils.getSchemaByName("HTWDD_RefPlaneSchema"));
+                        IDictionary<ElementId, string> value = entity.Get<IDictionary<ElementId, string>>("RefPlaneElementIdToString");
+                        value.Add(copiedRefSurf.Id, groupName);
+                        entity.Set("RefPlaneElementIdToString", value);
+                        refPlaneDataStorage.SetEntity(entity);
 
                         RefPlaneId = copiedRefSurf.Id;
                         trans.Commit();
@@ -634,6 +647,6 @@ namespace City2RVT.Builder
 
             return sb.Finish();
         }
-
+ 
     }
 }
