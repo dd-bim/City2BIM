@@ -7,6 +7,7 @@
         xmlns:ucDxf ="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
         xmlns:ucGrid ="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
         xmlns:ucReb ="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
+        xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -101,7 +102,7 @@
             <!--Grafbat-->
             <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
                 <!-- reference to the user controller (logic is outsourced there)-->
-                <!--<ucGraftbat:ucReadGraftbat/>-->
+                <ucGrafbat:Read/>
             </TabItem>
 
             <!--PostGIS-->
