@@ -27,21 +27,16 @@ namespace City2RVT.GUI.Modify
             using (Transaction trans = new Transaction(doc, "Modify Layer Visibility"))
             {
                 trans.Start();
-                
+
+                var refPlaneDataStorage = utils.getRefPlaneDataStorageObject(doc);
+                var elementId2NameDict = refPlaneDataStorage.GetEntity(utils.getSchemaByName("HTWDD_RefPlaneSchema")).Get<IDictionary<ElementId, string>>("RefPlaneElementIdToString");
                 //Alkis / XPlanung 
-                FilteredElementCollector topoCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Topography);
-
+                
                 List<LayerStatus> layerStatusList = new List<LayerStatus>();
-
-                foreach (var element in topoCollector)
+                foreach (var entry in elementId2NameDict)
                 {
-                    string nameParam = element.LookupParameter("Name").AsString();
-                    if (nameParam != null && nameParam.StartsWith("Ref"))
-                    {
-                        bool isHidden = element.IsHidden(view);
-                        layerStatusList.Add(new LayerStatus { LayerName = nameParam, Visibility = !isHidden });
-
-                    }
+                    bool isHidden = doc.GetElement(entry.Key).IsHidden(view);
+                    layerStatusList.Add(new LayerStatus { LayerName = entry.Value, Visibility = !isHidden });
                 }
 
                 //CityGML
@@ -76,13 +71,11 @@ namespace City2RVT.GUI.Modify
                 foreach (var visibleLayer in layerUI.visibleLayers)
                 {
                     //ref plane layer ermitteln und abhängige subregions in liste schreiben
-                    foreach (var element in topoCollector)
+                    foreach (var entry in elementId2NameDict)
                     {
-                        string nameParam = element.LookupParameter("Name").AsString();
-
-                        if (nameParam != null && nameParam.Equals(visibleLayer))
+                        if (visibleLayer.Equals(entry.Value))
                         {
-                            var topoSurf = element as TopographySurface;
+                            var topoSurf = doc.GetElement(entry.Key) as TopographySurface;
                             layerToShow.Add(topoSurf.Id);
                             layerToShow.AddRange(topoSurf.GetHostedSubRegionIds());
                         }
@@ -96,13 +89,11 @@ namespace City2RVT.GUI.Modify
 
                 foreach (var unvisibleLayer in layerUI.unvisibleLayers)
                 {
-                    foreach (var element in topoCollector)
+                    foreach (var entry in elementId2NameDict)
                     {
-                        string nameParam = element.LookupParameter("Name").AsString();
-
-                        if (nameParam != null && nameParam.Equals(unvisibleLayer))
+                        if (unvisibleLayer.Equals(entry.Value))
                         {
-                            var topoSurf = element as TopographySurface;
+                            var topoSurf = doc.GetElement(entry.Key) as TopographySurface;
                             layerToHide.Add(topoSurf.Id);
                             layerToHide.AddRange(topoSurf.GetHostedSubRegionIds());
                         }
