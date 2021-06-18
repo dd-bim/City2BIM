@@ -5,14 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 //BimGisCad
-using BimGisCad.Collections;                        //MESH - will be removed
-using BimGisCad.Representation.Geometry;            //Axis2Placement3D
+using BimGisCad.Collections;                        //MESH
 using BimGisCad.Representation.Geometry.Composed;   //TIN
 using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 
+//used for result class (may update to seperate class for rvtTerrain)
 using BIMGISInteropLibs.IfcTerrain;
 
+//include for data exchange (revit)
 using C2BPoint = BIMGISInteropLibs.Geometry.C2BPoint;
+
+//IxMilia: for processing dxf files
+using IxMilia.Dxf;
 
 namespace BIMGISInteropLibs.RvtTerrain
 {
@@ -23,6 +27,16 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// </summary>
         public Tin Tin { get; private set; }
 
+        /// <summary>
+        /// MESH (result of the specific file reader)
+        /// </summary>
+        public Mesh Mesh { get; private set; }
+
+        /// <summary>
+        /// file reading / tin build process
+        /// </summary>
+        /// <param name="config">setting to config file processing and conversion process</param>
+        /// <returns></returns>
         public static List<C2BPoint> mapProcess(JsonSettings config)
         {
             //set grid size (as default value)
@@ -34,22 +48,40 @@ namespace BIMGISInteropLibs.RvtTerrain
             //mapping on basis of data type
             switch (config.fileType)
             {
-                //grid
+                //grid reader
                 case IfcTerrainFileType.Grid:
                     resTerrain = BIMGISInteropLibs.ElevationGrid.ReaderTerrain.ReadGrid(config);
                     break;
 
                 case IfcTerrainFileType.DXF:
-                    //resultTerrain = BIMGISInteropLibs.DXF.ReaderTerrain.ReadFile(config.filePath, out DxfFile dxfFile);
+                    //dxf file reader (output used for process terrain information)
+                    BIMGISInteropLibs.DXF.ReaderTerrain.ReadFile(config.filePath, out DxfFile dxfFile);
+
+                    //loop for distinguishing whether it is a tin or not (processing via points and lines)
+                   
+                    //set min dist to default value (TODO)
+                    config.minDist = 1;
+
+                    //Mesh Reader (if dxf file contains 3dfaces)
+                    resTerrain = DXF.ReaderTerrain.ReadDXFMESH(dxfFile, config);
                     break;
 
+                case IfcTerrainFileType.REB:
+                    //REB file reader
+                    REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(config.filePath);
 
+                    //use REB data via processing with converter
+                    resTerrain = REB.ReaderTerrain.ConvertRebToTin(rebData, config);
+                    break;
             }
 
+
+            //init empty point list
             dynamic dgmPtList = new List<C2BPoint>();
+
             if (config.isTin)
             {
-                foreach (Point3 p in resTerrain.Tin.Points)
+                foreach (Point3 p in resTerrain.Mesh.Points)
                 {
                     dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));
                 }
@@ -58,7 +90,9 @@ namespace BIMGISInteropLibs.RvtTerrain
             {
                 foreach (Point3 p in resTerrain.Mesh.Points)
                 {
-                    dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));
+                    {
+                        dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));
+                    }
                 }
             }
             
@@ -68,4 +102,6 @@ namespace BIMGISInteropLibs.RvtTerrain
         }
 
     }
+
+    
 }
