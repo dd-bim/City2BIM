@@ -55,15 +55,20 @@ namespace City2RVT.GUI
                 //start mapping process
                 var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config);
 
-                //
+                //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
+                
+                //create dtm (TODO - update)
                 rev.CreateDTM(res);
 
                 //var process = new Reader.ReadTerrain(doc);
+                
+                //process successfuly
                 return Autodesk.Revit.UI.Result.Succeeded;
             }
             else
             {
+                //user canceld / closed window
                 return Autodesk.Revit.UI.Result.Cancelled;
             }
         }
