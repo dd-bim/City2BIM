@@ -8,6 +8,7 @@
         xmlns:ucGrid ="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
         xmlns:ucReb ="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
         xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
+        xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -96,7 +97,7 @@
                 Header="TIN (LandXML, CityGML)"
                 >
                 <!--include the controller to read a xml file -->
-                <!--<ucXml:ucReadXml/>-->
+                <ucXml:Read/>
             </TabItem>
 
             <!--Grafbat-->
