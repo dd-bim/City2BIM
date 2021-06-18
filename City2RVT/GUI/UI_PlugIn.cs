@@ -45,7 +45,7 @@ namespace City2RVT.GUI
 
             RibbonPanel panelTerrain = application.CreateRibbonPanel(tabName, "DTM2BIM");
             PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Import Terrain data", thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrain")) as PushButton;
-            buttonDTM.ToolTip = "Import functionality for Digital Terrain Models out of XYZ data (regular grid)";
+            buttonDTM.ToolTip = "Import functionality for Digital Terrain Models";
             buttonDTM.LargeImage = getBitmapFromResx(ResourcePictures.DTM_32px_96dpi);
 
             #endregion Terrain panel
@@ -116,7 +116,7 @@ namespace City2RVT.GUI
 
             #endregion IFC Export panel
 
-            #region survPlan panel
+            #region survPlan panel (deactivated)
 
             // Code für Integrieren von Surveyorsplan2Revit. Klappt aber noch nicht, daher für Release auskommentiert.
             //----------------------------------------------------------------------
@@ -131,15 +131,22 @@ namespace City2RVT.GUI
             buttonattribute.ToolTip = "Show and edit properties.";
             buttonattribute.LargeImage = getBitmapFromResx(ResourcePictures.Attribute32);
             */
-            #endregion survPlan panel
-            
-            #region DataCat panel
+            #endregion survPlan panel (deactivated)
+
+            #region DataCat panel (deactivated)
             /*
             RibbonPanel panelDataCat = application.CreateRibbonPanel(tabName, "DataCat");
             PushButton loginDataCat = panelDataCat.AddItem(new PushButtonData("LoginBtn", "Login", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatLogin")) as PushButton;
             PushButton querySubjects = panelDataCat.AddItem(new PushButtonData("QuerySubjBtn", "Subj", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatSubjQuery")) as PushButton;
             */
-            #endregion DataCat panel
+            #endregion DataCat panel (deactivated)
+
+            #region Documentation
+            RibbonPanel panelDocu = application.CreateRibbonPanel(tabName, "Documentation");
+            PushButton buttonDoc = panelDocu.AddItem(new PushButtonData("Doc", "Help!", thisAssemblyPath, "City2RVT.GUI.Cmd_Documentation")) as PushButton;
+            buttonDoc.ToolTip = "Open documentation (GitHub)";
+            buttonDoc.LargeImage = getBitmapFromResx(ResourcePictures.HelpIcon_64px);
+            #endregion Documentation
 
             return Result.Succeeded;
 
