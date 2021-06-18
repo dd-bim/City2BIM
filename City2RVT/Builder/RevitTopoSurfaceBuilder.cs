@@ -34,17 +34,23 @@ namespace City2RVT.Builder
             {
                 t.Start();
 
-                using (var surface = TopographySurface.Create(doc, revDTMpts))
+                var surface = TopographySurface.Create(doc, revDTMpts);
+                storeTerrainIDInExtensibleStorage(doc, surface.Id);
+                surface.Pinned = true;
+
+
+
+                /*using (var surface = TopographySurface.Create(doc, revDTMpts))
                 {
-                    Prop_Revit.TerrainId = surface.Id; //needed for draping of 2D data, e.g. ALKIS data
+                    //Prop_Revit.TerrainId = surface.Id; //needed for draping of 2D data, e.g. ALKIS data
 
                     storeTerrainIDInExtensibleStorage(doc, surface.Id);
 
-                    Parameter kommentarParam = surface.LookupParameter("Kommentare");
-                    kommentarParam.Set("DTM: " + dtmFile);
+                    Parameter NameParam = surface.LookupParameter("Name");
+                    NameParam.Set("DTM: " + dtmFile);
 
                     surface.Pinned = true;
-                }
+                }*/
 
                 t.Commit();
             }
