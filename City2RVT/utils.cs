@@ -236,6 +236,17 @@ namespace City2RVT
                 return refPlaneDataStorage;
             }
         }
+
+        /// <summary>
+        /// get revit version
+        /// </summary>
+        /// <returns>integer value of version number</returns>
+        public static int GetVersionInfo(Autodesk.Revit.ApplicationServices.Application app)
+        {
+            int.TryParse(app.VersionNumber, out int verisonNum);
+        
+            return verisonNum;
+        }
     }
 
     public static class IfcGuid
