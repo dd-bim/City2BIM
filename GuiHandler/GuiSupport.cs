@@ -29,6 +29,21 @@ namespace GuiHandler
         }
 
         /// <summary>
+        /// DTM2BIM task checker
+        /// </summary>
+        public static bool rdyDTM2BIM()
+        {
+            if (taskfileOpening)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// task to check if a file has been opened
         /// </summary>
         public static bool taskfileOpening { get; set; }
@@ -57,5 +72,10 @@ namespace GuiHandler
         /// task to check if georef have been set
         /// </summary>
         public static bool selectGeoRef { get; set; }
+
+        /// <summary>
+        ///[DTM2BIM only] check if processing has been set
+        /// </summary>
+        public static bool selectProcessing { get; set; }
     }
 }
