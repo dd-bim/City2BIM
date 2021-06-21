@@ -243,8 +243,8 @@ namespace City2RVT
         /// </summary>
         public enum rvtVersion
         {
-            R2020 = 2020,
-            R2021 = 2021,
+            R20 = 2020,
+            R21 = 2021,
             
             /// <summary>
             /// if this is selected give an information that it is currently not supported
@@ -265,10 +265,10 @@ namespace City2RVT
             switch (num)
             {
                 case 2020:
-                    rV = rvtVersion.R2020;
+                    rV = rvtVersion.R20;
                     break;
                 case 2021:
-                    rV = rvtVersion.R2021;
+                    rV = rvtVersion.R21;
                     break;
                 default:
                     rV = 0;
