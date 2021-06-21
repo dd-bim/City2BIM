@@ -17,7 +17,16 @@ namespace City2RVT.GUI.DTM2BIM
         /// </summary>
         private bool startImport { set; get; } = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool useDelaunyTriangulation { get { return useDelauny; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool useDelauny { set; get; } = false;
+        
         /// <summary>
         /// init dtm2bim main window
         /// </summary>
@@ -31,6 +40,39 @@ namespace City2RVT.GUI.DTM2BIM
             //start mapping process
             startImport = true;
             Close();
+        }
+
+        private void cbProcessing_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (cbDelauny.IsSelected)
+            {
+                useDelauny = true;
+            }
+            else
+            {
+                useDelauny = false;
+            }
+
+            if(cbProcessing.SelectedIndex != -1)
+            {
+                //set task to done
+                GuiHandler.GuiSupport.selectProcessing = true;
+                
+                //ready checker
+                enableStartBtn(GuiHandler.GuiSupport.rdyDTM2BIM());
+            }
+        }
+
+        private void enableStartBtn(bool enable)
+        {
+            if (enable)
+            {
+                this.btnStartImport.IsEnabled = true;
+            }
+            else
+            {
+                this.btnStartImport.IsEnabled = false;
+            }
         }
     }
 }
