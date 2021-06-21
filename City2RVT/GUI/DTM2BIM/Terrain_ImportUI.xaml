@@ -85,7 +85,7 @@
 
                 <!-- conversion selection -->
                 <ComboBox x:Name="cbProcessing" Grid.Column="1" SelectionChanged="cbProcessing_SelectionChanged">
-                    <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)" IsSelected="True"></ComboBoxItem>
+                    <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)"></ComboBoxItem>
                     <ComboBoxItem x:Name="cbDelauny" Content="... Points/ Breaklines (Delauny Triangulation)" IsEnabled="False"></ComboBoxItem>
                 </ComboBox>
             </Grid>
