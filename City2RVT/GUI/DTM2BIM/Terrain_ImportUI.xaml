@@ -84,9 +84,9 @@
                 <TextBlock Grid.Column="0" Text="Process DTM import via:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
                 <!-- conversion selection -->
-                <ComboBox Grid.Column="1">
-                    <ComboBoxItem Content="... only Points (Conversion)" IsSelected="True"></ComboBoxItem>
-                    <ComboBoxItem x:Name="cbDT" Content="... Points/ Breaklines (Delauny Triangulation)" IsEnabled="False"></ComboBoxItem>
+                <ComboBox x:Name="cbProcessing" Grid.Column="1">
+                    <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)" IsSelected="True"></ComboBoxItem>
+                    <ComboBoxItem x:Name="cbDelauny" Content="... Points/ Breaklines (Delauny Triangulation)" IsEnabled="False"></ComboBoxItem>
                 </ComboBox>
             </Grid>
 

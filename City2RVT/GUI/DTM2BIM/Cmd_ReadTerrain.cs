@@ -58,9 +58,9 @@ namespace City2RVT.GUI
             else
             {
                 //enable delauny triangulation as conversion option
-                if (rvtVersion.Equals(utils.rvtVersion.R21))
+                if (rvtVersion.Equals(utils.rvtVersion.R20))
                 {
-                    terrainUI.cbDT.IsEnabled = true;
+                    terrainUI.cbDelauny.IsEnabled = true;
                 }
                 
                 //show main window to user (start dialog for settings)
