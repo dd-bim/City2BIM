@@ -208,8 +208,11 @@ namespace GuiHandler.userControler.Reb
             //set task (file opening) to true
             GuiSupport.taskfileOpening = true;
 
-            //check if all task are allready done
+            //[IfcTerrain] check if all task are allready done
             GuiSupport.readyState();
+
+            //[DTM2BIM] check if all task are allready done
+            GuiSupport.rdyDTM2BIM();
 
             //check if all task are allready done
             //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());

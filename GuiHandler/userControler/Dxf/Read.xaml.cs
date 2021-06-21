@@ -351,8 +351,11 @@ namespace GuiHandler.userControler.Dxf
                 //set task (file opening) to true
                 GuiSupport.taskfileOpening = true;
 
-                //check if all task are allready done
+                //[IfcTerrain] check if all task are allready done
                 GuiSupport.readyState();
+
+                //[DTM2BIM] check if all task are allready done
+                GuiSupport.rdyDTM2BIM();
 
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
 

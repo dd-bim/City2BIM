@@ -102,7 +102,13 @@ namespace GuiHandler.userControler.XML
             //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, init.config.fileType.ToString());
 
             //set task (file opening) to true
-            GuiHandler.GuiSupport.taskfileOpening = true;
+            GuiSupport.taskfileOpening = true;
+
+            //[IfcTerrain] check if all task are allready done
+            GuiSupport.readyState();
+
+            //[DTM2BIM] check if all task are allready done
+            GuiSupport.rdyDTM2BIM();
 
             //set json settings isTin to true
             init.config.isTin = true;

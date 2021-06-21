@@ -79,7 +79,13 @@ namespace GuiHandler.userControler.Grafbat
 
             #region error handling
             //set task (file opening) to true
-            GuiHandler.GuiSupport.taskfileOpening = true;
+            GuiSupport.taskfileOpening = true;
+
+            //[IfcTerrain] check if all task are allready done
+            GuiSupport.readyState();
+
+            //[DTM2BIM] check if all task are allready done
+            GuiSupport.rdyDTM2BIM();
 
             //gui logging (user information)
             //MainWindowBib.setGuiLog("Grafbat settings applyed.");
