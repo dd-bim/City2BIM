@@ -33,7 +33,7 @@
             Unchecked="chkCalculateTin_Unchecked"
             IsEnabled="False"
             ToolTip="Use this option to calculate a TIN of the (irregular) XYZ-Dataset."
-            Visibility="Hidden"/>
+            />
 
         <GroupBox
             Grid.Row="2"
