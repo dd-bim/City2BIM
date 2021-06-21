@@ -237,15 +237,45 @@ namespace City2RVT
             }
         }
 
+
+        /// <summary>
+        /// Enumeration for supported revit version
+        /// </summary>
+        public enum rvtVersion
+        {
+            R2020 = 2020,
+            R2021 = 2021,
+            
+            /// <summary>
+            /// if this is selected give an information that it is currently not supported
+            /// </summary>
+            NotSupported = 0
+        };
+
         /// <summary>
         /// get revit version
         /// </summary>
         /// <returns>integer value of version number</returns>
-        public static int GetVersionInfo(Autodesk.Revit.ApplicationServices.Application app)
+        public static rvtVersion GetVersionInfo(Autodesk.Revit.ApplicationServices.Application app)
         {
-            int.TryParse(app.VersionNumber, out int verisonNum);
-        
-            return verisonNum;
+            int num = int.Parse(app.VersionNumber);
+
+            rvtVersion rV = 0;
+
+            switch (num)
+            {
+                case 2020:
+                    rV = rvtVersion.R2020;
+                    break;
+                case 2021:
+                    rV = rvtVersion.R2021;
+                    break;
+                default:
+                    rV = 0;
+                    break;
+            }
+
+            return rV;
         }
     }
 
