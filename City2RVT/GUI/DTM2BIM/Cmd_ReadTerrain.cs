@@ -76,8 +76,18 @@ namespace City2RVT.GUI
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
 
-                //create dtm (TODO - update)
-                rev.CreateDTM(res);
+                if (!terrainUI.useDelaunyTriangulation)
+                {
+                    //create dtm (TODO - update)
+                    rev.CreateDTM(res);
+                }
+                else
+                {
+                    //error handling
+                    TaskDialog.Show("Error - Implementation failed","Sorry!,\nSomething went wrong.");
+
+                    return Result.Failed;
+                }
 
                 //show info dialog (may update to better solution)
                 TaskDialog.Show("DTM import", "DTM import finished!");
