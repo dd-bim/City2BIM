@@ -37,21 +37,7 @@ namespace City2RVT.Builder
                 var surface = TopographySurface.Create(doc, revDTMpts);
                 storeTerrainIDInExtensibleStorage(doc, surface.Id);
                 surface.Pinned = true;
-
-
-
-                /*using (var surface = TopographySurface.Create(doc, revDTMpts))
-                {
-                    //Prop_Revit.TerrainId = surface.Id; //needed for draping of 2D data, e.g. ALKIS data
-
-                    storeTerrainIDInExtensibleStorage(doc, surface.Id);
-
-                    Parameter NameParam = surface.LookupParameter("Name");
-                    NameParam.Set("DTM: " + dtmFile);
-
-                    surface.Pinned = true;
-                }*/
-
+                
                 t.Commit();
             }
         }
