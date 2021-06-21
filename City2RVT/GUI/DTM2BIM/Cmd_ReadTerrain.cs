@@ -44,8 +44,23 @@ namespace City2RVT.GUI
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();
 
-            //show main window to user (start dialog for settings)
-            terrainUI.ShowDialog();
+            #region version handler
+            //get current revit version
+            utils.rvtVersion rvtVersion = utils.GetVersionInfo(doc.Application);
+
+            if (rvtVersion.Equals(utils.rvtVersion.NotSupported))
+            {
+                //error massage
+                TaskDialog.Show("Supported version", "The used Revit version is not supported!\nProcessing failed!");
+                
+                return Result.Failed;
+            }
+            else
+            {
+                //show main window to user (start dialog for settings)
+                terrainUI.ShowDialog();
+            }
+            #endregion
 
             if(terrainUI.startTerrainImport)
             {
@@ -54,7 +69,7 @@ namespace City2RVT.GUI
 
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
-                
+
                 //create dtm (TODO - update)
                 rev.CreateDTM(res);
 
