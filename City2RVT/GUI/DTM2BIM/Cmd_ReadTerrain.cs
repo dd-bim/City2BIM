@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-//include Revit API
+﻿//include Revit API
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
@@ -11,11 +9,6 @@ using uC = GuiHandler.userControler;
 
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
-
-//namespace for C2BPoint class (may need to be removed)
-using C2BPoint = BIMGISInteropLibs.Geometry.C2BPoint;
-
-using City2RVT.GUI;
 
 namespace City2RVT.GUI
 {
@@ -32,7 +25,7 @@ namespace City2RVT.GUI
     public class Cmd_ReadTerrain : IExternalCommand
     {
         // The main Execute method (inherited from IExternalCommand) must be public
-        public Autodesk.Revit.UI.Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
+        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             //get revit document
             Document doc = revit.Application.ActiveUIDocument.Document;
@@ -46,6 +39,7 @@ namespace City2RVT.GUI
             uC.Reb.Read ucReb = new uC.Reb.Read();
             uC.Grafbat.Read ucGrafbat = new uC.Grafbat.Read();
             uC.XML.Read ucXml = new uC.XML.Read();
+            //TODO: postgis reader
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();
@@ -64,18 +58,16 @@ namespace City2RVT.GUI
                 //create dtm (TODO - update)
                 rev.CreateDTM(res);
 
-                //var process = new Reader.ReadTerrain(doc);
-
                 //show info dialog (may update to better solution)
                 TaskDialog.Show("DTM import", "DTM import finished!");
 
                 //process successfuly
-                return Autodesk.Revit.UI.Result.Succeeded;
+                return Result.Succeeded;
             }
             else
             {
                 //user canceld / closed window
-                return Autodesk.Revit.UI.Result.Cancelled;
+                return Result.Cancelled;
             }
         }
     }
