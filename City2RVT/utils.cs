@@ -239,7 +239,8 @@ namespace City2RVT
 
 
         /// <summary>
-        /// Enumeration for supported revit version
+        /// Enumeration for supported revit version <para/>
+        /// UPDATE ME: if a Revit version is added or no longer supported
         /// </summary>
         public enum rvtVersion
         {
@@ -277,6 +278,8 @@ namespace City2RVT
 
             return rV;
         }
+
+
     }
 
     public static class IfcGuid
