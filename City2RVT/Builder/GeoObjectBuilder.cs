@@ -58,8 +58,6 @@ namespace City2RVT.Builder
                         TopographySurface refSurf = TopographySurface.Create(doc, RevitPts);
                         refSurf.Pinned = true;
 
-                        //Parameter nameParam = refSurf.LookupParameter("Name");
-                        //nameParam.Set("RefPlane_" + groupName);
                         var entity = refPlaneDataStorage.GetEntity(utils.getSchemaByName("HTWDD_RefPlaneSchema"));
                         IDictionary<ElementId, string> value = entity.Get <IDictionary<ElementId, string>>("RefPlaneElementIdToString");
                         value.Add(refSurf.Id, groupName);
@@ -82,12 +80,6 @@ namespace City2RVT.Builder
 
                         TopographySurface copiedRefSurf = doc.GetElement(copyOfRefSurfId.First()) as TopographySurface;
                         copiedRefSurf.Pinned = true;
-
-                        //var label = LabelUtils.GetLabelFor(BuiltInParameter.ALL_MODEL_TYPE_NAME);
-                        //Parameter nameParam = copiedRefSurf.LookupParameter(label);
-                        //nameParam.Set("RefPlane_" + groupName);
-                        //Parameter nameParam = copiedRefSurf.LookupParameter("Name");
-                        //nameParam.Set("RefPlane_" + groupName);
 
                         var entity = refPlaneDataStorage.GetEntity(utils.getSchemaByName("HTWDD_RefPlaneSchema"));
                         IDictionary<ElementId, string> value = entity.Get<IDictionary<ElementId, string>>("RefPlaneElementIdToString");
