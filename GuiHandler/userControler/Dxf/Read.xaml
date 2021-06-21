@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="IFCTerrainGUI.GUI.DXF.ucReadDxf"
+﻿<UserControl x:Class="GuiHandler.userControler.Dxf.Read"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.DXF"
+             xmlns:local="clr-namespace:GuiHandler.userControler.Dxf"
              mc:Ignorable="d" 
              d:DesignHeight="525" d:DesignWidth="385"
              >
@@ -24,6 +24,7 @@
 
             <Button
                 x:Name="btnReadDxf"
+                x:FieldModifier="public"
                 Grid.ColumnSpan="3"
                 Content="Read 'DXF file'"
                 ToolTip="Open DXF file. Please check that it is no longer opened." Click="btnReadDxf_Click"/>
@@ -90,8 +91,8 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             Text="Processing via..."/>
-                        
-                        
+
+
                         <RadioButton
                             x:Name="rbDxfFaces"
                             Content="Faces"
@@ -175,10 +176,11 @@
             </GroupBox>
             <Button
                 x:Name="btnProcessDxf"
+                x:FieldModifier="public"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Grid.Row="5"
-                Content="Process 'DXF' file" Click="btnProcessDxf_Click"
+                Content="Apply 'DXF' file settings" Click="btnProcessDxf_Click"
                 IsEnabled="False">
             </Button>
         </Grid>

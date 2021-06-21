@@ -85,17 +85,15 @@ namespace BIMGISInteropLibs.REB
         /// </summary>
         /// <param name="fileNames">Location of the REB data set</param>
         /// <returns>RebDaData - Container (must still be converted to a TIN)</returns>
-        public static RebDaData ReadReb(string[] fileNames)
+        public static RebDaData ReadReb(string fileName)
         {
             //Create instance of the container
             var rebData = new RebDaData();
             //[TODO] add an error message if file cannot be processed
             try
             {
-                foreach (string fileName in fileNames)
+                if (File.Exists(fileName))
                 {
-                    if (File.Exists(fileName))
-                    {
                         
                         using (var sr = new StreamReader(fileName))
                         {
@@ -161,7 +159,7 @@ namespace BIMGISInteropLibs.REB
                             }
                         }
                     }
-                }
+                
             }
             catch
             {

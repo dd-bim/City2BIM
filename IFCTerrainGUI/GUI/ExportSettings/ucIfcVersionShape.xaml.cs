@@ -20,6 +20,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
 using BIMGISInteropLibs.Logging; //access to log writer
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -75,14 +78,14 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             if (cbIfcVersion.SelectedIndex != -1)
             {
                 //set task to true
-                MainWindowBib.selectIfcVersion = true;
+                GuiHandler.GuiSupport.selectIfcVersion = true;
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] IFC schema set."));
                 MainWindowBib.setGuiLog("IFC schema version set.");
 
                 //check if all required tasks are performed
-                MainWindowBib.readyState();
+                MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
             }
 
             #endregion error handling
@@ -91,12 +94,12 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //IfcVersion: 2x3 (using MESH)
             if (this.ifc2x3.IsSelected)
             {
-                MainWindow.jSettings.outIFCType = BIMGISInteropLibs.IFC.IfcVersion.IFC2x3;
+                init.config.outIFCType = BIMGISInteropLibs.IFC.IfcVersion.IFC2x3;
             }
             //IfcVersion: 4 (using MESH)
             else if (this.ifc4.IsSelected)
             {
-                MainWindow.jSettings.outIFCType = BIMGISInteropLibs.IFC.IfcVersion.IFC4;
+                init.config.outIFCType = BIMGISInteropLibs.IFC.IfcVersion.IFC4;
             }
             //IfcVersion 4.3 (Placeholder)
             else if (this.ifc4dot3.IsSelected)
@@ -128,36 +131,36 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //GeometricCurveSet GCS
             if (this.ifcGCS.IsSelected)
             {
-                MainWindow.jSettings.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.GCS;
+                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.GCS;
             }
             //Shell Based Surface Model (SBSM)
             else if (this.ifcSBSM.IsSelected)
             {
-                MainWindow.jSettings.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.SBSM;
+                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.SBSM;
             }
             //Triangulated Face Set (TFS)
             else if (this.ifcTFS.IsSelected)
             {
-                MainWindow.jSettings.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.TFS;
+                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.TFS;
             }
             //Triangulated Irregular Network (TIN) [currently not supported]
             else if (this.ifcTIN.IsSelected)
             {
-                MainWindow.jSettings.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.TIN;
+                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.TIN;
             }
 
             //check if an item was selected
             if (cbShapeRepres.SelectedIndex != -1)
             {
                 //set task to true
-                MainWindowBib.selectIfcShape = true;
+                GuiHandler.GuiSupport.selectIfcShape = true;
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] IFC shape representation set."));
                 MainWindowBib.setGuiLog("IFC shape representation set.");
 
                 //check if all required tasks are performed
-                MainWindowBib.readyState();
+                MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
             }
         }
 
@@ -167,7 +170,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void chkIfcGeoEl_Checked(object sender, RoutedEventArgs e)
         {
             //bool to tro --> export ifc geo element
-            MainWindow.jSettings.geoElement = true;
+            init.config.geoElement = true;
         }
 
         /// <summary>
@@ -176,7 +179,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void chkIfcGeoEl_Unchecked(object sender, RoutedEventArgs e)
         {
             //bool to false --> no ifc geo element
-            MainWindow.jSettings.geoElement = false;
+            init.config.geoElement = false;
         }
     }
 }

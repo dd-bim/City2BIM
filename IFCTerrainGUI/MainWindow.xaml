@@ -3,13 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ucXml = "clr-namespace:IFCTerrainGUI.GUI.XML"
-        xmlns:ucDxf ="clr-namespace:IFCTerrainGUI.GUI.DXF"
-        xmlns:ucGraftbat ="clr-namespace:IFCTerrainGUI.GUI.Grafbat"
         xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
-        xmlns:ucGrid ="clr-namespace:IFCTerrainGUI.GUI.ElevationGrid"
-        xmlns:ucReb ="clr-namespace:IFCTerrainGUI.GUI.REB"
-        xmlns:ucPostGIS ="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
+        xmlns:ucDxf ="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
+        xmlns:ucGrid ="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
+        xmlns:ucReb ="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
+        xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
+        xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -88,7 +87,8 @@
             <TabItem x:Name="tabPageDxf"        
                      Header="CAD (DXF)">
                 <!--include the controller to read a dxf file (Attention: Background Worker is used here!) Changes have to be done there!!!-->
-                <ucDxf:ucReadDxf/>
+                <!--<ucDxf:ucReadDxf/>-->
+                <ucDxf:Read/>
             </TabItem>
 
             <!--XML-->
@@ -97,13 +97,13 @@
                 Header="TIN (LandXML, CityGML)"
                 >
                 <!--include the controller to read a xml file -->
-                <ucXml:ucReadXml/>
+                <ucXml:Read/>
             </TabItem>
 
             <!--Grafbat-->
             <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
                 <!-- reference to the user controller (logic is outsourced there)-->
-                <ucGraftbat:ucReadGraftbat/>
+                <ucGrafbat:Read/>
             </TabItem>
 
             <!--PostGIS-->
@@ -112,7 +112,7 @@
                 Header="Database (PostGIS)">
                 
                 <!-- add user controler for postgis reading-->
-                <ucPostGIS:ucReadPostGis/>
+                <!--<ucPostGIS:ucReadPostGis/>-->
 
             </TabItem>
 
@@ -121,9 +121,8 @@
                 x:Name ="tabPageGrid"      
                 Header="Grid (XYZ)"
                 IsEnabled="True">
-
                 <!-- add user controler for reading reb data -->
-                <ucGrid:ucElevationGrid/>
+                <ucGrid:Read/>
                 
             </TabItem>
 
@@ -131,11 +130,8 @@
             <TabItem 
                 x:Name ="tabPageReb"       
                 Header="REB (DA45, DA49, DA58)">
-
                 <!-- add user controler for reading reb data -->
-                <ucReb:ucReadReb/>
-
-
+                <ucReb:Read/>
             </TabItem>
             <!-- more tabs (if needed) have to be added here-->
         </TabControl>
@@ -316,7 +312,7 @@
 
                 <StackPanel Grid.Column="1">
                     <TextBox x:Name="tbFileName" Height="25" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileType" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                    <TextBox x:Name="tbFileType" x:FieldModifier="public" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="tbLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="tbFileSpecific" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
                     <TextBox x:Name="tbFileSpecific2" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>

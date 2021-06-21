@@ -236,6 +236,50 @@ namespace City2RVT
                 return refPlaneDataStorage;
             }
         }
+
+
+        /// <summary>
+        /// Enumeration for supported revit version <para/>
+        /// UPDATE ME: if a Revit version is added or no longer supported
+        /// </summary>
+        public enum rvtVersion
+        {
+            R20 = 2020,
+            R21 = 2021,
+            
+            /// <summary>
+            /// if this is selected give an information that it is currently not supported
+            /// </summary>
+            NotSupported = 0
+        };
+
+        /// <summary>
+        /// get revit version
+        /// </summary>
+        /// <returns>integer value of version number</returns>
+        public static rvtVersion GetVersionInfo(Autodesk.Revit.ApplicationServices.Application app)
+        {
+            int num = int.Parse(app.VersionNumber);
+
+            rvtVersion rV = 0;
+
+            switch (num)
+            {
+                case 2020:
+                    rV = rvtVersion.R20;
+                    break;
+                case 2021:
+                    rV = rvtVersion.R21;
+                    break;
+                default:
+                    rV = 0;
+                    break;
+            }
+
+            return rV;
+        }
+
+
     }
 
     public static class IfcGuid

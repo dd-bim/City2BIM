@@ -19,7 +19,8 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //embed for error handling
 
 using System.Globalization; //included to use culture info (parsing double values)
 
-using BIMGISInteropLibs.ProjCRS;//included to request epsg codes
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
 
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
@@ -70,10 +71,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef50Default_Checked(object sender, RoutedEventArgs e)
         {
             //in this case set to default (background: the project center will be used)
-            MainWindow.jSettings.customOrigin = false;
+            init.config.customOrigin = false;
 
             //set task (file opening) to true
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //set tasks to true
             valueXset = valueYset = valueZset = true;
@@ -88,7 +89,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef50Default_Unchecked(object sender, RoutedEventArgs e)
         {
             //set task (file opening) to false: user have to apply settings
-            MainWindowBib.selectGeoRef = false;
+            GuiHandler.GuiSupport.selectGeoRef = false;
 
             //set tasks to false
             valueXset = valueYset = valueZset = false;
@@ -103,7 +104,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef50User_Checked(object sender, RoutedEventArgs e)
         {
             //set json settings (use of custom origin)
-            MainWindow.jSettings.customOrigin = true;
+            init.config.customOrigin = true;
 
             //enabling input fields
             inputGrid.IsEnabled = true;
@@ -264,47 +265,47 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void btnApplyLoGeoRef50_Click(object sender, RoutedEventArgs e)
         {
             //set json settings (use of level of georef 50)
-            MainWindow.jSettings.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef50;
+            init.config.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef50;
 
             //if custom origin: set values of input fields to json settings
-            if (MainWindow.jSettings.customOrigin)
+            if (init.config.customOrigin)
             {
                 //set to json settings
-                MainWindow.jSettings.xOrigin = Double.Parse(tbLoGeoRef50ValueX.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.yOrigin = Double.Parse(tbLoGeoRef50ValueY.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.zOrigin = Double.Parse(tbLoGeoRef50ValueZ.Text, CultureInfo.CurrentCulture);
+                init.config.xOrigin = Double.Parse(tbLoGeoRef50ValueX.Text, CultureInfo.CurrentCulture);
+                init.config.yOrigin = Double.Parse(tbLoGeoRef50ValueY.Text, CultureInfo.CurrentCulture);
+                init.config.zOrigin = Double.Parse(tbLoGeoRef50ValueZ.Text, CultureInfo.CurrentCulture);
             }
 
             if(this.chkRotationLevel50.IsChecked == true)
             {
                 //set rotation to json settings
-                MainWindow.jSettings.trueNorth = Double.Parse(tbRotationLevel50.Text, CultureInfo.CurrentCulture);
+                init.config.trueNorth = Double.Parse(tbRotationLevel50.Text, CultureInfo.CurrentCulture);
             }
             else
             {
                 //set to defaul value
-                MainWindow.jSettings.trueNorth = 0;
+                init.config.trueNorth = 0;
             }
 
             if (this.chkScaleLevel50.IsChecked == true)
             {
                 //set rotation to json settings
-                MainWindow.jSettings.scale = Double.Parse(tbScaleLevel50.Text);
+                init.config.scale = Double.Parse(tbScaleLevel50.Text);
             }
             else
             {
                 //set to defaul value
-                MainWindow.jSettings.scale = 1.0;
+                init.config.scale = 1.0;
             }
 
             //set gui log
             MainWindowBib.setGuiLog("LoGeoRef50 set.");
 
             //set task (logeoref) to true
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //check if all tasks are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
 
         /// <summary>
@@ -394,19 +395,19 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 if (isValid)
                 {
                     //EPSG Code
-                    MainWindow.jSettings.crsName = projCRS.Code;
+                    init.config.crsName = projCRS.Code;
 
                     //CRS Description (example only)
-                    MainWindow.jSettings.crsDescription = projCRS.Name;
+                    init.config.crsDescription = projCRS.Name;
 
                     //split for getting name and zone
                     string[] projection = projCRS.Name.Split('/');
 
                     //projection name
-                    MainWindow.jSettings.projectionName = projection[0];
+                    init.config.projectionName = projection[0];
 
                     //projection zone
-                    MainWindow.jSettings.projectionZone = projection[1].Remove(0, 1);
+                    init.config.projectionZone = projection[1].Remove(0, 1);
 
                     int code = projCRS.BaseCoordRefSystem.Code;
 
@@ -414,7 +415,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                     var geoCRS = BIMGISInteropLibs.GeodeticCRS.GeodeticCRS.get(code);
 
                     //geodetic datum
-                    MainWindow.jSettings.geodeticDatum = geoCRS.Datum.Name;
+                    init.config.geodeticDatum = geoCRS.Datum.Name;
 
                     //get geoCRS EPSG Code
                     code = geoCRS.Datum.Code;
@@ -423,7 +424,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                     var datum = BIMGISInteropLibs.Datum.Datum.get(code);
 
                     //vertical datum (need other request)
-                    MainWindow.jSettings.verticalDatum = datum.Ellipsoid.Name;
+                    init.config.verticalDatum = datum.Ellipsoid.Name;
 
                     //gui logging (user information)
                     MainWindowBib.setGuiLog("EPSG code readed.");

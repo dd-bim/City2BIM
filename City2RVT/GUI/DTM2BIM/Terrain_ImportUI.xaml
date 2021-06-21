@@ -1,0 +1,124 @@
+﻿<Window x:Class="City2RVT.GUI.DTM2BIM.Terrain_ImportUI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:Dxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
+        xmlns:Grid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
+        xmlns:Reb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
+        xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
+        xmlns:Xml="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
+        xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
+        mc:Ignorable="d" 
+        Height="650" 
+        Width="800"
+        Title="Import Terrain Data"
+        ResizeMode="NoResize">
+    <Grid Margin="5">
+        <!--grid definitions for gui layout-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="1.8*"/>
+            <RowDefinition Height="1.3*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <!-- Textbox "File Settings"-->
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="File Settings"/>
+
+        <!-- Textbox "Import Settings"-->
+        <TextBlock  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="Import Settings"/>
+        
+        <!-- Tab Manager-->
+        <TabControl Grid.Row="1" Grid.RowSpan="4">
+            <TabItem Header="CAD (DXF)">
+                <!-- user controler dxf-->
+                <Dxf:Read/>
+
+            </TabItem>
+            <TabItem Header="TIN (LandXML, CityGML)">
+                <!-- user controler xml-->
+                <Xml:Read/>
+            </TabItem>
+            <TabItem Header="GEOgraf (OUT)">
+                <!-- user controler grafbat-->
+                <Grafbat:Read/>
+            </TabItem>
+            <TabItem Header="Database (PostGIS)">
+                <!-- user controler postgis-->
+                
+            </TabItem>
+            <TabItem Header="Grid (XYZ)">
+                <!-- user controler grid-->
+                <Grid:Read/>
+
+            </TabItem>
+            <TabItem Header="REB (DA45, DA49, DA58)">
+                <!-- user controler reb-->
+                <Reb:Read/>
+            </TabItem>
+        </TabControl>
+
+        <!-- import button (for execution)-->
+        <Button x:Name="btnStartImport" Grid.Row="5" Grid.ColumnSpan="2" Content="Import" Margin="0,5" FontSize="16" FontWeight="Bold" Click="btnStartImport_Click" IsEnabled="False"/>
+
+        <!-- config import -->
+        <GroupBox 
+            Grid.Row="1"
+            Grid.Column="1"
+            Header="Settings">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="1.8*"/>
+
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Process DTM import via:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                <!-- conversion selection -->
+                <ComboBox x:Name="cbProcessing" Grid.Column="1" SelectionChanged="cbProcessing_SelectionChanged">
+                    <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)"></ComboBoxItem>
+                    <ComboBoxItem x:Name="cbDelauny" Content="... Points/ Breaklines (Delauny Triangulation)" IsEnabled="False"></ComboBoxItem>
+                </ComboBox>
+            </Grid>
+
+            
+        </GroupBox>
+
+        <!-- bounding box input-->
+        <GroupBox
+            Grid.Row="2"
+            Grid.Column="1"
+            Header="Bounding Box"
+            >
+            
+        </GroupBox>
+
+        <!-- metadata -->
+        <GroupBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Header="Metadata"
+            >
+
+        </GroupBox>
+        
+        <!-- logging -->
+        <GroupBox
+            Grid.Row="4"
+            Grid.Column="1"
+            Header="Logging"
+            >
+
+        </GroupBox>
+
+    </Grid>
+</Window>

@@ -44,8 +44,8 @@ namespace City2RVT.GUI
             #region Terrain panel
 
             RibbonPanel panelTerrain = application.CreateRibbonPanel(tabName, "DTM2BIM");
-            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Get Terrain data", thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrainXYZ")) as PushButton;
-            buttonDTM.ToolTip = "Import functionality for Digital Terrain Models out of XYZ data (regular grid)";
+            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Import Terrain data", thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrain")) as PushButton;
+            buttonDTM.ToolTip = "Import functionality for Digital Terrain Models";
             buttonDTM.LargeImage = getBitmapFromResx(ResourcePictures.DTM_32px_96dpi);
 
             #endregion Terrain panel
@@ -116,10 +116,11 @@ namespace City2RVT.GUI
 
             #endregion IFC Export panel
 
-            #region survPlan panel
+            #region survPlan panel (deactivated)
 
             // Code für Integrieren von Surveyorsplan2Revit. Klappt aber noch nicht, daher für Release auskommentiert.
             //----------------------------------------------------------------------
+            /*
             RibbonPanel panelSurveyorsPlan = application.CreateRibbonPanel(tabName, "Surveyorsplan2Revit");
 
             PushButton buttonsurvPlan = panelSurveyorsPlan.AddItem(new PushButtonData("Surveyorsplan2Revit", "Surveyorsplan2Revit", thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.importLageplan")) as PushButton;
@@ -129,15 +130,23 @@ namespace City2RVT.GUI
             PushButton buttonattribute = panelSurveyorsPlan.AddItem(new PushButtonData("Attribute", "Attribute", thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.Attributes")) as PushButton;
             buttonattribute.ToolTip = "Show and edit properties.";
             buttonattribute.LargeImage = getBitmapFromResx(ResourcePictures.Attribute32);
+            */
+            #endregion survPlan panel (deactivated)
 
-            #endregion survPlan panel
-
-            #region DataCat panel
+            #region DataCat panel (deactivated)
+            /*
             RibbonPanel panelDataCat = application.CreateRibbonPanel(tabName, "DataCat");
             PushButton loginDataCat = panelDataCat.AddItem(new PushButtonData("LoginBtn", "Login", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatLogin")) as PushButton;
             PushButton querySubjects = panelDataCat.AddItem(new PushButtonData("QuerySubjBtn", "Subj", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatSubjQuery")) as PushButton;
+            */
+            #endregion DataCat panel (deactivated)
 
-            #endregion DataCat panel
+            #region Documentation
+            RibbonPanel panelDocu = application.CreateRibbonPanel(tabName, "Documentation");
+            PushButton buttonDoc = panelDocu.AddItem(new PushButtonData("Doc", "Help!", thisAssemblyPath, "City2RVT.GUI.Cmd_Documentation")) as PushButton;
+            buttonDoc.ToolTip = "Open documentation (GitHub)";
+            buttonDoc.LargeImage = getBitmapFromResx(ResourcePictures.HelpIcon_32px);
+            #endregion Documentation
 
             return Result.Succeeded;
 

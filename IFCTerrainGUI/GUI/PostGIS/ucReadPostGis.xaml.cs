@@ -17,6 +17,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 using Microsoft.Win32; //used for file handling
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace IFCTerrainGUI.GUI.PostGIS
 {
     /// <summary>
@@ -41,56 +44,56 @@ namespace IFCTerrainGUI.GUI.PostGIS
 
             #region set json settings
             //set "fileType" to PostGIS
-            MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS;
+            init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS;
 
             //set host
-            MainWindow.jSettings.host = this.tbHost.Text;
+            init.config.host = this.tbHost.Text;
 
             //set port
-            MainWindow.jSettings.port = Convert.ToInt32(this.tbPort.Text);
+            init.config.port = Convert.ToInt32(this.tbPort.Text);
 
             //set username
-            MainWindow.jSettings.user = this.tbUser.Text;
+            init.config.user = this.tbUser.Text;
 
             //set password
-            MainWindow.jSettings.password = this.tbPwd.Password;
+            init.config.password = this.tbPwd.Password;
 
             //set database
-            MainWindow.jSettings.database = this.tbDatabase.Text;
+            init.config.database = this.tbDatabase.Text;
 
             //set schema
-            MainWindow.jSettings.schema = this.tbSchema.Text;
+            init.config.schema = this.tbSchema.Text;
 
             //set tin geom (table)
-            MainWindow.jSettings.tin_table = this.tbTinTable.Text;
+            init.config.tin_table = this.tbTinTable.Text;
 
             //set tin geom (column)
-            MainWindow.jSettings.tin_column = this.tbTinColumn.Text;
+            init.config.tin_column = this.tbTinColumn.Text;
 
             //set tin id (colum)
-            MainWindow.jSettings.tinid_column = this.tbTinIdColumn.Text;
+            init.config.tinid_column = this.tbTinIdColumn.Text;
 
             //set tin id (value)
-            MainWindow.jSettings.tin_id = Convert.ToInt32(this.tbTinIdValue.Text);
+            init.config.tin_id = Convert.ToInt32(this.tbTinIdValue.Text);
 
             //set is TIN
-            MainWindow.jSettings.isTin = true;
+            init.config.isTin = true;
 
             #region breaklines
             //check if breaklines should be processed
             if(rbProcessBlTrue.IsChecked == true)
             {
                 //breakline will be processed
-                MainWindow.jSettings.breakline = true;
+                init.config.breakline = true;
 
                 //set bl table
-                MainWindow.jSettings.breakline_table = this.tbBlTable.Text;
+                init.config.breakline_table = this.tbBlTable.Text;
 
                 //set bl column
-                MainWindow.jSettings.breakline_column = this.tbBlGeomColumn.Text;
+                init.config.breakline_column = this.tbBlGeomColumn.Text;
 
                 //set bl tin id (column)
-                MainWindow.jSettings.breakline_tin_id = this.tbBlTinIdColumn.Text;
+                init.config.breakline_tin_id = this.tbBlTinIdColumn.Text;
 
                 //gui feedback
                 ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will be processed";
@@ -98,7 +101,7 @@ namespace IFCTerrainGUI.GUI.PostGIS
             else
             {
                 //breakline will not processed
-                MainWindow.jSettings.breakline = false;
+                init.config.breakline = false;
 
                 //gui feedback
                 ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will NOT be processed";
@@ -108,7 +111,7 @@ namespace IFCTerrainGUI.GUI.PostGIS
 
             #region gui feedback
             //return info to database
-            ((MainWindow)Application.Current.MainWindow).tbFileName.Text = MainWindow.jSettings.database;
+            ((MainWindow)Application.Current.MainWindow).tbFileName.Text = init.config.database;
 
             //return info to file type
             ((MainWindow)Application.Current.MainWindow).tbFileType.Text = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS.ToString() + " request";
@@ -122,10 +125,10 @@ namespace IFCTerrainGUI.GUI.PostGIS
 
             #region error handling
             //set task (file opening) to true
-            MainWindowBib.taskfileOpening = true;
+            GuiHandler.GuiSupport.taskfileOpening = true;
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
             #endregion error handling
         }
 

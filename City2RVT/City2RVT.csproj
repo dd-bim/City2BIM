@@ -241,6 +241,7 @@
       <DependentUpon>CityGML_ImportUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
+    <Compile Include="GUI\Cmd_Documentation.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatLogin.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatSubjQuery.cs" />
     <Compile Include="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
@@ -251,6 +252,9 @@
     </Compile>
     <Compile Include="GUI\DataCat\LoginScreen.xaml.cs">
       <DependentUpon>LoginScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DTM2BIM\Terrain_ImportUI.xaml.cs">
+      <DependentUpon>Terrain_ImportUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
     <Compile Include="GUI\GUI_helper.cs" />
@@ -326,7 +330,7 @@
     <Compile Include="GUI\City2BIM\Cmd_ImportCityGML.cs" />
     <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLFaces.cs" />
     <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLSolids.cs" />
-    <Compile Include="GUI\DTM2BIM\Cmd_ReadTerrainXYZ.cs" />
+    <Compile Include="GUI\DTM2BIM\Cmd_ReadTerrain.cs" />
     <Compile Include="GUI\Georeferencing\Cmd_GeoRefUI.cs" />
     <Compile Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml.cs">
       <DependentUpon>Wpf_GeoRef_Form.xaml</DependentUpon>
@@ -388,6 +392,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\DTM2BIM\Terrain_ImportUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -438,6 +446,7 @@
     </None>
     <None Include="img\Attribute32.png" />
     <Content Include="GdalConfiguration.vb" />
+    <Content Include="img\HelpIcon_32px.png" />
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -513,6 +522,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource_MetaJSONs.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -529,6 +539,10 @@
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GuiHandler\GuiHandler.csproj">
+      <Project>{24352448-2cab-4638-b4db-326539381408}</Project>
+      <Name>GuiHandler</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
