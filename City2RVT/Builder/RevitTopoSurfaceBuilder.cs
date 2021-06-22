@@ -33,21 +33,8 @@ namespace City2RVT.Builder
         /// <param name="terrainPoints"></param>
         public void createDTMviaPoints(List<C2BPoint> terrainPoints)
         {
-            //init new list
-            var revDTMpts = new List<XYZ>();
-
-            //loop throgh every point in list
-            foreach(var pt in terrainPoints)
-            {
-                //Transformation for revit
-                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(pt, true);
-
-                //add to new list (as projected point)
-                revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));
-            }
-
-            //get filename
-            var dtmFile = GUI.Prop_NAS_settings.DtmFile;
+            //transform input points to revit
+            var revDTMpts = transPts(terrainPoints);
 
             //transaction for surface / dtm creation
             using (Transaction t = new Transaction(doc, "Create TopoSurface"))
@@ -85,6 +72,41 @@ namespace City2RVT.Builder
                     return;
                 }
             }
+        }
+
+
+        /// <summary>
+        /// method to create DTM using point list and list of facets
+        /// </summary>
+        /// <param name="terrainPoints">point list (xyz)</param>
+        /// <param name="terrainFaces"></param>
+        public void createDTM(List<C2BPoint> terrainPoints, List<PolymeshFacet> terrainFaces)
+        {
+            //transform input points to revit
+            var revDTMpts = transPts(terrainPoints);
+
+
+        }
+
+        /// <summary>
+        /// function to transform points to revit crs
+        /// </summary>
+        private List<XYZ> transPts(List<C2BPoint> terrainPoints)
+        {
+            //init new list
+            var revDTMpts = new List<XYZ>();
+
+            //loop throgh every point in list
+            foreach (var pt in terrainPoints)
+            {
+                //Transformation for revit
+                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(pt, true);
+
+                //add to new list (as projected point)
+                revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));
+            }
+
+            return revDTMpts;
         }
 
         private static void storeTerrainIDInExtensibleStorage(Document doc, ElementId terrainID)
