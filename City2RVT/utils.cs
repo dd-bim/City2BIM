@@ -189,6 +189,97 @@ namespace City2RVT
             }
             return htwSchemas;
         }
+
+        public static DataStorage getRefPlaneDataStorageObject(Document doc)
+        {
+            DataStorage refPlaneDataStorage;
+            var refPlaneSchema = utils.getSchemaByName("HTWDD_RefPlaneSchema");
+
+            if (refPlaneSchema == null)
+            {
+                using (Transaction trans = new Transaction (doc, "create Schema"))
+                {
+                    trans.Start();
+                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                    sb.SetSchemaName("HTWDD_RefPlaneSchema");
+                    sb.SetReadAccessLevel(AccessLevel.Public);
+                    sb.SetWriteAccessLevel(AccessLevel.Public);
+                    sb.SetVendorId("HTWDresden");
+
+                    sb.AddMapField("RefPlaneElementIdToString", typeof(ElementId), typeof(string));
+
+                    refPlaneSchema = sb.Finish();
+                    trans.Commit();
+                }
+            }
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            ExtensibleStorageFilter filter = new ExtensibleStorageFilter(refPlaneSchema.GUID);
+
+            var resultElements = collector.WherePasses(filter).ToList();
+
+            if (resultElements.Count > 0)
+            {
+                return resultElements.FirstOrDefault() as DataStorage;
+            }
+
+            else
+            {
+                using (Transaction trans = new Transaction(doc, "getOrCreateRefPlaneObject"))
+                {
+                    trans.Start();
+                    Entity ent = new Entity(refPlaneSchema);
+                    refPlaneDataStorage = DataStorage.Create(doc);
+                    refPlaneDataStorage.SetEntity(ent);
+                    trans.Commit();
+                }
+                return refPlaneDataStorage;
+            }
+        }
+
+
+        /// <summary>
+        /// Enumeration for supported revit version <para/>
+        /// UPDATE ME: if a Revit version is added or no longer supported
+        /// </summary>
+        public enum rvtVersion
+        {
+            R20 = 2020,
+            R21 = 2021,
+            
+            /// <summary>
+            /// if this is selected give an information that it is currently not supported
+            /// </summary>
+            NotSupported = 0
+        };
+
+        /// <summary>
+        /// get revit version
+        /// </summary>
+        /// <returns>integer value of version number</returns>
+        public static rvtVersion GetVersionInfo(Autodesk.Revit.ApplicationServices.Application app)
+        {
+            int num = int.Parse(app.VersionNumber);
+
+            rvtVersion rV = 0;
+
+            switch (num)
+            {
+                case 2020:
+                    rV = rvtVersion.R20;
+                    break;
+                case 2021:
+                    rV = rvtVersion.R21;
+                    break;
+                default:
+                    rV = 0;
+                    break;
+            }
+
+            return rV;
+        }
+
+
     }
 
     public static class IfcGuid

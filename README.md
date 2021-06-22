@@ -25,7 +25,7 @@ Here you can find our latest releases:
   - [**Setup.msi**](https://github.com/dd-bim/City2BIM/releases/download/v1.5.0/Setup_Revit_2020.msi) (easy and fast support)
   - Source code ([***.zip**](https://github.com/dd-bim/City2BIM/archive/refs/tags/v1.5.0.zip); [***.tar.gz**](https://github.com/dd-bim/City2BIM/archive/refs/tags/v1.5.0.tar.gz)) (for developer)
 
-- [**IFCTerrain**](https://github.com/dd-bim/City2BIM/releases/download/v1.4.0/IFCTerrain_1_3.zip) (Version 1.3 - direct download)
+- [**IFCTerrain**](https://github.com/dd-bim/City2BIM/releases/download/v1.5.0/IFCTerrain_1.4.1.zip) (Version 1.4.1 - direct download)
 
 ---
 
@@ -37,13 +37,13 @@ If you have found an bug or have suggestions for improvement, please feel free t
 
 ### Support
 
-| in association with                      | supported by                                                 |
-| ---------------------------------------- | ------------------------------------------------------------ |
-| <img src="doc/pic/vcs.png" width="200"/> | <img src="doc/pic/BMWi_4C_Gef_en.jpg" align=center width="200"/> |
+| in association with                                          | supported by                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="BIMGISInteropLibs/Resources/LandingPage/vcs.png" width="200"/> | <img src="BIMGISInteropLibs/Resources/LandingPage/BMWi_4C_Gef_en.jpg" align=center width="200"/> |
 
 ## Contact
 
- ![HTWDD_Logo](doc/pic/logo_htwdd.jpg)  
+ ![HTWDD_Logo](BIMGISInteropLibs/Resources/LandingPage//logo_htwdd.jpg)  
 
 **HTW Dresden**
 **Faculty Geoinformation**

@@ -81,14 +81,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="GUI\DXF\ucReadDxf.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ElevationGrid\ucElevationGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -129,19 +121,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\Grafbat\ucReadGraftbat.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="GUI\PostGIS\ucReadPostGis.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\REB\ucReadReb.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\XML\ucReadXml.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -152,12 +132,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GUI\DXF\ucReadDxf.xaml.cs">
-      <DependentUpon>ucReadDxf.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ElevationGrid\ucElevationGrid.xaml.cs">
-      <DependentUpon>ucElevationGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml.cs">
       <DependentUpon>LoGeoRef50_CRS_Metadata.xaml</DependentUpon>
@@ -189,18 +163,9 @@
     <Compile Include="GUI\ExportSettings\ucMetadata.xaml.cs">
       <DependentUpon>ucMetadata.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Grafbat\ucReadGraftbat.xaml.cs">
-      <DependentUpon>ucReadGraftbat.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
     <Compile Include="GUI\PostGIS\ucReadPostGis.xaml.cs">
       <DependentUpon>ucReadPostGis.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\REB\ucReadReb.xaml.cs">
-      <DependentUpon>ucReadReb.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\XML\ucReadXml.xaml.cs">
-      <DependentUpon>ucReadXml.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -247,6 +212,10 @@
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GuiHandler\GuiHandler.csproj">
+      <Project>{24352448-2cab-4638-b4db-326539381408}</Project>
+      <Name>GuiHandler</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

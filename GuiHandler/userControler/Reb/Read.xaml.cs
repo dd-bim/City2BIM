@@ -16,20 +16,22 @@ using System.Windows.Shapes;
 using System.ComponentModel; //used for background worker
 using Microsoft.Win32; //used for file handling
 using BIMGISInteropLibs.REB; //include to read reb file
-using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide filepath insert into tb & for error handling (GUI)
 
 //embed for file logging
 using BIMGISInteropLibs.Logging;                                    //acess to logger
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
 
-namespace IFCTerrainGUI.GUI.REB
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+namespace GuiHandler.userControler.Reb
 {
     /// <summary>
-    /// Interaction logic for ucReadReb.xaml
+    /// Interaktionslogik für Read.xaml
     /// </summary>
-    public partial class ucReadReb : UserControl
+    public partial class Read : UserControl
     {
-        public ucReadReb()
+        public Read()
         {
             InitializeComponent();
 
@@ -37,14 +39,8 @@ namespace IFCTerrainGUI.GUI.REB
             backgroundWorkerReb.DoWork += BackgroundWorkerReb_DoWork; ;
 
             //create the task when the "do task" is completed
-            backgroundWorkerReb.RunWorkerCompleted += BackgroundWorkerReb_RunWorkerCompleted; ;
+            backgroundWorkerReb.RunWorkerCompleted += BackgroundWorkerReb_RunWorkerCompleted;
         }
-
-        /// <summary>
-        /// string to process reb files
-        /// </summary>
-        private string[] fileName = new string[1];
-
         /// <summary>
         /// container for reb Data
         /// </summary>
@@ -65,21 +61,21 @@ namespace IFCTerrainGUI.GUI.REB
                 #region JSON settings
                 //set JSON settings of file format 
                 //(Referencing to the BIMGISInteropsLibs, for which fileTypes an enumeration is used).
-                MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.REB;
+                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.REB;
 
                 //set JSON settings of file path
-                MainWindow.jSettings.filePath = ofd.FileName;
+                init.config.filePath = ofd.FileName;
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)
                 //so the user can not change any settings during the time the background worker is running
-                ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
+                IsEnabled = false;
 
                 //set mouse cursor to wait
                 Mouse.OverrideCursor = Cursors.Wait;
-                
+
                 #region backgroundWorker
-                fileName[0] = ofd.FileName;
+
                 //kick off BackgroundWorker
                 backgroundWorkerReb.RunWorkerAsync(ofd.FileName);
                 #endregion backgroundWorker
@@ -93,15 +89,15 @@ namespace IFCTerrainGUI.GUI.REB
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
                 //gui logging (user information)
-                MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
+                //MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
+                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
 
                 //conversion to string, because stored as enumeration
-                ((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
+                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = init.config.fileType.ToString();
                 #endregion gui feedback
             }
         }
@@ -118,7 +114,7 @@ namespace IFCTerrainGUI.GUI.REB
         private void BackgroundWorkerReb_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task
-            e.Result = ReaderTerrain.ReadReb(fileName);
+            e.Result = ReaderTerrain.ReadReb(init.config.filePath);
         }
 
         /// <summary>
@@ -145,7 +141,7 @@ namespace IFCTerrainGUI.GUI.REB
                     this.lbRebSelect.Items.Add(horizon);
                 }
                 //gui logging (user information)
-                MainWindowBib.setGuiLog("Readed reb layers: " + lbRebSelect.Items.Count);
+                //MainWindowBib.setGuiLog("Readed reb layers: " + lbRebSelect.Items.Count);
             }
             //if the file could not be read
             else
@@ -159,10 +155,10 @@ namespace IFCTerrainGUI.GUI.REB
             this.lbRebSelect.UpdateLayout();
 
             //release complete gui again
-            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+            IsEnabled = true;
 
             //set to json settings
-            MainWindow.jSettings.isTin = true;
+            init.config.isTin = true;
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
@@ -198,27 +194,34 @@ namespace IFCTerrainGUI.GUI.REB
         private void btnProcessReb_Click(object sender, RoutedEventArgs e)
         {
             //blank json settings 
-            MainWindow.jSettings.layer = null;
+            init.config.layer = null;
 
             //get selected horizon
             int horizon = (int)this.lbRebSelect.SelectedItem;
 
             //passed to json settings
-            MainWindow.jSettings.horizon = horizon;
+            init.config.horizon = horizon;
 
             //visual output on the GUI (layer selection) (need to convert to string!)
-            ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
+            //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
 
             //set task (file opening) to true
-            MainWindowBib.taskfileOpening = true;
+            GuiSupport.taskfileOpening = true;
+
+            //[IfcTerrain] check if all task are allready done
+            GuiSupport.readyState();
+
+            //[DTM2BIM] check if all task are allready done
+            GuiSupport.rdyDTM2BIM();
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
 
             //gui logging (user information)
-            MainWindowBib.setGuiLog("REB settings applyed.");
+            //MainWindowBib.setGuiLog("REB settings applyed.");
 
             return;
         }
     }
 }
+

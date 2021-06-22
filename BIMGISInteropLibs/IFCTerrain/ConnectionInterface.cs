@@ -54,11 +54,6 @@ namespace BIMGISInteropLibs.IfcTerrain
             //initalize transfer class
             var result = new Result();
 
-            //File location of the file to be converted 
-            //[TODO]: check if: string filePath = jSettings.filePath; would work! 
-            string[] filePath = new string[1];
-            filePath[0] = jSettings.filePath;
-
             #region import data via type selection
             //In the following a mapping is made on the basis of the data type, so that the respective reader is called up
             switch (jSettings.fileType)

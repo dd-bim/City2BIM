@@ -569,5 +569,61 @@ namespace BIMGISInteropLibs.DXF
                 return true;
             }
         }
+
+        public static Result ReadDXFMESH(DxfFile dxfFile, JsonSettings jSettings)
+        {
+            //get boolean value if 2D or 3D
+            bool is3d = jSettings.is3D;
+
+            //minDist (currently not supported!)
+            double minDist = jSettings.minDist;
+
+            //get layer (TODO: multiple layer selection)
+            string layer = jSettings.layer;
+
+            double minDistSq = minDist * minDist;
+            var result = new Result();
+            if (!UnitToMeter.TryGetValue(dxfFile.Header.DefaultDrawingUnits, out double scale))
+            {
+                scale = 1.0;
+            }
+            var tin = new Mesh(is3d, minDist);
+
+            foreach (var entity in dxfFile.Entities)
+            {
+                if (entity.Layer == layer && entity is Dxf3DFace face)
+                {
+                    var p1 = Point3.Create(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale);
+                    var p2 = Point3.Create(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale);
+                    var p3 = Point3.Create(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale);
+                    var p4 = Point3.Create(face.FourthCorner.X * scale, face.FourthCorner.Y * scale, face.FourthCorner.Z * scale);
+                    if (Vector3.Norm2(p4 - p3) < minDistSq)
+                    {
+                        int i1 = tin.AddPoint(p1);
+                        int i2 = tin.AddPoint(p2);
+                        int i3 = tin.AddPoint(p3);
+                        try
+                        {
+                            tin.AddFace(new[] { i1, i2, i3 });
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
+                }
+            }
+
+            //add to results (stats)
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.FaceEdges.Count;
+
+            result.Mesh = tin;
+
+
+            
+            return result;
+        }
+
     }
 }

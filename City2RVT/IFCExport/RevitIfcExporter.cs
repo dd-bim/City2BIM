@@ -211,8 +211,7 @@ namespace City2RVT.IFCExport
                 {
                     TopographySurface importedObj = topoSurf as TopographySurface;
 
-                    string nameParam = importedObj.LookupParameter("Name").AsString();
-                    if (nameParam != null && nameParam.StartsWith("RefPlane"))
+                    if (importedObj.IsSiteSubRegion == false)
                     {
                         continue;
                     }

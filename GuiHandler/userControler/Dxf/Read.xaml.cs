@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 //Include user-specific libraries from here onwards
-using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide filepath insert into tb
+
 using Microsoft.Win32; //used for file handling
 using System.ComponentModel; //used for background worker
 using BIMGISInteropLibs.DXF; //include to read dxf file
@@ -24,17 +24,21 @@ using IxMilia.Dxf; //need to handle dxf files
 using BIMGISInteropLibs.Logging;                                    //acess to logger
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
 
-namespace IFCTerrainGUI.GUI.DXF
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+
+namespace GuiHandler.userControler.Dxf
 {
     /// <summary>
     /// Interaction logic for ucReadDxf.xaml
     /// </summary>
-    public partial class ucReadDxf : UserControl
+    public partial class Read : UserControl
     {
         /// <summary>
         /// create instance of the gui
         /// </summary>
-        public ucReadDxf()
+        public Read()
         {
             //init gui panel
             InitializeComponent();
@@ -66,18 +70,19 @@ namespace IFCTerrainGUI.GUI.DXF
                 #region JSON settings
                 //set JSON settings of file format 
                 //(Referencing to the BIMGISInteropsLibs, for which fileTypes an enumeration is used).
-                MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.DXF;
+                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.DXF;
 
                 //set JSON settings of file path
-                MainWindow.jSettings.filePath = ofd.FileName;
+                init.config.filePath = ofd.FileName;
 
                 //set JSON settings of file name
-                MainWindow.jSettings.fileName = System.IO.Path.GetFileName(ofd.FileName);
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)
                 //so the user can not change any settings during the time the background worker is running
-                ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
+                IsEnabled = false;
+
                 //change cursor to wait animation (for user feedback)
                 Mouse.OverrideCursor = Cursors.Wait;
 
@@ -92,18 +97,18 @@ namespace IFCTerrainGUI.GUI.DXF
 
                 #region logging [TODO]
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File ("+ ofd.FileName +") selected!"));
+                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
                 //gui logging (user information)
-                MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
+                //MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.fileName);
+                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.fileName);
 
                 //conversion to string, because stored as enumeration
-                ((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
+                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
 
                 #endregion gui feedback
                 return; //do not add anything after this
@@ -152,7 +157,7 @@ namespace IFCTerrainGUI.GUI.DXF
                 //file logging allready in reader done - do not add (redundant)
 
                 //gui logging (user information)
-                ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("[ERROR] DXF layer not available. Processing stopped!");
+                //((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("[ERROR] DXF layer not available. Processing stopped!");
             }
             //will be executed if the file name is not empty
             else
@@ -161,7 +166,7 @@ namespace IFCTerrainGUI.GUI.DXF
                 foreach (var l in this.dxfFile.Layers)
                 {
                     //do not list, if layer is empty
-                    if(l.Handle != 0)
+                    if (l.Handle != 0)
                     {
                         //list layer name to list boxes (so the user can select a layer (or more))
                         this.lbDxfDtmLayer.Items.Add(l.Name);
@@ -174,7 +179,7 @@ namespace IFCTerrainGUI.GUI.DXF
             this.lbDxfBreaklineLayer.UpdateLayout();
 
             //Release MainWindow again --> so the user can make entries again
-            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+            IsEnabled = true;
 
             //change cursor to default
             Mouse.OverrideCursor = null;
@@ -184,7 +189,7 @@ namespace IFCTerrainGUI.GUI.DXF
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - readed layers: " + lbDxfDtmLayer.Items.Count));
 
             //gui logging (user information)
-            MainWindowBib.setGuiLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
+            //MainWindowBib.setGuiLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
         }
 
         /// <summary>
@@ -193,12 +198,12 @@ namespace IFCTerrainGUI.GUI.DXF
         private void rbDxfBreaklinesTrue_Checked(object sender, RoutedEventArgs e)
         {
             //disable start button (so the user can't go on --> first of all a breakline layer have to be selected)
-            ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = false;
+            //((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = false;
 
             //activate list box so the user can select a layer (where the breaklines are stored
             this.lbDxfBreaklineLayer.IsEnabled = true;
 
-            //btn process dxf disable (Reason: the user has made a decision because of the breaking edges)
+            //btn process dxf disable (Reason: the usser has made a decision because of the breaking edges)
             this.btnProcessDxf.IsEnabled = false;
         }
 
@@ -214,7 +219,7 @@ namespace IFCTerrainGUI.GUI.DXF
             this.btnProcessDxf.IsEnabled = true;
         }
 
-        
+
         /// <summary>
         /// is executed as soon as the selection has been changed in the ListBox lbDxfDtmLayer
         /// </summary>
@@ -268,11 +273,11 @@ namespace IFCTerrainGUI.GUI.DXF
         private void btnProcessDxf_Click(object sender, RoutedEventArgs e)
         {
             //blank text boxes otherwise (all layers are added if the process button was clicked multiple times in one session)
-            ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = null;
-            ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = null;
+            //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = null;
+            //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = null;
 
             //blank json settings 
-            MainWindow.jSettings.layer = null;
+            init.config.layer = null;
 
             //is executed as soon as a DXF layer is selected
             if (this.lbDxfDtmLayer.SelectedIndex >= 0)
@@ -287,10 +292,11 @@ namespace IFCTerrainGUI.GUI.DXF
                     //MainWindow.jSettings.layer += item + ";"; [DRAFT for Multi-Layer support]
 
                     //set selected items to json settings
-                    MainWindow.jSettings.layer = item;
+                    init.config.layer = item;
 
                     //visual output on the GUI (layer selection)
-                    ((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
+                    
+                    //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
 
                     //logging
                     LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Layer selection: " + item));
@@ -304,17 +310,17 @@ namespace IFCTerrainGUI.GUI.DXF
                     {
                         #region json settings
                         //passed to json settings - breakline (bool)
-                        MainWindow.jSettings.breakline = true;
+                        init.config.breakline = true;
 
                         //passed to json settings - breakline (layer)
-                        MainWindow.jSettings.breakline_layer = item.ToString();
+                        init.config.breakline_layer = item.ToString();
                         #endregion json settings
 
                         #region gui (user information)
                         //information panel 
-                        ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breakline - Layer";
+                        //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breakline - Layer";
                         //information panel output break line layer
-                        ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
+                        //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
                         #endregion gui (user information)
                     }
                 }
@@ -322,7 +328,7 @@ namespace IFCTerrainGUI.GUI.DXF
                 else
                 {
                     //passed to json settings - breakline (bool = false); reason: user hasn't selected breakline processing
-                    MainWindow.jSettings.breakline = false;
+                    init.config.breakline = false;
                 }
 
                 //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
@@ -330,27 +336,31 @@ namespace IFCTerrainGUI.GUI.DXF
                  * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
                  * and be converted in the JSON settings via an enumeration.
                  */
+
                 if (rbDxfFaces.IsChecked == true)
                 {
                     //processing faces (true)
-                    MainWindow.jSettings.isTin = true;
+                    init.config.isTin = true;
                 }
                 else
                 {
                     //processing points / lines (false)
-                    MainWindow.jSettings.isTin = false;
+                    init.config.isTin = false;
                 }
 
                 //set task (file opening) to true
-                MainWindowBib.taskfileOpening = true;
+                GuiSupport.taskfileOpening = true;
 
-                //check if all task are allready done
-                MainWindowBib.readyState();
+                //[IfcTerrain] check if all task are allready done
+                GuiSupport.readyState();
+
+                //[DTM2BIM] check if all task are allready done
+                GuiSupport.rdyDTM2BIM();
 
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
 
                 //gui logging (user information)
-                MainWindowBib.setGuiLog("DXF settings applyed.");
+                //MainWindowBib.setGuiLog("DXF settings applyed.");
             }
             return;
         }

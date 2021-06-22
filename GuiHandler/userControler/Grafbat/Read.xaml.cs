@@ -1,33 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 using Microsoft.Win32; //used for file handling
-using IFCTerrainGUI.GUI.MainWindowLogic; //error handling (btn start)
 
-namespace IFCTerrainGUI.GUI.Grafbat
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+namespace GuiHandler.userControler.Grafbat
 {
     /// <summary>
-    /// Interaction logic for ucReadGraftbat.xaml
+    /// Interaktionslogik für Read.xaml
     /// </summary>
-    public partial class ucReadGraftbat : UserControl
+    public partial class Read : UserControl
     {
-        public ucReadGraftbat()
+        public Read()
         {
             InitializeComponent();
         }
-
+        
         private void btnReadGrafbat_Click(object sender, RoutedEventArgs e)
         {
             //add new FileDialog handler 
@@ -40,16 +30,16 @@ namespace IFCTerrainGUI.GUI.Grafbat
             if (ofd.ShowDialog() == true)
             {
                 //set the save path of the file to be converted
-                MainWindow.jSettings.filePath = ofd.FileName;
+                init.config.filePath = ofd.FileName;
 
                 //set the save path of the file to be converted
-                MainWindow.jSettings.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat;
+                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat;
 
                 //enable process button [TODO]: check if need to be relocated 
                 btnProcessGraftbat.IsEnabled = true;
 
                 //gui logging (user information)
-                MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
+                //MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
 
                 //TODO logging
 
@@ -65,10 +55,10 @@ namespace IFCTerrainGUI.GUI.Grafbat
         {
             #region gui info panel
             // storage location
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.filePath);
+            //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
 
             //file tpye
-            MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, MainWindow.jSettings.fileType.ToString());
+            //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, init.config.fileType.ToString());
             #endregion gui info panel
 
             #region selection [include TODO!]
@@ -76,12 +66,12 @@ namespace IFCTerrainGUI.GUI.Grafbat
             //Selection "Faces"
             if (rbGraftbatReadFaces.IsChecked == true)
             {
-                MainWindow.jSettings.isTin = true;
+                init.config.isTin = true;
             }
             //Selection "Points / Lines"
             else if (rbGraftbatReadPointsLines.IsChecked == true)
             {
-                MainWindow.jSettings.isTin = false;
+                init.config.isTin = false;
             }
             //Selection "Points"
             //[TODO]: must be revised ... Reader + ConnectionInterface!
@@ -89,13 +79,19 @@ namespace IFCTerrainGUI.GUI.Grafbat
 
             #region error handling
             //set task (file opening) to true
-            MainWindowBib.taskfileOpening = true;
+            GuiSupport.taskfileOpening = true;
+
+            //[IfcTerrain] check if all task are allready done
+            GuiSupport.readyState();
+
+            //[DTM2BIM] check if all task are allready done
+            GuiSupport.rdyDTM2BIM();
 
             //gui logging (user information)
-            MainWindowBib.setGuiLog("Grafbat settings applyed.");
+            //MainWindowBib.setGuiLog("Grafbat settings applyed.");
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            GuiSupport.readyState();
             #endregion error handling
         }
     }

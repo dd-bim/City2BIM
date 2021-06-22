@@ -43,58 +43,21 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
         }
 
         /// <summary>
-        /// Check that all required tasks have been performed
+        /// support function to enable start button
         /// </summary>
-        public static bool readyState()
+        public static void enableStart(bool boolen)
         {
-            //if all tasks are true
-            if (taskfileOpening && selectIfcShape && selectIfcVersion && selectMetadata && selectStoreLocation && selectGeoRef)
+            if (boolen)
             {
                 //enable start button
                 ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = true;
-
-                //set gui log
-                setGuiLog("All required tasks set. Conversion can be started!");
-
-                //return
-                return true;
             }
             else
             {
                 //disable start button
                 ((MainWindow)Application.Current.MainWindow).btnStart.IsEnabled = false;
-                return false;
             }
+            return;
         }
-
-        /// <summary>
-        /// task to check if a file has been opened
-        /// </summary>
-        public static bool taskfileOpening { get; set; }
-
-        /// <summary>
-        /// task to check if an Ifc version has been selected
-        /// </summary>
-        public static bool selectIfcVersion { get; set; }
-
-        /// <summary>
-        /// task to check if an Ifc Shape Repres has been selected
-        /// </summary>
-        public static bool selectIfcShape { get; set; }
-
-        /// <summary>
-        /// task to check if metadata are selected (or not needed)
-        /// </summary>
-        public static bool selectMetadata { get; set; }
-
-        /// <summary>
-        /// task to check if storage location have been set
-        /// </summary>
-        public static bool selectStoreLocation { get; set; }
-
-        /// <summary>
-        /// task to check if georef have been set
-        /// </summary>
-        public static bool selectGeoRef { get; set; }
     }
 }
