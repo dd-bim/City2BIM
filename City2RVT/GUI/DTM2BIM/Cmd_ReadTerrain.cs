@@ -24,6 +24,8 @@ namespace City2RVT.GUI
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Cmd_ReadTerrain : IExternalCommand
     {
+        
+
         // The main Execute method (inherited from IExternalCommand) must be public
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -58,7 +60,7 @@ namespace City2RVT.GUI
             else
             {
                 //enable delauny triangulation as conversion option
-                if (rvtVersion.Equals(utils.rvtVersion.R20))
+                if (rvtVersion.Equals(utils.rvtVersion.R20 | utils.rvtVersion.R21))
                 {
                     terrainUI.cbDelauny.IsEnabled = true;
                 }
@@ -71,26 +73,20 @@ namespace City2RVT.GUI
             if(terrainUI.startTerrainImport)
             {
                 //start mapping process
-                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config);
+                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config, terrainUI.useDelaunyTriangulation);
 
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
 
                 if (!terrainUI.useDelaunyTriangulation)
                 {
-                    //create dtm (TODO - update)
+                    //create dtm (via points)
                     rev.createDTMviaPoints(res);
                 }
                 else
                 {
-                    //create dtm
+                    //create dtm via points & faces
                     rev.createDTM(res);
-
-                    //error handling
-                    TaskDialog.Show("Error - Implementation failed","Sorry!,\nSomething went wrong.");
-
-                    //return failed message
-                    return Result.Failed;
                 }
 
                 //error handlings
