@@ -25,7 +25,7 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// </summary>
         /// <param name="config">setting to config file processing and conversion process</param>
         /// <returns></returns>
-        public static Result mapProcess(JsonSettings config)
+        public static Result mapProcess(JsonSettings config, bool useFaces)
         {
             //set grid size (as default value)
             config.gridSize = 1;
@@ -36,6 +36,7 @@ namespace BIMGISInteropLibs.RvtTerrain
             //init transfer class (mainly used in ifc terrain)
             IfcTerrain.Result resTerrain = new IfcTerrain.Result();
 
+            #region file reading
             //mapping on basis of data type
             switch (config.fileType)
             {
@@ -78,7 +79,9 @@ namespace BIMGISInteropLibs.RvtTerrain
                     resTerrain = CityGML.CityGMLReaderTerrain.ReadTin(config);
                     break;
             }
+            #endregion file reading
 
+            #region point list
             //init empty point list
             dynamic dgmPtList = new List<C2BPoint>();
 
@@ -106,8 +109,33 @@ namespace BIMGISInteropLibs.RvtTerrain
 
             //set to result point list
             res.dtmPoints = dgmPtList;
-            
-            //set to result facet list
+            #endregion point list
+
+            //init face list
+            dynamic dgmFaceList = new List<DtmFace>();
+
+            if (useFaces)
+            {
+                if (resTerrain.Tin.Points == null)
+                {
+                    //set to result facet list
+                    foreach (int fe in resTerrain.Mesh.FaceEdges)
+                    {
+                        int p1 = resTerrain.Mesh.EdgeVertices[fe];
+                        int p2 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[fe]];
+                        int p3 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[resTerrain.Mesh.EdgeNexts[fe]]];
+
+                        //add face index to list
+                        dgmFaceList.Add(new DtmFace(p1, p2, p3));
+                    }
+                }
+                else
+                {
+                    //TODO for TIN
+                }
+            }
+
+            res.terrainFaces = dgmFaceList;
 
             return res;
         }
