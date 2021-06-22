@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 //BimGisCad
-using BimGisCad.Collections;                        //MESH
-using BimGisCad.Representation.Geometry.Composed;   //TIN
 using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 
 //used for result class (may update to seperate class for rvtTerrain)
@@ -23,27 +21,20 @@ namespace BIMGISInteropLibs.RvtTerrain
     public class ConnectionInterface
     {
         /// <summary>
-        /// TIN (result of the specific file reader)
-        /// </summary>
-        public Tin Tin { get; private set; }
-
-        /// <summary>
-        /// MESH (result of the specific file reader)
-        /// </summary>
-        public Mesh Mesh { get; private set; }
-
-        /// <summary>
         /// file reading / tin build process
         /// </summary>
         /// <param name="config">setting to config file processing and conversion process</param>
         /// <returns></returns>
-        public static List<C2BPoint> mapProcess(JsonSettings config)
+        public static Result mapProcess(JsonSettings config)
         {
             //set grid size (as default value)
             config.gridSize = 1;
 
-            //init transfer class
-            BIMGISInteropLibs.IfcTerrain.Result resTerrain = new BIMGISInteropLibs.IfcTerrain.Result();
+            //init transfer class (DTM2BIM)
+            Result res = new Result();
+            
+            //init transfer class (mainly used in ifc terrain)
+            IfcTerrain.Result resTerrain = new IfcTerrain.Result();
 
             //mapping on basis of data type
             switch (config.fileType)
@@ -112,13 +103,13 @@ namespace BIMGISInteropLibs.RvtTerrain
                 //TODO error catcher
                 return null;
             }
+
+            //set to result point list
+            res.dtmPoints = dgmPtList;
             
+            //set to result facet list
 
-
-            return dgmPtList;
+            return res;
         }
-
     }
-
-    
 }
