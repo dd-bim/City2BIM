@@ -79,21 +79,33 @@ namespace City2RVT.GUI
                 if (!terrainUI.useDelaunyTriangulation)
                 {
                     //create dtm (TODO - update)
-                    rev.CreateDTM(res);
+                    rev.createDTMviaPoints(res);
                 }
                 else
                 {
                     //error handling
                     TaskDialog.Show("Error - Implementation failed","Sorry!,\nSomething went wrong.");
 
+                    //return failed message
                     return Result.Failed;
                 }
 
-                //show info dialog (may update to better solution)
-                TaskDialog.Show("DTM import", "DTM import finished!");
+                //error handlings
+                if (rev.terrainImportSuccesful)
+                {
+                    //show info dialog (may update to better solution)
+                    TaskDialog.Show("DTM import", "DTM import finished!");
 
-                //process successfuly
-                return Result.Succeeded;
+                    //process successfuly
+                    return Result.Succeeded;
+                }
+                else
+                {
+                    //TODO improve error message
+                    TaskDialog.Show("DTM import failed!", "The DTM import failed.\nPlease use see in log file for more information.");
+
+                    return Result.Failed;
+                }
             }
             else
             {
