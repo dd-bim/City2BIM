@@ -23,6 +23,8 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// <summary>
         /// 
         /// </summary>
-        public List<C2BPoint> terrainFaces { get; set; }
+        public List<DtmFace> terrainFaces { get; set; }
     }
+
+    
 }
