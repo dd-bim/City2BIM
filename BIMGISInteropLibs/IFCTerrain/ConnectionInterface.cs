@@ -86,6 +86,14 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //Tin - Reader (if dxf file contains faces)
                         result = DXF.ReaderTerrain.ReadDxfTin(dxfFile, jSettings);
                     }
+                    else if (jSettings.calculateTin)
+                    {
+                        //TIN reader if dxf file contains points and lines and option calculateTin is set
+                        result = DXF.ReaderTerrain.CalculateDxfTin(dxfFile, jSettings);
+
+                        //After a TIN has been calculated the atribute 'isTin' becomes true
+                        jSettings.isTin = true;
+                    }
                     else
                     {
                         //processing points and lines (via mesh)
@@ -97,12 +105,22 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.REB:
                     //REB file reader
                     REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(filePath);
+                    if (jSettings.calculateTin)
+                    {
+                        //Calculate TIN if calculateTin is set
+                        result = REB.ReaderTerrain.CalculateTinFromReb(rebData, jSettings);
 
-                    //use REB data via processing with converter
-                    result = REB.ReaderTerrain.ConvertRebToTin(rebData, jSettings);
+                        //After a TIN has been calculated the atribute 'isTin' becomes true
+                        jSettings.isTin = true;
+                    }
+                    else
+                    {
+                        //use REB data via processing with converter
+                        result = REB.ReaderTerrain.ConvertRebToTin(rebData, jSettings);
+                    }
                     break;
 
-                //reader for Elev.Grid: processing result is mesh!
+                //reader for Elev.Grid: default processing result is mesh!
                 case IfcTerrainFileType.Grid:
                     result = ElevationGrid.ReaderTerrain.ReadGrid(jSettings);
                     break;
@@ -152,7 +170,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     return result;
                 }
             }
-
+            
             //mesh error handler
             else if (!jSettings.isTin)
             {
