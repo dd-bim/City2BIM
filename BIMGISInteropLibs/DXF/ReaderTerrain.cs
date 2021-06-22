@@ -25,6 +25,7 @@ using System.Windows; //error handling (message box)
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+using BIMGISInteropLibs.NTSApi;
 
 namespace BIMGISInteropLibs.DXF
 {    
@@ -366,6 +367,207 @@ namespace BIMGISInteropLibs.DXF
 
             //return result - processing via ifc writer will be enabled 
             return result;
+        }
+
+        /// <summary>
+        /// A function to create a TIN using NetTopologySuite class library and BimGisCad TIN builder.
+        /// </summary>
+        /// <param name="dxfFile">The DXF file containing the DTM data (poins and lines).</param>
+        /// <param name="jSettings">The global settings for processing.</param>
+        /// <returns>A result object which encapsulates the calculated TIN.</returns>
+        public static Result CalculateDxfTin(DxfFile dxfFile, JsonSettings jSettings)
+        {
+            //Initialize result
+            Result result = new Result();
+
+            //Initialize TIN builder
+            var tinBuilder = Tin.CreateBuilder(true);
+
+            //Log TIN builder initalization
+            AddToLogWriter(LogType.verbose, "[DXF] Initialize a TIN builder.");
+
+            //Read out DTM data from DXF file. If successful than process data and create TIN
+            if (ReadDxfDtmData(dxfFile, jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData))
+            {
+                //Get a list of triangles via NetTopologySuite class library using the interface object
+                List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointData, dtmLineData);
+
+                //Read out each triangle from the triangle list
+                int pnr = 0;
+                foreach (List<double[]> dtmTriangle in dtmTriangleList)
+                {
+                    //Read out the three vertices of one triangle at each loop
+                    Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
+                    Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
+                    Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
+
+                    //Add the triangle vertices to the TIN builder and log point coordinates
+                    tinBuilder.AddPoint(pnr++, p1);
+                    AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
+                    tinBuilder.AddPoint(pnr++, p2);
+                    AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
+                    tinBuilder.AddPoint(pnr++, p3);
+                    AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+
+                    //Add the index of each vertex to the TIN builder (defines triangle) and log
+                    for (int i = pnr - 3; i < pnr; i++)
+                    {
+                        tinBuilder.AddTriangle(i++, i++, i++);
+                        AddToLogWriter(LogType.verbose, "[DXF] Triangle set.");
+                    }
+                }
+            }
+
+            //Build a TIN via BimGisCad class library and log
+            Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
+            AddToLogWriter(LogType.verbose, "[DXF] Creating TIN via TIN builder.");
+
+            //Pass TIN to result and log
+            result.Tin = tin;
+            AddToLogWriter(LogType.info, "Reading DXF data successful.");
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
+            AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+
+            //Return the result as a TIN
+            return result;
+        }
+
+        /// <summary>
+        /// An auxiliary function to read out point and line data from a DXF file according to the specified layers.
+        /// </summary>
+        /// <param name="dxfFile">The DXF file containing the DTM data (poins and lines).</param>
+        /// <param name="jSettings">The global settings for processing.</param>
+        /// <param name="dtmPointData">A list of double arrays. Each array contains the x-, y- and z-value of one point.</param>
+        /// <param name="dtmLineData">A list of lists of double arrays. Each array contains the x-, y- and z-value of one point of one line.</param>
+        /// <returns>True or false respectively depending on successful reading.</returns>
+        public static bool ReadDxfDtmData(DxfFile dxfFile, JsonSettings jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData)
+        {
+            //A list of point data
+            dtmPointData = new List<double[]>();
+
+            //A list of lists of point data. Each list represents a line or polyline respectively
+            dtmLineData = new List<List<double[]>>();
+
+            //Get layer (TODO: multiple layer selection)
+            string dtmLayer = jSettings.layer;
+
+            string lineLayer = jSettings.breakline_layer;
+
+            //Check units
+            if (!UnitToMeter.TryGetValue(dxfFile.Header.DefaultDrawingUnits, out double scale))
+            {
+                //TODO dynamic scaling
+                scale = 1.0;
+            }
+            
+            //Go through all entities in dxf file
+            foreach (var entity in dxfFile.Entities)
+            {
+                if (entity.Layer == dtmLayer || entity.Layer == lineLayer)
+                {
+                    //case disinction
+                    switch (entity.EntityType)
+                    {
+                        case DxfEntityType.Face:
+                            var dxfFace = (Dxf3DFace)entity;
+                            dtmPointData.Add(new double[] { dxfFace.FirstCorner.X, dxfFace.FirstCorner.Y, dxfFace.FirstCorner.Z });
+                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfFace.FirstCorner.X + "; y= " + dxfFace.FirstCorner.Y + "; z= " + dxfFace.FirstCorner.Z + ")");
+                            dtmPointData.Add(new double[] { dxfFace.SecondCorner.X, dxfFace.SecondCorner.Y, dxfFace.SecondCorner.Z });
+                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfFace.SecondCorner.X + "; y= " + dxfFace.SecondCorner.Y + "; z= " + dxfFace.SecondCorner.Z + ")");
+                            dtmPointData.Add(new double[] { dxfFace.ThirdCorner.X, dxfFace.ThirdCorner.Y, dxfFace.ThirdCorner.Z });
+                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfFace.ThirdCorner.X + "; y= " + dxfFace.ThirdCorner.Y + "; z= " + dxfFace.ThirdCorner.Z + ")");
+                            break;
+                        //dxf entity line --> add every line
+                        case DxfEntityType.Line:
+
+                            //catch entity line
+                            var line = (DxfLine)entity;
+
+                            //A list of double arrays. Each array contains the x-, y- and z-values od a point of the lines
+                            List<double[]> linePointData = new List<double[]>();
+
+                            //Get the first point data of the line
+                            linePointData.Add(new double[] { line.P1.X * scale, line.P1.Y * scale, line.P1.Z * scale });
+
+                            //Log first point of line
+                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + linePointData[0][0] + "; y= " + linePointData[0][1] + "; z= " + linePointData[0][2] + ")");
+
+                            //Get the second point data of the line
+                            linePointData.Add(new double[] { line.P2.X * scale, line.P2.Y * scale, line.P2.Z * scale });
+
+                            //Log second point of line
+                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + linePointData[1][0] + "; y= " + linePointData[1][1] + "; z= " + linePointData[1][2] + ")");
+
+                            //Add the line data to the line data list
+                            dtmLineData.Add(linePointData);
+                            break;
+
+                        //dxf case polyline
+                        case DxfEntityType.Polyline:
+
+                            //get poly line entity
+                            var polyline = (DxfPolyline)entity;
+
+                            //A list of double arrays. Each array contains the x-, y- and z-values od a point of the lines
+                            List<double[]> polylinePointData = new List<double[]>();
+
+                            //go through all vertices
+                            foreach (var vertex in polyline.Vertices)
+                            {
+                                //Prepare x-, y- and z-coordinates of the vertex
+                                double x = vertex.Location.X * scale;
+                                double y = vertex.Location.Y * scale;
+                                double z = vertex.Location.Z * scale;
+
+                                //Add vertex cooedinates to data list
+                                polylinePointData.Add(new double[] { x, y, z });
+
+                                //Log point data
+                                AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + x + "; y= " + y + "; z= " + z + ")");
+                            }
+                            break;
+                    }
+                }
+            }
+
+            //Check if lists contain data and return true or false
+            return CheckDtmDataLists(dtmPointData, dtmLineData);
+        }
+
+        /// <summary>
+        /// A auxiliary function to feed the log writer.
+        /// </summary>
+        /// <param name="logType">The type of logging.</param>
+        /// <param name="message">The message to log.</param>
+        public static void AddToLogWriter(LogType logType, string message)
+        {
+            LogWriter.Entries.Add(new LogPair(logType, message));
+        }
+
+        /// <summary>
+        /// A auxiliary function to check if lists contain data. 
+        /// </summary>
+        /// <param name="dtmPointData">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
+        /// <param name="dtmLineData">A list of lists of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
+        /// <returns>True or false.</returns>
+        public static bool CheckDtmDataLists(List<double[]> dtmPointData, List<List<double[]>> dtmLineData)
+        {
+            if (dtmPointData.Count == 0)
+            {
+                AddToLogWriter(LogType.info, "[DXF] No point data found.");
+                return false;
+            }
+            else if (dtmLineData.Count == 0)
+            {
+                AddToLogWriter(LogType.info, "[DXF] Reading point data was successful. No line data found.");
+                return true;
+            }
+            else
+            {
+                AddToLogWriter(LogType.info, "[DXF] Reading point and line data was successful.");
+                return true;
+            }
         }
 
         public static Result ReadDXFMESH(DxfFile dxfFile, JsonSettings jSettings)

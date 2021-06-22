@@ -255,9 +255,9 @@ namespace BIMGISInteropLibs.ElevationGrid
             foreach (List<double[]> dtmTriangle in dtmTriangleList)
             {
                 //Read out the three vertices of one triangle at each loop
-                Point3 p1 = Point3.Create(Math.Round(dtmTriangle[0][0], 3), Math.Round(dtmTriangle[0][1], 3), Math.Round(dtmTriangle[0][2], 3));
-                Point3 p2 = Point3.Create(Math.Round(dtmTriangle[1][0], 3), Math.Round(dtmTriangle[1][1], 3), Math.Round(dtmTriangle[1][2], 3));
-                Point3 p3 = Point3.Create(Math.Round(dtmTriangle[2][0], 3), Math.Round(dtmTriangle[2][1], 3), Math.Round(dtmTriangle[2][2], 3));
+                Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
+                Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
+                Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
 
                 //Add the triangle vertices to the TIN builder and log point coordinates
                 tinBuilder.AddPoint(pnr++, p1);
