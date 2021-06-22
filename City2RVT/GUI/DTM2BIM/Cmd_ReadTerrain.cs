@@ -83,6 +83,9 @@ namespace City2RVT.GUI
                 }
                 else
                 {
+                    //create dtm
+                    rev.createDTM(res);
+
                     //error handling
                     TaskDialog.Show("Error - Implementation failed","Sorry!,\nSomething went wrong.");
 

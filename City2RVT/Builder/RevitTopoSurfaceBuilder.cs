@@ -31,10 +31,10 @@ namespace City2RVT.Builder
         /// function to create DTM via points only
         /// </summary>
         /// <param name="terrainPoints"></param>
-        public void createDTMviaPoints(List<C2BPoint> terrainPoints)
+        public void createDTMviaPoints(BIMGISInteropLibs.RvtTerrain.Result result)
         {
             //transform input points to revit
-            var revDTMpts = transPts(terrainPoints);
+            var revDTMpts = transPts(result.dtmPoints);
 
             //transaction for surface / dtm creation
             using (Transaction t = new Transaction(doc, "Create TopoSurface"))
@@ -43,8 +43,13 @@ namespace City2RVT.Builder
                 t.Start();
                 try
                 {
+                    //create surf var via points
                     var surface = TopographySurface.Create(doc, revDTMpts);
+                    
+                    //data storage
                     storeTerrainIDInExtensibleStorage(doc, surface.Id);
+                    
+                    //pin surface
                     surface.Pinned = true;
 
                     //commit transaction
@@ -80,10 +85,60 @@ namespace City2RVT.Builder
         /// </summary>
         /// <param name="terrainPoints">point list (xyz)</param>
         /// <param name="terrainFaces"></param>
-        public void createDTM(List<C2BPoint> terrainPoints, List<PolymeshFacet> terrainFaces)
+        public void createDTM(BIMGISInteropLibs.RvtTerrain.Result result)
         {
+            //get points from result / exchange class
+            var terrainPoints = result.dtmPoints;
+
+            //
+            List<PolymeshFacet> terrainFaces = new List<PolymeshFacet>();
+
+            //
+
             //transform input points to revit
             var revDTMpts = transPts(terrainPoints);
+
+            //transaction for surface / dtm creation
+            using (Transaction t = new Transaction(doc, "Create TopoSurface"))
+            {
+                //start transaction
+                t.Start();
+                try
+                {
+                    //create surf var via points & faces
+                    var surface = TopographySurface.Create(doc, revDTMpts, terrainFaces);
+
+                    //data storage
+                    storeTerrainIDInExtensibleStorage(doc, surface.Id);
+
+                    //pin surface
+                    surface.Pinned = true;
+
+                    //commit transaction
+                    t.Commit();
+
+                    //set to true
+                    importSuccesful = true;
+
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    //TODO logging
+
+                    //set to false
+                    importSuccesful = false;
+
+
+                    //write exception to console
+                    Console.WriteLine(ex);
+
+                    //roll back cause of error
+                    t.RollBack();
+
+                    return;
+                }
+            }
 
 
         }
