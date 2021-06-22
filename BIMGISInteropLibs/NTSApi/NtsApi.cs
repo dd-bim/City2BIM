@@ -20,6 +20,7 @@ namespace BIMGISInteropLibs.NTSApi
         /// </summary>
         public NtsApi()
         {
+            NtsGeometryServices.Instance = new NtsGeometryServices(new PrecisionModel(1000d));
             this.geomFactory = NtsGeometryServices.Instance.CreateGeometryFactory();
         }
 
