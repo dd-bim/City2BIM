@@ -21,7 +21,6 @@ namespace City2RVT.Builder
         /// </summary>
         private bool importSuccesful { set; get; } = false;
 
-
         public RevitTopoSurfaceBuilder(Document doc)
         {
             this.doc = doc;
@@ -33,6 +32,8 @@ namespace City2RVT.Builder
         /// <param name="terrainPoints"></param>
         public void createDTMviaPoints(BIMGISInteropLibs.RvtTerrain.Result result)
         {
+            GUI.DTM2BIM.Terrain_ImportUI cmdTerrain = new GUI.DTM2BIM.Terrain_ImportUI();
+            
             //transform input points to revit
             var revDTMpts = transPts(result.dtmPoints);
 
@@ -93,7 +94,11 @@ namespace City2RVT.Builder
             //
             List<PolymeshFacet> terrainFaces = new List<PolymeshFacet>();
 
-            //
+            foreach(BIMGISInteropLibs.RvtTerrain.DtmFace f in result.terrainFaces)
+            {
+                PolymeshFacet pm = new PolymeshFacet(f.p1, f.p2, f.p3);
+                terrainFaces.Add(pm);
+            }
 
             //transform input points to revit
             var revDTMpts = transPts(terrainPoints);
