@@ -16,6 +16,7 @@ using BIMGISInteropLibs.IfcTerrain;
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+using BIMGISInteropLibs.NTSApi;
 
 namespace BIMGISInteropLibs.REB
 {
@@ -42,7 +43,7 @@ namespace BIMGISInteropLibs.REB
     /// </summary>
     public class RebDaData
     {
-        public Dictionary<int, Point3> Points { get; }
+        public Dictionary<int, double[]> Points { get; }
         public Dictionary<int, List<RLine>> Lines { get; }
         public Dictionary<int, List<RTri>> Tris { get; }
 
@@ -51,9 +52,9 @@ namespace BIMGISInteropLibs.REB
         /// </summary>
         public RebDaData()
         {
-            this.Points = new Dictionary<int, Point3>();
-            this.Lines = new Dictionary<int, List<RLine>>();
-            this.Tris = new Dictionary<int, List<RTri>>();
+            this.Points = new Dictionary<int, double[]>(); //Basically a point list with an index and a double array containing the point coordinates
+            this.Lines = new Dictionary<int, List<RLine>>(); //A list of lines. Each line has a horizon identifier and consists of two pointers (point indices) referencing the point list.
+            this.Tris = new Dictionary<int, List<RTri>>(); //A list of triangles. Each triangle has a horizon identifier and consists of three pointers (point indices) referencing the point list.
         }
 
         /// <summary>
@@ -117,8 +118,8 @@ namespace BIMGISInteropLibs.REB
                                        && long.TryParse(line.Substring(30, 10), out long z)
                                        )
                                     {
-                                        var p = Point3.Create(x * 0.001, y * 0.001, z * 0.001);
-                                        rebData.Points.Add(nr, p);
+                                        double[] pointCoords = new double[] { x * 0.001, y * 0.001, z * 0.001 };
+                                        rebData.Points.Add(nr, pointCoords);
                                     }
                                 }
                                 //Break/edge lines work out via "identifier 49"
@@ -196,9 +197,10 @@ namespace BIMGISInteropLibs.REB
             //Add all points of the vine dataset to the TIN builder & point map
             foreach (var kv in rebData.Points)
             {
+                Point3 p = Point3.Create(kv.Value[0], kv.Value[1], kv.Value[2]);
                 pmap.Add(kv.Key, points); //point map
-                tinB.AddPoint(points++, kv.Value); //add tin builder
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Point (" + (points-1) + ") set (x= " + kv.Value.X + "; y= " + kv.Value.Y + "; z= " + kv.Value.Z + ")"));
+                tinB.AddPoint(points++, p); //add tin builder
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Point (" + (points-1) + ") set (x= " + p.X + "; y= " + p.Y + "; z= " + p.Z + ")"));
             }
             //reb triangle
             if (rebData.Tris.TryGetValue(horizon, out var tris))
@@ -234,6 +236,135 @@ namespace BIMGISInteropLibs.REB
             result.rFaces = tin.NumTriangles;
 
             return result;
+        }
+
+        public static Result CalculateTinFromReb(RebDaData rebData, JsonSettings jSettings)
+        {
+            //Initialize result
+            Result result = new Result();
+
+            //Initialize TIN builder
+            var tinBuilder = Tin.CreateBuilder(true);
+
+            //Log TIN builder initalization
+            AddToLogWriter(LogType.verbose, "[REB] Initialize a TIN builder.");
+
+            //Prepare DTM data REB file. If successful than process data and create TIN
+            if (PrepareRebData(rebData, jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData))
+            {
+                //Get a list of triangles via NetTopologySuite class library using the interface object
+                List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointData, dtmLineData);
+
+                //Read out each triangle from the triangle list
+                int pnr = 0;
+                foreach (List<double[]> dtmTriangle in dtmTriangleList)
+                {
+                    //Read out the three vertices of one triangle at each loop
+                    Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
+                    Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
+                    Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
+
+                    //Add the triangle vertices to the TIN builder and log point coordinates
+                    tinBuilder.AddPoint(pnr++, p1);
+                    AddToLogWriter(LogType.verbose, "[REB] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
+                    tinBuilder.AddPoint(pnr++, p2);
+                    AddToLogWriter(LogType.verbose, "[REB] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
+                    tinBuilder.AddPoint(pnr++, p3);
+                    AddToLogWriter(LogType.verbose, "[REB] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+
+                    //Add the index of each vertex to the TIN builder (defines triangle) and log
+                    for (int i = pnr - 3; i < pnr; i++)
+                    {
+                        tinBuilder.AddTriangle(i++, i++, i++);
+                        AddToLogWriter(LogType.verbose, "[REB] Triangle set.");
+                    }
+                }
+            }
+
+            //Build a TIN via BimGisCad class library and log
+            Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
+            AddToLogWriter(LogType.verbose, "[REB] Creating TIN via TIN builder.");
+
+            //Pass TIN to result and log
+            result.Tin = tin;
+            AddToLogWriter(LogType.info, "Reading REB data successful.");
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
+            AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+
+            //Return the result as a TIN
+            return result;
+        }
+
+        public static bool PrepareRebData(RebDaData rebData, JsonSettings jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData)
+        {
+            dtmPointData = new List<double[]>();
+            dtmLineData = new List<List<double[]>>();
+            int horizon = jSettings.horizon;
+            
+            foreach (var point in rebData.Points)
+            {
+                dtmPointData.Add(point.Value);
+            }
+            
+            if (rebData.Lines.TryGetValue(horizon, out var lines))
+            {
+                foreach (var line in lines)
+                {
+                    List<double[]> lineDataList = new List<double[]>();
+                    while (lineDataList.Count < 2)
+                    {
+                        foreach (var point in rebData.Points)
+                        {
+                            if (point.Key == line.P1)
+                            {
+                                lineDataList.Add(point.Value);
+                            }
+                            if (point.Key == line.P2)
+                            {
+                                lineDataList.Add(point.Value);
+                            }
+                        }
+                    }
+                    dtmLineData.Add(lineDataList);
+                }
+            }
+            return CheckDtmDataLists(dtmPointData, dtmLineData);
+        }
+
+        /// <summary>
+        /// A auxiliary function to feed the log writer.
+        /// </summary>
+        /// <param name="logType">The type of logging.</param>
+        /// <param name="message">The message to log.</param>
+        public static void AddToLogWriter(LogType logType, string message)
+        {
+            LogWriter.Entries.Add(new LogPair(logType, message));
+        }
+
+        /// <summary>
+        /// A auxiliary function to check if lists contain data. 
+        /// </summary>
+        /// <param name="dtmPointData">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
+        /// <param name="dtmLineData">A list of lists of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
+        /// <returns>True or false.</returns>
+        public static bool CheckDtmDataLists(List<double[]> dtmPointData, List<List<double[]>> dtmLineData)
+        {
+            if (dtmPointData.Count == 0)
+            {
+                AddToLogWriter(LogType.info, "[DXF] No point data found.");
+                return false;
+            }
+            else if (dtmLineData.Count == 0)
+            {
+                AddToLogWriter(LogType.info, "[DXF] Reading point data was successful. No line data found.");
+                return true;
+            }
+            else
+            {
+                AddToLogWriter(LogType.info, "[DXF] Reading point and line data was successful.");
+                return true;
+            }
         }
     }
 }
