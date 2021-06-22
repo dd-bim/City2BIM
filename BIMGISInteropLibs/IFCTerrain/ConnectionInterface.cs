@@ -99,7 +99,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //reader for REB    
                 case IfcTerrainFileType.REB:
                     //REB file reader
-                    REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(filePath);
+                    REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(jSettings.filePath);
                     if (jSettings.calculateTin)
                     {
                         //Calculate TIN if calculateTin is set
