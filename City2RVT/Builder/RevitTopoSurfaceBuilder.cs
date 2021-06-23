@@ -113,17 +113,29 @@ namespace City2RVT.Builder
                     //create surf var via points & faces
                     var surface = TopographySurface.Create(doc, revDTMpts, terrainFaces);
 
+
                     //data storage
                     storeTerrainIDInExtensibleStorage(doc, surface.Id);
 
                     //pin surface
                     surface.Pinned = true;
 
-                    //commit transaction
-                    t.Commit();
+                    if (surface.IsValidObject)
+                    {
+                        //commit transaction
+                        t.Commit();
 
-                    //set to true
-                    importSuccesful = true;
+                        //set to true
+                        importSuccesful = true;
+                    }
+                    else
+                    {
+                        //rollback transaction - dtm will not be created
+                        t.RollBack();
+
+                        //set to false
+                        importSuccesful = false;
+                    }
 
                     return;
                 }
