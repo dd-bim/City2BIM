@@ -23,12 +23,12 @@ namespace City2RVT.GUI.DTM2BIM
         /// <summary>
         /// set if delauny triangulation should be processed
         /// </summary>
-        public bool useDelaunyTriangulation { get { return useDelauny; } }
+        public bool usePointsFaces { get { return useFaces; } }
 
         /// <summary>
         /// setter for user selection
         /// </summary>
-        private bool useDelauny { set; get; } = false;
+        private bool useFaces { set; get; } = false;
         
         /// <summary>
         /// init dtm2bim main window
@@ -60,13 +60,13 @@ namespace City2RVT.GUI.DTM2BIM
         /// </summary>
         private void cbProcessing_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (cbDelauny.IsSelected)
+            if (cbFaces.IsSelected)
             {
-                useDelauny = true;
+                useFaces = true;
             }
             else
             {
-                useDelauny = false;
+                useFaces = false;
             }
             
             if(cbProcessing.SelectedIndex != -1)

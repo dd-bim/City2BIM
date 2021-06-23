@@ -59,10 +59,10 @@ namespace City2RVT.GUI
             }
             else
             {
-                //enable delauny triangulation as conversion option
+                //enable conversion via points & faces
                 if (rvtVersion.Equals(utils.rvtVersion.R20 | utils.rvtVersion.R21))
                 {
-                    terrainUI.cbDelauny.IsEnabled = true;
+                    terrainUI.cbFaces.IsEnabled = true;
                 }
                 
                 //show main window to user (start dialog for settings)
@@ -73,20 +73,20 @@ namespace City2RVT.GUI
             if(terrainUI.startTerrainImport)
             {
                 //start mapping process
-                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config, terrainUI.useDelaunyTriangulation);
+                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config, terrainUI.usePointsFaces);
 
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
 
-                if (!terrainUI.useDelaunyTriangulation)
-                {
-                    //create dtm (via points)
-                    rev.createDTMviaPoints(res);
-                }
-                else
+                if (terrainUI.usePointsFaces)
                 {
                     //create dtm via points & faces
                     rev.createDTM(res);
+                }
+                else
+                {
+                    //create dtm (via points)
+                    rev.createDTMviaPoints(res);
                 }
 
                 //error handlings
