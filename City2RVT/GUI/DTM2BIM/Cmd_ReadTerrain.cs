@@ -99,7 +99,7 @@ namespace City2RVT.GUI
                 else
                 {
                     //TODO improve error message
-                    TaskDialog.Show("DTM import failed!", "The DTM import failed.\nPlease use see in log file for more information.");
+                    TaskDialog.Show("DTM import failed!", "The DTM import failed.");
 
                     return Result.Failed;
                 }

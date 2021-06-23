@@ -63,10 +63,15 @@ namespace City2RVT.GUI.DTM2BIM
             if (cbFaces.IsSelected)
             {
                 useFaces = true;
+                //enable filter
+                gbSpatialFilter.IsEnabled = false;
             }
             else
             {
                 useFaces = false;
+
+                //disable
+                gbSpatialFilter.IsEnabled = true;
             }
             
             if(cbProcessing.SelectedIndex != -1)
