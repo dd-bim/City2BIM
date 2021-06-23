@@ -32,6 +32,10 @@ namespace City2RVT.GUI.DTM2BIM
         /// </summary>
         private bool useFaces { set; get; } = false;
 
+
+
+
+        /*
         /// <summary>
         /// set if processing should go via points & faces
         /// </summary>
@@ -60,7 +64,7 @@ namespace City2RVT.GUI.DTM2BIM
         /// <summary>
         /// setter for user selection
         /// </summary>
-        private double filterValue { set; get; }
+        private double filterValue { set; get; }*/
         #endregion config settings
 
         /// <summary>
@@ -85,6 +89,7 @@ namespace City2RVT.GUI.DTM2BIM
             //set is3D to default value (TODO - generic)
             init.config.is3D = true;
 
+            /* Spatial Filter
             if (chkSpatialFilter.IsChecked == true)
             {
                 //set filter will be used
@@ -107,6 +112,7 @@ namespace City2RVT.GUI.DTM2BIM
                 //set filter will not be used
                 useFilter = false;
             }
+            */
 
             Close();
         }
@@ -119,16 +125,10 @@ namespace City2RVT.GUI.DTM2BIM
             if (cbFaces.IsSelected)
             {
                 useFaces = true;
-
-                //enable filter
-                gbSpatialFilter.IsEnabled = false;
             }
             else
             {
                 useFaces = false;
-
-                //disable
-                gbSpatialFilter.IsEnabled = true;
             }
             
             if(cbProcessing.SelectedIndex != -1)
@@ -158,7 +158,7 @@ namespace City2RVT.GUI.DTM2BIM
                 this.btnStartImport.IsEnabled = false;
             }
         }
-
+        /* Spatial Filter
         private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (cbSquare.IsSelected)
@@ -182,5 +182,6 @@ namespace City2RVT.GUI.DTM2BIM
                 cbFilterSelection.IsEnabled = false;
             }
         }
+        */
     }
 }

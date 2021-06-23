@@ -97,7 +97,7 @@
         </GroupBox>
 
         <!-- spatial filter-->
-        <GroupBox
+        <!--<GroupBox
             x:Name="gbSpatialFilter"
             Grid.Row="2"
             Grid.Column="1"
@@ -133,7 +133,7 @@
                 </TextBox>
 
             </Grid>
-        </GroupBox>
+        </GroupBox>-->
 
         <!--bounding box -->
         <GroupBox
