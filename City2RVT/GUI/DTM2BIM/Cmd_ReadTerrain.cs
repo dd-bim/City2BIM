@@ -24,8 +24,6 @@ namespace City2RVT.GUI
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Cmd_ReadTerrain : IExternalCommand
     {
-        
-
         // The main Execute method (inherited from IExternalCommand) must be public
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -41,7 +39,7 @@ namespace City2RVT.GUI
             uC.Reb.Read ucReb = new uC.Reb.Read();
             uC.Grafbat.Read ucGrafbat = new uC.Grafbat.Read();
             uC.XML.Read ucXml = new uC.XML.Read();
-            //TODO: postgis reader
+            uC.PostGIS.Read ucPostGIS = new uC.PostGIS.Read();
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();

@@ -8,6 +8,7 @@
         xmlns:Reb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
         xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:Xml="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
+        xmlns:PostGIS="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
         xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
         mc:Ignorable="d" 
         Height="650" 
@@ -52,7 +53,7 @@
             </TabItem>
             <TabItem Header="Database (PostGIS)" IsEnabled="False">
                 <!-- user controler postgis-->
-                
+                <PostGIS:Read/>
             </TabItem>
             <TabItem Header="Grid (XYZ)">
                 <!-- user controler grid-->
