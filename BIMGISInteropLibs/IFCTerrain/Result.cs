@@ -19,7 +19,7 @@ namespace BIMGISInteropLibs.IfcTerrain
     public class Result
     {
         /// <summary>
-        /// transfer class of an MESH (WILL BE REMOVED)
+        /// transfer class of an MESH
         /// </summary>
         public Mesh Mesh { get; set; } = null;
 
