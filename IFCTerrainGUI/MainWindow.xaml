@@ -9,6 +9,7 @@
         xmlns:ucReb ="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
         xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
+        xmlns:ucPostGIS ="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -112,7 +113,7 @@
                 Header="Database (PostGIS)">
                 
                 <!-- add user controler for postgis reading-->
-                <!--<ucPostGIS:ucReadPostGis/>-->
+                <ucPostGIS:Read/>
 
             </TabItem>
 
