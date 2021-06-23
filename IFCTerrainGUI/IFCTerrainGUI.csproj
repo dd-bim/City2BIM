@@ -40,7 +40,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>DD_BIM_ICON.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\DD_BIM_ICON.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -203,12 +203,6 @@
     <Resource Include="Resources\DD_BIM_LOGO.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="DDBIM_Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="DDBIM_Logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
       <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
       <Name>BIMGISInteropLibs</Name>
@@ -219,7 +213,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="DD_BIM_ICON.ico" />
+    <Resource Include="Resources\DD_BIM_ICON.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
