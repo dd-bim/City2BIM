@@ -18,6 +18,9 @@ using IxMilia.Dxf;
 
 namespace BIMGISInteropLibs.RvtTerrain
 {
+    /// <summary>
+    /// connection between file reader & DTM2BIM writer
+    /// </summary>
     public class ConnectionInterface
     {
         /// <summary>
@@ -53,6 +56,8 @@ namespace BIMGISInteropLibs.RvtTerrain
                    
                     //set min dist to default value (TODO)
                     config.minDist = 1;
+
+                    config.is3D = true;
 
                     //Mesh Reader (if dxf file contains 3dfaces)
                     resTerrain = DXF.ReaderTerrain.ReadDXFMESH(dxfFile, config);

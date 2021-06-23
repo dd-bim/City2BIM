@@ -1,5 +1,8 @@
 ﻿using System.Windows;
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
 namespace City2RVT.GUI.DTM2BIM
 {
     /// <summary>
@@ -42,6 +45,13 @@ namespace City2RVT.GUI.DTM2BIM
         {
             //start mapping process
             startImport = true;
+
+            //set min dist to default value (TODO - generic)
+            init.config.minDist = 1;
+
+            //set is3D to default value (TODO - generic)
+            init.config.is3D = true;
+
             Close();
         }
 
