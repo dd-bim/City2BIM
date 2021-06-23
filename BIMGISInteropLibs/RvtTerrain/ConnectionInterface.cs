@@ -80,6 +80,10 @@ namespace BIMGISInteropLibs.RvtTerrain
                 case IfcTerrainFileType.CityGML:
                     resTerrain = CityGML.CityGMLReaderTerrain.ReadTin(config);
                     break;
+
+                case IfcTerrainFileType.PostGIS:
+                    resTerrain = PostGIS.ReaderTerrain.ReadPostGIS(config);
+                    break;
             }
             #endregion file reading
 
