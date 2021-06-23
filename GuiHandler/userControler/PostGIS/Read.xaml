@@ -118,13 +118,7 @@
                     <TextBox x:Name="tbBlTinIdColumn" Grid.Row="6" Grid.Column="1" Margin="5,0,0,0" TextChanged="tb_TextChanged" IsEnabled="False"/>
                 </Grid>
             </GroupBox>
-
-            <Button x:Name="btnPostGisExampleTin" Content="Load example (TerrainTwin) - only TIN" Margin="0,5" Click="btnPostGisExampleTin_Click" Visibility="Hidden"/>
-            <Button x:Name="btnPostGisExampelTinBl" Content="Load example (TerrainTwin) - with break lines" Click="btnPostGisExampelTinBl_Click" Visibility="Hidden"/>
-
-
-
         </StackPanel>
-        <Button x:Name="btnProcessPostGis" Grid.Row="2" Content="Process 'PostGIS'" IsEnabled="False" Click="btnProcessPostGis_Click" />
+        <Button x:Name="btnProcessPostGis" Grid.Row="2" Content="Apply 'PostGIS' query settings" IsEnabled="False" Click="btnProcessPostGis_Click" />
     </Grid>
 </UserControl>
