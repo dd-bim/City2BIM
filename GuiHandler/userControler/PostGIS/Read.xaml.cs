@@ -13,21 +13,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
+//using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
-using Microsoft.Win32; //used for file handling
 
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
-namespace IFCTerrainGUI.GUI.PostGIS
+namespace GuiHandler.userControler.PostGIS
 {
     /// <summary>
-    /// Interaction logic for ucReadPostGis.xaml
+    /// Interaktionslogik für Read.xaml
     /// </summary>
-    public partial class ucReadPostGis : UserControl
+    public partial class Read : UserControl
     {
-        public ucReadPostGis()
+        public Read()
         {
             InitializeComponent();
         }
@@ -81,7 +80,7 @@ namespace IFCTerrainGUI.GUI.PostGIS
 
             #region breaklines
             //check if breaklines should be processed
-            if(rbProcessBlTrue.IsChecked == true)
+            if (rbProcessBlTrue.IsChecked == true)
             {
                 //breakline will be processed
                 init.config.breakline = true;
@@ -96,7 +95,7 @@ namespace IFCTerrainGUI.GUI.PostGIS
                 init.config.breakline_tin_id = this.tbBlTinIdColumn.Text;
 
                 //gui feedback
-                ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will be processed";
+                //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will be processed";
             }
             else
             {
@@ -104,31 +103,37 @@ namespace IFCTerrainGUI.GUI.PostGIS
                 init.config.breakline = false;
 
                 //gui feedback
-                ((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will NOT be processed";
+                //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will NOT be processed";
             }
             #endregion breaklines
             #endregion set json settings
 
             #region gui feedback
             //return info to database
-            ((MainWindow)Application.Current.MainWindow).tbFileName.Text = init.config.database;
+            //((MainWindow)Application.Current.MainWindow).tbFileName.Text = init.config.database;
 
             //return info to file type
-            ((MainWindow)Application.Current.MainWindow).tbFileType.Text = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS.ToString() + " request";
+            //((MainWindow)Application.Current.MainWindow).tbFileType.Text = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS.ToString() + " request";
 
             //return info to breaklines
-            ((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breaklines";
+            //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breaklines";
 
             //gui logging (user information)
-            MainWindowBib.setGuiLog("PostGIS settings applyed.");
+            //MainWindowBib.setGuiLog("PostGIS settings applyed.");
             #endregion gui feedback
 
             #region error handling
+            
             //set task (file opening) to true
-            GuiHandler.GuiSupport.taskfileOpening = true;
+            GuiSupport.taskfileOpening = true;
+
+            //[IfcTerrain] check if all task are allready done
+            GuiSupport.readyState();
+
+            //[DTM2BIM] check if all task are allready done
+            GuiSupport.rdyDTM2BIM();
 
             //check if all task are allready done
-            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
             #endregion error handling
         }
 
@@ -138,18 +143,18 @@ namespace IFCTerrainGUI.GUI.PostGIS
         private bool readyState()
         {
             //if all tbs checker set to true
-            if (this.inputHost && this.inputPort 
-                && this.inputUsername && this.inputPassword 
+            if (this.inputHost && this.inputPort
+                && this.inputUsername && this.inputPassword
                 && this.inputDatabase && this.inputSchema
                 && this.inputGeomTable && this.inputGeomColumn
                 && this.inputTinId && this.inputTinValue)
             {
-                if(this.rbProcessBlFalse.IsChecked == true)
+                if (this.rbProcessBlFalse.IsChecked == true)
                 {
                     //enable process postgis button
                     this.btnProcessPostGis.IsEnabled = true;
                 }
-                else if ((this.rbProcessBlTrue.IsChecked == true) 
+                else if ((this.rbProcessBlTrue.IsChecked == true)
                     && this.inputBlTable
                     && this.inputBlColumn
                     && this.inputBlTinId)
@@ -435,13 +440,12 @@ namespace IFCTerrainGUI.GUI.PostGIS
         /// </summary>
         private void btnPostGisExampelTinBl_Click(object sender, RoutedEventArgs e)
         {
-            this.btnPostGisExampleTin_Click(sender,e);
+            this.btnPostGisExampleTin_Click(sender, e);
             this.rbProcessBlTrue.IsChecked = true;
 
             this.tbBlGeomColumn.Text = "breaklines";
             this.tbBlTable.Text = "geometry";
             this.tbBlTinIdColumn.Text = "tin_id";
         }
-
     }
 }

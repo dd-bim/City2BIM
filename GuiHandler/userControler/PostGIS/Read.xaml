@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="IFCTerrainGUI.GUI.PostGIS.ucReadPostGis"
+﻿<UserControl x:Class="GuiHandler.userControler.PostGIS.Read"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:IFCTerrainGUI.GUI.PostGIS"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GuiHandler.userControler.PostGIS"
              mc:Ignorable="d" 
-             d:DesignHeight="525" d:DesignWidth="379">
+             d:DesignHeight="525" d:DesignWidth="385">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -35,12 +35,12 @@
                     <TextBox x:Name="tbHost" x:FieldModifier="public" Grid.Column="1" TextChanged="tb_TextChanged"/>
                     <TextBlock Text="Port" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBox x:Name="tbPort" Grid.Column="3" TextChanged="tb_TextChanged" PreviewTextInput="tbPort_PreviewTextInput"/>
-                   
+
                     <!-- second row with username and password-->
                     <TextBlock Text="Username" Grid.Row="2" VerticalAlignment="Center" Margin="5,0"/>
                     <TextBox x:Name="tbUser" Grid.Column="1" Grid.Row="2" TextChanged="tb_TextChanged"/>
                     <TextBlock Text="Password" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="5,0"/>
-                    
+
                     <!-- use password box so pw is not visible-->
                     <PasswordBox x:Name="tbPwd" Grid.Column="3" Grid.Row="2" PasswordChar="*"/>
 
