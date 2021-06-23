@@ -54,10 +54,7 @@ namespace BIMGISInteropLibs.RvtTerrain
 
                     //loop for distinguishing whether it is a tin or not (processing via points and lines)
                    
-                    //set min dist to default value (TODO)
-                    config.minDist = 1;
 
-                    config.is3D = true;
 
                     //Mesh Reader (if dxf file contains 3dfaces)
                     resTerrain = DXF.ReaderTerrain.ReadDXFMESH(dxfFile, config);
