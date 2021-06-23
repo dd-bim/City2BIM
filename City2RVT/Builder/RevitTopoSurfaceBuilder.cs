@@ -4,15 +4,14 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using BIMGISInteropLibs.Geometry;
-using BIMGISInteropLibs.OGR;
+
+using BIMGISInteropLibs.RvtTerrain;
 
 namespace City2RVT.Builder
 {
     internal class RevitTopoSurfaceBuilder
     {
         private readonly Document doc;
-
-
 
         /// <summary>
         /// return this value for error handling of import 
@@ -32,8 +31,7 @@ namespace City2RVT.Builder
         /// <summary>
         /// function to create DTM via points only
         /// </summary>
-        /// <param name="terrainPoints"></param>
-        public void createDTMviaPoints(BIMGISInteropLibs.RvtTerrain.Result result)
+        public void createDTMviaPoints(Result result)
         {
             //transform input points to revit
             var revDTMpts = transPts(result.dtmPoints);
@@ -60,6 +58,8 @@ namespace City2RVT.Builder
                     //set to true
                     importSuccesful = true;
 
+                    result.numPoints = revDTMpts.Count;
+
                     return;
                 }
                 catch(Exception ex)
@@ -84,9 +84,7 @@ namespace City2RVT.Builder
         /// <summary>
         /// method to create DTM using point list and list of facets
         /// </summary>
-        /// <param name="terrainPoints">point list (xyz)</param>
-        /// <param name="terrainFaces"></param>
-        public void createDTM(BIMGISInteropLibs.RvtTerrain.Result result)
+        public void createDTM(Result result)
         {
             //get points from result / exchange class
             var terrainPoints = result.dtmPoints;
@@ -126,6 +124,9 @@ namespace City2RVT.Builder
 
                         //set to true
                         importSuccesful = true;
+
+                        result.numPoints = revDTMpts.Count;
+                        result.numFacets = terrainFaces.Count;
                     }
                     else
                     {

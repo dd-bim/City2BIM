@@ -1,4 +1,6 @@
-﻿//include Revit API
+﻿using System;
+
+//include Revit API
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
@@ -90,8 +92,17 @@ namespace City2RVT.GUI
                 //error handlings
                 if (rev.terrainImportSuccesful)
                 {
+                    dynamic resLog;
+                    if (terrainUI.usePointsFaces)
+                    {
+                        resLog = "Points: " + res.numPoints + " Faces: " + res.numFacets;
+                    }
+                    else
+                    {
+                        resLog = "Points: " + res.numPoints;
+                    }
                     //show info dialog (may update to better solution)
-                    TaskDialog.Show("DTM import", "DTM import finished!");
+                    TaskDialog.Show("DTM import", "DTM import finished!" + Environment.NewLine + resLog);
 
                     //process successfuly
                     return Result.Succeeded;
