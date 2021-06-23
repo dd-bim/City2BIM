@@ -50,7 +50,7 @@
                 <!-- user controler grafbat-->
                 <Grafbat:Read/>
             </TabItem>
-            <TabItem Header="Database (PostGIS)">
+            <TabItem Header="Database (PostGIS)" IsEnabled="False">
                 <!-- user controler postgis-->
                 
             </TabItem>
@@ -86,7 +86,8 @@
                 <!-- conversion selection -->
                 <ComboBox x:Name="cbProcessing" Grid.Column="1" SelectionChanged="cbProcessing_SelectionChanged">
                     <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)"></ComboBoxItem>
-                    <ComboBoxItem x:Name="cbDelauny" Content="... Points/ Breaklines (Delauny Triangulation)" IsEnabled="False"></ComboBoxItem>
+                    <ComboBoxItem x:Name="cbFaces" Content="... Points/ Faces (Conversion)" IsEnabled="False"></ComboBoxItem>
+                    <ComboBoxItem x:Name="cbDT" Content="... Delauny Trinagulation" IsEnabled="False" ToolTip="Comming soon!" ToolTipService.ShowOnDisabled="True"></ComboBoxItem>
                 </ComboBox>
             </Grid>
 

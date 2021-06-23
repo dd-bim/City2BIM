@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 //BimGisCad
-using BimGisCad.Collections;                        //MESH
-using BimGisCad.Representation.Geometry.Composed;   //TIN
 using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 
 //used for result class (may update to seperate class for rvtTerrain)
@@ -20,31 +18,28 @@ using IxMilia.Dxf;
 
 namespace BIMGISInteropLibs.RvtTerrain
 {
+    /// <summary>
+    /// connection between file reader & DTM2BIM writer
+    /// </summary>
     public class ConnectionInterface
     {
-        /// <summary>
-        /// TIN (result of the specific file reader)
-        /// </summary>
-        public Tin Tin { get; private set; }
-
-        /// <summary>
-        /// MESH (result of the specific file reader)
-        /// </summary>
-        public Mesh Mesh { get; private set; }
-
         /// <summary>
         /// file reading / tin build process
         /// </summary>
         /// <param name="config">setting to config file processing and conversion process</param>
         /// <returns></returns>
-        public static List<C2BPoint> mapProcess(JsonSettings config)
+        public static Result mapProcess(JsonSettings config, bool useFaces)
         {
             //set grid size (as default value)
             config.gridSize = 1;
 
-            //init transfer class
-            BIMGISInteropLibs.IfcTerrain.Result resTerrain = new BIMGISInteropLibs.IfcTerrain.Result();
+            //init transfer class (DTM2BIM)
+            Result res = new Result();
+            
+            //init transfer class (mainly used in ifc terrain)
+            IfcTerrain.Result resTerrain = new IfcTerrain.Result();
 
+            #region file reading
             //mapping on basis of data type
             switch (config.fileType)
             {
@@ -59,8 +54,7 @@ namespace BIMGISInteropLibs.RvtTerrain
 
                     //loop for distinguishing whether it is a tin or not (processing via points and lines)
                    
-                    //set min dist to default value (TODO)
-                    config.minDist = 1;
+                    //TODO - check all reader 
 
                     //Mesh Reader (if dxf file contains 3dfaces)
                     resTerrain = DXF.ReaderTerrain.ReadDXFMESH(dxfFile, config);
@@ -87,7 +81,9 @@ namespace BIMGISInteropLibs.RvtTerrain
                     resTerrain = CityGML.CityGMLReaderTerrain.ReadTin(config);
                     break;
             }
+            #endregion file reading
 
+            #region point list
             //init empty point list
             dynamic dgmPtList = new List<C2BPoint>();
 
@@ -112,13 +108,42 @@ namespace BIMGISInteropLibs.RvtTerrain
                 //TODO error catcher
                 return null;
             }
-            
 
+            //set to result point list
+            res.dtmPoints = dgmPtList;
+            #endregion point list
 
-            return dgmPtList;
+            //init face list
+            dynamic dgmFaceList = new List<DtmFace>();
+
+            if (useFaces)
+            {
+                if (resTerrain.Tin.Points == null)
+                {
+                    //set to result facet list
+                    foreach (int fe in resTerrain.Mesh.FaceEdges)
+                    {
+                        int p1 = resTerrain.Mesh.EdgeVertices[fe];
+                        int p2 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[fe]];
+                        int p3 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[resTerrain.Mesh.EdgeNexts[fe]]];
+
+                        //add face index to list
+                        dgmFaceList.Add(new DtmFace(p1, p2, p3));
+                    }
+                }
+                else
+                {
+                    //
+                    foreach(var tri in resTerrain.Tin.TriangleVertexPointIndizes())
+                    {
+                        dgmFaceList.Add(new DtmFace(tri[0], tri[1], tri[2]));
+                    }
+                }
+            }
+
+            res.terrainFaces = dgmFaceList;
+
+            return res;
         }
-
     }
-
-    
 }

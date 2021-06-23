@@ -281,6 +281,8 @@
     <Compile Include="OGR\OGRReader.cs" />
     <Compile Include="OGR\OGRUtils.cs" />
     <Compile Include="RvtTerrain\ConnectionInterface.cs" />
+    <Compile Include="RvtTerrain\Faces.cs" />
+    <Compile Include="RvtTerrain\Result.cs" />
     <Compile Include="Semantic\Xml_AttrRep.cs" />
     <Compile Include="Semantic\Read_GmlDictionary.cs" />
     <Compile Include="Semantic\City_Semantic.cs" />

@@ -28,9 +28,9 @@ namespace BIMGISInteropLibs.IfcTerrain
     {
         //initialize TIN / MESH / Breaklines
         /// <summary>
-        /// MESH (result of the specific file reader [TODO] remove, when no longer needed)
+        /// MESH (result of the specific file reader)
         /// </summary>
-        public Mesh Mesh { get; private set; } = null;
+        public Mesh Mesh { get; private set; }
 
         /// <summary>
         /// TIN (result of the specific file reader)
@@ -40,7 +40,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// breaklines (result of the specific file reader) [TODO]
         /// </summary>
-        public Dictionary<int, Line3> Breaklines { get; private set; } = null;
+        public Dictionary<int, Line3> Breaklines { get; private set; }
 
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer

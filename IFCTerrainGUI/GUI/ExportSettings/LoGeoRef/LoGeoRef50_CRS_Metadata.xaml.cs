@@ -160,6 +160,8 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
+
                 //TODO: log exception
             }
             

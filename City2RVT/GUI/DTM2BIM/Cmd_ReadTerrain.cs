@@ -24,6 +24,8 @@ namespace City2RVT.GUI
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Cmd_ReadTerrain : IExternalCommand
     {
+        
+
         // The main Execute method (inherited from IExternalCommand) must be public
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -57,10 +59,10 @@ namespace City2RVT.GUI
             }
             else
             {
-                //enable delauny triangulation as conversion option
-                if (rvtVersion.Equals(utils.rvtVersion.R20))
+                //enable conversion via points & faces
+                if (rvtVersion.Equals(utils.rvtVersion.R20 | utils.rvtVersion.R21))
                 {
-                    terrainUI.cbDelauny.IsEnabled = true;
+                    terrainUI.cbFaces.IsEnabled = true;
                 }
                 
                 //show main window to user (start dialog for settings)
@@ -71,29 +73,38 @@ namespace City2RVT.GUI
             if(terrainUI.startTerrainImport)
             {
                 //start mapping process
-                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config);
+                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config, terrainUI.usePointsFaces);
 
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
 
-                if (!terrainUI.useDelaunyTriangulation)
+                if (terrainUI.usePointsFaces)
                 {
-                    //create dtm (TODO - update)
-                    rev.CreateDTM(res);
+                    //create dtm via points & faces
+                    rev.createDTM(res);
                 }
                 else
                 {
-                    //error handling
-                    TaskDialog.Show("Error - Implementation failed","Sorry!,\nSomething went wrong.");
+                    //create dtm (via points)
+                    rev.createDTMviaPoints(res);
+                }
+
+                //error handlings
+                if (rev.terrainImportSuccesful)
+                {
+                    //show info dialog (may update to better solution)
+                    TaskDialog.Show("DTM import", "DTM import finished!");
+
+                    //process successfuly
+                    return Result.Succeeded;
+                }
+                else
+                {
+                    //TODO improve error message
+                    TaskDialog.Show("DTM import failed!", "The DTM import failed.\nPlease use see in log file for more information.");
 
                     return Result.Failed;
                 }
-
-                //show info dialog (may update to better solution)
-                TaskDialog.Show("DTM import", "DTM import finished!");
-
-                //process successfuly
-                return Result.Succeeded;
             }
             else
             {
