@@ -54,7 +54,7 @@ namespace BIMGISInteropLibs.RvtTerrain
 
                     //loop for distinguishing whether it is a tin or not (processing via points and lines)
                    
-
+                    //TODO - check all reader 
 
                     //Mesh Reader (if dxf file contains 3dfaces)
                     resTerrain = DXF.ReaderTerrain.ReadDXFMESH(dxfFile, config);
@@ -133,7 +133,11 @@ namespace BIMGISInteropLibs.RvtTerrain
                 }
                 else
                 {
-                    //TODO for TIN
+                    //
+                    foreach(var tri in resTerrain.Tin.TriangleVertexPointIndizes())
+                    {
+                        dgmFaceList.Add(new DtmFace(tri[0], tri[1], tri[2]));
+                    }
                 }
             }
 
