@@ -14,7 +14,7 @@
         Width="800"
         Title="Import Terrain Data"
         ResizeMode="NoResize">
-    <Grid Margin="5">
+    <Grid>
         <!--grid definitions for gui layout-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -66,7 +66,7 @@
         </TabControl>
 
         <!-- import button (for execution)-->
-        <Button x:Name="btnStartImport" Grid.Row="5" Grid.ColumnSpan="2" Content="Import" Margin="0,5" FontSize="16" FontWeight="Bold" Click="btnStartImport_Click" IsEnabled="False"/>
+        <Button x:Name="btnStartImport" Grid.Row="5" Grid.ColumnSpan="2" Content="Import" Margin="2,5,2,2" FontSize="16" FontWeight="Bold" Click="btnStartImport_Click" IsEnabled="False"/>
 
         <!-- config import -->
         <GroupBox 
