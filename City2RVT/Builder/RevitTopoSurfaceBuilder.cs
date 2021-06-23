@@ -4,12 +4,15 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using BIMGISInteropLibs.Geometry;
+using BIMGISInteropLibs.OGR;
 
 namespace City2RVT.Builder
 {
     internal class RevitTopoSurfaceBuilder
     {
         private readonly Document doc;
+
+
 
         /// <summary>
         /// return this value for error handling of import 
@@ -32,8 +35,6 @@ namespace City2RVT.Builder
         /// <param name="terrainPoints"></param>
         public void createDTMviaPoints(BIMGISInteropLibs.RvtTerrain.Result result)
         {
-            GUI.DTM2BIM.Terrain_ImportUI cmdTerrain = new GUI.DTM2BIM.Terrain_ImportUI();
-            
             //transform input points to revit
             var revDTMpts = transPts(result.dtmPoints);
 
@@ -80,7 +81,6 @@ namespace City2RVT.Builder
             }
         }
 
-
         /// <summary>
         /// method to create DTM using point list and list of facets
         /// </summary>
@@ -91,7 +91,7 @@ namespace City2RVT.Builder
             //get points from result / exchange class
             var terrainPoints = result.dtmPoints;
 
-            //
+            //init facet list
             List<PolymeshFacet> terrainFaces = new List<PolymeshFacet>();
 
             foreach(BIMGISInteropLibs.RvtTerrain.DtmFace f in result.terrainFaces)
@@ -112,7 +112,6 @@ namespace City2RVT.Builder
                 {
                     //create surf var via points & faces
                     var surface = TopographySurface.Create(doc, revDTMpts, terrainFaces);
-
 
                     //data storage
                     storeTerrainIDInExtensibleStorage(doc, surface.Id);
@@ -181,6 +180,11 @@ namespace City2RVT.Builder
             return revDTMpts;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="terrainID"></param>
         private static void storeTerrainIDInExtensibleStorage(Document doc, ElementId terrainID)
         {
             using (SubTransaction trans = new SubTransaction(doc))
@@ -211,5 +215,35 @@ namespace City2RVT.Builder
                 trans.Commit();
             }
         }
+        /* Spatial Filter
+        
+        public OGRSpatialFilter SpatialFilter { get => spatialFilter; }
+
+        private OGRSpatialFilter spatialFilter { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void setSpatialFilter(bool isSquare, Document doc, double distance)
+        {
+            //
+            var pbp = utils.getProjectBasePointMeter(doc);
+        
+            //
+            if (isSquare)
+            {
+                this.spatialFilter = new OGRRectangularSpatialFilter(pbp.X, pbp.Y, distance, distance);
+            }
+            else if (!isSquare)
+            {
+                this.spatialFilter = new OGRCircularSpatialFilter(pbp.X, pbp.Y, distance);
+            }
+            else
+            {
+                this.spatialFilter = null;
+            }
+            return;
+        }
+        */
     }
 }

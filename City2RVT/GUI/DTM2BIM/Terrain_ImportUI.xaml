@@ -24,7 +24,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="0.8*"/>
             <RowDefinition Height="0.8*"/>
             <RowDefinition Height="0.8*"/>
             <RowDefinition/>
@@ -36,7 +36,7 @@
 
         <!-- Textbox "Import Settings"-->
         <TextBlock  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="Import Settings"/>
-        
+
         <!-- Tab Manager-->
         <TabControl Grid.Row="1" Grid.RowSpan="5">
             <TabItem Header="CAD (DXF)">
@@ -93,7 +93,7 @@
                 </ComboBox>
             </Grid>
 
-            
+
         </GroupBox>
 
         <!-- spatial filter-->
@@ -103,54 +103,57 @@
             Grid.Column="1"
             Header="Spatial Filter"
             IsEnabled="False"
+            Visibility="Hidden"
             >
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.6*"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.6*"/>
+                    <ColumnDefinition Width="13*"/>
+                    <ColumnDefinition Width="59*"/>
+                    <ColumnDefinition Width="121*"/>
+                    <ColumnDefinition Width="120*"/>
+                    <ColumnDefinition Width="72*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Content="Enable" HorizontalAlignment="Center" VerticalAlignment="Center"></CheckBox>
-                <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0" IsEnabled="False">
-                    <ComboBoxItem Content="Circle"/>
-                    <ComboBoxItem Content="Square"/>
+                <CheckBox x:Name="chkSpatialFilter" Content="Enable" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="chkSpatialFilter_Checked" Grid.ColumnSpan="2" Margin="8,14"></CheckBox>
+                <ComboBox x:Name="cbFilterSelection" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,11" IsEnabled="False" SelectionChanged="ComboBox_SelectionChanged">
+                    <ComboBoxItem x:Name="cbCircle" Content="Circle"/>
+                    <ComboBoxItem x:Name="cbSquare" Content="Square"/>
                 </ComboBox>
 
-                <TextBlock Text="Radius / Distance [m]:" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"/>
+                <TextBlock Text="Radius / Distance [m]:" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Margin="2,14"/>
 
-                <TextBox 
-                    Grid.Column="3" 
+                <TextBox
+                    x:Name="tbFilterValue"
+                    Grid.Column="4" 
                     HorizontalAlignment="Stretch" 
                     VerticalAlignment="Center" 
                     Height="22" 
                     VerticalContentAlignment="Center" 
-                    HorizontalContentAlignment="Center" 
-                    IsEnabled="False">
-                500
+                    HorizontalContentAlignment="Center" Margin="0,11">
+                    500
                 </TextBox>
 
             </Grid>
         </GroupBox>
-        
+
         <!--bounding box -->
         <GroupBox
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.Column="1"
             Header="Bounding Box">
-            
-            
+
+
         </GroupBox>
 
         <!-- metadata -->
         <GroupBox
-            Grid.Row="4"
+            Grid.Row="3"
+            Grid.RowSpan="2"
             Grid.Column="1"
             Header="Metadata"
             >
 
         </GroupBox>
-        
+
         <!-- logging -->
         <GroupBox
             Grid.Row="5"
