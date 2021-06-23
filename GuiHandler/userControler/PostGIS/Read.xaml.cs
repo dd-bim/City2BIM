@@ -413,39 +413,5 @@ namespace GuiHandler.userControler.PostGIS
             this.tbBlGeomColumn.IsEnabled = false;
             this.tbBlTinIdColumn.IsEnabled = false;
         }
-
-        /// <summary>
-        /// Load example fields (only tin)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnPostGisExampleTin_Click(object sender, RoutedEventArgs e)
-        {
-            this.tbHost.Text = "terrain.dd-bim.org";
-            this.tbPort.Text = "5432";
-            this.tbUser.Text = "marcus";
-            this.tbPwd.Password = "123456";
-            this.tbDatabase.Text = "tt";
-            this.tbSchema.Text = "terraintwin";
-            this.tbTinTable.Text = "tin";
-            this.tbTinColumn.Text = "geometry";
-            this.tbTinIdColumn.Text = "tin_id";
-            this.tbTinIdValue.Text = "3";
-            this.rbProcessBlFalse.IsChecked = true;
-        }
-
-
-        /// <summary>
-        /// Load example fields (tin with break lines)
-        /// </summary>
-        private void btnPostGisExampelTinBl_Click(object sender, RoutedEventArgs e)
-        {
-            this.btnPostGisExampleTin_Click(sender, e);
-            this.rbProcessBlTrue.IsChecked = true;
-
-            this.tbBlGeomColumn.Text = "breaklines";
-            this.tbBlTable.Text = "geometry";
-            this.tbBlTinIdColumn.Text = "tin_id";
-        }
     }
 }
