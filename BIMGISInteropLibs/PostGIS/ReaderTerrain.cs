@@ -402,16 +402,16 @@ namespace BIMGISInteropLibs.PostGIS
             dtmLineDataWKT = "";
 
             //Database connection parameters
-            string host = jSettings.host;
-            int port = jSettings.port;
-            string user = jSettings.user;
-            string password = jSettings.password;
-            string dbName = jSettings.database;
-            string schema = jSettings.schema;
+            string host = "localhost";//jSettings.host;
+            int port = 5432;//jSettings.port;
+            string user = "postgres";//jSettings.user;
+            string password = "postgres";//jSettings.password;
+            string dbName = "ifcterrain";//jSettings.database;
+            string schema = "public";//jSettings.schema;
 
             //DTM data table
-            string dtmDataTable = "";
-            string dtmDataColumn = "";
+            string dtmDataTable = "geosn_dtm_testdata";
+            string dtmDataColumn = "geom";
             string dtmDataIdColumn = "";
             int dtmId = 0;
 
@@ -435,13 +435,32 @@ namespace BIMGISInteropLibs.PostGIS
                 AddToLogWriter(LogType.info, "[PostGIS] Connected to Database."); 
                 NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
 
-                //string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + tinid;
+                //Prepare sql string
+                string dtmPointDataSql = "SELECT " + "ST_AsEWKT(" + dtmDataColumn + ") FROM " + schema + "." + dtmDataTable + ";";
+
+                //Execute query
+                using (var command = new NpgsqlCommand(dtmPointDataSql, conn))
+                {
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        dtmPointDataWKT = (reader.GetValue(0)).ToString();
+                    }
+                }
+                conn.Close();
             }
             catch(Exception e)
             {
+                //Log error message
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[PostGIS]: " + e.Message));
 
+                //Write log file
+                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
+
+                //Show error message box
+                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            return true;
+            return CheckDtmDataLists(dtmPointDataWKT, dtmLineDataWKT);
         }
 
         /// <summary>
