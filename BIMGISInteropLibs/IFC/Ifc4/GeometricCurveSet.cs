@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 //embed BimGisCad
 using BimGisCad.Representation.Geometry.Elementary; //provides Vector
@@ -177,7 +174,9 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 {
                     //Create buffer for triangle edges
                     var edges = new HashSet<TupleIdx>();
+
                     g.Elements.AddRange(cps);
+
                     if (breakDist is double dist)
                     {
                         /* EDIT - is still the functionality from MESH

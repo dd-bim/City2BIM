@@ -14,12 +14,6 @@ using init = GuiHandler.InitClass;
 
 namespace City2RVT.GUI
 {
-    /*/TODO DTM2BIM
-    - eventuell Settings window
-    - Einstellungen für Ausdünnung bei großen Rastern
-    - Umkreis einschränken als Option
-    /*/
-
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.
     /// </remarks>

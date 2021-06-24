@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-//embed Xbim                                    //below selected examples that show why these are included
+﻿//embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc4.Kernel;                         //IfcProject
 using Xbim.Common.Step21;                       //Enumeration to XbimShemaVersion
