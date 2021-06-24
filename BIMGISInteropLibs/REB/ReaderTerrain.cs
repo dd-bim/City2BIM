@@ -352,17 +352,17 @@ namespace BIMGISInteropLibs.REB
         {
             if (dtmPointData.Count == 0)
             {
-                AddToLogWriter(LogType.info, "[DXF] No point data found.");
+                AddToLogWriter(LogType.info, "[REB] No point data found.");
                 return false;
             }
             else if (dtmLineData.Count == 0)
             {
-                AddToLogWriter(LogType.info, "[DXF] Reading point data was successful. No line data found.");
+                AddToLogWriter(LogType.info, "[REB] Reading point data was successful. No line data found.");
                 return true;
             }
             else
             {
-                AddToLogWriter(LogType.info, "[DXF] Reading point and line data was successful.");
+                AddToLogWriter(LogType.info, "[REB] Reading point and line data was successful.");
                 return true;
             }
         }
