@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
@@ -10,6 +11,7 @@ namespace City2RVT.GUI.DTM2BIM
     /// </summary>
     public partial class Terrain_ImportUI : Window
     {
+        #region config settings
         /// <summary>
         /// return this value to start import in revit cmd 
         /// </summary>
@@ -21,7 +23,7 @@ namespace City2RVT.GUI.DTM2BIM
         private bool startImport { set; get; } = false;
 
         /// <summary>
-        /// set if delauny triangulation should be processed
+        /// set if processing should go via points & faces
         /// </summary>
         public bool usePointsFaces { get { return useFaces; } }
 
@@ -29,9 +31,44 @@ namespace City2RVT.GUI.DTM2BIM
         /// setter for user selection
         /// </summary>
         private bool useFaces { set; get; } = false;
-        
+
+
+
+
+        /*
         /// <summary>
-        /// init dtm2bim main window
+        /// set if processing should go via points & faces
+        /// </summary>
+        public bool useSpatialFilter { get { return useFilter; } }
+
+        /// <summary>
+        /// setter for user selection
+        /// </summary>
+        private bool useFilter { set; get; } = false;
+
+        /// <summary>
+        /// set if processing should go via points & faces
+        /// </summary>
+        public bool isSquareFilter { get { return isSquare; } }
+
+        /// <summary>
+        /// setter for user selection
+        /// </summary>
+        private bool isSquare { set; get; } = false;
+
+        /// <summary>
+        /// set if processing should go via points & faces
+        /// </summary>
+        public double spatialFilterValue { get { return filterValue; } }
+
+        /// <summary>
+        /// setter for user selection
+        /// </summary>
+        private double filterValue { set; get; }*/
+        #endregion config settings
+
+        /// <summary>
+        /// init DTM2BIM main window
         /// </summary>
         public Terrain_ImportUI()
         {   
@@ -51,6 +88,31 @@ namespace City2RVT.GUI.DTM2BIM
 
             //set is3D to default value (TODO - generic)
             init.config.is3D = true;
+
+            /* Spatial Filter
+            if (chkSpatialFilter.IsChecked == true)
+            {
+                //set filter will be used
+                useFilter = true;
+
+                try
+                {
+                    //
+                    filterValue = double.Parse(tbFilterValue.Text);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    //TODO error logging
+                }
+                
+            }
+            else
+            {
+                //set filter will not be used
+                useFilter = false;
+            }
+            */
 
             Close();
         }
@@ -96,5 +158,30 @@ namespace City2RVT.GUI.DTM2BIM
                 this.btnStartImport.IsEnabled = false;
             }
         }
+        /* Spatial Filter
+        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (cbSquare.IsSelected)
+            {
+                isSquare = true;
+            }
+            else if(cbCircle.IsSelected)
+            {
+                isSquare = false;
+            }
+        }
+
+        private void chkSpatialFilter_Checked(object sender, RoutedEventArgs e)
+        {
+            if(chkSpatialFilter.IsChecked == true)
+            {
+                cbFilterSelection.IsEnabled = true;
+            }
+            else
+            {
+                cbFilterSelection.IsEnabled = false;
+            }
+        }
+        */
     }
 }

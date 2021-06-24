@@ -66,6 +66,9 @@
     <Compile Include="userControler\Grid\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
+    <Compile Include="userControler\PostGIS\Read.xaml.cs">
+      <DependentUpon>Read.xaml</DependentUpon>
+    </Compile>
     <Compile Include="userControler\Reb\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
@@ -83,6 +86,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="userControler\Grid\Read.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="userControler\PostGIS\Read.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

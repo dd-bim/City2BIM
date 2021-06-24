@@ -24,7 +24,9 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// 
         /// </summary>
         public List<DtmFace> terrainFaces { get; set; }
-    }
 
-    
+        public int numPoints { set; get; }
+
+        public int numFacets { set; get; }
+    }
 }

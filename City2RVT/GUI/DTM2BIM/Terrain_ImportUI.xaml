@@ -8,13 +8,14 @@
         xmlns:Reb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
         xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:Xml="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
+        xmlns:PostGIS="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
         xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
         mc:Ignorable="d" 
         Height="650" 
         Width="800"
         Title="Import Terrain Data"
         ResizeMode="NoResize">
-    <Grid Margin="5">
+    <Grid>
         <!--grid definitions for gui layout-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -23,9 +24,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="0.8*"/>
+            <RowDefinition Height="0.8*"/>
+            <RowDefinition Height="0.8*"/>
             <RowDefinition/>
-            <RowDefinition Height="1.8*"/>
-            <RowDefinition Height="1.3*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
@@ -34,9 +36,9 @@
 
         <!-- Textbox "Import Settings"-->
         <TextBlock  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="Import Settings"/>
-        
+
         <!-- Tab Manager-->
-        <TabControl Grid.Row="1" Grid.RowSpan="4">
+        <TabControl Grid.Row="1" Grid.RowSpan="5">
             <TabItem Header="CAD (DXF)">
                 <!-- user controler dxf-->
                 <Dxf:Read/>
@@ -52,7 +54,7 @@
             </TabItem>
             <TabItem Header="Database (PostGIS)" IsEnabled="False">
                 <!-- user controler postgis-->
-                
+                <PostGIS:Read/>
             </TabItem>
             <TabItem Header="Grid (XYZ)">
                 <!-- user controler grid-->
@@ -66,7 +68,7 @@
         </TabControl>
 
         <!-- import button (for execution)-->
-        <Button x:Name="btnStartImport" Grid.Row="5" Grid.ColumnSpan="2" Content="Import" Margin="0,5" FontSize="16" FontWeight="Bold" Click="btnStartImport_Click" IsEnabled="False"/>
+        <Button x:Name="btnStartImport" Grid.Row="6" Grid.ColumnSpan="2" Content="Import" Margin="2,5,2,2" FontSize="16" FontWeight="Bold" Click="btnStartImport_Click" IsEnabled="False"/>
 
         <!-- config import -->
         <GroupBox 
@@ -91,30 +93,70 @@
                 </ComboBox>
             </Grid>
 
-            
+
         </GroupBox>
 
-        <!-- bounding box input-->
+        <!-- spatial filter-->
+        <!--<GroupBox
+            x:Name="gbSpatialFilter"
+            Grid.Row="2"
+            Grid.Column="1"
+            Header="Spatial Filter"
+            IsEnabled="False"
+            Visibility="Hidden"
+            >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="13*"/>
+                    <ColumnDefinition Width="59*"/>
+                    <ColumnDefinition Width="121*"/>
+                    <ColumnDefinition Width="120*"/>
+                    <ColumnDefinition Width="72*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="chkSpatialFilter" Content="Enable" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="chkSpatialFilter_Checked" Grid.ColumnSpan="2" Margin="8,14"></CheckBox>
+                <ComboBox x:Name="cbFilterSelection" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,11" IsEnabled="False" SelectionChanged="ComboBox_SelectionChanged">
+                    <ComboBoxItem x:Name="cbCircle" Content="Circle"/>
+                    <ComboBoxItem x:Name="cbSquare" Content="Square"/>
+                </ComboBox>
+
+                <TextBlock Text="Radius / Distance [m]:" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Margin="2,14"/>
+
+                <TextBox
+                    x:Name="tbFilterValue"
+                    Grid.Column="4" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Center" 
+                    Height="22" 
+                    VerticalContentAlignment="Center" 
+                    HorizontalContentAlignment="Center" Margin="0,11">
+                    500
+                </TextBox>
+
+            </Grid>
+        </GroupBox>-->
+
+        <!--bounding box -->
         <GroupBox
             Grid.Row="2"
             Grid.Column="1"
-            Header="Bounding Box"
-            >
-            
+            Header="Bounding Box">
+
+
         </GroupBox>
 
         <!-- metadata -->
         <GroupBox
             Grid.Row="3"
+            Grid.RowSpan="2"
             Grid.Column="1"
             Header="Metadata"
             >
 
         </GroupBox>
-        
+
         <!-- logging -->
         <GroupBox
-            Grid.Row="4"
+            Grid.Row="5"
             Grid.Column="1"
             Header="Logging"
             >

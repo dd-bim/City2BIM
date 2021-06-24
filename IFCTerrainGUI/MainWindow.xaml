@@ -9,10 +9,11 @@
         xmlns:ucReb ="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
         xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
+        xmlns:ucPostGIS ="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
-        Height="840" Width="800" Icon="DD_BIM_ICON.ico"
+        Height="840" Width="800" Icon="Resources/DD_BIM_ICON.ico"
         FontFamily="Bahnschrift" FontSize="12"
         ResizeMode="CanMinimize" >
     <Grid x:Name="MainGrid">
@@ -112,7 +113,7 @@
                 Header="Database (PostGIS)">
                 
                 <!-- add user controler for postgis reading-->
-                <!--<ucPostGIS:ucReadPostGis/>-->
+                <ucPostGIS:Read/>
 
             </TabItem>
 

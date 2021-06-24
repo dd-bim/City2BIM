@@ -1,4 +1,6 @@
-﻿//include Revit API
+﻿using System;
+
+//include Revit API
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
@@ -12,20 +14,12 @@ using init = GuiHandler.InitClass;
 
 namespace City2RVT.GUI
 {
-    /*/TODO DTM2BIM
-    - eventuell Settings window
-    - Einstellungen für Ausdünnung bei großen Rastern
-    - Umkreis einschränken als Option
-    /*/
-
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.
     /// </remarks>
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Cmd_ReadTerrain : IExternalCommand
     {
-        
-
         // The main Execute method (inherited from IExternalCommand) must be public
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -41,7 +35,7 @@ namespace City2RVT.GUI
             uC.Reb.Read ucReb = new uC.Reb.Read();
             uC.Grafbat.Read ucGrafbat = new uC.Grafbat.Read();
             uC.XML.Read ucXml = new uC.XML.Read();
-            //TODO: postgis reader
+            uC.PostGIS.Read ucPostGIS = new uC.PostGIS.Read();
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();
@@ -92,8 +86,17 @@ namespace City2RVT.GUI
                 //error handlings
                 if (rev.terrainImportSuccesful)
                 {
+                    dynamic resLog;
+                    if (terrainUI.usePointsFaces)
+                    {
+                        resLog = "Points: " + res.numPoints + " Faces: " + res.numFacets;
+                    }
+                    else
+                    {
+                        resLog = "Points: " + res.numPoints;
+                    }
                     //show info dialog (may update to better solution)
-                    TaskDialog.Show("DTM import", "DTM import finished!");
+                    TaskDialog.Show("DTM import", "DTM import finished!" + Environment.NewLine + resLog);
 
                     //process successfuly
                     return Result.Succeeded;
@@ -101,7 +104,7 @@ namespace City2RVT.GUI
                 else
                 {
                     //TODO improve error message
-                    TaskDialog.Show("DTM import failed!", "The DTM import failed.\nPlease use see in log file for more information.");
+                    TaskDialog.Show("DTM import failed!", "The DTM import failed.");
 
                     return Result.Failed;
                 }
