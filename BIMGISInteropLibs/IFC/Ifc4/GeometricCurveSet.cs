@@ -233,10 +233,10 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                         //count up processed edge
                         numFaces++;
                     }
-                });
+                    //pass for processing results (log)
+                    result.wFaces = numFaces;
 
-                //pass for processing results (log)
-                result.wFaces = numFaces;
+                });
 
                 //write two remaining output parameter
                 representationIdentifier = RepresentationIdentifier.SurveyPoints;
