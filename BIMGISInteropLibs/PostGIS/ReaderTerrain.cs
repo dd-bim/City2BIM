@@ -24,6 +24,7 @@ using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 using System.Windows; //include for message box (error handling db connection)
+using BIMGISInteropLibs.NTSApi;
 
 //[TOOD #3]add error handling + tests
 namespace BIMGISInteropLibs.PostGIS
@@ -334,6 +335,148 @@ namespace BIMGISInteropLibs.PostGIS
             }
             
             return result;
+        }
+
+        public static Result CalculatePostGisTin(JsonSettings jSettings)
+        {
+            //Initialize result
+            Result result = new Result();
+
+            //Initialize TIN builder
+            var tinBuilder = Tin.CreateBuilder(true);
+
+            //Log TIN builder initalization
+            AddToLogWriter(LogType.verbose, "[PostGIS] Initialize a TIN builder.");
+
+            //Read DTM data from PostGis, compute triangles and create TIN
+            if (ReadPostGisDtmData(jSettings, out string dtmPointDataWKT, out string dtmLineDataWKT))
+            {
+                //Get a list of triangles via NetTopologySuite class library using the interface object
+                List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointDataWKT, dtmLineDataWKT);
+
+                //Read out each triangle from the triangle list
+                int pnr = 0;
+                foreach (List<double[]> dtmTriangle in dtmTriangleList)
+                {
+                    //Read out the three vertices of one triangle at each loop
+                    Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
+                    Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
+                    Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
+
+                    //Add the triangle vertices to the TIN builder and log point coordinates
+                    tinBuilder.AddPoint(pnr++, p1);
+                    AddToLogWriter(LogType.verbose, "[PostGIS] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
+                    tinBuilder.AddPoint(pnr++, p2);
+                    AddToLogWriter(LogType.verbose, "[PostGIS] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
+                    tinBuilder.AddPoint(pnr++, p3);
+                    AddToLogWriter(LogType.verbose, "[PostGIS] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+
+                    //Add the index of each vertex to the TIN builder (defines triangle) and log
+                    for (int i = pnr - 3; i < pnr; i++)
+                    {
+                        tinBuilder.AddTriangle(i++, i++, i++);
+                        AddToLogWriter(LogType.verbose, "[PostGIS] Triangle set.");
+                    }
+                }
+            }
+
+            //Build a TIN via BimGisCad class library and log
+            Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
+            AddToLogWriter(LogType.verbose, "[PostGIS] Creating TIN via TIN builder.");
+
+            //Pass TIN to result and log
+            result.Tin = tin;
+            AddToLogWriter(LogType.info, "Reading PostGIS data successful.");
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
+            AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+
+            //Return the result as a TIN
+            return result;
+        }
+
+        public static bool ReadPostGisDtmData(JsonSettings jSettings, out string dtmPointDataWKT, out string dtmLineDataWKT)
+        {
+            //Output variables for WKT strings
+            dtmPointDataWKT = "";
+            dtmLineDataWKT = "";
+
+            //Database connection parameters
+            string host = jSettings.host;
+            int port = jSettings.port;
+            string user = jSettings.user;
+            string password = jSettings.password;
+            string dbName = jSettings.database;
+            string schema = jSettings.schema;
+
+            //DTM data table
+            string dtmDataTable = "";
+            string dtmDataColumn = "";
+            string dtmDataIdColumn = "";
+            int dtmId = 0;
+
+            //Breakline data table
+            bool postgis_bl = jSettings.breakline;
+            string bl_column = jSettings.breakline_column;
+            string bl_table = jSettings.breakline_table;
+            string bl_tinid = jSettings.breakline_tin_id;
+
+            //Try to read data from database
+            try
+            {
+                //Prepare string for database connection
+                string connString = string.Format("Host={0};Port={1};Username={2};Password={3};Database={4};", host, port, user, password, dbName);
+
+                //Establish database connection
+                var conn = new NpgsqlConnection(connString);
+
+                //Open database connection
+                conn.Open();
+                AddToLogWriter(LogType.info, "[PostGIS] Connected to Database."); 
+                NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
+
+                //string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + tinid;
+            }
+            catch(Exception e)
+            {
+
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// A auxiliary function to feed the log writer.
+        /// </summary>
+        /// <param name="logType">The type of logging.</param>
+        /// <param name="message">The message to log.</param>
+        public static void AddToLogWriter(LogType logType, string message)
+        {
+            LogWriter.Entries.Add(new LogPair(logType, message));
+        }
+
+        /// <summary>
+        /// A auxiliary function to check if WKT strings contain data. 
+        /// </summary>
+        /// <param name="dtmPointDataWKT">A WKT string of point data.</param>
+        /// <param name="dtmLineData">A WKT string line data.</param>
+        /// <returns>True or false.</returns>
+        public static bool CheckDtmDataLists(string dtmPointDataWKT, string dtmLineDataWKT)
+        {
+            if (dtmPointDataWKT.Length == 0)
+            {
+                AddToLogWriter(LogType.info, "[PostGIS] No point data found.");
+                return false;
+            }
+            else if (dtmLineDataWKT.Length == 0)
+            {
+                AddToLogWriter(LogType.info, "[PostGIS] Reading point data was successful. No line data found.");
+                return true;
+            }
+            else
+            {
+                AddToLogWriter(LogType.info, "[PostGIS] Reading point and line data was successful.");
+                return true;
+            }
         }
     }
 }
