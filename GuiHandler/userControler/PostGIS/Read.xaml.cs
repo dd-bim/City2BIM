@@ -73,7 +73,7 @@ namespace GuiHandler.userControler.PostGIS
             init.config.tinid_column = this.tbTinIdColumn.Text;
 
             //set tin id (value)
-            init.config.tin_id = Convert.ToInt32(this.tbTinIdValue.Text);
+            init.config.tin_id = this.tbTinIdValue.Text;
 
             //set is TIN
             init.config.isTin = true;

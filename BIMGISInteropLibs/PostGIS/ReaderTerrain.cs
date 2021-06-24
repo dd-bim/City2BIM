@@ -59,7 +59,7 @@ namespace BIMGISInteropLibs.PostGIS
             string tintable = jSettings.tin_table;
             string tincolumn = jSettings.tin_column;
             string tinidcolumn = jSettings.tinid_column;
-            int tinid = jSettings.tin_id;
+            dynamic tinid = jSettings.tin_id;
 
             bool postgis_bl = jSettings.breakline;
             string bl_column = jSettings.breakline_column;
@@ -107,7 +107,7 @@ namespace BIMGISInteropLibs.PostGIS
                 
                 //select request for tin without breaklines via TIN ID
                 
-                string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + tinid;
+                string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + "'" + tinid + "'";
                     
 
                 
