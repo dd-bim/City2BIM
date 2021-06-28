@@ -114,5 +114,13 @@ namespace BIMGISInteropLibs.Logging
             //clear all entries
             Entries.Clear();
         }
+        
+        /// <summary>
+        /// auxilary to add entries to log writer
+        /// </summary>
+        public static void Add(LogType logType, string message)
+        {
+            LogWriterIfcTerrain.Entries.Add(new LogPair(logType, message));
+        }
     }
 }
