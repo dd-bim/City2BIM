@@ -48,32 +48,50 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Description";
-                        p.NominalValue = new IfcText(jSettings.description.ToString());
+                        if (!string.IsNullOrEmpty(jSettings.description))
+                        {
+                            p.NominalValue = new IfcText(jSettings.description);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Creator";
-                        p.NominalValue = new IfcText(jSettings.creator.ToString());
+                        if (!string.IsNullOrEmpty(jSettings.creator))
+                        {
+                            p.NominalValue = new IfcText(jSettings.creator);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Revision";
-                        p.NominalValue = new IfcText(jSettings.revision.ToString());
+                        if (!string.IsNullOrEmpty(jSettings.revision))
+                        {
+                            p.NominalValue = new IfcText(jSettings.revision);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Version";
-                        p.NominalValue = new IfcText(jSettings.version.ToString());
+                        if (!string.IsNullOrEmpty(jSettings.version))
+                        {
+                            p.NominalValue = new IfcText(jSettings.version);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Project ID";
-                        p.NominalValue = new IfcText(jSettings.projectId.ToString());
+                        if (!string.IsNullOrEmpty(jSettings.projectId))
+                        {
+                            p.NominalValue = new IfcText(jSettings.projectId);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "Meta Scheme";
-                        p.NominalValue = new IfcText(jSettings.metaScheme.ToString());
+                        p.Name = "Meta scheme";
+                        if (!string.IsNullOrEmpty(jSettings.metaScheme))
+                        {
+                            p.NominalValue = new IfcText(jSettings.metaScheme);
+                        }
                     }),
                 });
             });
@@ -107,38 +125,51 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                 pset.HasProperties.AddRange(new[] {
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "modeltype";
-                        p.NominalValue = new IfcText(jSettings.modelType.ToString());
+                        p.Name = "Model type";
+                        if (!string.IsNullOrEmpty(jSettings.modelType))
+                        {
+                            p.NominalValue = new IfcText(jSettings.modelType);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "datastructur";
-                        p.NominalValue = new IfcText(jSettings.dataStructure.ToString());
+                        p.Name = "Datastructur";
+                        if (!string.IsNullOrEmpty(jSettings.dataStructure))
+                        {
+                            p.NominalValue = new IfcText(jSettings.dataStructure);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "topicality";
-                        p.NominalValue = new IfcText(jSettings.topicality.ToString());
+                        p.Name = "Topicality";
+                        if (!string.IsNullOrEmpty(jSettings.topicality))
+                        {
+                            p.NominalValue = new IfcText(jSettings.topicality);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "topicality";
-                        p.NominalValue = new IfcText(jSettings.topicality.ToString());
+                        p.Name = "Positon reference system";
+                        if (!string.IsNullOrEmpty(jSettings.positionReferenceSystem))
+                        {
+                            p.NominalValue = new IfcText(jSettings.positionReferenceSystem);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "position reference system";
-                        p.NominalValue = new IfcText(jSettings.positionReferenceSystem.ToString());
+                        p.Name = "Altitude reference system";
+                        if (!string.IsNullOrEmpty(jSettings.altitudeReferenceSystem))
+                        {
+                            p.NominalValue = new IfcText(jSettings.altitudeReferenceSystem);
+                        }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "altitude reference system";
-                        p.NominalValue = new IfcText(jSettings.altitudeReferenceSystem.ToString());
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "projection";
-                        p.NominalValue = new IfcText(jSettings.projection.ToString());
+                        p.Name = "Projection";
+                        if (!string.IsNullOrEmpty(jSettings.projection))
+                        {
+                            p.NominalValue = new IfcText(jSettings.projection);
+                        }
                     }),
                 });
             });

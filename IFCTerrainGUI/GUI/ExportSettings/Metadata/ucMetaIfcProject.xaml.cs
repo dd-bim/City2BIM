@@ -50,7 +50,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             init.config.siteName = tbSiteName.Text.ToString();
             if (string.IsNullOrEmpty(init.config.siteName))
             {
-                init.config.siteName = "Site with Terrain";
+                init.config.siteName = "Terrain";
             }
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Site name set to: " + init.config.projectName));
 
