@@ -22,6 +22,9 @@ using System.Globalization; //included to use culture info (parsing double value
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -299,7 +302,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             }
 
             //set gui log
-            MainWindowBib.setGuiLog("LoGeoRef50 set.");
+            guiLog.setLog("LoGeoRef50 set.");
 
             //set task (logeoref) to true
             GuiHandler.GuiSupport.selectGeoRef = true;
@@ -427,7 +430,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                     init.config.verticalDatum = datum.Ellipsoid.Name;
 
                     //gui logging (user information)
-                    MainWindowBib.setGuiLog("EPSG code readed.");
+                    guiLog.setLog("EPSG code readed.");
 
                     //disable button
                     btnOpenCrsMetadata.IsEnabled = true;
@@ -449,7 +452,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 btnOpenCrsMetadata.IsEnabled = true;
 
                 //gui logging (user information)
-                MainWindowBib.setGuiLog("EPSG code invalid please try again!\nOr use manual input!");
+                guiLog.setLog("EPSG code invalid please try again!\nOr use manual input!");
 
             }
             //change cursor to default

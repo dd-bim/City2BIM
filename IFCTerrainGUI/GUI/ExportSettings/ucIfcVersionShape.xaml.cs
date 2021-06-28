@@ -23,6 +23,9 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -59,7 +62,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 ((MainWindow)Application.Current.MainWindow).tabLoGeoRef30.IsSelected = true;
 
                 //set gui log
-                MainWindowBib.setGuiLog("LoGeoRef50 disabled.");
+                guiLog.setLog("LoGeoRef50 disabled.");
             }
             else if (this.ifc4.IsSelected)
             {
@@ -69,9 +72,9 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
                 //enable LoGeoRef50 tab
                 ((MainWindow)Application.Current.MainWindow).tabLoGeoRef50.IsEnabled = true;
-                
+
                 //set gui log
-                MainWindowBib.setGuiLog("LoGeoRef50 enabled.");
+                guiLog.setLog("LoGeoRef50 enabled.");
             }
 
             //check if an item was selected
@@ -82,7 +85,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] IFC schema set."));
-                MainWindowBib.setGuiLog("IFC schema version set.");
+                guiLog.setLog("IFC schema version set.");
 
                 //check if all required tasks are performed
                 MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
@@ -157,7 +160,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] IFC shape representation set."));
-                MainWindowBib.setGuiLog("IFC shape representation set.");
+                guiLog.setLog("IFC shape representation set.");
 
                 //check if all required tasks are performed
                 MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());

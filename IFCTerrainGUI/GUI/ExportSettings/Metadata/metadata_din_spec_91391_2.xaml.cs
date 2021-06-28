@@ -17,6 +17,9 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //gui logging
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -62,7 +65,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             init.config91391.metaScheme = this.tbMetaShema.Text;
 
             //gui logging (user information)
-            ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("Metadata DIN 91391-2 adopted!");
+            guiLog.setLog("Metadata DIN 91391-2 adopted!");
 
             //unlock MainWindow
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;

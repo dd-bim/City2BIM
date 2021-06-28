@@ -38,7 +38,6 @@
             Margin="0,5,0,0"
             Loaded="ListBox_OnLoaded"
             ItemsSource="{Binding LogMessages}"
-            
             IsSynchronizedWithCurrentItem="True"
             />
     </Grid>
