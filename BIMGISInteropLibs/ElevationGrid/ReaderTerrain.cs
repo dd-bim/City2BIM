@@ -72,10 +72,10 @@ namespace BIMGISInteropLibs.ElevationGrid
 
                     //Pass TIN to result and log
                     result.Tin = tin;
-                    AddToLogWriter(LogType.info, "Reading XYZ data successful.");
+                    LogWriter.Add(LogType.info, "Reading XYZ data successful.");
                     result.rPoints = tin.Points.Count;
                     result.rFaces = tin.NumTriangles;
-                    AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+                    LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
                 }
                 #endregion
             }
@@ -245,7 +245,7 @@ namespace BIMGISInteropLibs.ElevationGrid
             var tinBuilder = Tin.CreateBuilder(true);
 
             //Log TIN builder initalization
-            AddToLogWriter(LogType.verbose, "[XYZ] Initialize a TIN builder.");
+            LogWriter.Add(LogType.verbose, "[XYZ] Initialize a TIN builder.");
 
             //Get a list of triangles via NetTopologySuite class library using the interface object
             List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointList);
@@ -261,23 +261,23 @@ namespace BIMGISInteropLibs.ElevationGrid
 
                 //Add the triangle vertices to the TIN builder and log point coordinates
                 tinBuilder.AddPoint(pnr++, p1);
-                AddToLogWriter(LogType.verbose, "[XYZ] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
+                LogWriter.Add(LogType.verbose, "[XYZ] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
                 tinBuilder.AddPoint(pnr++, p2);
-                AddToLogWriter(LogType.verbose, "[XYZ] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
+                LogWriter.Add(LogType.verbose, "[XYZ] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
                 tinBuilder.AddPoint(pnr++, p3);
-                AddToLogWriter(LogType.verbose, "[XYZ] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+                LogWriter.Add(LogType.verbose, "[XYZ] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
 
                 //Add the index of each vertex to the TIN builder (defines triangle) and log
                 for (int i = pnr - 3; i < pnr; i++)
                 {
                     tinBuilder.AddTriangle(i++, i++, i++);
-                    AddToLogWriter(LogType.verbose, "[XYZ] Triangle set.");
+                    LogWriter.Add(LogType.verbose, "[XYZ] Triangle set.");
                 }
             }
 
             //Build and return a TIN via BimGisCad class library and log
             Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            AddToLogWriter(LogType.verbose, "[XYZ] Creating TIN via TIN builder.");
+            LogWriter.Add(LogType.verbose, "[XYZ] Creating TIN via TIN builder.");
             return tin;
         }
 
@@ -338,7 +338,7 @@ namespace BIMGISInteropLibs.ElevationGrid
                 file.Close();
 
                 //Log successful reading
-                AddToLogWriter(LogType.verbose, "XYZ file has been read (" + fileName + ")");
+                LogWriter.Add(LogType.verbose, "XYZ file has been read (" + fileName + ")");
 
                 //Return true in case reading the input file was successful
                 return true;
@@ -346,7 +346,7 @@ namespace BIMGISInteropLibs.ElevationGrid
             catch (Exception e)
             {
                 //Log failed reading
-                AddToLogWriter(LogType.error, "XYZ file could not be read (" + fileName + ")");
+                LogWriter.Add(LogType.error, "XYZ file could not be read (" + fileName + ")");
 
                 //Show meassage box with exception
                 MessageBox.Show("XYZ file could not be read: \n" + e.Message, "XYZ file reader", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -354,16 +354,6 @@ namespace BIMGISInteropLibs.ElevationGrid
                 //Return false in case reading the input file failed
                 return false;
             }
-        }
-
-        /// <summary>
-        /// A auxiliary function to feed the log writer.
-        /// </summary>
-        /// <param name="logType">The type og logging.</param>
-        /// <param name="message">The message to log.</param>
-        public static void AddToLogWriter(LogType logType, string message)
-        {
-            LogWriter.Entries.Add(new LogPair(logType, message));
         }
     }
 }
