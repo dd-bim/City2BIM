@@ -444,7 +444,7 @@ namespace BIMGISInteropLibs.PostGIS
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        dtmPointDataWKT = (reader.GetValue(0)).ToString();
+                        dtmPointDataWKT += (reader.GetValue(0)).ToString() + ";";
                     }
                 }
                 conn.Close();
