@@ -10,7 +10,7 @@
         xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
         xmlns:ucPostGIS ="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
-        xmlns:ucLog="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
+        xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
@@ -197,7 +197,7 @@
             Margin="0,0,0,5">
             <!-- add user controler -->
 
-            <ucLog:UILog/>
+            <uC:UILog/>
         </GroupBox>
 
         <!-- storage of the converted data (ifc file, ifc xml, config, log) -->
@@ -264,34 +264,8 @@
             Grid.RowSpan="4"         
             Header="Current Terrain (Information panel)"
             Margin="0,0,0,5">
-
-            <!-- 
-            only visible settings (didn't need for processing)
-            do not outsource
-            -->
-            <Grid>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <TextBlock x:Name="ipFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="ipFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="ipLayerDtm" Text="Layer/ Horizon" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="ipFileSpecific" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="ipFileSpecific2" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1">
-                    <TextBox x:Name="tbFileName" Height="25" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileType" x:FieldModifier="public" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="tbLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileSpecific" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileSpecific2" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                </StackPanel>
-            </Grid>
+            <!-- add user controler for information panel -->
+            <uC:InformationPanel/>
         </GroupBox>
 
         <!-- the main grid ends here (no more code to add from here on)-->
