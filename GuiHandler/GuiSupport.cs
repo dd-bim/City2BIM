@@ -89,5 +89,13 @@ namespace GuiHandler
         {
             userControler.UILog.LogMessages.Add(message);
         }
+
+        /// <summary>
+        /// method to clear log (needed in DTM2BIM)
+        /// </summary>
+        public static void clearLog()
+        {
+            userControler.UILog.LogMessages.Clear();
+        }
     }
 }

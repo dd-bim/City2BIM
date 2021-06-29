@@ -11,7 +11,6 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
-
 namespace GuiHandler.userControler
 {
     /// <summary>
@@ -19,19 +18,25 @@ namespace GuiHandler.userControler
     /// </summary>
     public partial class UILog : UserControl
     {
-        //init collection
+        /// <summary>
+        /// used to store log messages
+        /// </summary>
         private static readonly ObservableCollection<string> _LogMessages = new ObservableCollection<string>();
 
-        //data binding - bind log messages
+        /// <summary>
+        /// data binding - bind log messages
+        /// </summary>
         public static ObservableCollection<string> LogMessages
         {
             get { return _LogMessages; }
         }
 
+        /// <summary>
+        /// init ui and apply data context
+        /// </summary>
         public UILog()
         {
             InitializeComponent();
-
             DataContext = this;
         }
 
@@ -62,12 +67,11 @@ namespace GuiHandler.userControler
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level changed to: " + init.config.verbosityLevel.ToString()));
         }
 
+        #region auto scroll in logging field
         //source: https://stackoverflow.com/questions/2337822/wpf-listbox-scroll-to-end-automatically
         /// <summary>
         /// update list box (scroll at the end)
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ListBox_OnLoaded(object sender, RoutedEventArgs e)
         {
             var listBox = (ListBox)sender;
@@ -87,8 +91,6 @@ namespace GuiHandler.userControler
         /// <summary>
         /// search for scroll viewer
         /// </summary>
-        /// <param name="root"></param>
-        /// <returns></returns>
         private static ScrollViewer FindScrollViewer(DependencyObject root)
         {
             var queue = new Queue<DependencyObject>(new[] { root });
@@ -106,8 +108,6 @@ namespace GuiHandler.userControler
 
             return null;
         }
-
-
-        
+        #endregion
     }
 }
