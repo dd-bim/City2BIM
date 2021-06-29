@@ -158,9 +158,16 @@ namespace BIMGISInteropLibs.NTSApi
         /// <returns>A collection of OGC simple feature geometries representing the caclculated triangles. The data set implicitly contains breaklines.</returns>
         public GeometryCollection Triangulate(string dtmPointDataWKT, string dtmLineDataWKT)
         {
+            string[] pointData = dtmPointDataWKT.Split(';');
             WKTReader reader = new WKTReader();
+            List<Point> pointList = new List<Point>();
+            foreach (string point in pointData)
+            {
+                pointList.Add((Point)reader.Read(point));
+            }
+            MultiPoint mPoint = new MultiPoint(pointList.ToArray(), this.geomFactory);
             ConformingDelaunayTriangulationBuilder triangulationBuilder = new ConformingDelaunayTriangulationBuilder();
-            triangulationBuilder.SetSites(reader.Read(dtmPointDataWKT));
+            triangulationBuilder.SetSites(mPoint);
             triangulationBuilder.Constraints = reader.Read(dtmLineDataWKT);
             return triangulationBuilder.GetTriangles(this.geomFactory);
         }
