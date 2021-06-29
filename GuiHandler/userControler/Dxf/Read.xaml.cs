@@ -27,6 +27,8 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
 
 namespace GuiHandler.userControler.Dxf
 {
@@ -157,7 +159,7 @@ namespace GuiHandler.userControler.Dxf
                 //file logging allready in reader done - do not add (redundant)
 
                 //gui logging (user information)
-                //((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("[ERROR] DXF layer not available. Processing stopped!");
+                guiLog.setLog("[ERROR] DXF layer not available. Processing stopped!");
             }
             //will be executed if the file name is not empty
             else
@@ -189,7 +191,7 @@ namespace GuiHandler.userControler.Dxf
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - readed layers: " + lbDxfDtmLayer.Items.Count));
 
             //gui logging (user information)
-            //MainWindowBib.setGuiLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
+            guiLog.setLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
         }
 
         /// <summary>
@@ -360,7 +362,7 @@ namespace GuiHandler.userControler.Dxf
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
 
                 //gui logging (user information)
-                //MainWindowBib.setGuiLog("DXF settings applyed.");
+                guiLog.setLog("DXF settings applyed.");
             }
             return;
         }
