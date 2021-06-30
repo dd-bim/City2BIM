@@ -28,7 +28,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log
 using init = GuiHandler.InitClass;
 
 //shortcut to set logging messages
-using guiLog = GuiHandler.GuiSupport;
+using support = GuiHandler.GuiSupport;
 
 namespace GuiHandler.userControler.Dxf
 {
@@ -107,7 +107,9 @@ namespace GuiHandler.userControler.Dxf
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.fileName);
+                support.setFileName(init.config.fileName);
+
+
 
                 //conversion to string, because stored as enumeration
                 //((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
@@ -159,7 +161,7 @@ namespace GuiHandler.userControler.Dxf
                 //file logging allready in reader done - do not add (redundant)
 
                 //gui logging (user information)
-                guiLog.setLog("[ERROR] DXF layer not available. Processing stopped!");
+                support.setLog("[ERROR] DXF layer not available. Processing stopped!");
             }
             //will be executed if the file name is not empty
             else
@@ -191,7 +193,7 @@ namespace GuiHandler.userControler.Dxf
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - readed layers: " + lbDxfDtmLayer.Items.Count));
 
             //gui logging (user information)
-            guiLog.setLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
+            support.setLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
         }
 
         /// <summary>
@@ -362,7 +364,7 @@ namespace GuiHandler.userControler.Dxf
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
 
                 //gui logging (user information)
-                guiLog.setLog("DXF settings applyed.");
+                support.setLog("DXF settings applyed.");
             }
             return;
         }
