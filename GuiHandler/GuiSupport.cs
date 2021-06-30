@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using System.Windows; //used to communicate with main window
 using System.Windows.Controls; //TextBox
+using System.Windows.Data;
 using System.Windows.Input;
 
 
@@ -96,6 +97,11 @@ namespace GuiHandler
         public static void clearLog()
         {
             userControler.UILog.LogMessages.Clear();
+        }
+
+        public static void setFileName(string fileName)
+        {
+            //userControler.InformationPanel.fileName = fileName;
         }
     }
 }
