@@ -6,7 +6,6 @@
              xmlns:vM="clr-namespace:GuiHandler"
              xmlns:local="clr-namespace:GuiHandler.userControler"
              mc:Ignorable="d"
-             x:Name="uc"
              d:DesignHeight="150" d:DesignWidth="370"
              >
     <Grid>
