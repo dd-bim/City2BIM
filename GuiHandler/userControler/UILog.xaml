@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="GuiHandler.userControler.UILog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vM="clr-namespace:GuiHandler"
+             xmlns:local="clr-namespace:GuiHandler.userControler"
+             mc:Ignorable="d"
+             d:DesignHeight="150" d:DesignWidth="370"
+             >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock 
+            Text="Choose Verbosity Level:" 
+            VerticalAlignment="Center"
+            Margin="5,0,0,0"/>
+
+        <ComboBox x:Name="selectVerbosityLevel" Grid.Column="1" SelectionChanged="selectVerbosityLevel_SelectionChanged" VerticalContentAlignment="Center">
+            <ComboBoxItem x:Name="minVerbose" Content="Verbose" ToolTip="VERBOSE is the noisiest level. Recommend: for development (if needed)"/>
+            <ComboBoxItem x:Name="minDebug" Content="Debug" ToolTip="Recommend: for development"/>
+            <ComboBoxItem x:Name="minInformation" Content="Information" ToolTip="Write more information for the whole process. Recommend: for advanced user" IsSelected="True"/>
+            <ComboBoxItem x:Name="minWarning" Content="Warning" ToolTip="Only Warnings or Errors. (NOT recommend)"/>
+        </ComboBox>
+
+        <ListView
+            x:Name="tbGuiLogging"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Margin="0,5,0,0"
+            Loaded="ListBox_OnLoaded"
+            ItemsSource="{Binding LogMessages}"
+            IsSynchronizedWithCurrentItem="True"
+            />
+    </Grid>
+</UserControl>

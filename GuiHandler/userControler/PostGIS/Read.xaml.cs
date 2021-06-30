@@ -19,6 +19,9 @@ using System.Text.RegularExpressions; //include to be able to restrict textbox e
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace GuiHandler.userControler.PostGIS
 {
     /// <summary>
@@ -119,7 +122,7 @@ namespace GuiHandler.userControler.PostGIS
             //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breaklines";
 
             //gui logging (user information)
-            //MainWindowBib.setGuiLog("PostGIS settings applyed.");
+            guiLog.setLog("PostGIS settings applyed.");
             #endregion gui feedback
 
             #region error handling

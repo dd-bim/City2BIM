@@ -22,6 +22,9 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -79,7 +82,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 //set to true
                 init.config.exportMetadataFile = true;
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'JSON' set."));
-                MainWindowBib.setGuiLog("Metadata export 'JSON' set.");
+                guiLog.setLog("Metadata export 'JSON' set.");
 
             }
 
@@ -89,7 +92,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 //set output of IfcPropertySet to true
                 init.config.outIfcPropertySet = true;
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'IfcPropertySet' set."));
-                MainWindowBib.setGuiLog("Metadata export 'IfcPropertySet' set.");
+                guiLog.setLog("Metadata export 'IfcPropertySet' set.");
             }
 
             //check if export of DIN 91391-2
@@ -116,9 +119,9 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 
             //set task (metadata) to true
             GuiHandler.GuiSupport.selectMetadata = true;
-            
+
             //gui logging
-            MainWindowBib.setGuiLog("Metadata 'export' set.");
+            guiLog.setLog("Metadata 'export' set.");
 
             //check if all task are allready done
             MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());

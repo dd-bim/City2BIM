@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 using System.Windows; //used to communicate with main window
 using System.Windows.Controls; //TextBox
+using System.Windows.Data;
+using System.Windows.Input;
+
 
 namespace GuiHandler
 {
     public class GuiSupport
     {
+
         /// <summary>
         /// Check that all required tasks have been performed
         /// </summary>
@@ -77,5 +81,27 @@ namespace GuiHandler
         ///[DTM2BIM only] check if processing has been set
         /// </summary>
         public static bool selectProcessing { get; set; }
+
+        /// <summary>
+        /// method to set gui messages
+        /// </summary>
+        /// <param name="message"></param>
+        public static void setLog(string message)
+        {
+            userControler.UILog.LogMessages.Add(message);
+        }
+
+        /// <summary>
+        /// method to clear log (needed in DTM2BIM)
+        /// </summary>
+        public static void clearLog()
+        {
+            userControler.UILog.LogMessages.Clear();
+        }
+
+        public static void setFileName(string fileName)
+        {
+            //userControler.InformationPanel.fileName = fileName;
+        }
     }
 }

@@ -22,6 +22,9 @@ using System.Globalization; //included to use culture info (parsing double value
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -244,7 +247,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             GuiHandler.GuiSupport.selectGeoRef = true;
 
             //set gui log
-            MainWindowBib.setGuiLog("LoGeoRef40 set.");
+            guiLog.setLog("LoGeoRef40 set.");
 
             //check if all task are allready done
             MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());

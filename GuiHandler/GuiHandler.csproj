@@ -66,11 +66,17 @@
     <Compile Include="userControler\Grid\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
+    <Compile Include="userControler\InformationPanel.xaml.cs">
+      <DependentUpon>InformationPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="userControler\PostGIS\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
     <Compile Include="userControler\Reb\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="userControler\UILog.xaml.cs">
+      <DependentUpon>UILog.xaml</DependentUpon>
     </Compile>
     <Compile Include="userControler\XML\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
@@ -89,11 +95,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="userControler\InformationPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="userControler\PostGIS\Read.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="userControler\Reb\Read.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="userControler\UILog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

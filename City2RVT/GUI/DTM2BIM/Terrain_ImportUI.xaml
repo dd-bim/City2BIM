@@ -9,12 +9,13 @@
         xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:Xml="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
         xmlns:PostGIS="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
+        xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
         xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
         mc:Ignorable="d" 
         Height="650" 
         Width="800"
         Title="Import Terrain Data"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize" Closed="Window_Closed">
     <Grid>
         <!--grid definitions for gui layout-->
         <Grid.ColumnDefinitions>
@@ -160,7 +161,7 @@
             Grid.Column="1"
             Header="Logging"
             >
-
+            <uC:UILog/>
         </GroupBox>
 
     </Grid>
