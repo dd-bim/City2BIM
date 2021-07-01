@@ -7,6 +7,8 @@ using BIMGISInteropLibs.Geometry;
 
 using BIMGISInteropLibs.RvtTerrain;
 
+using Autodesk.Revit.UI; //Task dialog
+
 namespace City2RVT.Builder
 {
     internal class RevitTopoSurfaceBuilder
@@ -31,7 +33,7 @@ namespace City2RVT.Builder
         /// <summary>
         /// function to create DTM via points only
         /// </summary>
-        public void createDTMviaPoints(Result result)
+        public void createDTMviaPoints(BIMGISInteropLibs.RvtTerrain.Result result)
         {
             //transform input points to revit
             var revDTMpts = transPts(result.dtmPoints);
@@ -84,7 +86,7 @@ namespace City2RVT.Builder
         /// <summary>
         /// method to create DTM using point list and list of facets
         /// </summary>
-        public void createDTM(Result result)
+        public void createDTM(BIMGISInteropLibs.RvtTerrain.Result result)
         {
             //get points from result / exchange class
             var terrainPoints = result.dtmPoints;
@@ -98,8 +100,19 @@ namespace City2RVT.Builder
                 terrainFaces.Add(pm);
             }
 
-            //transform input points to revit
-            var revDTMpts = transPts(terrainPoints);
+
+            dynamic revDTMpts = null; //initalize
+
+            try
+            {
+                //transform input points to revit
+                revDTMpts = transPts(terrainPoints);
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Error - Transform points", ex.Message);
+            }
+            
 
             //transaction for surface / dtm creation
             using (Transaction t = new Transaction(doc, "Create TopoSurface"))
