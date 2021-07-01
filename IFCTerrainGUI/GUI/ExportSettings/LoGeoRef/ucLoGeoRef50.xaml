@@ -59,10 +59,6 @@
                     <TextBox x:Name="tbLoGeoRef50ValueZ" Grid.Row="2" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput"/>
 
                 </Grid>
-                <!-- rotation -->
-                <CheckBox x:Name="chkRotationLevel50" Grid.Row="2" Height="20" Content="Enable Input - Rotation" VerticalContentAlignment="Center" HorizontalAlignment="Left" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values." Checked="chkRotationLevel50_Checked" Unchecked="chkRotationLevel50_Unchecked" Visibility="Hidden" IsEnabled="False"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="Rotation [°]:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0" Visibility="Hidden"/>
-                <TextBox x:Name="tbRotationLevel50" Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" IsEnabled="False" Height="20" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput" TextChanged="tbInput_TextChanged" Visibility="Hidden"/>
 
                 <!-- scale -->
                 <CheckBox x:Name="chkScaleLevel50" Grid.Row="1" Height="20" Content="Enable Input - Scale" VerticalContentAlignment="Center" HorizontalAlignment="Left" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values." Checked="chkScaleLevel50_Checked" Unchecked="chkScaleLevel50_Unchecked"/>
