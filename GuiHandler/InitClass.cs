@@ -26,5 +26,16 @@ namespace GuiHandler
         /// mainly used to export metadata acording to DIN SPEC 18740-6 <para/>
         /// </summary>
         public static JsonSettings_DIN_18740_6 config18740 = new JsonSettings_DIN_18740_6();
+    
+        /// <summary>
+        /// create NEW instance for settings (to override the settings before)
+        /// </summary>
+        /// <returns></returns>
+        public static JsonSettings clearConfig()
+        {
+            GuiSupport.resetTasks();
+            JsonSettings config = new JsonSettings();
+            return config;
+        }
     }
 }

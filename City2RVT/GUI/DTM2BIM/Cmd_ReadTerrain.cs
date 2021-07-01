@@ -47,7 +47,7 @@ namespace City2RVT.GUI
             if (rvtVersion.Equals(utils.rvtVersion.NotSupported))
             {
                 //error massage
-                TaskDialog.Show("Supported version", "The used Revit version is not supported!\nProcessing failed!");
+                TaskDialog.Show("Supported version", "The used Revit version is not supported!" + Environment.NewLine + "Processing failed!");
                 
                 return Result.Failed;
             }
@@ -95,6 +95,10 @@ namespace City2RVT.GUI
                     {
                         resLog = "Points: " + res.numPoints;
                     }
+
+                    //reset config
+                    init.clearConfig();
+
                     //show info dialog (may update to better solution)
                     TaskDialog.Show("DTM import", "DTM import finished!" + Environment.NewLine + resLog);
 
@@ -103,6 +107,9 @@ namespace City2RVT.GUI
                 }
                 else
                 {
+                    //reset config
+                    init.clearConfig();
+
                     //TODO improve error message
                     TaskDialog.Show("DTM import failed!", "The DTM import failed.");
 
@@ -111,6 +118,9 @@ namespace City2RVT.GUI
             }
             else
             {
+                //reset config
+                init.clearConfig();
+
                 //user canceld / closed window
                 return Result.Cancelled;
             }
