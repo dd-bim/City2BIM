@@ -140,14 +140,13 @@
         <GroupBox
             Grid.Row="2"
             Grid.Column="1"
-            Header="Bounding Box">
-
-
+            Header="Bounding Box"
+            Visibility="Hidden">
         </GroupBox>
 
         <!-- metadata -->
         <GroupBox
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.RowSpan="2"
             Grid.Column="1"
             Header="Metadata"
@@ -157,7 +156,8 @@
 
         <!-- logging -->
         <GroupBox
-            Grid.Row="5"
+            Grid.Row="4"
+            Grid.RowSpan="2"
             Grid.Column="1"
             Header="Logging"
             >
