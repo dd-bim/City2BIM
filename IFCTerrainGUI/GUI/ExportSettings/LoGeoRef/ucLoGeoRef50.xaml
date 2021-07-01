@@ -6,7 +6,7 @@
              xmlns:num="http://gu.se/NumericInput"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
-             d:DesignHeight="187" d:DesignWidth="373">
+             d:DesignHeight="199" d:DesignWidth="373">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -26,6 +26,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60"/>
+                    <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
@@ -68,8 +69,15 @@
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Scale:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
                 <TextBox x:Name="tbScaleLevel50" Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" IsEnabled="False" Height="20" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput" TextChanged="tbInput_TextChanged"/>
                 
+                <!-- rotation -->
+                <CheckBox Grid.Row="2" x:Name="chkRoation" Height="20" Content="Enable rotation" VerticalContentAlignment="Center" HorizontalAlignment="Left" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values." Checked="chkRoation_Checked" Unchecked="chkRoation_Unchecked"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Rotation [°]:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+                <TextBox Grid.Row="2" Grid.Column="2" x:Name="tbRotation50" VerticalContentAlignment="Center" IsEnabled="False" Height="20" PreviewTextInput="tbLoGeoRefValue_PreviewTextInput" TextChanged="tbInput_TextChanged"/>
+
+                
+                
                 <!-- epsg -->
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
+                <StackPanel Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal">
                     <TextBlock Text="Input EPSG-Code:" Height="20" Width="100" HorizontalAlignment="Right" Margin="0,0,10,0"/>
                     <TextBox x:Name="tbEpsgCode" VerticalContentAlignment="Center" Height="20" Width="100" Margin="0,0,10,0"/>
                     <Button x:Name="requestEPSG" Grid.Row="2" Grid.Column="2" Content="Query - EPSG code" Height="20" Click="requestEPSG_Click" Padding="5,0,5,0"/>
