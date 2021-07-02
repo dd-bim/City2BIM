@@ -138,7 +138,14 @@ namespace BIMGISInteropLibs.IfcTerrain
 
                 //reader for PostGIS
                 case IfcTerrainFileType.PostGIS:
-                    result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings);
+                    if (jSettings.calculateTin)
+                    {
+                        result = PostGIS.ReaderTerrain.CalculatePostGisTin(jSettings);
+                    }
+                    else
+                    {
+                        result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings);
+                    }
                     break;
             }
             //so that from the reader (TIN, Error, Mesh) is passed to respective "classes"
