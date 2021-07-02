@@ -41,6 +41,9 @@ namespace BIMGISInteropLibs.CityGML
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "Create TIN builder"));
             int pnr = 0;
 
+            //init hash set
+            var pList = new HashSet<Geometry.uPoint3>();
+
             //create new result to be able to transfer later
             var result = new Result();
 
@@ -81,19 +84,25 @@ namespace BIMGISInteropLibs.CityGML
                                             && Point3.Create(pl, out var pt2, 3)
                                             && Point3.Create(pl, out var pt3, 6))
                                         {
-                                            //first Add points to tin with point index (pnr)
-                                            tinB.AddPoint(pnr++, pt1);
-                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr - 1) + ") set (x= " + pt1.X + "; y= " + pt1.Y + "; z= " + pt1.Z + ")"));
-                                            tinB.AddPoint(pnr++, pt2);
-                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr - 1) + ") set (x= " + pt2.X + "; y= " + pt2.Y + "; z= " + pt2.Z + ")"));
-                                            tinB.AddPoint(pnr++, pt3);
-                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr - 1) + ") set (x= " + pt3.X + "; y= " + pt3.Y + "; z= " + pt3.Z + ")"));
-                                            //adding Triangle to TIN-Builder (Referencing to point numbers just used)
-                                            tinB.AddTriangle(pnr - 3, pnr - 2, pnr - 1, true);
+                                            //add points to point list
+                                            int pnrP1 = Geometry.terrain.addToList(pList, pt1);
+                                            int pnrP2 = Geometry.terrain.addToList(pList, pt2);
+                                            int pnrP3 = Geometry.terrain.addToList(pList, pt3);
+                                            
+                                            //add triangle via indicies
+                                            tinB.AddTriangle(pnrP1, pnrP2, pnrP3);
                                             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Triangle set (P1= " + (pnr-3) + "; P2= " + (pnr - 2) + "; P3= " + (pnr - 1) + ")"));
                                         }
                                         reader.Read();
                                     }
+
+                                    //loop through point list 
+                                    foreach (Geometry.uPoint3 pt in pList)
+                                    {
+                                        //add point to tin builder
+                                        tinB.AddPoint(pt.pnr, pt.point3);
+                                    }
+
                                     //Generate TIN from TIN Builder
                                     Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
                                     
