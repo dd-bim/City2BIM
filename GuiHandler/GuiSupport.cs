@@ -37,8 +37,9 @@ namespace GuiHandler
         /// </summary>
         public static bool rdyDTM2BIM()
         {
-            if (taskfileOpening)
+            if (taskfileOpening && selectProcessing)
             {
+                //TODO ENABLE START BUTTON FUNCTION!!!!!!!!!!!
                 return true;
             }
             else
@@ -81,6 +82,19 @@ namespace GuiHandler
         ///[DTM2BIM only] check if processing has been set
         /// </summary>
         public static bool selectProcessing { get; set; }
+
+        //
+        public static void resetTasks()
+        {
+            selectProcessing = false;
+            selectGeoRef = false;
+            selectStoreLocation = false;
+            selectMetadata = false;
+            selectIfcVersion = false;
+            selectIfcShape = false;
+            taskfileOpening = false;
+        }
+
 
         /// <summary>
         /// method to set gui messages
