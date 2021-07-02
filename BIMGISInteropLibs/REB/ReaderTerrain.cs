@@ -13,6 +13,9 @@ using BimGisCad.Representation.Geometry.Composed;       //TIN
 //Transfer class (Result) for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
+//shortcut for tin building class
+using terrain = BIMGISInteropLibs.Geometry.terrain;
+
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
@@ -183,7 +186,7 @@ namespace BIMGISInteropLibs.REB
 
             //var mesh = new Mesh(is3D, minDist); remove
             var tinB = Tin.CreateBuilder(true);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Create TIN builder"));
+            LogWriter.Add(LogType.verbose, "[REB] Create TIN builder");
 
             //Container for tin
             var result = new Result();
@@ -200,7 +203,7 @@ namespace BIMGISInteropLibs.REB
                 Point3 p = Point3.Create(kv.Value[0], kv.Value[1], kv.Value[2]);
                 pmap.Add(kv.Key, points); //point map
                 tinB.AddPoint(points++, p); //add tin builder
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Point (" + (points-1) + ") set (x= " + p.X + "; y= " + p.Y + "; z= " + p.Z + ")"));
+                LogWriter.Add(LogType.verbose, "[REB] Point (" + (points-1) + ") set (x= " + p.X + "; y= " + p.Y + "; z= " + p.Z + ")");
             }
             //reb triangle
             if (rebData.Tris.TryGetValue(horizon, out var tris))
@@ -215,21 +218,21 @@ namespace BIMGISInteropLibs.REB
                     {
                         //Create triangle over the references to the point indices
                         tinB.AddTriangle(v1, v2, v3, true);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Triangle set (P1= " + (v1) + "; P2= " + (v2) + "; P3= " + (v3) + ")"));
+                        LogWriter.Add(LogType.verbose, "[REB] Triangle set (P1= " + (v1) + "; P2= " + (v2) + "; P3= " + (v3) + ")");
                     }
                 }
             }
 
             //Generate TIN from TIN Builder
             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[REB] Create TIN via TIN builder."));
+            LogWriter.Add(LogType.verbose, "[REB] Create TIN via TIN builder.");
             
             //Add TIN to the Result
             result.Tin = tin;
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.info, "Reading REB data successful."));
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
+            LogWriter.Add(LogType.info, "Reading REB data successful.");
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             //add to results (to gui logging)
             result.rPoints = tin.Points.Count;
@@ -247,16 +250,17 @@ namespace BIMGISInteropLibs.REB
             var tinBuilder = Tin.CreateBuilder(true);
 
             //Log TIN builder initalization
-            AddToLogWriter(LogType.verbose, "[REB] Initialize a TIN builder.");
+            LogWriter.Add(LogType.verbose, "[REB] Initialize a TIN builder.");
 
             //Prepare DTM data REB file. If successful than process data and create TIN
             if (PrepareRebData(rebData, jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData))
             {
                 //Get a list of triangles via NetTopologySuite class library using the interface object
                 List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointData, dtmLineData);
-
-                //Read out each triangle from the triangle list
-                int pnr = 0;
+                
+                //init hash set (for unquie points)
+                var uptList = new HashSet<Geometry.uPoint3>();
+                
                 foreach (List<double[]> dtmTriangle in dtmTriangleList)
                 {
                     //Read out the three vertices of one triangle at each loop
@@ -264,33 +268,35 @@ namespace BIMGISInteropLibs.REB
                     Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
                     Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
 
-                    //Add the triangle vertices to the TIN builder and log point coordinates
-                    tinBuilder.AddPoint(pnr++, p1);
-                    AddToLogWriter(LogType.verbose, "[REB] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
-                    tinBuilder.AddPoint(pnr++, p2);
-                    AddToLogWriter(LogType.verbose, "[REB] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
-                    tinBuilder.AddPoint(pnr++, p3);
-                    AddToLogWriter(LogType.verbose, "[REB] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+                    //add points to list [note: logging will be done in support function]
+                    int pnrP1 = terrain.addToList(uptList, p1);
+                    int pnrP2 = terrain.addToList(uptList, p2);
+                    int pnrP3 = terrain.addToList(uptList, p3);
 
-                    //Add the index of each vertex to the TIN builder (defines triangle) and log
-                    for (int i = pnr - 3; i < pnr; i++)
-                    {
-                        tinBuilder.AddTriangle(i++, i++, i++);
-                        AddToLogWriter(LogType.verbose, "[REB] Triangle set.");
-                    }
+                    //add triangle via point numbers above
+                    tinBuilder.AddTriangle(pnrP1, pnrP2, pnrP3);
+
+                    //log
+                    LogWriter.Add(LogType.verbose, "[Grid] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
+                }
+
+                //loop through point list 
+                foreach (Geometry.uPoint3 pt in uptList)
+                {
+                    tinBuilder.AddPoint(pt.pnr, pt.point3);
                 }
             }
-
+            
             //Build a TIN via BimGisCad class library and log
             Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            AddToLogWriter(LogType.verbose, "[REB] Creating TIN via TIN builder.");
+            LogWriter.Add(LogType.verbose, "[REB] Creating TIN via TIN builder.");
 
             //Pass TIN to result and log
             result.Tin = tin;
-            AddToLogWriter(LogType.info, "Reading REB data successful.");
+            LogWriter.Add(LogType.info, "Reading REB data successful.");
             result.rPoints = tin.Points.Count;
             result.rFaces = tin.NumTriangles;
-            AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             //Return the result as a TIN
             return result;
@@ -333,16 +339,6 @@ namespace BIMGISInteropLibs.REB
         }
 
         /// <summary>
-        /// A auxiliary function to feed the log writer.
-        /// </summary>
-        /// <param name="logType">The type of logging.</param>
-        /// <param name="message">The message to log.</param>
-        public static void AddToLogWriter(LogType logType, string message)
-        {
-            LogWriter.Entries.Add(new LogPair(logType, message));
-        }
-
-        /// <summary>
         /// A auxiliary function to check if lists contain data. 
         /// </summary>
         /// <param name="dtmPointData">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
@@ -352,17 +348,17 @@ namespace BIMGISInteropLibs.REB
         {
             if (dtmPointData.Count == 0)
             {
-                AddToLogWriter(LogType.info, "[REB] No point data found.");
+                LogWriter.Add(LogType.info, "[DXF] No point data found.");
                 return false;
             }
             else if (dtmLineData.Count == 0)
             {
-                AddToLogWriter(LogType.info, "[REB] Reading point data was successful. No line data found.");
+                LogWriter.Add(LogType.info, "[DXF] Reading point data was successful. No line data found.");
                 return true;
             }
             else
             {
-                AddToLogWriter(LogType.info, "[REB] Reading point and line data was successful.");
+                LogWriter.Add(LogType.info, "[DXF] Reading point and line data was successful.");
                 return true;
             }
         }

@@ -29,18 +29,7 @@ namespace IFCTerrainGUI.GUI.MainWindowLogic
             tbName.ScrollToHorizontalOffset(rect.Right);
         }
 
-        /// <summary>
-        /// function to set gui logging messages
-        /// </summary>
-        /// <param name="guiText"></param>
-        public static void setGuiLog(string guiText)
-        {
-            //set list box
-            var lstBox = ((MainWindow)Application.Current.MainWindow).tbGuiLogging;
-            
-            //set item to list box
-            lstBox.Items.Add(guiText);
-        }
+        
 
         /// <summary>
         /// support function to enable start button

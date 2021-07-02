@@ -46,13 +46,26 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 //z value
                 mapConversion.OrthogonalHeight = placement.Location.Z;
 
-                //x axis abscissa [TODO]: need to be reviewed
-                var xAxis = Direction2.Create(placement.Location.X);
-                mapConversion.XAxisAbscissa = xAxis.X;
+                //init dynamic rotation vector
+                dynamic rotationVector;
 
-                //y axis ordinate [TODO]: need to be reviewed
-                var yAxis = Direction2.Create(placement.Location.Y);
-                mapConversion.XAxisOrdinate = xAxis.Y;
+                //error handling
+                if (jsonSettings.trueNorth.Equals(0) | jsonSettings.trueNorth.Equals(null))
+                {
+                    //default value
+                    rotationVector = AzimuthToVector(0);
+                }
+                else
+                {
+                    //calculate rotation vector from true north
+                    rotationVector = AzimuthToVector(jsonSettings.trueNorth);
+                }
+
+                //x axis abscissa:
+                mapConversion.XAxisAbscissa = rotationVector[1];
+
+                //y axis ordinate: 
+                mapConversion.XAxisOrdinate = rotationVector[0];
 
                 //scale
                 mapConversion.Scale = jsonSettings.scale;
@@ -93,5 +106,24 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 return geomRepContext;
             }
         }
+
+        /// <summary>
+        /// support function to calclue azimuth to vector
+        /// </summary>
+        private static double[] AzimuthToVector(double azi)
+        {
+            var razi = DegToRad(azi);
+            return new[] { Math.Cos(razi), Math.Sin(razi) };
+        }
+
+        /// <summary>
+        /// support to calc rho
+        /// </summary>
+        private static readonly double RevRho = Math.PI / 180.0;
+
+        /// <summary>
+        /// calc deg to rad
+        /// </summary>
+        private static double DegToRad(double deg) => deg * RevRho;
     }
 }

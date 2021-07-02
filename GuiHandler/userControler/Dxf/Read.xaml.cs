@@ -27,6 +27,8 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using support = GuiHandler.GuiSupport;
 
 namespace GuiHandler.userControler.Dxf
 {
@@ -105,7 +107,9 @@ namespace GuiHandler.userControler.Dxf
 
                 #region gui feedback
                 //here a feedback is given to the gui for the user (info panel)
-                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, MainWindow.jSettings.fileName);
+                support.setFileName(init.config.fileName);
+
+
 
                 //conversion to string, because stored as enumeration
                 //((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
@@ -157,7 +161,7 @@ namespace GuiHandler.userControler.Dxf
                 //file logging allready in reader done - do not add (redundant)
 
                 //gui logging (user information)
-                //((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("[ERROR] DXF layer not available. Processing stopped!");
+                support.setLog("[ERROR] DXF layer not available. Processing stopped!");
             }
             //will be executed if the file name is not empty
             else
@@ -189,7 +193,7 @@ namespace GuiHandler.userControler.Dxf
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - readed layers: " + lbDxfDtmLayer.Items.Count));
 
             //gui logging (user information)
-            //MainWindowBib.setGuiLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
+            support.setLog("Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
         }
 
         /// <summary>
@@ -295,8 +299,9 @@ namespace GuiHandler.userControler.Dxf
                     init.config.layer = item;
 
                     //visual output on the GUI (layer selection)
-                    
+
                     //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
+                    support.setLog("DXF layer: '" + item + "' selected.");
 
                     //logging
                     LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Layer selection: " + item));
@@ -319,8 +324,10 @@ namespace GuiHandler.userControler.Dxf
                         #region gui (user information)
                         //information panel 
                         //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breakline - Layer";
+
                         //information panel output break line layer
                         //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
+                        support.setLog("DXF breakline layer: '" + item + "' selected.");
                         #endregion gui (user information)
                     }
                 }
@@ -357,10 +364,12 @@ namespace GuiHandler.userControler.Dxf
                 //[DTM2BIM] check if all task are allready done
                 GuiSupport.rdyDTM2BIM();
 
+                //TODO enable start button
+
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
 
                 //gui logging (user information)
-                //MainWindowBib.setGuiLog("DXF settings applyed.");
+                support.setLog("DXF settings applyed.");
             }
             return;
         }

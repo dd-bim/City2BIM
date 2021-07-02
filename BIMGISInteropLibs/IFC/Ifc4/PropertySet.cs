@@ -91,8 +91,8 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 pset.HasProperties.AddRange(new[] {
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                                p.Name = "Unique Identificator";
-                                p.NominalValue = new IfcLabel(jSettings.id.ToString());
+                        p.Name = "Unique Identificator";
+                        p.NominalValue = new IfcLabel(jSettings.id.ToString());
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {

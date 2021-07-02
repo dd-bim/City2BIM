@@ -150,7 +150,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
             //so that from the reader (TIN, Error, Mesh) is passed to respective "classes"
             LogWriter.Entries.Add(new LogPair(LogType.debug, "Reading file completed."));
-
+            
             //passing results from reader to local var 
             this.Tin = result.Tin;      //passing tin
             this.Mesh = result.Mesh;    //passing mesh

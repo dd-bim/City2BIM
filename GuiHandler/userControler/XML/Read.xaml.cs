@@ -5,6 +5,9 @@ using Microsoft.Win32; //used for file handling
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace GuiHandler.userControler.XML
 {
     /// <summary>
@@ -113,8 +116,8 @@ namespace GuiHandler.userControler.XML
             //set json settings isTin to true
             init.config.isTin = true;
 
-            //check if all task are allready done
-            GuiSupport.readyState();
+            //send gui logging
+            guiLog.setLog("XML settings applyed.");
         }
     }
 }

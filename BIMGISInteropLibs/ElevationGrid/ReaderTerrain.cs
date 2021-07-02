@@ -17,6 +17,9 @@ using BIMGISInteropLibs.IfcTerrain;
 //API to NetTopologySuite
 using BIMGISInteropLibs.NTSApi;
 
+//shortcut for tin building class
+using terrain = BIMGISInteropLibs.Geometry.terrain;
+
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
@@ -31,19 +34,11 @@ namespace BIMGISInteropLibs.ElevationGrid
         /// <summary>
         /// Reads out a grid file
         /// </summary>
-        /// <param name="is3d">Whether it is a 2D or 3D raster</param>
-        /// <param name="fileName">Storage location of the grid</param>
-        /// <param name="minDist">minimale Distanz</param>
-        /// <param name="size">?[TODO]?</param>
-        /// <param name="bBox">Decision to be tailored around grid via a bounding box</param>
-        /// <param name="bbNorth">Boundary (North)</param>
-        /// <param name="bbEast">Boundary (East)</param>
-        /// <param name="bbSouth">Boundary (South)</param>
-        /// <param name="bbWest">Boundary (West)</param>
         /// <returns>TIN or MESH for processing in IFCTerrain (and Revit)</returns>
         public static Result ReadGrid(JsonSettings jSettings)
         {
             #region JSON settings
+            
             //Read from json settings
             bool is3d = jSettings.is3D;
             double minDist = jSettings.minDist;
@@ -72,10 +67,10 @@ namespace BIMGISInteropLibs.ElevationGrid
 
                     //Pass TIN to result and log
                     result.Tin = tin;
-                    AddToLogWriter(LogType.info, "Reading XYZ data successful.");
+                    LogWriter.Add(LogType.info, "Reading XYZ data successful.");
                     result.rPoints = tin.Points.Count;
                     result.rFaces = tin.NumTriangles;
-                    AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+                    LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
                 }
                 #endregion
             }
@@ -245,13 +240,14 @@ namespace BIMGISInteropLibs.ElevationGrid
             var tinBuilder = Tin.CreateBuilder(true);
 
             //Log TIN builder initalization
-            AddToLogWriter(LogType.verbose, "[XYZ] Initialize a TIN builder.");
+            LogWriter.Add(LogType.verbose, "[XYZ] Initialize a TIN builder.");
 
             //Get a list of triangles via NetTopologySuite class library using the interface object
             List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointList);
-            
-            //Read out each triangle from the triangle list
-            int pnr = 0;
+
+            //init hash set (for unquie points)
+            var uptList = new HashSet<Geometry.uPoint3>();
+
             foreach (List<double[]> dtmTriangle in dtmTriangleList)
             {
                 //Read out the three vertices of one triangle at each loop
@@ -259,25 +255,27 @@ namespace BIMGISInteropLibs.ElevationGrid
                 Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
                 Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
 
-                //Add the triangle vertices to the TIN builder and log point coordinates
-                tinBuilder.AddPoint(pnr++, p1);
-                AddToLogWriter(LogType.verbose, "[XYZ] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
-                tinBuilder.AddPoint(pnr++, p2);
-                AddToLogWriter(LogType.verbose, "[XYZ] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
-                tinBuilder.AddPoint(pnr++, p3);
-                AddToLogWriter(LogType.verbose, "[XYZ] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+                //add points to list [note: logging will be done in support function]
+                int pnrP1 = terrain.addToList(uptList, p1);
+                int pnrP2 = terrain.addToList(uptList, p2);
+                int pnrP3 = terrain.addToList(uptList, p3);
 
-                //Add the index of each vertex to the TIN builder (defines triangle) and log
-                for (int i = pnr - 3; i < pnr; i++)
-                {
-                    tinBuilder.AddTriangle(i++, i++, i++);
-                    AddToLogWriter(LogType.verbose, "[XYZ] Triangle set.");
-                }
+                //add triangle via point numbers above
+                tinBuilder.AddTriangle(pnrP1, pnrP2, pnrP3);
+
+                //log
+                LogWriter.Add(LogType.verbose, "[Grid] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
+            }
+
+            //loop through point list 
+            foreach (Geometry.uPoint3 pt in uptList)
+            {
+                tinBuilder.AddPoint(pt.pnr, pt.point3);
             }
 
             //Build and return a TIN via BimGisCad class library and log
             Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            AddToLogWriter(LogType.verbose, "[XYZ] Creating TIN via TIN builder.");
+            LogWriter.Add(LogType.verbose, "[XYZ] Creating TIN via TIN builder.");
             return tin;
         }
 
@@ -338,7 +336,7 @@ namespace BIMGISInteropLibs.ElevationGrid
                 file.Close();
 
                 //Log successful reading
-                AddToLogWriter(LogType.verbose, "XYZ file has been read (" + fileName + ")");
+                LogWriter.Add(LogType.verbose, "XYZ file has been read (" + fileName + ")");
 
                 //Return true in case reading the input file was successful
                 return true;
@@ -346,7 +344,7 @@ namespace BIMGISInteropLibs.ElevationGrid
             catch (Exception e)
             {
                 //Log failed reading
-                AddToLogWriter(LogType.error, "XYZ file could not be read (" + fileName + ")");
+                LogWriter.Add(LogType.error, "XYZ file could not be read (" + fileName + ")");
 
                 //Show meassage box with exception
                 MessageBox.Show("XYZ file could not be read: \n" + e.Message, "XYZ file reader", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -354,16 +352,6 @@ namespace BIMGISInteropLibs.ElevationGrid
                 //Return false in case reading the input file failed
                 return false;
             }
-        }
-
-        /// <summary>
-        /// A auxiliary function to feed the log writer.
-        /// </summary>
-        /// <param name="logType">The type og logging.</param>
-        /// <param name="message">The message to log.</param>
-        public static void AddToLogWriter(LogType logType, string message)
-        {
-            LogWriter.Entries.Add(new LogPair(logType, message));
         }
     }
 }

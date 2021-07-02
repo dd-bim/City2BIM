@@ -392,7 +392,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Specification of a TIN ID to be read out
         /// </summary>
-        public int tin_id { get; set; }
+        public dynamic tin_id { get; set; }
 
         /// <summary>
         /// Specify the table that contains the geometry of the break lines

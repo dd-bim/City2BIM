@@ -157,10 +157,10 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             }
             */
 
-
             //add site entity to model
             using (var txn = model.BeginTransaction("Add Site to Project"))
             {
+                
                 //get site entity
                 site.Representation = model.Instances.New<IfcProductDefinitionShape>(r => r.Representations.Add(repres));
 

@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 using System.Windows; //used to communicate with main window
 using System.Windows.Controls; //TextBox
+using System.Windows.Data;
+using System.Windows.Input;
+
 
 namespace GuiHandler
 {
     public class GuiSupport
     {
+
         /// <summary>
         /// Check that all required tasks have been performed
         /// </summary>
@@ -33,8 +37,9 @@ namespace GuiHandler
         /// </summary>
         public static bool rdyDTM2BIM()
         {
-            if (taskfileOpening)
+            if (taskfileOpening && selectProcessing)
             {
+                //TODO ENABLE START BUTTON FUNCTION!!!!!!!!!!!
                 return true;
             }
             else
@@ -77,5 +82,40 @@ namespace GuiHandler
         ///[DTM2BIM only] check if processing has been set
         /// </summary>
         public static bool selectProcessing { get; set; }
+
+        //
+        public static void resetTasks()
+        {
+            selectProcessing = false;
+            selectGeoRef = false;
+            selectStoreLocation = false;
+            selectMetadata = false;
+            selectIfcVersion = false;
+            selectIfcShape = false;
+            taskfileOpening = false;
+        }
+
+
+        /// <summary>
+        /// method to set gui messages
+        /// </summary>
+        /// <param name="message"></param>
+        public static void setLog(string message)
+        {
+            userControler.UILog.LogMessages.Add(message);
+        }
+
+        /// <summary>
+        /// method to clear log (needed in DTM2BIM)
+        /// </summary>
+        public static void clearLog()
+        {
+            userControler.UILog.LogMessages.Clear();
+        }
+
+        public static void setFileName(string fileName)
+        {
+            //userControler.InformationPanel.fileName = fileName;
+        }
     }
 }

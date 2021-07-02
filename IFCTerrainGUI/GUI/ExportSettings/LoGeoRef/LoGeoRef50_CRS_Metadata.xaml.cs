@@ -18,6 +18,8 @@ using System.Text.RegularExpressions; //include to be able to restrict textbox e
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -111,8 +113,9 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             }
 
             //gui logging (user information)
-            ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("[LoGeoRef50] CRS Metadata adopted!");
-
+            
+            //((MainWindow)Application.Current.MainWindow).ucUILog.tbGuiLogging.Items.Add("[LoGeoRef50] CRS Metadata adopted!");
+                
             //Close window
             Close();
         }

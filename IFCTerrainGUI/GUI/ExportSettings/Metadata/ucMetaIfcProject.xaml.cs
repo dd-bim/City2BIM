@@ -22,6 +22,9 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -50,7 +53,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             init.config.siteName = tbSiteName.Text.ToString();
             if (string.IsNullOrEmpty(init.config.siteName))
             {
-                init.config.siteName = "Site with Terrain";
+                init.config.siteName = "Terrain";
             }
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Site name set to: " + init.config.projectName));
 
@@ -91,7 +94,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 
             //logging
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata - IfcProject set."));
-            MainWindowBib.setGuiLog("Metadata - IfcProject set.");
+            guiLog.setLog("Metadata - IfcProject set.");
 
             //check if all task are allready done
             MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());

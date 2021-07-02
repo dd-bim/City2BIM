@@ -24,6 +24,9 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace GuiHandler.userControler.Reb
 {
     /// <summary>
@@ -75,7 +78,6 @@ namespace GuiHandler.userControler.Reb
                 Mouse.OverrideCursor = Cursors.Wait;
 
                 #region backgroundWorker
-
                 //kick off BackgroundWorker
                 backgroundWorkerReb.RunWorkerAsync(ofd.FileName);
                 #endregion backgroundWorker
@@ -89,7 +91,7 @@ namespace GuiHandler.userControler.Reb
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
                 //gui logging (user information)
-                //MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
+                guiLog.setLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
                 #region gui feedback
@@ -215,10 +217,10 @@ namespace GuiHandler.userControler.Reb
             GuiSupport.rdyDTM2BIM();
 
             //check if all task are allready done
-            //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
+            //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState()); (TODO)
 
             //gui logging (user information)
-            //MainWindowBib.setGuiLog("REB settings applyed.");
+            guiLog.setLog("REB settings applyed.");
 
             return;
         }

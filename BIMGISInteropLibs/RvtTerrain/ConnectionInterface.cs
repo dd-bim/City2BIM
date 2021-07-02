@@ -45,19 +45,18 @@ namespace BIMGISInteropLibs.RvtTerrain
             {
                 //grid reader
                 case IfcTerrainFileType.Grid:
-                    resTerrain = BIMGISInteropLibs.ElevationGrid.ReaderTerrain.ReadGrid(config);
+                    resTerrain = ElevationGrid.ReaderTerrain.ReadGrid(config);
                     break;
 
                 case IfcTerrainFileType.DXF:
+
                     //dxf file reader (output used for process terrain information)
-                    BIMGISInteropLibs.DXF.ReaderTerrain.ReadFile(config.filePath, out DxfFile dxfFile);
+                    DXF.ReaderTerrain.ReadFile(config.filePath, out DxfFile dxfFile);
 
-                    //loop for distinguishing whether it is a tin or not (processing via points and lines)
+                    //[TODO]loop for distinguishing whether it is a tin or not (processing via points and lines)
                    
-                    //TODO - check all reader 
-
-                    //Mesh Reader (if dxf file contains 3dfaces)
-                    resTerrain = DXF.ReaderTerrain.ReadDXFMESH(dxfFile, config);
+                    //Reader (if dxf file contains 3dfaces & procssing as conversion)
+                    resTerrain = DXF.ReaderTerrain.ReadDxfTin(dxfFile, config);
                     break;
 
                 case IfcTerrainFileType.REB:

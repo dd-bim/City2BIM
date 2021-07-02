@@ -175,67 +175,24 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     //Create buffer for triangle edges
                     var edges = new HashSet<TupleIdx>();
 
-                    g.Elements.AddRange(cps);
-
-                    if (breakDist is double dist)
+                    //read out each triangle
+                    foreach (var tri in tin.TriangleVertexPointIndizes())
                     {
-                        /* EDIT - is still the functionality from MESH
-                        // Hilfsfunktion zum Punkte auf Kante erzeugen
-                        void addEdgePoints(Point3 start, Point3 dest)
-                        {
-                            var dir = dest - start;
-                            double len = Vector3.Norm(dir);
-                            double fac = len / dist;
-                            if (fac > 1.0)
-                            {
-                                start -= origin;
-                                dir /= len;
-                                double currLen = dist;
-                                while (currLen < len)
-                                {
-                                    var p = start + (dir * currLen);
-                                    g.Elements.Add(model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(p.X, p.Y, p.Z)));
-                                    currLen += dist;
-                                }
-                            }
-                        }
-                        /*
-                        // evtl. Bruchlinien erzeugen
-                        foreach (var edge in mesh.FixedEdges)
-                        {
-                            addEdgePoints(mesh.Points[edge.Idx1], mesh.Points[edge.Idx2]);
-                            edges.Add(edge);
-                        }
-
-                        // Kanten der Faces (falls vorhanden und ohne Doppelung)
-                        foreach (var edge in mesh.EdgeIndices.Keys)
-                        {
-                            if (!edges.Contains(TupleIdx.Flipped(edge)) && edges.Add(edge))
-                            { addEdgePoints(mesh.Points[edge.Idx1], mesh.Points[edge.Idx2]); }
-                        }
-                        */
-
-                    }
-                    else
-                    {
-                        //read out each triangle
-                        foreach (var tri in tin.TriangleVertexPointIndizes())
-                        {
-                            //first edge
-                            g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[tri[0]], cps[tri[1]] })));
-                            //next edge
-                            g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[tri[1]], cps[tri[2]] })));
-                            //last edge
-                            g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[tri[2]], cps[tri[0]] })));
-                        }
-
+                        //first edge
+                        g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[tri[0]], cps[tri[1]] })));
+                    
+                        //next edge
+                        g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[tri[1]], cps[tri[2]] })));
+                        
+                        //last edge
+                        g.Elements.Add(model.Instances.New<IfcPolyline>(p => p.Points.AddRange(new[] { cps[tri[2]], cps[tri[0]] })));
+                            
                         //count up processed edge
                         numFaces++;
                     }
-                    //pass for processing results (log)
-                    result.wFaces = numFaces;
-
                 });
+                //pass for processing results (log)
+                result.wFaces = numFaces;
 
                 //write two remaining output parameter
                 representationIdentifier = RepresentationIdentifier.SurveyPoints;

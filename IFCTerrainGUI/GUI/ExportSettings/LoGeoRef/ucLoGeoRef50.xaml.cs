@@ -22,6 +22,9 @@ using System.Globalization; //included to use culture info (parsing double value
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -133,7 +136,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void readyCheck()
         {
             //if all tasks are true
-            if (valueXset && valueYset && valueZset && !chkScaleLevel50.IsChecked == true)
+            if (valueXset && valueYset && valueZset && chkScaleLevel50.IsChecked == false && chkRoation.IsChecked == false)
             {
                 //enable apply button
                 btnApplyLoGeoRef50.IsEnabled = true;
@@ -144,6 +147,11 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 btnApplyLoGeoRef50.IsEnabled = true;
             }
             else if (valueScaleset && rbLoGeoRef50Default.IsChecked == true)
+            {
+                //enable apply button
+                btnApplyLoGeoRef50.IsEnabled = true;
+            }
+            else if(valueRotationSet && rbLoGeoRef50Default.IsChecked == true)
             {
                 //enable apply button
                 btnApplyLoGeoRef50.IsEnabled = true;
@@ -178,6 +186,11 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         /// check if value scale is set
         /// </summary>
         private bool valueScaleset { get; set; }
+
+        /// <summary>
+        /// check if rotation is set
+        /// </summary>
+        private bool valueRotationSet { get; set; }
 
         /// <summary>
         /// function for error handling to set bool settings (for ready checker)
@@ -222,19 +235,19 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 //set to FALSE
                 valueZset = false;
             }
-            /*
+            
             //check if tb roation is not empty
-            if (!string.IsNullOrEmpty(tbRotationLevel50.Text))
+            if (!string.IsNullOrEmpty(tbRotation50.Text))
             {
                 //set to true
-                valueRotationset = true;
+                valueRotationSet = true;
             }
             //if tb rotation is empty
             else
             {
                 //set to FALSE
-                valueRotationset = false;
-            }*/
+                valueRotationSet = false;
+            }
 
             //check if tb sclae is not empty
             if (!string.IsNullOrEmpty(tbScaleLevel50.Text))
@@ -248,7 +261,6 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 //set to FALSE
                 valueScaleset = false;
             }
-
 
             //check if all fields are not empty any more
             readyCheck();
@@ -276,10 +288,13 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 init.config.zOrigin = Double.Parse(tbLoGeoRef50ValueZ.Text, CultureInfo.CurrentCulture);
             }
 
-            if(this.chkRotationLevel50.IsChecked == true)
+            if(chkRoation.IsChecked == true)
             {
+                //parse to double
+                Double.TryParse(tbRotation50.Text, out double rotation);
+
                 //set rotation to json settings
-                init.config.trueNorth = Double.Parse(tbRotationLevel50.Text, CultureInfo.CurrentCulture);
+                init.config.trueNorth = rotation;
             }
             else
             {
@@ -299,43 +314,13 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             }
 
             //set gui log
-            MainWindowBib.setGuiLog("LoGeoRef50 set.");
+            guiLog.setLog("LoGeoRef50 set.");
 
             //set task (logeoref) to true
             GuiHandler.GuiSupport.selectGeoRef = true;
 
             //check if all tasks are allready done
             MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
-        }
-
-        /// <summary>
-        /// task if rotation (user input) is checked (error handling)
-        /// </summary>
-        private void chkRotationLevel50_Checked(object sender, RoutedEventArgs e)
-        {
-            //enable textbox
-            tbRotationLevel50.IsEnabled = true;
-
-            //set task to false
-            //valueRotationset = false;
-
-            //check if all fields are not empty any more
-            readyCheck();
-        }
-
-        /// <summary>
-        /// task if rotation (user input) is uncheck (error handling)
-        /// </summary>
-        private void chkRotationLevel50_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //diable textbox
-            tbRotationLevel50.IsEnabled = false;
-
-            //set task to true
-            //valueRotationset = true;
-
-            //check if all fields are not empty any more
-            readyCheck();
         }
 
         /// <summary>
@@ -353,6 +338,18 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             readyCheck();
         }
 
+        private void chkRoation_Checked(object sender, RoutedEventArgs e)
+        {
+            //enable textbox
+            tbRotation50.IsEnabled = true;
+
+            //set task to false;
+            valueRotationSet = false;
+
+            //check if all fields are not empty any more
+            readyCheck();
+        }
+
         /// <summary>
         /// task if scaling (user input) is checked (error handling)
         /// </summary>
@@ -363,6 +360,18 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             
             //set task to true;
             valueScaleset = true;
+
+            //check if all fields are not empty any more
+            readyCheck();
+        }
+
+        private void chkRoation_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //diable textbox
+            tbRotation50.IsEnabled = false;
+
+            //set task to true;
+            valueRotationSet = true;
 
             //check if all fields are not empty any more
             readyCheck();
@@ -409,6 +418,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                     //projection zone
                     init.config.projectionZone = projection[1].Remove(0, 1);
 
+                    //get code
                     int code = projCRS.BaseCoordRefSystem.Code;
 
                     //send request for geodetic coord ref
@@ -427,7 +437,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                     init.config.verticalDatum = datum.Ellipsoid.Name;
 
                     //gui logging (user information)
-                    MainWindowBib.setGuiLog("EPSG code readed.");
+                    guiLog.setLog("EPSG code readed.");
 
                     //disable button
                     btnOpenCrsMetadata.IsEnabled = true;
@@ -449,7 +459,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 btnOpenCrsMetadata.IsEnabled = true;
 
                 //gui logging (user information)
-                MainWindowBib.setGuiLog("EPSG code invalid please try again!\nOr use manual input!");
+                guiLog.setLog("EPSG code invalid please try again!\nOr use manual input!");
 
             }
             //change cursor to default
@@ -458,5 +468,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //Release MainWindow again --> so the user can make entries again
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
         }
+
+
     }
 }

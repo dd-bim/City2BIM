@@ -31,6 +31,9 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI
 {
     /// <summary>
@@ -50,12 +53,13 @@ namespace IFCTerrainGUI
             backgroundWorkerIfc.DoWork += BackgroundWorkerIfc_DoWork;
             backgroundWorkerIfc.RunWorkerCompleted += BackgroundWorkerIfc_RunWorkerCompleted;
 
-            //add gui logging
-            tbGuiLogging.Items.Add("Welcome to IFCTerrain!");
+            //gui logging
+            guiLog.setLog("Welcome to IFCTerrain");
 
+            //file logging
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "GUI initialized."));
         }
-        
+
         /// <summary>
         /// class for logging
         /// </summary>
@@ -114,7 +118,7 @@ namespace IFCTerrainGUI
 
                 //gui information
                 MainWindowBib.setTextBoxText(tbIfcDir, sfd.FileName);
-                MainWindowBib.setGuiLog("Storage location set.");
+                guiLog.setLog("Storage location set.");
 
                 //set filepath to jSettings
                 init.config.destFileName = sfd.FileName;
@@ -294,38 +298,11 @@ namespace IFCTerrainGUI
             //logging stat
             double numPoints = (double)result.wPoints / (double)result.rPoints;
             double numFaces = (double)result.wFaces / (double)result.rFaces;
-            MainWindowBib.setGuiLog("Conversion completed!");
-            MainWindowBib.setGuiLog("Results: " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " % )");
-            MainWindowBib.setGuiLog("and "+ result.wFaces + " Triangles(" + Math.Round(numFaces * 100, 2) + " %) processed.");
+            guiLog.setLog("Conversion completed!");
+            guiLog.setLog("Results: " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " % )");
+            guiLog.setLog("and "+ result.wFaces + " triangles (" + Math.Round(numFaces * 100, 2) + " %) processed.");
         }
         #endregion background worker
-
-        /// <summary>
-        /// swtiching verbosity levels
-        /// </summary>
-        private void selectVerbosityLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //check and set the choosen verbo level into json settings
-            if (minVerbose.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.verbose;
-            }
-            else if (minDebug.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.debug;
-            }
-            else if (minInformation.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.info;
-            }
-            else if (minWarning.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.warning;
-            }
-
-            //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level changed to: " + init.config.verbosityLevel.ToString()));
-        }
 
         /// <summary>
         /// function to open storage location
@@ -344,54 +321,8 @@ namespace IFCTerrainGUI
             else
             {
                 //gui logging (user information)
-                tbGuiLogging.Items.Add("File path could not be opened!");
+                guiLog.setLog("File path could not be opened!");
             }
-        }
-
-
-        //source: https://stackoverflow.com/questions/2337822/wpf-listbox-scroll-to-end-automatically
-        /// <summary>
-        /// update list box (scroll at the end)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListBox_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            var listBox = (ListBox)sender;
-
-            var scrollViewer = FindScrollViewer(listBox);
-
-            if (scrollViewer != null)
-            {
-                scrollViewer.ScrollChanged += (o, args) =>
-                {
-                    if (args.ExtentHeightChange > 0)
-                        scrollViewer.ScrollToBottom();
-                };
-            }
-        }
-
-        /// <summary>
-        /// search for scroll viewer
-        /// </summary>
-        /// <param name="root"></param>
-        /// <returns></returns>
-        private static ScrollViewer FindScrollViewer(DependencyObject root)
-        {
-            var queue = new Queue<DependencyObject>(new[] { root });
-
-            do
-            {
-                var item = queue.Dequeue();
-
-                if (item is ScrollViewer)
-                    return (ScrollViewer)item;
-
-                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
-                    queue.Enqueue(VisualTreeHelper.GetChild(item, i));
-            } while (queue.Count > 0);
-
-            return null;
         }
     }
 }

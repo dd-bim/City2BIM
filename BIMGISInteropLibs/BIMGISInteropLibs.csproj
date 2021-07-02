@@ -242,6 +242,7 @@
     <Compile Include="Geometry\C2BSolid.cs" />
     <Compile Include="Geometry\C2BVertex.cs" />
     <Compile Include="Geometry\C2BPoint.cs" />
+    <Compile Include="Geometry\terrain.cs" />
     <Compile Include="IfcTerrain\Common.cs" />
     <Compile Include="IfcTerrain\JsonSettings.cs" />
     <Compile Include="IfcTerrain\Result.cs" />

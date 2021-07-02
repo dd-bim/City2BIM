@@ -4,6 +4,9 @@ using System.Windows;
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace City2RVT.GUI.DTM2BIM
 {
     /// <summary>
@@ -73,6 +76,9 @@ namespace City2RVT.GUI.DTM2BIM
         public Terrain_ImportUI()
         {   
             InitializeComponent();
+
+            //send gui logging
+            guiLog.setLog("Welcome to DTM2BIM");
         }
 
         /// <summary>
@@ -158,30 +164,39 @@ namespace City2RVT.GUI.DTM2BIM
                 this.btnStartImport.IsEnabled = false;
             }
         }
-        /* Spatial Filter
-        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+
+        /// <summary>
+        /// clear log on closing window
+        /// </summary>
+        private void Window_Closed(object sender, EventArgs e)
         {
-            if (cbSquare.IsSelected)
-            {
-                isSquare = true;
-            }
-            else if(cbCircle.IsSelected)
-            {
-                isSquare = false;
-            }
+            guiLog.clearLog();
         }
 
-        private void chkSpatialFilter_Checked(object sender, RoutedEventArgs e)
-        {
-            if(chkSpatialFilter.IsChecked == true)
-            {
-                cbFilterSelection.IsEnabled = true;
-            }
-            else
-            {
-                cbFilterSelection.IsEnabled = false;
-            }
-        }
-        */
+        /* Spatial Filter
+private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+{
+   if (cbSquare.IsSelected)
+   {
+       isSquare = true;
+   }
+   else if(cbCircle.IsSelected)
+   {
+       isSquare = false;
+   }
+}
+
+private void chkSpatialFilter_Checked(object sender, RoutedEventArgs e)
+{
+   if(chkSpatialFilter.IsChecked == true)
+   {
+       cbFilterSelection.IsEnabled = true;
+   }
+   else
+   {
+       cbFilterSelection.IsEnabled = false;
+   }
+}
+*/
     }
 }
