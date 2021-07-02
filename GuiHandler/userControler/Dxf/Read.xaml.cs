@@ -299,8 +299,9 @@ namespace GuiHandler.userControler.Dxf
                     init.config.layer = item;
 
                     //visual output on the GUI (layer selection)
-                    
+
                     //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text += item + "; ";
+                    support.setLog("DXF layer: '" + item + "' selected.");
 
                     //logging
                     LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Layer selection: " + item));
@@ -323,8 +324,10 @@ namespace GuiHandler.userControler.Dxf
                         #region gui (user information)
                         //information panel 
                         //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breakline - Layer";
+
                         //information panel output break line layer
                         //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text += item.ToString();
+                        support.setLog("DXF breakline layer: '" + item + "' selected.");
                         #endregion gui (user information)
                     }
                 }
@@ -360,6 +363,8 @@ namespace GuiHandler.userControler.Dxf
 
                 //[DTM2BIM] check if all task are allready done
                 GuiSupport.rdyDTM2BIM();
+
+                //TODO enable start button
 
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
 
