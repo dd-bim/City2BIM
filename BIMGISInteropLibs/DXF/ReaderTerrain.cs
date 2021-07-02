@@ -398,8 +398,9 @@ namespace BIMGISInteropLibs.DXF
                 //Get a list of triangles via NetTopologySuite class library using the interface object
                 List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointData, dtmLineData);
 
-                //Read out each triangle from the triangle list
-                int pnr = 0;
+                //init hash set
+                var pList = new HashSet<Geometry.uPoint3>();
+
                 foreach (List<double[]> dtmTriangle in dtmTriangleList)
                 {
                     //Read out the three vertices of one triangle at each loop
@@ -407,23 +408,25 @@ namespace BIMGISInteropLibs.DXF
                     Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
                     Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
 
-                    //Add the triangle vertices to the TIN builder and log point coordinates
-                    tinBuilder.AddPoint(pnr++, p1);
-                    LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
-                    tinBuilder.AddPoint(pnr++, p2);
-                    LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
-                    tinBuilder.AddPoint(pnr++, p3);
-                    LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+                    
+                    //add points to list [note: logging will be done in support function]
+                    int pnrP1 = terrain.addToList(pList, p1);
+                    int pnrP2 = terrain.addToList(pList, p2);
+                    int pnrP3 = terrain.addToList(pList, p3);
 
-                    //Add the index of each vertex to the TIN builder (defines triangle) and log
-                    for (int i = pnr - 3; i < pnr; i++)
-                    {
-                        tinBuilder.AddTriangle(i++, i++, i++);
-                        LogWriter.Add(LogType.verbose, "[DXF] Triangle set.");
-                    }
+                    //add triangle via point numbers above
+                    tinBuilder.AddTriangle(pnrP1, pnrP2, pnrP3);
+
+                    //log
+                    LogWriter.Add(LogType.verbose, "[DXF] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
+                }
+
+                //loop through point list 
+                foreach (Geometry.uPoint3 pt in pList)
+                {
+                    tinBuilder.AddPoint(pt.pnr, pt.point3);
                 }
             }
-
             //Build a TIN via BimGisCad class library and log
             Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
             LogWriter.Add(LogType.verbose, "[DXF] Creating TIN via TIN builder.");
