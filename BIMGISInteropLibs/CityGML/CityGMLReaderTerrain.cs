@@ -39,8 +39,7 @@ namespace BIMGISInteropLibs.CityGML
             //TIN-Builder
             var tinB = Tin.CreateBuilder(true);
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "Create TIN builder"));
-            int pnr = 0;
-
+            
             //init hash set
             var pList = new HashSet<Geometry.uPoint3>();
 
@@ -81,8 +80,8 @@ namespace BIMGISInteropLibs.CityGML
                                             && (pl = posList.First().Value.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)).Length == 12
                                             && pl[0] == pl[9] && pl[1] == pl[10] && pl[2] == pl[11]
                                             && Point3.Create(pl, out var pt1)
-                                            && Point3.Create(pl, out var pt2, 3)
-                                            && Point3.Create(pl, out var pt3, 6))
+                                            && Point3.Create(pl, out var pt2)
+                                            && Point3.Create(pl, out var pt3))
                                         {
                                             //add points to point list
                                             int pnrP1 = Geometry.terrain.addToList(pList, pt1);
@@ -91,7 +90,7 @@ namespace BIMGISInteropLibs.CityGML
                                             
                                             //add triangle via indicies
                                             tinB.AddTriangle(pnrP1, pnrP2, pnrP3);
-                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Triangle set (P1= " + (pnr-3) + "; P2= " + (pnr - 2) + "; P3= " + (pnr - 1) + ")"));
+                                            LogWriter.Add(LogType.verbose, "[CityGML] Triangle set (" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + ")");
                                         }
                                         reader.Read();
                                     }
@@ -131,8 +130,6 @@ namespace BIMGISInteropLibs.CityGML
                         LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] file (" + jSettings.fileName + ") no TIN data found!"));
                         MessageBox.Show("CityGML file contains no TIN data!", "CityGML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    
-
                     return result;
                 }
             }

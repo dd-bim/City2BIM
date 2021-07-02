@@ -34,7 +34,7 @@ namespace BIMGISInteropLibs.Geometry
             pList.Add(up);
 
             //log
-            LogWriter.Add(LogType.verbose, "[DXF] Point (" + up.pnr + ") set (x= " + up.X + "; y= " + up.Y + "; z= " + up.Z + ")");
+            LogWriter.Add(LogType.verbose, "[File reader] Point (" + up.pnr + ") set (x= " + up.X + "; y= " + up.Y + "; z= " + up.Z + ")");
 
             //return current point number
             return up.pnr;
