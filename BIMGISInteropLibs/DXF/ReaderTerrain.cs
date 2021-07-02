@@ -478,7 +478,7 @@ namespace BIMGISInteropLibs.DXF
                         case DxfEntityType.Insert:
                             var dxfPoint = (DxfInsert)entity;
                             dtmPointData.Add(new double[] { dxfPoint.Location.X, dxfPoint.Location.Y, dxfPoint.Location.Z });
-                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfPoint.Location.X + "; y= " + dxfPoint.Location.Y + "; z= " + dxfPoint.Location.Z + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + dxfPoint.Location.X + "; y= " + dxfPoint.Location.Y + "; z= " + dxfPoint.Location.Z + ")");
                             break;
                         case DxfEntityType.Face:
                             var dxfFace = (Dxf3DFace)entity;
