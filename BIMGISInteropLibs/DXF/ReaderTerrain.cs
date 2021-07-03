@@ -22,9 +22,14 @@ using BIMGISInteropLibs.IfcTerrain;
 //embed for error handling
 using System.Windows; //error handling (message box)
 
+//shortcut for tin building class
+using terrain = BIMGISInteropLibs.Geometry.terrain;
+
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
+//include NTSApi for delauny triangulation
 using BIMGISInteropLibs.NTSApi;
 
 namespace BIMGISInteropLibs.DXF
@@ -109,7 +114,6 @@ namespace BIMGISInteropLibs.DXF
                 scale = 1.0;
                 LogWriter.Add(LogType.verbose, "[DXF] Set scale to: " + scale.ToString());
             }
-     
 
             //TIN-Builder initalise
             var tinB = Tin.CreateBuilder(true);
@@ -120,8 +124,8 @@ namespace BIMGISInteropLibs.DXF
 
             int processedBreaklines = 0;
 
-            //PNR counter to increment the point number
-            int pnr = 0;
+            //init hash set
+            var uptList = new HashSet<Geometry.uPoint3>();
 
             //loop to go through all entities of the DXF file
             foreach (var entity in dxfFile.Entities)
@@ -131,29 +135,24 @@ namespace BIMGISInteropLibs.DXF
                 if (entity.Layer == jsonSettings.layer && entity is Dxf3DFace face)
                 {
                     //query the four points of the face and pass them to variable p1 ... p4 passed
-                    var p1 = Point3.Create(Math.Round(face.FirstCorner.X * scale,3),Math.Round(face.FirstCorner.Y * scale,3), Math.Round(face.FirstCorner.Z * scale,3));
-                    var p2 = Point3.Create(Math.Round(face.SecondCorner.X * scale,3), Math.Round(face.SecondCorner.Y * scale,3), Math.Round(face.SecondCorner.Z * scale,3));
-                    var p3 = Point3.Create(Math.Round(face.ThirdCorner.X * scale,3), Math.Round(face.ThirdCorner.Y * scale,3), Math.Round(face.ThirdCorner.Z * scale,3));
-                    var p4 = Point3.Create(Math.Round(face.FourthCorner.X * scale,3), Math.Round(face.FourthCorner.Y * scale,3), Math.Round(face.FourthCorner.Z * scale,3));
+                    var p1 = Point3.Create(face.FirstCorner.X * scale,face.FirstCorner.Y * scale, face.FirstCorner.Z * scale);
+                    var p2 = Point3.Create(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale);
+                    var p3 = Point3.Create(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale);
+                    var p4 = Point3.Create(face.FourthCorner.X * scale, face.FourthCorner.Y * scale, face.FourthCorner.Z * scale);
+
+                    //check if point is under min dist
                     if (Vector3.Norm2(p4 - p3) < minDistSq)
                     {
-                        //Add points & increment one point number at a time
-                        tinB.AddPoint(pnr++, p1);
-                        LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
-                        tinB.AddPoint(pnr++, p2);
-                        LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
-                        tinB.AddPoint(pnr++, p3);
-                        LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
-
-                        //Loop to create the triangle
-                        for (int i = pnr - 3; i < pnr; i++)
-                        {
-                            //add triangle to tin builder
-                            tinB.AddTriangle(i++, i++, i++);
-                            
-                            //logging
-                            LogWriter.Add(LogType.verbose, "[DXF] Triangle set.");
-                        }
+                        //add points to list [note: logging will be done in support function]
+                        int pnrP1 = terrain.addToList(uptList, p1);
+                        int pnrP2 = terrain.addToList(uptList, p2);
+                        int pnrP3 = terrain.addToList(uptList, p3);
+                        
+                        //add triangle via point numbers above
+                        tinB.AddTriangle(pnrP1, pnrP2, pnrP3);
+                        
+                        //log
+                        LogWriter.Add(LogType.verbose, "[DXF] Triangle ["+pnrP1+"; "+pnrP2 + "; " + pnrP3+ "] set.");
                     }
                 }
 
@@ -197,6 +196,12 @@ namespace BIMGISInteropLibs.DXF
                 return result;
             }
             */
+
+            //loop through point list 
+            foreach (Geometry.uPoint3 pt in uptList)
+            {
+                tinB.AddPoint(pt.pnr, pt.point3);
+            }
 
             //Generate TIN from TIN Builder
             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
@@ -554,12 +559,12 @@ namespace BIMGISInteropLibs.DXF
         {
             if (dtmPointData.Count == 0)
             {
-                LogWriter.Add(LogType.info, "[DXF] No point data found.");
+                LogWriter.Add(LogType.error, "[DXF] No point data found.");
                 return false;
             }
             else if (dtmLineData.Count == 0)
             {
-                LogWriter.Add(LogType.info, "[DXF] Reading point data was successful. No line data found.");
+                LogWriter.Add(LogType.warning, "[DXF] Reading point data was successful. No line data found.");
                 return true;
             }
             else
@@ -568,7 +573,7 @@ namespace BIMGISInteropLibs.DXF
                 return true;
             }
         }
-
+        /*
         public static Result ReadDXFMESH(DxfFile dxfFile, JsonSettings jSettings)
         {
             //get boolean value if 2D or 3D
@@ -623,6 +628,6 @@ namespace BIMGISInteropLibs.DXF
             
             return result;
         }
-
+        */
     }
 }

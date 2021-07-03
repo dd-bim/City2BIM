@@ -6,6 +6,9 @@ using Microsoft.Win32; //used for file handling
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace GuiHandler.userControler.Grafbat
 {
     /// <summary>
@@ -39,7 +42,7 @@ namespace GuiHandler.userControler.Grafbat
                 btnProcessGraftbat.IsEnabled = true;
 
                 //gui logging (user information)
-                //MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
+                guiLog.setLog("File selected! --> Please make settings and confirm.");
 
                 //TODO logging
 
@@ -88,7 +91,7 @@ namespace GuiHandler.userControler.Grafbat
             GuiSupport.rdyDTM2BIM();
 
             //gui logging (user information)
-            //MainWindowBib.setGuiLog("Grafbat settings applyed.");
+            guiLog.setLog("Grafbat settings applyed.");
 
             //check if all task are allready done
             GuiSupport.readyState();

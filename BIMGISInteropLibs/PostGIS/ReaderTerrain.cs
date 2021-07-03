@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-//Using Npgsql - .NET Access to PostgreSQL
-//Link: https://www.npgsql.org/
-using Npgsql;
-
-//embed for CultureInfo handling
-using System.Globalization;
-
+﻿using BimGisCad.Representation.Geometry.Composed;   //TIN
 //BimGisCad - Bibliothek einbinden
 using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
-using BimGisCad.Representation.Geometry.Composed;   //TIN
-
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
-
 //[TODO #1]Revise reader into smaller structure
 //Logging
 using BIMGISInteropLibs.Logging;
+//Using Npgsql - .NET Access to PostgreSQL
+//Link: https://www.npgsql.org/
+using Npgsql;
+using System;
+using System.Collections.Generic;
+//embed for CultureInfo handling
+using System.Globalization;
+using System.Windows; //include for message box (error handling db connection)
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 using System.Windows; //include for message box (error handling db connection)
@@ -67,7 +60,6 @@ namespace BIMGISInteropLibs.PostGIS
             string bl_table = jSettings.breakline_table;
             string bl_tinid = jSettings.breakline_tin_id;
 
-            
             //TODO dynamic scaling
             double scale = 1.0;
             LogWriter.Add(LogType.verbose, "[PostGIS] processing started.");
@@ -80,7 +72,7 @@ namespace BIMGISInteropLibs.PostGIS
 
             //Container to store breaklines
             Dictionary<int, Line3> breaklines = new Dictionary<int, Line3>();
-                       
+
             try
             {
                 //prepare string for database connection
@@ -94,28 +86,22 @@ namespace BIMGISInteropLibs.PostGIS
                         DBname
                         );
 
-
                 var conn = new NpgsqlConnection(connString);
+                
                 conn.Open();
                 LogWriter.Add(LogType.info, "[PostGIS] Connected to Database.");
-                   
+
                 NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
 
-                
+
                 //TODO: Check whether other query options exist
 
-
-                
                 //select request for tin without breaklines via TIN ID
-                
                 string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + "'" + tinid + "'";
-                    
 
-                
                 //select request for breaklines via TIN ID + JOIN
-                
                 string bl_select = null;
-                
+
                 if (postgis_bl == true)
                 {
                     bl_select = "SELECT ST_AsEWKT(" + bl_table + "." + bl_column + ") FROM " + schema + "." + bl_table + " JOIN " + schema + "." + tintable + " ON (" + bl_table + "." + bl_tinid + " = " + tintable + "." + tinidcolumn + ") WHERE " + tintable + "." + tinidcolumn + " = " + tinid;
@@ -123,6 +109,10 @@ namespace BIMGISInteropLibs.PostGIS
                 //Query TIN
                 using (var command = new NpgsqlCommand(tin_select, conn))
                 {
+
+                    //init hash set
+                    var pList = new HashSet<Geometry.uPoint3>();
+
                     var reader = command.ExecuteReader();
                     LogWriter.Add(LogType.debug, "[PostGIS] Request sent to database: \n" + tin_select);
                     while (reader.Read())
@@ -136,75 +126,75 @@ namespace BIMGISInteropLibs.PostGIS
                         //String for EPSG - Code [TODO]: Check if EPSG code can be used for processing to metadata
                         string tin_epsg = geom_split[0];
 
-                            //whole TIN 
-                            string tin_gesamt = geom_split[1];
+                        //whole TIN 
+                        string tin_gesamt = geom_split[1];
 
-                            //Split for the beginning of the TIN
-                            char[] trim = { 'T', 'I', 'N', '(' };
-                            //Remove start string
-                            tin_gesamt = tin_gesamt.TrimStart(trim);
+                        //Split for the beginning of the TIN
+                        char[] trim = { 'T', 'I', 'N', '(' };
+                        //Remove start string
+                        tin_gesamt = tin_gesamt.TrimStart(trim);
 
-                            //Split for each triangle
-                            string[] separator = { ")),((" };
-                            string[] tin_string = tin_gesamt.Split(separator, System.StringSplitOptions.RemoveEmptyEntries);
+                        //Split for each triangle
+                        string[] separator = { ")),((" };
+                        string[] tin_string = tin_gesamt.Split(separator, System.StringSplitOptions.RemoveEmptyEntries);
 
-                            //Create point number for "artificial" indexing
-                            int pnr = 0;
+                        //Go through each triangle
+                        foreach (string face in tin_string)
+                        {
+                            //Points - Split via comma
+                            string[] face_points = face.Split(',');
 
-                            //Go through each triangle
-                            foreach (string face in tin_string)
-                            {
-                                //Points - Split via comma
-                                string[] face_points = face.Split(',');
+                            //Split over spaces
+                            //FirstCorner
+                            string[] P1 = face_points[0].Split(' ');
 
-                                //Split over spaces
-                                //FirstCorner
-                                string[] P1 = face_points[0].Split(' ');
+                            double P1X = Convert.ToDouble(P1[0], CultureInfo.InvariantCulture);
+                            double P1Y = Convert.ToDouble(P1[1], CultureInfo.InvariantCulture);
+                            double P1Z = Convert.ToDouble(P1[2], CultureInfo.InvariantCulture);
 
-                                double P1X = Convert.ToDouble(P1[0], CultureInfo.InvariantCulture);
-                                double P1Y = Convert.ToDouble(P1[1], CultureInfo.InvariantCulture);
-                                double P1Z = Convert.ToDouble(P1[2], CultureInfo.InvariantCulture);
+                            //P1 
+                            var p1 = Point3.Create(P1X * scale, P1Y * scale, P1Z * scale);
 
-                                //P1 
-                                var p1 = Point3.Create(P1X * scale, P1Y * scale, P1Z * scale);
+                            //SecoundCorner
+                            string[] P2 = face_points[1].Split(' ');
 
-                                //SecoundCorner
-                                string[] P2 = face_points[1].Split(' ');
+                            double P2X = Convert.ToDouble(P2[0], CultureInfo.InvariantCulture);
+                            double P2Y = Convert.ToDouble(P2[1], CultureInfo.InvariantCulture);
+                            double P2Z = Convert.ToDouble(P2[2], CultureInfo.InvariantCulture);
 
-                                double P2X = Convert.ToDouble(P2[0], CultureInfo.InvariantCulture);
-                                double P2Y = Convert.ToDouble(P2[1], CultureInfo.InvariantCulture);
-                                double P2Z = Convert.ToDouble(P2[2], CultureInfo.InvariantCulture);
+                            //P2 
+                            var p2 = Point3.Create(P2X * scale, P2Y * scale, P2Z * scale);
 
-                                //P2 
-                                var p2 = Point3.Create(P2X * scale, P2Y * scale, P2Z * scale);
+                            //ThirdCorner
+                            string[] P3 = face_points[2].Split(' ');
 
-                                //ThirdCorner
-                                string[] P3 = face_points[2].Split(' ');
+                            double P3X = Convert.ToDouble(P3[0], CultureInfo.InvariantCulture);
+                            double P3Y = Convert.ToDouble(P3[1], CultureInfo.InvariantCulture);
+                            double P3Z = Convert.ToDouble(P3[2], CultureInfo.InvariantCulture);
 
-                                double P3X = Convert.ToDouble(P3[0], CultureInfo.InvariantCulture);
-                                double P3Y = Convert.ToDouble(P3[1], CultureInfo.InvariantCulture);
-                                double P3Z = Convert.ToDouble(P3[2], CultureInfo.InvariantCulture);
+                            //P3 
+                            var p3 = Point3.Create(P3X * scale, P3Y * scale, P3Z * scale);
 
-                                //P3 
-                                var p3 = Point3.Create(P3X * scale, P3Y * scale, P3Z * scale);
+                            //add points to point list
+                            int pnrP1 = Geometry.terrain.addToList(pList, p1);
+                            int pnrP2 = Geometry.terrain.addToList(pList, p2);
+                            int pnrP3 = Geometry.terrain.addToList(pList, p3);
 
-                                //Add points & increment one point number at a time
-                                tinB.AddPoint(pnr++, p1);
-                                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Point (" + (pnr) + ") set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")"));
-                                tinB.AddPoint(pnr++, p2);
-                                tinB.AddPoint(pnr++, p3);
-
-                                //Loop to create the triangle
-                                //TODO: check if it is a bad solution
-                                for (int i = pnr - 3; i < pnr; i++)
-                                {
-                                    tinB.AddTriangle(i++, i++, i++);
-                                }
-                            }
+                            //add triangle via indicies (above)
+                            tinB.AddTriangle(pnrP1, pnrP2, pnrP3);
+                            LogWriter.Add(LogType.verbose, "[PostGIS] Triangle set (" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + ")");
                         }
-                        //Close DB connection --> allows to establish further connections
-                        conn.Close();
-                    
+                    }
+                    //Close DB connection --> allows to establish further connections
+                    conn.Close();
+
+                    //loop through point list 
+                    foreach (Geometry.uPoint3 pt in pList)
+                    {
+                        //add point to tin builder
+                        tinB.AddPoint(pt.pnr, pt.point3);
+                    }
+
                     //TIN generate from TIN builder
                     Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
                     //hand over tin to result
@@ -318,8 +308,8 @@ namespace BIMGISInteropLibs.PostGIS
                     //Logger.Info(result.Tin.Points.Count() + " points; " + result.Tin.NumTriangles + " triangels processed");
                 */
                 }
-                   
-                }
+
+            }
             catch (Exception e)
             {
                 //log error message
@@ -329,11 +319,8 @@ namespace BIMGISInteropLibs.PostGIS
                 LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
 
                 //
-                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error" , MessageBoxButton.OK, MessageBoxImage.Error);
-
-
+                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            
             return result;
         }
 

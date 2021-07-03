@@ -10,12 +10,14 @@
         xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
         xmlns:ucPostGIS ="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
+        xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
         Title="IFCTerrain GUI" 
-        Height="840" Width="800" Icon="Resources/DD_BIM_ICON.ico"
+        Height="880" Width="800" Icon="Resources/DD_BIM_ICON.ico"
         FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize" >
+        ResizeMode="CanMinimize" 
+        >
     <Grid x:Name="MainGrid">
         <!-- add background coloring -->
         <Grid.Background>
@@ -193,38 +195,9 @@
             Grid.RowSpan="3"
             Header="Logging"
             Margin="0,0,0,5">
-            <!-- do not outsource so all user controllers can easily access it-->
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-                
+            <!-- add user controler -->
 
-                <TextBlock 
-                    Text="Choose Verbosity Level:" 
-                    VerticalAlignment="Center"
-                    Margin="5,0,0,0"/>
-
-                <ComboBox x:Name="selectVerbosityLevel" Grid.Column="1" SelectionChanged="selectVerbosityLevel_SelectionChanged" VerticalContentAlignment="Center">
-                    <ComboBoxItem x:Name="minVerbose" Content="Verbose" ToolTip="VERBOSE is the noisiest level. Recommend: for development (if needed)"/>
-                    <ComboBoxItem x:Name="minDebug" Content="Debug" ToolTip="Recommend: for development"/>
-                    <ComboBoxItem x:Name="minInformation" Content="Information" ToolTip="Write more information for the whole process. Recommend: for advanced user" IsSelected="True"/>
-                    <ComboBoxItem x:Name="minWarning" Content="Warning" ToolTip="Only Warnings or Errors. (NOT recommend)"/>
-                </ComboBox>
-
-                <ListView
-                    x:Name="tbGuiLogging"
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
-                    Margin="0,5,0,0"
-                    Loaded="ListBox_OnLoaded"
-                    />
-            </Grid>
+            <uC:UILog/>
         </GroupBox>
 
         <!-- storage of the converted data (ifc file, ifc xml, config, log) -->
@@ -291,34 +264,8 @@
             Grid.RowSpan="4"         
             Header="Current Terrain (Information panel)"
             Margin="0,0,0,5">
-
-            <!-- 
-            only visible settings (didn't need for processing)
-            do not outsource
-            -->
-            <Grid>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <TextBlock x:Name="ipFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="ipFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="ipLayerDtm" Text="Layer/ Horizon" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="ipFileSpecific" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                    <TextBlock x:Name="ipFileSpecific2" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1">
-                    <TextBox x:Name="tbFileName" Height="25" VerticalAlignment="Center" Text="" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileType" x:FieldModifier="public" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="tbLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileSpecific" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                    <TextBox x:Name="tbFileSpecific2" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-                </StackPanel>
-            </Grid>
+            <!-- add user controler for information panel -->
+            <uC:InformationPanel/>
         </GroupBox>
 
         <!-- the main grid ends here (no more code to add from here on)-->

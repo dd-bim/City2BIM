@@ -23,6 +23,9 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace GuiHandler.userControler.Grid
 {
     /// <summary>
@@ -60,7 +63,7 @@ namespace GuiHandler.userControler.Grid
                 #region logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
-                //((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("File selected! --> Please make settings and confirm.");
+                guiLog.setLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
                 #region gui feedback
@@ -212,6 +215,9 @@ namespace GuiHandler.userControler.Grid
 
             //[DTM2BIM] check if all task are allready done
             GuiSupport.rdyDTM2BIM();
+
+            //gui logging (user information)
+            guiLog.setLog("Grid settings applyed.");
 
             //check if all task are allready done
             //TODO
