@@ -98,72 +98,72 @@ namespace BIMGISInteropLibs.REB
             {
                 if (File.Exists(fileName))
                 {
-                        
-                        using (var sr = new StreamReader(fileName))
-                        {
-                            //String to buffer a line
-                            string line;
-                            
-                            bool read = true; //[TODO]: check if this boolean value makes sense!
 
-                            //Line by line reader
-                            while (read && (line = sr.ReadLine()) != null)
+                    using (var sr = new StreamReader(fileName))
+                    {
+                        //String to buffer a line
+                        string line;
+
+                        bool read = true; //[TODO]: check if this boolean value makes sense!
+
+                        //Line by line reader
+                        while (read && (line = sr.ReadLine()) != null)
+                        {
+                            //Coordinates work out via "identifier 45"
+                            if (line.Length >= 40
+                                && line[0] == '4'
+                                && line[1] == '5')
                             {
-                                //Coordinates work out via "identifier 45"
-                                if (line.Length >= 40
-                                    && line[0] == '4'
-                                    && line[1] == '5')
+                                if (int.TryParse(line.Substring(2, 7), out int nr)
+                                   && !rebData.Points.ContainsKey(nr)
+                                   && long.TryParse(line.Substring(10, 10), out long x)
+                                   && long.TryParse(line.Substring(20, 10), out long y)
+                                   && long.TryParse(line.Substring(30, 10), out long z)
+                                   )
                                 {
-                                    if (int.TryParse(line.Substring(2, 7), out int nr)
-                                       && !rebData.Points.ContainsKey(nr)
-                                       && long.TryParse(line.Substring(10, 10), out long x)
-                                       && long.TryParse(line.Substring(20, 10), out long y)
-                                       && long.TryParse(line.Substring(30, 10), out long z)
-                                       )
-                                    {
-                                        double[] pointCoords = new double[] { x * 0.001, y * 0.001, z * 0.001 };
-                                        rebData.Points.Add(nr, pointCoords);
-                                    }
+                                    double[] pointCoords = new double[] { x * 0.001, y * 0.001, z * 0.001 };
+                                    rebData.Points.Add(nr, pointCoords);
                                 }
-                                //Break/edge lines work out via "identifier 49"
-                                else if (line.Length >= 30
-                                    && line[0] == '4'
-                                    && line[1] == '9')
+                            }
+                            //Break/edge lines work out via "identifier 49"
+                            else if (line.Length >= 30
+                                && line[0] == '4'
+                                && line[1] == '9')
+                            {
+                                if (int.TryParse(line.Substring(7, 2), out int hz)
+                                   && long.TryParse(line.Substring(10, 10), out long p1)
+                                   && long.TryParse(line.Substring(20, 10), out long p2))
                                 {
-                                    if (int.TryParse(line.Substring(7, 2), out int hz)
-                                       && long.TryParse(line.Substring(10, 10), out long p1)
-                                       && long.TryParse(line.Substring(20, 10), out long p2))
+                                    if (rebData.Lines.TryGetValue(hz, out var ls))
                                     {
-                                        if (rebData.Lines.TryGetValue(hz, out var ls))
-                                        {
-                                            ls = new List<RLine>();
-                                            rebData.Lines.Add(hz, ls);
-                                        }
-                                        ls.Add(new RLine { P1 = p1, P2 = p2 });
+                                        ls = new List<RLine>();
+                                        rebData.Lines.Add(hz, ls);
                                     }
+                                    ls.Add(new RLine { P1 = p1, P2 = p2 });
                                 }
-                                //TIN work out via "identifier 58"
-                                else if (line.Length >= 50 
-                                    && line[0] == '5'
-                                    && line[1] == '8')
+                            }
+                            //TIN work out via "identifier 58"
+                            else if (line.Length >= 50
+                                && line[0] == '5'
+                                && line[1] == '8')
+                            {
+                                if (int.TryParse(line.Substring(7, 2), out int hz)
+                                   && long.TryParse(line.Substring(20, 10), out long p1)
+                                   && long.TryParse(line.Substring(30, 10), out long p2)
+                                   && long.TryParse(line.Substring(40, 10), out long p3))
                                 {
-                                    if (int.TryParse(line.Substring(7, 2), out int hz)
-                                       && long.TryParse(line.Substring(20, 10), out long p1)
-                                       && long.TryParse(line.Substring(30, 10), out long p2)
-                                       && long.TryParse(line.Substring(40, 10), out long p3))
+                                    if (!rebData.Tris.TryGetValue(hz, out var ts))
                                     {
-                                        if (!rebData.Tris.TryGetValue(hz, out var ts))
-                                        {
-                                            ts = new List<RTri>();
-                                            rebData.Tris.Add(hz, ts);
-                                        }
-                                        ts.Add(new RTri { P1 = p1, P2 = p2, P3 = p3 });
+                                        ts = new List<RTri>();
+                                        rebData.Tris.Add(hz, ts);
                                     }
+                                    ts.Add(new RTri { P1 = p1, P2 = p2, P3 = p3 });
                                 }
                             }
                         }
                     }
-                
+                }
+
             }
             catch
             {
@@ -190,7 +190,7 @@ namespace BIMGISInteropLibs.REB
 
             //Container for tin
             var result = new Result();
-            
+
             //create point map check whether revision makes sense
             var pmap = new Dictionary<long, int>();
 
@@ -203,7 +203,7 @@ namespace BIMGISInteropLibs.REB
                 Point3 p = Point3.Create(kv.Value[0], kv.Value[1], kv.Value[2]);
                 pmap.Add(kv.Key, points); //point map
                 tinB.AddPoint(points++, p); //add tin builder
-                LogWriter.Add(LogType.verbose, "[REB] Point (" + (points-1) + ") set (x= " + p.X + "; y= " + p.Y + "; z= " + p.Z + ")");
+                LogWriter.Add(LogType.verbose, "[REB] Point (" + (points - 1) + ") set (x= " + p.X + "; y= " + p.Y + "; z= " + p.Z + ")");
             }
             //reb triangle
             if (rebData.Tris.TryGetValue(horizon, out var tris))
@@ -226,7 +226,7 @@ namespace BIMGISInteropLibs.REB
             //Generate TIN from TIN Builder
             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
             LogWriter.Add(LogType.verbose, "[REB] Create TIN via TIN builder.");
-            
+
             //Add TIN to the Result
             result.Tin = tin;
 
@@ -257,10 +257,10 @@ namespace BIMGISInteropLibs.REB
             {
                 //Get a list of triangles via NetTopologySuite class library using the interface object
                 List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointData, dtmLineData);
-                
+
                 //init hash set (for unquie points)
                 var uptList = new HashSet<Geometry.uPoint3>();
-                
+
                 foreach (List<double[]> dtmTriangle in dtmTriangleList)
                 {
                     //Read out the three vertices of one triangle at each loop
@@ -277,7 +277,7 @@ namespace BIMGISInteropLibs.REB
                     tinBuilder.AddTriangle(pnrP1, pnrP2, pnrP3);
 
                     //log
-                    LogWriter.Add(LogType.verbose, "[Grid] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
+                    LogWriter.Add(LogType.verbose, "[REB] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
                 }
 
                 //loop through point list 
@@ -286,7 +286,7 @@ namespace BIMGISInteropLibs.REB
                     tinBuilder.AddPoint(pt.pnr, pt.point3);
                 }
             }
-            
+
             //Build a TIN via BimGisCad class library and log
             Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
             LogWriter.Add(LogType.verbose, "[REB] Creating TIN via TIN builder.");
@@ -307,12 +307,12 @@ namespace BIMGISInteropLibs.REB
             dtmPointData = new List<double[]>();
             dtmLineData = new List<List<double[]>>();
             int horizon = jSettings.horizon;
-            
+
             foreach (var point in rebData.Points)
             {
                 dtmPointData.Add(point.Value);
             }
-            
+
             if (rebData.Lines.TryGetValue(horizon, out var lines))
             {
                 foreach (var line in lines)
@@ -348,17 +348,17 @@ namespace BIMGISInteropLibs.REB
         {
             if (dtmPointData.Count == 0)
             {
-                LogWriter.Add(LogType.info, "[DXF] No point data found.");
+                LogWriter.Add(LogType.error, "[REB] No point data found.");
                 return false;
             }
             else if (dtmLineData.Count == 0)
             {
-                LogWriter.Add(LogType.info, "[DXF] Reading point data was successful. No line data found.");
+                LogWriter.Add(LogType.warning, "[REB] Reading point data was successful. No line data found.");
                 return true;
             }
             else
             {
-                LogWriter.Add(LogType.info, "[DXF] Reading point and line data was successful.");
+                LogWriter.Add(LogType.info, "[REB] Reading point and line data was successful.");
                 return true;
             }
         }

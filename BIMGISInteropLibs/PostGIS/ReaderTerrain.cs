@@ -3,9 +3,11 @@
 using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
+
 //[TODO #1]Revise reader into smaller structure
 //Logging
 using BIMGISInteropLibs.Logging;
+
 //Using Npgsql - .NET Access to PostgreSQL
 //Link: https://www.npgsql.org/
 using Npgsql;
@@ -16,7 +18,9 @@ using System.Globalization;
 using System.Windows; //include for message box (error handling db connection)
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-using System.Windows; //include for message box (error handling db connection)
+//shortcut for tin building class
+using terrain = BIMGISInteropLibs.Geometry.terrain;
+
 using BIMGISInteropLibs.NTSApi;
 
 //[TOOD #3]add error handling + tests
@@ -27,20 +31,6 @@ namespace BIMGISInteropLibs.PostGIS
         /// <summary>
         /// PostGIS - query to establish DB connections to retrieve a TIN and, if necessary, the break edges.
         /// </summary>
-        /// <param name="Host">Link to the database server</param>
-        /// <param name="Port">Port</param>
-        /// <param name="User">Username</param>
-        /// <param name="Password">Password to connect with database</param>
-        /// <param name="DBname">DB designation on which is queried</param>
-        /// <param name="schema">Scheme that contains the TIN (if necessary, also the broken edges)</param>
-        /// <param name="tintable">Table in which the TIN is held</param>
-        /// <param name="tincolumn">Column in which the TIN geometry is kept</param>
-        /// <param name="tinidcolumn">Column designation in which the TIN IDs are managed</param>
-        /// <param name="tinid">TIN ID for the TIN to be processed</param>
-        /// <param name="postgis_bl">Decision whether to process broken edges</param>
-        /// <param name="bl_column">Spalte in dem die Bruchkanten geführt werden</param>
-        /// <param name="bl_table">Tabelle, dass die Bruchkanten enthält</param>
-        /// <param name="bl_tinid">Column in which the TIN-ID is kept (needed to create JOIN to TIN-Table)</param>
         /// <returns>TIN via Result for terrain processing (IFCTerrain/Revit)</returns>
         public static Result ReadPostGIS(JsonSettings jSettings)
         {
@@ -87,7 +77,7 @@ namespace BIMGISInteropLibs.PostGIS
                         );
 
                 var conn = new NpgsqlConnection(connString);
-                
+
                 conn.Open();
                 LogWriter.Add(LogType.info, "[PostGIS] Connected to Database.");
 
@@ -332,6 +322,9 @@ namespace BIMGISInteropLibs.PostGIS
             //Initialize TIN builder
             var tinBuilder = Tin.CreateBuilder(true);
 
+            //init hash set
+            var uptList = new HashSet<Geometry.uPoint3>();
+
             //Log TIN builder initalization
             LogWriter.Add(LogType.verbose, "[PostGIS] Initialize a TIN builder.");
 
@@ -341,8 +334,6 @@ namespace BIMGISInteropLibs.PostGIS
                 //Get a list of triangles via NetTopologySuite class library using the interface object
                 List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointDataWKT, dtmLineDataWKT);
 
-                //Read out each triangle from the triangle list
-                int pnr = 0;
                 foreach (List<double[]> dtmTriangle in dtmTriangleList)
                 {
                     //Read out the three vertices of one triangle at each loop
@@ -436,7 +427,7 @@ namespace BIMGISInteropLibs.PostGIS
                 }
                 conn.Close();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 //Log error message
                 LogWriter.Add(LogType.error, "[PostGIS]: " + e.Message);
