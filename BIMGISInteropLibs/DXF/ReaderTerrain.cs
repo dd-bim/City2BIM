@@ -69,7 +69,7 @@ namespace BIMGISInteropLibs.DXF
                 {
                     dxfFile = DxfFile.Load(fs);
 
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "DXF file has been read (" + fileName + ")"));
+                    LogWriter.Add(LogType.verbose, "DXF file has been read (" + fileName + ")");
 
                     return true;
                 }
@@ -78,7 +78,7 @@ namespace BIMGISInteropLibs.DXF
             //if it can't be opend
             catch(Exception ex)
             {
-                LogWriter.Entries.Add(new LogPair(LogType.error, "DXF file could not be read (" + fileName + ")"));
+                LogWriter.Add(LogType.error, "DXF file could not be read (" + fileName + ")");
 
                 MessageBox.Show("DXF file could not be read: \n" + ex.Message, "DXF file reader", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -107,12 +107,13 @@ namespace BIMGISInteropLibs.DXF
             if (!UnitToMeter.TryGetValue(dxfFile.Header.DefaultDrawingUnits, out double scale))
             {
                 scale = 1.0;
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Set scale to: " + scale.ToString()));
+                LogWriter.Add(LogType.verbose, "[DXF] Set scale to: " + scale.ToString());
             }
+     
 
             //TIN-Builder initalise
             var tinB = Tin.CreateBuilder(true);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Initialize a TIN builder."));
+            LogWriter.Add(LogType.verbose, "[DXF] Initialize a TIN builder.");
 
             //Dictionary for "saving" breaklines
             Dictionary<int, Line3> breaklines = new Dictionary<int, Line3>(); 
@@ -138,11 +139,11 @@ namespace BIMGISInteropLibs.DXF
                     {
                         //Add points & increment one point number at a time
                         tinB.AddPoint(pnr++, p1);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y +"; z= " + p1.Z +")"));
+                        LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
                         tinB.AddPoint(pnr++, p2);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")"));
+                        LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
                         tinB.AddPoint(pnr++, p3);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")"));
+                        LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
 
                         //Loop to create the triangle
                         for (int i = pnr - 3; i < pnr; i++)
@@ -151,7 +152,7 @@ namespace BIMGISInteropLibs.DXF
                             tinB.AddTriangle(i++, i++, i++);
                             
                             //logging
-                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Triangle set."));
+                            LogWriter.Add(LogType.verbose, "[DXF] Triangle set.");
                         }
                     }
                 }
@@ -180,7 +181,7 @@ namespace BIMGISInteropLibs.DXF
 
                             //add breaklines to dictionary
                             breaklines.Add(processedBreaklines++, l);
-                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Breakline added ( xA= " + l.Position.X + "; yA= " + l.Position.Y + "; zA= " + l.Position.Z + "; xE= " + l.Direction.X + "; yE= " + l.Direction.Y + "; zE= " + l.Direction.Z + ")"));
+                            LogWriter.Add(LogType.verbose, "[DXF] Breakline added ( xA= " + l.Position.X + "; yA= " + l.Position.Y + "; zA= " + l.Position.Z + Environment.NewLine + "; xE= " + l.Direction.X + "; yE= " + l.Direction.Y + "; zE= " + l.Direction.Z + ")");
                             
                             break;
 
@@ -199,7 +200,7 @@ namespace BIMGISInteropLibs.DXF
 
             //Generate TIN from TIN Builder
             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Creating TIN via TIN builder."));
+            LogWriter.Add(LogType.verbose, "[DXF] Creating TIN via TIN builder.");
 
             //Result describe
             result.Tin = tin;
@@ -208,8 +209,8 @@ namespace BIMGISInteropLibs.DXF
             result.Breaklines = breaklines;
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.info, "Reading DXF data successful."));
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
+            LogWriter.Add(LogType.info, "Reading DXF data successful.");
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             //add to results (stats)
             result.rPoints = tin.Points.Count;
@@ -249,7 +250,7 @@ namespace BIMGISInteropLibs.DXF
 
             //create mesh builder
             var pp = new Mesh(is3d, minDist);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Initialize a MESH builder."));
+            LogWriter.Add(LogType.verbose, "[DXF] Initialize a MESH builder.");
 
             //go through all entities in dxf file
             foreach (var entity in dxfFile.Entities)
@@ -273,7 +274,7 @@ namespace BIMGISInteropLibs.DXF
                             pp.AddPoint(pt);
 
                             //logging
-                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + pt.X + "; y= " + pt.Y + "; z= " + pt.Z + ")"));
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + pt.X + "; y= " + pt.Y + "; z= " + pt.Z + ")");
                             
                             break;
 
@@ -290,13 +291,13 @@ namespace BIMGISInteropLibs.DXF
                             int p1 = pp.AddPoint(pt1);
 
                             //logging
-                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + pt1.X + "; y= " + pt1.Y + "; z= " + pt1.Z + ")"));
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + pt1.X + "; y= " + pt1.Y + "; z= " + pt1.Z + ")");
 
                             //secount point (var)
                             var pt2 = Point3.Create(line.P2.X * scale, line.P2.Y * scale, line.P2.Z * scale);
 
                             //logging
-                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + pt2.X + "; y= " + pt2.Y + "; z= " + pt2.Z + ")"));
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + pt2.X + "; y= " + pt2.Y + "; z= " + pt2.Z + ")");
 
                             //create index (point 2)
                             int p2 = pp.AddPoint(pt2);
@@ -305,7 +306,7 @@ namespace BIMGISInteropLibs.DXF
                             pp.FixEdge(p1, p2);
 
                             //logging
-                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Line set (P1 (Index) = " + p1 + "; P2 (Index) = " + p2 + ")"));
+                            LogWriter.Add(LogType.verbose, "[DXF] Line set (P1 (Index) = " + p1 + "; P2 (Index) = " + p2 + ")");
 
                             break;
 
@@ -323,7 +324,7 @@ namespace BIMGISInteropLibs.DXF
                             {
                                 //get index of current point
                                 var ptpoly = Point3.Create(v.Location.X * scale, v.Location.Y * scale, v.Location.Z * scale);
-                                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Point set (x= " + ptpoly.X + "; y= " + ptpoly.Y + "; z= " + ptpoly.Z + ")"));
+                                LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + ptpoly.X + "; y= " + ptpoly.Y + "; z= " + ptpoly.Z + ")");
 
                                 //create index and map to mesh
                                 int curr = pp.AddPoint(ptpoly);
@@ -335,7 +336,7 @@ namespace BIMGISInteropLibs.DXF
                                     pp.FixEdge(last, curr);
                                     
                                     //logging
-                                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[DXF] Line set (P1 (Index) = " + last + "; P2 (Index) = " + curr + ")"));
+                                    LogWriter.Add(LogType.verbose, "[DXF] Line set (P1 (Index) = " + last + "; P2 (Index) = " + curr + ")");
                                 }
                                 last = curr;
                             }
@@ -348,7 +349,7 @@ namespace BIMGISInteropLibs.DXF
             if (!pp.Points.Any() || !pp.FixedEdges.Any())
             {
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[DXF] file could not be processed!"));
+                LogWriter.Add(LogType.error, "[DXF] file could not be processed!");
 
                 //write to logging file
                 LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
@@ -358,8 +359,8 @@ namespace BIMGISInteropLibs.DXF
             result.Mesh = pp;
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.info, "[DXF] Reading data successful!"));
-            LogWriter.Entries.Add(new LogPair(LogType.info, "[DXF] " + pp.Points.Count + " points, " + pp.FixedEdges.Count + " lines and " + pp.FaceEdges.Count + " faces read."));
+            LogWriter.Add(LogType.info, "[DXF] Reading data successful!");
+            LogWriter.Add(LogType.info, "[DXF] " + pp.Points.Count + " points, " + pp.FixedEdges.Count + " lines and " + pp.FaceEdges.Count + " faces read.");
             
             result.rPoints = pp.Points.Count;
             result.rLines = pp.FixedEdges.Count;
@@ -384,7 +385,7 @@ namespace BIMGISInteropLibs.DXF
             var tinBuilder = Tin.CreateBuilder(true);
 
             //Log TIN builder initalization
-            AddToLogWriter(LogType.verbose, "[DXF] Initialize a TIN builder.");
+            LogWriter.Add(LogType.verbose, "[DXF] Initialize a TIN builder.");
 
             //Read out DTM data from DXF file. If successful than process data and create TIN
             if (ReadDxfDtmData(dxfFile, jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData))
@@ -403,31 +404,31 @@ namespace BIMGISInteropLibs.DXF
 
                     //Add the triangle vertices to the TIN builder and log point coordinates
                     tinBuilder.AddPoint(pnr++, p1);
-                    AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
+                    LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
                     tinBuilder.AddPoint(pnr++, p2);
-                    AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
+                    LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
                     tinBuilder.AddPoint(pnr++, p3);
-                    AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+                    LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
 
                     //Add the index of each vertex to the TIN builder (defines triangle) and log
                     for (int i = pnr - 3; i < pnr; i++)
                     {
                         tinBuilder.AddTriangle(i++, i++, i++);
-                        AddToLogWriter(LogType.verbose, "[DXF] Triangle set.");
+                        LogWriter.Add(LogType.verbose, "[DXF] Triangle set.");
                     }
                 }
             }
 
             //Build a TIN via BimGisCad class library and log
             Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            AddToLogWriter(LogType.verbose, "[DXF] Creating TIN via TIN builder.");
+            LogWriter.Add(LogType.verbose, "[DXF] Creating TIN via TIN builder.");
 
             //Pass TIN to result and log
             result.Tin = tin;
-            AddToLogWriter(LogType.info, "Reading DXF data successful.");
+            LogWriter.Add(LogType.info, "Reading DXF data successful.");
             result.rPoints = tin.Points.Count;
             result.rFaces = tin.NumTriangles;
-            AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             //Return the result as a TIN
             return result;
@@ -472,16 +473,16 @@ namespace BIMGISInteropLibs.DXF
                         case DxfEntityType.Insert:
                             var dxfPoint = (DxfInsert)entity;
                             dtmPointData.Add(new double[] { dxfPoint.Location.X, dxfPoint.Location.Y, dxfPoint.Location.Z });
-                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfPoint.Location.X + "; y= " + dxfPoint.Location.Y + "; z= " + dxfPoint.Location.Z + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + dxfPoint.Location.X + "; y= " + dxfPoint.Location.Y + "; z= " + dxfPoint.Location.Z + ")");
                             break;
                         case DxfEntityType.Face:
                             var dxfFace = (Dxf3DFace)entity;
                             dtmPointData.Add(new double[] { dxfFace.FirstCorner.X, dxfFace.FirstCorner.Y, dxfFace.FirstCorner.Z });
-                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfFace.FirstCorner.X + "; y= " + dxfFace.FirstCorner.Y + "; z= " + dxfFace.FirstCorner.Z + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + dxfFace.FirstCorner.X + "; y= " + dxfFace.FirstCorner.Y + "; z= " + dxfFace.FirstCorner.Z + ")");
                             dtmPointData.Add(new double[] { dxfFace.SecondCorner.X, dxfFace.SecondCorner.Y, dxfFace.SecondCorner.Z });
-                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfFace.SecondCorner.X + "; y= " + dxfFace.SecondCorner.Y + "; z= " + dxfFace.SecondCorner.Z + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + dxfFace.SecondCorner.X + "; y= " + dxfFace.SecondCorner.Y + "; z= " + dxfFace.SecondCorner.Z + ")");
                             dtmPointData.Add(new double[] { dxfFace.ThirdCorner.X, dxfFace.ThirdCorner.Y, dxfFace.ThirdCorner.Z });
-                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + dxfFace.ThirdCorner.X + "; y= " + dxfFace.ThirdCorner.Y + "; z= " + dxfFace.ThirdCorner.Z + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + dxfFace.ThirdCorner.X + "; y= " + dxfFace.ThirdCorner.Y + "; z= " + dxfFace.ThirdCorner.Z + ")");
                             break;
                         //dxf entity line --> add every line
                         case DxfEntityType.Line:
@@ -496,13 +497,13 @@ namespace BIMGISInteropLibs.DXF
                             linePointData.Add(new double[] { line.P1.X * scale, line.P1.Y * scale, line.P1.Z * scale });
 
                             //Log first point of line
-                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + linePointData[0][0] + "; y= " + linePointData[0][1] + "; z= " + linePointData[0][2] + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + linePointData[0][0] + "; y= " + linePointData[0][1] + "; z= " + linePointData[0][2] + ")");
 
                             //Get the second point data of the line
                             linePointData.Add(new double[] { line.P2.X * scale, line.P2.Y * scale, line.P2.Z * scale });
 
                             //Log second point of line
-                            AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + linePointData[1][0] + "; y= " + linePointData[1][1] + "; z= " + linePointData[1][2] + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + linePointData[1][0] + "; y= " + linePointData[1][1] + "; z= " + linePointData[1][2] + ")");
 
                             //Add the line data to the line data list
                             dtmLineData.Add(linePointData);
@@ -529,7 +530,7 @@ namespace BIMGISInteropLibs.DXF
                                 polylinePointData.Add(new double[] { x, y, z });
 
                                 //Log point data
-                                AddToLogWriter(LogType.verbose, "[DXF] Point set (x= " + x + "; y= " + y + "; z= " + z + ")");
+                                LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + x + "; y= " + y + "; z= " + z + ")");
                             }
 
                             //Add the line data to the line data list
@@ -544,16 +545,6 @@ namespace BIMGISInteropLibs.DXF
         }
 
         /// <summary>
-        /// A auxiliary function to feed the log writer.
-        /// </summary>
-        /// <param name="logType">The type of logging.</param>
-        /// <param name="message">The message to log.</param>
-        public static void AddToLogWriter(LogType logType, string message)
-        {
-            LogWriter.Entries.Add(new LogPair(logType, message));
-        }
-
-        /// <summary>
         /// A auxiliary function to check if lists contain data. 
         /// </summary>
         /// <param name="dtmPointData">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
@@ -563,17 +554,17 @@ namespace BIMGISInteropLibs.DXF
         {
             if (dtmPointData.Count == 0)
             {
-                AddToLogWriter(LogType.info, "[DXF] No point data found.");
+                LogWriter.Add(LogType.info, "[DXF] No point data found.");
                 return false;
             }
             else if (dtmLineData.Count == 0)
             {
-                AddToLogWriter(LogType.info, "[DXF] Reading point data was successful. No line data found.");
+                LogWriter.Add(LogType.info, "[DXF] Reading point data was successful. No line data found.");
                 return true;
             }
             else
             {
-                AddToLogWriter(LogType.info, "[DXF] Reading point and line data was successful.");
+                LogWriter.Add(LogType.info, "[DXF] Reading point and line data was successful.");
                 return true;
             }
         }

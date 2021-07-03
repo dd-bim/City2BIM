@@ -60,7 +60,7 @@ namespace BIMGISInteropLibs.PostGIS
             string tintable = jSettings.tin_table;
             string tincolumn = jSettings.tin_column;
             string tinidcolumn = jSettings.tinid_column;
-            int tinid = jSettings.tin_id;
+            dynamic tinid = jSettings.tin_id;
 
             bool postgis_bl = jSettings.breakline;
             string bl_column = jSettings.breakline_column;
@@ -70,13 +70,13 @@ namespace BIMGISInteropLibs.PostGIS
             
             //TODO dynamic scaling
             double scale = 1.0;
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] processing started."));
+            LogWriter.Add(LogType.verbose, "[PostGIS] processing started.");
 
             var result = new Result();
 
             //create TIN Builder
             var tinB = Tin.CreateBuilder(true);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] create TIN builder."));
+            LogWriter.Add(LogType.verbose, "[PostGIS] create TIN builder.");
 
             //Container to store breaklines
             Dictionary<int, Line3> breaklines = new Dictionary<int, Line3>();
@@ -97,7 +97,7 @@ namespace BIMGISInteropLibs.PostGIS
 
                 var conn = new NpgsqlConnection(connString);
                 conn.Open();
-                LogWriter.Entries.Add(new LogPair(LogType.info, "[PostGIS] Connected to Database."));
+                LogWriter.Add(LogType.info, "[PostGIS] Connected to Database.");
                    
                 NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
 
@@ -108,7 +108,7 @@ namespace BIMGISInteropLibs.PostGIS
                 
                 //select request for tin without breaklines via TIN ID
                 
-                string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + tinid;
+                string tin_select = "SELECT " + "ST_AsEWKT(" + tincolumn + ") as wkt FROM " + schema + "." + tintable + " WHERE " + tinidcolumn + " = " + "'" + tinid + "'";
                     
 
                 
@@ -124,7 +124,7 @@ namespace BIMGISInteropLibs.PostGIS
                 using (var command = new NpgsqlCommand(tin_select, conn))
                 {
                     var reader = command.ExecuteReader();
-                    LogWriter.Entries.Add(new LogPair(LogType.debug, "[PostGIS] Request sent to database: \n" + tin_select));
+                    LogWriter.Add(LogType.debug, "[PostGIS] Request sent to database: \n" + tin_select);
                     while (reader.Read())
                     {
                         //read column --> as EWKT
@@ -323,7 +323,7 @@ namespace BIMGISInteropLibs.PostGIS
             catch (Exception e)
             {
                 //log error message
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[PostGIS]: " +  e.Message));
+                LogWriter.Add(LogType.error, "[PostGIS]: " +  e.Message);
 
                 //write log file
                 LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
@@ -346,7 +346,7 @@ namespace BIMGISInteropLibs.PostGIS
             var tinBuilder = Tin.CreateBuilder(true);
 
             //Log TIN builder initalization
-            AddToLogWriter(LogType.verbose, "[PostGIS] Initialize a TIN builder.");
+            LogWriter.Add(LogType.verbose, "[PostGIS] Initialize a TIN builder.");
 
             //Read DTM data from PostGis, compute triangles and create TIN
             if (ReadPostGisDtmData(jSettings, out string dtmPointDataWKT, out string dtmLineDataWKT))
@@ -365,31 +365,31 @@ namespace BIMGISInteropLibs.PostGIS
 
                     //Add the triangle vertices to the TIN builder and log point coordinates
                     tinBuilder.AddPoint(pnr++, p1);
-                    AddToLogWriter(LogType.verbose, "[PostGIS] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
+                    LogWriter.Add(LogType.verbose, "[PostGIS] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
                     tinBuilder.AddPoint(pnr++, p2);
-                    AddToLogWriter(LogType.verbose, "[PostGIS] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
+                    LogWriter.Add(LogType.verbose, "[PostGIS] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
                     tinBuilder.AddPoint(pnr++, p3);
-                    AddToLogWriter(LogType.verbose, "[PostGIS] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
+                    LogWriter.Add(LogType.verbose, "[PostGIS] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
 
                     //Add the index of each vertex to the TIN builder (defines triangle) and log
                     for (int i = pnr - 3; i < pnr; i++)
                     {
                         tinBuilder.AddTriangle(i++, i++, i++);
-                        AddToLogWriter(LogType.verbose, "[PostGIS] Triangle set.");
+                        LogWriter.Add(LogType.verbose, "[PostGIS] Triangle set.");
                     }
                 }
             }
 
             //Build a TIN via BimGisCad class library and log
             Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            AddToLogWriter(LogType.verbose, "[PostGIS] Creating TIN via TIN builder.");
+            LogWriter.Add(LogType.verbose, "[PostGIS] Creating TIN via TIN builder.");
 
             //Pass TIN to result and log
             result.Tin = tin;
-            AddToLogWriter(LogType.info, "Reading PostGIS data successful.");
+            LogWriter.Add(LogType.info, "Reading PostGIS data successful.");
             result.rPoints = tin.Points.Count;
             result.rFaces = tin.NumTriangles;
-            AddToLogWriter(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             //Return the result as a TIN
             return result;
@@ -432,7 +432,7 @@ namespace BIMGISInteropLibs.PostGIS
 
                 //Open database connection
                 conn.Open();
-                AddToLogWriter(LogType.info, "[PostGIS] Connected to Database."); 
+                LogWriter.Add(LogType.info, "[PostGIS] Connected to Database."); 
                 NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
 
                 //Prepare sql string
@@ -452,7 +452,7 @@ namespace BIMGISInteropLibs.PostGIS
             catch(Exception e)
             {
                 //Log error message
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[PostGIS]: " + e.Message));
+                LogWriter.Add(LogType.error, "[PostGIS]: " + e.Message);
 
                 //Write log file
                 LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
@@ -461,16 +461,6 @@ namespace BIMGISInteropLibs.PostGIS
                 MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return CheckDtmDataLists(dtmPointDataWKT, dtmLineDataWKT);
-        }
-
-        /// <summary>
-        /// A auxiliary function to feed the log writer.
-        /// </summary>
-        /// <param name="logType">The type of logging.</param>
-        /// <param name="message">The message to log.</param>
-        public static void AddToLogWriter(LogType logType, string message)
-        {
-            LogWriter.Entries.Add(new LogPair(logType, message));
         }
 
         /// <summary>
@@ -483,17 +473,17 @@ namespace BIMGISInteropLibs.PostGIS
         {
             if (dtmPointDataWKT.Length == 0)
             {
-                AddToLogWriter(LogType.info, "[PostGIS] No point data found.");
+                LogWriter.Add(LogType.info, "[PostGIS] No point data found.");
                 return false;
             }
             else if (dtmLineDataWKT.Length == 0)
             {
-                AddToLogWriter(LogType.info, "[PostGIS] Reading point data was successful. No line data found.");
+                LogWriter.Add(LogType.info, "[PostGIS] Reading point data was successful. No line data found.");
                 return true;
             }
             else
             {
-                AddToLogWriter(LogType.info, "[PostGIS] Reading point and line data was successful.");
+                LogWriter.Add(LogType.info, "[PostGIS] Reading point and line data was successful.");
                 return true;
             }
         }
