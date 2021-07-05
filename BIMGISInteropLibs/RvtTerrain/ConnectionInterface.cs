@@ -10,9 +10,6 @@ using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
 //used for result class (may update to seperate class for rvtTerrain)
 using BIMGISInteropLibs.IfcTerrain;
 
-//include for data exchange (revit)
-using C2BPoint = BIMGISInteropLibs.Geometry.C2BPoint;
-
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
 
@@ -88,13 +85,13 @@ namespace BIMGISInteropLibs.RvtTerrain
 
             #region point list
             //init empty point list
-            dynamic dgmPtList = new List<C2BPoint>();
+            dynamic dgmPtList = new List<Point3>();
 
             if (resTerrain.Tin.Points == null)
             {
                 foreach (Point3 p in resTerrain.Mesh.Points)
                 {
-                    dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));
+                    dgmPtList.Add(p);
                 }
             }
             else if (resTerrain.Mesh == null)
@@ -102,7 +99,7 @@ namespace BIMGISInteropLibs.RvtTerrain
                 foreach (Point3 p in resTerrain.Tin.Points)
                 {
                     {
-                        dgmPtList.Add(new C2BPoint(p.X, p.Y, p.Z));
+                        dgmPtList.Add(p);
                     }
                 }
             }
