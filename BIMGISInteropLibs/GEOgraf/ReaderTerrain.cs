@@ -59,14 +59,14 @@ namespace BIMGISInteropLibs.GEOgraf
             string filePath = jSettings.filePath;
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] start reading."));
+            LogWriter.Add(LogType.verbose, "[Grafbat] start reading.");
 
             //Result define so that TIN can be passed
             Result result = new Result();
 
             //Create a new builder for TIN            
             var tinB = Tin.CreateBuilder(true);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Tin builder created."));
+            LogWriter.Add(LogType.verbose, "[Grafbat] Tin builder created.");
 
             //init transfer classes
             pointIndex2NumberMap = null;
@@ -82,98 +82,7 @@ namespace BIMGISInteropLibs.GEOgraf
             //check if file exsists 
             if (File.Exists(filePath))
             {
-                //pass through each line of the file
-                foreach (var line in File.ReadAllLines(filePath))
-                {
-                    var values = line.Split(new[] { ',' });
-                    if (line.StartsWith("PK") && values.Length > 4
-                        && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int pnr)
-                        && int.TryParse(values[1].Substring(0, values[1].IndexOf('.')), out int pointtype)
-                        && double.TryParse(values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double x)
-                        && double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
-                        && double.TryParse(values[4], NumberStyles.Float, CultureInfo.InvariantCulture, out double z)
-                        && int.TryParse(values[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statPos)
-                        && int.TryParse(values[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statHeight))
-                    {
-                        //Add point to TIN builder, here only PNR + coordinates are needed
-                        tinB.AddPoint(pnr, x, y, z);
-
-                        //logging
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Point (" + (pnr) + ") set (x= " + x + "; y= " + y + "; z= " + z + ")"));
-
-                        //Create point
-                        OPoint point = new OPoint(pnr, pointtype, x, y, z, statPos, statHeight);
-                        //Insert point (Value) via Key (Point number) into point list
-                        pointList[pnr] = point;
-                    }
-                    //TODO
-                    /*
-                    if (line.StartsWith("LI") && breakline == true
-                       && values.Length > 11
-                       && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int ln)
-                       && int.TryParse(values[0].Substring(12), out int la)
-                       && int.TryParse(values[1].Substring(3), out int lb)
-                       && int.TryParse(values[2].Substring(0, values[2].IndexOf('.')), out int linetype))
-                    {
-                        if(linetype == bl_layer)
-                        {
-                            //build line from points
-                            OLine oLine = new OLine(pointList[la], pointList[lb], linetype);
-
-                            Point3 p1 = Point3.Create(oLine.PNr1.X, oLine.PNr1.Y, oLine.PNr1.Z);
-                            Point3 p2 = Point3.Create(oLine.PNr2.X, oLine.PNr2.Y, oLine.PNr2.Z);
-
-                            Vector3 v12 = Vector3.Create(p2);
-                            Direction3 d12 = Direction3.Create(v12, scale);
-
-                            
-                            try
-                            {
-                                //insert line in breakline list
-                                Line3 l = Line3.Create(p1, d12);
-                            }
-                            catch
-                            {
-                                //todo error
-                            }
-                        }
-                    }*/
-
-                    //Read horizon
-                    if (line.StartsWith("HNR") && values.Length > 13
-                        && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hornr))
-                    {
-                        //Query whether 2D (false) or 3D (true)
-                        bool is3D = values[4].Equals("1") ? true : false;
-                        //Form horizon
-                        OHorizon horizon = new OHorizon(hornr, values[3].ToString(), is3D); //NOTE: Encoding of ANSI not considered!
-                        //Add horizon to the horizon list
-                        horList[hornr] = horizon;
-                    }
-
-                    //Read triangles
-                    if (line.StartsWith("DG") && values.Length > 9
-                        && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int tn)
-                        && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hnr)
-                        && int.TryParse(values[1].Substring(3), out int va)
-                        && int.TryParse(values[2].Substring(3), out int vb)
-                        && int.TryParse(values[3].Substring(3), out int vc))
-                    {
-                        int? na = !string.IsNullOrEmpty(values[4]) && int.TryParse(values[4], out int n) ? n : (int?)null;
-                        int? nb = !string.IsNullOrEmpty(values[5]) && int.TryParse(values[5], out n) ? n : (int?)null;
-                        int? nc = !string.IsNullOrEmpty(values[6]) && int.TryParse(values[6], out n) ? n : (int?)null;
-                        bool ea = !string.IsNullOrEmpty(values[7]);
-                        bool eb = !string.IsNullOrEmpty(values[8]);
-                        bool ec = !string.IsNullOrEmpty(values[9]);
-
-                        //Add triangle to TIN builder
-                        tinB.AddTriangle(tn, va, vb, vc, na, nb, nc, ea, eb, ec, true);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Triangle ("+tn+") set (P1= " + (va) + "; P2= " + (vb) + "; P3= " + (vc) + ")"));
-
-                        OTriangle triangle = new OTriangle(tn, horList[hnr], pointList[va], pointList[vb], pointList[vc], na, nb, nc, ea, eb, ec);
-                        triList[tn] = triangle;
-                    }
-                }
+                ReadDataViaTriangle(tinB, filePath);
             }
             //if file path isn't valid
             else
@@ -181,11 +90,11 @@ namespace BIMGISInteropLibs.GEOgraf
                 //error handling??? result.error???
 
                 //error logging
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[Grafbat] File path ("+filePath+") could not be read!"));
+                LogWriter.Add(LogType.error, "[Grafbat] File path (" + filePath + ") could not be read!");
             }
 
             //handover tin from tin builder
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[Grafbat] Create TIN via TIN builder."));
+            LogWriter.Add(LogType.verbose, "[Grafbat] Create TIN via TIN builder.");
             Tin tin = tinB.ToTin(out pointIndex2NumberMap, out triangleIndex2NumberMap);
 
             //Result describe
@@ -196,10 +105,80 @@ namespace BIMGISInteropLibs.GEOgraf
             result.rFaces = tin.NumTriangles;
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.info, "Reading Grafbat data successful."));
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
+            LogWriter.Add(LogType.info, "Reading Grafbat data successful.");
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             return result;
+        }
+
+
+        /// <summary>
+        /// reads out data via points & triangles
+        /// </summary>
+        private static void ReadDataViaTriangle(Tin.Builder tinBuilder, string filePath)
+        {
+            //pass through each line of the file
+            foreach (var line in File.ReadAllLines(filePath))
+            {
+                var values = line.Split(new[] { ',' });
+                if (line.StartsWith("PK") && values.Length > 4
+                    && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int pnr)
+                    && int.TryParse(values[1].Substring(0, values[1].IndexOf('.')), out int pointtype)
+                    && double.TryParse(values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double x)
+                    && double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
+                    && double.TryParse(values[4], NumberStyles.Float, CultureInfo.InvariantCulture, out double z)
+                    && int.TryParse(values[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statPos)
+                    && int.TryParse(values[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statHeight))
+                {
+                    //Add point to TIN builder, here only PNR + coordinates are needed
+                    tinBuilder.AddPoint(pnr, x, y, z);
+
+                    //logging
+                    LogWriter.Add(LogType.verbose, "[Grafbat] Point (" + (pnr) + ") set (x= " + x + "; y= " + y + "; z= " + z + ")");
+
+                    //Create point
+                    OPoint point = new OPoint(pnr, pointtype, x, y, z, statPos, statHeight);
+                    //Insert point (Value) via Key (Point number) into point list
+                    pointList[pnr] = point;
+                }
+
+                //Read horizon
+                if (line.StartsWith("HNR") && values.Length > 13
+                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hornr))
+                {
+                    //Query whether 2D (false) or 3D (true)
+                    bool is3D = values[4].Equals("1") ? true : false;
+
+                    //Form horizon
+                    OHorizon horizon = new OHorizon(hornr, values[3].ToString(), is3D); //NOTE: Encoding of ANSI not considered!
+
+                    //Add horizon to the horizon list
+                    horList[hornr] = horizon;
+                }
+
+                //Read triangles
+                if (line.StartsWith("DG") && values.Length > 9
+                    && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int tn)
+                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hnr)
+                    && int.TryParse(values[1].Substring(3), out int va)
+                    && int.TryParse(values[2].Substring(3), out int vb)
+                    && int.TryParse(values[3].Substring(3), out int vc))
+                {
+                    int? na = !string.IsNullOrEmpty(values[4]) && int.TryParse(values[4], out int n) ? n : (int?)null;
+                    int? nb = !string.IsNullOrEmpty(values[5]) && int.TryParse(values[5], out n) ? n : (int?)null;
+                    int? nc = !string.IsNullOrEmpty(values[6]) && int.TryParse(values[6], out n) ? n : (int?)null;
+                    bool ea = !string.IsNullOrEmpty(values[7]);
+                    bool eb = !string.IsNullOrEmpty(values[8]);
+                    bool ec = !string.IsNullOrEmpty(values[9]);
+
+                    //Add triangle to TIN builder
+                    tinBuilder.AddTriangle(tn, va, vb, vc, true);
+                    LogWriter.Add(LogType.verbose, "[Grafbat] Triangle (" + tn + ") set (P1= " + (va) + "; P2= " + (vb) + "; P3= " + (vc) + ")");
+
+                    OTriangle triangle = new OTriangle(tn, horList[hnr], pointList[va], pointList[vb], pointList[vc], na, nb, nc, ea, eb, ec);
+                    triList[tn] = triangle;
+                }
+            }
         }
     }
 }
