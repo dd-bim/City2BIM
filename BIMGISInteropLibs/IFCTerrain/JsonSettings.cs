@@ -97,6 +97,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// Decision to calculate a TIN of the input data
         /// </summary>
         public bool calculateTin { get; set; }
+
+        /// <summary>
+        /// Decision to recalculate a existing TIN
+        /// </summary>
+        public bool recalculateTin { get; set; }
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
