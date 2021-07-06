@@ -223,7 +223,6 @@ namespace GuiHandler.userControler.Dxf
             this.btnProcessDxf.IsEnabled = true;
         }
 
-
         /// <summary>
         /// is executed as soon as the selection has been changed in the ListBox lbDxfDtmLayer
         /// </summary>
@@ -267,7 +266,7 @@ namespace GuiHandler.userControler.Dxf
             else
             {
                 //deactivate btn process
-                btnProcessDxf.IsEnabled = true;
+                btnProcessDxf.IsEnabled = false;
             }
         }
 
@@ -343,11 +342,21 @@ namespace GuiHandler.userControler.Dxf
                  * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
                  * and be converted in the JSON settings via an enumeration.
                  */
-
-                if (rbDxfFaces.IsChecked == true)
+                //Processing options
+                if (rbDxfFaces.IsChecked == true && rbDxfBreaklinesFalse.IsChecked == true)
                 {
                     //processing faces (true)
                     init.config.isTin = true;
+                }
+                else if (rbDxfFaces.IsChecked == true && rbDxfBreaklinesTrue.IsChecked == true)
+                {
+                    init.config.recalculateTin = true;
+                    init.config.isTin = false;
+                }
+                else if (rbDxfPoints.IsChecked == true)
+                {
+                    init.config.calculateTin = true;
+                    init.config.isTin = false;
                 }
                 else
                 {
