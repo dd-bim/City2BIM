@@ -91,27 +91,20 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             Text="Processing via..."/>
-
-
                         <RadioButton
                             x:Name="rbDxfFaces"
                             Content="Faces"
-                            IsChecked="True"
                             VerticalAlignment="Center"
                             Margin="20,0,0,0"
-                            ToolTip="Processing will be done via 3D Faces (DXF layer)"/>
+                            ToolTip="Processing will be done via 3D Faces (DXF layer)"
+                            IsChecked="True"/>
                         <RadioButton
-                            x:Name="rbDxfPointsLines"
-                            Content="Points / Lines"
+                            x:Name="rbDxfPoints"
+                            Content="Points"
                             VerticalAlignment="Center"
-                            ToolTip="Processing will be done via Points and Lines (DXF layer). [Currently not available]"
-                            ToolTipService.ShowOnDisabled="True"
                             Margin="20,0,0,0"
-                            IsEnabled="False"/>
+                            ToolTip="Processing will be done via Points (DXF layer)."/>
                     </StackPanel>
-
-
-
                 </Grid>
             </GroupBox>
 
