@@ -301,6 +301,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="CityGML\CityGMLReader.cs" />
+    <Compile Include="Triangulator\IfcTerrainTriangulator.cs" />
     <Compile Include="WFS\WFSClient.cs" />
     <Compile Include="ALKIS\AlkisReader.cs" />
     <Compile Include="ALKIS\Alkis_Semantic.cs" />
