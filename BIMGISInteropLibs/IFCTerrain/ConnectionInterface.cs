@@ -81,10 +81,18 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //Tin - Reader (if dxf file contains faces)
                         result = DXF.ReaderTerrain.ReadDxfTin(dxfFile, jSettings);
                     }
+                    else if (jSettings.recalculateTin)
+                    {
+                        //TIN is recalculated by using an existing TIN and breaklines
+                        result = DXF.ReaderTerrain.RecalculateTin(dxfFile, jSettings);
+
+                        //After a TIN has been calculated the atribute 'isTin' becomes true
+                        jSettings.isTin = true;
+                    }
                     else if (jSettings.calculateTin)
                     {
-                        //TIN reader if dxf file contains points and lines and option calculateTin is set
-                        result = DXF.ReaderTerrain.CalculateDxfTin(dxfFile, jSettings);
+                        //TIN is calculated from point data (in case breaklines are selected these are uses as well)
+                        result = DXF.ReaderTerrain.CalculateTin(dxfFile, jSettings);
 
                         //After a TIN has been calculated the atribute 'isTin' becomes true
                         jSettings.isTin = true;
@@ -100,18 +108,18 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.REB:
                     //REB file reader
                     REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(jSettings.filePath);
-                    if (jSettings.calculateTin)
-                    {
-                        //Calculate TIN if calculateTin is set
-                        result = REB.ReaderTerrain.CalculateTinFromReb(rebData, jSettings);
-
-                        //After a TIN has been calculated the atribute 'isTin' becomes true
-                        jSettings.isTin = true;
-                    }
-                    else
+                    if (jSettings.isTin)
                     {
                         //use REB data via processing with converter
                         result = REB.ReaderTerrain.ConvertRebToTin(rebData, jSettings);
+                    }
+                    else if (jSettings.calculateTin)
+                    {
+                        //Calculate TIN if calculateTin is set
+                        result = REB.ReaderTerrain.CalculateTin(rebData, jSettings);
+
+                        //After a TIN has been calculated the atribute 'isTin' becomes true
+                        jSettings.isTin = true;
                     }
                     break;
 
@@ -138,13 +146,26 @@ namespace BIMGISInteropLibs.IfcTerrain
 
                 //reader for PostGIS
                 case IfcTerrainFileType.PostGIS:
-                    if (jSettings.calculateTin)
+                    if (jSettings.isTin)
                     {
-                        result = PostGIS.ReaderTerrain.CalculatePostGisTin(jSettings);
-                    }
-                    else
-                    {
+                        //A exisiting TIN is read and converted
                         result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings);
+                    }
+                    if (jSettings.recalculateTin)
+                    {
+                        //A existing TIN is recalculated by using the triangle and line data
+                        result = PostGIS.ReaderTerrain.RecalculateTin(jSettings);
+
+                        //After a TIN has been calculated the atribute 'isTin' becomes true
+                        jSettings.isTin = true;
+                    }
+                    else if (jSettings.calculateTin)
+                    {
+                        //A TIN of MultiPoint data is calculated (if choosen, line data is used as well)
+                        result = PostGIS.ReaderTerrain.CalculateTin(jSettings);
+
+                        //After a TIN has been calculated the atribute 'isTin' becomes true
+                        jSettings.isTin = true;
                     }
                     break;
             }
