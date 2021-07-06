@@ -42,12 +42,10 @@ namespace City2RVT.GUI
             #endregion Georef panel
 
             #region Terrain panel
-
             RibbonPanel panelTerrain = application.CreateRibbonPanel(tabName, "DTM2BIM");
-            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Import Terrain data", thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrain")) as PushButton;
-            buttonDTM.ToolTip = "Import functionality for Digital Terrain Models";
+            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Import Terrian data", thisAssemblyPath, "City2RVT.GUI.Cmd_ReadTerrain")) as PushButton;
+            buttonDTM.ToolTip = "Import functionality for Digital Terrain Models from different file formats.";
             buttonDTM.LargeImage = getBitmapFromResx(ResourcePictures.DTM_32px_96dpi);
-
             #endregion Terrain panel
 
             #region City2BIM panel
@@ -67,7 +65,7 @@ namespace City2RVT.GUI
             RibbonPanel panelAlkis = application.CreateRibbonPanel(tabName, "ALKIS2BIM");
             PushButton buttonAlkis = panelAlkis.AddItem(new PushButtonData("LoadALKIS", "Import ALKIS data",
             thisAssemblyPath, "City2RVT.GUI.Cmd_ReadALKIS")) as PushButton;
-            buttonAlkis.ToolTip = "Import functionality ALKIS data from NAS-XML files.)";
+            buttonAlkis.ToolTip = "Import functionality ALKIS data from NAS-XML files.";
             buttonAlkis.LargeImage = getBitmapFromResx(ResourcePictures.ALKIS_32px_96dpi);
 
             #endregion ALKIS panel
