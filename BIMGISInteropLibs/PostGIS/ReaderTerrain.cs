@@ -21,7 +21,8 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //shortcut for tin building class
 using terrain = BIMGISInteropLibs.Geometry.terrain;
 
-using BIMGISInteropLibs.NTSApi;
+//Compute triangulation
+using BIMGISInteropLibs.Triangulator;
 
 //[TOOD #3]add error handling + tests
 namespace BIMGISInteropLibs.PostGIS
@@ -314,118 +315,55 @@ namespace BIMGISInteropLibs.PostGIS
             return result;
         }
 
-        public static Result CalculatePostGisTin(JsonSettings jSettings)
+        /// <summary>
+        /// A existing TIN is recalculated. Using breakline data is mandatory.
+        /// </summary>
+        /// <param name="jSettings">User input.</param>
+        /// <returns>A TIN as result.</returns>
+        public static Result RecalculateTin(JsonSettings jSettings)
         {
+            //Initialize TIN
+            Tin tin;
+
             //Initialize result
             Result result = new Result();
 
-            //Initialize TIN builder
-            var tinBuilder = Tin.CreateBuilder(true);
+            //Get database connection parameters
+            string host = jSettings.host;
+            int port = jSettings.port;
+            string user = jSettings.user;
+            string password = jSettings.password;
+            string dbName = jSettings.database;
+            string schema = jSettings.schema;
 
-            //init hash set
-            var uptList = new HashSet<Geometry.uPoint3>();
+            //Prepare string for database connection
+            string connString = string.Format("Host={0};Port={1};Username={2};Password={3};Database={4};", host, port, user, password, dbName);
 
-            //Log TIN builder initalization
-            LogWriter.Add(LogType.verbose, "[PostGIS] Initialize a TIN builder.");
+            //TIN data table
+            string tinDataTable = jSettings.tin_table;
+            string tinDataColumn = jSettings.tin_column;
 
-            //Read DTM data from PostGis, compute triangles and create TIN
-            if (ReadPostGisDtmData(jSettings, out string dtmPointDataWKT, out string dtmLineDataWKT))
-            {
-                //Get a list of triangles via NetTopologySuite class library using the interface object
-                List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointDataWKT, dtmLineDataWKT);
-
-                foreach (List<double[]> dtmTriangle in dtmTriangleList)
-                {
-                    //Read out the three vertices of one triangle at each loop
-                    Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
-                    Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
-                    Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
-
-                    //Add the triangle vertices to the TIN builder and log point coordinates
-                    tinBuilder.AddPoint(pnr++, p1);
-                    LogWriter.Add(LogType.verbose, "[PostGIS] Point set (x= " + p1.X + "; y= " + p1.Y + "; z= " + p1.Z + ")");
-                    tinBuilder.AddPoint(pnr++, p2);
-                    LogWriter.Add(LogType.verbose, "[PostGIS] Point set (x= " + p2.X + "; y= " + p2.Y + "; z= " + p2.Z + ")");
-                    tinBuilder.AddPoint(pnr++, p3);
-                    LogWriter.Add(LogType.verbose, "[PostGIS] Point set (x= " + p3.X + "; y= " + p3.Y + "; z= " + p3.Z + ")");
-
-                    //Add the index of each vertex to the TIN builder (defines triangle) and log
-                    for (int i = pnr - 3; i < pnr; i++)
-                    {
-                        tinBuilder.AddTriangle(i++, i++, i++);
-                        LogWriter.Add(LogType.verbose, "[PostGIS] Triangle set.");
-                    }
-                }
-            }
-
-            //Build a TIN via BimGisCad class library and log
-            Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            LogWriter.Add(LogType.verbose, "[PostGIS] Creating TIN via TIN builder.");
-
-            //Pass TIN to result and log
-            result.Tin = tin;
-            LogWriter.Add(LogType.info, "Reading PostGIS data successful.");
-            result.rPoints = tin.Points.Count;
-            result.rFaces = tin.NumTriangles;
-            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
-
-            //Return the result as a TIN
-            return result;
-        }
-
-        public static bool ReadPostGisDtmData(JsonSettings jSettings, out string dtmPointDataWKT, out string dtmLineDataWKT)
-        {
-            //Output variables for WKT strings
-            dtmPointDataWKT = "";
-            dtmLineDataWKT = "";
-
-            //Database connection parameters
-            string host = "localhost";//jSettings.host;
-            int port = 5432;//jSettings.port;
-            string user = "postgres";//jSettings.user;
-            string password = "postgres";//jSettings.password;
-            string dbName = "ifcterrain";//jSettings.database;
-            string schema = "public";//jSettings.schema;
-
-            //DTM data table
-            string dtmDataTable = "geosn_dtm_testdata";
-            string dtmDataColumn = "geom";
-            string dtmDataIdColumn = "";
-            int dtmId = 0;
+            //Prepare sql string for tin data
+            string tinDataSql = "SELECT " + "ST_AsEWKT(" + tinDataColumn + ") FROM " + schema + "." + tinDataTable + ";";
 
             //Breakline data table
-            bool postgis_bl = jSettings.breakline;
-            string bl_column = jSettings.breakline_column;
-            string bl_table = jSettings.breakline_table;
-            string bl_tinid = jSettings.breakline_tin_id;
+            string breaklineDataTable = jSettings.breakline_table;
+            string breaklineDataColumn = jSettings.breakline_column;
 
-            //Try to read data from database
+            //Prepare sql string for breakline data
+            string breaklineDataSql = "SELECT " + "ST_AsEWKT(" + breaklineDataColumn + ") FROM " + schema + "." + breaklineDataTable + ";";
+
             try
             {
-                //Prepare string for database connection
-                string connString = string.Format("Host={0};Port={1};Username={2};Password={3};Database={4};", host, port, user, password, dbName);
-
                 //Establish database connection
                 var conn = new NpgsqlConnection(connString);
 
-                //Open database connection
-                conn.Open();
-                LogWriter.Add(LogType.info, "[PostGIS] Connected to Database."); 
-                NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
-
-                //Prepare sql string
-                string dtmPointDataSql = "SELECT " + "ST_AsEWKT(" + dtmDataColumn + ") FROM " + schema + "." + dtmDataTable + ";";
-
-                //Execute query
-                using (var command = new NpgsqlCommand(dtmPointDataSql, conn))
+                //Try to read out TIN and breakline data to recalculate TIN
+                if (GetTinData(conn, tinDataSql, out List<double[]> tinPointList) && GetBreaklineData(conn, breaklineDataSql, out List<double[]> constraintList))
                 {
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        dtmPointDataWKT += (reader.GetValue(0)).ToString() + ";";
-                    }
+                    //Read DTM data from PostGis, compute triangles and create TIN
+                    tin = IfcTerrainTriangulator.CreateTin(tinPointList, constraintList);
                 }
-                conn.Close();
             }
             catch (Exception e)
             {
@@ -438,32 +376,321 @@ namespace BIMGISInteropLibs.PostGIS
                 //Show error message box
                 MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            return CheckDtmDataLists(dtmPointDataWKT, dtmLineDataWKT);
+
+            //Pass TIN to result and log
+            result.Tin = tin;
+            LogWriter.Add(LogType.info, "Reading PostGIS data successful.");
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+
+            //Return the result as a TIN
+            return result;
         }
 
         /// <summary>
-        /// A auxiliary function to check if WKT strings contain data. 
+        /// A TIN is calculated by using point data and if choosen breakline data as well.
         /// </summary>
-        /// <param name="dtmPointDataWKT">A WKT string of point data.</param>
-        /// <param name="dtmLineData">A WKT string line data.</param>
-        /// <returns>True or false.</returns>
-        public static bool CheckDtmDataLists(string dtmPointDataWKT, string dtmLineDataWKT)
+        /// <param name="jSettings">User input.</param>
+        /// <returns>A TIN as result.</returns>
+        public static Result CalculateTin(JsonSettings jSettings)
         {
-            if (dtmPointDataWKT.Length == 0)
+            //Initialize TIN
+            Tin tin;
+
+            //Initialize result
+            Result result = new Result();
+
+            //Get database connection parameters
+            string host = jSettings.host;
+            int port = jSettings.port;
+            string user = jSettings.user;
+            string password = jSettings.password;
+            string dbName = jSettings.database;
+            string schema = jSettings.schema;
+
+            //Prepare string for database connection
+            string connString = string.Format("Host={0};Port={1};Username={2};Password={3};Database={4};", host, port, user, password, dbName);
+
+            //DTM data table
+            string dtmDataTable = jSettings.tin_table;
+            string dtmDataColumn = jSettings.tin_column;
+
+            //Prepare sql string for dtm data
+            string dtmDataSql = "SELECT " + "ST_AsEWKT(" + dtmDataColumn + ") FROM " + schema + "." + dtmDataTable + ";";
+
+            //Breakline data table
+            string breaklineDataTable = jSettings.breakline_table;
+            string breaklineDataColumn = jSettings.breakline_column;
+
+            //Prepare sql string for breakline data
+            string breaklineDataSql = "SELECT " + "ST_AsEWKT(" + breaklineDataColumn + ") FROM " + schema + "." + breaklineDataTable + ";";
+
+            try
             {
-                LogWriter.Add(LogType.info, "[PostGIS] No point data found.");
-                return false;
+                //Establish database connection
+                var conn = new NpgsqlConnection(connString);
+
+                //Decide weather breaklines shall be used or not used 
+                if (jSettings.breakline && GetDtmData(conn, dtmDataSql, out List<double[]> dtmPointList) && GetBreaklineData(conn, breaklineDataSql, out List<double[]> constraintList))
+                {
+                    //Read DTM data from PostGis, compute triangles and create TIN
+                    tin = IfcTerrainTriangulator.CreateTin(dtmPointList, constraintList);
+                }
+                else if (GetDtmData(conn, dtmDataSql, out dtmPointList))
+                {
+                    tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
+                }
             }
-            else if (dtmLineDataWKT.Length == 0)
+            catch (Exception e)
             {
-                LogWriter.Add(LogType.info, "[PostGIS] Reading point data was successful. No line data found.");
-                return true;
+                //Log error message
+                LogWriter.Add(LogType.error, "[PostGIS]: " + e.Message);
+
+                //Write log file
+                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
+
+                //Show error message box
+                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            //Pass TIN to result and log
+            result.Tin = tin;
+            LogWriter.Add(LogType.info, "Reading PostGIS data successful.");
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+
+            //Return the result as a TIN
+            return result;
+        }
+
+        /// <summary>
+        /// An auxiliary function to get TIN data. 
+        /// </summary>
+        /// <param name="conn">The connection string to connect to the database.</param>
+        /// <param name="tinDataSql">Query for TIN data.</param>
+        /// <param name="tinPointList">A list of double arrays. Each array contains the x, y and z coordinate of a TIN vertex.</param>
+        /// <returns>True or false in case TIN data was read successful or not respectively.</returns>
+        public static bool GetTinData(NpgsqlConnection conn, string tinDataSql, out List<double[]> tinPointList)
+        {
+            tinPointList = ReadTinData(conn, tinDataSql);
+            if (tinPointList.Count == 0)
+            {
+                LogWriter.Add(LogType.info, "[PostGIS] No TIN data found.");
+                return false;
             }
             else
             {
-                LogWriter.Add(LogType.info, "[PostGIS] Reading point and line data was successful.");
+                LogWriter.Add(LogType.info, "[PostGIS] Reading TIN data was successful.");
                 return true;
             }
+        }
+
+        /// <summary>
+        /// An auxiliary function to get DTM data.
+        /// </summary>
+        /// <param name="conn">The connection string to connect to the database.</param>
+        /// <param name="dtmDataSql">Query for DTM data.</param>
+        /// <param name="dtmPointList">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
+        /// <returns>True or false in case DTM data was read successful or not respectively.</returns>
+        public static bool GetDtmData(NpgsqlConnection conn, string dtmDataSql, out List<double[]> dtmPointList)
+        {
+            dtmPointList = ReadDtmData(conn, dtmDataSql);
+            if (dtmPointList.Count == 0)
+            {
+                LogWriter.Add(LogType.info, "[PostGIS] No DTM point data found.");
+                return false;
+            }
+            else
+            {
+                LogWriter.Add(LogType.info, "[PostGIS] Reading DTM point data was successful.");
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// An auxiliary function to get breakline data.
+        /// </summary>
+        /// <param name="conn">The connection string to connect to the database.</param>
+        /// <param name="breaklineDataSql">Query for breakline data.</param>
+        /// <param name="breaklineList">A list of double arrays. Each array contains the x, y and z coordinate of a constraint vertex.</param>
+        /// <returns>rue or false in case breakline data was read successful or not respectively.</returns>
+        public static bool GetBreaklineData(NpgsqlConnection conn, string breaklineDataSql, out List<double[]> breaklineList)
+        {
+            breaklineList = ReadBreaklineData(conn, breaklineDataSql);
+            if (breaklineList.Count == 0)
+            {
+                LogWriter.Add(LogType.info, "[PostGIS] No breakline data found.");
+                return false;
+            }
+            else
+            {
+                LogWriter.Add(LogType.info, "[PostGIS] Reading breakline data was successful.");
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// An auxiliary function to read out a OGC Simple Feature TIN from PostGis.
+        /// </summary>
+        /// <param name="conn">The connection string to connect to the database.</param>
+        /// <param name="tinDataSql">Query for TIN data.</param>
+        /// <returns>A list of double arrays. Each array contains the x, y and z coordinate of a TIN vertex.</returns>
+        public static List<double[]> ReadTinData(NpgsqlConnection conn, string tinDataSql)
+        {
+            //Output variables for WKT strings
+            List<double[]> tinPointList = new List<double[]>();
+            double scale = 1.0;
+
+            //Open database connection
+            conn.Open();
+            LogWriter.Add(LogType.info, "[PostGIS] Connected to Database. Reading TIN data.");
+            NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
+
+            //Execute query
+            using (var command = new NpgsqlCommand(tinDataSql, conn))
+            {
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string wktString = (reader.GetValue(0)).ToString();
+                    string[] wktStringSplit = wktString.Split(';');
+                    string tinAsWkt = wktStringSplit[1];
+                    char[] trim = { 'T', 'I', 'N', '(' };
+                    tinAsWkt = tinAsWkt.TrimStart(trim);
+                    string[] separator = { ")),((" };
+                    string[] tin_string = tinAsWkt.Split(separator, System.StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string face in tin_string)
+                    {
+                        //Points - Split via comma
+                        string[] face_points = face.Split(',');
+
+                        //Split over spaces
+                        //FirstCorner
+                        string[] p1 = face_points[0].Split(' ');
+
+                        double p1X = Convert.ToDouble(p1[0], CultureInfo.InvariantCulture);
+                        double p1Y = Convert.ToDouble(p1[1], CultureInfo.InvariantCulture);
+                        double p1Z = Convert.ToDouble(p1[2], CultureInfo.InvariantCulture);
+
+                        //P1 
+                        tinPointList.Add(new double[] { p1X * scale, p1Y * scale, p1Z * scale });
+
+                        //SecoundCorner
+                        string[] p2 = face_points[1].Split(' ');
+
+                        double p2X = Convert.ToDouble(p2[0], CultureInfo.InvariantCulture);
+                        double p2Y = Convert.ToDouble(p2[1], CultureInfo.InvariantCulture);
+                        double p2Z = Convert.ToDouble(p2[2], CultureInfo.InvariantCulture);
+
+                        //P2 
+                        tinPointList.Add(new double[] { p2X * scale, p2Y * scale, p2Z * scale });
+
+                        //ThirdCorner
+                        string[] p3 = face_points[2].Split(' ');
+
+                        double p3X = Convert.ToDouble(p3[0], CultureInfo.InvariantCulture);
+                        double p3Y = Convert.ToDouble(p3[1], CultureInfo.InvariantCulture);
+                        double p3Z = Convert.ToDouble(p3[2], CultureInfo.InvariantCulture);
+
+                        //P3
+                        tinPointList.Add(new double[] { p3X * scale, p3Y * scale, p3Z * scale });
+                    }
+                }
+            }
+            conn.Close();
+            return tinPointList;
+        }
+
+        /// <summary>
+        /// An auxiliary function to read out a OGC Simple Feature Multipoint from PostGis.
+        /// </summary>
+        /// <param name="conn">The connection string to connect to the database.</param>
+        /// <param name="dtmDataSql">Query for DTM point data.</param>
+        /// <returns>A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</returns>
+        public static List<double[]> ReadDtmData(NpgsqlConnection conn, string dtmDataSql)
+        {
+            //Output variables for WKT strings
+            List<double[]> dtmPointList = new List<double[]>();
+
+            //Open database connection
+            conn.Open();
+            LogWriter.Add(LogType.info, "[PostGIS] Connected to Database. Reading DTM point data.");
+            NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
+
+            //Execute query
+            using (var command = new NpgsqlCommand(dtmDataSql, conn))
+            {
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string wktString = (reader.GetValue(0)).ToString();
+                    string[] wktStringSplit = wktString.Split(';');
+                    string dtmDataAsWkt = wktStringSplit[1];
+                    char[] trim = { 'M', 'U', 'L', 'T', 'I', 'P', 'O', 'I', 'N', 'T', '(' };
+                    dtmDataAsWkt = dtmDataAsWkt.TrimStart(trim);
+                    char[] trimEnd = { ')' };
+                    dtmDataAsWkt = dtmDataAsWkt.TrimEnd(trimEnd);
+                    string[] separator = { "," };
+                    string[] pointArr = dtmDataAsWkt.Split(separator, System.StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string point in pointArr)
+                    {
+                        string[] coords = point.Split(' ');
+                        double pX = Convert.ToDouble(coords[0], CultureInfo.InvariantCulture);
+                        double pY = Convert.ToDouble(coords[1], CultureInfo.InvariantCulture);
+                        double pZ = Convert.ToDouble(coords[2], CultureInfo.InvariantCulture);
+                        dtmPointList.Add(new double[] { pX, pY, pZ });
+                    }
+                }
+            }
+            conn.Close();
+            return dtmPointList;
+        }
+
+        /// <summary>
+        /// An auxiliary function to read out a OGC Simple Feature LineString from PostGis.
+        /// </summary>
+        /// <param name="conn">The connection string to connect to the database.</param>
+        /// <param name="breaklineDataSql">Query for breakline data.</param>
+        /// <returns>A list of double arrays. Each array contains the x, y and z coordinate of a constraint vertex.</returns>
+        public static List<double[]> ReadBreaklineData(NpgsqlConnection conn, string breaklineDataSql)
+        {
+            //Prepare List of strings for breakline data
+            List<double[]> constraintList = new List<double[]>();
+
+            //Open database connection
+            conn.Open();
+            LogWriter.Add(LogType.info, "[PostGIS] Connected to Database. Reading breakline data.");
+            NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
+
+            //Execute query
+            using (var command = new NpgsqlCommand(breaklineDataSql, conn))
+            {
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string wktString = (reader.GetValue(0)).ToString();
+                    string[] wktStringSplit = wktString.Split(';');
+                    string breaklineAsWkt = wktStringSplit[1];
+                    char[] trim = { 'L', 'I', 'N', 'E', 'S', 'T', 'R', 'I', 'N', 'G', '(' };
+                    breaklineAsWkt = breaklineAsWkt.TrimStart(trim);
+                    char[] trimEnd = { ')' };
+                    breaklineAsWkt = breaklineAsWkt.TrimEnd(trimEnd);
+                    string[] separator = { "," };
+                    string[] constraintArr = breaklineAsWkt.Split(separator, System.StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string constraint in constraintArr)
+                    {
+                        string[] coords = constraint.Split(' ');
+                        double cX = Convert.ToDouble(coords[0], CultureInfo.InvariantCulture);
+                        double cY = Convert.ToDouble(coords[1], CultureInfo.InvariantCulture);
+                        double cZ = Convert.ToDouble(coords[2], CultureInfo.InvariantCulture);
+                        constraintList.Add(new double[] { cX, cY, cZ });
+                    }
+                }
+            }
+            conn.Close();
+            return constraintList;
         }
     }
 }
