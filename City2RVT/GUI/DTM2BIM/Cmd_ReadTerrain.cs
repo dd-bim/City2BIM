@@ -53,12 +53,6 @@ namespace City2RVT.GUI
             }
             else
             {
-                //enable conversion via points & faces
-                if (rvtVersion.Equals(utils.rvtVersion.R20 | utils.rvtVersion.R21))
-                {
-                    terrainUI.cbFaces.IsEnabled = true;
-                }
-                
                 //show main window to user (start dialog for settings)
                 terrainUI.ShowDialog();
             }
