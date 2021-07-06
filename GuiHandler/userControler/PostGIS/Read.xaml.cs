@@ -78,8 +78,23 @@ namespace GuiHandler.userControler.PostGIS
             //set tin id (value)
             init.config.tin_id = this.tbTinIdValue.Text;
 
-            //set is TIN
-            init.config.isTin = true;
+            #region processing options
+            if (rbPostGisFaces.IsChecked == true && rbProcessBlFalse.IsChecked == true)
+            {
+                //set is TIN
+                init.config.isTin = true;
+            }
+            else if (rbPostGisFaces.IsChecked == true && rbProcessBlTrue.IsChecked == true)
+            {
+                init.config.recalculateTin = true;
+                init.config.isTin = false;
+            }
+            else if (rbPostGisPoints.IsChecked == true)
+            {
+                init.config.calculateTin = true;
+                init.config.isTin = false;
+            }
+            #endregion processing options
 
             #region breaklines
             //check if breaklines should be processed
