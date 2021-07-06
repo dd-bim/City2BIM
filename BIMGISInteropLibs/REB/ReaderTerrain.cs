@@ -19,7 +19,9 @@ using terrain = BIMGISInteropLibs.Geometry.terrain;
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
-using BIMGISInteropLibs.NTSApi;
+
+//Compute triangulation
+using BIMGISInteropLibs.Triangulator;
 
 namespace BIMGISInteropLibs.REB
 {
@@ -241,55 +243,29 @@ namespace BIMGISInteropLibs.REB
             return result;
         }
 
-        public static Result CalculateTinFromReb(RebDaData rebData, JsonSettings jSettings)
+        /// <summary>
+        /// A existing TIN is recalculated. Using breakline data is mandatory.
+        /// </summary>
+        /// <param name="rebData">A list of point data. If available triangles and breaklines are read out as well.</param>
+        /// <param name="jSettings">User input.</param>
+        /// <returns>A TIN as result.</returns>
+        public static Result CalculateTin(RebDaData rebData, JsonSettings jSettings)
         {
+            //Initialize TIN
+            Tin tin;
+
             //Initialize result
             Result result = new Result();
 
-            //Initialize TIN builder
-            var tinBuilder = Tin.CreateBuilder(true);
-
-            //Log TIN builder initalization
-            LogWriter.Add(LogType.verbose, "[REB] Initialize a TIN builder.");
-
             //Prepare DTM data REB file. If successful than process data and create TIN
-            if (PrepareRebData(rebData, jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData))
+            if (jSettings.breakline && GetDtmData(rebData, jSettings, out List<double[]> dtmPointList) && GetConstraintData(rebData, jSettings, out List<double[]> constraintList))
             {
-                //Get a list of triangles via NetTopologySuite class library using the interface object
-                List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointData, dtmLineData);
-
-                //init hash set (for unquie points)
-                var uptList = new HashSet<Geometry.uPoint3>();
-
-                foreach (List<double[]> dtmTriangle in dtmTriangleList)
-                {
-                    //Read out the three vertices of one triangle at each loop
-                    Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
-                    Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
-                    Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
-
-                    //add points to list [note: logging will be done in support function]
-                    int pnrP1 = terrain.addToList(uptList, p1);
-                    int pnrP2 = terrain.addToList(uptList, p2);
-                    int pnrP3 = terrain.addToList(uptList, p3);
-
-                    //add triangle via point numbers above
-                    tinBuilder.AddTriangle(pnrP1, pnrP2, pnrP3);
-
-                    //log
-                    LogWriter.Add(LogType.verbose, "[REB] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
-                }
-
-                //loop through point list 
-                foreach (Geometry.uPoint3 pt in uptList)
-                {
-                    tinBuilder.AddPoint(pt.pnr, pt.point3);
-                }
+                tin = IfcTerrainTriangulator.CreateTin(dtmPointList, constraintList);
             }
-
-            //Build a TIN via BimGisCad class library and log
-            Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            LogWriter.Add(LogType.verbose, "[REB] Creating TIN via TIN builder.");
+            else if (GetDtmData(rebData, jSettings, out dtmPointList))
+            {
+                tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
+            }
 
             //Pass TIN to result and log
             result.Tin = tin;
@@ -302,17 +278,77 @@ namespace BIMGISInteropLibs.REB
             return result;
         }
 
-        public static bool PrepareRebData(RebDaData rebData, JsonSettings jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData)
+        /// <summary>
+        /// An auxiliary function to get DTM point data.
+        /// </summary>
+        /// <param name="rebData">A list of point data. If available triangles and breaklines are read out as well.</param>
+        /// <param name="jSettings">User input.</param>
+        /// <param name="dtmPointList">A list of double arrays. Each array contains the x, y and z coordinate of DTM point.</param>
+        /// <returns>True or false in case DTM data was read successful or not respectively.</returns>
+        public static bool GetDtmData(RebDaData rebData, JsonSettings jSettings, out List<double[]> dtmPointList)
         {
-            dtmPointData = new List<double[]>();
-            dtmLineData = new List<List<double[]>>();
-            int horizon = jSettings.horizon;
+            dtmPointList = ReadDtmData(rebData, jSettings);
+            if (dtmPointList.Count == 0)
+            {
+                LogWriter.Add(LogType.error, "[REB] No point data found.");
+                return false;
+            }
+            else
+            {
+                LogWriter.Add(LogType.info, "[REB] Reading point data was successful.");
+                return true;
+            }
+        }
 
+        /// <summary>
+        /// An auxiliary function to get breakline data.
+        /// </summary>
+        /// <param name="rebData">A list of point data. If available triangles and breaklines are read out as well.</param>
+        /// <param name="jSettings">User input.</param>
+        /// <param name="constraintList">A list of double arrays. Each array contains the x, y and z coordinate of constraint vertex.</param>
+        /// <returns>True or false in case breakline data was read successful or not respectively.</returns>
+        public static bool GetConstraintData(RebDaData rebData, JsonSettings jSettings, out List<double[]> constraintList)
+        {
+            constraintList = ReadConstraintData(rebData, jSettings);
+            if (constraintList.Count == 0)
+            {
+                LogWriter.Add(LogType.error, "[REB] No breakline data found.");
+                return false;
+            }
+            else
+            {
+                LogWriter.Add(LogType.info, "[REB] Reading breakline data was successful.");
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// An auxiliary function to read out DTM point data.
+        /// </summary>
+        /// <param name="rebData">A list of point data. If available triangles and breaklines are read out as well.</param>
+        /// <param name="jSettings">User input.</param>
+        /// <returns>A list of double arrays. Each array contains the x, y and z coordinate of DTM point.</returns>
+        public static List<double[]> ReadDtmData(RebDaData rebData, JsonSettings jSettings)
+        {
+            List<double[]> dtmPointList = new List<double[]>();
+            int horizon = jSettings.horizon;
             foreach (var point in rebData.Points)
             {
-                dtmPointData.Add(point.Value);
+                dtmPointList.Add(point.Value);
             }
+            return dtmPointList;
+        }
 
+        /// <summary>
+        /// An auxiliary function to read out breakline data.
+        /// </summary>
+        /// <param name="rebData">A list of point data. If available triangles and breaklines are read out as well.</param>
+        /// <param name="jSettings">User input.</param>
+        /// <returns>A list of double arrays. Each array contains the x, y and z coordinate of constraint vertex.</returns>
+        public static List<double[]> ReadConstraintData(RebDaData rebData, JsonSettings jSettings)
+        {
+            List<double[]> constraintList = new List<double[]>();
+            int horizon = jSettings.horizon;
             if (rebData.Lines.TryGetValue(horizon, out var lines))
             {
                 foreach (var line in lines)
@@ -332,35 +368,11 @@ namespace BIMGISInteropLibs.REB
                             }
                         }
                     }
-                    dtmLineData.Add(lineDataList);
+                    constraintList.Add(lineDataList[0]);
+                    constraintList.Add(lineDataList[1]);
                 }
             }
-            return CheckDtmDataLists(dtmPointData, dtmLineData);
-        }
-
-        /// <summary>
-        /// A auxiliary function to check if lists contain data. 
-        /// </summary>
-        /// <param name="dtmPointData">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
-        /// <param name="dtmLineData">A list of lists of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
-        /// <returns>True or false.</returns>
-        public static bool CheckDtmDataLists(List<double[]> dtmPointData, List<List<double[]>> dtmLineData)
-        {
-            if (dtmPointData.Count == 0)
-            {
-                LogWriter.Add(LogType.error, "[REB] No point data found.");
-                return false;
-            }
-            else if (dtmLineData.Count == 0)
-            {
-                LogWriter.Add(LogType.warning, "[REB] Reading point data was successful. No line data found.");
-                return true;
-            }
-            else
-            {
-                LogWriter.Add(LogType.info, "[REB] Reading point and line data was successful.");
-                return true;
-            }
+            return constraintList;
         }
     }
 }
