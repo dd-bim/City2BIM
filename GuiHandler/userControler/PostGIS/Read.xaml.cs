@@ -448,7 +448,7 @@ namespace GuiHandler.userControler.PostGIS
 
         private void btnExcute_Click(object sender, RoutedEventArgs e)
         {
-            BIMGISInteropLibs.PostGIS.RvtReaderTerrain.RvtReadPostGIS(init.config);
+            //BIMGISInteropLibs.PostGIS.RvtReaderTerrain.RvtReadPostGIS(init.config);
         }
     }
 }
