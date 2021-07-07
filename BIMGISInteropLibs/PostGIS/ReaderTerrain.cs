@@ -11,6 +11,7 @@ using BIMGISInteropLibs.Logging;
 //Using Npgsql - .NET Access to PostgreSQL
 //Link: https://www.npgsql.org/
 using Npgsql;
+
 using System;
 using System.Collections.Generic;
 //embed for CultureInfo handling
@@ -23,6 +24,14 @@ using terrain = BIMGISInteropLibs.Geometry.terrain;
 
 //Compute triangulation
 using BIMGISInteropLibs.Triangulator;
+
+
+using RestSharp;
+using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using System.Threading.Tasks;
 
 //[TOOD #3]add error handling + tests
 namespace BIMGISInteropLibs.PostGIS
@@ -529,6 +538,96 @@ namespace BIMGISInteropLibs.PostGIS
                 LogWriter.Add(LogType.info, "[PostGIS] Reading breakline data was successful.");
                 return true;
             }
+        }
+
+        
+    }
+
+    public class RvtReaderTerrain : RestClient
+    {
+        public static void RvtReadPostGIS(JsonSettings config)
+        {
+            //getLogin(config);
+
+            string ConnString = connStringSSL(config);
+
+            var con = new NpgsqlConnection(ConnString); 
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(ConnString))
+            {
+                try
+                {
+                    conn.Open();
+                    //NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM tableName", conn);
+                    
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+
+
+        }
+
+        public static void getLogin(JsonSettings config)
+        {
+            var client = new RestClient(config.host);
+
+            string login = connString(config);
+
+            var request = new RestRequest(Method.GET);
+            request.AddParameter("application/json", login);
+            request.RequestFormat = RestSharp.DataFormat.None;
+           
+            IRestResponse response = client.Execute(request);
+            
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                try
+                {
+                    var conn = new NpgsqlConnection(login);
+
+                    conn.Open();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+
+                return;
+            }
+        }
+
+        public static string connString(JsonSettings jSettings)
+        {
+            return string.Format("Host={0};Port={1};Username={2};Password={3};Database={4};",
+                        jSettings.host,
+                        jSettings.port,
+                        jSettings.user,
+                        jSettings.password,
+                        jSettings.database);
+        }
+
+        public static string connStringSSL(JsonSettings jSettings)
+        {
+            return string.Format("Server={0};Database={4};Port={1};Username={2};Password={3};Trust Server Certificate=true;Ssl Mode=Require",
+                        jSettings.host,
+                        jSettings.port,
+                        jSettings.user,
+                        jSettings.password,
+                        jSettings.database);
+        }
+
+        public class LoginResponse
+        {
+            public LoginData data { get; set; }
+        }
+
+        public class LoginData
+        {
+            public string login { get; set; }
         }
 
         /// <summary>
