@@ -19,6 +19,12 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //embed for error handling
 
 using System.Globalization; //included to use culture info (parsing double values)
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -68,10 +74,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef50Default_Checked(object sender, RoutedEventArgs e)
         {
             //in this case set to default (background: the project center will be used)
-            MainWindow.jSettings.customOrigin = false;
+            init.config.customOrigin = false;
 
             //set task (file opening) to true
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //set tasks to true
             valueXset = valueYset = valueZset = true;
@@ -86,7 +92,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef50Default_Unchecked(object sender, RoutedEventArgs e)
         {
             //set task (file opening) to false: user have to apply settings
-            MainWindowBib.selectGeoRef = false;
+            GuiHandler.GuiSupport.selectGeoRef = false;
 
             //set tasks to false
             valueXset = valueYset = valueZset = false;
@@ -101,7 +107,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef50User_Checked(object sender, RoutedEventArgs e)
         {
             //set json settings (use of custom origin)
-            MainWindow.jSettings.customOrigin = true;
+            init.config.customOrigin = true;
 
             //enabling input fields
             inputGrid.IsEnabled = true;
@@ -130,7 +136,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void readyCheck()
         {
             //if all tasks are true
-            if (valueXset && valueYset && valueZset && !chkScaleLevel50.IsChecked == true)
+            if (valueXset && valueYset && valueZset && chkScaleLevel50.IsChecked == false && chkRoation.IsChecked == false)
             {
                 //enable apply button
                 btnApplyLoGeoRef50.IsEnabled = true;
@@ -141,6 +147,11 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 btnApplyLoGeoRef50.IsEnabled = true;
             }
             else if (valueScaleset && rbLoGeoRef50Default.IsChecked == true)
+            {
+                //enable apply button
+                btnApplyLoGeoRef50.IsEnabled = true;
+            }
+            else if(valueRotationSet && rbLoGeoRef50Default.IsChecked == true)
             {
                 //enable apply button
                 btnApplyLoGeoRef50.IsEnabled = true;
@@ -175,6 +186,11 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         /// check if value scale is set
         /// </summary>
         private bool valueScaleset { get; set; }
+
+        /// <summary>
+        /// check if rotation is set
+        /// </summary>
+        private bool valueRotationSet { get; set; }
 
         /// <summary>
         /// function for error handling to set bool settings (for ready checker)
@@ -219,19 +235,19 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 //set to FALSE
                 valueZset = false;
             }
-            /*
+            
             //check if tb roation is not empty
-            if (!string.IsNullOrEmpty(tbRotationLevel50.Text))
+            if (!string.IsNullOrEmpty(tbRotation50.Text))
             {
                 //set to true
-                valueRotationset = true;
+                valueRotationSet = true;
             }
             //if tb rotation is empty
             else
             {
                 //set to FALSE
-                valueRotationset = false;
-            }*/
+                valueRotationSet = false;
+            }
 
             //check if tb sclae is not empty
             if (!string.IsNullOrEmpty(tbScaleLevel50.Text))
@@ -245,7 +261,6 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 //set to FALSE
                 valueScaleset = false;
             }
-
 
             //check if all fields are not empty any more
             readyCheck();
@@ -262,77 +277,50 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void btnApplyLoGeoRef50_Click(object sender, RoutedEventArgs e)
         {
             //set json settings (use of level of georef 50)
-            MainWindow.jSettings.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef50;
+            init.config.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef50;
 
             //if custom origin: set values of input fields to json settings
-            if (MainWindow.jSettings.customOrigin)
+            if (init.config.customOrigin)
             {
                 //set to json settings
-                MainWindow.jSettings.xOrigin = Double.Parse(tbLoGeoRef50ValueX.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.yOrigin = Double.Parse(tbLoGeoRef50ValueY.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.zOrigin = Double.Parse(tbLoGeoRef50ValueZ.Text, CultureInfo.CurrentCulture);
+                init.config.xOrigin = Double.Parse(tbLoGeoRef50ValueX.Text, CultureInfo.CurrentCulture);
+                init.config.yOrigin = Double.Parse(tbLoGeoRef50ValueY.Text, CultureInfo.CurrentCulture);
+                init.config.zOrigin = Double.Parse(tbLoGeoRef50ValueZ.Text, CultureInfo.CurrentCulture);
             }
 
-            if(this.chkRotationLevel50.IsChecked == true)
+            if(chkRoation.IsChecked == true)
             {
+                //parse to double
+                Double.TryParse(tbRotation50.Text, out double rotation);
+
                 //set rotation to json settings
-                MainWindow.jSettings.trueNorth = Double.Parse(tbRotationLevel50.Text, CultureInfo.CurrentCulture);
+                init.config.trueNorth = rotation;
             }
             else
             {
                 //set to defaul value
-                MainWindow.jSettings.trueNorth = 0;
+                init.config.trueNorth = 0;
             }
 
             if (this.chkScaleLevel50.IsChecked == true)
             {
                 //set rotation to json settings
-                MainWindow.jSettings.scale = Double.Parse(tbScaleLevel50.Text);
+                init.config.scale = Double.Parse(tbScaleLevel50.Text);
             }
             else
             {
                 //set to defaul value
-                MainWindow.jSettings.scale = 1.0;
+                init.config.scale = 1.0;
             }
 
             //set gui log
-            MainWindowBib.setGuiLog("LoGeoRef50 set.");
+            guiLog.setLog("LoGeoRef50 set.");
 
             //set task (logeoref) to true
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //check if all tasks are allready done
-            MainWindowBib.readyState();
-        }
-
-        /// <summary>
-        /// task if rotation (user input) is checked (error handling)
-        /// </summary>
-        private void chkRotationLevel50_Checked(object sender, RoutedEventArgs e)
-        {
-            //enable textbox
-            tbRotationLevel50.IsEnabled = true;
-
-            //set task to false
-            //valueRotationset = false;
-
-            //check if all fields are not empty any more
-            readyCheck();
-        }
-
-        /// <summary>
-        /// task if rotation (user input) is uncheck (error handling)
-        /// </summary>
-        private void chkRotationLevel50_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //diable textbox
-            tbRotationLevel50.IsEnabled = false;
-
-            //set task to true
-            //valueRotationset = true;
-
-            //check if all fields are not empty any more
-            readyCheck();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
 
         /// <summary>
@@ -345,6 +333,18 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
             //set task to false;
             valueScaleset = false;
+
+            //check if all fields are not empty any more
+            readyCheck();
+        }
+
+        private void chkRoation_Checked(object sender, RoutedEventArgs e)
+        {
+            //enable textbox
+            tbRotation50.IsEnabled = true;
+
+            //set task to false;
+            valueRotationSet = false;
 
             //check if all fields are not empty any more
             readyCheck();
@@ -364,5 +364,111 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //check if all fields are not empty any more
             readyCheck();
         }
+
+        private void chkRoation_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //diable textbox
+            tbRotation50.IsEnabled = false;
+
+            //set task to true;
+            valueRotationSet = true;
+
+            //check if all fields are not empty any more
+            readyCheck();
+        }
+
+        /// <summary>
+        /// request button for epsg codes
+        /// </summary>
+        private void requestEPSG_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: error handler (integer and not more as 5 numbers)
+
+            //change cursor to wait animation (for user feedback)
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //lock MainWindow a so the user can't make any entries
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
+
+            try
+            {
+                //get epsg code
+                int epsgCode = int.Parse(tbEpsgCode.Text);
+
+                //send request
+                var projCRS = BIMGISInteropLibs.ProjCRS.Request.get(epsgCode, out bool isValid);
+
+                //disable button
+                btnOpenCrsMetadata.IsEnabled = false;
+
+                if (isValid)
+                {
+                    //EPSG Code
+                    init.config.crsName = projCRS.Code;
+
+                    //CRS Description (example only)
+                    init.config.crsDescription = projCRS.Name;
+
+                    //split for getting name and zone
+                    string[] projection = projCRS.Name.Split('/');
+
+                    //projection name
+                    init.config.projectionName = projection[0];
+
+                    //projection zone
+                    init.config.projectionZone = projection[1].Remove(0, 1);
+
+                    //get code
+                    int code = projCRS.BaseCoordRefSystem.Code;
+
+                    //send request for geodetic coord ref
+                    var geoCRS = BIMGISInteropLibs.GeodeticCRS.GeodeticCRS.get(code);
+
+                    //geodetic datum
+                    init.config.geodeticDatum = geoCRS.Datum.Name;
+
+                    //get geoCRS EPSG Code
+                    code = geoCRS.Datum.Code;
+
+                    //send datum request
+                    var datum = BIMGISInteropLibs.Datum.Datum.get(code);
+
+                    //vertical datum (need other request)
+                    init.config.verticalDatum = datum.Ellipsoid.Name;
+
+                    //gui logging (user information)
+                    guiLog.setLog("EPSG code readed.");
+
+                    //disable button
+                    btnOpenCrsMetadata.IsEnabled = true;
+
+                    //create new instance of window
+                    LoGeoRef50_CRS_Metadata windowCrsMeta = new LoGeoRef50_CRS_Metadata();
+
+                    //change cursor to default
+                    Mouse.OverrideCursor = null;
+
+                    //open window
+                    windowCrsMeta.ShowDialog();
+
+                }
+            }
+            catch
+            {
+                //enable button
+                btnOpenCrsMetadata.IsEnabled = true;
+
+                //gui logging (user information)
+                guiLog.setLog("EPSG code invalid please try again!\nOr use manual input!");
+
+            }
+            //change cursor to default
+            Mouse.OverrideCursor = null;
+
+            //Release MainWindow again --> so the user can make entries again
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
+        }
+
+
     }
 }

@@ -12,20 +12,20 @@ Struktur, Namen und Funktionalität sind an die ISO 10303 angelehnt.</Descriptio
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\DDBIM\BimGisCad\BimGisCad\BimGisCad\BimGisCad.xml</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DocumentationFile>D:\DDBIM\BimGisCad\BimGisCad\BimGisCad\BimGisCad.xml</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\DDBIM\BimGisCad\BimGisCad\BimGisCad\BimGisCad.xml</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DocumentationFile>D:\DDBIM\BimGisCad\BimGisCad\BimGisCad\BimGisCad.xml</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -28,6 +28,12 @@ using System.ComponentModel; //used for background worker
 using BIMGISInteropLibs.Logging; //access to log writer
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI
 {
     /// <summary>
@@ -47,31 +53,15 @@ namespace IFCTerrainGUI
             backgroundWorkerIfc.DoWork += BackgroundWorkerIfc_DoWork;
             backgroundWorkerIfc.RunWorkerCompleted += BackgroundWorkerIfc_RunWorkerCompleted;
 
-            //add gui logging
-            tbGuiLogging.Items.Add("Welcome to IFCTerrain!");
+            //gui logging
+            guiLog.setLog("Welcome to IFCTerrain");
 
+            //file logging
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "GUI initialized."));
         }
-        /// <summary>
-        /// create an instance for Json Settings (getter + setter) <para/>
-        /// mainly used to create interaction between command / GUI and readers & writers <para/>
-        /// </summary>
-        public static JsonSettings jSettings = new JsonSettings();
 
         /// <summary>
-        /// create an instance for JSON Settings (getter + setter) <para/>
-        /// mainly used to export metadata acording to DIN SPEC 91391-2 <para/>
-        /// </summary>
-        public static JsonSettings_DIN_SPEC_91391_2 jSettings91391 { get; set; } = new JsonSettings_DIN_SPEC_91391_2();
-
-        /// <summary>
-        /// create an instance for JSON Settings (getter + setter) <para/>
-        /// mainly used to export metadata acording to DIN SPEC 18740-6 <para/>
-        /// </summary>
-        public static JsonSettings_DIN_18740_6 jSettings18740 { get; set; } = new JsonSettings_DIN_18740_6();
-
-        /// <summary>
-        /// 
+        /// class for logging
         /// </summary>
         public Result result { get; set; }
         
@@ -102,57 +92,57 @@ namespace IFCTerrainGUI
                     //jump to this case if STEP was selected
                     case 1:
                         //json settings                        
-                        jSettings.outFileType = BIMGISInteropLibs.IFC.IfcFileType.Step;
+                        init.config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.Step;
 
                         //set settings for DIN SPEC 91391
-                        jSettings91391.mimeType = "application/x-step";
+                        init.config91391.mimeType = "application/x-step";
                         break;
                     //jump to this case if ifcXML was selected
                     case 2:
                         //json setting file format
-                        jSettings.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcXML;
+                        init.config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcXML;
 
                         //set settings for DIN SPEC 91391
-                        jSettings91391.mimeType = "application/xml";
+                        init.config91391.mimeType = "application/xml";
                         break;
                     //jump to this case if ifcXML was selected
                     case 3:
                         //json setting file format
-                        jSettings.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcZip;
+                        init.config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcZip;
 
                         //set settings for DIN SPEC 91391
-                        jSettings91391.mimeType = "application/zip";
+                        init.config91391.mimeType = "application/zip";
                         break;
                 }
                 //below settings regardless of format
 
                 //gui information
                 MainWindowBib.setTextBoxText(tbIfcDir, sfd.FileName);
-                MainWindowBib.setGuiLog("Storage location set.");
+                guiLog.setLog("Storage location set.");
 
                 //set filepath to jSettings
-                jSettings.destFileName = sfd.FileName;
+                init.config.destFileName = sfd.FileName;
 
                 //set task (file opening) to true
-                MainWindowBib.selectStoreLocation = true;
+                GuiHandler.GuiSupport.selectStoreLocation = true;
 
                 //check if all task are allready done
-                MainWindowBib.readyState();
+                MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
 
                 //set logging path
-                string logPath = System.IO.Path.GetDirectoryName(jSettings.destFileName);
-                jSettings.logFilePath = logPath;
+                string logPath = System.IO.Path.GetDirectoryName(init.config.destFileName);
+                init.config.logFilePath = logPath;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Storage location set to: " + jSettings.logFilePath));
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Storage location set to: " + init.config.logFilePath));
             }
             else
             {
                 //set task (file opening) to true
-                MainWindowBib.selectStoreLocation = false;
+                GuiHandler.GuiSupport.selectStoreLocation = false;
 
                 //check to deactivate start button
-                MainWindowBib.readyState();
+                MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.warning, "[GUI] Storage location was not set."));
@@ -165,25 +155,25 @@ namespace IFCTerrainGUI
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
             //json settings set 3D to true [TODO]
-            jSettings.is3D = true;
+            init.config.is3D = true;
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'is3D'-value to default (true)"));
 
             //json settings set minDist to 1.0 (default value) [TODO]
-            jSettings.minDist = 1.0;
+            init.config.minDist = 1.0;
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'minDist'-value to default (1.0 m)"));
 
             //read export specific settings
             //get filepath
-            string dirPath = System.IO.Path.GetDirectoryName(jSettings.destFileName);
-            string dirName = System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName);
+            string dirPath = System.IO.Path.GetDirectoryName(init.config.destFileName);
+            string dirName = System.IO.Path.GetFileNameWithoutExtension(init.config.destFileName);
 
-            string fileType = jSettings.fileType.ToString();
-            string ifcVersion = jSettings.outIFCType.ToString();
-            string shape = jSettings.surfaceType.ToString();
+            string fileType = init.config.fileType.ToString();
+            string ifcVersion = init.config.outIFCType.ToString();
+            string shape = init.config.surfaceType.ToString();
 
             #region metadata
             //will be executed if user select export of meta data
-            if (jSettings.exportMetadataFile)
+            if (init.config.exportMetadataFile)
             {
                 try
                 {
@@ -193,28 +183,28 @@ namespace IFCTerrainGUI
                     var export187406 = new JProperty("DIN 18740-6", "NOT EXPORTED");
 
                     //check if metadata should be exported according to DIN 91391-2
-                    if (jSettings.exportMetadataDin91391)
+                    if (init.config.exportMetadataDin91391)
                     {
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata]***DIN SPEC 91391-2***"));
                         //Assignment all obligatory variables
                         //set file name
-                        jSettings91391.name = System.IO.Path.GetFileName(jSettings.destFileName);
+                        init.config91391.name = System.IO.Path.GetFileName(init.config.destFileName);
 
                         //set mime type
-                        jSettings91391.mimeType = "application/x-step";
+                        init.config91391.mimeType = "application/x-step";
 
                         //set export string
-                        export913912 = new JProperty("DIN SEPC 91391-2", JObject.FromObject(jSettings91391));
-
+                        export913912 = new JProperty("DIN SEPC 91391-2", JObject.FromObject(init.config91391));
+                        
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
 
                     }
 
                     //check if metadata should be exported according to DIN 18740-6
-                    if (jSettings.exportMetadataDin18740)
+                    if (init.config.exportMetadataDin18740)
                     {
                         //set export string
-                        export187406 = new JProperty("DIN 18740-6", JObject.FromObject(jSettings18740));
+                        export187406 = new JProperty("DIN 18740-6", JObject.FromObject(init.config18740));
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] ***DIN 18740-6***"));
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
                     }
@@ -244,7 +234,7 @@ namespace IFCTerrainGUI
                 LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][JsonSettings] start serializing json"));
 
                 //convert to json object
-                string jExportText = JsonConvert.SerializeObject(jSettings, Formatting.Indented);
+                string jExportText = JsonConvert.SerializeObject(init.config, Formatting.Indented);
 
                 //export json settings
                 File.WriteAllText(dirPath + @"\config_" + fileType + "_" + ifcVersion + "_" + shape + ".json", jExportText);
@@ -286,7 +276,7 @@ namespace IFCTerrainGUI
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
 
             //start mapping process which currently begins with the selection of the file reader
-            result = conInt.mapProcess(jSettings, jSettings91391);
+            result = conInt.mapProcess(init.config, init.config91391, init.config18740);
         }
 
         /// <summary>
@@ -308,38 +298,11 @@ namespace IFCTerrainGUI
             //logging stat
             double numPoints = (double)result.wPoints / (double)result.rPoints;
             double numFaces = (double)result.wFaces / (double)result.rFaces;
-            MainWindowBib.setGuiLog("Conversion completed!");
-            MainWindowBib.setGuiLog("Results: " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " % )");
-            MainWindowBib.setGuiLog("and "+ result.wFaces + " Triangles(" + Math.Round(numFaces * 100, 2) + " %) processed.");
+            guiLog.setLog("Conversion completed!");
+            guiLog.setLog("Results: " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " % )");
+            guiLog.setLog("and "+ result.wFaces + " triangles (" + Math.Round(numFaces * 100, 2) + " %) processed.");
         }
         #endregion background worker
-
-        /// <summary>
-        /// swtiching verbosity levels
-        /// </summary>
-        private void selectVerbosityLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //check and set the choosen verbo level into json settings
-            if (minVerbose.IsSelected)
-            {
-                jSettings.verbosityLevel = LogType.verbose;
-            }
-            else if (minDebug.IsSelected)
-            {
-                jSettings.verbosityLevel = LogType.debug;
-            }
-            else if (minInformation.IsSelected)
-            {
-                jSettings.verbosityLevel = LogType.info;
-            }
-            else if (minWarning.IsSelected)
-            {
-                jSettings.verbosityLevel = LogType.warning;
-            }
-
-            //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level changed to: " + jSettings.verbosityLevel.ToString()));
-        }
 
         /// <summary>
         /// function to open storage location
@@ -347,7 +310,7 @@ namespace IFCTerrainGUI
         private void btnOpenStore_Click(object sender, RoutedEventArgs e)
         {
             //get file path
-            string path = System.IO.Path.GetDirectoryName(jSettings.destFileName);
+            string path = System.IO.Path.GetDirectoryName(init.config.destFileName);
 
             //check if 'path' exsists
             if (Directory.Exists(path))
@@ -358,54 +321,8 @@ namespace IFCTerrainGUI
             else
             {
                 //gui logging (user information)
-                tbGuiLogging.Items.Add("File path could not be opened!");
+                guiLog.setLog("File path could not be opened!");
             }
-        }
-
-
-        //source: https://stackoverflow.com/questions/2337822/wpf-listbox-scroll-to-end-automatically
-        /// <summary>
-        /// update list box (scroll at the end)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListBox_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            var listBox = (ListBox)sender;
-
-            var scrollViewer = FindScrollViewer(listBox);
-
-            if (scrollViewer != null)
-            {
-                scrollViewer.ScrollChanged += (o, args) =>
-                {
-                    if (args.ExtentHeightChange > 0)
-                        scrollViewer.ScrollToBottom();
-                };
-            }
-        }
-
-        /// <summary>
-        /// search for scroll viewer
-        /// </summary>
-        /// <param name="root"></param>
-        /// <returns></returns>
-        private static ScrollViewer FindScrollViewer(DependencyObject root)
-        {
-            var queue = new Queue<DependencyObject>(new[] { root });
-
-            do
-            {
-                var item = queue.Dequeue();
-
-                if (item is ScrollViewer)
-                    return (ScrollViewer)item;
-
-                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
-                    queue.Enqueue(VisualTreeHelper.GetChild(item, i));
-            } while (queue.Count > 0);
-
-            return null;
         }
     }
 }

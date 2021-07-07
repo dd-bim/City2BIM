@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 //implement xml parser
 using System.Xml;
@@ -132,6 +129,7 @@ namespace BIMGISInteropLibs.LandXML
                         {
                             //Generate TIN from TIN Builder
                             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
+                            
                             LogWriter.Entries.Add(new LogPair(LogType.debug, "[LandXML] TIN created via TIN builder."));
 
                             //return tin to result

@@ -14,10 +14,14 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
-
 using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
-
 using System.Globalization; //included to use culture info (parsing double values)
+
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
 
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
@@ -37,10 +41,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef30Default_Checked(object sender, RoutedEventArgs e)
         {
             //in this case set to default (background: the project center will be used)
-            MainWindow.jSettings.customOrigin = false;
+            init.config.customOrigin = false;
 
             //set task (file opening) to true
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //enable apply button
             btnLoGeoRef30Apply.IsEnabled = true;
@@ -52,7 +56,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef30User_Checked(object sender, RoutedEventArgs e)
         {
             //set json settings (use of custom origin)
-            MainWindow.jSettings.customOrigin = true;
+            init.config.customOrigin = true;
 
             //enabling input fields
             inputGrid.IsEnabled = true;
@@ -64,7 +68,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef30Default_Unchecked(object sender, RoutedEventArgs e)
         {
             //set task (file opening) to false: user have to apply settings
-            MainWindowBib.selectGeoRef = false;
+            GuiHandler.GuiSupport.selectGeoRef = false;
         }
 
         private void rbLoGeoRef30User_Unchecked(object sender, RoutedEventArgs e)
@@ -79,28 +83,28 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void btnLoGeoRef30Apply_Click(object sender, RoutedEventArgs e)
         {
             //set json settings (use of level of georef 30)
-            MainWindow.jSettings.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef30;
+            init.config.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef30;
 
             //if custom origin: set values of input fields to json settings
-            if (MainWindow.jSettings.customOrigin)
+            if (init.config.customOrigin)
             {
                 //set to json settings
-                MainWindow.jSettings.xOrigin = Double.Parse(tbLoGeoRef30ValueX.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.yOrigin = Double.Parse(tbLoGeoRef30ValueY.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.zOrigin = Double.Parse(tbLoGeoRef30ValueZ.Text, CultureInfo.CurrentCulture);
+                init.config.xOrigin = Double.Parse(tbLoGeoRef30ValueX.Text, CultureInfo.CurrentCulture);
+                init.config.yOrigin = Double.Parse(tbLoGeoRef30ValueY.Text, CultureInfo.CurrentCulture);
+                init.config.zOrigin = Double.Parse(tbLoGeoRef30ValueZ.Text, CultureInfo.CurrentCulture);
             }
-                        
+
             //set task (file opening) to true (user applyed)
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //set gui log
-            MainWindowBib.setGuiLog("LoGeoRef30 set.");
+            guiLog.setLog("LoGeoRef30 set.");
 
             //set task (file opening) to true
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
 
         /// <summary>

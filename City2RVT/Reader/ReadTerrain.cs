@@ -14,6 +14,7 @@ namespace City2RVT.Reader
     public class ReadTerrain
     {
         // The main Execute method (inherited from IExternalCommand) must be public
+        /*
         public ReadTerrain(Document doc)
         {
             //Import via Dialog:
@@ -64,5 +65,6 @@ namespace City2RVT.Reader
             var rev = new Builder.RevitTopoSurfaceBuilder(doc);
             rev.CreateDTM(dgmPtList);
         }
+        */
     }
 }

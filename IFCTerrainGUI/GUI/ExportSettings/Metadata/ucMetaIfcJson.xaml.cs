@@ -19,6 +19,12 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //include for error handling
 using BIMGISInteropLibs.Logging; //access to log writer
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
 {
     /// <summary>
@@ -74,9 +80,9 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             if (chkJsonExport.IsChecked == true)
             {
                 //set to true
-                MainWindow.jSettings.exportMetadataFile = true;
+                init.config.exportMetadataFile = true;
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'JSON' set."));
-                MainWindowBib.setGuiLog("Metadata export 'JSON' set.");
+                guiLog.setLog("Metadata export 'JSON' set.");
 
             }
 
@@ -84,23 +90,23 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             if (chkIfcPropertySet.IsChecked == true)
             {
                 //set output of IfcPropertySet to true
-                MainWindow.jSettings.outIfcPropertySet = true;
+                init.config.outIfcPropertySet = true;
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'IfcPropertySet' set."));
-                MainWindowBib.setGuiLog("Metadata export 'IfcPropertySet' set.");
+                guiLog.setLog("Metadata export 'IfcPropertySet' set.");
             }
 
             //check if export of DIN 91391-2
             if (chkDin91391Export.IsChecked == true)
             {
-                MainWindow.jSettings.exportMetadataDin91391 = true;
+                init.config.exportMetadataDin91391 = true;
             }
 
             //check if export of DIN 18740-6
             if (chkDin18740Export.IsChecked == true)
             {
-                MainWindow.jSettings.exportMetadataDin18740 = true;
+                init.config.exportMetadataDin18740 = true;
             }
-
+            /*
             //if non of those should not be exported set json settings (too)
             else
             {
@@ -109,17 +115,16 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 MainWindow.jSettings.exportMetadataDin91391 = false;
                 MainWindow.jSettings.exportMetadataDin18740 = false;
             }
+            */
 
             //set task (metadata) to true
-            MainWindowBib.selectMetadata = true;
-            
-            //gui logging
-            MainWindowBib.setGuiLog("Metadata 'export' set.");
-            
+            GuiHandler.GuiSupport.selectMetadata = true;
 
+            //gui logging
+            guiLog.setLog("Metadata 'export' set.");
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
 
         /// <summary>

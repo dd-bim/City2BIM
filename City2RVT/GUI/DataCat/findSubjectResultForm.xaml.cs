@@ -39,7 +39,7 @@ namespace City2RVT.GUI.DataCat
                 TaskDialog.Show("Error!", "You are currently not logged into the external server!");
             }
 
-            else
+            else if (searchText != null && searchText != "")
             {
                 var responseWithHierarchy = Prop_Revit.DataClient.querySubjectsWithHierarchy(searchText);
                 trvFindResult.ItemsSource = responseWithHierarchy.data.findSubjects.nodes;

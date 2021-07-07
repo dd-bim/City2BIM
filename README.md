@@ -1,174 +1,91 @@
-#### Download for **Autodesk Revit 2019** under *releases* (see bar above)
+### Welcome to the open source project for **GIS-BIM integration** of  **HTW Dresden**. 
 
-Guide / Anleitung als HTML:
-[**Link to City2RVT (Plugin for Revit) Guide as HTML**](Doc_City2RVT.html)
+We provide for the BIM authoring software **Revit** a small Plugin. This includes:
 
+- City2RVT - Import of **administrative geodata** (ALKIS themes, grid DTM, DXF conversion)
+- City2BIM - Import of **3D city models** (CityGML buildings, ALKIS parcels, ALKIS land uses, ALKIS building surrounds)
+- City2IFC - improved **export to IFC** (work in progress)
 
-Guide / Anleitung als Markdown:
-[**Link to City2RVT (Plugin for Revit) Guide as markdown**](Doc_City2RVT.md)
+For the **openBIM** context we provide a small open source software **IfcTerrain**. For creating digital terrain models (DTM) using the IndustryFoundation Classes (IFC) for “openBIM” (vender neutral Building Information Modelling) projects. The software can convert many standard formats and model representations of DTM. 
 
+---
 
-**If you find any bugs please let us know via mail or create an issue at github.**
+### *Want to know more?* Please check out our [**GitHub wiki pages**](https://github.com/dd-bim/City2BIM/wiki).
 
-**Sollten Sie Programmfehler entdecken, schreiben Sie uns bitte eine Mail oder erstellen Sie einen Issue hier auf github.**
+---
 
-----------------------
+### **Releases:**
 
+Here you can find our latest releases:
 
-**Stand (07.01.2020):**
+- [**City2BIM - Revit Plugin**](https://github.com/dd-bim/City2BIM/releases/) (**Overview**)
 
-#### Umfang Repo:
-- drei VisualStudio-Projekte:
+  direct download links:
 
-1.) **City2BIM:**
- - Library, zum Einlesen von CityGML-Gebäuden, ALKIS-Flurstücken, ALKIS-Nutzungen, ALKIS-Gebäudeumringen, Raster-DGM
- - Nutzung von XDocument (XML.Linq)
- - Revit - unabhängig
- - XBim (IFC) - unabhängig
- - Abhängigkeiten: Serilog
+  - [**Setup.msi**](https://github.com/dd-bim/City2BIM/releases/download/v1.5.0/Setup_Revit_2020.msi) (easy and fast support)
+  - Source code ([***.zip**](https://github.com/dd-bim/City2BIM/archive/refs/tags/v1.5.0.zip); [***.tar.gz**](https://github.com/dd-bim/City2BIM/archive/refs/tags/v1.5.0.tar.gz)) (for developer)
 
-2.) **City2RVT:**
- - Revit-Plugin für Revit 2019
- - PlugIn zur Übergabe einer Georeferenzierung sowie zur Darstellung von CityGml-Gebäuden, ALKIS-Themen, Raster-DGM
- - Addin-Datei beachten (dient dau Revit von PlugIn in Kenntnis zu setzen)
- - Abhängigkeiten: RevitAPI (proprietär), RevitAPIUI (proprietär), GeographicLib, City2BIM
+- [**IFCTerrain**](https://github.com/dd-bim/City2BIM/releases/download/v1.5.0/IFCTerrain_1.4.1.zip) (Version 1.4.1 - direct download)
 
-3.) **City2IFC:**
- - derzeit nur Dummy
- - Aussicht: stand-alone WPF tool zur Konvertierung von CityGml-Gebäuden nach IFC
- - Abhängigkeiten (voraussichtlich): XBim, GeographicLib, City2BIM
+---
 
----------------------------
+### Feedback:
 
-### City2BIM
+If you have found an bug or have suggestions for improvement, please feel free to contact us!
 
-#### Scope
+---
 
-- liest CityGml-Daten über XDocument
-- speichert Gebäude und Gebäudeteile in LOD1 und LOD2 intern ab
-- interne Objekte enthalten Geometrie und Semantik
-- keine Texturen, keine Vegetation, kein Gelände
+### Support
 
-#### Einleselogik
+| in association with                                          | supported by                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="BIMGISInteropLibs/Resources/LandingPage/vcs.png" width="200"/> | <img src="BIMGISInteropLibs/Resources/LandingPage/BMWi_4C_Gef_en.jpg" align=center width="200"/> |
 
-- auf lokal vorliegender Datei
-- bei Stadtmodellen zusätzlich: Abfrage des WFS-Servers von VirtualCitySystems wird bereit gestellt
+## Contact
 
+ ![HTWDD_Logo](BIMGISInteropLibs/Resources/LandingPage//logo_htwdd.jpg)  
 
-#### Interne Speicherung
+**HTW Dresden**
+**Faculty Geoinformation**
+Friedrich-List-Platz 1
+01069 Dresden
 
-##### Stadtmodelle
+**Project head:** Prof. Dr.-Ing. Christian Clemen
 
-- je CityGml-Buildung wird intern ein CityGml_Bldg-Objekt angelegt
-- wenn vorhanden werden BuildingParts gespeichert
-- enthält jeweils eometrie der Begrenzungsflächen als Liste von CityGml_Surfaces
-- optional wird über Ebenenschnitte ein geschlossener Volumenkörper (Solid) berechnet (Punktkoordinaten werden hierfür neu berechnet)
-- Semantik und Flächenart wird aus CityGml übernommen und als Key-Value im Objekt gespeichert
-- Mapping von Codierungen nach Adv zu lesbaren Eigenschaften wird bereitgestellt
+**Project staff:**
 
-##### Flurstücksdaten
+- Tim Kaiser, M.Eng.
+- Enrico Romanschek, M.Eng.
+- Marcus Schröder, M.Eng.
 
-- je ALKIS-Objekt wird ein AX_Objekt angelegt
-- enthält Liste der begrenzenden Segmente
-- unterscheidet zwischen ALKIS-Themen: Flurstück, Tatsächliche Nutzung, Gebäude
-- enthält Semantik für Flurstücke sowie (wenn vorhanden) Daten zum Eigentümer
+**Former project staff:**
 
-------------------------------------
+- Hendrik Görne, M.Eng.
+- Sören Meier, M.Eng.
 
-### City2RVT
+## License
 
-#### Scope
+*This project is licensed under the **MIT License**:*
 
-- Gebäude und Gebäudeteile in LOD1 und LOD2 (aus City2BIM) werden nach Revit übertragen
-- mit Geometrie und Semantik
-- keine Texturen, keine Vegetation, kein Gelände
+```
+Copyright (c) 2020 HTW Dresden
 
-#### GUI
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-##### Georeferencing
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-- UI zur Übergabe einer Georeferenzierung
-- Adressübergabe: TO DO, Recherche nach bestem Speicherort in Revit API notwendig
-- LatLon für SiteLocation
-- Projektion für Projektbasispunkt bzw. Revit-Projektparameter
-- Berechnung von LatLon zu UTM-System und vice versa
-- Berechnung eines Projektmaßstabes im UTM-System sowie abhängig von der Projekthöhe (wird später bei Import von Geodaten berücksichtigt)
-- Berechnung von Grid North zu True North und vice versa
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
-#####  City2BIM
-
-###### Settings
-
-- Server oder File Import
-- Server URL
-- Umfang der abzufragenden Daten (Umkreis um Koordinate)
-- Möglichkeit zur Speicherung der Server-Antwort
-- lokale File Location
-- Koordinatenreihenfolge
-- Codelistübersetzung: ja/nein; Adv oder Sig3D
-
-###### Import als Solids
-
-- Erfolgsquote Solids > 90 %
-- Übertragung erfolgt als DirectShape-Element
-- Geometrieerzeugung als TesselatedShapeBuilder-Objekt
-- Fallback 1 (LOD2 nicht möglich):
--- LOD1-Erzeugung aus Grundfläche und max. Höhe
-- Fallback 2 (LOD1 aus Grundfläche nicht möglich): 
--- aus Grundflächenpunkten wird konvexe Hülle als Umring verwendet und als LOD1 extrudiert
-- jedes Gebäude bzw. jeder Gebäudeteil wird eigenes Revit-Objekt
-- gebäude(teil)spezifische Semantik wird in Form von Parametren (Shared Parameters) übertragen
-- Flächensemantik (falls vorhanden) geht verloren
-- Kategorisierung der Objekte innerhalb "Umgebung"
-
-###### Import als Surfaces
-
-- Erfolgsquote > 98 %
-- Übertragung erfolgt als DirectShape-Element
-- Geometrieerzeugung als Extrusion (pseudo-Volumenkörper mit Extrusionshöhe von 1 cm)
-- jede Fläche wird eigenes eigenes Revit-Objekt
-- flächenspezifische Semantik (inklusive übergeordneter Gebäude-Semantik) wird in Form von Parametren (Shared Parameters) übertragen
-- Kategorisierung der Objekte abhängig von Flächenart in Dach, Fundament, Wand, Allgemeines Modell
-
-##### ALKIS2BIM
-
-###### Settings
-
-- lokale File Location
-- Koordinatenreihenfolge
-- Drapieren eines oder mehrerer ALKIS-Themen auf Gelände (falls vorhanden und per PlugIn vorher importiert)
-
-###### Import
-
-- Berücksichtigung der ALKIS-Themen: Flurstücke, Tatsächliche Nutzungen, Gebäude
-- Anlegen von Topographie-Objekten als Referenzflächen je ALKIS-Thema
--- außer Haken für Drapieren wurde gesetzt, dann ist Referenz das TIN
--- 2D-Flächen unterhalb der Projekthöhe
-- Import der einzelnen Flächen
--- geometrisch als Liste von CurveLoops mit Außenring und (wenn vorhanden) Innenringen
--- semantisch als Unterregion innerhalb der Referenz-Topographie
-- Einfärbung der Flurstücke (grau), Gebäudeumringe (rot), Nutzungen (verschieden je nach Unterthema)
-
-##### DTM2BIM
-
-###### Import
-
-- über FileDialog als .txt- oder .csv-Datei
-
-##### IFC Export
-
-- legt lokal (AppData/Lokal/City2BIM) eine ParameterSet-Datei an, mit welcher gesteuert werden kann, dass das Property Set der Georef-Attribute den standardisierten Namen "ePset_MapConversion" bzw "ePset_ProjectedCRS" bekommt
-- der Nutzer bekommt einen Hinweis dahingehend angezeigt
-- Info: beim IFC-Export mit dem Revit IFC-Exporter muss diese Text-Datei als Template für ein benutzerefiniertes Property Set importiert werden
-
-- Ausblick:
--- schöner wäre es hier einen eigenen IFC-Export zu implementieren (IFC Exporter ist Open Source und könnte somit für eigene Zwecke angepasst werden, Einarbeitung ist allerdings aufwendig)
-
-### Logging
-
-- via Serilog
-- derzeit nur für CityGml-Daten
-- gespeichert im lokalen Profil: %LOCALAPPDATA%/City2BIM
-- enthält Schrankenwerte
-- enthält Statistik (Erfolgsrate)
-- enthält Protokoll zu überführten Gebäuden (bei Solids mit Statistik zu Geometrieoperationen)

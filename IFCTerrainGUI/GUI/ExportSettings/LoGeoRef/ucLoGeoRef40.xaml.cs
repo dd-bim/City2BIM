@@ -19,6 +19,12 @@ using IFCTerrainGUI.GUI.MainWindowLogic; //included to provide error handling
 
 using System.Globalization; //included to use culture info (parsing double values)
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+//shortcut to set logging messages
+using guiLog = GuiHandler.GuiSupport;
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -37,10 +43,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef40Default_Checked(object sender, RoutedEventArgs e)
         {
             //in this case set to default (background: the project center will be used)
-            MainWindow.jSettings.customOrigin = false;
+            init.config.customOrigin = false;
 
             //set task (file opening) to true
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //set tasks to true
             valueXset = valueYset = valueZset = true;
@@ -52,7 +58,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef40Default_Unchecked(object sender, RoutedEventArgs e)
         {
             //set task (file opening) to false: user have to apply settings
-            MainWindowBib.selectGeoRef = false;
+            GuiHandler.GuiSupport.selectGeoRef = false;
 
             //set tasks to false
             valueXset = valueYset = valueZset = false;
@@ -70,7 +76,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void rbLoGeoRef40User_Checked(object sender, RoutedEventArgs e)
         {
             //set json settings (use of custom origin)
-            MainWindow.jSettings.customOrigin = true;
+            init.config.customOrigin = true;
 
             //enabling input fields
             inputGrid.IsEnabled = true;
@@ -214,40 +220,37 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private void btnLoGeoRef40Apply_Click(object sender, RoutedEventArgs e)
         {
             //set json settings (use of level of georef 40)
-            MainWindow.jSettings.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef40;
+            init.config.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef40;
 
             //if custom origin: set values of input fields to json settings
-            if (MainWindow.jSettings.customOrigin)
+            if (init.config.customOrigin)
             {
                 //set to json settings
-                MainWindow.jSettings.xOrigin = Double.Parse(tbLoGeoRef40ValueX.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.yOrigin = Double.Parse(tbLoGeoRef40ValueY.Text, CultureInfo.CurrentCulture);
-                MainWindow.jSettings.zOrigin = Double.Parse(tbLoGeoRef40ValueZ.Text, CultureInfo.CurrentCulture);
+                init.config.xOrigin = Double.Parse(tbLoGeoRef40ValueX.Text, CultureInfo.CurrentCulture);
+                init.config.yOrigin = Double.Parse(tbLoGeoRef40ValueY.Text, CultureInfo.CurrentCulture);
+                init.config.zOrigin = Double.Parse(tbLoGeoRef40ValueZ.Text, CultureInfo.CurrentCulture);
             }
 
             //check if user input rotation
             if(this.chkRotationLevel40.IsChecked == true)
             {
                 //set rotation to json settings
-                MainWindow.jSettings.trueNorth = Double.Parse(tbRotationLevel40.Text, CultureInfo.CurrentCulture);
+                init.config.trueNorth = Double.Parse(tbRotationLevel40.Text, CultureInfo.CurrentCulture);
             }
             else
             {
                 //set to defaul value
-                MainWindow.jSettings.trueNorth = 0;
+                init.config.trueNorth = 0;
             }
 
             //set task (file opening) to true (user applyed)
-            MainWindowBib.selectGeoRef = true;
+            GuiHandler.GuiSupport.selectGeoRef = true;
 
             //set gui log
-            MainWindowBib.setGuiLog("LoGeoRef40 set.");
-
-            //set task (file opening) to true
-            MainWindowBib.selectGeoRef = true;
+            guiLog.setLog("LoGeoRef40 set.");
 
             //check if all task are allready done
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
 
         /// <summary>

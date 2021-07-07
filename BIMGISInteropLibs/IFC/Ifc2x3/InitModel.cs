@@ -1,28 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-//embed BimGisCad
-using BimGisCad.Representation.Geometry;
-using BimGisCad.Representation.Geometry.Elementary;
-using BimGisCad.Representation.Geometry.Composed;
-using BimGisCad.Collections;                         //provides MESH --> will be removed
-
-//embed Xbim                                    //below selected examples that show why these are included
+﻿//embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using Xbim.Ifc2x3.GeometricConstraintResource;  //IfcLocalPlacement
-using Xbim.Ifc2x3.GeometryResource;             //IfcAxis2Placement3D
 using Xbim.Ifc2x3.Kernel;                       //IfcProject
 using Xbim.Common.Step21;                       //Enumeration to XbimShemaVersion
 using Xbim.IO;                                  //Enumeration to XbimStoreType
 using Xbim.Common;                              //ProjectUnits (Hint: support imperial (TODO: check if required)
 using Xbim.Ifc2x3.MeasureResource;              //Enumeration for Unit
-using Xbim.Ifc2x3.ProductExtension;             //IfcSite
-using Xbim.Ifc2x3.GeometricModelResource;       //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
-using Xbim.Ifc2x3.TopologyResource;             //IfcOpenShell
-using Xbim.Ifc2x3.RepresentationResource;       //IfcShapeRepresentation
 
 namespace BIMGISInteropLibs.IFC.Ifc2x3
 {
@@ -46,20 +28,25 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             //first we need to set up some credentials for ownership of data in the new model
             var credentials = new XbimEditorCredentials
             {
-                ApplicationDevelopersName = "HTW Dresden for DDBIM",
-                ApplicationFullName = System.Reflection.Assembly.GetExecutingAssembly().FullName,
-                ApplicationIdentifier = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
-                ApplicationVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                ApplicationDevelopersName = "HTW Dresden [DD-BIM]",
+                ApplicationFullName = "IFCTerrain",
+                ApplicationIdentifier = "DTM2IFC",
+                ApplicationVersion ="1.4.1",
+
+                //user information
                 EditorsFamilyName = editorsFamilyName,
                 EditorsGivenName = editorsGivenName,
                 EditorsOrganisationName = editorsOrganisationName
             };
             //write credentials to IfcStore (model)
-            var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc2X3, XbimStoreType.EsentDatabase);
+            var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc2X3, XbimStoreType.InMemoryModel);
 
             //Begin a transaction as all changes to a model are ACID
             using (var txn = model.BeginTransaction("Initialise Model"))
             {
+                //add file description to header
+                model.Header.FileDescription.Description.Add("ViewDefinition [CoordinationView_V2.0]");
+
                 //create a project
                 project = model.Instances.New<IfcProject>();
 

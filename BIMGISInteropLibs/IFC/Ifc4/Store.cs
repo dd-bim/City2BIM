@@ -46,6 +46,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         public static IfcStore CreateViaTin(
             JsonSettings jSt,
             JsonSettings_DIN_SPEC_91391_2 jsonSettings_DIN_SPEC,
+            JsonSettings_DIN_18740_6 jsonSettings_DIN_18740_6,
             IFC.LoGeoRef loGeoRef,
             Axis2Placement3D sitePlacement,
             Result result,
@@ -156,10 +157,10 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             }
             */
 
-
             //add site entity to model
             using (var txn = model.BeginTransaction("Add Site to Project"))
             {
+                
                 //get site entity
                 site.Representation = model.Instances.New<IfcProductDefinitionShape>(r => r.Representations.Add(repres));
 
@@ -176,15 +177,24 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 txn.Commit();
             }
 
-            //TODO: read out properties of the metadata dynamic
             //start transaction to create property set
             using (var txn = model.BeginTransaction("Ifc Property Set"))
             {
                 //Query if metadata should be exported as IfcPropertySet?
                 if (jSt.outIfcPropertySet)
                 {
-                    //Methode to store Metadata from DIN 91391-2
-                    PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
+                    //switch between cases for metadata export
+                    if (jSt.exportMetadataDin91391)
+                    {
+                        //Methode to store Metadata according to DIN 91391-2
+                        PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
+                    }                  
+                    //case 2: din 18740
+                    if (jSt.exportMetadataDin18740)
+                    {
+                        //Methode to store Metadata according to DIN 18740-6
+                        PropertySet.CreatePSetMetaDin18740(model, jsonSettings_DIN_18740_6);
+                    }
 
                     //commit transaction
                     txn.Commit();
@@ -196,9 +206,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 }
             }
 
-
-            
-            
             return model;
         }
 

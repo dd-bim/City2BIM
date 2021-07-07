@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City2IFC", "City2IFC\City2IFC.csproj", "{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City2RVT", "City2RVT\City2RVT.csproj", "{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup_Revit_2020", "Setup_Revit_2020\Setup_Revit_2020.vdproj", "{E64ACD6E-4986-48BD-9B37-9D88A9C6A16F}"
@@ -19,9 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFCTerrainGUI", "IFCTerrain
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFCTerrainCommand", "IFCTerrainCommand\IFCTerrainCommand.csproj", "{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIMGISInteropsLibs.Tests", "BIMGISInteropsLibs.Tests\BIMGISInteropsLibs.Tests.csproj", "{13312D7B-4674-4E86-BBB0-925A3E4E742C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BimGisCad", "BimGisCad\BimGisCad.csproj", "{4DAFBBD2-AD9C-4E52-9219-7E4F6E30866B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiHandler", "GuiHandler\GuiHandler.csproj", "{24352448-2CAB-4638-B4DB-326539381408}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +29,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Debug|x64.ActiveCfg = Debug|x64
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Debug|x64.Build.0 = Debug|x64
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Release|x64.ActiveCfg = Release|x64
-		{702FB5FF-EA0F-442E-B7F0-5777B7B824C9}.Release|x64.Build.0 = Release|x64
 		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -83,14 +73,6 @@ Global
 		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|x64.ActiveCfg = Release|Any CPU
 		{1DD59F9E-5B3C-47C6-ABF0-7151F379985F}.Release|x64.Build.0 = Release|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Debug|x64.Build.0 = Debug|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|x64.ActiveCfg = Release|Any CPU
-		{13312D7B-4674-4E86-BBB0-925A3E4E742C}.Release|x64.Build.0 = Release|Any CPU
 		{4DAFBBD2-AD9C-4E52-9219-7E4F6E30866B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DAFBBD2-AD9C-4E52-9219-7E4F6E30866B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DAFBBD2-AD9C-4E52-9219-7E4F6E30866B}.Debug|x64.ActiveCfg = Debug|x64
@@ -99,6 +81,14 @@ Global
 		{4DAFBBD2-AD9C-4E52-9219-7E4F6E30866B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DAFBBD2-AD9C-4E52-9219-7E4F6E30866B}.Release|x64.ActiveCfg = Release|x64
 		{4DAFBBD2-AD9C-4E52-9219-7E4F6E30866B}.Release|x64.Build.0 = Release|x64
+		{24352448-2CAB-4638-B4DB-326539381408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24352448-2CAB-4638-B4DB-326539381408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24352448-2CAB-4638-B4DB-326539381408}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{24352448-2CAB-4638-B4DB-326539381408}.Debug|x64.Build.0 = Debug|Any CPU
+		{24352448-2CAB-4638-B4DB-326539381408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24352448-2CAB-4638-B4DB-326539381408}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24352448-2CAB-4638-B4DB-326539381408}.Release|x64.ActiveCfg = Release|Any CPU
+		{24352448-2CAB-4638-B4DB-326539381408}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

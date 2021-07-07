@@ -15,6 +15,11 @@ using System.Windows.Shapes;
 using IFCTerrainGUI.GUI.MainWindowLogic;
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
+
+
+
 namespace IFCTerrainGUI.GUI.ExportSettings
 {
     /// <summary>
@@ -36,7 +41,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
 
             //check state
-            MainWindowBib.readyState();
+            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
 
         /// <summary>
@@ -48,70 +53,69 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             if (!string.IsNullOrEmpty(tbCrsName.Text))
             {
                 //parse to int and pass to json settings
-                MainWindow.jSettings.crsName = int.Parse(tbCrsName.Text);
+                init.config.crsName = int.Parse(tbCrsName.Text);
             }
             else
             {
                 //default value
-                MainWindow.jSettings.crsName = int.Parse("000000");
+                init.config.crsName = int.Parse("000000");
             }
 
             //crs discription
             if (!string.IsNullOrEmpty(tbDescription.Text))
             {
-                //
-                MainWindow.jSettings.crsDescription = tbDescription.Text;
+                init.config.crsDescription = tbDescription.Text;
             }
             else
             {
-                //
-                MainWindow.jSettings.crsDescription = "[Placeholder - Discription]";
+                init.config.crsDescription = "[Placeholder - Discription]";
             }
 
             //crs geodetic datum
             if (!string.IsNullOrEmpty(tbGeodeticDatum.Text))
             {
-                MainWindow.jSettings.geodeticDatum = tbGeodeticDatum.Text;
+                init.config.geodeticDatum = tbGeodeticDatum.Text;
             }
             else
             {
-                MainWindow.jSettings.geodeticDatum = "[Placeholder - geodetic datum]";
+                init.config.geodeticDatum = "[Placeholder - geodetic datum]";
             }
 
             //crs vertical datum
             if (!string.IsNullOrEmpty(tbVerticalDatum.Text))
             {
-                MainWindow.jSettings.verticalDatum = tbVerticalDatum.Text;
+                init.config.verticalDatum = tbVerticalDatum.Text;
             }
             else
             {
-                MainWindow.jSettings.verticalDatum = "[Placeholder - vertical datum]";
+                init.config.verticalDatum = "[Placeholder - vertical datum]";
             }
 
 
             //crs projection name
             if (!string.IsNullOrEmpty(tbProjectionName.Text))
             {
-                MainWindow.jSettings.projectionName = tbProjectionName.Text;
+                init.config.projectionName = tbProjectionName.Text;
             }
             else
             {
-                MainWindow.jSettings.projectionName = "[Placeholder - projection name]";
+                init.config.projectionName = "[Placeholder - projection name]";
             }
 
             //crs projection zone
             if (!string.IsNullOrEmpty(tbProjectionZone.Text))
             {
-                MainWindow.jSettings.projectionZone = tbProjectionZone.Text;
+                init.config.projectionZone = tbProjectionZone.Text;
             }
             else
             {
-                MainWindow.jSettings.projectionZone = "[Placeholder - projection zone]";
+                init.config.projectionZone = "[Placeholder - projection zone]";
             }
 
             //gui logging (user information)
-            ((MainWindow)Application.Current.MainWindow).tbGuiLogging.Items.Add("[LoGeoRef50] CRS Metadata adopted!");
-
+            
+            //((MainWindow)Application.Current.MainWindow).ucUILog.tbGuiLogging.Items.Add("[LoGeoRef50] CRS Metadata adopted!");
+                
             //Close window
             Close();
         }
@@ -130,6 +134,40 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //if not valid no input follows
             e.Handled = !regex.IsMatch(e.Text);
 
+        }
+
+        /// <summary>
+        /// insert the readed epsg codes [TODO: add error handler for, that epsg code is requested before]
+        /// </summary>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //set crs name (epsg code)
+                tbCrsName.Text = init.config.crsName.ToString();
+
+                //set description
+                tbDescription.Text = init.config.crsDescription.ToString();
+
+                //set geodetic datum
+                tbGeodeticDatum.Text = init.config.geodeticDatum;
+
+                //set vertical datum
+                tbVerticalDatum.Text = init.config.verticalDatum;
+
+                //set projection name
+                tbProjectionName.Text = init.config.projectionName;
+
+                //set projection zone
+                tbProjectionZone.Text = init.config.projectionZone;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                //TODO: log exception
+            }
+            
         }
     }
 }
