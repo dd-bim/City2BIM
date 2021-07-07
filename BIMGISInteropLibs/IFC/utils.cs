@@ -12,10 +12,17 @@ namespace BIMGISInteropLibs.IFC
     public class utils
     {
 
+        public static double[] getRotationVector(double azi)
+        {
+            double[] vector = AzimuthToVector(azi);
+
+            return new[] { vector[0], vector[1] };
+        }
+
         /// <summary>
         /// support function to calclue azimuth to vector
         /// </summary>
-        public static double[] AzimuthToVector(double azi)
+        private static double[] AzimuthToVector(double azi)
         {
             var razi = DegToRad(azi);
             return new[] { Math.Cos(razi), Math.Sin(razi) };

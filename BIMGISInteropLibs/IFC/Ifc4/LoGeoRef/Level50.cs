@@ -53,19 +53,19 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 if (jsonSettings.trueNorth.Equals(0) | jsonSettings.trueNorth.Equals(null))
                 {
                     //default value
-                    rotationVector = utils.AzimuthToVector(0);
+                    //rotationVector = utils.AzimuthToVector(0);
                 }
                 else
                 {
                     //calculate rotation vector from true north
-                    rotationVector = utils.AzimuthToVector(jsonSettings.trueNorth);
+                    //rotationVector = utils.AzimuthToVector(jsonSettings.trueNorth);
                 }
 
                 //x axis abscissa:
-                mapConversion.XAxisAbscissa = rotationVector[1];
+                mapConversion.XAxisAbscissa = utils.getRotationVector(jsonSettings.trueNorth)[1];
 
                 //y axis ordinate: 
-                mapConversion.XAxisOrdinate = rotationVector[0];
+                mapConversion.XAxisOrdinate = utils.getRotationVector(jsonSettings.trueNorth)[0];
 
                 //scale
                 mapConversion.Scale = jsonSettings.scale;
