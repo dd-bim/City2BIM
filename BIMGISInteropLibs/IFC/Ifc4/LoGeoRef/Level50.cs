@@ -53,12 +53,12 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 if (jsonSettings.trueNorth.Equals(0) | jsonSettings.trueNorth.Equals(null))
                 {
                     //default value
-                    rotationVector = AzimuthToVector(0);
+                    rotationVector = utils.AzimuthToVector(0);
                 }
                 else
                 {
                     //calculate rotation vector from true north
-                    rotationVector = AzimuthToVector(jsonSettings.trueNorth);
+                    rotationVector = utils.AzimuthToVector(jsonSettings.trueNorth);
                 }
 
                 //x axis abscissa:
@@ -107,23 +107,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
             }
         }
 
-        /// <summary>
-        /// support function to calclue azimuth to vector
-        /// </summary>
-        private static double[] AzimuthToVector(double azi)
-        {
-            var razi = DegToRad(azi);
-            return new[] { Math.Cos(razi), Math.Sin(razi) };
-        }
-
-        /// <summary>
-        /// support to calc rho
-        /// </summary>
-        private static readonly double RevRho = Math.PI / 180.0;
-
-        /// <summary>
-        /// calc deg to rad
-        /// </summary>
-        private static double DegToRad(double deg) => deg * RevRho;
+        
     }
 }
