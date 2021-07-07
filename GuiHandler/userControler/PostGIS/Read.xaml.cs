@@ -83,6 +83,7 @@ namespace GuiHandler.userControler.PostGIS
             {
                 //set is TIN
                 init.config.isTin = true;
+                init.config.calculateTin = false;
             }
             else if (rbPostGisFaces.IsChecked == true && rbProcessBlTrue.IsChecked == true)
             {
