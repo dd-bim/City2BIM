@@ -28,7 +28,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
         /// <returns>IfcLocalPlacement (references IfcAxis2Placement3D (IfcCartesianPoint and 2x IfcDirection)</returns>
         public static IfcLocalPlacement Create(IfcStore model, Axis2Placement3D placement)
         {
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Create IFCLocalPlacement ..."));
+            LogWriter.Add(LogType.verbose, "Create IFCLocalPlacement ...");
 
             //local placment as instance
             var lp = model.Instances.New<IfcLocalPlacement>(
@@ -39,19 +39,19 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 {
                     //create IfcCartesianPoint by setting x y z
                     p.Location = model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(placement.Location.X, placement.Location.Y, placement.Location.Z));
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcCartesianPoint (Easting: "+p.Location.X + "; Northing: " + p.Location.Y  +"; Height: "+ p.Location.Z + ") set!" ));
-
-                    //create IfcDirection - RefDir
-                    p.RefDirection = model.Instances.New<IfcDirection>(d => d.SetXYZ(placement.RefDirection.X, placement.RefDirection.Y, placement.RefDirection.Z));
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcDirection - refDirection (Easting: " + p.RefDirection.X + "; Northing: " + p.RefDirection.Y + "; Height: " + p.RefDirection.Z + ") set!"));
+                    LogWriter.Add(LogType.verbose, "IfcCartesianPoint (Easting: "+p.Location.X + "; Northing: " + p.Location.Y  +"; Height: "+ p.Location.Z + ") set!" );
 
                     //create IfcDirection - Axis
                     p.Axis = model.Instances.New<IfcDirection>(a => a.SetXYZ(placement.Axis.X, placement.Axis.Y, placement.Axis.Z));
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcDirection - Axis (Easting: " + p.Axis.X + "; Northing: " + p.Axis.Y + "; Height: " + p.Axis.Z + ") set!"));
+                    LogWriter.Add(LogType.verbose, "IfcDirection - Axis (Easting: " + p.Axis.X + "; Northing: " + p.Axis.Y + "; Height: " + p.Axis.Z + ") set!");
+
+                    //create IfcDirection - RefDir
+                    p.RefDirection = model.Instances.New<IfcDirection>(d => d.SetXYZ(placement.RefDirection.X, placement.RefDirection.Y, placement.RefDirection.Z));
+                    LogWriter.Add(LogType.verbose, "IfcDirection - refDirection (Easting: " + p.RefDirection.X + "; Northing: " + p.RefDirection.Y + "; Height: " + p.RefDirection.Z + ") set!");
                 }));
             
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "IfcLocalPlacment set."));
+            LogWriter.Add(LogType.debug, "IfcLocalPlacment set.");
 
             return lp;
         }
