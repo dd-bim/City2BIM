@@ -11,14 +11,15 @@ namespace BIMGISInteropLibs.IFC
     /// </summary>
     public class utils
     {
-
+        #region rotation
+        /// <summary>
+        /// rotation vector
+        /// </summary>
         public static double[] getRotationVector(double azi)
         {
             double[] vector = AzimuthToVector(azi);
-
             return new[] { vector[0], vector[1] };
         }
-
         /// <summary>
         /// support function to calclue azimuth to vector
         /// </summary>
@@ -27,7 +28,6 @@ namespace BIMGISInteropLibs.IFC
             var razi = DegToRad(azi);
             return new[] { Math.Cos(razi), Math.Sin(razi) };
         }
-
         /// <summary>
         /// support to calc rho
         /// </summary>
@@ -37,6 +37,9 @@ namespace BIMGISInteropLibs.IFC
         /// calc deg to rad
         /// </summary>
         private static double DegToRad(double deg) => deg * RevRho;
+        #endregion rotation
 
+        #region meridian conv
+        #endregion meridian conv
     }
 }

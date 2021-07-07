@@ -61,6 +61,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
 
                     //set angle
                     s.CompositionType = compositionType;
+                    
                     if (refLatitude.HasValue)
                     {
                         s.RefLatitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLatitude.Value);
@@ -94,22 +95,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4
 
     public class Geo
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="siteName"></param>
-        /// <param name="jSt"></param>
-        /// <param name="loGeoRef"></param>
-        /// <param name="sitePlacement"></param>
-        /// <param name="tin"></param>
-        /// <param name="mesh"></param>
-        /// <param name="breaklines"></param>
-        /// <param name="surfaceType"></param>
-        /// <param name="breakDist"></param>
-        /// <param name="refLatitude"></param>
-        /// <param name="refLongitude"></param>
-        /// <param name="refElevation"></param>
-        /// <returns></returns>
         public static IfcStore Create(
              JsonSettings jSt,
              IFC.LoGeoRef loGeoRef,

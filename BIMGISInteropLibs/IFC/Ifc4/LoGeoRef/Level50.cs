@@ -46,26 +46,11 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 //z value
                 mapConversion.OrthogonalHeight = placement.Location.Z;
 
-                //init dynamic rotation vector
-                dynamic rotationVector;
-
-                //error handling
-                if (jsonSettings.trueNorth.Equals(0) | jsonSettings.trueNorth.Equals(null))
-                {
-                    //default value
-                    //rotationVector = utils.AzimuthToVector(0);
-                }
-                else
-                {
-                    //calculate rotation vector from true north
-                    //rotationVector = utils.AzimuthToVector(jsonSettings.trueNorth);
-                }
-
                 //x axis abscissa:
-                mapConversion.XAxisAbscissa = utils.getRotationVector(jsonSettings.trueNorth)[1];
+                mapConversion.XAxisAbscissa = placement.RefDirection.X;
 
                 //y axis ordinate: 
-                mapConversion.XAxisOrdinate = utils.getRotationVector(jsonSettings.trueNorth)[0];
+                mapConversion.XAxisOrdinate = placement.RefDirection.Y;
 
                 //scale
                 mapConversion.Scale = jsonSettings.scale;
