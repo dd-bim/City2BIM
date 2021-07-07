@@ -53,7 +53,7 @@
                 <!-- user controler grafbat-->
                 <Grafbat:Read/>
             </TabItem>
-            <TabItem Header="Database (PostGIS)" IsEnabled="False">
+            <TabItem Header="Database (PostGIS)">
                 <!-- user controler postgis-->
                 <PostGIS:Read/>
             </TabItem>
