@@ -143,8 +143,9 @@ namespace BIMGISInteropLibs.GEOgraf
                 }
 
                 //Read horizon
+                
                 if (line.StartsWith("HNR") && values.Length > 13
-                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hornr))
+                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 2), out int hornr))
                 {
                     //Query whether 2D (false) or 3D (true)
                     bool is3D = values[4].Equals("1") ? true : false;
@@ -159,7 +160,7 @@ namespace BIMGISInteropLibs.GEOgraf
                 //Read triangles
                 if (line.StartsWith("DG") && values.Length > 9
                     && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int tn)
-                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hnr)
+                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 2), out int hnr)
                     && int.TryParse(values[1].Substring(3), out int va)
                     && int.TryParse(values[2].Substring(3), out int vb)
                     && int.TryParse(values[3].Substring(3), out int vc))

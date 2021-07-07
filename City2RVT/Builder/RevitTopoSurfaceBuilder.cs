@@ -7,6 +7,8 @@ using BIMGISInteropLibs.Geometry;
 
 using BIMGISInteropLibs.RvtTerrain;
 
+using BimGisCad.Representation.Geometry.Elementary;
+
 using Autodesk.Revit.UI; //Task dialog
 
 namespace City2RVT.Builder
@@ -176,7 +178,7 @@ namespace City2RVT.Builder
         /// <summary>
         /// function to transform points to revit crs
         /// </summary>
-        private List<XYZ> transPts(List<C2BPoint> terrainPoints)
+        private List<XYZ> transPts(List<Point3> terrainPoints)
         {
             //init new list
             var revDTMpts = new List<XYZ>();
@@ -184,8 +186,11 @@ namespace City2RVT.Builder
             //loop throgh every point in list
             foreach (var pt in terrainPoints)
             {
+                //create point (otherwise clac point won't work)
+                C2BPoint c2bPoint = new C2BPoint(pt.X, pt.Y, pt.Z);
+
                 //Transformation for revit
-                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(pt, true);
+                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(c2bPoint, true);
 
                 //add to new list (as projected point)
                 revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));

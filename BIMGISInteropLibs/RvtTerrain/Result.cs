@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-//include for data exchange (revit)
-using C2BPoint = BIMGISInteropLibs.Geometry.C2BPoint;
+using BimGisCad.Representation.Geometry.Elementary; //Point3
 
 namespace BIMGISInteropLibs.RvtTerrain
 {
@@ -18,7 +16,7 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// <summary>
         /// 
         /// </summary>
-        public List<C2BPoint> dtmPoints { get; set; }
+        public List<Point3> dtmPoints { get; set; }
 
         /// <summary>
         /// 
