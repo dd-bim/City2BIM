@@ -203,6 +203,36 @@ namespace City2RVT {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap loginIcon32 {
+            get {
+                object obj = ResourceManager.GetObject("loginIcon32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap overViewIcon {
+            get {
+                object obj = ResourceManager.GetObject("overViewIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap queryDataCat {
+            get {
+                object obj = ResourceManager.GetObject("queryDataCat", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Vermesser32 {
             get {
                 object obj = ResourceManager.GetObject("Vermesser32", resourceCulture);
