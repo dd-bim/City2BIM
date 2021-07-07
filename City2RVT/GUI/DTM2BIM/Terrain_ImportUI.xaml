@@ -89,8 +89,8 @@
                 <!-- conversion selection -->
                 <ComboBox x:Name="cbProcessing" Grid.Column="1" SelectionChanged="cbProcessing_SelectionChanged">
                     <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)"></ComboBoxItem>
-                    <ComboBoxItem x:Name="cbFaces" Content="... Points/ Faces (Conversion)" IsEnabled="False"></ComboBoxItem>
-                    <ComboBoxItem x:Name="cbDT" Content="... Delauny Trinagulation" IsEnabled="False" ToolTip="Comming soon!" ToolTipService.ShowOnDisabled="True"></ComboBoxItem>
+                    <ComboBoxItem x:Name="cbFaces" Content="... Points/ Faces (Conversion)"></ComboBoxItem>
+                    <ComboBoxItem x:Name="cbDT" Content="... Delauny Trinagulation"></ComboBoxItem>
                 </ComboBox>
             </Grid>
 

@@ -7,6 +7,8 @@ using init = GuiHandler.InitClass;
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
 
+using BIMGISInteropLibs.RvtTerrain;
+
 namespace City2RVT.GUI.DTM2BIM
 {
     /// <summary>
@@ -14,7 +16,6 @@ namespace City2RVT.GUI.DTM2BIM
     /// </summary>
     public partial class Terrain_ImportUI : Window
     {
-        #region config settings
         /// <summary>
         /// return this value to start import in revit cmd 
         /// </summary>
@@ -24,51 +25,6 @@ namespace City2RVT.GUI.DTM2BIM
         /// Value to be specified that the import should be started.
         /// </summary>
         private bool startImport { set; get; } = false;
-
-        /// <summary>
-        /// set if processing should go via points & faces
-        /// </summary>
-        public bool usePointsFaces { get { return useFaces; } }
-
-        /// <summary>
-        /// setter for user selection
-        /// </summary>
-        private bool useFaces { set; get; } = false;
-
-
-
-
-        /*
-        /// <summary>
-        /// set if processing should go via points & faces
-        /// </summary>
-        public bool useSpatialFilter { get { return useFilter; } }
-
-        /// <summary>
-        /// setter for user selection
-        /// </summary>
-        private bool useFilter { set; get; } = false;
-
-        /// <summary>
-        /// set if processing should go via points & faces
-        /// </summary>
-        public bool isSquareFilter { get { return isSquare; } }
-
-        /// <summary>
-        /// setter for user selection
-        /// </summary>
-        private bool isSquare { set; get; } = false;
-
-        /// <summary>
-        /// set if processing should go via points & faces
-        /// </summary>
-        public double spatialFilterValue { get { return filterValue; } }
-
-        /// <summary>
-        /// setter for user selection
-        /// </summary>
-        private double filterValue { set; get; }*/
-        #endregion config settings
 
         /// <summary>
         /// init DTM2BIM main window
@@ -130,11 +86,15 @@ namespace City2RVT.GUI.DTM2BIM
         {
             if (cbFaces.IsSelected)
             {
-                useFaces = true;
+                Result.processingEnum =   Result.conversionEnum.ConversionViaFaces;
+            }
+            else if (cbPoints.IsSelected)
+            {
+                Result.processingEnum = Result.conversionEnum.ConversionViaPoints;
             }
             else
             {
-                useFaces = false;
+                
             }
             
             if(cbProcessing.SelectedIndex != -1)
