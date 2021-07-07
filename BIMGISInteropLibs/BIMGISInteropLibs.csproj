@@ -335,6 +335,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="README.md" />
     <None Include="Resources\ZukunftBauAsJSON.json" />
   </ItemGroup>
   <ItemGroup>
