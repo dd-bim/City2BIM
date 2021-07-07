@@ -282,6 +282,7 @@
     <Compile Include="IFC\Ifc2x3\Store.cs" />
     <Compile Include="IFC\Ifc4dot3\Dummy.cs" />
     <Compile Include="IfcTerrain\ConnectionInterface.cs" />
+    <Compile Include="IFC\utils.cs" />
     <Compile Include="IFC\WriteInput.cs" />
     <Compile Include="LandXML\ReaderTerrain.cs" />
     <Compile Include="Logging\LogWriterIfcTerrain.cs" />
