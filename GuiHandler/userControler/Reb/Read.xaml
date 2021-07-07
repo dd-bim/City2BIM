@@ -15,11 +15,23 @@
             <RowDefinition Height="20"/>
             <RowDefinition/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
         <Button x:Name="btnReadReb" Grid.ColumnSpan="2" Content="Read 'REB' file" Click="btnReadReb_Click"/>
         <ListBox x:Name="lbRebSelect" Grid.Row="1" Grid.Column="1" Margin="0,5" SelectionChanged="lbRebSelect_SelectionChanged" IsEnabled="False"/>
         <TextBlock Grid.Row="1" Margin="5" Text="Select Horizon"/>
-        <Button x:Name="btnProcessReb" Grid.Row="2" Grid.ColumnSpan="2" Content="Apply 'REB' file settings" Click="btnProcessReb_Click" IsEnabled="False"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <TextBlock Text="Processing via..." />
+            <RadioButton x:Name="rbRebFaces" Content="Faces" Margin="5,0,0,0" IsChecked="True" ToolTip="Use this option to convert a existing TIN or to recalculate it by using breaklines."/>
+            <RadioButton x:Name="rbRebPoints" Content="Points" Margin="5,0,0,0" ToolTip="Use this option to calculate a TIN of 3D point data. Processing breaklines is optional."/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <TextBlock Text="Process Breaklines?"/>
+            <RadioButton x:Name="rbProcessBlTrue" Content="Yes" Margin="5,0,0,0"/>
+            <RadioButton x:Name="rbProcessBlFalse" Content="No" Margin="5,0,0,0" IsChecked="True"/>
+        </StackPanel>
+        <Button x:Name="btnProcessReb" Grid.Row="4" Grid.ColumnSpan="2" Content="Apply 'REB' file settings" Click="btnProcessReb_Click" IsEnabled="False"/>
     </Grid>
 </UserControl>

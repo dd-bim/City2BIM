@@ -14,9 +14,6 @@ using BimGisCad.Representation.Geometry.Composed;   //TIN
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
-//API to NetTopologySuite
-using BIMGISInteropLibs.NTSApi;
-
 //shortcut for tin building class
 using terrain = BIMGISInteropLibs.Geometry.terrain;
 
@@ -26,6 +23,9 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 
 //Message box
 using System.Windows;
+
+//Compute triangulation
+using BIMGISInteropLibs.Triangulator;
 
 namespace BIMGISInteropLibs.ElevationGrid
 {
@@ -63,7 +63,7 @@ namespace BIMGISInteropLibs.ElevationGrid
                 if (ReadDtmPointData(fileName, bBox, bbNorth, bbEast, bbSouth, bbWest, out List<double[]> dtmPointList))
                 {
                     //Calculate triangulation
-                    Tin tin = CalculateTriangulation(dtmPointList);
+                    Tin tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
 
                     //Pass TIN to result and log
                     result.Tin = tin;
@@ -227,56 +227,6 @@ namespace BIMGISInteropLibs.ElevationGrid
 
             //Return the result as TIN or MESH
             return result;
-        }
-
-        /// <summary>
-        /// A function to create a TIN using BimGisCad TIN builder and an interface to NetTopologySuite class library to calculate triangles.
-        /// </summary>
-        /// <param name="dtmPointList">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
-        /// <returns>A TIN structured by BimGisCad TIN builder</returns>
-        public static Tin CalculateTriangulation(List<double[]> dtmPointList)
-        {
-            //Initialize TIN builder
-            var tinBuilder = Tin.CreateBuilder(true);
-
-            //Log TIN builder initalization
-            LogWriter.Add(LogType.verbose, "[XYZ] Initialize a TIN builder.");
-
-            //Get a list of triangles via NetTopologySuite class library using the interface object
-            List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointList);
-
-            //init hash set (for unquie points)
-            var uptList = new HashSet<Geometry.uPoint3>();
-
-            foreach (List<double[]> dtmTriangle in dtmTriangleList)
-            {
-                //Read out the three vertices of one triangle at each loop
-                Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
-                Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
-                Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
-
-                //add points to list [note: logging will be done in support function]
-                int pnrP1 = terrain.addToList(uptList, p1);
-                int pnrP2 = terrain.addToList(uptList, p2);
-                int pnrP3 = terrain.addToList(uptList, p3);
-
-                //add triangle via point numbers above
-                tinBuilder.AddTriangle(pnrP1, pnrP2, pnrP3);
-
-                //log
-                LogWriter.Add(LogType.verbose, "[Grid] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
-            }
-
-            //loop through point list 
-            foreach (Geometry.uPoint3 pt in uptList)
-            {
-                tinBuilder.AddPoint(pt.pnr, pt.point3);
-            }
-
-            //Build and return a TIN via BimGisCad class library and log
-            Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            LogWriter.Add(LogType.verbose, "[XYZ] Creating TIN via TIN builder.");
-            return tin;
         }
 
         /// <summary>

@@ -29,8 +29,8 @@ using terrain = BIMGISInteropLibs.Geometry.terrain;
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-//include NTSApi for delauny triangulation
-using BIMGISInteropLibs.NTSApi;
+//Compute triangulation
+using BIMGISInteropLibs.Triangulator;
 
 namespace BIMGISInteropLibs.DXF
 {    
@@ -377,59 +377,59 @@ namespace BIMGISInteropLibs.DXF
         }
 
         /// <summary>
-        /// A function to create a TIN using NetTopologySuite class library and BimGisCad TIN builder.
+        /// A function to recalculate a TIN using NetTopologySuite class library and BimGisCad TIN builder.
         /// </summary>
-        /// <param name="dxfFile">The DXF file containing the DTM data (poins and lines).</param>
+        /// <param name="dxfFile">The DXF file containing the TIN data (triangles, points and breaklines).</param>
         /// <param name="jSettings">The global settings for processing.</param>
         /// <returns>A result object which encapsulates the calculated TIN.</returns>
-        public static Result CalculateDxfTin(DxfFile dxfFile, JsonSettings jSettings)
+        public static Result RecalculateTin(DxfFile dxfFile, JsonSettings jSettings)
         {
+            //Initialize TIN
+            Tin tin;
+
             //Initialize result
             Result result = new Result();
 
-            //Initialize TIN builder
-            var tinBuilder = Tin.CreateBuilder(true);
-
-            //Log TIN builder initalization
-            LogWriter.Add(LogType.verbose, "[DXF] Initialize a TIN builder.");
-
-            //Read out DTM data from DXF file. If successful than process data and create TIN
-            if (ReadDxfDtmData(dxfFile, jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData))
+            //Read out DXF data and create TIN via IfcTerrainTriangulator
+            if (ReadDxfDtmData(dxfFile, jSettings, out List<double[]> dtmPointData, out List<double[]> constraintData))
             {
-                //Get a list of triangles via NetTopologySuite class library using the interface object
-                List<List<double[]>> dtmTriangleList = new NtsApi().MakeTriangleList(dtmPointData, dtmLineData);
-
-                //init hash set
-                var pList = new HashSet<Geometry.uPoint3>();
-
-                foreach (List<double[]> dtmTriangle in dtmTriangleList)
-                {
-                    //Read out the three vertices of one triangle at each loop
-                    Point3 p1 = Point3.Create(dtmTriangle[0][0], dtmTriangle[0][1], dtmTriangle[0][2]);
-                    Point3 p2 = Point3.Create(dtmTriangle[1][0], dtmTriangle[1][1], dtmTriangle[1][2]);
-                    Point3 p3 = Point3.Create(dtmTriangle[2][0], dtmTriangle[2][1], dtmTriangle[2][2]);
-
-                    //add points to list [note: logging will be done in support function]
-                    int pnrP1 = terrain.addToList(pList, p1);
-                    int pnrP2 = terrain.addToList(pList, p2);
-                    int pnrP3 = terrain.addToList(pList, p3);
-
-                    //add triangle via point numbers above
-                    tinBuilder.AddTriangle(pnrP1, pnrP2, pnrP3);
-
-                    //log
-                    LogWriter.Add(LogType.verbose, "[DXF] Triangle [" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + "] set.");
-                }
-
-                //loop through point list 
-                foreach (Geometry.uPoint3 pt in pList)
-                {
-                    tinBuilder.AddPoint(pt.pnr, pt.point3);
-                }
+                tin = IfcTerrainTriangulator.CreateTin(dtmPointData, constraintData);
             }
-            //Build a TIN via BimGisCad class library and log
-            Tin tin = tinBuilder.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-            LogWriter.Add(LogType.verbose, "[DXF] Creating TIN via TIN builder.");
+
+            //Pass TIN to result and log
+            result.Tin = tin;
+            LogWriter.Add(LogType.info, "Reading DXF data successful.");
+            result.rPoints = tin.Points.Count;
+            result.rFaces = tin.NumTriangles;
+            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+
+            //Return the result as a TIN
+            return result;
+        }
+
+        /// <summary>
+        /// A function to calculate a TIN using NetTopologySuite class library and BimGisCad TIN builder.
+        /// </summary>
+        /// <param name="dxfFile">The DXF file containing the TIN data (triangles, points and breaklines).</param>
+        /// <param name="jSettings">User input.</param>
+        /// <returns>A result object which encapsulates the calculated TIN.</returns>
+        public static Result CalculateTin(DxfFile dxfFile, JsonSettings jSettings)
+        {
+            //Initialize TIN
+            Tin tin;
+
+            //Initialize result
+            Result result = new Result();
+
+            //Read out DXF data and create TIN via IfcTerrainTriangulator
+            if (jSettings.breakline && ReadDxfDtmData(dxfFile, jSettings, out List<double[]> dtmPointData, out List<double[]> constraintData))
+            {
+                tin = IfcTerrainTriangulator.CreateTin(dtmPointData, constraintData);
+            }
+            else if (ReadDxfDtmData(dxfFile, jSettings, out dtmPointData, out constraintData))
+            {
+                tin = IfcTerrainTriangulator.CreateTin(dtmPointData);
+            }
 
             //Pass TIN to result and log
             result.Tin = tin;
@@ -448,15 +448,15 @@ namespace BIMGISInteropLibs.DXF
         /// <param name="dxfFile">The DXF file containing the DTM data (poins and lines).</param>
         /// <param name="jSettings">The global settings for processing.</param>
         /// <param name="dtmPointData">A list of double arrays. Each array contains the x-, y- and z-value of one point.</param>
-        /// <param name="dtmLineData">A list of lists of double arrays. Each array contains the x-, y- and z-value of one point of one line.</param>
+        /// <param name="constraintData">A list of lists of double arrays. Each array contains the x-, y- and z-value of one point of one line.</param>
         /// <returns>True or false respectively depending on successful reading.</returns>
-        public static bool ReadDxfDtmData(DxfFile dxfFile, JsonSettings jSettings, out List<double[]> dtmPointData, out List<List<double[]>> dtmLineData)
+        public static bool ReadDxfDtmData(DxfFile dxfFile, JsonSettings jSettings, out List<double[]> dtmPointData, out List<double[]> constraintData)
         {
             //A list of point data
             dtmPointData = new List<double[]>();
 
-            //A list of lists of point data. Each list represents a line or polyline respectively
-            dtmLineData = new List<List<double[]>>();
+            //A list of point data. Each double array represents a constraint vertex
+            constraintData = new List<double[]>();
 
             //Get layer (TODO: multiple layer selection)
             string dtmLayer = jSettings.layer;
@@ -501,23 +501,27 @@ namespace BIMGISInteropLibs.DXF
                             //catch entity line
                             var line = (DxfLine)entity;
 
-                            //A list of double arrays. Each array contains the x-, y- and z-values od a point of the lines
-                            List<double[]> linePointData = new List<double[]>();
-
                             //Get the first point data of the line
-                            linePointData.Add(new double[] { line.P1.X * scale, line.P1.Y * scale, line.P1.Z * scale });
+                            double p1X = line.P1.X * scale;
+                            double p1Y = line.P1.Y * scale;
+                            double p1Z = line.P1.Z * scale;
+
+                            //Add point data to constraint data list
+                            constraintData.Add(new double[] { line.P1.X * scale, line.P1.Y * scale, line.P1.Z * scale });
 
                             //Log first point of line
-                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + linePointData[0][0] + "; y= " + linePointData[0][1] + "; z= " + linePointData[0][2] + ")");
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p1X + "; y= " + p1Y + "; z= " + p1Z + ")");
 
                             //Get the second point data of the line
-                            linePointData.Add(new double[] { line.P2.X * scale, line.P2.Y * scale, line.P2.Z * scale });
+                            double p2X = line.P2.X * scale;
+                            double p2Y = line.P2.Y * scale;
+                            double p2Z = line.P2.Z * scale;
+
+                            //Add point data to constraint data list
+                            constraintData.Add(new double[] { p2X, p2Y, p2Z });
 
                             //Log second point of line
-                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + linePointData[1][0] + "; y= " + linePointData[1][1] + "; z= " + linePointData[1][2] + ")");
-
-                            //Add the line data to the line data list
-                            dtmLineData.Add(linePointData);
+                            LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + p2X + "; y= " + p2Y + "; z= " + p2Z + ")");
                             break;
 
                         //dxf case polyline
@@ -525,9 +529,6 @@ namespace BIMGISInteropLibs.DXF
 
                             //get poly line entity
                             var polyline = (DxfPolyline)entity;
-
-                            //A list of double arrays. Each array contains the x-, y- and z-values od a point of the lines
-                            List<double[]> polylinePointData = new List<double[]>();
 
                             //go through all vertices
                             foreach (var vertex in polyline.Vertices)
@@ -538,21 +539,18 @@ namespace BIMGISInteropLibs.DXF
                                 double z = vertex.Location.Z * scale;
 
                                 //Add vertex cooedinates to data list
-                                polylinePointData.Add(new double[] { x, y, z });
+                                constraintData.Add(new double[] { x, y, z });
 
                                 //Log point data
                                 LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + x + "; y= " + y + "; z= " + z + ")");
                             }
-
-                            //Add the line data to the line data list
-                            dtmLineData.Add(polylinePointData);
                             break;
                     }
                 }
             }
 
             //Check if lists contain data and return true or false
-            return CheckDtmDataLists(dtmPointData, dtmLineData);
+            return CheckDtmDataLists(dtmPointData, constraintData);
         }
 
         /// <summary>
@@ -561,7 +559,7 @@ namespace BIMGISInteropLibs.DXF
         /// <param name="dtmPointData">A list of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
         /// <param name="dtmLineData">A list of lists of double arrays. Each array contains the x, y and z coordinate of a DTM point.</param>
         /// <returns>True or false.</returns>
-        public static bool CheckDtmDataLists(List<double[]> dtmPointData, List<List<double[]>> dtmLineData)
+        public static bool CheckDtmDataLists(List<double[]> dtmPointData, List<double[]> dtmLineData)
         {
             if (dtmPointData.Count == 0)
             {

@@ -52,6 +52,13 @@
 
                 </Grid>
             </GroupBox>
+            
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                <TextBlock Text="Processing via..." Margin="5,5,5,5"/>
+                <RadioButton x:Name="rbPostGisFaces" Content="Faces" Margin="5,5,5,5" IsChecked="True" ToolTip="Use this option to convert a existing TIN or to recalculate it by using breaklines."/>
+                <RadioButton x:Name="rbPostGisPoints" Content="Points" Margin="5,5,5,5" ToolTip="Use this option to calculate a TIN of 3D point data. Processing breaklines is optional."/>
+            </StackPanel>
+            
             <GroupBox Header="TIN Geometry">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -120,5 +127,9 @@
             </GroupBox>
         </StackPanel>
         <Button x:Name="btnProcessPostGis" Grid.Row="2" Content="Apply 'PostGIS' query settings" IsEnabled="False" Click="btnProcessPostGis_Click" />
+        
+        <!-- REMOVE -->
+        <Button x:Name="btnSample" Grid.Row="0" Height="20" Margin="0,0,0,35" VerticalAlignment="Bottom" Click="btnSample_Click">SampleData</Button>
+        <Button x:Name="btnExcute" Grid.Row="0" Height="20" Margin="0,0,0,10" VerticalAlignment="Bottom" Click="btnExcute_Click" >TEST</Button>
     </Grid>
 </UserControl>

@@ -50,13 +50,13 @@ namespace BIMGISInteropLibs.NTSApi
         /// A function which turns a list of input point and line data into a list of triangle data using the NetTopologySuite class library.
         /// </summary>
         /// <param name="dtmPointList">A List of DTM point data.</param>
-        /// <param name="dtmLineList">A list of DTM line data (e. g. breaklines).</param>
+        /// <param name="constraintList">A list of DTM line data (e. g. breaklines).</param>
         /// <returns>A List of triangle data.</returns>
-        public List<List<double[]>> MakeTriangleList(List<double[]> dtmPointList, List<List<double[]>> dtmLineList)
+        public List<List<double[]>> MakeTriangleList(List<double[]> dtmPointList, List<double[]> constraintList)
         {
             List<List<double[]>> dtmTriangleList = new List<List<double[]>>();
-            GeometryCollection triangles = this.Triangulate(dtmPointList, dtmLineList);
-            foreach (NetTopologySuite.Geometries.Geometry geom in triangles.Geometries)
+            GeometryCollection triangles = this.Triangulate(dtmPointList, constraintList);
+            foreach(NetTopologySuite.Geometries.Geometry geom in triangles.Geometries)
             {
                 List<double[]> trianglePointCoordList = new List<double[]>();
                 foreach (CoordinateZ coordZ in geom.Coordinates)
@@ -69,50 +69,7 @@ namespace BIMGISInteropLibs.NTSApi
         }
 
         /// <summary>
-        /// A function which turns a WKT string of input point data into a list of triangle data using the NetTopologySuite class library.
-        /// </summary>
-        /// <param name="dtmPointListWKT">A WKT string of the input DTM point data.</param>
-        /// <returns>A List of triangle data.</returns>
-        public List<List<double[]>> MakeTriangleList(string dtmPointListWKT)
-        {
-            List<List<double[]>> dtmTriangleList = new List<List<double[]>>();
-            GeometryCollection triangles = this.Triangulate(dtmPointListWKT);
-            foreach (NetTopologySuite.Geometries.Geometry geom in triangles.Geometries)
-            {
-                List<double[]> trianglePointCoordList = new List<double[]>();
-                foreach (CoordinateZ coordZ in geom.Coordinates)
-                {
-                    trianglePointCoordList.Add(new double[] { coordZ.X, coordZ.Y, coordZ.Z });
-                }
-                dtmTriangleList.Add(trianglePointCoordList);
-            }
-            return dtmTriangleList;
-        }
-
-        /// <summary>
-        /// A function which turns a WKT string of input point and line data into a list of triangle data using the NetTopologySuite class library.
-        /// </summary>
-        /// <param name="dtmPointListWKT">A WKT string of the input DTM point data.</param>
-        /// <param name="dtmLineListWKT">A WKT string of the input DTM line data.</param>
-        /// <returns>A List of triangle data.</returns>
-        public List<List<double[]>> MakeTriangleList(string dtmPointListWKT, string dtmLineListWKT)
-        {
-            List<List<double[]>> dtmTriangleList = new List<List<double[]>>();
-            GeometryCollection triangles = this.Triangulate(dtmPointListWKT, dtmLineListWKT);
-            foreach (NetTopologySuite.Geometries.Geometry geom in triangles.Geometries)
-            {
-                List<double[]> trianglePointCoordList = new List<double[]>();
-                foreach (CoordinateZ coordZ in geom.Coordinates)
-                {
-                    trianglePointCoordList.Add(new double[] { coordZ.X, coordZ.Y, coordZ.Z });
-                }
-                dtmTriangleList.Add(trianglePointCoordList);
-            }
-            return dtmTriangleList;
-        }
-
-        /// <summary>
-        /// A auxiliary function to triangulate the input point data.
+        /// An auxiliary function to triangulate the input point data.
         /// </summary>
         /// <param name="dtmPointList">A List of DTM point data.</param>
         /// <returns>A collection of OGC simple feature geometries representing the caclculated triangles.</returns>
@@ -124,90 +81,64 @@ namespace BIMGISInteropLibs.NTSApi
         }
 
         /// <summary>
-        /// A auxiliary function to triangulate the input point and line data.
+        /// An auxiliary function to triangulate the input point and line data.
         /// </summary>
         /// <param name="dtmPointList">A List of DTM point data.</param>
-        /// <param name="dtmLineList">A list of DTM line data (e. g. breaklines).</param>
+        /// <param name="constraintList">A list of DTM line data (e. g. breaklines).</param>
         /// <returns>A collection of OGC simple feature geometries representing the caclculated triangles. The data set implicitly contains breaklines.</returns>
-        public GeometryCollection Triangulate(List<double[]> dtmPointList, List<List<double[]>> dtmLineList)
+        public GeometryCollection Triangulate(List<double[]> dtmPointList, List<double[]> constraintList)
         {
             ConformingDelaunayTriangulationBuilder triangulationBuilder = new ConformingDelaunayTriangulationBuilder();
-            triangulationBuilder.SetSites(this.geomFactory.CreateMultiPoint(MakePointCoordinateSequence(dtmPointList)));
-            triangulationBuilder.Constraints = MakeMultiLineString(dtmLineList);
+            triangulationBuilder.SetSites(MakeMultiPoint(dtmPointList));
+            triangulationBuilder.Constraints = MakeMultiPoint(constraintList);
             return triangulationBuilder.GetTriangles(this.geomFactory);
         }
 
         /// <summary>
-        /// An auxiliary function to read out and triangulate the input point data from WKT.
+        /// An auxiliary function to create a OGC simple feature geometry MultiPoint of the input point data.
         /// </summary>
-        /// <param name="dtmPointDataWKT">A WKT string of the input DTM point data.</param>
-        /// <returns>A collection of OGC simple feature geometries representing the caclculated triangles.</returns>
-        public GeometryCollection Triangulate(string dtmPointDataWKT)
+        /// <param name="pointList">A list of DTM point data.</param>
+        /// <returns>A OGC simple feature geometry MultiPoint of the input point data.</returns>
+        public MultiPoint MakeMultiPoint(List<double[]> pointList)
         {
-            WKTReader reader = new WKTReader();
-            ConformingDelaunayTriangulationBuilder triangulationBuilder = new ConformingDelaunayTriangulationBuilder();
-            triangulationBuilder.SetSites(reader.Read(dtmPointDataWKT));
-            return triangulationBuilder.GetTriangles(this.geomFactory);
+            return this.geomFactory.CreateMultiPoint(MakePointCoordinateSequence(pointList));
         }
 
         /// <summary>
-        /// An auxiliary function to read out and triangulate the input point and line data from WKT.
+        /// An auxiliary function to create a NetTopologySuite coordinate sequence of the input point data.
         /// </summary>
-        /// <param name="dtmPointDataWKT">A WKT string of the input DTM point data.</param>
-        /// <param name="dtmLineDataWKT">A WKT string of the input DTM line data.</param>
-        /// <returns>A collection of OGC simple feature geometries representing the caclculated triangles. The data set implicitly contains breaklines.</returns>
-        public GeometryCollection Triangulate(string dtmPointDataWKT, string dtmLineDataWKT)
-        {
-            string[] pointData = dtmPointDataWKT.Split(';');
-            WKTReader reader = new WKTReader();
-            List<Point> pointList = new List<Point>();
-            foreach (string point in pointData)
-            {
-                pointList.Add((Point)reader.Read(point));
-            }
-            MultiPoint mPoint = new MultiPoint(pointList.ToArray(), this.geomFactory);
-            ConformingDelaunayTriangulationBuilder triangulationBuilder = new ConformingDelaunayTriangulationBuilder();
-            triangulationBuilder.SetSites(mPoint);
-            triangulationBuilder.Constraints = reader.Read(dtmLineDataWKT);
-            return triangulationBuilder.GetTriangles(this.geomFactory);
-        }
-
-        /// <summary>
-        /// A auxiliary function to create a OGC simple feature geometry MultiLineString of the input line data.
-        /// </summary>
-        /// <param name="dtmLineList">A list of DTM line data (e. g. breaklines).</param>
-        /// <returns>A OGC simple feature geometry MultiLineString of the input line data.</returns>
-        public MultiLineString MakeMultiLineString(List<List<double[]>> dtmLineList)
-        {
-            List<LineString> lineCoordList = new List<LineString>();
-            foreach (List<double[]> lineCoords in dtmLineList)
-            {
-                lineCoordList.Add(new LineString (MakePointCoordinateArr(lineCoords)));
-            }
-            return new MultiLineString(lineCoordList.ToArray());
-        }
-
-        /// <summary>
-        /// A auxiliary function to create a NetTopologySuite coordinate sequence of the input point data.
-        /// </summary>
-        /// <param name="dtmPointList"></param>
+        /// <param name="pointList"></param>
         /// <returns>A sequence of coordinates of the input point data.</returns>
-        public CoordinateSequence MakePointCoordinateSequence(List<double[]> dtmPointList)
+        public CoordinateSequence MakePointCoordinateSequence(List<double[]> pointList)
         {
-            return this.geomFactory.CoordinateSequenceFactory.Create(MakePointCoordinateArr(dtmPointList));
+            return this.geomFactory.CoordinateSequenceFactory.Create(MakePointCoordinateArr(pointList));
         }
         
         /// <summary>
-        /// A auxiliary function to map each point of the input data to a NetTopologySuite CoordinateZ object.
+        /// An auxiliary function to map each point of the input data to a NetTopologySuite CoordinateZ object.
         /// </summary>
-        /// <param name="dtmPointList"></param>
-        /// <returns>An array of NetTopologySuite CoordinateZ objects representing the input point data.</returns>
-        public CoordinateZ[] MakePointCoordinateArr(List<double[]> dtmPointList)
+        /// <param name="pointList"></param>
+        /// <returns>An array of NetTopologySuite CoordinateZ objects representing the input point data. Each CoordinateZ object is unique.</returns>
+        public CoordinateZ[] MakePointCoordinateArr(List<double[]> pointList)
         {
+            bool addPoint;
             List<CoordinateZ> coordList = new List<CoordinateZ>();
-            foreach (double[] pointCoords in dtmPointList)
+            foreach (double[] pointCoords in pointList)
             {
-                coordList.Add(new CoordinateZ(pointCoords[0], pointCoords[1], pointCoords[2]));
+                addPoint = true;
+                CoordinateZ pointCoordZ = new CoordinateZ(pointCoords[0], pointCoords[1], pointCoords[2]);
+                foreach (CoordinateZ coordZ in coordList)
+                {
+                    if (coordZ.Equals3D(pointCoordZ))
+                    {
+                        addPoint = false;
+                        break;
+                    }
+                }
+                if (addPoint)
+                {
+                    coordList.Add(pointCoordZ);
+                }
             }
             return coordList.ToArray();
         }

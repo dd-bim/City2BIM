@@ -204,6 +204,24 @@ namespace GuiHandler.userControler.Reb
             //passed to json settings
             init.config.horizon = horizon;
 
+            //Processing options
+            if (rbRebFaces.IsChecked == true && rbProcessBlFalse.IsChecked == true)
+            {
+                //Process exisitng TIN
+                init.config.isTin = true;
+            }
+            else
+            {
+                //Calculate TIN from point data
+                init.config.calculateTin = true;
+            }
+
+            //Decision if breaklines shall be used
+            if (rbProcessBlTrue.IsChecked == true)
+            {
+                init.config.breakline = true;
+            }
+
             //visual output on the GUI (layer selection) (need to convert to string!)
             //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
 
