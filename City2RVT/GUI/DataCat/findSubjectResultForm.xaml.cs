@@ -57,12 +57,14 @@ namespace City2RVT.GUI.DataCat
             Selection sel = this.uiDoc.Selection;
             ICollection<ElementId> selectedIds = sel.GetElementIds();
 
+            /*
             //more or less than one element is selected
             if (selectedIds.Count != 1)
             {
                 TaskDialog.Show("Hint!", "Please only select ONE element!");
                 return;
             }
+            */
 
             var selectedItem = trvFindResult.SelectedItem;
 
@@ -81,67 +83,229 @@ namespace City2RVT.GUI.DataCat
             {
                 var node = selectedItem as City2RVT.ExternalDataCatalog.Node;
 
-                var attrDict = new Dictionary<string, string>();
-
-                foreach (var prop in node.properties)
+                foreach (var id in sel.GetElementIds())
                 {
-                    attrDict.Add(prop.name, "");
-                }
+                    var attrDict = new Dictionary<string, string>();
 
-                var schemaObj = new ExternalDataSchemaObject(node.name, attrDict, node.ifcClassification);
-
-                var editor = new DataCatalogEditorWindow(schemaObj.prepareForEditorWindow());
-                editor.ShowDialog();
-
-                if (editor.saveChanges)
-                {
-                    using (Transaction trans = new Transaction(this.uiDoc.Document, "add external data to element"))
+                    foreach (var prop in node.properties)
                     {
-                        trans.Start();
+                        attrDict.Add(prop.name, "");
+                    }
 
-                        Schema externalSchema = ExternalDataUtils.createExternalDataCatalogSchema(uiDoc.Document);
-                        var revitElement = uiDoc.Document.GetElement(selectedIds.FirstOrDefault());
+                    var schemaObj = new ExternalDataSchemaObject(node.name, attrDict, node.ifcClassification);
+                    Schema externalSchema = ExternalDataUtils.createExternalDataCatalogSchema(uiDoc.Document);
+                    var revitElement = uiDoc.Document.GetElement(id);
+                    var revitEntity = revitElement.GetEntity(externalSchema);
 
-                        var revitEntity = revitElement.GetEntity(externalSchema);
+                    sel.SetElementIds(new ElementId[] { id });
 
-                        //if entity already exists data gets attached -> multiple property sets for one element possible
-                        if (revitEntity.IsValid())
+                    var schemaObjList = new List<ExternalDataSchemaObject>();
+                    if (revitEntity.IsValid())
+                    {
+                        var objects = revitEntity.Get<IDictionary<string, string>>("Objects");
+
+                        if (objects.ContainsKey(schemaObj.ObjectType) == false)
                         {
-                            var data = revitEntity.Get <IDictionary<string, string>>("data");
+                            objects.Add(schemaObj.ObjectType, schemaObj.toJSONString());
+                        }
+                        schemaObjList = objects.Values.Select(value => ExternalDataSchemaObject.fromJSONString(value)).ToList();
+                    }
+                    else
+                    {
+                        schemaObjList.Add(schemaObj);
+                    }
 
-                            if (data.ContainsKey(node.name))
+                    var newEditor = new DataCatPropertySetterWindow(schemaObjList);
+                    newEditor.ShowDialog();
+
+                    if (newEditor.saveChanges)
+                    {
+                        var externalDataEditorContainerList = newEditor.containerList;
+                        var externalDataSchemaObjectList = externalDataEditorContainerList.Select(edecl => edecl.toExternalDataSchemaObject()).ToList();
+                        var externalDataDict = externalDataSchemaObjectList.ToDictionary(entry => entry.ObjectType, entry => entry.toJSONString());
+
+                        using (Transaction trans = new Transaction(this.uiDoc.Document, "addExternalDataToDocument"))
+                        {
+                            trans.Start();
+                            if (revitEntity.IsValid())
                             {
-                                data[node.name] = editor.getDataAsJsonString();
+                                revitEntity.Set<IDictionary<string, string>>("Objects", externalDataDict);
                             }
-
                             else
                             {
-                                data.Add(node.name, editor.getDataAsJsonString());
+                                revitEntity = new Entity(externalSchema);
+                                revitEntity.Set<IDictionary<string, string>>("Objects", externalDataDict);
                             }
 
-                            revitEntity.Set<IDictionary<string, string>>("data", data);
-                            var classificationAsJSONString = JsonConvert.SerializeObject(node.ifcClassification);
-                            revitEntity.Set<string>("ifcClassification", classificationAsJSONString);
                             revitElement.SetEntity(revitEntity);
-
+                            trans.Commit();
                         }
 
-                        else
-                        {
-                            var data = new Dictionary<string, string>();
-                            data.Add(node.name, editor.getDataAsJsonString());
-                            revitEntity = new Entity(externalSchema);
-                            revitEntity.Set<IDictionary<string, string>>("data", data);
-                            var classificationAsJSONString = JsonConvert.SerializeObject(node.ifcClassification);
-                            revitEntity.Set<string>("ifcClassification", classificationAsJSONString);
-                            revitElement.SetEntity(revitEntity);
-                        }
-
-                        trans.Commit();
                     }
                 }
             }
         }
+
+
+
+
+
+
+
+        /*
+        var attrDict = new Dictionary<string, string>();
+
+        foreach (var prop in node.properties)
+        {
+            attrDict.Add(prop.name, "");
+        }
+
+        var schemaObj = new ExternalDataSchemaObject(node.name, attrDict, node.ifcClassification);
+        Schema externalSchema = ExternalDataUtils.createExternalDataCatalogSchema(uiDoc.Document);
+        var revitElement = uiDoc.Document.GetElement(selectedIds.FirstOrDefault());
+        var revitEntity = revitElement.GetEntity(externalSchema);
+
+        var schemaObjList = new List<ExternalDataSchemaObject>();
+        if (revitEntity.IsValid())
+        {
+            var objects = revitEntity.Get<IDictionary<string, string>>("Objects");
+
+            if (objects.ContainsKey(schemaObj.ObjectType) == false) {
+                objects.Add(schemaObj.ObjectType, schemaObj.toJSONString());
+            }
+            schemaObjList = objects.Values.Select(value => ExternalDataSchemaObject.fromJSONString(value)).ToList();
+        }
+        else
+        {
+            schemaObjList.Add(schemaObj);
+        }
+
+        var newEditor = new DataCatPropertySetterWindow(schemaObjList);
+        newEditor.ShowDialog();
+
+        if (newEditor.saveChanges)
+        {
+            var externalDataEditorContainerList = newEditor.containerList;
+            var externalDataSchemaObjectList = externalDataEditorContainerList.Select(edecl => edecl.toExternalDataSchemaObject()).ToList();
+            var externalDataDict = externalDataSchemaObjectList.ToDictionary(entry => entry.ObjectType, entry => entry.toJSONString());
+
+            using (Transaction trans = new Transaction(this.uiDoc.Document, "addExternalDataToDocument"))
+            {
+                trans.Start();
+                if (revitEntity.IsValid())
+                {
+                    revitEntity.Set<IDictionary<string, string>>("Objects", externalDataDict);
+                }
+                else
+                {
+                    revitEntity = new Entity(externalSchema);
+                    revitEntity.Set<IDictionary<string, string>>("Objects", externalDataDict);
+                }
+
+                revitElement.SetEntity(revitEntity);
+                trans.Commit();
+            }
+        }
+
+
+            //using (Transaction trans = new Transaction(this.uiDoc.Document, "addExternalDataToDocument"))
+            //{
+            //    trans.Start();
+            //}
+
+
+            //var editor = new DataCatalogEditorWindow(schemaObj.prepareForEditorWindow());
+            //var newEditor = new DataCatPropertySetterWindow(new List<ExternalDataSchemaObject> { schemaObj });
+            //editor.ShowDialog();
+
+
+            /*
+            if (editor.saveChanges)
+            {
+                using (Transaction trans = new Transaction(this.uiDoc.Document, "add external data to element"))
+                {
+                    trans.Start();
+
+                    Schema externalSchema = ExternalDataUtils.createExternalDataCatalogSchema(uiDoc.Document);
+                    var revitElement = uiDoc.Document.GetElement(selectedIds.FirstOrDefault());
+
+                    var revitEntity = revitElement.GetEntity(externalSchema);
+
+                    // //if entity already exists data gets attached -> multiple property sets for one element possible//
+                    if (revitEntity.IsValid())
+                    {
+                        var objects = revitEntity.Get<IDictionary<string, string>>("Objects");
+
+                        if (objects.ContainsKey(schemaObj.ObjectType))
+                        {
+                            schemaObj.Properties = JsonConvert.DeserializeObject<Dictionary<string, string>>(editor.getDataAsJsonString());
+                            objects[schemaObj.ObjectType] = JsonConvert.SerializeObject(schemaObj);
+                        }
+
+                        else
+                        {
+                            schemaObj.Properties = JsonConvert.DeserializeObject<Dictionary<string, string>>(editor.getDataAsJsonString());
+                            objects.Add(schemaObj.ObjectType, JsonConvert.SerializeObject(schemaObj));
+                        }
+
+                        revitEntity.Set<IDictionary<string, string>>("Objects", objects);
+                        revitElement.SetEntity(revitEntity);
+                    }
+                    else
+                    {
+                        var objects = new Dictionary<string, string>();
+                        schemaObj.Properties = JsonConvert.DeserializeObject<Dictionary<string,string>>(editor.getDataAsJsonString());
+                        objects.Add(schemaObj.ObjectType, JsonConvert.SerializeObject(schemaObj));
+                        revitEntity = new Entity(externalSchema);
+                        revitEntity.Set<IDictionary<string, string>>("Objects", objects);
+                        revitElement.SetEntity(revitEntity);
+                    }
+
+                    trans.Commit();
+
+
+                    /*
+                    if (revitEntity.IsValid())
+                    {
+                        var data = revitEntity.Get <IDictionary<string, string>>("data");
+
+                        if (data.ContainsKey(node.name))
+                        {
+                            data[node.name] = editor.getDataAsJsonString();
+                        }
+
+                        else
+                        {
+                            data.Add(node.name, editor.getDataAsJsonString());
+                        }
+
+                        revitEntity.Set<IDictionary<string, string>>("data", data);
+                        var classificationAsJSONString = JsonConvert.SerializeObject(node.ifcClassification);
+                        revitEntity.Set<string>("ifcClassification", classificationAsJSONString);
+                        revitElement.SetEntity(revitEntity);
+
+                    }
+
+                    else
+                    {
+                        var data = new Dictionary<string, string>();
+                        data.Add(node.name, editor.getDataAsJsonString());
+                        revitEntity = new Entity(externalSchema);
+                        revitEntity.Set<IDictionary<string, string>>("data", data);
+                        var classificationAsJSONString = JsonConvert.SerializeObject(node.ifcClassification);
+                        revitEntity.Set<string>("ifcClassification", classificationAsJSONString);
+                        revitElement.SetEntity(revitEntity);
+                    }
+
+                    trans.Commit();
+
+                }
+            }
+
+
+
+        }
+}*/
 
         private void closeBtn_Click(object sender, RoutedEventArgs e)
         {

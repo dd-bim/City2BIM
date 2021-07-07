@@ -230,7 +230,10 @@
     <Compile Include="Calc\GeorefCalc.cs" />
     <Compile Include="Calc\Transformation.cs" />
     <Compile Include="Calc\UTMcalc.cs" />
+    <Compile Include="ExternalDataCatalog\DataGridEntry.cs" />
     <Compile Include="ExternalDataCatalog\ExternalDataClient.cs" />
+    <Compile Include="ExternalDataCatalog\ExternalDataEditorContainer.cs" />
+    <Compile Include="ExternalDataCatalog\ExternalDataSchemaObject.cs" />
     <Compile Include="ExternalDataCatalog\ExternalDataUtils.cs" />
     <Compile Include="ExternalDataCatalog\IfcClassification.cs" />
     <Compile Include="ExternalDataCatalog\IfcClassificationReference.cs" />
@@ -240,9 +243,16 @@
     </Compile>
     <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatLogin.cs" />
+    <Compile Include="GUI\DataCat\Cmd_DataCatOverview.cs" />
     <Compile Include="GUI\DataCat\Cmd_DataCatSubjQuery.cs" />
     <Compile Include="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
       <DependentUpon>DataCatalogEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DataCat\DataCatOverview.xaml.cs">
+      <DependentUpon>DataCatOverview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DataCat\DataCatPropertySetterWindow.xaml.cs">
+      <DependentUpon>DataCatPropertySetterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\DataCat\findSubjectResultForm.xaml.cs">
       <DependentUpon>findSubjectResultForm.xaml</DependentUpon>
@@ -378,6 +388,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\DataCat\DataCatOverview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\DataCat\DataCatPropertySetterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\DataCat\findSubjectResultForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -433,6 +451,9 @@
     </None>
     <None Include="img\Attribute32.png" />
     <Content Include="GdalConfiguration.vb" />
+    <None Include="img\loginIcon32.png" />
+    <None Include="img\queryDataCat.png" />
+    <None Include="img\overViewIcon.png" />
     <Content Include="Surveyorsplan2Revit\NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -534,4 +555,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>robocopy /XO $(TargetDir) $(ProgramData)\Autodesk\Revit\Addins\2021 /S
+exit 0
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
