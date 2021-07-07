@@ -367,6 +367,7 @@ namespace BIMGISInteropLibs.DXF
             LogWriter.Add(LogType.info, "[DXF] Reading data successful!");
             LogWriter.Add(LogType.info, "[DXF] " + pp.Points.Count + " points, " + pp.FixedEdges.Count + " lines and " + pp.FaceEdges.Count + " faces read.");
             
+            //set data for result processing
             result.rPoints = pp.Points.Count;
             result.rLines = pp.FixedEdges.Count;
             result.rFaces = pp.FaceEdges.Count;
@@ -482,6 +483,8 @@ namespace BIMGISInteropLibs.DXF
                             dtmPointData.Add(new double[] { dxfPoint.Location.X, dxfPoint.Location.Y, dxfPoint.Location.Z });
                             LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + dxfPoint.Location.X + "; y= " + dxfPoint.Location.Y + "; z= " + dxfPoint.Location.Z + ")");
                             break;
+                        
+                        //
                         case DxfEntityType.Face:
                             var dxfFace = (Dxf3DFace)entity;
                             dtmPointData.Add(new double[] { dxfFace.FirstCorner.X, dxfFace.FirstCorner.Y, dxfFace.FirstCorner.Z });
@@ -491,6 +494,7 @@ namespace BIMGISInteropLibs.DXF
                             dtmPointData.Add(new double[] { dxfFace.ThirdCorner.X, dxfFace.ThirdCorner.Y, dxfFace.ThirdCorner.Z });
                             LogWriter.Add(LogType.verbose, "[DXF] Point set (x= " + dxfFace.ThirdCorner.X + "; y= " + dxfFace.ThirdCorner.Y + "; z= " + dxfFace.ThirdCorner.Z + ")");
                             break;
+                        
                         //dxf entity line --> add every line
                         case DxfEntityType.Line:
 
