@@ -45,34 +45,22 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 {
                     //create IfcCartesianPoint by setting x y z
                     p.Location = model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(placement.Location.X, placement.Location.Y, placement.Location.Z));
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcCartesianPoint (Easting: " + p.Location.X + "; Northing: " + p.Location.Y + "; Height: " + p.Location.Z + ") set!"));
+                    LogWriter.Add(LogType.verbose, "IfcCartesianPoint (Easting: " + p.Location.X + "; Northing: " + p.Location.Y + "; Height: " + p.Location.Z + ") set!");
                    
                     //create IfcDirection - Axis
                     p.Axis = model.Instances.New<IfcDirection>(a => a.SetXYZ(placement.Axis.X, placement.Axis.Y, placement.Axis.Z));
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcDirection - Axis (Easting: " + p.Axis.X + "; Northing: " + p.Axis.Y + "; Height: " + p.Axis.Z + ") set!"));
+                    LogWriter.Add(LogType.verbose, "IfcDirection - Axis (Easting: " + p.Axis.X + "; Northing: " + p.Axis.Y + "; Height: " + p.Axis.Z + ") set!");
 
                     //create IfcDirection - RefDir
                     p.RefDirection = model.Instances.New<IfcDirection>(d => d.SetXYZ(placement.RefDirection.X, placement.RefDirection.Y, placement.RefDirection.Z));
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcDirection - refDirection (Easting: " + p.RefDirection.X + "; Northing: " + p.RefDirection.Y + "; Height: " + p.RefDirection.Z + ") set!"));
+                    LogWriter.Add(LogType.verbose, "IfcDirection - refDirection (Easting: " + p.RefDirection.X + "; Northing: " + p.RefDirection.Y + "; Height: " + p.RefDirection.Z + ") set!");
                 });
 
-                dynamic dirTN;
-                if (!double.IsNaN(inputTrueNorth))
-                {
-                    //set True North (via XY - Axis)
-                    dirTN = Direction2.Create(inputTrueNorth);
-                }
-                else
-                {
-                    //set to default rotation (zero)
-                    dirTN = Direction2.Create(0.00);
-                }
-
                 //set true north prepared for ifc file
-                grc.TrueNorth = model.Instances.New<IfcDirection>(d => d.SetXY(dirTN.X, dirTN.Y));
-                
+                grc.TrueNorth = model.Instances.OfType<IfcDirection>().LastOrDefault();
+
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "True North set - Axis (Easting: " + grc.TrueNorth.X + "; Northing: " + grc.TrueNorth.Y + "; set!"));
+                LogWriter.Add(LogType.verbose, "True North set - Axis (Easting: " + grc.TrueNorth.X + "; Northing: " + grc.TrueNorth.Y + "; set!");
 
                 //commit otherwise need to roll back
                 txn.Commit();
