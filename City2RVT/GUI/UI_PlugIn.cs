@@ -135,8 +135,17 @@ namespace City2RVT.GUI
             
             RibbonPanel panelDataCat = application.CreateRibbonPanel(tabName, "DataCat");
             PushButton loginDataCat = panelDataCat.AddItem(new PushButtonData("LoginBtn", "Login", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatLogin")) as PushButton;
-            PushButton querySubjects = panelDataCat.AddItem(new PushButtonData("QuerySubjBtn", "Subj", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatSubjQuery")) as PushButton;
-            
+            loginDataCat.ToolTip = "Login to server";
+            loginDataCat.LargeImage = getBitmapFromResx(ResourcePictures.loginIcon32);
+
+            PushButton querySubjects = panelDataCat.AddItem(new PushButtonData("QuerySubjBtn", "Query Catalog", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatSubjQuery")) as PushButton;
+            querySubjects.ToolTip = "Query server with key word";
+            querySubjects.LargeImage = getBitmapFromResx(ResourcePictures.queryDataCat);
+
+            PushButton overviewEditor = panelDataCat.AddItem(new PushButtonData("OverviewBtn", "Overview", thisAssemblyPath, "City2RVT.GUI.DataCat.Cmd_DataCatOverview")) as PushButton;
+            overviewEditor.ToolTip = "Show overview of all data objects";
+            overviewEditor.LargeImage = getBitmapFromResx(ResourcePictures.overViewIcon);
+
             #endregion DataCat panel
 
             #region Documentation
