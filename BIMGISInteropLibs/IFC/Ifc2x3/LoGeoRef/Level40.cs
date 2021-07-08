@@ -55,9 +55,8 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3.LoGeoRef
                     LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcDirection - Axis (Easting: " + p.Axis.X + "; Northing: " + p.Axis.Y + "; Height: " + p.Axis.Z + ") set!"));
                 });
 
-                //set True North (via XY - Axis)
-                grc.TrueNorth = model.Instances.New<IfcDirection>(a => a.SetXY(placement.Axis.X, placement.Axis.Y));
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "True north set - Axis (Easting: " + grc.TrueNorth.X + "; Northing: " + grc.TrueNorth.Y + "; set!"));
+                //set true north prepared for ifc file
+                grc.TrueNorth = model.Instances.OfType<IfcDirection>().LastOrDefault();
 
                 //commit otherwise need to roll back
                 txn.Commit();

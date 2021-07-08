@@ -59,9 +59,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 //set true north prepared for ifc file
                 grc.TrueNorth = model.Instances.OfType<IfcDirection>().LastOrDefault();
 
-                //logging
-                LogWriter.Add(LogType.verbose, "True North set - Axis (Easting: " + grc.TrueNorth.X + "; Northing: " + grc.TrueNorth.Y + "; set!");
-
                 //commit otherwise need to roll back
                 txn.Commit();
                 return grc;

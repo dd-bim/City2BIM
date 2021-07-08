@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,12 @@ using Xbim.Ifc4.GeometryResource;               //IfcAxis2Placement3D
 using Xbim.Ifc4.MeasureResource;                //IfcLabel
 using Xbim.Ifc4.RepresentationResource;         //IfcShapeRepresentation
 using Xbim.IO;                                  //StorageType
+
+using Xbim.Common;
+using Xbim.Common.Metadata;
+using Xbim.Ifc4.GeometricModelResource;
+using Xbim.IO.Step21;
+
  
 //embed IfcTerrain logic
 using BIMGISInteropLibs.IfcTerrain; //used for handling json settings
@@ -221,7 +228,12 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 case IfcFileType.Step:
                     try
                     {
-                        model.SaveAs(jSettings.destFileName, StorageType.Ifc);
+                        using (StreamWriter fileStream = new StreamWriter(jSettings.destFileName))
+                        {
+                            Save(fileStream, model);
+                        } 
+
+                        //model.SaveAs(jSettings.destFileName, StorageType.Ifc);
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated."));
                     }
                     catch (Exception ex)
@@ -256,6 +268,63 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     }
                     break;
             }
+        }
+
+        //below a small "bug fix" for IfcCartesianPointList
+        //source: https://github.com/xBimTeam/XbimGeometry/issues/291
+        /// <summary>
+        /// methode to save file and check for entity length
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="model"></param>
+        public static void Save(TextWriter writer, IModel model)
+        {
+            Part21Writer.WriteHeader(model.Header, writer, "IFC4");
+            var metadata = model.Metadata;
+            foreach (var instance in model.Instances)
+                WriteEntity(instance, writer, metadata);
+  
+            Part21Writer.WriteFooter(writer);
+        }
+
+        /// <summary>
+        /// enntity writer & checker
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="output"></param>
+        /// <param name="metadata"></param>
+        private static void WriteEntity(IPersistEntity entity, TextWriter output, ExpressMetaData metadata)
+        {
+            var expressType = metadata.ExpressType(entity);
+            output.Write("#{0}={1}(", entity.EntityLabel, expressType.ExpressNameUpper);
+
+            var first = true;
+
+            foreach (var ifcProperty in expressType.Properties.Values)
+            //only write out persistent attributes, ignore inverses
+            {
+                if (ifcProperty.EntityAttribute.State == EntityAttributeState.DerivedOverride)
+                {
+                    if (!first)
+                        output.Write(',');
+                    output.Write('*');
+                    first = false;
+                }
+                else
+                {
+                    // workaround for IfcCartesianPointList3D from IFC4x1
+                    if (entity is IfcCartesianPointList3D && ifcProperty.Name == "TagList")
+                        continue;
+
+                    var propType = ifcProperty.PropertyInfo.PropertyType;
+                    var propVal = ifcProperty.PropertyInfo.GetValue(entity, null);
+                    if (!first)
+                        output.Write(',');
+                    Part21Writer.WriteProperty(propType, propVal, output, null, metadata);
+                    first = false;
+                }
+            }
+            output.Write(");"+Environment.NewLine);
         }
     }
 }
