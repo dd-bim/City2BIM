@@ -259,8 +259,6 @@ namespace City2RVT.IFCExport
             }
         }
 
-
-
         public void addCityGMLAttributes(IfcStore model, Document doc, IDictionary<string, string> ifc2CityGMLGuidDic)
         {
             //retrieve ifc to revit id dictionary
@@ -318,7 +316,7 @@ namespace City2RVT.IFCExport
                 return;
             }
 
-            createIfcClassifications(model, doc, ifc2ExternalDataGuidDic);
+            addIfcClassifications(model, doc, ifc2ExternalDataGuidDic);
 
             foreach (KeyValuePair<string,string> entry in ifc2ExternalDataGuidDic)
             {
@@ -332,20 +330,20 @@ namespace City2RVT.IFCExport
                     //create new property set with attributes
                     //read attributes from revit extensible storage
 
-                    var dict = bpEntity.Get<IDictionary<string, string>>("data");
+                    //var dict = bpEntity.Get<IDictionary<string, string>>("data");
+                    var schemaObjList = bpEntity.Get<IDictionary<string, string>>("Objects");
 
-                    foreach (KeyValuePair<string, string> externalDataPair in dict)
+                    foreach (KeyValuePair<string, string> externalObjContainer in schemaObjList)
                     {
-                        //attribute data that is stored as single json string in revit gets deserialized to c# dictionary
-                        var propertyDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(externalDataPair.Value);
+                        var schemaObject = JsonConvert.DeserializeObject<ExternalDataSchemaObject>(externalObjContainer.Value);
 
                         var pSetRel = model.Instances.New<IfcRelDefinesByProperties>(r =>
                         {
                             r.RelatingPropertyDefinition = model.Instances.New<IfcPropertySet>(pSet =>
                             {
-                                pSet.Name = externalDataPair.Key;
+                                pSet.Name = schemaObject.ObjectType;
 
-                                foreach (KeyValuePair<string, string> property in propertyDict)
+                                foreach (KeyValuePair<string, string> property in schemaObject.Properties)
                                 {
                                     pSet.HasProperties.Add(model.Instances.New<IfcPropertySingleValue>(p =>
                                     {
@@ -361,7 +359,7 @@ namespace City2RVT.IFCExport
             }
         }
 
-        private void createIfcClassifications(IfcStore model, Document doc, Dictionary<string, string> ifc2ExternalDataGuidDic)
+        private void addIfcClassifications(IfcStore model, Document doc, Dictionary<string, string> ifc2ExternalDataGuidDic)
         {
             var externalDataSchema = utils.getSchemaByName("ExternalDataCatalogSchema");
             List<IfcClassification> classList = new List<IfcClassification>();
@@ -377,20 +375,23 @@ namespace City2RVT.IFCExport
                 var revitEntity = doc.GetElement(entry.Value).GetEntity(externalDataSchema);
                 entityList.Add(revitEntity);
 
-                var currentClassification = JsonConvert.DeserializeObject<IfcClassification>(revitEntity.Get<string>("ifcClassification"));
-                classifications.Add(currentClassification);
-
-                foreach (var classRef in currentClassification.RefList)
+                var schemaObjects = revitEntity.Get<IDictionary<string, string>>("Objects");
+                foreach (KeyValuePair<string, string> objectTypeAndObject in schemaObjects)
                 {
-                    classRefs.Add(classRef);
+                    var schemaObject = JsonConvert.DeserializeObject<ExternalDataSchemaObject>(objectTypeAndObject.Value);
+                    classifications.Add(schemaObject.IfcClassification);
+                    foreach (var classRef in schemaObject.IfcClassification.RefList)
+                    {
+                        classRefs.Add(classRef);
 
-                    if (IfcClassRefId2RevitUniqueId.ContainsKey(classRef.ID))
-                    {
-                        IfcClassRefId2RevitUniqueId[classRef.ID].Add(entry.Value);
-                    }
-                    else
-                    {
-                        IfcClassRefId2RevitUniqueId.Add(classRef.ID, new List<string> { entry.Value });
+                        if (IfcClassRefId2RevitUniqueId.ContainsKey(classRef.ID))
+                        {
+                            IfcClassRefId2RevitUniqueId[classRef.ID].Add(entry.Value);
+                        }
+                        else
+                        {
+                            IfcClassRefId2RevitUniqueId.Add(classRef.ID, new List<string> { entry.Value });
+                        }
                     }
                 }
             }
@@ -424,7 +425,6 @@ namespace City2RVT.IFCExport
                     cls.Source = uniqueClassifications.Where(c => c.ID == entry.Key).First().Source;
                     cls.Location = uniqueClassifications.Where(c => c.ID == entry.Key).First().Location;
                     cls.Edition = uniqueClassifications.Where(c => c.ID == entry.Key).First().Edition;
-                    cls.EditionDate = uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate;
                     cls.EditionDate = uniqueClassifications.Where(c => c.ID == entry.Key).First().EditionDate;
                 });
 

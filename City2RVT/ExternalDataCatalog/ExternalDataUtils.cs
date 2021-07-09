@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
+using Newtonsoft.Json;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using City2RVT;
@@ -125,7 +127,8 @@ namespace City2RVT.ExternalDataCatalog
                 return externalSchema;
             }
 
-            using (SubTransaction trans = new SubTransaction(doc))
+            //using (SubTransaction trans = new SubTransaction(doc))
+            using (Transaction trans = new Transaction(doc, "create DataCat Schema"))
             {
                 trans.Start();
 
@@ -134,8 +137,10 @@ namespace City2RVT.ExternalDataCatalog
                 schemaBuilder.SetReadAccessLevel(AccessLevel.Public);
                 schemaBuilder.SetWriteAccessLevel(AccessLevel.Public);
 
-                schemaBuilder.AddMapField("data", typeof(string), typeof(string));
-                schemaBuilder.AddSimpleField("ifcClassification", typeof(string));
+                //schemaBuilder.AddMapField("data", typeof(string), typeof(string));
+                //schemaBuilder.AddSimpleField("ifcClassification", typeof(string));
+
+                schemaBuilder.AddMapField("Objects", typeof(string), typeof(string));
 
                 externalSchema = schemaBuilder.Finish();
 
@@ -167,6 +172,43 @@ namespace City2RVT.ExternalDataCatalog
 
         }
 
+        public static List<ExternalDataSchemaObject> getExternalDataSchemaObjectsFromDoc (Document doc)
+        {
+            var externalDataSchema = utils.getSchemaByName("ExternalDataCatalogSchema");
+
+            if (externalDataSchema == null)
+            {
+                return null;
+            }
+
+            var edsoList = new List<ExternalDataSchemaObject>();
+
+            List<Element> affectedRevitElements = new List<Element>();
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            affectedRevitElements.AddRange(collector.WherePasses(new ExtensibleStorageFilter(externalDataSchema.GUID)).ToElements());
+            
+            if (affectedRevitElements.Count > 0)
+            {
+                foreach(var revitElement in affectedRevitElements)
+                {
+                    var entity = revitElement.GetEntity(externalDataSchema);
+
+                    if (entity.IsValid())
+                    {
+                        var dict = entity.Get<IDictionary<string, string>>("Objects");
+                        foreach (var dictEntry in dict)
+                        {
+                            edsoList.Add(JsonConvert.DeserializeObject<ExternalDataSchemaObject>(dictEntry.Value));
+                        }
+                    }
+                }
+                return edsoList;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
 
@@ -244,26 +286,5 @@ namespace City2RVT.ExternalDataCatalog
 
         }
             
-    }
-
-    public class ExternalDataSchemaObject
-    {
-        public string ObjectType { get; set; }
-        public Dictionary<string, string> Properties { get; set; }
-        public IfcClassification IfcClassification { get; set; }
-
-        public ExternalDataSchemaObject(string objectType, Dictionary<string, string> props, IfcClassification ifcClassification)
-        {
-            this.ObjectType = objectType;
-            this.Properties = props;
-            this.IfcClassification = ifcClassification;
-        }
-
-        public Dictionary<string, Dictionary<string, string>> prepareForEditorWindow()
-        {
-            var result = new Dictionary<string, Dictionary<string, string>>();
-            result.Add(this.ObjectType, this.Properties);
-            return result;
-        }
     }
 }
