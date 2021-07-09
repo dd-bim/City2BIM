@@ -37,19 +37,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <summary>
         /// Building Model Method
         /// </summary>
-        /// <param name="projectName"></param>
-        /// <param name="editorsFamilyName"></param>
-        /// <param name="editorsGivenName"></param>
-        /// <param name="editorsOrganisationName"></param>
-        /// <param name="siteName"></param>
-        /// <param name="sitePlacement"></param>
-        /// <param name="tin"></param>
-        /// <param name="surfaceType"></param>
-        /// <param name="breakDist"></param>
-        /// <param name="refLatitude"></param>
-        /// <param name="refLongitude"></param>
-        /// <param name="refElevation"></param>
-        /// <returns></returns>
         public static IfcStore CreateViaTin(
             JsonSettings jSt,
             JsonSettings_DIN_SPEC_91391_2 jsonSettings_DIN_SPEC,
@@ -65,7 +52,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         {
             //create model
             var model = InitModel.Create(jSt.projectName, jSt.editorsFamilyName, jSt.editorsGivenName, jSt.editorsOrganisationName, out var project);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Entity IfcProject generated."));
+            LogWriter.Add(LogType.verbose, "Entity IfcProject generated.");
 
             //init site as dynamic
             dynamic site = null;
@@ -228,17 +215,19 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 case IfcFileType.Step:
                     try
                     {
+                        /*
                         using (StreamWriter fileStream = new StreamWriter(jSettings.destFileName))
                         {
                             Save(fileStream, model);
-                        } 
+                        }
+                        */ 
 
-                        //model.SaveAs(jSettings.destFileName, StorageType.Ifc);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated."));
+                        model.SaveAs(jSettings.destFileName, StorageType.Ifc);
+                        LogWriter.Add(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated.");
                     }
                     catch (Exception ex)
                     {
-                        LogWriter.Entries.Add(new LogPair(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex));
+                        LogWriter.Add(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex);
                     }
                     break;
 
