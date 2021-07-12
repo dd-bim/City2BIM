@@ -299,6 +299,10 @@
     <Compile Include="GUI\Properties\Wpf_showLayer.xaml.cs">
       <DependentUpon>Wpf_showLayer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Surveyorsplan2BIM\Cmd_Surveyorsplan.cs" />
+    <Compile Include="GUI\Surveyorsplan2BIM\Surveyorsplan_ImportUI.xaml.cs">
+      <DependentUpon>Surveyorsplan_ImportUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
@@ -442,6 +446,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\Surveyorsplan2BIM\Surveyorsplan_ImportUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -451,9 +459,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GUI\Surveyorsplan2Revit\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="City2RVT.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -579,7 +585,7 @@
     <Error Condition="!Exists('..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.2.4.4\build\net40\GDAL.Native.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>robocopy /XO $(TargetDir) $(ProgramData)\Autodesk\Revit\Addins\2021 /S
+    <PostBuildEvent>robocopy /XO $(TargetDir) $(ProgramData)\Autodesk\Revit\Addins\2020 /S
 exit 0</PostBuildEvent>
   </PropertyGroup>
 </Project>
