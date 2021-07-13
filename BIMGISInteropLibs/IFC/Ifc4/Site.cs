@@ -17,6 +17,7 @@ using Xbim.Ifc4.ProductExtension;               //IfcSite
 using Xbim.Ifc4.Interfaces;                     //IfcElementComposition (ENUM)
 using Xbim.Ifc4.GeometryResource;               //Shape
 using Xbim.Ifc4.GeometricConstraintResource;    //IfcLocalPlacement
+using Xbim.Ifc4.RepresentationResource;         //representation res
 
 //embed IfcTerrain logic
 using BIMGISInteropLibs.IfcTerrain; //used for handling json settings
@@ -115,7 +116,33 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             
             //site
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "Initalize IfcSite"));
-            var site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
+
+            //init site and geomRepContext
+            dynamic site = null;
+            dynamic geomRepContext;
+
+            //loop for different LoGeoRef's
+            switch (loGeoRef)
+            {
+                //Level 50 - TODO
+                case IFC.LoGeoRef.LoGeoRef50:
+                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
+                    geomRepContext = LoGeoRef.Level50.Create(model, sitePlacement, jSt);
+                    break;
+                //Level 40
+                case IFC.LoGeoRef.LoGeoRef40:
+                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
+                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, jSt.trueNorth);
+                    break;
+                //Level 30 DEFAULT
+                default:
+                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
+                    break;
+            }
+            LogWriter.Add(LogType.verbose, "Entity IfcSite generated.");
+
+
+            //var site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
             
             //needed (do not remove or change!)
             RepresentationType representationType;
@@ -164,29 +191,59 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                         break;
                 }
             }
+
             //write Shape Representation to model
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Write shape representation to IfcModel..."));
+            LogWriter.Add(LogType.verbose, "Write shape representation to IfcModel...");
+            
             var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
             
+            //
+            
+
             //var terrain = createTerrain(model, "TIN", mesh.Id, null, repres);
-            var terrain = Terrain.Create(model, "TIN", null, null, repres);
+            //var terrain = Terrain.Create(model, "TIN", null, null, repres);
 
             //add site to IfcProject entity
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Add site to IfcProject entity..."));
+            LogWriter.Add(LogType.verbose, "Add site to IfcProject entity...");
             
             //start transaction
             using (var txn = model.BeginTransaction("Add Site to Project"))
             {
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Transaction started."));
-                
-                //add to entity IfcSite
+                var terrain = model.Instances.New<IfcGeographicElement>(s =>
+                {
+                    //set site name (from user input)
+                    s.Name = siteName;
+
+                    //set predefined type to TERRAIN
+                    s.PredefinedType = IfcGeographicElementTypeEnum.TERRAIN;
+
+                    //create Identifier (UUID)
+                    s.Tag = new IfcIdentifier(Guid.NewGuid().ToString());
+
+                    //
+                    s.Representation = model.Instances.New<IfcProductDefinitionShape>(r => r.Representations.Add(repres));
+
+                });
+
+                //
                 site.AddElement(terrain);
 
-                //TODO
-                //add local placement
-                var lp = terrain.ObjectPlacement as IfcLocalPlacement;
-                lp.PlacementRelTo = site.ObjectPlacement;
+
+               
                 
+                
+                
+
+                //add local placement
+                //var lp = terrain.ObjectPlacement as IfcLocalPlacement;
+
+                //add to entity IfcSite
+                //site.AddElement(terrain);
+
+                //lp.PlacementRelTo = site.ObjectPlacement;
+
+                
+
                 //add site to IfcProject
                 project.AddSite(site);
 
