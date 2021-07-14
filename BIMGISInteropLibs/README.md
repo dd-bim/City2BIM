@@ -1,0 +1,1 @@
+﻿In this class library you can find the control classes for the processing. A distinction is made between: File formats or program structures used. Use this for orientation. For more information please use our wiki pages: [Link](https://github.com/dd-bim/City2BIM/wiki)
