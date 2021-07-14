@@ -5,11 +5,104 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:City2RVT.GUI.Surveyorsplan2BIM"
         mc:Ignorable="d" 
-        Height="450" 
-        Width="800"
+        Height="650" 
+        Width="1000"
         Title="Import Surveyorsplan"
         ResizeMode="NoResize">
-    <Grid>
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.2*"/>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="0.2*"/>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
         
+        <!-- button to load dxf file -->
+        <Button x:Name="btnLoadDxf" Content="Load DXF file" Grid.Column="1" Grid.Row="1" Click="btnLoadDxf_Click"/>
+        <ListBox x:Name="lbDxfLayer" Grid.Column="1" Grid.Row="2" SelectionChanged="lbDxfLayer_SelectionChanged"/>
+
+        <!-- button to set family folder -->
+        <Button x:Name="btnSetFamilyFolder" Content="Set family folder" Grid.Column="3" Grid.Row="1" Click="btnSetFamilyFolder_Click"/>
+        <ListBox x:Name="lbFamilies" Grid.Column="3" Grid.Row="2" SelectionChanged="lbFamilies_SelectionChanged"/>
+
+        <!-- button to apply layer selection -->
+        <Button x:Name="btnApplyDxfLayer" Content="Apply DXF layer" Grid.Column="1" Grid.Row="3" Click="btnApplyDxfLayer_Click" IsEnabled="False"/>
+        
+        <!-- button to apply family selection -->
+        <Button x:Name="btnApplyFamilySelection" Content="Apply family selection" Grid.Column="3" Grid.Row="3" Click="btnApplyFamilySelection_Click" IsEnabled="False"/>
+        
+        <!-- listbox for dxf block attributes -->
+        <ListBox x:Name="lbBlockAttributes" Grid.Column="1" Grid.Row="4"/>
+
+        <!-- listbox for rvt family attributes -->
+        <ListBox x:Name="lbFamilyAttributes" Grid.Column="3" Grid.Row="4"/>
+
+        <!-- button to apply selection -->
+        <Button x:Name="btnSetSelection" Content="Set selection" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3"/>
+        
+        <!-- button to apply mapping after that list in load config -->
+        <Button x:Name="btnSetLayerMapping" Content="Set mapping" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3"/>
+        
+        <!-- button to load config -->
+        <Button x:Name="btnLoadConfig" Content="Load config" Grid.Column="5" Grid.Row="1"/>
+        <!-- button to store current config -->
+        <Button x:Name="btnSaveConfig" Content="Save config" Grid.Column="5" Grid.Row="3"/>
+
+        
+        <!-- placeholder for phase selection -->
+        <GroupBox
+            Header="Phase selection"
+            Grid.Column="6"
+            Grid.RowSpan="2">
+            <!-- TODO -->
+        </GroupBox>
+
+        <!-- placeholder for shorting zone code -->
+        <GroupBox
+            Header="Shorten zone code"
+            Grid.Column="6"
+            Grid.Row="2">
+            <!-- TODO -->
+        </GroupBox>
+
+        <!-- placeholder for metadata -->
+        <GroupBox
+            Header="Metadata"
+            Grid.Column="6"
+            Grid.Row="3"
+            Grid.RowSpan="3">
+            <!-- TODO -->
+        </GroupBox>
+
+        <!-- placeholder for metadata -->
+        <GroupBox
+            Header="Logging"
+            Grid.Column="5"
+            Grid.Row="4"
+            Grid.RowSpan="2"
+            >
+            <!-- TODO -->
+        </GroupBox>
+
+        
+        
+        
+        <!-- progress bar for showing import completion (TODO) -->
+        <ProgressBar x:Name="progressBarImport" Minimum="0" Maximum="100" Grid.Column="5" Grid.Row="6" Margin="5,0"/>
+
+        <!-- start button: kick off import (check if selection is done allready) -->
+        <Button x:Name="btnStartImport" Content="Start import" Grid.Column="6" Grid.Row="6"/>
     </Grid>
 </Window>

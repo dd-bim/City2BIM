@@ -19,10 +19,10 @@ namespace City2RVT.GUI
             Document doc = revit.Application.ActiveUIDocument.Document;
 
             //get georef settings based on revit doc
-            Prop_GeoRefSettings.SetInitialSettings(doc);
+            //Prop_GeoRefSettings.SetInitialSettings(doc);
 
             //init import ui
-            Surveyorsplan2BIM.Surveyorsplan_ImportUI importUI = new Surveyorsplan2BIM.Surveyorsplan_ImportUI();
+            Surveyorsplan2BIM.Surveyorsplan_ImportUI importUI = new Surveyorsplan2BIM.Surveyorsplan_ImportUI(doc);
 
             //show main window
             importUI.ShowDialog();
@@ -34,7 +34,8 @@ namespace City2RVT.GUI
             }
             else
             {
-                return Result.Failed;
+                //return cancelled --> user has canceled dialog ui
+                return Result.Cancelled;
             }
         }
     }
