@@ -322,46 +322,29 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             //kick off listing method
             Family family = readFamily(rvtFamilyFolder, selectedFamily);
 
+            FamilySymbol familySymbol = new FilteredElementCollector(rvtDoc).
+                OfClass(typeof(Family)).OfType<Family>().
+                FirstOrDefault(f => f.Name.Equals(family.Name))?.
+                GetFamilySymbolIds().Select(id => rvtDoc.GetElement(id)).OfType<FamilySymbol>().
+                FirstOrDefault(sym => sym.Name.Equals(family.Name));
+            
+            FamilyInstance familyInstance = null;
 
-            //
-            ElementClassFilter FamilyInstanceFilter = new ElementClassFilter(typeof(FamilyInstance));
-
-            //
-            FilteredElementCollector FamilyInstanceCollector = new FilteredElementCollector(rvtDoc);
-
-            //
-            ICollection<Element> AllFamilyInstances = FamilyInstanceCollector.WherePasses(FamilyInstanceFilter).ToElements();
-
-            //
-            List<string> paramList = new List<string>();
-
-            //
-            FamilySymbol familySymbol;
-
-            //
-            Family fam;
-
-            //
-            foreach(FamilyInstance famIns in AllFamilyInstances)
+            using (Transaction transaction = new Transaction(rvtDoc))
             {
-                familySymbol = famIns.Symbol;
-                fam = familySymbol.Family;
+                transaction.Start("Dummy");
+                familyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(rvtDoc, familySymbol);
+                transaction.Commit();
+            }
 
-                //
-                foreach(Parameter para in famIns.Parameters)
+            foreach(Parameter para in familyInstance.Parameters)
+            {   
+                if(para.Definition.ParameterGroup != BuiltInParameterGroup.INVALID)
                 {
-                    paramList.Add(para.Definition.Name);
+                    lbFamilyAttributes.Items.Add(para.Definition.Name);
                 }
-
             }
-
-
-            var parameter = family.GetParameters("Pfeiler_Material");
-
-            if(family != null)
-            {
-                MessageBox.Show(parameter.ToString());
-            }
+            lbFamilyAttributes.UpdateLayout();
         }
 
         /// <summary>
@@ -392,16 +375,14 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         /// <returns></returns>
         private Family readFamily(string filePath, string famliyFile)
         {
-            //init family
-            Family family = null;
-
             //get absoult path
             var absPath = Path.Combine(filePath, famliyFile);
 
-            //
-            FamilySymbol familySymbol = GetSymbol(rvtDoc, Path.GetFileNameWithoutExtension(famliyFile));
+            Family family = null;
+            
+            //TODO try to find family
 
-            if (familySymbol == null)
+            if (family == null)
             {
                 //read family as transaction (otherwise: famliy = null)
                 using (Transaction t = new Transaction(rvtDoc))
@@ -421,15 +402,11 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
                     t.Commit();
                 }
             }
-            else
-            {
-                family = familySymbol.Family;
-            }
-            
-
            
             return family;
         }
+
+       
 
 
         public FamilySymbol GetSymbol(Document document, string familyName)
