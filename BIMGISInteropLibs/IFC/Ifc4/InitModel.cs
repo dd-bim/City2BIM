@@ -48,7 +48,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             using (var txn = model.BeginTransaction("Initialise Model"))
             {
                 //add file description to header
-                model.Header.FileDescription.Description.Add("ViewDefinition [CoordinationView_V2.0]");
+                model.Header.FileDescription.Description.Add("ViewDefinition [DesignTransferView_V1.0]");
 
                 //create a project
                 project = model.Instances.New<IfcProject>();

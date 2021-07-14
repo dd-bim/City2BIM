@@ -26,5 +26,20 @@ namespace BIMGISInteropLibs.RvtTerrain
         public int numPoints { set; get; }
 
         public int numFacets { set; get; }
+
+        public static conversionEnum processingEnum
+        {
+            set;
+            get;
+        }
+
+        public enum conversionEnum
+        {
+            ConversionViaPoints = 1,
+            ConversionViaFaces = 2,
+            TriangulationViaPoints = 3,
+            TriangulationViaPointsAndBreaklines = 4,
+            TriangulationViaFacesAndBreaklines = 5
+        }
     }
 }

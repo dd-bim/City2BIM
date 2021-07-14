@@ -12,6 +12,8 @@ using uC = GuiHandler.userControler;
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
+using rvtRes = BIMGISInteropLibs.RvtTerrain;
+
 namespace City2RVT.GUI
 {
     /// <remarks>
@@ -61,33 +63,33 @@ namespace City2RVT.GUI
             if(terrainUI.startTerrainImport)
             {
                 //start mapping process
-                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config, terrainUI.usePointsFaces);
+                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config, rvtRes.Result.processingEnum);
 
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
 
-                if (terrainUI.usePointsFaces)
-                {
-                    //create dtm via points & faces
-                    rev.createDTM(res);
-                }
-                else
+                if (rvtRes.Result.processingEnum == rvtRes.Result.conversionEnum.ConversionViaPoints)
                 {
                     //create dtm (via points)
                     rev.createDTMviaPoints(res);
+                }
+                else
+                {
+                    //create dtm via points & faces
+                    rev.createDTM(res);
                 }
 
                 //error handlings
                 if (rev.terrainImportSuccesful)
                 {
                     dynamic resLog;
-                    if (terrainUI.usePointsFaces)
+                    if (rvtRes.Result.processingEnum == rvtRes.Result.conversionEnum.ConversionViaPoints)
                     {
-                        resLog = "Points: " + res.numPoints + " Faces: " + res.numFacets;
+                        resLog = "Points: " + res.numPoints;
                     }
                     else
                     {
-                        resLog = "Points: " + res.numPoints;
+                        resLog = "Points: " + res.numPoints + " Faces: " + res.numFacets;
                     }
 
                     //reset config

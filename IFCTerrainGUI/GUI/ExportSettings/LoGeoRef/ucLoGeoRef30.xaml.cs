@@ -94,6 +94,12 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 init.config.zOrigin = Double.Parse(tbLoGeoRef30ValueZ.Text, CultureInfo.CurrentCulture);
             }
 
+            //
+            if (valueRotation)
+            {
+                init.config.trueNorth = Double.Parse(tbRotationLevel30.Text, CultureInfo.CurrentCulture);
+            }
+
             //set task (file opening) to true (user applyed)
             GuiHandler.GuiSupport.selectGeoRef = true;
 
@@ -113,12 +119,18 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         private bool readyCheck()
         {
             //if all tasks are true
-            if (valueXset && valueYset && valueZset)
+            if (valueXset && valueYset && valueZset && !valueRotation)
             {
                 //enable apply button
                 btnLoGeoRef30Apply.IsEnabled = true;
 
                 //return
+                return true;
+            }
+            else if (valueXset && valueYset && valueZset && valueRotation)
+            {
+                //enable apply button
+                btnLoGeoRef30Apply.IsEnabled = true;
                 return true;
             }
             else
@@ -144,6 +156,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         /// </summary>
         private bool valueZset { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool valueRotation { get; set; }
         
 
         /// <summary>
@@ -189,6 +205,18 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 //set to FALSE
                 valueZset = false;
             }
+
+            if (!string.IsNullOrEmpty(tbRotationLevel30.Text))
+            {
+                //set to true
+                valueRotation = true;
+            }
+            else
+            {
+                //set to false
+                valueRotation = false;
+            }
+
             //check if all fields are not empty any more
             readyCheck();
         }
@@ -205,7 +233,14 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             e.Handled = regex.IsMatch(e.Text);
         }
 
+        private void chkRotationLevel30_Checked(object sender, RoutedEventArgs e)
+        {
+            tbRotationLevel30.IsEnabled = true;
+        }
 
-        
+        private void chkRotationLevel30_Unchecked(object sender, RoutedEventArgs e)
+        {
+            tbRotationLevel30.IsEnabled = false;
+        }
     }
 }

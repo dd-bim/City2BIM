@@ -229,13 +229,20 @@ namespace BIMGISInteropLibs.IfcTerrain
             var writeInput = new WriteInput();
             writeInput.Placement = Axis2Placement3D.Standard;
 
+            double originX = 0;
+            double originY = 0;
+            double originZ = 0;
+
             //query whether a user has assigned "coordinates"
             if (jSettings.customOrigin)
             {
-                //Placement is set via input values
-                writeInput.Placement.Location = Vector3.Create(jSettings.xOrigin, jSettings.yOrigin, jSettings.zOrigin);
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using origin: X= "+ jSettings.xOrigin + "; Y= "+jSettings.yOrigin + "; Z= "+ jSettings.zOrigin));
+                originX = jSettings.xOrigin;
+                originY = jSettings.yOrigin;
+                originZ = jSettings.zOrigin;
+
+                LogWriter.Add(LogType.verbose, "Custom orgin has been set.");
             }
+            
             //Alternative: determine the "BoundingBox", and define the center (x,y,z) as the coordinate origin.
             else if(jSettings.isTin)
             {
@@ -251,12 +258,10 @@ namespace BIMGISInteropLibs.IfcTerrain
                 if (Mesh != null)
                 {
                     //Determine center point (x,y,z)
-                    double midX = (this.Mesh.MaxX + this.Mesh.MinX) / 2;
-                    double midY = (this.Mesh.MaxY + this.Mesh.MinY) / 2;
-                    double midZ = (this.Mesh.MaxZ + this.Mesh.MinZ) / 2;
+                    originX = (this.Mesh.MaxX + this.Mesh.MinX) / 2;
+                    originY = (this.Mesh.MaxY + this.Mesh.MinY) / 2;
+                    originZ = (this.Mesh.MaxZ + this.Mesh.MinZ) / 2;
 
-                    //set center point as placement
-                    writeInput.Placement.Location = Vector3.Create(midX, midY, midZ);
                 }
                 //Proposal for BimGisCad.Composed (in MESH this already exists) [TODO]
                 else
@@ -293,33 +298,30 @@ namespace BIMGISInteropLibs.IfcTerrain
                         i++;
                     }
                     //Determine center point (x,y,z)
-                    double MidX = (MaxX + MinX) / 2;
-                    double MidY = (MaxY + MinY) / 2;
-                    double MidZ = (MaxZ + MinZ) / 2;
-
-                    //set center point as placement
-                    writeInput.Placement.Location = Vector3.Create(MidX, MidY, MidZ);
+                    originX = (MaxX + MinX) / 2;
+                    originY = (MaxY + MinY) / 2;
+                    originZ = (MaxZ + MinZ) / 2;
 
                     //logging
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "Project center point was calculated and set."));
-                    LogWriter.Entries.Add(new LogPair(LogType.debug, "Project center: X= " + MidX + "; Y= " + MidY + "; Z= " + MidZ));
+                    LogWriter.Add(LogType.verbose, "Project center point was calculated and set.");
                 }
             }
             //case mesh (not needed to calculate min or max values)
             else if(!jSettings.isTin)
             {
                 //get center point via readed mesh
-                double MidX = (this.Mesh.MinX + this.Mesh.MaxX) / 2;
-                double MidY = (this.Mesh.MinY + this.Mesh.MaxY) / 2;
-                double MidZ = (this.Mesh.MinZ + this.Mesh.MaxZ) / 2;
+                originX = (this.Mesh.MinX + this.Mesh.MaxX) / 2;
+                originY = (this.Mesh.MinY + this.Mesh.MaxY) / 2;
+                originZ = (this.Mesh.MinZ + this.Mesh.MaxZ) / 2;
 
-                //set center point as placement
-                writeInput.Placement.Location = Vector3.Create(MidX, MidY, MidZ);
-                
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.verbose, "Project center point was calculated and set."));
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "Project center: X= " + MidX + "; Y= " + MidY + "; Z= " + MidZ));
+                
             }
+            //set center point as placement
+            writeInput.Placement.Location = Vector3.Create(originX, originY, originZ);
+            LogWriter.Add(LogType.debug, "Project center: X= " + originX + "; Y= " + originY + "; Z= " + originZ);
+            writeInput.Placement.RefDirection = Direction3.Create(utils.getRotationVector(jSettings.trueNorth)[0], utils.getRotationVector(jSettings.trueNorth)[1], 0, null);
             #endregion placement / georef
 
             #region shape representation

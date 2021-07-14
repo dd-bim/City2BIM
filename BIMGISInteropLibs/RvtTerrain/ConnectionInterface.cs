@@ -25,7 +25,7 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// </summary>
         /// <param name="config">setting to config file processing and conversion process</param>
         /// <returns></returns>
-        public static Result mapProcess(JsonSettings config, bool useFaces)
+        public static Result mapProcess(JsonSettings config, BIMGISInteropLibs.RvtTerrain.Result.conversionEnum processingEnum)
         {
             //set grid size (as default value)
             config.gridSize = 1;
@@ -116,7 +116,7 @@ namespace BIMGISInteropLibs.RvtTerrain
             //init face list
             dynamic dgmFaceList = new List<DtmFace>();
 
-            if (useFaces)
+            if (processingEnum == Result.conversionEnum.ConversionViaFaces)
             {
                 if (resTerrain.Tin.Points == null)
                 {
