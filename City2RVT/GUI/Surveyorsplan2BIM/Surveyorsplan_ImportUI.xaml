@@ -44,21 +44,28 @@
         <Button x:Name="btnApplyFamilySelection" Content="Apply family selection" Grid.Column="3" Grid.Row="3" Click="btnApplyFamilySelection_Click" IsEnabled="False"/>
         
         <!-- listbox for dxf block attributes -->
-        <ListBox x:Name="lbBlockAttributes" Grid.Column="1" Grid.Row="4"/>
+        <ListBox x:Name="lbBlockAttributes" Grid.Column="1" Grid.Row="4" Height="271" VerticalAlignment="Bottom"/>
 
         <!-- listbox for rvt family attributes -->
         <ListBox x:Name="lbFamilyAttributes" Grid.Column="3" Grid.Row="4"/>
 
+        <!-- button to create mapping list -->
+        <Button x:Name="btnCreateMapping" Content="Create new mapping" Grid.Column="1" Grid.Row="5" Click="btnCreateMapping_Click" IsEnabled="False"/>
+
         <!-- button to apply selection -->
-        <Button x:Name="btnSetSelection" Content="Set selection" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3"/>
+        <Button x:Name="btnSetSelection" Content="Set selection" Grid.Column="3" Grid.Row="5" IsEnabled="False" Click="btnSetSelection_Click"/>
         
         <!-- button to apply mapping after that list in load config -->
-        <Button x:Name="btnSetLayerMapping" Content="Set mapping" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3"/>
+        <Button x:Name="btnSetLayerMapping" Content="Set mapping" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" IsEnabled="False" Click="btnSetLayerMapping_Click"/>
         
         <!-- button to load config -->
-        <Button x:Name="btnLoadConfig" Content="Load config" Grid.Column="5" Grid.Row="1"/>
+        <Button x:Name="btnLoadConfig" Content="Load config" Grid.Column="5" Grid.Row="1" Click="btnLoadConfig_Click"/>
+        
+        <!-- list box for overview of different configs-->
+        <ListBox x:Name="lbMappingConfigs" Grid.Column="5" Grid.Row="2" Background="AliceBlue"/>
+
         <!-- button to store current config -->
-        <Button x:Name="btnSaveConfig" Content="Save config" Grid.Column="5" Grid.Row="3"/>
+        <Button x:Name="btnSaveConfig" Content="Save config" Grid.Column="5" Grid.Row="3" Click="btnSaveConfig_Click"/>
 
         
         <!-- placeholder for phase selection -->
@@ -94,6 +101,10 @@
             Grid.RowSpan="2"
             >
             <!-- TODO -->
+            <ListBox
+                x:Name="lbLogging">
+                
+            </ListBox>
         </GroupBox>
 
         
@@ -103,6 +114,6 @@
         <ProgressBar x:Name="progressBarImport" Minimum="0" Maximum="100" Grid.Column="5" Grid.Row="6" Margin="5,0"/>
 
         <!-- start button: kick off import (check if selection is done allready) -->
-        <Button x:Name="btnStartImport" Content="Start import" Grid.Column="6" Grid.Row="6"/>
+        <Button x:Name="btnStartImport" Content="Start import" Grid.Column="6" Grid.Row="6" Click="btnStartImport_Click"/>
     </Grid>
 </Window>
