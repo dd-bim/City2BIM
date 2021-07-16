@@ -309,6 +309,7 @@
     <Compile Include="GUI\Surveyorsplan2BIM\Surveyorsplan_ImportUI.xaml.cs">
       <DependentUpon>Surveyorsplan_ImportUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Surveyorsplan2BIM\utils.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ExportXPlan2IFC.cs" />
     <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
     <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
