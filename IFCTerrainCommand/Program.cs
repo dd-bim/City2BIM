@@ -110,6 +110,9 @@ namespace IFCTerrainCommand
                 //create collection from each json file
                 JsonSettings jSettings = JsonConvert.DeserializeObject<JsonSettings>(jText);
 
+                //init logger
+                BIMGISInteropLibs.Logging.LogWriterIfcTerrain.initLogger(jSettings);
+
                 //set to default values
                 double? breakDist = 0.0;
                 double? refLatitude = 0.0;

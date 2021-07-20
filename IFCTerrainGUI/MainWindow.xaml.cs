@@ -324,5 +324,10 @@ namespace IFCTerrainGUI
                 guiLog.setLog("File path could not be opened!");
             }
         }
+
+        private void IFCTerrainGUI_Initialized(object sender, EventArgs e)
+        {
+            LogWriter.initLogger(init.config);
+        }
     }
 }

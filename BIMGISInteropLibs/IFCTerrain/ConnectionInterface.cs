@@ -45,7 +45,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public Result mapProcess(JsonSettings jSettings, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
         {
-            LogWriter.initLogger(jSettings);
             LogWriter.Add(LogType.info, "Log-Protocol for IFCTerrain");
             LogWriter.Add(LogType.info, "--------------------------------------------------");
             LogWriter.Add(LogType.verbose, "Mapping process started.");

@@ -142,6 +142,9 @@ namespace BIMGISInteropLibs.Logging
             //set entrie
             Entries.Add(new LogPair(logType, message));
 
+            //console logging
+            Console.WriteLine(message);
+
             //write to log file
             WriteLogFile();
         }
