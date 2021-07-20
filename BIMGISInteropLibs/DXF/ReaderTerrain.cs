@@ -85,7 +85,7 @@ namespace BIMGISInteropLibs.DXF
             {
                 LogWriter.Add(LogType.error, "DXF file could not be read (" + fileName + ")");
 
-                MessageBox.Show("DXF file could not be read: \n" + ex.Message, "DXF file reader", MessageBoxButton.OK, MessageBoxImage.Error);
+                Console.WriteLine("DXF file could not be read: " + Environment.NewLine + ex.Message);
                 return false;
             }
         }
@@ -355,9 +355,6 @@ namespace BIMGISInteropLibs.DXF
             {
                 //logging
                 LogWriter.Add(LogType.error, "[DXF] file could not be processed!");
-
-                //write to logging file
-                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
             }
 
             //pass the mesh to the result class

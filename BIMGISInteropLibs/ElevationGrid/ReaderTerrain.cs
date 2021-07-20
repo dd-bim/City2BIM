@@ -296,8 +296,8 @@ namespace BIMGISInteropLibs.ElevationGrid
                 //Log failed reading
                 LogWriter.Add(LogType.error, "XYZ file could not be read (" + fileName + ")");
 
-                //Show meassage box with exception
-                MessageBox.Show("XYZ file could not be read: \n" + e.Message, "XYZ file reader", MessageBoxButton.OK, MessageBoxImage.Error);
+                //write to console
+                Console.WriteLine("XYZ file could not be read: " + Environment.NewLine + e.Message);
 
                 //Return false in case reading the input file failed
                 return false;

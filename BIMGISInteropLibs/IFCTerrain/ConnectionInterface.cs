@@ -20,8 +20,6 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
 
-using System.Windows; //include for output error messagebox
-
 namespace BIMGISInteropLibs.IfcTerrain
 {
     public class ConnectionInterface
@@ -47,8 +45,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public Result mapProcess(JsonSettings jSettings, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
         {
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Mapping process started."));
-
+            LogWriter.initLogger(jSettings);
+            LogWriter.Add(LogType.info, "Log-Protocol for IFCTerrain");
+            LogWriter.Add(LogType.info, "--------------------------------------------------");
+            LogWriter.Add(LogType.verbose, "Mapping process started.");
+            
             //The processing is basically done by a reader and a writer (these are included in the corresponding regions)
             #region reader
             //initalize transfer class
@@ -74,6 +75,8 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.DXF:
                     //file Reader: output will be used to process terrain information
                     DXF.ReaderTerrain.ReadFile(jSettings.filePath, out DxfFile dxfFile);
+
+                    LogWriter.Add(LogType.verbose, "dxf file readed layers: " + dxfFile.Layers.Count);
 
                     //loop for distinguishing whether it is a tin or not (processing via points and lines)
                     if (jSettings.isTin)
@@ -170,7 +173,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
             }
             //so that from the reader (TIN, Error, Mesh) is passed to respective "classes"
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "Reading file completed."));
+            LogWriter.Add(LogType.debug, "Reading file completed.");
             
             //passing results from reader to local var 
             this.Tin = result.Tin;      //passing tin
@@ -182,13 +185,10 @@ namespace BIMGISInteropLibs.IfcTerrain
                 if (this.Tin.NumTriangles.Equals(0))
                 {
                     //log error message
-                    LogWriter.Entries.Add(new LogPair(LogType.error, "[READER] no DTM could be read on the basis of the input data. The DTM is empty! - Processing canceled!"));
-
-                    //write log file
-                    LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
+                    LogWriter.Add(LogType.error, "[READER] no DTM could be read on the basis of the input data. The DTM is empty! - Processing canceled!");
 
                     //Messagebox
-                    MessageBox.Show("The TIN is empty! - Processing canceled!", "TIN is empty", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //[REWORK] MessageBox.Show("The TIN is empty! - Processing canceled!", "TIN is empty", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     return result;
                 }
@@ -198,13 +198,13 @@ namespace BIMGISInteropLibs.IfcTerrain
             else if (!jSettings.isTin)
             {
                 //log reading results
-                LogWriter.Entries.Add(new LogPair(LogType.info, "MESH read: " + Mesh.Points.Count + " points; " + Mesh.FaceEdges.Count + " triangles;"));
+                LogWriter.Add(LogType.info, "MESH read: " + Mesh.Points.Count + " points; " + Mesh.FaceEdges.Count + " triangles;");
             }
             //if tin has been readed succesfully
             else
             {
                 //log reading results
-                LogWriter.Entries.Add(new LogPair(LogType.info, "TIN read: " + Tin.Points.Count + " points; " + Tin.NumTriangles + " triangles;"));
+                LogWriter.Add(LogType.info, "TIN read: " + Tin.Points.Count + " points; " + Tin.NumTriangles + " triangles;");
             }
             #endregion import data via type selection
             #endregion reader
@@ -221,7 +221,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 //so that a user can also adjust it later on
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.warning, "Project name have been set as placeholder."));
+                LogWriter.Add(LogType.warning, "Project name have been set as placeholder.");
             }
 
             #region placement / georef
@@ -315,7 +315,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 originZ = (this.Mesh.MinZ + this.Mesh.MaxZ) / 2;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Project center point was calculated and set."));
+                LogWriter.Add(LogType.verbose, "Project center point was calculated and set.");
                 
             }
             //set center point as placement
@@ -346,7 +346,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             */
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Writer is using shape representation: " + writeInput.SurfaceType.ToString()));
+            LogWriter.Add(LogType.verbose, "Writer is using shape representation: " + writeInput.SurfaceType.ToString());
             #endregion shape representation
 
             #region ifc xml / step file
@@ -356,27 +356,27 @@ namespace BIMGISInteropLibs.IfcTerrain
             if (jSettings.outFileType == IfcFileType.ifcXML)
             {
                 writeInput.FileType = IfcFileType.ifcXML;
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output ifcXML"));
+                LogWriter.Add(LogType.debug, "Using settings to output ifcXML");
             }
             else if (jSettings.outFileType == IfcFileType.ifcZip)
             {
                 writeInput.FileType = IfcFileType.ifcZip;
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output ifcZIP"));
+                LogWriter.Add(LogType.debug, "Using settings to output ifcZIP");
             }
             else
             {
                 //Standard file type to STEP (Reason: supported by IFC2x3 *AND* IFC4, etc.)
                 writeInput.FileType = IfcFileType.Step;
 
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "Using settings to output STEP"));
+                LogWriter.Add(LogType.debug, "Using settings to output STEP");
             }
             #endregion ifc xml / step file
 
             //Logging
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "Writing IFC with:"));
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "--> IFC Version " + jSettings.outIFCType));
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "--> Surfacetype " + jSettings.surfaceType));
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "--> Filetype " + jSettings.fileType));
+            LogWriter.Add(LogType.debug, "Writing IFC with:");
+            LogWriter.Add(LogType.debug, "--> IFC Version " + jSettings.outIFCType);
+            LogWriter.Add(LogType.debug, "--> Surfacetype " + jSettings.surfaceType);
+            LogWriter.Add(LogType.debug, "--> Filetype " + jSettings.fileType);
 
             //region for ifc writer control
             #region IFC2x3 writer
@@ -398,12 +398,12 @@ namespace BIMGISInteropLibs.IfcTerrain
                 IFC.Ifc2x3.Store.WriteFile(model, jSettings);
 
                 //logging file info
-                LogWriter.Entries.Add(new LogPair(LogType.info, "IFC file writen: " + jSettings.destFileName));
+                LogWriter.Add(LogType.info, "IFC file writen: " + jSettings.destFileName);
 
                 //logging stat
                 double numPoints = (double)result.wPoints / (double)result.rPoints;
                 double numFaces = (double)result.wFaces / (double)result.rFaces;
-                LogWriter.Entries.Add(new LogPair(LogType.info, "There were " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " %) and " + result.wFaces + " Triangles (" + Math.Round(numFaces * 100, 2) + " %) processed."));
+                LogWriter.Add(LogType.info, "There were " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " %) and " + result.wFaces + " Triangles (" + Math.Round(numFaces * 100, 2) + " %) processed.");
 
             }
             #endregion IFC2x3 writer (TIN)
@@ -436,18 +436,18 @@ namespace BIMGISInteropLibs.IfcTerrain
                 IFC.Ifc4.Store.WriteFile(model, jSettings);
                 
                 //logging file info
-                LogWriter.Entries.Add(new LogPair(LogType.info, "IFC file writen: " + jSettings.destFileName));
+                LogWriter.Add(LogType.info, "IFC file writen: " + jSettings.destFileName);
 
                 //logging stat
                 double numPoints = (double)result.wPoints / (double)result.rPoints;
                 double numFaces = (double)result.wFaces / (double)result.rFaces;
-                LogWriter.Entries.Add(new LogPair(LogType.info, "There were "+ result.wPoints + " points ("+ Math.Round(numPoints*100, 2) + " %) and " + result.wFaces + " Triangles ("+ Math.Round(numFaces*100, 2) + " %) processed."));
+                LogWriter.Add(LogType.info, "There were "+ result.wPoints + " points ("+ Math.Round(numPoints*100, 2) + " %) and " + result.wFaces + " Triangles ("+ Math.Round(numFaces*100, 2) + " %) processed.");
                 
             }
             #endregion IFC4 writer (TIN)
 
             #region logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC writer completed."));
+            LogWriter.Add(LogType.verbose, "IFC writer completed.");
 
             //if user didn't select a verbosity level
             if (string.IsNullOrEmpty(jSettings.verbosityLevel.ToString()))
@@ -456,17 +456,13 @@ namespace BIMGISInteropLibs.IfcTerrain
                 jSettings.verbosityLevel = LogType.info;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level set to " + jSettings.verbosityLevel.ToString()));
+                LogWriter.Add(LogType.verbose, "Verbosity level set to " + jSettings.verbosityLevel.ToString());
             }
             
             //log placeholder line
-            LogWriter.Entries.Add(new LogPair(LogType.info, "--------------------------------------------------"));
-
-            //write to log file
-            LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
+            LogWriter.Add(LogType.info, "--------------------------------------------------");
             #endregion logging
             #endregion writer
-
             return result;
         }
     }

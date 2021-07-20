@@ -38,7 +38,7 @@ namespace BIMGISInteropLibs.CityGML
 
             //TIN-Builder
             var tinB = Tin.CreateBuilder(true);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Create TIN builder"));
+            LogWriter.Add(LogType.verbose, "Create TIN builder");
             
             //init hash set
             var pList = new HashSet<Geometry.uPoint3>();
@@ -106,7 +106,7 @@ namespace BIMGISInteropLibs.CityGML
                                     Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
                                     
                                     //logging
-                                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Create TIN via TIN builder."));
+                                    LogWriter.Add(LogType.verbose, "[CityGML] Create TIN via TIN builder.");
                                     
                                     //handover tin to result
                                     result.Tin = tin;
@@ -116,8 +116,8 @@ namespace BIMGISInteropLibs.CityGML
                                     result.rFaces = tin.NumTriangles;
 
                                     //logging
-                                    LogWriter.Entries.Add(new LogPair(LogType.info, "Reading CityGML data successful."));
-                                    LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
+                                    LogWriter.Add(LogType.info, "Reading CityGML data successful.");
+                                    LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
                                     //Result handed over
                                     return result;
                                 }
@@ -127,8 +127,9 @@ namespace BIMGISInteropLibs.CityGML
                     else
                     {
                         //error logging
-                        LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] file (" + jSettings.fileName + ") no TIN data found!"));
-                        MessageBox.Show("CityGML file contains no TIN data!", "CityGML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogWriter.Add(LogType.error, "[CityGML] file (" + jSettings.fileName + ") no TIN data found!");
+
+                        Console.WriteLine("CityGML file contains no TIN data!");
                     }
                     return result;
                 }
@@ -137,8 +138,9 @@ namespace BIMGISInteropLibs.CityGML
             catch (Exception ex)
             {
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] file could not be read (" + jSettings.fileName + ")"));
-                MessageBox.Show("CityGML file could not be read: \n" + ex.Message, "LandXML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogWriter.Add(LogType.error, "[CityGML] file could not be read (" + jSettings.fileName + ")");
+                
+                Console.WriteLine("CityGML file could not be read:" + Environment.NewLine + ex.Message);
                 return result;
             }
         } //End ReadTIN

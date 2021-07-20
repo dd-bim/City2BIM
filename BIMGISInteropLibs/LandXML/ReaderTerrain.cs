@@ -153,10 +153,14 @@ namespace BIMGISInteropLibs.LandXML
             catch (Exception ex)
             {
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[LandXML] file could not be read (" + jSettings.fileName + ")"));
-                MessageBox.Show("LandXML file could not be read: \n" + ex.Message, "LandXML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
+                LogWriter.Add(LogType.error, "[LandXML] file could not be read (" + jSettings.fileName + ")");
+                LogWriter.Add(LogType.error, "[LandXML]: " + ex.Message);
+                
+                //write to console
+                Console.WriteLine("LandXML file could not be read: "+ Environment.NewLine + ex.Message);
 
-                return result;
+                //return null result --> can not be processed
+                return null;
             }
             return result;
         } //End ReadTIN

@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 //embed for CultureInfo handling
 using System.Globalization;
-using System.Windows; //include for message box (error handling db connection)
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 //shortcut for tin building class
@@ -176,9 +175,9 @@ namespace BIMGISInteropLibs.PostGIS
                             var p3 = Point3.Create(P3X * scale, P3Y * scale, P3Z * scale);
 
                             //add points to point list
-                            int pnrP1 = Geometry.terrain.addToList(pList, p1);
-                            int pnrP2 = Geometry.terrain.addToList(pList, p2);
-                            int pnrP3 = Geometry.terrain.addToList(pList, p3);
+                            int pnrP1 = terrain.addToList(pList, p1);
+                            int pnrP2 = terrain.addToList(pList, p2);
+                            int pnrP3 = terrain.addToList(pList, p3);
 
                             //add triangle via indicies (above)
                             tinB.AddTriangle(pnrP1, pnrP2, pnrP3);
@@ -315,11 +314,8 @@ namespace BIMGISInteropLibs.PostGIS
                 //log error message
                 LogWriter.Add(LogType.error, "[PostGIS]: " +  e.Message);
 
-                //write log file
-                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
-
                 //
-                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //[REWORK] MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return result;
         }
@@ -379,11 +375,8 @@ namespace BIMGISInteropLibs.PostGIS
                 //Log error message
                 LogWriter.Add(LogType.error, "[PostGIS]: " + e.Message);
 
-                //Write log file
-                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
-
                 //Show error message box
-                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //[REWORK] MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             //Pass TIN to result and log
@@ -451,16 +444,13 @@ namespace BIMGISInteropLibs.PostGIS
                     tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 //Log error message
-                LogWriter.Add(LogType.error, "[PostGIS]: " + e.Message);
+                LogWriter.Add(LogType.error, "[PostGIS]: " + ex.Message);
 
-                //Write log file
-                LogWriter.WriteLogFile(jSettings.logFilePath, jSettings.verbosityLevel, System.IO.Path.GetFileNameWithoutExtension(jSettings.destFileName));
-
-                //Show error message box
-                MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //write to console
+                Console.WriteLine("[PostGIS] - ERROR: " + ex.Message);
             }
 
             //Pass TIN to result and log
@@ -726,7 +716,7 @@ namespace BIMGISInteropLibs.PostGIS
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                    //[REWORK] MessageBox.Show(ex.ToString());
                 }
             }
 
@@ -755,7 +745,7 @@ namespace BIMGISInteropLibs.PostGIS
                 }
                 catch(Exception ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                    Console.WriteLine(ex.Message);
                 }
 
                 return;
