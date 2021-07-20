@@ -136,8 +136,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RestSharp, Version=106.11.7.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=106.12.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
