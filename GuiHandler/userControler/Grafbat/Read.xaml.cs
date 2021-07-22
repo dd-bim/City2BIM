@@ -35,6 +35,9 @@ namespace GuiHandler.userControler.Grafbat
                 //set the save path of the file to be converted
                 init.config.filePath = ofd.FileName;
 
+                //set JSON settings of file name
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
+
                 //set the save path of the file to be converted
                 init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat;
 

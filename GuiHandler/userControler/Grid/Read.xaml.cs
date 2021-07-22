@@ -58,6 +58,9 @@ namespace GuiHandler.userControler.Grid
 
                 //set JSON settings of file path
                 init.config.filePath = ofd.FileName;
+
+                //set JSON settings of file name
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 #region logging

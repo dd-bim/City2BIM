@@ -68,6 +68,9 @@ namespace GuiHandler.userControler.Reb
 
                 //set JSON settings of file path
                 init.config.filePath = ofd.FileName;
+
+                //set JSON settings of file name
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)

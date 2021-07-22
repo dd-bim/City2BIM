@@ -58,6 +58,9 @@ namespace GuiHandler.userControler.XML
                 //set the save path of the file to be converted
                 init.config.filePath = ofd.FileName;
 
+                //set JSON settings of file name
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
+
                 //TODO logging
                 return;
             }
