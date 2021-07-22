@@ -139,7 +139,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             using (var txn = model.BeginTransaction("Ifc Property Set"))
             {
                 //Query if metadata should be exported as IfcPropertySet?
-                if (jSt.outIfcPropertySet)
+                if (jSt.outIfcPropertySet.GetValueOrDefault())
                 {
                     //Methode to store Metadata according to DIN 91391-2
                     PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);

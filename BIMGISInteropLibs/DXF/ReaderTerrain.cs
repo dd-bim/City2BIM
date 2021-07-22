@@ -132,7 +132,7 @@ namespace BIMGISInteropLibs.DXF
             {
                 //Check if the layer to be processed corresponds to the "current" entity
                 //furthermore it is checked if it is a face
-                if (entity.Layer == jsonSettings.layer && entity is Dxf3DFace face)
+                if (entity.Layer == jsonSettings.dxfLayer && entity is Dxf3DFace face)
                 {
                     //query the four points of the face and pass them to variable p1 ... p4 passed
                     var p1 = Point3.Create(face.FirstCorner.X * scale,face.FirstCorner.Y * scale, face.FirstCorner.Z * scale);
@@ -241,7 +241,7 @@ namespace BIMGISInteropLibs.DXF
             double minDist = jSettings.minDist;
             
             //get layer (TODO: multiple layer selection)
-            string layer = jSettings.layer;
+            string layer = jSettings.dxfLayer;
             
             //init result class
             var result = new Result();
@@ -419,7 +419,7 @@ namespace BIMGISInteropLibs.DXF
             Result result = new Result();
 
             //Read out DXF data and create TIN via IfcTerrainTriangulator
-            if (jSettings.breakline && ReadDxfDtmData(dxfFile, jSettings, out List<double[]> dtmPointData, out List<double[]> constraintData))
+            if (jSettings.breakline.GetValueOrDefault() && ReadDxfDtmData(dxfFile, jSettings, out List<double[]> dtmPointData, out List<double[]> constraintData))
             {
                 tin = IfcTerrainTriangulator.CreateTin(dtmPointData, constraintData);
             }
@@ -456,7 +456,7 @@ namespace BIMGISInteropLibs.DXF
             constraintData = new List<double[]>();
 
             //Get layer (TODO: multiple layer selection)
-            string dtmLayer = jSettings.layer;
+            string dtmLayer = jSettings.dxfLayer;
 
             string lineLayer = jSettings.breakline_layer;
 

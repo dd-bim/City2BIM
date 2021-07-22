@@ -75,7 +75,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 //Level 40
                 case IFC.LoGeoRef.LoGeoRef40:
                     site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
-                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, jSt.trueNorth);
+                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, jSt.trueNorth.Value);
                     break;
                 //Level 30 DEFAULT
                 default:
@@ -175,16 +175,16 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             using (var txn = model.BeginTransaction("Ifc Property Set"))
             {
                 //Query if metadata should be exported as IfcPropertySet?
-                if (jSt.outIfcPropertySet)
+                if (jSt.outIfcPropertySet.GetValueOrDefault())
                 {
                     //switch between cases for metadata export
-                    if (jSt.exportMetadataDin91391)
+                    if (jSt.exportMetadataDin91391.GetValueOrDefault())
                     {
                         //Methode to store Metadata according to DIN 91391-2
                         PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
                     }                  
                     //case 2: din 18740
-                    if (jSt.exportMetadataDin18740)
+                    if (jSt.exportMetadataDin18740.GetValueOrDefault())
                     {
                         //Methode to store Metadata according to DIN 18740-6
                         PropertySet.CreatePSetMetaDin18740(model, jsonSettings_DIN_18740_6);

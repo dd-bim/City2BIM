@@ -43,15 +43,15 @@ namespace BIMGISInteropLibs.ElevationGrid
             bool is3d = jSettings.is3D;
             double minDist = jSettings.minDist;
             string fileName = jSettings.filePath;
-            int size = jSettings.gridSize;
-            bool calculateTin = jSettings.calculateTin;
+            int size = jSettings.gridSize.GetValueOrDefault();
+            bool calculateTin = jSettings.calculateTin.GetValueOrDefault();
 
             //Read bbox from json settings
-            bool bBox = jSettings.bBox;
-            double bbNorth = jSettings.bbNorth;
-            double bbEast = jSettings.bbEast;
-            double bbSouth = jSettings.bbSouth;
-            double bbWest = jSettings.bbWest;
+            bool bBox = jSettings.bBox.GetValueOrDefault();
+            double bbNorth = jSettings.bbNorth.GetValueOrDefault();
+            double bbEast = jSettings.bbEast.GetValueOrDefault();
+            double bbSouth = jSettings.bbSouth.GetValueOrDefault();
+            double bbWest = jSettings.bbWest.GetValueOrDefault();
             #endregion
 
             //Initialize return variable

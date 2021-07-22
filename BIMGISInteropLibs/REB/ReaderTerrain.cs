@@ -184,7 +184,7 @@ namespace BIMGISInteropLibs.REB
         public static Result ConvertRebToTin(RebDaData rebData, JsonSettings jSettings)
         {
             //read horizon from json settings
-            int horizon = jSettings.horizon;
+            int horizon = jSettings.horizon.GetValueOrDefault();
 
             //var mesh = new Mesh(is3D, minDist); remove
             var tinB = Tin.CreateBuilder(true);
@@ -258,7 +258,7 @@ namespace BIMGISInteropLibs.REB
             Result result = new Result();
 
             //Prepare DTM data REB file. If successful than process data and create TIN
-            if (jSettings.breakline && GetDtmData(rebData, jSettings, out List<double[]> dtmPointList) && GetConstraintData(rebData, jSettings, out List<double[]> constraintList))
+            if (jSettings.breakline.GetValueOrDefault() && GetDtmData(rebData, jSettings, out List<double[]> dtmPointList) && GetConstraintData(rebData, jSettings, out List<double[]> constraintList))
             {
                 tin = IfcTerrainTriangulator.CreateTin(dtmPointList, constraintList);
             }
@@ -331,7 +331,7 @@ namespace BIMGISInteropLibs.REB
         public static List<double[]> ReadDtmData(RebDaData rebData, JsonSettings jSettings)
         {
             List<double[]> dtmPointList = new List<double[]>();
-            int horizon = jSettings.horizon;
+            int horizon = jSettings.horizon.GetValueOrDefault();
             foreach (var point in rebData.Points)
             {
                 dtmPointList.Add(point.Value);
@@ -348,7 +348,7 @@ namespace BIMGISInteropLibs.REB
         public static List<double[]> ReadConstraintData(RebDaData rebData, JsonSettings jSettings)
         {
             List<double[]> constraintList = new List<double[]>();
-            int horizon = jSettings.horizon;
+            int horizon = jSettings.horizon.GetValueOrDefault();
             if (rebData.Lines.TryGetValue(horizon, out var lines))
             {
                 foreach (var line in lines)

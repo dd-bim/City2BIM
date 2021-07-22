@@ -86,7 +86,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             init.config.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef30;
 
             //if custom origin: set values of input fields to json settings
-            if (init.config.customOrigin)
+            if (init.config.customOrigin.Value)
             {
                 //set to json settings
                 init.config.xOrigin = Double.Parse(tbLoGeoRef30ValueX.Text, CultureInfo.CurrentCulture);

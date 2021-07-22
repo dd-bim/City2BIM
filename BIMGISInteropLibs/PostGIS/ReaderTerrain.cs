@@ -44,7 +44,7 @@ namespace BIMGISInteropLibs.PostGIS
         public static Result ReadPostGIS(JsonSettings jSettings)
         {
             string Host = jSettings.host;
-            int Port = jSettings.port;
+            int Port = jSettings.port.GetValueOrDefault();
             string User = jSettings.user;
             string Password = jSettings.password;
             string DBname = jSettings.database;
@@ -54,7 +54,7 @@ namespace BIMGISInteropLibs.PostGIS
             string tinidcolumn = jSettings.tinid_column;
             dynamic tinid = jSettings.tin_id;
 
-            bool postgis_bl = jSettings.breakline;
+            bool postgis_bl = jSettings.breakline.GetValueOrDefault();
             string bl_column = jSettings.breakline_column;
             string bl_table = jSettings.breakline_table;
             string bl_tinid = jSettings.breakline_tin_id;
@@ -335,7 +335,7 @@ namespace BIMGISInteropLibs.PostGIS
 
             //Get database connection parameters
             string host = jSettings.host;
-            int port = jSettings.port;
+            int port = jSettings.port.GetValueOrDefault();
             string user = jSettings.user;
             string password = jSettings.password;
             string dbName = jSettings.database;
@@ -405,7 +405,7 @@ namespace BIMGISInteropLibs.PostGIS
 
             //Get database connection parameters
             string host = jSettings.host;
-            int port = jSettings.port;
+            int port = jSettings.port.GetValueOrDefault();
             string user = jSettings.user;
             string password = jSettings.password;
             string dbName = jSettings.database;
@@ -434,7 +434,7 @@ namespace BIMGISInteropLibs.PostGIS
                 var conn = new NpgsqlConnection(connString);
 
                 //Decide weather breaklines shall be used or not used 
-                if (jSettings.breakline && GetDtmData(conn, dtmDataSql, out List<double[]> dtmPointList) && GetBreaklineData(conn, breaklineDataSql, out List<double[]> constraintList))
+                if (jSettings.breakline.GetValueOrDefault() && GetDtmData(conn, dtmDataSql, out List<double[]> dtmPointList) && GetBreaklineData(conn, breaklineDataSql, out List<double[]> constraintList))
                 {
                     //Read DTM data from PostGis, compute triangles and create TIN
                     tin = IfcTerrainTriangulator.CreateTin(dtmPointList, constraintList);

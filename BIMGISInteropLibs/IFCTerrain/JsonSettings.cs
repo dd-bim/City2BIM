@@ -96,12 +96,12 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decision to calculate a TIN of the input data
         /// </summary>
-        public bool calculateTin { get; set; }
+        public bool? calculateTin { get; set; }
 
         /// <summary>
         /// Decision to recalculate a existing TIN
         /// </summary>
-        public bool recalculateTin { get; set; }
+        public bool? recalculateTin { get; set; }
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
@@ -134,23 +134,23 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// Decide whether metadata should be exported as a separate JSON file<para/>
         /// TODO: support of IFCTerrain Command
         /// </summary>
-        public bool exportMetadataFile { get; set; }
+        public bool? exportMetadataFile { get; set; }
 
         /// <summary>
         /// Decide whehter metadata should be stored as IfcPropertySets
         /// </summary>
-        public bool outIfcPropertySet { get; set; }
+        public bool? outIfcPropertySet { get; set; }
         #endregion
 
         /// <summary>
         /// Decide whether metadata (according to DIN SPEC 91391-2) should be exported
         /// </summary>
-        public bool exportMetadataDin91391 { get; set; }
+        public bool? exportMetadataDin91391 { get; set; }
 
         /// <summary>
         /// Decide whether metadata (according to DIN 18740-6) should be exported
         /// </summary>
-        public bool exportMetadataDin18740 { get; set; }
+        public bool? exportMetadataDin18740 { get; set; }
 
         #region only used for processing [Settings]
         /// <summary>
@@ -163,6 +163,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public double minDist { get; set; }
 
+        /// <summary>
+        /// Describes whether an input DXF file contains tin information (faces) or not
+        /// </summary>
+        public bool isTin { get; set; }
+
         /// <summary> 
         ///Sets the terrain model type for the output IFC file: GCS=GeometricCurveSet; SBSM=ShellBasesSurfaceModel; TFS=TriangulatedFaceSet
         /// </summary>
@@ -171,9 +176,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not
         /// </summary>
-        public bool geoElement { get; set; }
-
-
+        public bool? geoElement { get; set; }
         #endregion
 
         //below the required attributes to process the georeferencing
@@ -187,38 +190,38 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Describes whether the project coordinate origin should be set to the user defined position or not.
         /// </summary>
-        public bool customOrigin { get; set; }
+        public bool? customOrigin { get; set; }
 
         /// <summary>
         /// x - value of a user defined georeferencing
         /// </summary>
-        public double xOrigin { get; set; }
+        public double? xOrigin { get; set; }
 
         /// <summary>
         /// y - value of a user defined georeferencing
         /// </summary>
-        public double yOrigin { get; set; }
+        public double? yOrigin { get; set; }
 
         /// <summary>
         /// z - value of a user defined georeferencing
         /// </summary>
-        public double zOrigin { get; set; }
+        public double? zOrigin { get; set; }
 
         /// <summary>
         /// [LoGeoRef40] true north rotation
         /// </summary>
-        public double trueNorth { get; set; }
+        public double? trueNorth { get; set; }
 
         #region LoGeoRef50
         /// <summary>
         /// [LoGeoRef50] scale
         /// </summary>
-        public double scale { get; set; }
+        public double? scale { get; set; }
 
         /// <summary>
         /// [LoGeoRef50] Name of the CRS (EPSG-Code)
         /// </summary>
-        public int crsName { get; set; }
+        public int? crsName { get; set; }
 
         /// <summary>
         /// [LoGeoRef50] Description to the CRS
@@ -256,12 +259,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Name of the layer that contains terrain information in an input DXF file
         /// </summary>
-        public string layer { get; set; }
-
-        /// <summary>
-        /// Describes whether an input DXF file contains tin information (faces) or not
-        /// </summary>
-        public bool isTin { get; set; }
+        public string dxfLayer { get; set; }
         #endregion
 
         //for reb processing
@@ -269,7 +267,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Number of the horizon that contains terrain information
         /// </summary>
-        public int horizon { get; set; }
+        public int? horizon { get; set; }
         #endregion
 
         //for elevation grid processing
@@ -277,33 +275,33 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// The distance between points in the grid input file
         /// </summary>
-        public int gridSize { get; set; }
+        public int? gridSize { get; set; }
 
         #region BoundingBox
         /// <summary>
         /// Decision whether BoundingBox should be processed (yes = true)
         /// </summary>
-        public bool bBox { get; set; }
+        public bool? bBox { get; set; }
 
         /// <summary>
         /// NORTH value of the bounding box
         /// </summary>
-        public double bbNorth { get; set; }
+        public double? bbNorth { get; set; }
 
         /// <summary>
         /// EAST value of the bounding box
         /// </summary>
-        public double bbEast { get; set; }
+        public double? bbEast { get; set; }
 
         /// <summary>
         /// SOUTH value of the bounding box
         /// </summary>
-        public double bbSouth { get; set; }
+        public double? bbSouth { get; set; }
 
         /// <summary>
         /// WEST value of the bounding box
         /// </summary>
-        public double bbWest { get; set; }
+        public double? bbWest { get; set; }
 
 
         #endregion
@@ -314,27 +312,27 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decides whether all horizons (=false) or only selected ones (=true) are to be used. If filtering is to be used, the entry must be made via "horizonFilter".
         /// </summary>
-        public bool onlyHorizon { get; set; }
+        public bool? onlyHorizon { get; set; }
 
         /// <summary>
         /// Input only if "onlyHorizon" is true. Designation of specific horizons. Separation via: "/" ";" "," permissible
         /// </summary>
-        public int horizonFilter { get; set; }
+        public int? horizonFilter { get; set; }
 
         /// <summary>
         /// Decides whether all types(=false) or only selected ones(=true) are to be used.If filtering is to be used, the entry must be made via "layer".
         /// </summary>
-        public bool onlyTypes { get; set; }
+        public bool? onlyTypes { get; set; }
 
         /// <summary>
         /// Decides whether the status code for the location position should be ignored (=true).
         /// </summary>
-        public bool ignPos { get; set; }
+        public bool? ignPos { get; set; }
 
         /// <summary>
         /// Decides whether the status code for the height position should be ignored (=true).
         /// </summary>
-        public bool ignHeight { get; set; }
+        public bool? ignHeight { get; set; }
 
         /// <summary>
         /// Name of the layer that contains the breakline. (only one layer is allowed)
@@ -344,7 +342,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decides whether break edges are to be processed(true).
         /// </summary>
-        public bool breakline { get; set; }
+        public bool? breakline { get; set; }
         #endregion
 
         //for postgis processing
@@ -357,7 +355,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Specifying the port for the database connection
         /// </summary>
-        public int port { get; set; }
+        public int? port { get; set; }
 
         /// <summary>
         /// Specification of the user name for authentication with the database

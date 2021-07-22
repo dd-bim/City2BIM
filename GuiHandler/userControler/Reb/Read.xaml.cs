@@ -199,7 +199,7 @@ namespace GuiHandler.userControler.Reb
         private void btnProcessReb_Click(object sender, RoutedEventArgs e)
         {
             //blank json settings 
-            init.config.layer = null;
+            init.config.dxfLayer = null;
 
             //get selected horizon
             int horizon = (int)this.lbRebSelect.SelectedItem;

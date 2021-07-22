@@ -173,7 +173,7 @@ namespace IFCTerrainGUI
 
             #region metadata
             //will be executed if user select export of meta data
-            if (init.config.exportMetadataFile)
+            if (init.config.exportMetadataFile.GetValueOrDefault())
             {
                 try
                 {
@@ -183,7 +183,7 @@ namespace IFCTerrainGUI
                     var export187406 = new JProperty("DIN 18740-6", "NOT EXPORTED");
 
                     //check if metadata should be exported according to DIN 91391-2
-                    if (init.config.exportMetadataDin91391)
+                    if (init.config.exportMetadataDin91391.GetValueOrDefault())
                     {
                         LogWriter.Add(LogType.verbose, "[GUI][Metadata]***DIN SPEC 91391-2***");
                         //Assignment all obligatory variables
@@ -201,7 +201,7 @@ namespace IFCTerrainGUI
                     }
 
                     //check if metadata should be exported according to DIN 18740-6
-                    if (init.config.exportMetadataDin18740)
+                    if (init.config.exportMetadataDin18740.GetValueOrDefault())
                     {
                         //set export string
                         export187406 = new JProperty("DIN 18740-6", JObject.FromObject(init.config18740));
@@ -234,7 +234,11 @@ namespace IFCTerrainGUI
                 LogWriter.Add(LogType.info, "[GUI][JsonSettings] start serializing json");
 
                 //convert to json object
-                string jExportText = JsonConvert.SerializeObject(init.config, Formatting.Indented);
+                string jExportText = JsonConvert.SerializeObject(init.config, Formatting.Indented, new JsonSerializerSettings
+                {
+                    //ignore null values
+                    NullValueHandling = NullValueHandling.Ignore
+                });
 
                 //export json settings
                 File.WriteAllText(dirPath + @"\config_" + fileType + "_" + ifcVersion + "_" + shape + ".json", jExportText);

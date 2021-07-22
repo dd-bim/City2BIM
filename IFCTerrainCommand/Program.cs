@@ -115,16 +115,13 @@ namespace IFCTerrainCommand
 
                 //set to default values
                 double? breakDist = 0.0;
-                double? refLatitude = 0.0;
-                double? refLongitude = 0.0;
-                double? refElevation = 0.0;
 
                 //create new instance of the ConnectionInterface
                 var conn = new ConnectionInterface();
 
                 //start mapping process
                 //TODO: add jSettings for metadata to IfcPropertySet
-                conn.mapProcess(jSettings, null, null, breakDist, refLatitude, refLongitude, refElevation);
+                conn.mapProcess(jSettings, null, null, breakDist);
             }
             //finish programm
             return;

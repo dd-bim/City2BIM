@@ -43,9 +43,9 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer
         /// </summary>
-        public Result mapProcess(JsonSettings jSettings, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740, double? breakDist = null, double? refLatitude = null, double? refLongitude = null, double? refElevation = null)
+        public Result mapProcess(JsonSettings jSettings, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740, double? breakDist = null)
         {
-            LogWriter.Add(LogType.info, "Log-Protocol for IFCTerrain");
+            LogWriter.Add(LogType.info, "Processing-Protocol for IFCTerrain");
             LogWriter.Add(LogType.info, "--------------------------------------------------");
             LogWriter.Add(LogType.verbose, "Mapping process started.");
             
@@ -83,7 +83,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //Tin - Reader (if dxf file contains faces)
                         result = DXF.ReaderTerrain.ReadDxfTin(dxfFile, jSettings);
                     }
-                    else if (jSettings.recalculateTin)
+                    else if (jSettings.recalculateTin.GetValueOrDefault())
                     {
                         //TIN is recalculated by using an existing TIN and breaklines
                         result = DXF.ReaderTerrain.RecalculateTin(dxfFile, jSettings);
@@ -91,7 +91,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //After a TIN has been calculated the atribute 'isTin' becomes true
                         jSettings.isTin = true;
                     }
-                    else if (jSettings.calculateTin)
+                    else if (jSettings.calculateTin.GetValueOrDefault())
                     {
                         //TIN is calculated from point data (in case breaklines are selected these are uses as well)
                         result = DXF.ReaderTerrain.CalculateTin(dxfFile, jSettings);
@@ -115,7 +115,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //use REB data via processing with converter
                         result = REB.ReaderTerrain.ConvertRebToTin(rebData, jSettings);
                     }
-                    else if (jSettings.calculateTin)
+                    else if (jSettings.calculateTin.GetValueOrDefault())
                     {
                         //Calculate TIN if calculateTin is set
                         result = REB.ReaderTerrain.CalculateTin(rebData, jSettings);
@@ -153,7 +153,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //A exisiting TIN is read and converted
                         result = PostGIS.ReaderTerrain.ReadPostGIS(jSettings);
                     }
-                    if (jSettings.recalculateTin)
+                    if (jSettings.recalculateTin.GetValueOrDefault())
                     {
                         //A existing TIN is recalculated by using the triangle and line data
                         result = PostGIS.ReaderTerrain.RecalculateTin(jSettings);
@@ -161,7 +161,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //After a TIN has been calculated the atribute 'isTin' becomes true
                         jSettings.isTin = true;
                     }
-                    else if (jSettings.calculateTin)
+                    else if (jSettings.calculateTin.GetValueOrDefault())
                     {
                         //A TIN of MultiPoint data is calculated (if choosen, line data is used as well)
                         result = PostGIS.ReaderTerrain.CalculateTin(jSettings);
@@ -233,11 +233,11 @@ namespace BIMGISInteropLibs.IfcTerrain
             double originZ = 0;
 
             //query whether a user has assigned "coordinates"
-            if (jSettings.customOrigin)
+            if (jSettings.customOrigin.Value)
             {
-                originX = jSettings.xOrigin;
-                originY = jSettings.yOrigin;
-                originZ = jSettings.zOrigin;
+                originX = jSettings.xOrigin.Value;
+                originY = jSettings.yOrigin.Value;
+                originZ = jSettings.zOrigin.Value;
 
                 LogWriter.Add(LogType.verbose, "Custom orgin has been set.");
             }
@@ -320,7 +320,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             //set center point as placement
             writeInput.Placement.Location = Vector3.Create(originX, originY, originZ);
             LogWriter.Add(LogType.debug, "Project center: X= " + originX + "; Y= " + originY + "; Z= " + originZ);
-            writeInput.Placement.RefDirection = Direction3.Create(utils.getRotationVector(jSettings.trueNorth)[0], utils.getRotationVector(jSettings.trueNorth)[1], 0, null);
+            writeInput.Placement.RefDirection = Direction3.Create(utils.getRotationVector(jSettings.trueNorth.GetValueOrDefault())[0], utils.getRotationVector(jSettings.trueNorth.GetValueOrDefault())[1], 0, null);
             #endregion placement / georef
 
             #region shape representation
@@ -411,7 +411,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             else if (jSettings.outIFCType == IfcVersion.IFC4)
             {
                 //create IFC4 modell
-                var model = jSettings.geoElement
+                var model = jSettings.geoElement.GetValueOrDefault()
                     //create with geo element
                     ? IFC.Ifc4.Geo.Create(
                         jSettings,
