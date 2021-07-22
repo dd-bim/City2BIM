@@ -45,7 +45,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             using (var txn = model.BeginTransaction("Create TIN"))
             {
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation started..."));
+                LogWriter.Add(LogType.verbose, "IfcTFS shape representation started...");
 
                 //init empty dictionary
                 var vmap = new Dictionary<int, int>();
@@ -100,7 +100,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 txn.Commit();
                 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation created."));
+                LogWriter.Add(LogType.verbose, "IfcTFS shape representation created.");
 
                 return tfs;
             }
@@ -122,7 +122,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             using (var txn = model.BeginTransaction("Create TIN"))
             {
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation started..."));
+                LogWriter.Add(LogType.verbose, "IfcTFS shape representation started...");
 
                 //init empty dictionary
                 var vmap = new Dictionary<int, int>();
@@ -147,7 +147,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     }
                 });
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "CoordList created."));
+                LogWriter.Add(LogType.debug, "CoordList created.");
 
                 //TFS write --> need cpl
                 var tfs = model.Instances.New<IfcTriangulatedFaceSet>(t =>
@@ -184,7 +184,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 txn.Commit();
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcTFS shape representation created."));
+                LogWriter.Add(LogType.verbose, "IfcTFS shape representation created.");
                 
                 return tfs;
             }

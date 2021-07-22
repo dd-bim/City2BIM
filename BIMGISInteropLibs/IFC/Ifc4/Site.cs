@@ -53,12 +53,12 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             using (var txn = model.BeginTransaction("Create Site"))
             {
                 //init model
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Transaction started."));
+                LogWriter.Add(LogType.verbose, "[IfcSite] Transaction started.");
                 var site = model.Instances.New<IfcSite>(s =>
                 {
                     //set site name
                     s.Name = name;
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Name ('" + s.Name + "') set."));
+                    LogWriter.Add(LogType.verbose, "[IfcSite] Name ('" + s.Name + "') set.");
 
                     //set angle
                     s.CompositionType = compositionType;
@@ -66,16 +66,16 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     if (refLatitude.HasValue)
                     {
                         s.RefLatitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLatitude.Value);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Latitude ('" + s.RefLatitude.Value + "') set."));
+                        LogWriter.Add(LogType.verbose, "[IfcSite] Latitude ('" + s.RefLatitude.Value + "') set.");
                     }
                     if (refLongitude.HasValue)
                     {
                         s.RefLongitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLongitude.Value);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Longitude ('" + s.RefLongitude.Value + "') set."));
+                        LogWriter.Add(LogType.verbose, "[IfcSite] Longitude ('" + s.RefLongitude.Value + "') set.");
                     }
 
                     s.RefElevation = refElevation;
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Elevation ('" + s.RefElevation.ToString() + "') set."));
+                    LogWriter.Add(LogType.verbose, "[IfcSite] Elevation ('" + s.RefElevation.ToString() + "') set.");
 
                     placement = placement ?? Axis2Placement3D.Standard;
 
@@ -87,8 +87,8 @@ namespace BIMGISInteropLibs.IFC.Ifc4
 
                 });
                 txn.Commit();
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Transaction commited."));
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[IfcSite] Site created."));
+                LogWriter.Add(LogType.verbose, "[IfcSite] Transaction commited.");
+                LogWriter.Add(LogType.debug, "[IfcSite] Site created.");
                 return site;
             }
         }
@@ -111,11 +111,11 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             IfcLabel siteName = jSt.siteName;
 
             //init model
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Initalize IfcModel"));
+            LogWriter.Add(LogType.verbose, "Initalize IfcModel");
             var model = InitModel.Create(jSt.projectName, jSt.editorsFamilyName, jSt.editorsGivenName, jSt.editorsOrganisationName, out var project);
             
             //site
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Initalize IfcSite"));
+            LogWriter.Add(LogType.verbose, "Initalize IfcSite");
 
             //init site and geomRepContext
             dynamic site = null;
@@ -253,7 +253,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
 
                 //commit otherwise no update / add
                 txn.Commit();
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Transaction commited."));
+                LogWriter.Add(LogType.verbose, "Transaction commited.");
             }
 
             //return model

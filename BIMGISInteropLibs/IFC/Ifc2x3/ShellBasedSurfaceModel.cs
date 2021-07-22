@@ -53,14 +53,14 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             if (mesh.MaxFaceCorners < 3)
             {
                 //log error
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[IFC-Writer] MESH has no Faces!"));
+                LogWriter.Add(LogType.error, "[IFC-Writer] MESH has no Faces!");
 
                 //output error (TODO: MESSAGE window?)
                 throw new Exception("Mesh has no Faces");
             }
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation creation started..."));
+            LogWriter.Add(LogType.verbose, "IfcSBSM shape representation creation started...");
 
             //start transaction
             using (var txn = model.BeginTransaction("Create Mesh"))
@@ -125,7 +125,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                 txn.Commit();
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation created."));
+                LogWriter.Add(LogType.verbose, "IfcSBSM shape representation created.");
 
                 return sbsm;
             }
@@ -146,7 +146,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             using (var txn = model.BeginTransaction("Create Tin"))
             {
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation creation started..."));
+                LogWriter.Add(LogType.verbose, "IfcSBSM shape representation creation started...");
 
                 //Point indexing 
                 var vmap = new Dictionary<int, int>();
@@ -167,7 +167,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                 result.wPoints = cpl.Count;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "CoordList created."));
+                LogWriter.Add(LogType.debug, "CoordList created.");
 
                 //init numFaces for processing results (logging)
                 int numFaces = 0;
@@ -204,7 +204,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                 txn.Commit();
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcSBSM shape representation created."));
+                LogWriter.Add(LogType.verbose, "IfcSBSM shape representation created.");
 
                 return sbsm;
             }

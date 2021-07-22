@@ -84,7 +84,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 GuiHandler.GuiSupport.selectIfcVersion = true;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] IFC schema set."));
+                LogWriter.Add(LogType.debug, "[GUI] IFC schema set.");
                 guiLog.setLog("IFC schema version set.");
 
                 //check if all required tasks are performed
@@ -159,7 +159,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 GuiHandler.GuiSupport.selectIfcShape = true;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] IFC shape representation set."));
+                LogWriter.Add(LogType.debug, "[GUI] IFC shape representation set.");
                 guiLog.setLog("IFC shape representation set.");
 
                 //check if all required tasks are performed

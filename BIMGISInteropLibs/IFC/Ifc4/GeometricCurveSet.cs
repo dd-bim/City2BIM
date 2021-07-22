@@ -36,7 +36,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             Mesh mesh = result.Mesh;
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation creation started..."));
+            LogWriter.Add(LogType.verbose, "IfcGCS shape representation creation started...");
 
             //begin a transaction
             using (var txn = model.BeginTransaction("Create DTM (IfcGCS)"))
@@ -127,7 +127,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 representationType = RepresentationType.GeometricCurveSet;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation created."));
+                LogWriter.Add(LogType.verbose, "IfcGCS shape representation created.");
 
                 //commit transaction
                 txn.Commit();
@@ -154,7 +154,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             Tin tin = result.Tin;
 
             //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation creation started..."));
+            LogWriter.Add(LogType.verbose, "IfcGCS shape representation creation started...");
 
             //begin a transaction
             using (var txn = model.BeginTransaction("Create DTM"))
@@ -199,7 +199,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 representationType = RepresentationType.GeometricCurveSet;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcGCS shape representation created."));
+                LogWriter.Add(LogType.verbose, "IfcGCS shape representation created.");
 
                 //commit transaction - ACID (otherwise rollback)
                 txn.Commit();

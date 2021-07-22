@@ -50,7 +50,7 @@ namespace BIMGISInteropLibs.LandXML
 
                     //TIN-Builder erzeugen
                     var tinB = Tin.CreateBuilder(true);
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[LandXML] TIN builder created."));
+                    LogWriter.Add(LogType.verbose, "[LandXML] TIN builder created.");
 
                     //Create PNR "artificially" & used for Indexing in TIN
                     int pnr = 0;
@@ -96,7 +96,7 @@ namespace BIMGISInteropLibs.LandXML
                                             //add point to tin builder
                                             tinB.AddPoint(pnr, point);
                                             //logging
-                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[LandXML] Point (" + (pnr) + ") set (x= " + point.X + "; y= " + point.Y + "; z= " + point.Z + ")"));
+                                            LogWriter.Add(LogType.verbose, "[LandXML] Point (" + (pnr) + ") set (x= " + point.X + "; y= " + point.Y + "; z= " + point.Z + ")");
                                             //add to point indicies
                                             pntIds.Add(att.Value, pnr++);
                                         }
@@ -116,7 +116,7 @@ namespace BIMGISInteropLibs.LandXML
                                             tinB.AddTriangle(p1, p2, p3);
 
                                             //logging
-                                            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[LandXML] Triangle set (P1= " + (p1) + "; P2= " + (p2) + "; P3= " + (p3) + ")"));
+                                            LogWriter.Add(LogType.verbose, "[LandXML] Triangle set (P1= " + (p1) + "; P2= " + (p2) + "; P3= " + (p3) + ")");
                                         }
                                     }
                                     break;
@@ -130,7 +130,7 @@ namespace BIMGISInteropLibs.LandXML
                             //Generate TIN from TIN Builder
                             Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
                             
-                            LogWriter.Entries.Add(new LogPair(LogType.debug, "[LandXML] TIN created via TIN builder."));
+                            LogWriter.Add(LogType.debug, "[LandXML] TIN created via TIN builder.");
 
                             //return tin to result
                             result.Tin = tin;
@@ -140,8 +140,8 @@ namespace BIMGISInteropLibs.LandXML
                             result.rFaces = tin.NumTriangles;
 
                             //Logging
-                            LogWriter.Entries.Add(new LogPair(LogType.info, "Reading LandXML data successful."));
-                            LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
+                            LogWriter.Add(LogType.info, "Reading LandXML data successful.");
+                            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
                             return result;
                         }

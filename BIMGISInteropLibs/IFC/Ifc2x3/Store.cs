@@ -45,7 +45,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         {
             //create model
             var model = InitModel.Create(jSt.projectName, jSt.editorsFamilyName, jSt.editorsGivenName, jSt.editorsOrganisationName, out var project);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Entity IfcProject generated."));
+            LogWriter.Add(LogType.verbose, "Entity IfcProject generated.");
 
             //site name
             IfcLabel siteName = jSt.siteName;
@@ -71,7 +71,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     break;
 
             }
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Entity IfcSite generated."));
+            LogWriter.Add(LogType.verbose, "Entity IfcSite generated.");
 
             //init
             RepresentationType representationType;
@@ -114,7 +114,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
 
             //create IfcShapeRepres
             var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Entity IfcShapeRepresentation generated."));
+            LogWriter.Add(LogType.verbose, "Entity IfcShapeRepresentation generated.");
 
             //add site entity to ifc project (model)
             using (var txn = model.BeginTransaction("Add Site to Project"))
@@ -124,12 +124,12 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                 
                 //add site to project
                 project.AddSite(site);
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "IfcShapeRepresentation add to IfcSite."));
+                LogWriter.Add(LogType.verbose, "IfcShapeRepresentation add to IfcSite.");
 
                 //modfiy owner history
                 model.OwnerHistoryAddObject.CreationDate = DateTime.Now;
                 model.OwnerHistoryAddObject.LastModifiedDate = model.OwnerHistoryAddObject.CreationDate;
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "Entity IfcOwnerHistory updated."));
+                LogWriter.Add(LogType.verbose, "Entity IfcOwnerHistory updated.");
 
                 //commit otherwise would not update / add
                 txn.Commit();
@@ -173,11 +173,11 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     try
                     {
                         model.SaveAs(jSettings.destFileName, StorageType.Ifc);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated."));
+                        LogWriter.Add(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated.");
                     }
                     catch (Exception ex)
                     {
-                        LogWriter.Entries.Add(new LogPair(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex));
+                        LogWriter.Add(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex);
                     }
                     break;
 
@@ -186,11 +186,11 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     try
                     {
                         model.SaveAs(jSettings.destFileName, StorageType.IfcXml);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated."));
+                        LogWriter.Add(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated.");
                     }
                     catch (Exception ex)
                     {
-                        LogWriter.Entries.Add(new LogPair(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex));
+                        LogWriter.Add(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex);
                     }
                     break;
 
@@ -199,11 +199,11 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     try
                     {
                         model.SaveAs(jSettings.destFileName, StorageType.IfcZip);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated."));
+                        LogWriter.Add(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated.");
                     }
                     catch (Exception ex)
                     {
-                        LogWriter.Entries.Add(new LogPair(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex));
+                        LogWriter.Add(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex);
                     }
                     break;
             }

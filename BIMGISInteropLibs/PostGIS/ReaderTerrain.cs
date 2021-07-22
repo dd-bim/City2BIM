@@ -118,7 +118,7 @@ namespace BIMGISInteropLibs.PostGIS
                     {
                         //read column --> as EWKT
                         string geom_string = (reader.GetValue(0)).ToString();
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] reading from table via 'EWKT'"));
+                        LogWriter.Add(LogType.verbose, "[PostGIS] reading from table via 'EWKT'");
 
                         //Split - CRS & TIN
                         string[] geom_split = geom_string.Split(';');

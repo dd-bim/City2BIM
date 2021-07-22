@@ -52,18 +52,18 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     //set terrain designation
                     s.Name = name;
                     s.CompositionType = compositionType; //DO NOT CHANGE
-                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Name ('" + s.Name + "') set."));
+                    LogWriter.Add(LogType.verbose, "[IfcSite] Name ('" + s.Name + "') set.");
 
                     //set latitude and longitude
                     if (refLatitude.HasValue)
                     {
                         s.RefLatitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLatitude.Value);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Latitude ('" + s.RefLatitude.Value + "') set."));
+                        LogWriter.Add(LogType.verbose, "[IfcSite] Latitude ('" + s.RefLatitude.Value + "') set.");
                     }
                     if (refLongitude.HasValue)
                     {
                         s.RefLongitude = IfcCompoundPlaneAngleMeasure.FromDouble(refLongitude.Value);
-                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Longitude ('" + s.RefLongitude.Value + "') set."));
+                        LogWriter.Add(LogType.verbose, "[IfcSite] Longitude ('" + s.RefLongitude.Value + "') set.");
                     }
                     s.RefElevation = refElevation;
 
@@ -79,8 +79,8 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                 });
                 //commit transaction (acccording to ACID) otherwise the site would not be provided
                 txn.Commit();
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[IfcSite] Transaction commited."));
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[IfcSite] Site created."));
+                LogWriter.Add(LogType.verbose, "[IfcSite] Transaction commited.");
+                LogWriter.Add(LogType.debug, "[IfcSite] Site created.");
                 return site;
             }
         }

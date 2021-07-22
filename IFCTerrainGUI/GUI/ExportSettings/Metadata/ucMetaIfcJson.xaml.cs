@@ -81,7 +81,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 //set to true
                 init.config.exportMetadataFile = true;
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'JSON' set."));
+                LogWriter.Add(LogType.debug, "[GUI] Metadata export 'JSON' set.");
                 guiLog.setLog("Metadata export 'JSON' set.");
 
             }
@@ -91,7 +91,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 //set output of IfcPropertySet to true
                 init.config.outIfcPropertySet = true;
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'IfcPropertySet' set."));
+                LogWriter.Add(LogType.debug, "[GUI] Metadata export 'IfcPropertySet' set.");
                 guiLog.setLog("Metadata export 'IfcPropertySet' set.");
             }
 
