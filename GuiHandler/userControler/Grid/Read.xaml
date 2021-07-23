@@ -16,7 +16,7 @@
         <Button x:Name="btnReadGrid" Content="Read 'Grid' file" Click="btnReadGrid_Click"/>
         <Button x:Name="btnProcessGrid" Grid.Row="3" Content="Apply 'Grid' file settings" Click="btnProcessGrid_Click" IsEnabled="False"/>
 
-        <StackPanel x:Name="stpGridSize" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False" Height="20">
+        <StackPanel Visibility="Hidden" x:Name="stpGridSize" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False" Height="20">
             <TextBlock Text="Grid size:" Margin="0,0,5,0" VerticalAlignment="Center"/>
             <!--<num:IntBox x:Name="tbGridSize" Width="50" TextChanged="tbBB_TextChanged" TextAlignment="Center" ValidationTrigger="PropertyChanged" Validation.Error="tbNum_Error"/>-->
             <TextBox x:Name="tbGridSize" Width="50" TextChanged="tbBB_TextChanged" TextAlignment="Center" VerticalContentAlignment="Center" PreviewTextInput="tbGridSize_PreviewTextInput" />
@@ -32,11 +32,14 @@
             Checked="chkCalculateTin_Checked" 
             Unchecked="chkCalculateTin_Unchecked"
             IsEnabled="False"
+            IsChecked="True"
+            Visibility="Hidden"
             ToolTip="Use this option to calculate a TIN of the (irregular) XYZ-Dataset."
             />
 
         <GroupBox
-            Grid.Row="2"
+            Grid.Row="1"
+            Grid.RowSpan="2"
             Header="Bounding Box"
             >
             <Grid>

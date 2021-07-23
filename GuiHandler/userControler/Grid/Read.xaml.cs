@@ -85,7 +85,7 @@ namespace GuiHandler.userControler.Grid
 
                 chkGridBB.IsEnabled = true;
 
-                chkCalculateTin.IsEnabled = true;
+                chkCalculateTin.IsEnabled = false;
             }
         }
 

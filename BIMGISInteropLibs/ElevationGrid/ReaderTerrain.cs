@@ -56,26 +56,36 @@ namespace BIMGISInteropLibs.ElevationGrid
 
             //Initialize return variable
             var result = new Result();
+            
+            //log
+            LogWriter.Add(LogType.info, "[Grid] Will be done via delauny triangulation.");
 
-            if (calculateTin)
+            //read dtm point data
+            if (ReadDtmPointData(fileName, bBox, bbNorth, bbEast, bbSouth, bbWest, out List<double[]> dtmPointList))
             {
-                #region TIN
-                if (ReadDtmPointData(fileName, bBox, bbNorth, bbEast, bbSouth, bbWest, out List<double[]> dtmPointList))
-                {
-                    //Calculate triangulation
-                    Tin tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
+                //Calculate triangulation
+                Tin tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
 
-                    //Pass TIN to result and log
-                    result.Tin = tin;
-                    LogWriter.Add(LogType.info, "Reading XYZ data successful.");
-                    result.rPoints = tin.Points.Count;
-                    result.rFaces = tin.NumTriangles;
-                    LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
-                }
-                #endregion
+                //Pass TIN to result and log
+                result.Tin = tin;
+                LogWriter.Add(LogType.info, "Reading XYZ data successful.");
+                result.rPoints = tin.Points.Count;
+                result.rFaces = tin.NumTriangles;
+                LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+                return result;
             }
             else
             {
+                //write error message
+                LogWriter.Add(LogType.error, "[Grid] Reading failed.");
+
+                //return null --> processing should stop after this
+                return null;
+            }
+            /*
+            }
+            else
+            {               
                 #region MESH
                 //Initialize MESH
                 var mesh = new BimGisCad.Collections.Mesh(is3d, minDist); //will be replaced by TIN
@@ -224,9 +234,10 @@ namespace BIMGISInteropLibs.ElevationGrid
                 #endregion
                 #endregion
             }
-
+            
             //Return the result as TIN or MESH
             return result;
+            */
         }
 
         /// <summary>
