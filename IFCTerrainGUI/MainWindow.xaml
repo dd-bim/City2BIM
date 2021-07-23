@@ -16,7 +16,7 @@
         Title="IFCTerrain GUI" 
         Height="880" Width="800" Icon="Resources/DD_BIM_ICON.ico"
         FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize" Initialized="IFCTerrainGUI_Initialized" 
+        ResizeMode="CanMinimize" 
         >
     <Grid x:Name="MainGrid">
         <!-- add background coloring -->

@@ -57,7 +57,7 @@ namespace IFCTerrainGUI
             guiLog.setLog("Welcome to IFCTerrain");
 
             //file logging
-            LogWriter.Add(LogType.verbose, "GUI initialized.");
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "GUI initialized."));
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace IFCTerrainGUI
                 init.config.logFilePath = logPath;
 
                 //logging
-                LogWriter.Add(LogType.verbose, "[GUI] Storage location set to: " + init.config.logFilePath);
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Storage location set to: " + init.config.logFilePath));
             }
             else
             {
@@ -145,7 +145,7 @@ namespace IFCTerrainGUI
                 MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
 
                 //logging
-                LogWriter.Add(LogType.warning, "[GUI] Storage location was not set.");
+                LogWriter.Entries.Add(new LogPair(LogType.warning, "[GUI] Storage location was not set."));
             }
             return;
         }
@@ -154,13 +154,16 @@ namespace IFCTerrainGUI
         /// </summary>
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            //
+            LogWriter.initLogger(init.config);
+
             //json settings set 3D to true [TODO]
             init.config.is3D = true;
-            LogWriter.Add(LogType.verbose, "[GUI][JsonSetting] set 'is3D'-value to default (true)");
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'is3D'-value to default (true)"));
 
             //json settings set minDist to 1.0 (default value) [TODO]
             init.config.minDist = 1.0;
-            LogWriter.Add(LogType.verbose, "[GUI][JsonSetting] set 'minDist'-value to default (1.0 m)");
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'minDist'-value to default (1.0 m)"));
 
             //read export specific settings
             //get filepath
@@ -177,7 +180,7 @@ namespace IFCTerrainGUI
             {
                 try
                 {
-                    LogWriter.Add(LogType.verbose, "[GUI][Metadata] export started.");
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] export started."));
                     //init vars for export settings
                     var export913912 = new JProperty("DIN SPEC 91391-2", "NOT EXPORTED");
                     var export187406 = new JProperty("DIN 18740-6", "NOT EXPORTED");
@@ -185,7 +188,7 @@ namespace IFCTerrainGUI
                     //check if metadata should be exported according to DIN 91391-2
                     if (init.config.exportMetadataDin91391.GetValueOrDefault())
                     {
-                        LogWriter.Add(LogType.verbose, "[GUI][Metadata]***DIN SPEC 91391-2***");
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata]***DIN SPEC 91391-2***"));
                         //Assignment all obligatory variables
                         //set file name
                         init.config91391.name = System.IO.Path.GetFileName(init.config.destFileName);
@@ -196,7 +199,7 @@ namespace IFCTerrainGUI
                         //set export string
                         export913912 = new JProperty("DIN SEPC 91391-2", JObject.FromObject(init.config91391));
                         
-                        LogWriter.Add(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty.");
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
 
                     }
 
@@ -205,8 +208,8 @@ namespace IFCTerrainGUI
                     {
                         //set export string
                         export187406 = new JProperty("DIN 18740-6", JObject.FromObject(init.config18740));
-                        LogWriter.Add(LogType.verbose, "[GUI][Metadata] ***DIN 18740-6***");
-                        LogWriter.Add(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty.");
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] ***DIN 18740-6***"));
+                        LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
                     }
 
                     //build objects (here you can add, if needed more objects)
@@ -216,13 +219,13 @@ namespace IFCTerrainGUI
                     //File.WriteAllText(@"D:\test.json", meta.ToString());
                     File.WriteAllText(dirPath + @"\" + dirName + "_metadata.json", meta.ToString());
 
-                    LogWriter.Add(LogType.info, "[GUI][Metadata] exported metadata to following path: " + dirPath);
+                    LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][Metadata] exported metadata to following path: " + dirPath));
 
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
-                    LogWriter.Add(LogType.error, "Metadata - processing: " + ex.Message.ToString());
+                    LogWriter.Entries.Add(new LogPair(LogType.error, "Metadata - processing: " + ex.Message.ToString()));
                 }
             }
 
@@ -231,7 +234,7 @@ namespace IFCTerrainGUI
             //serialize json file
             try
             {
-                LogWriter.Add(LogType.info, "[GUI][JsonSettings] start serializing json");
+                LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][JsonSettings] start serializing json"));
 
                 //convert to json object
                 string jExportText = JsonConvert.SerializeObject(init.config, Formatting.Indented, new JsonSerializerSettings
@@ -243,13 +246,13 @@ namespace IFCTerrainGUI
                 //export json settings
                 File.WriteAllText(dirPath + @"\config_" + fileType + "_" + ifcVersion + "_" + shape + ".json", jExportText);
 
-                LogWriter.Add(LogType.info, "[GUI][JsonSettings] exported to following path: " + dirPath);
+                LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][JsonSettings] exported to following path: " + dirPath));
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
 
-                LogWriter.Add(LogType.error, "Json Config - processing: " + ex.Message.ToString());
+                LogWriter.Entries.Add(new LogPair(LogType.error, "Json Config - processing: " + ex.Message.ToString()));
             }
 
             //lock MainWindow 
@@ -277,7 +280,7 @@ namespace IFCTerrainGUI
             ConnectionInterface conInt = new ConnectionInterface();
 
             //logging
-            LogWriter.Add(LogType.verbose, "[BackgroundWorker][IFC] started.");
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
 
             //start mapping process which currently begins with the selection of the file reader
             result = conInt.mapProcess(init.config, init.config91391, init.config18740);
@@ -327,11 +330,6 @@ namespace IFCTerrainGUI
                 //gui logging (user information)
                 guiLog.setLog("File path could not be opened!");
             }
-        }
-
-        private void IFCTerrainGUI_Initialized(object sender, EventArgs e)
-        {
-            LogWriter.initLogger(init.config);
         }
     }
 }

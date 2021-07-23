@@ -55,7 +55,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 init.config.siteName = "Terrain";
             }
-            LogWriter.Add(LogType.verbose, "[GUI] Metadata: Site name set to: " + init.config.projectName);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Site name set to: " + init.config.projectName));
 
             //project name
             init.config.projectName = tbProjectName.Text.ToString();
@@ -63,7 +63,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 init.config.projectName = "Project Titel [Placeholder]";
             }
-            LogWriter.Add(LogType.verbose, "[GUI] Metadata: Project name set to: " + init.config.projectName);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Project name set to: " + init.config.projectName));
 
             //organisation name
             init.config.editorsOrganisationName = tbOrganisationName.Text.ToString();
@@ -71,7 +71,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 init.config.editorsOrganisationName = "Organisation [Placeholder]";
             }
-            LogWriter.Add(LogType.verbose, "[GUI] Metadata: Organisation name set to: " + init.config.editorsOrganisationName);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Organisation name set to: " + init.config.editorsOrganisationName));
 
             //given name
             init.config.editorsGivenName = tbGivenName.Text.ToString();
@@ -79,7 +79,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 init.config.editorsGivenName = "Given name [Placeholder]";
             }
-            LogWriter.Add(LogType.verbose, "[GUI] Metadata: Given name set to: " + init.config.editorsGivenName);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Given name set to: " + init.config.editorsGivenName));
 
             //family name
             init.config.editorsFamilyName = tbFamilyName.Text.ToString();
@@ -87,13 +87,13 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             {
                 init.config.editorsFamilyName = "Family name [Placeholder]";
             }
-            LogWriter.Add(LogType.verbose, "[GUI] Metadata: Family name set to: " + init.config.editorsFamilyName);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Metadata: Family name set to: " + init.config.editorsFamilyName));
 
             //set task (file opening) to true
             GuiHandler.GuiSupport.selectMetadata = true;
 
             //logging
-            LogWriter.Add(LogType.debug, "[GUI] Metadata - IfcProject set.");
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata - IfcProject set."));
             guiLog.setLog("Metadata - IfcProject set.");
 
             //check if all task are allready done

@@ -74,7 +74,7 @@ namespace BIMGISInteropLibs.DXF
                 {
                     dxfFile = DxfFile.Load(fs);
 
-                    LogWriter.Add(LogType.verbose, "DXF file has been read (" + fileName + ")");
+                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "DXF file has been read (" + fileName + ")"));
 
                     return true;
                 }
@@ -83,9 +83,7 @@ namespace BIMGISInteropLibs.DXF
             //if it can't be opend
             catch(Exception ex)
             {
-                LogWriter.Add(LogType.error, "DXF file could not be read (" + fileName + ")");
-
-                Console.WriteLine("DXF file could not be read: " + Environment.NewLine + ex.Message);
+                LogWriter.Entries.Add(new LogPair(LogType.error, "DXF file could not be read (" + fileName + ")" + Environment.NewLine + ex.Message));
                 return false;
             }
         }
