@@ -259,7 +259,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Name of the layer that contains terrain information in an input DXF file
         /// </summary>
-        public string dxfLayer { get; set; }
+        public string layer { get; set; }
         #endregion
 
         //for reb processing

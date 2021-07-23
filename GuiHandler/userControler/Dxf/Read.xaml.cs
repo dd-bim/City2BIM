@@ -280,7 +280,7 @@ namespace GuiHandler.userControler.Dxf
             //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = null;
 
             //blank json settings 
-            init.config.dxfLayer = null;
+            init.config.layer = null;
 
             //is executed as soon as a DXF layer is selected
             if (this.lbDxfDtmLayer.SelectedIndex >= 0)
@@ -295,7 +295,7 @@ namespace GuiHandler.userControler.Dxf
                     //MainWindow.jSettings.layer += item + ";"; [DRAFT for Multi-Layer support]
 
                     //set selected items to json settings
-                    init.config.dxfLayer = item;
+                    init.config.layer = item;
 
                     //visual output on the GUI (layer selection)
 

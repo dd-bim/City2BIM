@@ -132,7 +132,7 @@ namespace BIMGISInteropLibs.DXF
             {
                 //Check if the layer to be processed corresponds to the "current" entity
                 //furthermore it is checked if it is a face
-                if (entity.Layer == jsonSettings.dxfLayer && entity is Dxf3DFace face)
+                if (entity.Layer == jsonSettings.layer && entity is Dxf3DFace face)
                 {
                     //query the four points of the face and pass them to variable p1 ... p4 passed
                     var p1 = Point3.Create(face.FirstCorner.X * scale,face.FirstCorner.Y * scale, face.FirstCorner.Z * scale);
@@ -241,7 +241,7 @@ namespace BIMGISInteropLibs.DXF
             double minDist = jSettings.minDist;
             
             //get layer (TODO: multiple layer selection)
-            string layer = jSettings.dxfLayer;
+            string layer = jSettings.layer;
             
             //init result class
             var result = new Result();
@@ -456,7 +456,7 @@ namespace BIMGISInteropLibs.DXF
             constraintData = new List<double[]>();
 
             //Get layer (TODO: multiple layer selection)
-            string dtmLayer = jSettings.dxfLayer;
+            string dtmLayer = jSettings.layer;
 
             string lineLayer = jSettings.breakline_layer;
 
