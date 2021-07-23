@@ -80,7 +80,7 @@ namespace BIMGISInteropLibs.Logging
             //create logger
             Serilog.Core.Logger results = new LoggerConfiguration()
                 //write logging file to path --> use fileType and date for log file name
-                .WriteTo.File(path + "/" + logfileName + "_" + date + ".log")
+                .WriteTo.File(path + logfileName + "_" + date + ".log")
                 //change minimum level (set by config)
                 .MinimumLevel.ControlledBy(levelSwitch)
                 //init logger (have to be at the end of this config)
