@@ -80,6 +80,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 init.config18740.projection = this.selectProjection.SelectionBoxItem.ToString() + "; " + this.tbInputProjection.Text.ToString();
             }
 
+            //#7 deviation
+            init.config18740.deviationPosition = this.tbDeviationPosition.Text.ToString();
+            init.config18740.deviationAltitude = this.tbDeviationAltitude.Text.ToString();
+
             //gui logging (user information)
             guiLog.setLog("Metadata DIN 18740-6 adopted!");
 
