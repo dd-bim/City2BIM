@@ -35,31 +35,35 @@
         </Grid.RowDefinitions>
         <!-- info text -->
         <TextBlock Text="Here you can assign metadata (according to DIN 18740-6)." Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" FontSize="14"/>
-        <TextBlock Text="at least the following information must be provided!" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Text="Moddelltyp" Grid.Row="2" VerticalAlignment="Center"/>
-        <TextBlock Text="Datenstruktur" Grid.Row="3" VerticalAlignment="Center"/>
-        <TextBlock Text="Darstellungsform" Grid.Row="4" VerticalAlignment="Center"/>
-        <TextBlock Text="Aktualität (Erfassung)" Grid.Row="5" VerticalAlignment="Center"/>
-        <TextBlock Text="Erfassungsmethode" Grid.Row="6" VerticalAlignment="Center"/>
-        <TextBlock Text="Lagereferenzsystem" Grid.Row="7" VerticalAlignment="Center"/>
-        <TextBlock Text="Höhenreferenzsystem" Grid.Row="8" VerticalAlignment="Center"/>
-        <TextBlock Text="Projektion" Grid.Row="9" VerticalAlignment="Center"/>
-        <TextBlock Text="Gebietsausdehnung" Grid.Row="10" VerticalAlignment="Center" ToolTip="räumliche Umfang des Datensatzes"/>
-        <TextBlock Text="Genauigkeit - horizontal" Grid.Row="11" VerticalAlignment="Center"/>
-        <TextBlock Text="Genauigkeit - vertikal" Grid.Row="12" VerticalAlignment="Center"/>
+        <TextBlock Text="At least the following information must be provided!" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="Model type" Grid.Row="2" VerticalAlignment="Center"/>
+        <TextBlock Text="Data model" Grid.Row="3" VerticalAlignment="Center"/>
+        <TextBlock Text="Representation" Grid.Row="4" VerticalAlignment="Center"/>
+        <TextBlock Text="Acquisition date" Grid.Row="5" VerticalAlignment="Center"/>
+        <TextBlock Text="Acquisition method" Grid.Row="6" VerticalAlignment="Center"/>
+        <TextBlock Text="Position reference system" Grid.Row="7" VerticalAlignment="Center"/>
+        <TextBlock Text="Altitude reference system" Grid.Row="8" VerticalAlignment="Center"/>
+        <TextBlock Text="Projection" Grid.Row="9" VerticalAlignment="Center"/>
+        <TextBlock Text="Spatial expansion" Grid.Row="10" VerticalAlignment="Center" ToolTip="räumliche Umfang des Datensatzes"/>
+        <TextBlock Text="Deviation - horizontal" Grid.Row="11" VerticalAlignment="Center"/>
+        <TextBlock Text="Deviation - vertical" Grid.Row="12" VerticalAlignment="Center"/>
 
 
         <!-- input fields -->
         <ComboBox x:Name="selectModelType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
             <ComboBoxItem x:Name="itemDtm" Content="DTM" IsSelected="True"/>
+            <ComboBoxItem x:Name="itemDsm" Content="DSM" />
         </ComboBox>
 
         <ComboBox x:Name="selectDataStructure" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
             <ComboBoxItem Content="Mesh" IsSelected="True"/>
+            <ComboBoxItem Content="Tin"/>
         </ComboBox>
 
         <ComboBox x:Name="selectedRep" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem x:Name="itemIsoline" Content="Isoline" Visibility="Collapsed"/>
+            <ComboBoxItem x:Name="itemPc" Content="Point Cloud" />
+            <ComboBoxItem x:Name="itemIsoline" Content="Isoline" />
+            <ComboBoxItem x:Name="itemColor" Content="Color encoded" />
             <ComboBoxItem x:Name="itemShading" Content="Shading" IsSelected="True"/>
         </ComboBox>
 
@@ -67,7 +71,10 @@
         <DatePicker x:Name="entryDate" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"></DatePicker>
 
         <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem Content="Terrestrische Aufnahme" IsSelected="True"/>
+            <ComboBoxItem Content="Terrestrial survey" IsSelected="True"/>
+            <ComboBoxItem Content="Photogrammetry"/>
+            <ComboBoxItem Content="Airborne laserscanning"/>
+            <ComboBoxItem Content="InSAR"/>
         </ComboBox>
 
         <ComboBox x:Name="selectPosRef" Grid.Row="7" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center">
@@ -81,7 +88,7 @@
         <ComboBox x:Name="selectAltitudeRef" Grid.Row="8" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" SelectionChanged="selectAltitudeRef_SelectionChanged">
             <ComboBoxItem x:Name="itemDhhn92" Content="DHHN92"/>
             <ComboBoxItem x:Name="itemDhhn16"  Content="DHHN16"/>
-            <ComboBoxItem x:Name="itemAltitudeUser" Content="Nutzereingabe:"/>
+            <ComboBoxItem x:Name="itemAltitudeUser" Content="User input:"/>
         </ComboBox>
 
         <TextBox x:Name="tbInputAltitude" Grid.Row="8" Grid.Column="2" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False"/>
@@ -89,15 +96,15 @@
         <ComboBox x:Name="selectProjection" Grid.Row="9" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" SelectionChanged="selectProjection_SelectionChanged">
             <ComboBoxItem x:Name="itemGcg2011" Content="GCG2011"/>
             <ComboBoxItem x:Name="itemGcg2005" Content="GCG2005"/>
-            <ComboBoxItem x:Name="itemProjectUser" Content="Nutzereingabe:"/>
+            <ComboBoxItem x:Name="itemProjectUser" Content="User input:"/>
         </ComboBox>
 
         <TextBox x:Name="tbInputProjection" Grid.Row="9" Grid.Column="2" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False"/>
 
         <CheckBox Grid.Row="10" Grid.Column="1" VerticalContentAlignment="Center" Content="export Bounding Box" IsEnabled="False" ToolTip="[Currently not supported]" ToolTipService.ShowOnDisabled="True"/>
 
-        <TextBox Grid.Row="11" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False" ToolTip="[Currently not supported]" ToolTipService.ShowOnDisabled="True"/>
-        <TextBox Grid.Row="12" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False" ToolTip="[Currently not supported]" ToolTipService.ShowOnDisabled="True"/>
+        <TextBox x:Name="tbDeviationPosition" Grid.Row="11" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbDeviationAltitude" Grid.Row="12" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
         
         <!--apply button-->
         <Button x:Name="btnApplyMetadata187406" Grid.Row="19" Grid.ColumnSpan="3" Content="Apply and Close - Window" Click="btnApplyMetadata187406_Click"/>
