@@ -133,7 +133,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
-                        p.Name = "Datastructur";
+                        p.Name = "Data model";
                         if (!string.IsNullOrEmpty(jSettings.dataStructure))
                         {
                             p.NominalValue = new IfcText(jSettings.dataStructure);
@@ -169,6 +169,22 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                         if (!string.IsNullOrEmpty(jSettings.projection))
                         {
                             p.NominalValue = new IfcText(jSettings.projection);
+                        }
+                    }),
+                    model.Instances.New<IfcPropertySingleValue>(p =>
+                    {
+                        p.Name = "Deviation - position";
+                        if (!string.IsNullOrEmpty(jSettings.deviationPosition))
+                        {
+                            p.NominalValue = new IfcText(jSettings.deviationPosition);
+                        }
+                    }),
+                    model.Instances.New<IfcPropertySingleValue>(p =>
+                    {
+                        p.Name = "Deviation - altitude";
+                        if (!string.IsNullOrEmpty(jSettings.deviationAltitude))
+                        {
+                            p.NominalValue = new IfcText(jSettings.deviationAltitude);
                         }
                     }),
                 });
