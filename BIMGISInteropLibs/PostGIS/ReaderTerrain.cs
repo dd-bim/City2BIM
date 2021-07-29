@@ -24,7 +24,6 @@ using terrain = BIMGISInteropLibs.Geometry.terrain;
 //Compute triangulation
 using BIMGISInteropLibs.Triangulator;
 
-
 using RestSharp;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
@@ -43,6 +42,8 @@ namespace BIMGISInteropLibs.PostGIS
         /// <returns>TIN via Result for terrain processing (IFCTerrain/Revit)</returns>
         public static Result ReadPostGIS(JsonSettings jSettings)
         {
+            
+
             string Host = jSettings.host;
             int Port = jSettings.port.GetValueOrDefault();
             string User = jSettings.user;
@@ -71,7 +72,6 @@ namespace BIMGISInteropLibs.PostGIS
 
             //Container to store breaklines
             Dictionary<int, Line3> breaklines = new Dictionary<int, Line3>();
-
             try
             {
                 //prepare string for database connection
@@ -85,9 +85,24 @@ namespace BIMGISInteropLibs.PostGIS
                         DBname
                         );
 
-                var conn = new NpgsqlConnection(connString);
+                LogWriter.Add(LogType.verbose, "Connection string: " + connString);
+
+                dynamic conn = null;
+                
+                try
+                {
+                    conn = new NpgsqlConnection(connString);
+
+                }
+                catch (Exception ex)
+                {
+                    LogWriter.Add(LogType.error, ex.Message);
+                }
+
+                LogWriter.Add(LogType.verbose, "Handed over conntection string to NpqgSqlConnection ");
 
                 conn.Open();
+
                 LogWriter.Add(LogType.info, "[PostGIS] Connected to Database.");
 
                 NpgsqlConnection.GlobalTypeMapper.UseLegacyPostgis();
@@ -318,6 +333,27 @@ namespace BIMGISInteropLibs.PostGIS
                 //[REWORK] MessageBox.Show("[PostGIS]: " + e.Message, "PostGIS - Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return result;
+        }
+
+        private static void connector(JsonSettings jsonSettings)
+        {
+            LogWriter.Add(LogType.verbose, "Using auxilary connection function.");
+            var builder = new NpgsqlConnectionStringBuilder();
+            LogWriter.Add(LogType.verbose, "Init connection string builder.");
+
+            builder.Host = jsonSettings.host;
+            builder.Port = jsonSettings.port.GetValueOrDefault();
+            builder.Username = jsonSettings.user;
+            builder.Password = jsonSettings.password;
+            builder.Database = jsonSettings.database;
+            LogWriter.Add(LogType.verbose, "Connection string is set to the builder.");
+
+
+            NpgsqlConnection conn = new NpgsqlConnection(builder.ConnectionString);
+            LogWriter.Add(LogType.verbose, "Connection string is set to NpgsqlCon.");
+
+            conn.Open();
+            LogWriter.Add(LogType.verbose, "Connection is opend.");
         }
 
         /// <summary>
@@ -692,7 +728,6 @@ namespace BIMGISInteropLibs.PostGIS
             conn.Close();
             return constraintList;
         }
-
     }
 
     public class RvtReaderTerrain : RestClient

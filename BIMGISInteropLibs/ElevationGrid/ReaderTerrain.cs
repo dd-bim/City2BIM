@@ -54,35 +54,43 @@ namespace BIMGISInteropLibs.ElevationGrid
             double bbWest = jSettings.bbWest.GetValueOrDefault();
             #endregion
 
+            //REMOVE!!!
+            calculateTin = false;
+            jSettings.isTin = false;
+
+            //
+            size = (int)1;
+            
             //Initialize return variable
             var result = new Result();
             
             //log
             LogWriter.Add(LogType.info, "[Grid] Will be done via delauny triangulation.");
 
-            //read dtm point data
-            if (ReadDtmPointData(fileName, bBox, bbNorth, bbEast, bbSouth, bbWest, out List<double[]> dtmPointList))
+            if (calculateTin)
             {
-                //Calculate triangulation
-                Tin tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
+                //read dtm point data
+                if (ReadDtmPointData(fileName, bBox, bbNorth, bbEast, bbSouth, bbWest, out List<double[]> dtmPointList))
+                {
+                    //Calculate triangulation
+                    Tin tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
 
-                //Pass TIN to result and log
-                result.Tin = tin;
-                LogWriter.Add(LogType.info, "Reading XYZ data successful.");
-                result.rPoints = tin.Points.Count;
-                result.rFaces = tin.NumTriangles;
-                LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
-                return result;
-            }
-            else
-            {
-                //write error message
-                LogWriter.Add(LogType.error, "[Grid] Reading failed.");
+                    //Pass TIN to result and log
+                    result.Tin = tin;
+                    LogWriter.Add(LogType.info, "Reading XYZ data successful.");
+                    result.rPoints = tin.Points.Count;
+                    result.rFaces = tin.NumTriangles;
+                    LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
+                    return result;
+                }
+                else
+                {
+                    //write error message
+                    LogWriter.Add(LogType.error, "[Grid] Reading failed.");
 
-                //return null --> processing should stop after this
-                return null;
-            }
-            /*
+                    //return null --> processing should stop after this
+                    return null;
+                }
             }
             else
             {               
@@ -237,7 +245,6 @@ namespace BIMGISInteropLibs.ElevationGrid
             
             //Return the result as TIN or MESH
             return result;
-            */
         }
 
         /// <summary>

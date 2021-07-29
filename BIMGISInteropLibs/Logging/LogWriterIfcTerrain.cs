@@ -31,9 +31,19 @@ namespace BIMGISInteropLibs.Logging
             //get file path from config
             string path = config.logFilePath;
 
-            //set filepath
-            string logfileName = System.IO.Path.GetFileNameWithoutExtension(config.filePath);
-            
+            //init logfile name
+            string logfileName;
+
+            if(config.fileName != null)
+            {
+                //set filepath
+                logfileName = System.IO.Path.GetFileNameWithoutExtension(config.fileName);
+            }
+            else
+            {
+                //set alternativ log file name (e.g. postgis)
+                logfileName = config.fileType.ToString();
+            }
             //get verbosity level from json settings
             var minLevel = config.verbosityLevel;
 

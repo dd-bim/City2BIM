@@ -14,6 +14,10 @@ using init = GuiHandler.InitClass;
 
 using rvtRes = BIMGISInteropLibs.RvtTerrain;
 
+//embed for file logging
+using BIMGISInteropLibs.Logging;                                    //acess to logger
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
+
 namespace City2RVT.GUI
 {
     /// <remarks>
@@ -45,6 +49,9 @@ namespace City2RVT.GUI
             #region version handler
             //get current revit version
             utils.rvtVersion rvtVersion = utils.GetVersionInfo(doc.Application);
+
+            //logwriter
+            LogWriter.initLogger(init.config);
 
             if (rvtVersion.Equals(utils.rvtVersion.NotSupported))
             {

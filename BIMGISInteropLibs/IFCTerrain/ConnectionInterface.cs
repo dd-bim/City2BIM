@@ -58,6 +58,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             //In the following a mapping is made on the basis of the data type, so that the respective reader is called up
             switch (jSettings.fileType)
             {
+                
                 //reader for LandXML
                 case IfcTerrainFileType.LandXML:
                     //result = LandXML.ReaderTerrain(jSettings.is3D, jSettings.filePath, jSettings.minDist, jSettings.logFilePath, jSettings.verbosityLevel);
@@ -148,6 +149,7 @@ namespace BIMGISInteropLibs.IfcTerrain
 
                 //reader for PostGIS
                 case IfcTerrainFileType.PostGIS:
+                    LogWriter.Add(LogType.verbose, "File type readed: " + jSettings.fileType.ToString());
                     if (jSettings.isTin)
                     {
                         //A exisiting TIN is read and converted
@@ -174,6 +176,12 @@ namespace BIMGISInteropLibs.IfcTerrain
             //so that from the reader (TIN, Error, Mesh) is passed to respective "classes"
             LogWriter.Add(LogType.debug, "Reading file completed.");
             
+            if(result == null)
+            {
+                LogWriter.Add(LogType.error, "Dataset is empty!");
+                return null;
+            }
+
             //passing results from reader to local var 
             this.Tin = result.Tin;      //passing tin
             this.Mesh = result.Mesh;    //passing mesh
