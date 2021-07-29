@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
@@ -12,6 +13,12 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 
 using System.IO;
+
+using Microsoft.Win32; //file dialog handling
+using System.Windows.Input; //mouse coursor
+using System.ComponentModel; //background worker
+
+using IxMilia.Dxf;
 
 namespace City2RVT.GUI.Surveyorsplan2BIM
 {
@@ -101,7 +108,10 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             }
         }
 
-        public class FParameterData
+        /// <summary>
+        /// constructor class for 
+        /// </summary>
+        public class familyParameterData
         {
             public string Family { get; set; }
             public string BuiltinParameter { get; set; }
@@ -110,9 +120,9 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             public string ParameterGroup { get; set; }
             public string BuiltinGroup { get; set; }
 
-            public static FParameterData GetParameterData(FamilyParameter familyparam, Document doc)
+            public static familyParameterData GetParameterData(FamilyParameter familyparam, Document doc)
             {
-                FParameterData parameterdata = new FParameterData
+                familyParameterData parameterdata = new familyParameterData
                 {
                     Family = Path.GetFileNameWithoutExtension(doc.Title.ToString()),
                     ParameterName = familyparam.Definition.Name,
@@ -126,7 +136,10 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             }
         }
 
-        public static List<FParameterData> readFamilyParameterInfo(Application app, string absPath)
+        /// <summary>
+        /// read family parameters from rfa file (TODO: error handling)
+        /// </summary>
+        public static List<familyParameterData> readFamilyParameterInfo(Application app, string absPath)
         {
             //open revit family file in a separate document
             var doc = app.OpenDocumentFile(absPath);
@@ -136,40 +149,199 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             
             //int totalParams = familyManager.Parameters.Size;
 
-            List<FParameterData> ParametersData = new List<FParameterData>();
+            List<familyParameterData> ParametersData = new List<familyParameterData>();
 
             foreach (FamilyParameter familyParameter in familyManager.Parameters)
             {
                 /// Add Parameter Data into a list
-                ParametersData.Add(FParameterData.GetParameterData(familyParameter, doc));
+                ParametersData.Add(familyParameterData.GetParameterData(familyParameter, doc));
             }
 
             return ParametersData;
         }
 
-        public class mappingList
+        /// <summary>
+        /// mappingList class
+        /// </summary>
+        public class mappingEntry
         {
-            public Guid mappingId { get; set; }
+            /// <summary>
+            /// enumeration of the specific type
+            /// </summary>
+            public survObjType survObjType { get; set; }
 
-            public string dxfName { get; set; }
+            /// <summary>
+            /// file name of the used dxf file
+            /// </summary>
+            public string dxfName { get; set; } = null;
 
+            /// <summary>
+            /// family name
+            /// </summary>
             public string familyName { get; set; } = null;
 
+            /// <summary>
+            /// mapped parameters
+            /// </summary>
             public Dictionary<string, string> parameterMap { get; set; }
+        }
 
-            public static mappingList setMappingPair(string dxfName, string familyName)
+        /// <summary>
+        /// different object type for a CAD2BIM conversion
+        /// </summary>
+        public enum survObjType
+        {
+            Point,
+            MultiPoint,
+            Line,
+            Polyline,
+            Surface
+        }
+
+        /// <summary>
+        /// TODO: find a better name
+        /// </summary>
+        public class mapping
+        {
+            /// <summary>
+            /// check if needed
+            /// </summary>
+            public Guid mappingId { get; set; }
+
+            /// <summary>
+            /// file path to be used in conversion
+            /// </summary>
+            public string dxfFileName { get; set; }
+
+            /// <summary>
+            /// directory of all family files to be used in converison
+            /// </summary>
+            public string familyDir { get; set; }
+
+            /// <summary>
+            /// list of mapping entrys
+            /// </summary>
+            public List<mappingEntry> mappingEntrys { get; set; }
+
+            public static mapping init()
             {
-                mappingList mappingList = new mappingList
+                mapping mapping = new mapping
                 {
                     mappingId = Guid.NewGuid(),
-                    dxfName = dxfName,
-                    familyName = familyName,
+                    mappingEntrys = new List<mappingEntry>(),
                 };
 
-                return mappingList;
+                return mapping;
             }
         }
 
-        
+        /// <summary>
+        /// init background worker
+        /// </summary>
+        private static readonly BackgroundWorker backgroundWorker = new BackgroundWorker();
+
+        private static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
+
+        /// <summary>
+        /// init do and done tasks
+        /// </summary>
+        public static void initBackgroundWorkerDxf()
+        {
+            //init do task
+            backgroundWorker.DoWork += backgroundWorker_DoWork;
+
+            //task when "do" is completed
+            backgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
+        }
+
+        private static bool dxfSuccess { get; set; }
+        public static string dxfFileName { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //file name
+            string fileName = (string)e.Result;
+
+            //if file path is empty (file does not exist)
+            if (string.IsNullOrEmpty(fileName))
+            {
+                dxfSuccess = false;
+            }
+            else
+            {
+                dxfFileName = fileName;
+                dxfSuccess = true;
+            }
+
+            //change mouse cursor to default
+            Mouse.OverrideCursor = null;
+        }
+
+        /// <summary>
+        /// dialog to open dxf file
+        /// </summary>
+        /// <returns></returns>
+        public static void readDxfFileDialog()
+        {
+            //new file dialog handler
+            var ofd = new OpenFileDialog();
+
+            //set file filter
+            ofd.Filter = "DXF Files *.dxf, *.dxb|*.dxf;*.dxb";
+
+            //open dialog window
+            if (ofd.ShowDialog() == true)
+            {
+                dxfFileName = ofd.FileName;
+            }
+        }
+
+        /// <summary>
+        /// check if file exsists
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public static void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //if file exsists get file name if not: set to null
+            e.Result = File.Exists((string)e.Argument) ? (string)e.Argument : null;
+        }
+
+        /// <summary>
+        /// reader for file name
+        /// </summary>
+        /// <returns>dxf file (ixMilia conform)</returns>
+        public static bool openDxfFile(string fileName, out DxfFile dxfFile)
+        {
+            //try to open fileName
+            try
+            {
+                using (var fileStream = new FileStream(fileName, FileMode.Open))
+                {
+                    //will be returned via "out"
+                    dxfFile = DxfFile.Load(fileStream);
+
+                    //return true - file could be opend
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                //return error message
+                TaskDialog.Show("DXF file could not be read:" + Environment.NewLine + ex.Message, "DXF file reader");
+
+                //set dxf file to false
+                dxfFile = null;
+
+                //return false - file could not be opend
+                return false;
+            }
+        }
+
+
+
     }
 }

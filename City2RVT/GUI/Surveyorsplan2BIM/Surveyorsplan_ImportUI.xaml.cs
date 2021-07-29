@@ -18,7 +18,8 @@ using Microsoft.Win32;          //file dialog handling
 
 using Newtonsoft.Json;
 
-using cmd = City2RVT.GUI.Cmd_Surveyorsplan;
+using System.Collections.ObjectModel; //observable collection
+using System.Windows.Data;
 
 namespace City2RVT.GUI.Surveyorsplan2BIM
 {
@@ -30,6 +31,7 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         #region config
         /// <summary>
         /// return to start surv import in cmd 
+        /// </summary>
         /// </summary>
         public bool startSurvImport { get { return startImport; } }
         
@@ -49,13 +51,22 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         private Document rvtDoc { get; set; }
 
         /// <summary>
+        /// mapping table
+        /// </summary>
+        private utils.mapping mapping { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
-        private List<utils.mappingList> mappingLists { get; set; }
-
         private string dxfLayer { get; set; }
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private string rfaFile { get; set; }
         #endregion config
+
+        
 
         /// <summary>
         /// init import gui
@@ -65,17 +76,15 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         {
             //handle revit doc
             this.rvtDoc = doc;
-
-            mappingLists = new List<utils.mappingList>();
+            
+            //init mapping
+            mapping = utils.mapping.init();
 
             //init gui components
             InitializeComponent();
 
-            //init "do" task
-            backgroundWorker.DoWork += backgroundWorker_DoWork;
-
-            //task when "do" is completed
-            backgroundWorker.RunWorkerCompleted += backgroundWorker_RunWorkerCompleted;
+            //init background Worker
+            utils.initBackgroundWorkerDxf();
         }
 
         /// <summary>
@@ -83,113 +92,40 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         /// </summary>
         private void btnLoadDxf_Click(object sender, RoutedEventArgs e)
         {
-            //add new FileDialog handler
-            var ofd = new OpenFileDialog();
+            //open dialog
+            utils.readDxfFileDialog();
 
-            //set file filter
-            ofd.Filter = "DXF Files *.dxf, *.dxb|*.dxf;*.dxb";
-
-            //open dialog window
-            if(ofd.ShowDialog() == true)
+            //clear layout
+            lbDxfLayer.Items.Clear();
+           
+            //check if file can be opend
+            if(utils.openDxfFile(utils.dxfFileName, out dxfFile))
             {
-                //disable window
-                IsEnabled = false;
+                //go through all layer of selected dxf fiel
+                foreach (var layer in dxfFile.Layers)
+                {
+                    //list up all layer
+                    lbDxfLayer.Items.Add(layer.Name);
+                }
 
-                //change mouse corsor (user feedback)
-                Mouse.OverrideCursor = Cursors.Wait;
-
-                //kick off backgorund worker (with current file name)
-                backgroundWorker.RunWorkerAsync(ofd.FileName);
+                //set file name
+                mapping.dxfFileName = utils.dxfFileName;
             }
-
+            else
+            {
+                dxfFile = null;
+                mapping.dxfFileName = null;
+            }
+            
             return;
         }
-
-        /// <summary>
-        /// background worker to list dxf elements for user selection
-        /// </summary>
-        private readonly BackgroundWorker backgroundWorker = new BackgroundWorker();
+      
 
         /// <summary>
         /// dxf file to be processed
         /// </summary>
         private DxfFile dxfFile = null;
-
-        /// <summary>
-        /// read dxf file
-        /// </summary>
-        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            e.Result = ReadDxfFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
-        }
         
-        /// <summary>
-        /// reader for file name
-        /// </summary>
-        /// <returns>dxf file (ixMilia conform)</returns>
-        private static bool ReadDxfFile(string fileName, out DxfFile dxfFile)
-        {
-            //init dxf file
-            dxfFile = null;
-
-            //try to open fileName
-            try 
-            {
-                using (var fileStream = new FileStream(fileName, FileMode.Open))
-                {
-                    //will be returned via "out"
-                    dxfFile = DxfFile.Load(fileStream);
-                    
-                    //return true - file could be opend
-                    return true;
-                }
-            }
-            catch(Exception ex)
-            {
-                //return error message
-                MessageBox.Show("DXF file could not be read:" + Environment.NewLine + ex.Message, "DXF file reader", MessageBoxButton.OK, MessageBoxImage.Error);
-                
-                //return false - file could not be opend
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// executed as soon "do"-Worker is done
-        /// </summary>
-        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //file name
-            string fileName = (string)e.Result;
-
-            //clear all items (cause another file will be read OR read again)
-            lbDxfLayer.Items.Clear();
-
-            //check if file could not be read
-            if (string.IsNullOrEmpty(fileName))
-            {
-                //set dxf file to null
-                dxfFile = null;
-            }
-            else
-            {
-                //go through all layer of selected dxf fiel
-                foreach(var layer in dxfFile.Layers)
-                {
-                    //list up all layer
-                    lbDxfLayer.Items.Add(layer.Name);
-                }
-            }
-
-            //update gui
-            lbDxfLayer.UpdateLayout();
-
-            //enable mainwindow
-            IsEnabled = true;
-
-            //change mouse cursor to default
-            Mouse.OverrideCursor = null;
-        }
 
         //change selection
         private void btnApplyDxfLayer_Click(object sender, RoutedEventArgs e)
@@ -199,9 +135,10 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             //set current layer
             dxfLayer = selectedItem;
 
+
             DxfInsert dxfEntity;
 
-            lbBlockAttributes.Items.Clear();
+            cbBlockAttributes.Items.Clear();
 
             //set number of attributes to 0
             int count = 0;
@@ -211,33 +148,25 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             {
                 if (entity.Layer == selectedItem)
                 {
-                    //
-                    try
-                    {
-                        //get entity
-                        dxfEntity = (IxMilia.Dxf.Entities.DxfInsert)entity;
+                    //get entity
+                    dxfEntity = (IxMilia.Dxf.Entities.DxfInsert)entity;
                         
-                        if(count != dxfEntity.Attributes.Count)
-                        {
-                            //update count
-                            count = dxfEntity.Attributes.Count;
-
-                            //loop through all attributes of one entity
-                            foreach (var attr in dxfEntity.Attributes)
-                            {
-                                lbBlockAttributes.Items.Add(attr.AttributeTag.ToString());
-                            }
-                        }
-                    }
-                    catch(Exception ex)
+                    if(count != dxfEntity.Attributes.Count)
                     {
-                        MessageBox.Show(ex.Message, "List elemnts", MessageBoxButton.OK, MessageBoxImage.Question);
-                    }
+                        //update count
+                        count = dxfEntity.Attributes.Count;
+
+                        //loop through all attributes of one entity
+                        foreach (var attr in dxfEntity.Attributes)
+                        {
+                            cbBlockAttributes.Items.Add(attr.AttributeTag.ToString());
+                        }
+                    }                    
                 }
             }
 
             //update layout
-            lbBlockAttributes.UpdateLayout();
+            cbBlockAttributes.UpdateLayout();
         }
 
         /// <summary>
@@ -251,22 +180,38 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             //open dialog
             ofd.ShowDialog();
 
+            //
+            bool familyReading;
+
             //if string is not empty
             if(ofd.SelectedPath != string.Empty)
             {
                 //set file path
                 rvtFamilyFolder = ofd.SelectedPath;
 
-                readRvtFam(rvtFamilyFolder);
+                familyReading = readRvtFam(rvtFamilyFolder);
             }
             else
             {
                 //set file to false
                 rvtFamilyFolder = null;
+
+                //set to false
+                familyReading = false;
+            }
+
+            //error handling
+            if (familyReading)
+            {
+                mapping.familyDir = rvtFamilyFolder;
+            }
+            else
+            {
+                mapping.familyDir = null;
             }
 
             //clear attributes list (new family folder is selected)
-            lbFamilyAttributes.Items.Clear();
+            cbFamilyAttributes.Items.Clear();
 
             return;
         }
@@ -274,7 +219,7 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         /// <summary>
         /// read revit familys in selected file folder
         /// </summary>
-        private void readRvtFam(string rvtFamilyFilePath)
+        private bool readRvtFam(string rvtFamilyFilePath)
         {
             //clear items
             lbFamilies.Items.Clear();
@@ -300,6 +245,8 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
                 {
                     //user feedback
                     MessageBox.Show("The selected folder does not contain Revit families.", "Folder is empty!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    return false;
                 }
                 
             }
@@ -311,6 +258,8 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
 
             //update layout - file names will be shown after that
             lbFamilies.UpdateLayout();
+
+            return true;
         }
 
         /// <summary>
@@ -319,7 +268,7 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         private void btnApplyFamilySelection_Click(object sender, RoutedEventArgs e)
         {
             //clear attributes
-            lbFamilyAttributes.Items.Clear();
+            cbFamilyAttributes.Items.Clear();
 
             //get selected family
             string selectedFamily = lbFamilies.SelectedItem.ToString();
@@ -331,91 +280,27 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             string absPath = Path.Combine(rvtFamilyFolder, selectedFamily);
 
             //read out parameter
-            List<utils.FParameterData> famParameterDataSet = utils.readFamilyParameterInfo(rvtDoc.Application, absPath);
+            List<utils.familyParameterData> famParameterDataSet = utils.readFamilyParameterInfo(rvtDoc.Application, absPath);
 
             //loop through all parameter
             foreach (var para in famParameterDataSet)
             {
-                //if built in parameter is invalid list up (user defined parameter)
+                //if built in parameter is invalid list up (equals user defined parameter)
                 if (para.BuiltinParameter.Equals("INVALID"))
                 {
                     //list into list box for user selection
-                    lbFamilyAttributes.Items.Add(para.ParameterName);
+                    cbFamilyAttributes.Items.Add(para.ParameterName);
                 }
             }
             //update lb will be listed up after that
-            lbFamilyAttributes.UpdateLayout();
-
-            return;
-
-            /*
-             * 
-             * FamilySymbol familySymbol = new FilteredElementCollector(rvtDoc).
-                OfClass(typeof(Family)).OfType<Family>().
-                FirstOrDefault(f => f.Name.Equals(family.Name))?.
-                GetFamilySymbolIds().Select(id => rvtDoc.GetElement(id)).OfType<FamilySymbol>().
-                FirstOrDefault(sym => sym.Name.Equals(family.Name));
-
-
-            FamilyInstance familyInstance = null;
-
-            using (Transaction transaction = new Transaction(rvtDoc))
-            {
-                transaction.Start("Dummy");
-                familyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(rvtDoc, familySymbol);
-                transaction.Commit();
-            }
-
-            
-
-            foreach(Parameter para in familyInstance.Parameters)
-            {   
-                if(para.Definition.ParameterGroup != BuiltInParameterGroup.INVALID)
-                {
-                    lbFamilyAttributes.Items.Add(para.Definition.Name);
-                }
-            }
-            lbFamilyAttributes.UpdateLayout();
-            */
+            cbFamilyAttributes.UpdateLayout();
         }
 
-        private void btnStartImport_Click(object sender, RoutedEventArgs e)
-        {
-            
+        
 
-            
-        }
+       
 
-        /// <summary>
-        /// button to fill mapping list
-        /// </summary>
-        private void btnSetSelection_Click(object sender, RoutedEventArgs e)
-         {
-            //get last mapping list
-            utils.mappingList mapList = mappingLists.Last();
-
-            //get selected dxf layer
-            var dxfLayer = lbBlockAttributes.SelectedItem.ToString();
-
-            //get selected family attribute layer
-            var familyName = lbFamilyAttributes.SelectedItem.ToString();
-
-            //add to parameter map
-            mapList.parameterMap.Add(dxfLayer, familyName);
-
-            //remove from "list selection"
-            lbBlockAttributes.Items.Remove(dxfLayer);
-            lbFamilyAttributes.Items.Remove(familyName);
-
-            //update layout (otherwise will not be shown)
-            lbBlockAttributes.UpdateLayout();
-            lbFamilyAttributes.UpdateLayout();
-
-            if (!btnSetLayerMapping.IsEnabled)
-            {
-                btnSetLayerMapping.IsEnabled = true;
-            }
-        }
+        
 
         /// <summary>
         /// btn to create new mapping list
@@ -423,22 +308,31 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
         private void btnCreateMapping_Click(object sender, RoutedEventArgs e)
         {
             //init mapping list
-            utils.mappingList mapList = new utils.mappingList();
+            utils.mappingEntry mapEntry = new utils.mappingEntry();
+
+            //init enum            
+            utils.survObjType survObjType;
+
+            //parse enum
+            Enum.TryParse(cbObjTypeEnum.SelectedValue.ToString(), out survObjType);
+
+            //set type
+            mapEntry.survObjType = survObjType;
 
             //set current layer selection
-            mapList.dxfName = dxfLayer;
+            mapEntry.dxfName = dxfLayer;
 
             //set current family name
-            mapList.familyName = rfaFile;
+            mapEntry.familyName = rfaFile;
 
             //create new guid
-            mapList.mappingId = Guid.NewGuid();
+            //mapList.mappingId = Guid.NewGuid();
 
             //init empty parametermap 
-            mapList.parameterMap = new Dictionary<string, string>();
+            mapEntry.parameterMap = new Dictionary<string, string>();
 
-            //add to mapping lists collection
-            mappingLists.Add(mapList);
+            //add to mapping lists collection 
+            mapping.mappingEntrys.Add(mapEntry);
 
             //enable set selection
             btnSetSelection.IsEnabled = true;
@@ -512,11 +406,11 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
 
         private void btnSetLayerMapping_Click(object sender, RoutedEventArgs e)
         {
-            var currentMapEntry = mappingLists.Last();
+            var currentMapEntry = mapping.mappingEntrys.Last();
 
             string mapTitel = currentMapEntry.dxfName + "-" + currentMapEntry.familyName;
 
-            lbMappingConfigs.Items.Add(mapTitel);
+            //[REWORK]lbMappingConfigs.Items.Add(mapTitel);
 
             //remove attributes
             lbDxfLayer.Items.Remove(currentMapEntry.dxfName);
@@ -524,11 +418,12 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
 
             //update layout
             lbDxfLayer.UpdateLayout();
-            lbFamilies.UpdateLayout();
+
+            //[REWORK]lbFamilies.UpdateLayout();
 
             //clear reaming attributes
-            lbFamilyAttributes.Items.Clear();
-            lbBlockAttributes.Items.Clear();
+            cbFamilyAttributes.Items.Clear();
+            cbBlockAttributes.Items.Clear();
         }
 
 
@@ -542,44 +437,248 @@ namespace City2RVT.GUI.Surveyorsplan2BIM
             //open file handler
             if(sfd.ShowDialog() == true)
             {
-                using (StreamWriter file = File.CreateText(sfd.FileName))
-                {
-                    //init serializer
-                    JsonSerializer serializer = new JsonSerializer();
+                //serialize mappingList to file
+                string jsonText = JsonConvert.SerializeObject(mapping, Formatting.Indented);
 
-                    //set formatting
-                    serializer.Formatting = Formatting.Indented;
+                //write json to "wanted" file path
+                File.WriteAllText(sfd.FileName, jsonText);
 
-                    //serialize mappingList to file
-                    serializer.Serialize(file, mappingLists);
-                }
-
-                lbMappingConfigs.Items.Clear();
-                lbMappingConfigs.UpdateLayout();
+                //clear items & update
+                //[REWORK]lbMappingConfigs.Items.Clear();
+                //[REWORK]lbMappingConfigs.UpdateLayout();
             }
         }
 
+        /// <summary>
+        /// config loading
+        /// </summary>
         private void btnLoadConfig_Click(object sender, RoutedEventArgs e)
         {
+            //set file dialog
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Json config| *.json";
 
+            //open dialog
             if(ofd.ShowDialog() == true)
             {
+                //file stream to read json file
                 using (StreamReader file = File.OpenText(ofd.FileName))
                 {
+                    //init serializer
                     JsonSerializer serializer = new JsonSerializer();
-
-                    List<utils.mappingList> mapEntry = (List<utils.mappingList>)serializer.Deserialize(file, typeof(List<utils.mappingList>));
-
-                    mappingLists = mapEntry;
-
-                    foreach(utils.mappingList entry in mappingLists)
+                    
+                    //try to deserialize json file to mapping List
+                    try
                     {
-                        lbMappingConfigs.Items.Add(entry.dxfName + " - " + entry.familyName);
+                        //get mapping from json import
+                        utils.mapping map = (utils.mapping)serializer.Deserialize(file, typeof(utils.mapping));
+
+                        //überschreiben des mapping durch import json
+                        mapping = map;
+
                     }
+                    //return exeption (TODO: logging)
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Imported JSON - deserializing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    //if deserialize was successful ... list all entrys
+                    //[REWORK]lbMappingConfigs.Items.Clear();
+
+                    //loop through every entry and list up
+                    foreach (utils.mappingEntry entry in mapping.mappingEntrys)
+                    {
+                        //[REWORK]lbMappingConfigs.Items.Add(entry.dxfName + " - " + entry.familyName);
+                    }
+
+                    //update entry list
+                    //[REWORK]lbMappingConfigs.UpdateLayout();
                 }
             }
+
+            //error handling
+            //open dxf file path and check that file is still there
+            
+            //clear listbox
+            lbDxfLayer.Items.Clear();
+
+            if (File.Exists(mapping.dxfFileName))
+            {
+                //read dxf file from output
+                utils.openDxfFile(mapping.dxfFileName, out dxfFile);
+
+                foreach(var layer in dxfFile.Layers)
+                {
+                    lbDxfLayer.Items.Add(layer.Name);
+                }
+            }
+            else
+            {
+                //
+                lbDxfLayer.Items.Add("DXF file missing!");
+
+                //return error message
+                MessageBox.Show("The DXF file under the path: " + 
+                    Environment.NewLine + mapping.dxfFileName + " can not be readed.", "DXF file reading", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            //open family folder and check each used family if still there
+            lbFamilies.Items.Clear();
+
+            if (Directory.Exists(mapping.familyDir))
+            {
+                readRvtFam(mapping.familyDir);
+            }
+            else
+            {
+                lbFamilies.Items.Add("Family folder invalid!");
+
+                MessageBox.Show("The family file folder under the path: " +
+                    Environment.NewLine + mapping.familyDir + " can not be readed.", "Family folder",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+
+        private void btnStartImport_Click(object sender, RoutedEventArgs e)
+        {
+
+
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void lvMappingSort(object sender, RoutedEventArgs e)
+        {
+            //get column which should be sorted
+            GridViewColumnHeader column = sender as GridViewColumnHeader;
+
+            //
+            ICollectionView view = CollectionViewSource.GetDefaultView(lvMapping.ItemsSource);
+
+            //
+            view.SortDescriptions.Clear();
+
+            //
+            view.SortDescriptions.Add(
+                new SortDescription(column.Content.ToString(), ListSortDirection.Ascending));
+
+            //
+            view.Refresh();
+        }
+
+        /// <summary>
+        /// button to fill mapping list
+        /// </summary>
+        private void btnSetSelection_Click(object sender, RoutedEventArgs e)
+        {
+            //get last mapping list
+            var mapEntry = mapping.mappingEntrys.Last();
+
+            //get selected dxf layer
+            var dxfLayer = cbBlockAttributes.SelectedItem.ToString();
+
+            //get selected family attribute layer
+            var familyName = cbFamilyAttributes.SelectedItem.ToString();
+
+            //add to parameter map
+            mapEntry.parameterMap.Add(dxfLayer, familyName);
+
+            //remove from "list selection"
+            cbBlockAttributes.Items.Remove(dxfLayer);
+            cbFamilyAttributes.Items.Remove(familyName);
+
+            //update layout (otherwise will not be shown)
+            cbBlockAttributes.UpdateLayout();
+            cbFamilyAttributes.UpdateLayout();
+
+            if (!btnSetLayerMapping.IsEnabled)
+            {
+                btnSetLayerMapping.IsEnabled = true;
+            }
+
+            //-----------------
+            mapOverview.Add(new mappingOverview()
+            { Name = rfaFile, ObjType = mapEntry.survObjType, DxfLayer = dxfLayer, DxfUnit = "TESTUNIT", RfaLayer = familyName });
+
+            DataContext = mapOverview;
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lvMapping.DataContext);
+            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
+
+            if (view.GroupDescriptions.Count == 0)
+            {
+                view.GroupDescriptions.Add(groupDescription);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<mappingOverview> mapOverview { get; set; } = new ObservableCollection<mappingOverview>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<utils.mapping> map { get; set; } = new ObservableCollection<utils.mapping>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public class mappingOverview
+        {
+            public string Name { get; set; }
+
+            public utils.survObjType ObjType { get; set; }
+
+            public string DxfLayer { get; set; }
+
+            public string DxfUnit { get; set; }
+
+            public string RfaLayer { get; set; }
+        }
+
+        private void btnRemoveMappingEntry_Click(object sender, RoutedEventArgs e)
+        {
+            //init selected item
+            dynamic item = null;
+
+            try
+            {
+                //get selected value (index) from grid view
+                item = mapOverview.ElementAt(lvMapping.SelectedIndex);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                lbLogging.Items.Add("Selected item cannot be deleted.");
+                return;
+            }
+
+            //
+            var remove = mapOverview.ElementAt(lvMapping.SelectedIndex).DxfLayer;
+
+            //get map entry which shoul be removed
+            foreach (var entry in mapping.mappingEntrys)
+            {
+                //
+                if (entry.parameterMap.ContainsKey(remove))
+                {
+                    entry.parameterMap.Remove(remove);
+                }
+            }
+            //remove item
+            mapOverview.Remove(item);
+
+            //restore in parameter pull down menus
+
+
         }
     }
 }
