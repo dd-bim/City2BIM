@@ -432,24 +432,5 @@ namespace GuiHandler.userControler.PostGIS
             this.tbBlGeomColumn.IsEnabled = false;
             this.tbBlTinIdColumn.IsEnabled = false;
         }
-
-        private void btnSample_Click(object sender, RoutedEventArgs e)
-        {
-            tbHost.Text = "https://terrain.dd-bim.org/";
-            tbPort.Text = "5432";
-            tbUser.Text = "marcus";
-            tbPwd.Password = "123456";
-            tbDatabase.Text = "tt";
-            tbSchema.Text = "terraintwin";
-            tbTinTable.Text = "tin";
-            tbTinColumn.Text = "geometry";
-            tbTinIdValue.Text = "3";
-            tbTinIdColumn.Text = "tin_id";
-        }
-
-        private void btnExcute_Click(object sender, RoutedEventArgs e)
-        {
-            //BIMGISInteropLibs.PostGIS.RvtReaderTerrain.RvtReadPostGIS(init.config);
-        }
     }
 }
