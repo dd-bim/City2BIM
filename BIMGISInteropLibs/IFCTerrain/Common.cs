@@ -21,7 +21,5 @@ namespace BIMGISInteropLibs.IfcTerrain
             ["mile"] = 1609.34,
             ["ussurveyfoot"] = 1200.0 / 3937.0
         };
-
-        public static double SaveParse(string str, double defaultDbl = double.NaN) => double.TryParse(str.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out double dbl) ? dbl : defaultDbl;
     }
 }

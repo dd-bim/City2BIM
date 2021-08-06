@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 //embed BimGisCad
 using BimGisCad.Representation.Geometry;            //Axis
-using BimGisCad.Representation.Geometry.Composed;   //TIN
-using BimGisCad.Representation.Geometry.Elementary; //Vector, Points, ...
-using BimGisCad.Collections;                        //MESH
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
@@ -16,7 +13,6 @@ using Xbim.Ifc4.MeasureResource;                //Enumeration for Unit
 using Xbim.Ifc4.ProductExtension;               //IfcSite
 using Xbim.Ifc4.Interfaces;                     //IfcElementComposition (ENUM)
 using Xbim.Ifc4.GeometryResource;               //Shape
-using Xbim.Ifc4.GeometricConstraintResource;    //IfcLocalPlacement
 using Xbim.Ifc4.RepresentationResource;         //representation res
 
 //embed IfcTerrain logic
@@ -97,53 +93,56 @@ namespace BIMGISInteropLibs.IFC.Ifc4
     public class Geo
     {
         public static IfcStore Create(
-             JsonSettings jSt,
-             IFC.LoGeoRef loGeoRef,
-             Axis2Placement3D sitePlacement,
-             Result result,
-             SurfaceType surfaceType,
-             double? breakDist = null,
-             double? refLatitude = null,
-             double? refLongitude = null,
-              double? refElevation = null)
+            Result result,
+            Config config,
+            WriteInput writeInput,
+            JsonSettings_DIN_SPEC_91391_2 jsonSettings_DIN_SPEC,
+            JsonSettings_DIN_18740_6 jsonSettings_DIN_18740_6,
+            double? refLatitude = null,
+            double? refLongitude = null,
+            double? refElevation = null)
         {
-            //site name
-            IfcLabel siteName = jSt.siteName;
+            Axis2Placement3D sitePlacement = writeInput.Placement;
+            SurfaceType surfaceType = writeInput.SurfaceType;
 
             //init model
             LogWriter.Add(LogType.verbose, "Initalize IfcModel");
-            var model = InitModel.Create(jSt.projectName, jSt.editorsFamilyName, jSt.editorsGivenName, jSt.editorsOrganisationName, out var project);
+            var model = InitModel.Create(config.projectName, config.editorsFamilyName, 
+                config.editorsGivenName, config.editorsOrganisationName, out var project);
             
             //site
             LogWriter.Add(LogType.verbose, "Initalize IfcSite");
 
-            //init site and geomRepContext
+            //init site as dynamic
             dynamic site = null;
+
+            //init geomRepresContext
             dynamic geomRepContext;
 
+            //site name
+            IfcLabel siteName = config.siteName;
+
             //loop for different LoGeoRef's
-            switch (loGeoRef)
+            switch (config.logeoref)
             {
                 //Level 50 - TODO
                 case IFC.LoGeoRef.LoGeoRef50:
-                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
-                    geomRepContext = LoGeoRef.Level50.Create(model, sitePlacement, jSt);
+                    site = Site.Create(model, siteName, config.logeoref , sitePlacement, refLatitude, refLongitude, refElevation);
+                    geomRepContext = LoGeoRef.Level50.Create(model, sitePlacement, config);
                     break;
                 //Level 40
                 case IFC.LoGeoRef.LoGeoRef40:
-                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
-                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, jSt.trueNorth.Value);
+                    site = Site.Create(model, siteName, config.logeoref, sitePlacement, refLatitude, refLongitude, refElevation);
+                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, config.trueNorth.Value);
                     break;
                 //Level 30 DEFAULT
                 default:
-                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
+                    site = Site.Create(model, siteName, config.logeoref, sitePlacement, refLatitude, refLongitude, refElevation);
                     break;
             }
+
             LogWriter.Add(LogType.verbose, "Entity IfcSite generated.");
 
-
-            //var site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
-            
             //needed (do not remove or change!)
             RepresentationType representationType;
             RepresentationIdentifier representationIdentifier;
@@ -151,58 +150,33 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             //set Representation shape
             IfcGeometricRepresentationItem shape;
 
-            //Case discrimination for different shape representations
-            //distinction whether TIN (true) or MESH (false)
-            if (jSt.isTin) //TIN processing
+
+            //distinction which shape representation
+            switch (surfaceType)
             {
-                //distinction which shape representation
-                switch (surfaceType)
-                {
-                    //IfcTFS
-                    case SurfaceType.TFS:
-                        shape = TriangulatedFaceSet.CreateViaTin(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcSBSM
-                    case SurfaceType.SBSM:
-                        shape = ShellBasedSurfaceModel.CreateViaTin(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcGCS (default)
-                    default:
-                        shape = GeometricCurveSet.CreateViaTin(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
-                        break;
-                }
+                //IfcTFS
+                case SurfaceType.TFS:
+                    shape = TriangulatedFaceSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
+
+                //IfcSBSM
+                case SurfaceType.SBSM:
+                    shape = ShellBasedSurfaceModel.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
+
+                //IfcGCS
+                default:
+                    shape = GeometricCurveSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
             }
-            else //MESH processing
-            {
-                //distinction which shape representation
-                switch (surfaceType)
-                {
-                    //IfcTFS
-                    case SurfaceType.TFS:
-                        shape = TriangulatedFaceSet.CreateViaMesh(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcSBSM
-                    case SurfaceType.SBSM:
-                        shape = ShellBasedSurfaceModel.CreateViaMesh(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcGCS (default)
-                    default:
-                        shape = GeometricCurveSet.CreateViaMesh(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
-                        break;
-                }
-            }
+            
 
             //write Shape Representation to model
             LogWriter.Add(LogType.verbose, "Write shape representation to IfcModel...");
-            
+
+            //create IfcShapeRepresentation entity
             var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
             
-            //
-            
-
-            //var terrain = createTerrain(model, "TIN", mesh.Id, null, repres);
-            //var terrain = Terrain.Create(model, "TIN", null, null, repres);
-
             //add site to IfcProject entity
             LogWriter.Add(LogType.verbose, "Add site to IfcProject entity...");
             
@@ -228,12 +202,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 //
                 site.AddElement(terrain);
 
-
-               
-                
-                
-                
-
                 //add local placement
                 //var lp = terrain.ObjectPlacement as IfcLocalPlacement;
 
@@ -241,8 +209,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 //site.AddElement(terrain);
 
                 //lp.PlacementRelTo = site.ObjectPlacement;
-
-                
 
                 //add site to IfcProject
                 project.AddSite(site);
@@ -254,6 +220,35 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                 //commit otherwise no update / add
                 txn.Commit();
                 LogWriter.Add(LogType.verbose, "Transaction commited.");
+            }
+
+            //start transaction to create property set
+            using (var txn = model.BeginTransaction("Ifc Property Set"))
+            {
+                //Query if metadata should be exported as IfcPropertySet?
+                if (config.outIfcPropertySet.GetValueOrDefault())
+                {
+                    //switch between cases for metadata export
+                    if (config.exportMetadataDin91391.GetValueOrDefault())
+                    {
+                        //Methode to store Metadata according to DIN 91391-2
+                        PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
+                    }
+                    //case 2: din 18740
+                    if (config.exportMetadataDin18740.GetValueOrDefault())
+                    {
+                        //Methode to store Metadata according to DIN 18740-6
+                        PropertySet.CreatePSetMetaDin18740(model, jsonSettings_DIN_18740_6);
+                    }
+
+                    //commit transaction
+                    txn.Commit();
+                }
+                else
+                {
+                    //rollback transaction not need to store pr
+                    txn.RollBack();
+                }
             }
 
             //return model

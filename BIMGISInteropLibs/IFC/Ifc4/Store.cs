@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 //embed BimGisCad
 using BimGisCad.Representation.Geometry;            //Axis
-using BimGisCad.Representation.Geometry.Composed;   //TIN
-using BimGisCad.Collections;                        //MESH
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
@@ -37,22 +35,26 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <summary>
         /// Building Model Method
         /// </summary>
-        public static IfcStore CreateViaTin(
-            JsonSettings jSt,
+        public static IfcStore Create(
+            Result result,
+            Config config,
+            WriteInput writeInput,
             JsonSettings_DIN_SPEC_91391_2 jsonSettings_DIN_SPEC,
             JsonSettings_DIN_18740_6 jsonSettings_DIN_18740_6,
-            IFC.LoGeoRef loGeoRef,
-            Axis2Placement3D sitePlacement,
-            Result result,
-            SurfaceType surfaceType,
-            double? breakDist = null,
             double? refLatitude = null,
             double? refLongitude = null,
             double? refElevation = null)
         {
+            Axis2Placement3D sitePlacement = writeInput.Placement;
+            SurfaceType surfaceType = writeInput.SurfaceType;
+
             //create model
-            var model = InitModel.Create(jSt.projectName, jSt.editorsFamilyName, jSt.editorsGivenName, jSt.editorsOrganisationName, out var project);
-            LogWriter.Add(LogType.verbose, "Entity IfcProject generated.");
+            LogWriter.Add(LogType.verbose, "Initalize IfcModel");
+            var model = InitModel.Create(config.projectName, config.editorsFamilyName, 
+                config.editorsGivenName, config.editorsOrganisationName, out var project);
+
+            //site
+            LogWriter.Add(LogType.verbose, "Initalize IfcSite");
 
             //init site as dynamic
             dynamic site = null;
@@ -61,100 +63,67 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             dynamic geomRepContext;
 
             //read site name from json settings
-            IfcLabel siteName = jSt.siteName;
+            IfcLabel siteName = config.siteName;
 
             //loop for different Level of Georef
-            //[TODO] may clean up code
-            switch (loGeoRef)
+            switch (config.logeoref)
             {
                 //Level 50 - TODO
                 case IFC.LoGeoRef.LoGeoRef50:
-                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
-                    geomRepContext = LoGeoRef.Level50.Create(model, sitePlacement, jSt);
+                    site = Site.Create(model, siteName, config.logeoref, sitePlacement, refLatitude, refLongitude, refElevation);
+                    geomRepContext = LoGeoRef.Level50.Create(model, sitePlacement, config);
                     break;
                 //Level 40
                 case IFC.LoGeoRef.LoGeoRef40:
-                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
-                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, jSt.trueNorth.Value);
+                    site = Site.Create(model, siteName, config.logeoref, sitePlacement, refLatitude, refLongitude, refElevation);
+                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, config.trueNorth.Value);
                     break;
-                //Level 30 DEFAULT
+                
                 default:
-                    site = Site.Create(model, siteName, loGeoRef, sitePlacement, refLatitude, refLongitude, refElevation);
+                    site = Site.Create(model, siteName, config.logeoref, sitePlacement, refLatitude, refLongitude, refElevation);
                     break;
             }
             LogWriter.Add(LogType.verbose, "Entity IfcSite generated.");
+
+            //needed (do not remove or change!)
+            RepresentationType representationType = new RepresentationType();
+            RepresentationIdentifier representationIdentifier = new RepresentationIdentifier();
             
-            RepresentationType representationType;
-            RepresentationIdentifier representationIdentifier;
-            
-            //init geometric representation
+            //init geometric representation as null value
             IfcGeometricRepresentationItem shape;
 
-            //distinction whether TIN (true) or MESH (false)
-            if (jSt.isTin) //TIN processing
+            //distinction which shape representation
+            switch (surfaceType)
             {
-                //distinction which shape representation
-                switch (surfaceType)
-                {
-                    //IfcTFS
-                    case SurfaceType.TFS:
-                        shape = TriangulatedFaceSet.CreateViaTin(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcSBSM
-                    case SurfaceType.SBSM:
-                        shape = ShellBasedSurfaceModel.CreateViaTin(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcGCS (default)
-                    default:
-                        shape = GeometricCurveSet.CreateViaTin(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
-                        break;
-                }
+                //IfcTFS
+                case SurfaceType.TFS:
+                    shape = TriangulatedFaceSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
+
+                //IfcSBSM
+                case SurfaceType.SBSM:
+                    shape = ShellBasedSurfaceModel.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
+
+                //IfcGCS
+                default:
+                    shape = GeometricCurveSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
+
+                case SurfaceType.TIN:
+                    throw new NotImplementedException();
+                    //shape = TriangulatedIrregularNetwork.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    //break;
             }
-            else //MESH processing
-            {
-                //distinction which shape representation
-                switch (surfaceType)
-                {
-                    //IfcTFS
-                    case SurfaceType.TFS:
-                        shape = TriangulatedFaceSet.CreateViaMesh(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcSBSM
-                    case SurfaceType.SBSM:
-                        shape = ShellBasedSurfaceModel.CreateViaMesh(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcGCS (default)
-                    default:
-                        shape = GeometricCurveSet.CreateViaMesh(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
-                        break;
-                }
-            }
+            //write Shape Representation to model
+            LogWriter.Add(LogType.verbose, "Write shape representation to IfcModel...");
+
             //create IfcShapeRepresentation entity
             var repres = ShapeRepresentation.Create(model, shape, representationIdentifier, representationType);
-
-            //TODO Breaklines
-            /*
-            using (var txn = model.BeginTransaction("Breaklines"))
-            {
-                //query if breaklines should be processed
-                if (jSt.breakline)
-                {
-                    //Breakline.Create();
-
-                    txn.Commit();
-                }
-                else
-                {
-                    //rollback transaction
-                    txn.RollBack();
-                }
-            }
-            */
 
             //add site entity to model
             using (var txn = model.BeginTransaction("Add Site to Project"))
             {
-                
                 //get site entity
                 site.Representation = model.Instances.New<IfcProductDefinitionShape>(r => r.Representations.Add(repres));
 
@@ -175,16 +144,16 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             using (var txn = model.BeginTransaction("Ifc Property Set"))
             {
                 //Query if metadata should be exported as IfcPropertySet?
-                if (jSt.outIfcPropertySet.GetValueOrDefault())
+                if (config.outIfcPropertySet.GetValueOrDefault())
                 {
                     //switch between cases for metadata export
-                    if (jSt.exportMetadataDin91391.GetValueOrDefault())
+                    if (config.exportMetadataDin91391.GetValueOrDefault())
                     {
                         //Methode to store Metadata according to DIN 91391-2
                         PropertySet.CreatePSetMetaDin91391(model, jsonSettings_DIN_SPEC);
                     }                  
                     //case 2: din 18740
-                    if (jSt.exportMetadataDin18740.GetValueOrDefault())
+                    if (config.exportMetadataDin18740.GetValueOrDefault())
                     {
                         //Methode to store Metadata according to DIN 18740-6
                         PropertySet.CreatePSetMetaDin18740(model, jsonSettings_DIN_18740_6);
@@ -203,62 +172,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             return model;
         }
 
-        /// <summary>
-        /// this method write the dest file <para/>
-        /// supports STEP, XML, ZIP
-        /// </summary>
-        public static void WriteFile(IfcStore model, JsonSettings jSettings)
-        {
-            switch (jSettings.outFileType)
-            {
-                //if it is to be saved as an STEP file
-                case IfcFileType.Step:
-                    try
-                    {
-                        /*
-                        using (StreamWriter fileStream = new StreamWriter(jSettings.destFileName))
-                        {
-                            Save(fileStream, model);
-                        }
-                        */ 
-
-                        model.SaveAs(jSettings.destFileName, StorageType.Ifc);
-                        LogWriter.Add(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated.");
-                    }
-                    catch (Exception ex)
-                    {
-                        LogWriter.Add(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex);
-                    }
-                    break;
-
-                //if it is to be saved as an XML file
-                case IfcFileType.ifcXML:
-                    try
-                    {
-                        model.SaveAs(jSettings.destFileName, StorageType.IfcXml);
-                        LogWriter.Add(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated.");
-                    }
-                    catch (Exception ex)
-                    {
-                        LogWriter.Add(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex);
-                    }
-                    break;
-
-                //if it is to be saved as an ifcZIP file
-                case IfcFileType.ifcZip:
-                    try
-                    {
-                        model.SaveAs(jSettings.destFileName, StorageType.IfcZip);
-                        LogWriter.Add(LogType.verbose, "IFC file (as '" + jSettings.outFileType.ToString() + "') generated.");
-                    }
-                    catch (Exception ex)
-                    {
-                        LogWriter.Add(LogType.error, "IFC file (as '" + jSettings.outFileType.ToString() + "') could not be generated.\nError message: " + ex);
-                    }
-                    break;
-            }
-        }
-
+        
         //below a small "bug fix" for IfcCartesianPointList
         //source: https://github.com/xBimTeam/XbimGeometry/issues/291
         /// <summary>

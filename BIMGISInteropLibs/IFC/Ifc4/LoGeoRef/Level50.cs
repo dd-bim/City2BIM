@@ -26,7 +26,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
     /// </summary>
     public static class Level50
     {
-        public static IfcGeometricRepresentationContext Create(IfcStore model, Axis2Placement3D placement, JsonSettings jsonSettings)
+        public static IfcGeometricRepresentationContext Create(IfcStore model, Axis2Placement3D placement, Config jsonSettings)
         {
             //start transaction
             using(var txn = model.BeginTransaction("Create Geometric Representation Context[LoGeoRef50]"))

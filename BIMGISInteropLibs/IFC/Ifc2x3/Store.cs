@@ -31,18 +31,20 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// <param name="refLongitude"></param>
         /// <param name="refElevation"></param>
         /// <returns></returns>
-        public static IfcStore CreateViaTin(
-            JsonSettings jSt,
+        public static IfcStore Create(
+            Result result,
+            Config jSt,
+            WriteInput writeInput,
             JsonSettings_DIN_SPEC_91391_2 jsonSettings_DIN_SPEC,
             JsonSettings_DIN_18740_6 jsonSettings_DIN_18740_6,
-            Axis2Placement3D sitePlacement,
-            Result result,
-            SurfaceType surfaceType,
-            double? breakDist = null,
             double? refLatitude = null,
             double? refLongitude = null,
             double? refElevation = null)
         {
+
+            Axis2Placement3D sitePlacement = writeInput.Placement;
+            SurfaceType surfaceType = writeInput.SurfaceType;
+
             //create model
             var model = InitModel.Create(jSt.projectName, jSt.editorsFamilyName, jSt.editorsGivenName, jSt.editorsOrganisationName, out var project);
             LogWriter.Add(LogType.verbose, "Entity IfcProject generated.");
@@ -80,36 +82,18 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             //init geometric representation (entity IfcShapeRepresentation)
             IfcGeometricRepresentationItem shape;
 
-            //distinction whether TIN (true) or MESH (false)
-            if (jSt.isTin) //TIN processing
+            
+            //distinction which shape representation
+            switch (surfaceType)
             {
-                //distinction which shape representation
-                switch (surfaceType)
-                {
-                    //IfcSBSM
-                    case SurfaceType.SBSM:
-                        shape = ShellBasedSurfaceModel.CreateViaTin(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcGCS (default)
-                    default:
-                        shape = GeometricCurveSet.CreateViaTin(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
-                        break;
-                }
-            }
-            else //MESH processing
-            {
-                //distinction which shape representation
-                switch (surfaceType)
-                {
-                    //IfcSBSM
-                    case SurfaceType.SBSM:
-                        shape = ShellBasedSurfaceModel.CreateViaMesh(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                        break;
-                    //IfcGCS (default)
-                    default:
-                        shape = GeometricCurveSet.CreateViaMesh(model, sitePlacement.Location, result, breakDist, out representationType, out representationIdentifier);
-                        break;
-                }
+                //IfcSBSM
+                case SurfaceType.SBSM:
+                    shape = ShellBasedSurfaceModel.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
+                //IfcGCS (default)
+                default:
+                    shape = GeometricCurveSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
             }
 
             //create IfcShapeRepres
@@ -164,7 +148,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// this method write the dest file <para/>
         /// supports STEP, XML, ZIP
         /// </summary>
-        public static void WriteFile(IfcStore model, JsonSettings jSettings)
+        public static void WriteFile(IfcStore model, Config jSettings)
         {
             switch (jSettings.outFileType)
             {

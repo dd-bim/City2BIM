@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 //integration of the BimGisCad library
 using BimGisCad.Collections;                        //MESH --> will be removed
-using BimGisCad.Representation.Geometry.Elementary; //LINE
-using BimGisCad.Representation.Geometry.Composed;   //TIN
-
-using IxMilia.Dxf; //for DXF processing
+using BimGisCad.Representation.Geometry.Composed;   //TIN --> will be removed
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -19,48 +16,74 @@ namespace BIMGISInteropLibs.IfcTerrain
     public class Result
     {
         /// <summary>
-        /// transfer class of an MESH
+        /// internale use
+        /// </summary>
+        public DtmConversionType currentConversion { get; set; }
+
+        /// <summary>
+        /// REMOVE
         /// </summary>
         public Mesh Mesh { get; set; } = null;
 
         /// <summary>
-        /// transfer class of break edges
-        /// </summary>
-        public Dictionary<int, Line3> Breaklines { get; set; } = null;
-
-        /// <summary>
-        /// transfer class for tin
+        /// REMOVE
         /// </summary>
         public Tin Tin { get; set; }
 
         /// <summary>
-        /// Number of points read
+        /// [FILE-READING] transfer point list (for NTS only)
         /// </summary>
-        public int rPoints { get; set; }
+        public List<NetTopologySuite.Geometries.Point> pointList { get; set; }
 
         /// <summary>
-        /// Number of points processed
+        /// [FILE-READING] transfer triangles (NTS)
         /// </summary>
-        public int wPoints { get; set; }
+        public List<NetTopologySuite.Geometries.Polygon> triangleList { get; set; }
 
         /// <summary>
-        /// Number of lines read
+        /// [FILE-READING] transfer breaklines (NTS)
         /// </summary>
-        public int rLines { get; set; }
+        public List<NetTopologySuite.Geometries.LineString> lines { get; set; }
 
         /// <summary>
-        /// Number of lines processed
+        /// [FILE-WRITING] unqiue list of coordinate in a dtm
         /// </summary>
-        public int wLines { get; set; }
-        
-        /// <summary>
-        /// Number of lines read
-        /// </summary>
-        public int rFaces { get; set; }
+        public NetTopologySuite.Geometries.CoordinateList coordinateList { get; set; } = null;
 
         /// <summary>
-        /// Number of lines processed
+        /// [FILE-WRITING] mapped int values (point indicies) 
         /// </summary>
-        public int wFaces { get; set; }
+        public HashSet<Triangulator.triangleMap> triMap { get; set; } = null;
+
+        /// <summary>
+        /// [FILE - WRITING] - > TXT export (only internal support)
+        /// </summary>
+        public NetTopologySuite.Geometries.GeometryCollection geomStore { get; set; } = null;
+    }
+
+    /// <summary>
+    /// different szenarios for dtm conversion
+    /// </summary>
+    public enum DtmConversionType
+    {
+        /// <summary>
+        /// dtm contains points --> need to do a delauny triangulation
+        /// </summary>
+        points,
+
+        /// <summary>
+        /// dtm contains faces --> conversion of the given faces
+        /// </summary>
+        faces,
+
+        /// <summary>
+        /// dtm contains points & breaklines --> need to do a conforming delauny triangulation
+        /// </summary>
+        points_breaklines,
+
+        /// <summary>
+        /// dtm contains faces & breaklines --> need to do a conforming delauny triangulation
+        /// </summary>
+        faces_breaklines,
     }
 }

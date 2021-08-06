@@ -88,9 +88,9 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Meta scheme";
-                        if (!string.IsNullOrEmpty(jSettings.metaScheme))
+                        if (!string.IsNullOrEmpty(jSettings.metadataSchema))
                         {
-                            p.NominalValue = new IfcText(jSettings.metaScheme);
+                            p.NominalValue = new IfcText(jSettings.metadataSchema);
                         }
                     }),
                 });

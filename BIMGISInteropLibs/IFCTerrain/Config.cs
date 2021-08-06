@@ -43,13 +43,13 @@ namespace BIMGISInteropLibs.IfcTerrain
         REB,
     }
 
+   
     /// <summary>
     /// Establishes the connection between Reader, Writers, GUI and Command
     /// </summary>
-    public class JsonSettings
+    public class Config
     {
         #region unspecific file attributes
-
         #region file handling
         //Read
         /// <summary>
@@ -97,11 +97,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// Decision to calculate a TIN of the input data
         /// </summary>
         public bool? calculateTin { get; set; }
-
-        /// <summary>
-        /// Decision to recalculate a existing TIN
-        /// </summary>
-        public bool? recalculateTin { get; set; }
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
@@ -498,7 +493,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// reference to schema (for more metadata) (optional)
         /// </summary>
-        public string metaScheme { get; set; }
+        public string metadataSchema { get; set; }
 
         /// <summary>
         /// mime type eg.: application/x-step

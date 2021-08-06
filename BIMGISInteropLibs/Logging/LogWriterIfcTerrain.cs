@@ -26,7 +26,7 @@ namespace BIMGISInteropLibs.Logging
         /// <summary>
         /// init instance of log writer
         /// </summary>
-        public static void initLogger(IfcTerrain.JsonSettings config)
+        public static void initLogger(IfcTerrain.Config config)
         {
             //get file path from config
             string path = config.logFilePath;

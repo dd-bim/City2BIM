@@ -29,7 +29,12 @@ namespace BIMGISInteropLibs.IFC
     /// <summary>
     /// Enumeration for IFC-File-Types
     /// </summary>
-    public enum IfcFileType { Step, ifcXML, ifcZip }
+    public enum IfcFileType { 
+        Step, 
+        ifcXML, 
+        ifcZip,
+        text = 17
+    }
 
     /// <summary>
     /// Enumeration for shape representation

@@ -13,7 +13,7 @@ namespace GuiHandler
         /// <summary>
         /// instance for settings (getter + setter) to convert files
         /// </summary>
-        public static JsonSettings config = new JsonSettings();
+        public static Config config = new Config();
 
         /// <summary>
         /// create an instance for JSON Settings (getter + setter) <para/>
@@ -31,10 +31,10 @@ namespace GuiHandler
         /// create NEW instance for settings (to override the settings before)
         /// </summary>
         /// <returns></returns>
-        public static JsonSettings clearConfig()
+        public static Config clearConfig()
         {
             GuiSupport.resetTasks();
-            JsonSettings config = new JsonSettings();
+            Config config = new Config();
             return config;
         }
     }
