@@ -108,7 +108,7 @@ namespace IFCTerrainCommand
                 string jText = System.IO.File.ReadAllText(path);
 
                 //create collection from each json file
-                JsonSettings jSettings = JsonConvert.DeserializeObject<JsonSettings>(jText);
+                Config jSettings = JsonConvert.DeserializeObject<Config>(jText);
 
                 //init logger
                 BIMGISInteropLibs.Logging.LogWriterIfcTerrain.initLogger(jSettings);

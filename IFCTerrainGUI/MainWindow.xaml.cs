@@ -283,7 +283,7 @@ namespace IFCTerrainGUI
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
 
             //start mapping process which currently begins with the selection of the file reader
-            result = conInt.mapProcess(init.config, init.config91391, init.config18740);
+            bool processingResult = conInt.mapProcess(init.config, init.config91391, init.config18740);
         }
 
         /// <summary>
@@ -303,11 +303,13 @@ namespace IFCTerrainGUI
             Mouse.OverrideCursor = null;
 
             //logging stat
+            /*
             double numPoints = (double)result.wPoints / (double)result.rPoints;
             double numFaces = (double)result.wFaces / (double)result.rFaces;
             guiLog.setLog("Conversion completed!");
             guiLog.setLog("Results: " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " % )");
             guiLog.setLog("and "+ result.wFaces + " triangles (" + Math.Round(numFaces * 100, 2) + " %) processed.");
+            */
         }
         #endregion background worker
 

@@ -25,7 +25,7 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// </summary>
         /// <param name="config">setting to config file processing and conversion process</param>
         /// <returns></returns>
-        public static Result mapProcess(JsonSettings config, BIMGISInteropLibs.RvtTerrain.Result.conversionEnum processingEnum)
+        public static Result mapProcess(Config config, Result.conversionEnum processingEnum)
         {
             //set grid size (as default value)
             config.gridSize = 1;
@@ -42,44 +42,25 @@ namespace BIMGISInteropLibs.RvtTerrain
             {
                 //grid reader
                 case IfcTerrainFileType.Grid:
-                    resTerrain = ElevationGrid.ReaderTerrain.ReadGrid(config);
-                    break;
+                    throw new NotImplementedException();
 
                 case IfcTerrainFileType.DXF:
-
-                    //dxf file reader (output used for process terrain information)
-                    DXF.ReaderTerrain.ReadFile(config.filePath, out DxfFile dxfFile);
-
-                    //[TODO]loop for distinguishing whether it is a tin or not (processing via points and lines)
-                   
-                    //Reader (if dxf file contains 3dfaces & procssing as conversion)
-                    resTerrain = DXF.ReaderTerrain.ReadDxfTin(dxfFile, config);
-                    break;
+                    throw new NotImplementedException();
 
                 case IfcTerrainFileType.REB:
-                    //REB file reader
-                    REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(config.filePath);
-
-                    //use REB data via processing with converter
-                    resTerrain = REB.ReaderTerrain.ConvertRebToTin(rebData, config);
-                    break;
+                    throw new NotImplementedException();
 
                 case IfcTerrainFileType.Grafbat:
-                    resTerrain = GEOgraf.ReadOUT.ReadOutData(config, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumerMap);
-                    break;
+                    throw new NotImplementedException();
 
-                //XML
                 case IfcTerrainFileType.LandXML:
-                    resTerrain = LandXML.ReaderTerrain.ReadTin(config);
-                    break;
+                    throw new NotImplementedException();
 
                 case IfcTerrainFileType.CityGML:
-                    resTerrain = CityGML.CityGMLReaderTerrain.ReadTin(config);
-                    break;
+                    throw new NotImplementedException();
 
                 case IfcTerrainFileType.PostGIS:
-                    resTerrain = PostGIS.ReaderTerrain.ReadPostGIS(config);
-                    break;
+                    throw new NotImplementedException();
             }
             #endregion file reading
 

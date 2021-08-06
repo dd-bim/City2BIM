@@ -80,6 +80,9 @@
     <Reference Include="IxMilia.Dxf, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IxMilia.Dxf.0.8.0\lib\netstandard2.0\IxMilia.Dxf.dll</HintPath>
     </Reference>
+    <Reference Include="MIConvexHull, Version=1.1.19.1018, Culture=neutral, PublicKeyToken=2644b6f8be52c998, processorArchitecture=MSIL">
+      <HintPath>..\packages\MIConvexHull.1.1.19.1019\lib\netstandard2.0\MIConvexHull.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -117,7 +120,7 @@
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.11.1\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="NetTopologySuite, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetTopologySuite.2.2.0\lib\netstandard2.0\NetTopologySuite.dll</HintPath>
+      <HintPath>..\packages\NetTopologySuite.2.3.0\lib\netstandard2.0\NetTopologySuite.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -255,7 +258,7 @@
     <Compile Include="Geometry\C2BPoint.cs" />
     <Compile Include="Geometry\terrain.cs" />
     <Compile Include="IfcTerrain\Common.cs" />
-    <Compile Include="IfcTerrain\JsonSettings.cs" />
+    <Compile Include="IfcTerrain\Config.cs" />
     <Compile Include="IfcTerrain\Result.cs" />
     <Compile Include="IFC\Ifc2x3\GeometricCurveSet.cs" />
     <Compile Include="IFC\Ifc2x3\LoGeoRef\Level30.cs" />
@@ -281,11 +284,11 @@
     <Compile Include="IFC\Ifc2x3\Store.cs" />
     <Compile Include="IFC\Ifc4dot3\Dummy.cs" />
     <Compile Include="IfcTerrain\ConnectionInterface.cs" />
+    <Compile Include="IFC\Ifc4\TriangulatedIrregularNetwork.cs" />
     <Compile Include="IFC\utils.cs" />
     <Compile Include="IFC\WriteInput.cs" />
     <Compile Include="LandXML\ReaderTerrain.cs" />
     <Compile Include="Logging\LogWriterIfcTerrain.cs" />
-    <Compile Include="NTSApi\NtsApi.cs" />
     <Compile Include="PostGIS\ReaderTerrain.cs" />
     <Compile Include="REB\ReaderTerrain.cs" />
     <Compile Include="OGR\GeoObject.cs" />
@@ -313,7 +316,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="CityGML\CityGMLReader.cs" />
-    <Compile Include="Triangulator\IfcTerrainTriangulator.cs" />
+    <Compile Include="Triangulator\DelaunayTriangulation.cs" />
     <Compile Include="WFS\WFSClient.cs" />
     <Compile Include="ALKIS\AlkisReader.cs" />
     <Compile Include="ALKIS\Alkis_Semantic.cs" />
