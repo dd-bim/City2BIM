@@ -46,19 +46,21 @@ namespace BIMGISInteropLibs.IfcTerrain
         public List<NetTopologySuite.Geometries.LineString> lines { get; set; }
 
         /// <summary>
-        /// [FILE-WRITING] unqiue list of coordinate in a dtm
+        /// [FILE-WRITING] unqiue list of coordinates in a dtm
         /// </summary>
         public NetTopologySuite.Geometries.CoordinateList coordinateList { get; set; } = null;
+
+        /// <summary>
+        /// [FILE - WRITING] txt export (only internal support)
+        /// </summary>
+        public NetTopologySuite.Geometries.GeometryCollection geomStore { get; set; } = null;
 
         /// <summary>
         /// [FILE-WRITING] mapped int values (point indicies) 
         /// </summary>
         public HashSet<Triangulator.triangleMap> triMap { get; set; } = null;
 
-        /// <summary>
-        /// [FILE - WRITING] - > TXT export (only internal support)
-        /// </summary>
-        public NetTopologySuite.Geometries.GeometryCollection geomStore { get; set; } = null;
+        public NetTopologySuite.Geometries.Coordinate origin { get; set; } = null;
     }
 
     /// <summary>

@@ -12,8 +12,6 @@ using NetTopologySuite.Triangulate.QuadEdge;
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-using MIConvexHull;
-
 namespace BIMGISInteropLibs.Triangulator
 {
     public class DelaunayTriangulation
@@ -44,7 +42,7 @@ namespace BIMGISInteropLibs.Triangulator
             //init builder
             var builder = new ConformingDelaunayTriangulationBuilder()
             {
-                //TODO set tol from user input
+                //TODO set tol from user input (config)
                 Tolerance = 0.001
             };
             
@@ -56,14 +54,17 @@ namespace BIMGISInteropLibs.Triangulator
             GeometryCollection breaklines;
             GeometryCollection triangles;
 
-            
-
             //switch between different conversion types
             switch (result.currentConversion)
             {
                 default:
                     //set point list to multi points
-                    MultiPoint pointCollection = new MultiPoint(result.pointList.ToArray());
+                    Point[] points = result.pointList.ToArray();
+                    
+                    //set points as multi point
+                    MultiPoint pointCollection = new MultiPoint(points);
+
+                    //set sites
                     builder.SetSites(pointCollection);
                     break;
 
@@ -74,7 +75,7 @@ namespace BIMGISInteropLibs.Triangulator
                     break;
 
                 case IfcTerrain.DtmConversionType.faces_breaklines:
-
+                    
                     faces = new GeometryCollection(result.triangleList.ToArray());
                     builder.SetSites(faces);
 
@@ -85,7 +86,8 @@ namespace BIMGISInteropLibs.Triangulator
                 case IfcTerrain.DtmConversionType.points_breaklines:
                     throw new NotImplementedException();
             }
-            //get triangles
+            
+            //get triangles -> this one is a processing step 
             triangles = builder.GetTriangles(geometryFactory);
             result.geomStore = triangles;
 

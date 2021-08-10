@@ -47,7 +47,7 @@ namespace GuiHandler.userControler.Reb
         /// <summary>
         /// container for reb Data
         /// </summary>
-        private RebDaData rebData = null;
+        private RebData rebData = null;
 
         /// <summary>
         /// opens file dialgo as soon as a file has been selected further functions are triggerd
@@ -119,7 +119,7 @@ namespace GuiHandler.userControler.Reb
         private void BackgroundWorkerReb_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task
-            e.Result = ReaderTerrain.ReadReb(init.config.filePath);
+            e.Result = ReaderTerrain.ReadReb(init.config);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace GuiHandler.userControler.Reb
             this.lbRebSelect.Items.Clear();
 
             //if file fits to rebdata
-            if (e.Result is RebDaData rebData)
+            if (e.Result is RebData rebData)
             {
                 //Assignment
                 this.rebData = rebData;
@@ -161,9 +161,6 @@ namespace GuiHandler.userControler.Reb
 
             //release complete gui again
             IsEnabled = true;
-
-            //set to json settings
-            init.config.isTin = true;
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
@@ -206,18 +203,6 @@ namespace GuiHandler.userControler.Reb
 
             //passed to json settings
             init.config.horizon = horizon;
-
-            //Processing options
-            if (rbRebFaces.IsChecked == true && rbProcessBlFalse.IsChecked == true)
-            {
-                //Process exisitng TIN
-                init.config.isTin = true;
-            }
-            else
-            {
-                //Calculate TIN from point data
-                init.config.calculateTin = true;
-            }
 
             //Decision if breaklines shall be used
             if (rbProcessBlTrue.IsChecked == true)

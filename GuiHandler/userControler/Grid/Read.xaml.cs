@@ -150,28 +150,15 @@ namespace GuiHandler.userControler.Grid
             #region set json settings
             if (chkCalculateTin.IsChecked == true)
             {
-                //TIN will be calculated
-                init.config.calculateTin = true;
-
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "TIN will be calculated";
-
-                //set json setting tin
-                init.config.isTin = true;
+                
             }
             else
             {
-                //MESh willbe calculated
-                init.config.calculateTin = false;
-
                 //set text to info panel
                 //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
 
                 //set json settings grid size
                 init.config.gridSize = Convert.ToInt32(tbGridSize.Text);
-
-                //set json setting tin
-                init.config.isTin = false;
             }
             if (chkGridBB.IsChecked == true)
             {

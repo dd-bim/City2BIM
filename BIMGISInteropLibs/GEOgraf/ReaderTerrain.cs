@@ -53,7 +53,7 @@ namespace BIMGISInteropLibs.GEOgraf
         /// <param name="pointIndex2NumberMap"></param>
         /// <param name="triangleIndex2NumberMap"></param>
         /// <returns>TIN - for processing in IFCTerrain or Revit</returns>
-        public static Result ReadOutData(JsonSettings jSettings, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumberMap)
+        public static Result ReadOutData(Config jSettings, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumberMap)
         {
             //read from json settings
             string filePath = jSettings.filePath;
@@ -101,8 +101,8 @@ namespace BIMGISInteropLibs.GEOgraf
             result.Tin = tin;
 
             //add to results (stats)
-            result.rPoints = tin.Points.Count;
-            result.rFaces = tin.NumTriangles;
+            //result.rPoints = tin.Points.Count;
+            //result.rFaces = tin.NumTriangles;
 
             //logging
             LogWriter.Add(LogType.info, "Reading Grafbat data successful.");

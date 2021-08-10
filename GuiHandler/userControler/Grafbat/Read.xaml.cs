@@ -69,16 +69,7 @@ namespace GuiHandler.userControler.Grafbat
 
             #region selection [include TODO!]
             //check selection and set json settings
-            //Selection "Faces"
-            if (rbGraftbatReadFaces.IsChecked == true)
-            {
-                init.config.isTin = true;
-            }
-            //Selection "Points / Lines"
-            else if (rbGraftbatReadPointsLines.IsChecked == true)
-            {
-                init.config.isTin = false;
-            }
+            
             //Selection "Points"
             //[TODO]: must be revised ... Reader + ConnectionInterface!
             #endregion selection [include TODO!]

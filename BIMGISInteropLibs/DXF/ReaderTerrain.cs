@@ -105,13 +105,13 @@ namespace BIMGISInteropLibs.DXF
             dxfResult.currentConversion = DtmConversionType.faces;
 
             //read faces
-            readFaces(dxfFile, config.layer, scale, dxfResult.triangleList);
+            readFaces(dxfFile, config.layer, scale, dxfResult.triangleList, dxfResult);
 
             //if breaklines should be processed
             if (config.breakline.GetValueOrDefault())
             {
                 //read faces
-                readBreaklines(dxfFile, config.breakline_layer, scale, dxfResult.lines);
+                readBreaklines(dxfFile, config.breakline_layer, scale, dxfResult.lines, dxfResult);
 
                 //set conversion type --> breaklines will be processed
                 dxfResult.currentConversion = DtmConversionType.faces_breaklines;
@@ -127,7 +127,7 @@ namespace BIMGISInteropLibs.DXF
         /// <summary>
         /// reading faces of dxf file
         /// </summary>
-        private static void readFaces(DxfFile dxfFile, string dxfLayer, double scale, List<Polygon> triangleList)
+        private static void readFaces(DxfFile dxfFile, string dxfLayer, double scale, List<Polygon> triangleList, Result dxfResult)
         {
             triangleList = new List<Polygon>();
             
@@ -144,16 +144,15 @@ namespace BIMGISInteropLibs.DXF
                     CoordinateZ p1 = new CoordinateZ(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale);
                     CoordinateZ p2 = new CoordinateZ(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale);
                     CoordinateZ p3 = new CoordinateZ(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale);
-                    
+
                     //CoordinateZ p4 = new CoordinateZ(face.FourthCorner.X * scale, face.FourthCorner.Y * scale, face.FourthCorner.Z * scale);
                     //vertices.Add(new NetTopologySuite.Triangulate.ConstraintVertex(p4));
-                    
-                    //
-                    LinearRing shell = new LinearRing(new Coordinate[] { p1, p2, p3, p1 });
-                   
-                    //
-                    Polygon triangle = new Polygon(shell);
-                    
+
+                    Coordinate[] coords = new Coordinate[] { p1, p2, p3, p1 };
+
+
+                    Polygon triangle = new Polygon(new LinearRing(coords));
+
                     //add polygon to list
                     triangleList.Add(triangle);
 
@@ -162,12 +161,15 @@ namespace BIMGISInteropLibs.DXF
 
                 }
             }
+
+            //set to result
+            dxfResult.triangleList = triangleList;
         }
     
         /// <summary>
         /// reading breaklines in an dxf file via current settings 
         /// </summary>
-        private static void readBreaklines(DxfFile dxfFile, string breaklineLayer , double scale, List<LineString> lines)
+        private static void readBreaklines(DxfFile dxfFile, string breaklineLayer , double scale, List<LineString> lines, Result res)
         {
             lines = new List<LineString>();
 
@@ -187,6 +189,7 @@ namespace BIMGISInteropLibs.DXF
                     LogWriter.Add(LogType.verbose, "[DXF] Breakline set.");
                 }
             }
+            res.lines = lines;
         }
     }
 

@@ -57,6 +57,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public string filePath { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
         /// <summary>
         /// name of the file to be converted (without path)
         /// </summary>
@@ -74,16 +75,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         public string destFileName { get; set; }
 
         /// <summary>
-        /// Sets the IFC version of the output file (IFC2x3; IFC4; ~IFC4dot3~)
-        /// </summary>
-        public IFC.IfcVersion outIFCType { get; set; }
-
-        /// <summary>
-        /// Sets the file format of the output file (Step/XML)
-        /// </summary>
-        public IFC.IfcFileType outFileType { get; set; }
-
-        /// <summary>
         /// Destination location for the log file
         /// </summary>
         public string logFilePath { get; set; }
@@ -94,9 +85,31 @@ namespace BIMGISInteropLibs.IfcTerrain
         public LogType verbosityLevel { get; set; }
 
         /// <summary>
-        /// Decision to calculate a TIN of the input data
+        /// Sets the IFC version of the output file (IFC2x3; IFC4; ~IFC4dot3~)
         /// </summary>
-        public bool? calculateTin { get; set; }
+        public IFC.IfcVersion outIFCType { get; set; }
+
+        /// <summary> 
+        ///Sets the terrain model type for the output IFC file: GCS=GeometricCurveSet; SBSM=ShellBasesSurfaceModel; TFS=TriangulatedFaceSet
+        /// </summary>
+        public IFC.SurfaceType outSurfaceType { get; set; }
+
+        /// <summary>
+        /// Sets the file format of the output file (Step/XML/IfcZip)
+        /// </summary>
+        public IFC.IfcFileType outFileType { get; set; }
+        #endregion
+
+        #region only used for processing [Settings]
+        /// <summary>
+        /// minimum distance (used for IFC writer processing) [TODO].
+        /// </summary>
+        public double minDist { get; set; }
+        
+        /// <summary>
+        /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not
+        /// </summary>
+        public bool? geoElement { get; set; }
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
@@ -147,32 +160,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public bool? exportMetadataDin18740 { get; set; }
 
-        #region only used for processing [Settings]
-        /// <summary>
-        /// Decides whether 2D (false) or 3D (true)
-        /// </summary>
-        public bool is3D { get; set; }
-
-        /// <summary>
-        /// minimum distance (used for IFC writer processing) [TODO].
-        /// </summary>
-        public double minDist { get; set; }
-
-        /// <summary>
-        /// Describes whether an input DXF file contains tin information (faces) or not
-        /// </summary>
-        public bool isTin { get; set; }
-
-        /// <summary> 
-        ///Sets the terrain model type for the output IFC file: GCS=GeometricCurveSet; SBSM=ShellBasesSurfaceModel; TFS=TriangulatedFaceSet
-        /// </summary>
-        public IFC.SurfaceType surfaceType { get; set; }
-
-        /// <summary>
-        /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not
-        /// </summary>
-        public bool? geoElement { get; set; }
-        #endregion
+        
 
         //below the required attributes to process the georeferencing
         #region GeoRef - Attributes

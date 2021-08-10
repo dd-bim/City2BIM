@@ -79,6 +79,13 @@ namespace BIMGISInteropLibs.IFC
 
                 LogWriter.Add(LogType.info, "Orgin via user input has been set.");
             }
+            else if(result.origin != null)
+            {
+                originX = result.origin.X;
+                originY = result.origin.Y;
+                originZ = 0;
+                LogWriter.Add(LogType.info, "Orgin (XY) cacluate from data.");
+            }
             else
             {
                 originX = result.geomStore.Centroid.X;
@@ -96,17 +103,17 @@ namespace BIMGISInteropLibs.IFC
             //interface for IFC shape representation on the basis of which the Shape - Representation are controlled
             writeInput.SurfaceType = SurfaceType.TFS; //standard case
             //Query whether another shape representation is desired
-            if (config.surfaceType == SurfaceType.GCS)
+            if (config.outSurfaceType == SurfaceType.GCS)
             {
                 //set shape repr. to GCS
                 writeInput.SurfaceType = SurfaceType.GCS;
             }
-            else if (config.surfaceType == SurfaceType.SBSM)
+            else if (config.outSurfaceType == SurfaceType.SBSM)
             {
                 //set shape repr. to SBSM
                 writeInput.SurfaceType = SurfaceType.SBSM;
             }
-            else if (config.surfaceType == SurfaceType.TIN)
+            else if (config.outSurfaceType == SurfaceType.TIN)
             {
                 writeInput.SurfaceType = SurfaceType.TIN;
             }

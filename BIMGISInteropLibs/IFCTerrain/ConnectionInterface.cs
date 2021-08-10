@@ -15,6 +15,8 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
 
+using NetTopologySuite.Geometries;
+
 namespace BIMGISInteropLibs.IfcTerrain
 {
     public class ConnectionInterface
@@ -32,7 +34,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             #region reader
             //initalize transfer class
             var result = new Result();
-            
+
             //In the following a mapping is made on the basis of the data type, so that the respective reader is called up
             switch (config.fileType)
             {
@@ -69,7 +71,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
 
             //error handling
-            if (result.pointList == null && result.triangleList == null)
+            if (result.pointList == null && result.triangleList == null && result.coordinateList == null)
             {
                 LogWriter.Add(LogType.error, "[READER] File reading failed - processing canceld!");
                 return false;
@@ -78,9 +80,23 @@ namespace BIMGISInteropLibs.IfcTerrain
             //so that from the reader is passed to respective "classes"
             LogWriter.Add(LogType.debug, "Reading file completed.");
             #endregion reader
+            if(result.triMap.Count == 0)
+            {
+                //dtm processing
+                Triangulator.DelaunayTriangulation.triangulate(result);
+            }
+            else
+            {
+                //set point list to multi points
+                Point[] points = result.pointList.ToArray();
 
-            //dtm processing
-            Triangulator.DelaunayTriangulation.triangulate(result);
+                //create point collection
+                MultiPoint pointCollection = new MultiPoint(points);
+
+                var centroid = NetTopologySuite.Algorithm.Centroid.GetCentroid(pointCollection);
+
+                result.origin = centroid;
+            }
 
             //from here are the IFC writers
             #region writer

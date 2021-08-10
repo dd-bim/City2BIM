@@ -116,9 +116,6 @@ namespace GuiHandler.userControler.XML
             //[DTM2BIM] check if all task are allready done
             GuiSupport.rdyDTM2BIM();
 
-            //set json settings isTin to true
-            init.config.isTin = true;
-
             //send gui logging
             guiLog.setLog("XML settings applyed.");
         }

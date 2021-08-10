@@ -136,7 +136,7 @@ namespace GuiHandler.userControler.Dxf
         private void BackgroundWorkerDxf_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task: file reading
-            e.Result = ReaderTerrain.ReadFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
+            e.Result = ReaderTerrain.readFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - started!"));
         }
 
@@ -343,26 +343,7 @@ namespace GuiHandler.userControler.Dxf
                  * and be converted in the JSON settings via an enumeration.
                  */
                 //Processing options
-                if (rbDxfFaces.IsChecked == true && rbDxfBreaklinesFalse.IsChecked == true)
-                {
-                    //processing faces (true)
-                    init.config.isTin = true;
-                }
-                else if (rbDxfFaces.IsChecked == true && rbDxfBreaklinesTrue.IsChecked == true)
-                {
-                    init.config.recalculateTin = true;
-                    init.config.isTin = false;
-                }
-                else if (rbDxfPoints.IsChecked == true)
-                {
-                    init.config.calculateTin = true;
-                    init.config.isTin = false;
-                }
-                else
-                {
-                    //processing points / lines (false)
-                    init.config.isTin = false;
-                }
+                
 
                 //set task (file opening) to true
                 GuiSupport.taskfileOpening = true;

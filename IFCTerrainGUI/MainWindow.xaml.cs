@@ -157,10 +157,6 @@ namespace IFCTerrainGUI
             //
             LogWriter.initLogger(init.config);
 
-            //json settings set 3D to true [TODO]
-            init.config.is3D = true;
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'is3D'-value to default (true)"));
-
             //json settings set minDist to 1.0 (default value) [TODO]
             init.config.minDist = 1.0;
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'minDist'-value to default (1.0 m)"));
@@ -172,7 +168,7 @@ namespace IFCTerrainGUI
 
             string fileType = init.config.fileType.ToString();
             string ifcVersion = init.config.outIFCType.ToString();
-            string shape = init.config.surfaceType.ToString();
+            string shape = init.config.outSurfaceType.ToString();
 
             #region metadata
             //will be executed if user select export of meta data

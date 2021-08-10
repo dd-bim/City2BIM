@@ -55,7 +55,6 @@ namespace BIMGISInteropLibs.ElevationGrid
 
             //Initialize list for DTM point data
             var pointList = new List<Point>();
-               
 
             //set conversion type
             gridResult.currentConversion = DtmConversionType.points;
@@ -88,7 +87,7 @@ namespace BIMGISInteropLibs.ElevationGrid
                                     && x >= config.bbNorth && x <= config.bbSouth)
                                 {
                                     //Prepare Point Data for NetTopologySuite
-                                    pointList.Add(new NetTopologySuite.Geometries.Point(x, y, z));
+                                    pointList.Add(new Point(x, y, z));
                                 }
                             }
                         }

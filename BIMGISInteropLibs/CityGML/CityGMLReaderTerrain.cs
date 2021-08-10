@@ -23,7 +23,8 @@ namespace BIMGISInteropLibs.CityGML
     class CityGMLReaderTerrain
     {
         /// <summary>
-        /// Reads DTM from a CityGML file
+        /// Reads DTM from a CityGML file<para/>
+        /// [TODO] CityGML - Features review and expand ("gml::MultiCurve", "gml::Multipoint", ...)
         /// </summary>
         public static Result ReadTin(Config config)
         {
@@ -109,13 +110,10 @@ namespace BIMGISInteropLibs.CityGML
                     return null;
                 }
             }
-            //[TODO]: Pass error message and "Error"
             catch (Exception ex)
             {
                 //logging
-                LogWriter.Add(LogType.error, "[CityGML] file could not be read (" + config.fileName + ")");
-                LogWriter.Add(LogType.error, ex.Message);
-                
+                LogWriter.Add(LogType.error, "[CityGML] Error: " + ex.Message);
                 return null;
             }
         } //End ReadTIN

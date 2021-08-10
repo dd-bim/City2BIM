@@ -40,7 +40,7 @@ namespace BIMGISInteropLibs.PostGIS
         /// PostGIS - query to establish DB connections to retrieve a TIN and, if necessary, the break edges.
         /// </summary>
         /// <returns>TIN via Result for terrain processing (IFCTerrain/Revit)</returns>
-        public static Result ReadPostGIS(JsonSettings jSettings)
+        public static Result ReadPostGIS(Config jSettings)
         {
             
 
@@ -215,8 +215,8 @@ namespace BIMGISInteropLibs.PostGIS
                     result.Tin = tin;
 
                     //add to results (stats)
-                    result.rPoints = tin.Points.Count;
-                    result.rFaces = tin.NumTriangles;
+                    //result.rPoints = tin.Points.Count;
+                    //result.rFaces = tin.NumTriangles;
 
                     //*** BREAKLINE PROCESSING ***
                     /*
@@ -335,7 +335,7 @@ namespace BIMGISInteropLibs.PostGIS
             return result;
         }
 
-        private static void connector(JsonSettings jsonSettings)
+        private static void connector(Config jsonSettings)
         {
             LogWriter.Add(LogType.verbose, "Using auxilary connection function.");
             var builder = new NpgsqlConnectionStringBuilder();
@@ -361,7 +361,7 @@ namespace BIMGISInteropLibs.PostGIS
         /// </summary>
         /// <param name="jSettings">User input.</param>
         /// <returns>A TIN as result.</returns>
-        public static Result RecalculateTin(JsonSettings jSettings)
+        public static Result RecalculateTin(Config jSettings)
         {
             //Initialize TIN
             Tin tin;
@@ -403,7 +403,7 @@ namespace BIMGISInteropLibs.PostGIS
                 if (GetTinData(conn, tinDataSql, out List<double[]> tinPointList) && GetBreaklineData(conn, breaklineDataSql, out List<double[]> constraintList))
                 {
                     //Read DTM data from PostGis, compute triangles and create TIN
-                    tin = IfcTerrainTriangulator.CreateTin(tinPointList, constraintList);
+                    //tin = IfcTerrainTriangulator.CreateTin(tinPointList, constraintList);
                 }
             }
             catch (Exception e)
@@ -418,8 +418,8 @@ namespace BIMGISInteropLibs.PostGIS
             //Pass TIN to result and log
             result.Tin = tin;
             LogWriter.Add(LogType.info, "Reading PostGIS data successful.");
-            result.rPoints = tin.Points.Count;
-            result.rFaces = tin.NumTriangles;
+            //result.rPoints = tin.Points.Count;
+            //result.rFaces = tin.NumTriangles;
             LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             //Return the result as a TIN
@@ -431,7 +431,7 @@ namespace BIMGISInteropLibs.PostGIS
         /// </summary>
         /// <param name="jSettings">User input.</param>
         /// <returns>A TIN as result.</returns>
-        public static Result CalculateTin(JsonSettings jSettings)
+        public static Result CalculateTin(Config jSettings)
         {
             //Initialize TIN
             Tin tin;
@@ -473,11 +473,11 @@ namespace BIMGISInteropLibs.PostGIS
                 if (jSettings.breakline.GetValueOrDefault() && GetDtmData(conn, dtmDataSql, out List<double[]> dtmPointList) && GetBreaklineData(conn, breaklineDataSql, out List<double[]> constraintList))
                 {
                     //Read DTM data from PostGis, compute triangles and create TIN
-                    tin = IfcTerrainTriangulator.CreateTin(dtmPointList, constraintList);
+                    //tin = IfcTerrainTriangulator.CreateTin(dtmPointList, constraintList);
                 }
                 else if (GetDtmData(conn, dtmDataSql, out dtmPointList))
                 {
-                    tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
+                    //tin = IfcTerrainTriangulator.CreateTin(dtmPointList);
                 }
             }
             catch (Exception ex)
@@ -492,8 +492,8 @@ namespace BIMGISInteropLibs.PostGIS
             //Pass TIN to result and log
             result.Tin = tin;
             LogWriter.Add(LogType.info, "Reading PostGIS data successful.");
-            result.rPoints = tin.Points.Count;
-            result.rFaces = tin.NumTriangles;
+            //result.rPoints = tin.Points.Count;
+            //result.rFaces = tin.NumTriangles;
             LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
 
             //Return the result as a TIN
@@ -732,7 +732,7 @@ namespace BIMGISInteropLibs.PostGIS
 
     public class RvtReaderTerrain : RestClient
     {
-        public static void RvtReadPostGIS(JsonSettings config)
+        public static void RvtReadPostGIS(Config config)
         {
             //getLogin(config);
 
@@ -758,7 +758,7 @@ namespace BIMGISInteropLibs.PostGIS
 
         }
 
-        public static void getLogin(JsonSettings config)
+        public static void getLogin(Config config)
         {
             var client = new RestClient(config.host);
 
@@ -787,7 +787,7 @@ namespace BIMGISInteropLibs.PostGIS
             }
         }
 
-        public static string connString(JsonSettings jSettings)
+        public static string connString(Config jSettings)
         {
             return string.Format("Host={0};Port={1};Username={2};Password={3};Database={4};",
                         jSettings.host,
@@ -797,7 +797,7 @@ namespace BIMGISInteropLibs.PostGIS
                         jSettings.database);
         }
 
-        public static string connStringSSL(JsonSettings jSettings)
+        public static string connStringSSL(Config jSettings)
         {
             return string.Format("Server={0};Database={4};Port={1};Username={2};Password={3};Trust Server Certificate=true;Ssl Mode=Require",
                         jSettings.host,
