@@ -337,22 +337,28 @@ namespace GuiHandler.userControler.Dxf
                     init.config.breakline = false;
                 }
 
+                //case distinction --> only the point data are read from a DXF file
+                if (rbDxfFaces.IsChecked != true)
+                {
+                    init.config.readPoints = true;
+                }
+
                 //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
                 /*
                  * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
                  * and be converted in the JSON settings via an enumeration.
                  */
                 //Processing options
-                
+
 
                 //set task (file opening) to true
-                GuiSupport.taskfileOpening = true;
+                support.taskfileOpening = true;
 
                 //[IfcTerrain] check if all task are allready done
-                GuiSupport.readyState();
+                support.readyState();
 
                 //[DTM2BIM] check if all task are allready done
-                GuiSupport.rdyDTM2BIM();
+                support.rdyDTM2BIM();
 
                 //TODO enable start button
 

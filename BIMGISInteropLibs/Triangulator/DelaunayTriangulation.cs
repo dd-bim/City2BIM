@@ -84,17 +84,29 @@ namespace BIMGISInteropLibs.Triangulator
                     break;
 
                 case IfcTerrain.DtmConversionType.points_breaklines:
-                    throw new NotImplementedException();
+                    //set point list to multi points
+                    Point[] pointList = result.pointList.ToArray();
+
+                    //set points as multi point
+                    MultiPoint pointCollection2 = new MultiPoint(pointList);
+
+                    //set sites
+                    builder.SetSites(pointCollection2);
+
+                    breaklines = new GeometryCollection(result.lines.ToArray());
+                    builder.Constraints = breaklines;
+
+                    break;
             }
-            
-            //get triangles -> this one is a processing step 
+
+            //get triangles -> this one is a processing step (may take some time)
             triangles = builder.GetTriangles(geometryFactory);
             result.geomStore = triangles;
 
             //get unqiue coord list
             var coordinates = DelaunayTriangulationBuilder.Unique(triangles.Coordinates);
 
-            if (result.currentConversion == IfcTerrain.DtmConversionType.faces_breaklines)
+            if (result.currentConversion == IfcTerrain.DtmConversionType.faces_breaklines || result.currentConversion == IfcTerrain.DtmConversionType.points_breaklines)
             {
                 //create empty list
                 CoordinateList cList = new CoordinateList();
@@ -145,8 +157,7 @@ namespace BIMGISInteropLibs.Triangulator
 
             result.triMap = map;
 
-            LogWriter.Add(LogType.info, "Points readed: " + coordinates.Count
-                + Environment.NewLine + "Triangles readed: " + triangles.Count);
+            LogWriter.Add(LogType.info, "Points readed: " + coordinates.Count + "; Triangles readed: " + triangles.Count);
 
             return;
 
@@ -163,7 +174,6 @@ namespace BIMGISInteropLibs.Triangulator
             //
             foreach (var triangle in geometryCollection.Geometries)
             {
-
                 int[] coordIndex = new int[3];
 
                 for (int i = 0; i < 3; i++)

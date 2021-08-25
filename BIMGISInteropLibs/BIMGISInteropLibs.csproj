@@ -122,6 +122,9 @@
     <Reference Include="NetTopologySuite, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
       <HintPath>..\packages\NetTopologySuite.2.3.0\lib\netstandard2.0\NetTopologySuite.dll</HintPath>
     </Reference>
+    <Reference Include="NetTopologySuite.IO.PostGis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetTopologySuite.IO.PostGis.2.1.0\lib\netstandard2.0\NetTopologySuite.IO.PostGis.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -133,6 +136,9 @@
     </Reference>
     <Reference Include="Npgsql.LegacyPostgis, Version=5.0.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.LegacyPostgis.5.0.7\lib\netstandard2.0\Npgsql.LegacyPostgis.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql.NetTopologySuite, Version=5.0.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.NetTopologySuite.5.0.7\lib\netstandard2.0\Npgsql.NetTopologySuite.dll</HintPath>
     </Reference>
     <Reference Include="ogr_csharp, Version=1.0.7372.36898, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\GDAL.2.4.4\lib\net40\ogr_csharp.dll</HintPath>
@@ -245,10 +251,6 @@
     <Compile Include="EPSG\GeodeticCRS.cs" />
     <Compile Include="EPSG\ProjCRS.cs" />
     <Compile Include="GdalConfiguration.cs" />
-    <Compile Include="GEOgraf\OHorizon.cs" />
-    <Compile Include="GEOgraf\OLine.cs" />
-    <Compile Include="GEOgraf\OPoint.cs" />
-    <Compile Include="GEOgraf\OTriangle.cs" />
     <Compile Include="GEOgraf\ReaderTerrain.cs" />
     <Compile Include="Geometry\C2BEdge.cs" />
     <Compile Include="Geometry\C2BPlane.cs" />

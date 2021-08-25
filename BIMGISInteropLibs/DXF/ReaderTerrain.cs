@@ -17,6 +17,7 @@ using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 using NetTopologySuite.Geometries;
+using BIMGISInteropLibs.Geometry;
 
 namespace BIMGISInteropLibs.DXF
 {    
@@ -101,20 +102,27 @@ namespace BIMGISInteropLibs.DXF
                 LogWriter.Add(LogType.warning, "[DXF] Scale has been set to: " + scale.ToString());
             }
 
-            //set conversion type (needed for processing via NTS
-            dxfResult.currentConversion = DtmConversionType.faces;
+            if (!config.readPoints.GetValueOrDefault()) 
+            {
+                LogWriter.Add(LogType.debug, "[DXF] Reading 3DFaces...");
 
-            //read faces
-            readFaces(dxfFile, config.layer, scale, dxfResult.triangleList, dxfResult);
+                config.minDist = 1;
 
+                //read faces
+                readFaces(dxfFile, config.layer, scale, config.minDist, dxfResult);
+            } 
+            else
+            {
+                LogWriter.Add(LogType.debug, "[DXF] Reading points...");
+                //read points
+                readPoints(dxfFile, config.layer, scale, dxfResult);
+            }
+            
             //if breaklines should be processed
             if (config.breakline.GetValueOrDefault())
             {
                 //read faces
-                readBreaklines(dxfFile, config.breakline_layer, scale, dxfResult.lines, dxfResult);
-
-                //set conversion type --> breaklines will be processed
-                dxfResult.currentConversion = DtmConversionType.faces_breaklines;
+                readBreaklines(dxfFile, config.breakline_layer, scale, dxfResult);
             }
 
             //logging
@@ -127,10 +135,14 @@ namespace BIMGISInteropLibs.DXF
         /// <summary>
         /// reading faces of dxf file
         /// </summary>
-        private static void readFaces(DxfFile dxfFile, string dxfLayer, double scale, List<Polygon> triangleList, Result dxfResult)
+        private static void readFaces(DxfFile dxfFile, string dxfLayer, double scale, double minDist, Result dxfResult)
         {
-            triangleList = new List<Polygon>();
-            
+            //set conversion type (needed for processing via NTS
+            dxfResult.currentConversion = DtmConversionType.conversion;
+
+            var triMap = new HashSet<Triangulator.triangleMap>();
+            var pointList = new HashSet<Point>();
+
             LogWriter.Add(LogType.verbose, "[DXF] read faces ...");
 
             //loop to go through all entities of the DXF file
@@ -141,37 +153,79 @@ namespace BIMGISInteropLibs.DXF
                 if (entity.Layer == dxfLayer && entity is Dxf3DFace face)
                 {
                     //query the four points of the face and pass them to variable p1 ... p4 passed
-                    CoordinateZ p1 = new CoordinateZ(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale);
-                    CoordinateZ p2 = new CoordinateZ(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale);
-                    CoordinateZ p3 = new CoordinateZ(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale);
+                    //set point
+                    int p1 = terrain.addPoint(pointList, new Point(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale));
+                    int p2 = terrain.addPoint(pointList, new Point(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale));
+                    int p3 = terrain.addPoint(pointList, new Point(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale));
 
-                    //CoordinateZ p4 = new CoordinateZ(face.FourthCorner.X * scale, face.FourthCorner.Y * scale, face.FourthCorner.Z * scale);
-                    //vertices.Add(new NetTopologySuite.Triangulate.ConstraintVertex(p4));
-
-                    Coordinate[] coords = new Coordinate[] { p1, p2, p3, p1 };
-
-
-                    Polygon triangle = new Polygon(new LinearRing(coords));
-
-                    //add polygon to list
-                    triangleList.Add(triangle);
+                    triMap.Add(new Triangulator.triangleMap()
+                    {
+                        triNumber = triMap.Count,
+                        triValues = new int[] { p1, p2, p3 }
+                    });
 
                     //log
                     LogWriter.Add(LogType.verbose, "[DXF] Triangle set.");
 
+                    //CoordinateZ p4 = new CoordinateZ(face.FourthCorner.X * scale, face.FourthCorner.Y * scale, face.FourthCorner.Z * scale);
+
+                    /*
+                    Coordinate[] coords = new Coordinate[] { p1, p2, p3, p1 };
+                    Polygon triangle = new Polygon(new LinearRing(coords));
+                    //add polygon to list
+                    triangleList.Add(triangle);
+                    */
                 }
             }
 
             //set to result
-            dxfResult.triangleList = triangleList;
+            dxfResult.triMap = triMap;
+            dxfResult.pointList = pointList.ToList();
         }
     
         /// <summary>
+        /// reading point data from dxf file and layer
+        /// </summary>
+        private static void readPoints(DxfFile dxfFile, string dxfLayer, double scale, Result dxfResult)
+        {
+            //set conversion type (needed for processing via NTS
+            dxfResult.currentConversion = DtmConversionType.points;
+
+            var pointList = new HashSet<Point>();
+
+            LogWriter.Add(LogType.verbose, "[DXF] read points ...");
+
+            //loop to go through all entities of the DXF file
+            foreach (var entity in dxfFile.Entities)
+            {
+                //Check if the layer to be processed corresponds to the "current" entity
+                //furthermore it is checked if it is a face
+                if (entity.Layer == dxfLayer && entity is DxfInsert point)
+                {
+                    //get point data
+                    var dxfPoint = new Point(point.Location.X * scale, point.Location.Y * scale, point.Location.Z * scale);
+                    
+                    //set point to point list
+                    pointList.Add(dxfPoint);
+
+                    //log
+                    LogWriter.Add(LogType.verbose, "[DXF] Point data added.");
+                }
+            }
+
+            //set to result
+            dxfResult.pointList = pointList.ToList();
+        }
+
+        /// <summary>
         /// reading breaklines in an dxf file via current settings 
         /// </summary>
-        private static void readBreaklines(DxfFile dxfFile, string breaklineLayer , double scale, List<LineString> lines, Result res)
+        private static void readBreaklines(DxfFile dxfFile, string breaklineLayer , double scale, Result res)
         {
-            lines = new List<LineString>();
+            //set conversion type --> breaklines will be processed
+            res.currentConversion = DtmConversionType.points_breaklines;
+
+            var lines = new List<LineString>();
 
             LogWriter.Add(LogType.verbose, "[DXF] read breaklines ...");
 

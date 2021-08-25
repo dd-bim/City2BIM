@@ -15,7 +15,6 @@
             <RowDefinition Height="45"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="70"/>
-            <RowDefinition Height="40"/>
             <RowDefinition/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
@@ -124,37 +123,10 @@
             </Grid>
         </GroupBox>
 
-        <!-- point status -->
-        <GroupBox
-            Grid.Row="4"
-            Header="Point status"
-            IsEnabled="False">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <TextBlock 
-                    x:Name="tbGraftbatPointStatusHint"
-                    Grid.Column="0"
-                    Text="Ignore status 'invalid':">
-                </TextBlock>
-                <CheckBox 
-                    Grid.Column="1"
-                    Content="position"
-                    HorizontalAlignment="Center"/>
-                <CheckBox 
-                    Grid.Column="2"
-                    Content="height"
-                    HorizontalAlignment="Center"/>
-            </Grid>
-        </GroupBox>
-
         <!-- break edge processing -->
         <GroupBox
             Grid.Column="1"
-            Grid.Row="5"
+            Grid.Row="4"
             Header="Breaklines"
             IsEnabled="False">
             <Grid>
@@ -181,7 +153,7 @@
         <!--button to apply the settings-->
         <Button
             x:Name="btnProcessGraftbat"
-            Grid.Row="6"
+            Grid.Row="5"
             Content="Apply 'GEOgraf OUT' file settings"
             IsEnabled="False"
             ToolTip="Applying the settings (from this tab)" Click="btnProcessGraftbat_Click">

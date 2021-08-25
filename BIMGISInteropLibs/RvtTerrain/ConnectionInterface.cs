@@ -63,7 +63,7 @@ namespace BIMGISInteropLibs.RvtTerrain
                     throw new NotImplementedException();
             }
             #endregion file reading
-
+            /*
             #region point list
             //init empty point list
             dynamic dgmPtList = new List<Point3>();
@@ -96,7 +96,7 @@ namespace BIMGISInteropLibs.RvtTerrain
 
             //init face list
             dynamic dgmFaceList = new List<DtmFace>();
-
+            
             if (processingEnum == Result.conversionEnum.ConversionViaFaces)
             {
                 if (resTerrain.Tin.Points == null)
@@ -121,9 +121,9 @@ namespace BIMGISInteropLibs.RvtTerrain
                     }
                 }
             }
-
+            
             res.terrainFaces = dgmFaceList;
-
+            */
             return res;
         }
     }

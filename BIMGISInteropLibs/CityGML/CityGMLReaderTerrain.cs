@@ -17,7 +17,7 @@ using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 using NetTopologySuite.Geometries; //geometries for further processing 
-
+using BIMGISInteropLibs.Geometry;
 namespace BIMGISInteropLibs.CityGML
 {
     class CityGMLReaderTerrain
@@ -26,10 +26,13 @@ namespace BIMGISInteropLibs.CityGML
         /// Reads DTM from a CityGML file<para/>
         /// [TODO] CityGML - Features review and expand ("gml::MultiCurve", "gml::Multipoint", ...)
         /// </summary>
-        public static Result ReadTin(Config config)
+        public static Result readTin(Config config)
         {
             var cityGmlResult = new Result();
-            var triangleList = new List<Polygon>();
+
+            HashSet<Point> pointList = new HashSet<Point>();
+            
+            var triangleMap = new HashSet<Triangulator.triangleMap>();
 
             try
             {
@@ -65,37 +68,45 @@ namespace BIMGISInteropLibs.CityGML
                                             && (pl = posList.First().Value.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)).Length == 12
                                             && pl[0] == pl[9] && pl[1] == pl[10] && pl[2] == pl[11])
                                         {
+                                            //read coordinate values
                                             double.TryParse(pl[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double p1X);
                                             double.TryParse(pl[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double p1Y);
                                             double.TryParse(pl[2], NumberStyles.Any, CultureInfo.InvariantCulture, out double p1Z);
-                                            Coordinate c1 = new CoordinateZ(p1X, p1Y, p1Z);
                                             
+                                            //set coordinate
+                                            int p1 =  terrain.addPoint(pointList, new Point(p1X, p1Y, p1Z));
+
                                             double.TryParse(pl[3], NumberStyles.Any, CultureInfo.InvariantCulture, out double p2X);
                                             double.TryParse(pl[4], NumberStyles.Any, CultureInfo.InvariantCulture, out double p2Y);
                                             double.TryParse(pl[5], NumberStyles.Any, CultureInfo.InvariantCulture, out double p2Z);
-                                            Coordinate c2 = new CoordinateZ(p1X, p1Y, p1Z);
+                                            
+                                            //set coordinate
+                                            int p2 = terrain.addPoint(pointList, new Point(p2X, p2Y, p2Z));
 
                                             double.TryParse(pl[6], NumberStyles.Any, CultureInfo.InvariantCulture, out double p3X);
                                             double.TryParse(pl[7], NumberStyles.Any, CultureInfo.InvariantCulture, out double p3Y);
                                             double.TryParse(pl[8], NumberStyles.Any, CultureInfo.InvariantCulture, out double p3Z);
-                                            Coordinate c3 = new CoordinateZ(p1X, p1Y, p1Z);
+                                            
+                                            //set coordinate
+                                            int p3 = terrain.addPoint(pointList, new Point(p3X, p3Y, p3Z));
 
-                                            LinearRing shell = new LinearRing(new Coordinate[] { c1, c2, c3, c1 });
-                                            Polygon triangle = new Polygon(shell);
-
-                                            triangleList.Add(triangle);
+                                            //add indexed map
+                                            triangleMap.Add(new Triangulator.triangleMap()
+                                            {
+                                                triNumber = triangleMap.Count,
+                                                triValues = new int[] {p1, p2, p3} 
+                                            });
                                         }
                                         reader.Read();
                                     }
-
-                                    
                                     //logging
                                     LogWriter.Add(LogType.info, "Reading CityGML data successful.");
-
-                                    cityGmlResult.currentConversion = DtmConversionType.faces;
-
-                                    cityGmlResult.triangleList = triangleList;
-
+                                    
+                                    //TODO add case destinction
+                                    cityGmlResult.currentConversion = DtmConversionType.conversion;
+                                    cityGmlResult.pointList = pointList.ToList();
+                                    cityGmlResult.triMap = triangleMap;
+                                  
                                     //Result handed over
                                     return cityGmlResult;
                                 }

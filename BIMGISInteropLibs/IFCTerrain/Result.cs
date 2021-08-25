@@ -21,16 +21,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         public DtmConversionType currentConversion { get; set; }
 
         /// <summary>
-        /// REMOVE
-        /// </summary>
-        public Mesh Mesh { get; set; } = null;
-
-        /// <summary>
-        /// REMOVE
-        /// </summary>
-        public Tin Tin { get; set; }
-
-        /// <summary>
         /// [FILE-READING] transfer point list (for NTS only)
         /// </summary>
         public List<NetTopologySuite.Geometries.Point> pointList { get; set; }
@@ -58,8 +48,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// [FILE-WRITING] mapped int values (point indicies) 
         /// </summary>
-        public HashSet<Triangulator.triangleMap> triMap { get; set; } = null;
+        public HashSet<Triangulator.triangleMap> triMap { get; set; } = new HashSet<Triangulator.triangleMap>();
 
+        /// <summary>
+        /// [IFCTerrain] exchange origin
+        /// </summary>
         public NetTopologySuite.Geometries.Coordinate origin { get; set; } = null;
     }
 
@@ -87,5 +80,10 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// dtm contains faces & breaklines --> need to do a conforming delauny triangulation
         /// </summary>
         faces_breaklines,
+
+        /// <summary>
+        /// dtm contains index map (delauany triangulation is not necessary) (no breakline processing)
+        /// </summary>
+        conversion
     }
 }

@@ -243,6 +243,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// Name of the layer that contains terrain information in an input DXF file
         /// </summary>
         public string layer { get; set; }
+
+        /// <summary>
+        /// read only point data from dxf file
+        /// </summary>
+        public bool? readPoints { get; set; }
         #endregion
 
         //for reb processing
@@ -306,16 +311,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// Decides whether all types(=false) or only selected ones(=true) are to be used.If filtering is to be used, the entry must be made via "layer".
         /// </summary>
         public bool? onlyTypes { get; set; }
-
-        /// <summary>
-        /// Decides whether the status code for the location position should be ignored (=true).
-        /// </summary>
-        public bool? ignPos { get; set; }
-
-        /// <summary>
-        /// Decides whether the status code for the height position should be ignored (=true).
-        /// </summary>
-        public bool? ignHeight { get; set; }
 
         /// <summary>
         /// Name of the layer that contains the breakline. (only one layer is allowed)

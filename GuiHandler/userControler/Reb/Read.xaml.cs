@@ -44,10 +44,6 @@ namespace GuiHandler.userControler.Reb
             //create the task when the "do task" is completed
             backgroundWorkerReb.RunWorkerCompleted += BackgroundWorkerReb_RunWorkerCompleted;
         }
-        /// <summary>
-        /// container for reb Data
-        /// </summary>
-        private RebData rebData = null;
 
         /// <summary>
         /// opens file dialgo as soon as a file has been selected further functions are triggerd
@@ -119,7 +115,7 @@ namespace GuiHandler.userControler.Reb
         private void BackgroundWorkerReb_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task
-            e.Result = ReaderTerrain.ReadReb(init.config);
+            e.Result = ReaderTerrain.readHorizon(init.config.filePath);
         }
 
         /// <summary>
@@ -134,28 +130,19 @@ namespace GuiHandler.userControler.Reb
             this.lbRebSelect.Items.Clear();
 
             //if file fits to rebdata
-            if (e.Result is RebData rebData)
+            if(e.Result != null)
             {
-                //Assignment
-                this.rebData = rebData;
-
-                //traversing all horizons
-                foreach (var horizon in rebData.GetHorizons())
+                HashSet<int> horizons = new HashSet<int>();
+                horizons = e.Result as HashSet<int>;
+                foreach(int h in horizons)
                 {
-                    //list the horizon
-                    this.lbRebSelect.Items.Add(horizon);
+                    lbRebSelect.Items.Add(h);
                 }
-                //gui logging (user information)
-                //MainWindowBib.setGuiLog("Readed reb layers: " + lbRebSelect.Items.Count);
             }
-            //if the file could not be read
-            else
-            {
-                //go through all layers (one by one) of selected reb file
-                this.rebData = null;
 
-                //TODO add throw error + log
-            }
+
+            
+            
             //apply layout - all items will be listed
             this.lbRebSelect.UpdateLayout();
 
@@ -214,13 +201,13 @@ namespace GuiHandler.userControler.Reb
             //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
 
             //set task (file opening) to true
-            GuiSupport.taskfileOpening = true;
+            guiLog.taskfileOpening = true;
 
             //[IfcTerrain] check if all task are allready done
-            GuiSupport.readyState();
+            guiLog.readyState();
 
             //[DTM2BIM] check if all task are allready done
-            GuiSupport.rdyDTM2BIM();
+            guiLog.rdyDTM2BIM();
 
             //check if all task are allready done
             //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState()); (TODO)

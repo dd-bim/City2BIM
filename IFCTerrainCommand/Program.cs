@@ -105,7 +105,7 @@ namespace IFCTerrainCommand
             foreach (string path in files)
             {
                 //read json as text
-                string jText = System.IO.File.ReadAllText(path);
+                string jText = File.ReadAllText(path);
 
                 //create collection from each json file
                 Config jSettings = JsonConvert.DeserializeObject<Config>(jText);

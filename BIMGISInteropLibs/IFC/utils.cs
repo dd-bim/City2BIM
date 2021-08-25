@@ -83,7 +83,7 @@ namespace BIMGISInteropLibs.IFC
             {
                 originX = result.origin.X;
                 originY = result.origin.Y;
-                originZ = 0;
+                originZ = 0; //TODO gernerate from dataset
                 LogWriter.Add(LogType.info, "Orgin (XY) cacluate from data.");
             }
             else
@@ -113,9 +113,13 @@ namespace BIMGISInteropLibs.IFC
                 //set shape repr. to SBSM
                 writeInput.SurfaceType = SurfaceType.SBSM;
             }
-            else if (config.outSurfaceType == SurfaceType.TIN)
+            else if (config.outSurfaceType == SurfaceType.TFS)
             {
-                writeInput.SurfaceType = SurfaceType.TIN;
+                writeInput.SurfaceType = SurfaceType.TFS;
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
 
             //logging

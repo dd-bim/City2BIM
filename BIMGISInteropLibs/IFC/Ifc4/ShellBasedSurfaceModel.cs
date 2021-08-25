@@ -56,8 +56,8 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     var pt = coordinates[i];
                     cpl.Add(model.Instances.New<IfcCartesianPoint>(
                         c => c.SetXYZ(
-                            pt.X - origin.X, 
-                            pt.Y - origin.Y, 
+                            pt.X - origin.X,
+                            pt.Y - origin.Y,
                             pt.Z - origin.Z)
                         ));
                     j++;

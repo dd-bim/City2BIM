@@ -33,17 +33,13 @@ namespace BIMGISInteropLibs.REB
 
         public static Result readDtm(Config config)
         {
+            LogWriter.Add(LogType.verbose, "[REB] start reading.");
             var rebResult = ReadReb(config);
 
             if (rebResult.triMap.Count != 0)
             {
                 return rebResult;
             }
-            else
-            {
-                //TODO
-            }
-
             return null;
         }
 
@@ -67,6 +63,8 @@ namespace BIMGISInteropLibs.REB
 
             //set scaling (TODO: read dynamic from file?)
             double scale = 0.001;
+
+            LogWriter.Add(LogType.debug, "[REB] set scaling to: " + scale);
 
             //[TODO] add an error message if file cannot be processed
             try
@@ -92,13 +90,11 @@ namespace BIMGISInteropLibs.REB
                                    && long.TryParse(line.Substring(30, 10), out long z)
                                    )
                                 {
-                                    /*
-                                    double[] pointCoords = new double[] { x * scale, y * scale, z * scale };
-                                    rebData.Points.Add(nr, pointCoords);
-                                    */
                                     //add point to point list
                                     coordinates.Add(new CoordinateZ(x * scale, y * scale, z * scale));
                                     points.Add(new Point(x * scale, y * scale, z * scale));
+
+                                    LogWriter.Add(LogType.verbose, "[REB] add coordinate(X: " + x*scale + "; Y:" + y*scale + "; Z: "+ z*scale+")");
                                 }
                             }
                             //Break/edge lines work out via "identifier 49"
@@ -120,6 +116,7 @@ namespace BIMGISInteropLibs.REB
                                     */
 
                                     //TODO
+                                    throw new NotImplementedException();
                                 }
                             }
                             //TIN work out via "identifier 58"
@@ -127,25 +124,19 @@ namespace BIMGISInteropLibs.REB
                                 && line[0] == '5'
                                 && line[1] == '8')
                             {
-                                if (int.TryParse(line.Substring(7, 2), out int hz)
-                                   && long.TryParse(line.Substring(20, 10), out long p1)
+                                if (
+                                   long.TryParse(line.Substring(20, 10), out long p1)
                                    && long.TryParse(line.Substring(30, 10), out long p2)
                                    && long.TryParse(line.Substring(40, 10), out long p3))
                                 {
-                                    /*
-                                    if (!rebData.Tris.TryGetValue(hz, out var ts))
-                                    {
-                                        ts = new List<RTri>();
-                                        rebData.Tris.Add(hz, ts);
-                                    }
-                                    
-                                    ts.Add(new RTri { P1 = p1, P2 = p2, P3 = p3 });
-                                    */
+                                    //add triangle map
                                     triangleMap.Add(new Triangulator.triangleMap()
                                     {
                                         triNumber = triangleMap.Count,
                                         triValues = new int[] { (int)p1 - 1, (int)p2 - 1, (int)p3 - 1 }
                                     });
+
+                                    LogWriter.Add(LogType.verbose, "[REB] triangle index set");
                                 }
                             }
                         }
@@ -153,20 +144,62 @@ namespace BIMGISInteropLibs.REB
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
+                LogWriter.Add(LogType.error, "[REB] error: " + ex.Message);
                 return null;
             }
+
+            //set conversion type
+            rebResult.currentConversion = DtmConversionType.conversion;
 
             //set point coordinates to result
             rebResult.coordinateList = coordinates;
             rebResult.pointList = points;
+            LogWriter.Add(LogType.info, "[REB] readed points: " + coordinates.Count);
 
             //set tri map
             rebResult.triMap = triangleMap;
+            LogWriter.Add(LogType.info, "[REB] readed triangels: " + triangleMap.Count);
 
             //Return of a REB data set
             return rebResult;
+        }
+
+        public static HashSet<int> readHorizon(string filePath)
+        {
+            HashSet<int> horizons = new HashSet<int>();
+
+            if (File.Exists(filePath))
+            {
+                using (var sr = new StreamReader(filePath))
+                {
+                    //String to buffer a line
+                    string line;
+
+                    //Line by line reader
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        if(line.Length >= 50
+                             && line[0] == '5'
+                             && line[1] == '8')
+                        {
+                            int.TryParse(line.Substring(7, 2), out int hz);
+                            if (!horizons.Contains(hz))
+                            {
+                                horizons.Add(hz);
+                            }
+                        }
+
+                    }
+                }
+                return horizons;
+            }
+            else
+            {
+                LogWriter.Entries.Add(new LogPair(LogType.error, "[REB] file can not be processed"));
+                return null;
+            }
         }
     }
 }

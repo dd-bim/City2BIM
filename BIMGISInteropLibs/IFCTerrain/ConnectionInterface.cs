@@ -52,14 +52,16 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 case IfcTerrainFileType.CityGML:
-                    result = CityGML.CityGMLReaderTerrain.ReadTin(config);
+                    result = CityGML.CityGMLReaderTerrain.readTin(config);
                     break;
 
                 case IfcTerrainFileType.Grafbat:
-                    throw new NotImplementedException();
+                    result = GEOgraf.ReadOUT.readOutData(config);
+                    break;
 
                 case IfcTerrainFileType.PostGIS:
-                    throw new NotImplementedException();
+                    result = PostGIS.ReaderTerrain.readPostGIS(config);
+                    break;
 
                 case IfcTerrainFileType.Grid:
                     result = ElevationGrid.ReaderTerrain.readGrid(config);
@@ -71,36 +73,60 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
 
             //error handling
-            if (result.pointList == null && result.triangleList == null && result.coordinateList == null)
+            if (result == null)
             {
-                LogWriter.Add(LogType.error, "[READER] File reading failed - processing canceld!");
+                LogWriter.Add(LogType.error, "[READER] File reading failed (result is null) - processing canceld!");
+                return false;
+            }
+            else if(result.pointList == null)
+            {
+                LogWriter.Add(LogType.error, "[READER] File reading failed (point list is empty) - processing canceld!");
                 return false;
             }
 
             //so that from the reader is passed to respective "classes"
             LogWriter.Add(LogType.debug, "Reading file completed.");
+
             #endregion reader
-            if(result.triMap.Count == 0)
+            if(result.currentConversion == DtmConversionType.conversion)
             {
-                //dtm processing
-                Triangulator.DelaunayTriangulation.triangulate(result);
-            }
-            else
-            {
+                LogWriter.Add(LogType.info, "Faces readed: " + result.triMap.Count + " Points readed: " + result.pointList.Count);
+
+                //log
+                LogWriter.Add(LogType.info, "Processing via delaunay triangulation is not necessary.");
+
                 //set point list to multi points
                 Point[] points = result.pointList.ToArray();
 
                 //create point collection
                 MultiPoint pointCollection = new MultiPoint(points);
 
+                //create coord list from points
+                CoordinateList cL = new CoordinateList();
+                foreach (var point in points)
+                {
+                    //add point as coordinate
+                    cL.Add(point.Coordinate);
+                }
+                result.coordinateList = cL;
+
+                //get centroid from point collection
                 var centroid = NetTopologySuite.Algorithm.Centroid.GetCentroid(pointCollection);
 
+                //set origion for processing exchange
                 result.origin = centroid;
+            }
+
+            //if index map is not aviable triangulate
+            else
+            {
+                //dtm processing via delaunay triangulation
+                Triangulator.DelaunayTriangulation.triangulate(result);
             }
 
             //from here are the IFC writers
             #region writer
-            #region small hidden export of geometry as WKT (in a txt file)
+            #region [TODO] small export of geometry as WKT (in a txt file)
             if (config.outFileType == IfcFileType.text)
             {
                 var exportGeom = result.geomStore;
@@ -115,7 +141,9 @@ namespace BIMGISInteropLibs.IfcTerrain
             //set write input
             var writeInput = utils.setWriteInput(result, config);
 
+            //init empty model
             Xbim.Ifc.IfcStore model = null;
+
             //region for ifc writer control
             switch (config.outIFCType)
             {
@@ -145,7 +173,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 case IfcVersion.IFC4dot3:
-                    return false;
+                    throw new NotImplementedException();
             }
 
             //access to file writer
@@ -156,6 +184,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             LogWriter.Add(LogType.verbose, "IFC writer completed.");
             LogWriter.Add(LogType.info, "--------------------------------------------------");
             #endregion writer
+            
             return true;
         }
     }
