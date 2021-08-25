@@ -10,16 +10,14 @@ using System.Globalization;
 //File handling
 using System.IO;
 
-//BimGisCad - Bibliothek einbinden (TIN)
-using BimGisCad.Representation.Geometry.Composed; //TIN
-using BimGisCad.Representation.Geometry.Elementary;
-
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
+using NetTopologySuite.Geometries;
 
 namespace BIMGISInteropLibs.GEOgraf
 {
@@ -28,158 +26,198 @@ namespace BIMGISInteropLibs.GEOgraf
     /// </summary>
     public static class ReadOUT
     {
-        #region DictionaryCollection - TIN
-        //Speicherung aller Punkte im TIN
-        public static Dictionary<int, OPoint> pointList = new Dictionary<int, OPoint>();
-
-        //Speicherung aller Linien im TIN
-        public static Dictionary<int, OLine> lineList = new Dictionary<int, OLine>();
-
-        //Speicherung aller Horizonte im TIN
-        public static Dictionary<int, OHorizon> horList = new Dictionary<int, OHorizon>();
-
-        //Speicherung aller Dreiecke im TIN
-        public static Dictionary<int, OTriangle> triList = new Dictionary<int, OTriangle>();
-        #endregion
-
-        #region DictionaryCollection - Bruchkanten
-        public static Dictionary<int, Line3> breakLineList = new Dictionary<int, Line3>();
-        #endregion
-
         /// <summary>
-        /// Class for reading out the mesh (via points and triangles)
+        /// Class for reading out data
         /// </summary>
-        /// <param name="filePath">Location of the GEOgraf OUT - file</param>
-        /// <param name="pointIndex2NumberMap"></param>
-        /// <param name="triangleIndex2NumberMap"></param>
-        /// <returns>TIN - for processing in IFCTerrain or Revit</returns>
-        public static Result ReadOutData(Config jSettings, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumberMap)
+        public static Result readOutData(Config config)
         {
-            //read from json settings
-            string filePath = jSettings.filePath;
+            //init new result
+            Result res = new Result();
 
             //logging
-            LogWriter.Add(LogType.verbose, "[Grafbat] start reading.");
-
-            //Result define so that TIN can be passed
-            Result result = new Result();
-
-            //Create a new builder for TIN            
-            var tinB = Tin.CreateBuilder(true);
-            LogWriter.Add(LogType.verbose, "[Grafbat] Tin builder created.");
-
-            //init transfer classes
-            pointIndex2NumberMap = null;
-            triangleIndex2NumberMap = null;
-            /*
-            //breakline
-            bool breakline = jSettings.breakline;
-            int bl_layer = int.Parse(jSettings.breakline_layer);
-
-            //
-            double scale = 1.0; //TODO dynamic*/
+            LogWriter.Add(LogType.verbose, "[Grafbat] start file reading...");
 
             //check if file exsists 
-            if (File.Exists(filePath))
+            if (File.Exists(config.filePath))
             {
-                ReadDataViaTriangle(tinB, filePath);
+                //check if reading "only" point data (&breaklines)
+                if (!config.readPoints.GetValueOrDefault())
+                {
+                    //read faces (& breaklines)
+                    if (!readFaces(config, res))
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    
+                }
+                
+               
             }
             //if file path isn't valid
             else
             {
-                //error handling??? result.error???
-
                 //error logging
-                LogWriter.Add(LogType.error, "[Grafbat] File path (" + filePath + ") could not be read!");
+                LogWriter.Add(LogType.error, "[Grafbat] File path (" + config.filePath + ") could not be read!");
+                return null;
             }
 
-            //handover tin from tin builder
-            LogWriter.Add(LogType.verbose, "[Grafbat] Create TIN via TIN builder.");
-            Tin tin = tinB.ToTin(out pointIndex2NumberMap, out triangleIndex2NumberMap);
-
-            //Result describe
-            result.Tin = tin;
-
-            //add to results (stats)
-            //result.rPoints = tin.Points.Count;
-            //result.rFaces = tin.NumTriangles;
-
             //logging
-            LogWriter.Add(LogType.info, "Reading Grafbat data successful.");
-            LogWriter.Add(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed");
-
-            return result;
+            LogWriter.Add(LogType.info, "[GRAFBAT] Reading grafbat file data successful.");
+            
+            return res;
         }
 
+
+        
 
         /// <summary>
         /// reads out data via points & triangles
         /// </summary>
-        private static void ReadDataViaTriangle(Tin.Builder tinBuilder, string filePath)
+        private static bool readFaces(Config config, Result res)
         {
-            //pass through each line of the file
-            foreach (var line in File.ReadAllLines(filePath))
+            var points = new HashSet<Point>();
+            var lines = new List<LineString>();
+            var triMap = new HashSet<Triangulator.triangleMap>();
+
+            string[] filterBreakline = config.breakline_layer.Split(';');
+
+            HashSet<int> breaklineFilter = new HashSet<int>();
+            foreach(var input in filterBreakline)
             {
+                int.TryParse(input, out int hor);
+                breaklineFilter.Add(hor);
+            }
+
+
+            //pass through each line of the file
+            foreach (var line in File.ReadAllLines(config.filePath))
+            {
+                //get line value
                 var values = line.Split(new[] { ',' });
+
+                //read point data
                 if (line.StartsWith("PK") && values.Length > 4
                     && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int pnr)
                     && int.TryParse(values[1].Substring(0, values[1].IndexOf('.')), out int pointtype)
                     && double.TryParse(values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double x)
                     && double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
-                    && double.TryParse(values[4], NumberStyles.Float, CultureInfo.InvariantCulture, out double z)
-                    && int.TryParse(values[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statPos)
-                    && int.TryParse(values[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out int statHeight))
+                    && double.TryParse(values[4], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
                 {
-                    //Add point to TIN builder, here only PNR + coordinates are needed
-                    tinBuilder.AddPoint(pnr, x, y, z);
+                    //create new point
+                    Point p = new Point(x, y, z);
+
+                    //set point number
+                    p.UserData = pnr;
+
+                    //add point to hash set
+                    points.Add(p);
 
                     //logging
-                    LogWriter.Add(LogType.verbose, "[Grafbat] Point (" + (pnr) + ") set (x= " + x + "; y= " + y + "; z= " + z + ")");
+                    LogWriter.Add(LogType.verbose, "[Grafbat] Point (" + (p.UserData) + ") set (x= " + x + "; y= " + y + "; z= " + z + ")");
 
-                    //Create point
-                    OPoint point = new OPoint(pnr, pointtype, x, y, z, statPos, statHeight);
-                    //Insert point (Value) via Key (Point number) into point list
-                    pointList[pnr] = point;
                 }
 
-                //Read horizon
-                
-                if (line.StartsWith("HNR") && values.Length > 13
-                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 2), out int hornr))
+                //read breaklines
+                if(config.breakline == true
+                    && line.StartsWith("LI") && values.Length > 11
+                    && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int ln)
+                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 5, 5), out int ls)
+                    && int.TryParse(values[1].Substring(3), out int le)
+                    && int.TryParse(values[2].Split('.').GetValue(1).ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int la)
+                    )
                 {
-                    //Query whether 2D (false) or 3D (true)
-                    bool is3D = values[4].Equals("1") ? true : false;
+                    if (breaklineFilter.Contains(la))
+                    {
+                        var pts = points.ToList();
 
-                    //Form horizon
-                    OHorizon horizon = new OHorizon(hornr, values[3].ToString(), is3D); //NOTE: Encoding of ANSI not considered!
+                        Point p1 = pts.Find(p => (int)p.UserData == ls);
+                        CoordinateZ c1 = new CoordinateZ(p1.X, p1.Y, p1.Z);
+                        
+                        Point p2 = pts.Find(p => (int)p.UserData == le);
+                        CoordinateZ c2 = new CoordinateZ(p2.X, p2.Y, p2.Z);
 
-                    //Add horizon to the horizon list
-                    horList[hornr] = horizon;
+                        Coordinate[] lineCoords = new Coordinate[] { c1, c2 };
+
+                        LineString breakline = new LineString(lineCoords);
+
+                        lines.Add(breakline);
+
+                        LogWriter.Add(LogType.verbose, "[Grafbat] Breakline added");
+                    }
+                    else
+                    {
+                        LogWriter.Add(LogType.debug, "Line skipped. Not in breakline filter!");
+                    }
                 }
 
-                //Read triangles
+                //read faces
                 if (line.StartsWith("DG") && values.Length > 9
+                    && config.breakline.GetValueOrDefault() == false
                     && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int tn)
-                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 2), out int hnr)
+                    && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hnr)
                     && int.TryParse(values[1].Substring(3), out int va)
                     && int.TryParse(values[2].Substring(3), out int vb)
                     && int.TryParse(values[3].Substring(3), out int vc))
                 {
-                    int? na = !string.IsNullOrEmpty(values[4]) && int.TryParse(values[4], out int n) ? n : (int?)null;
-                    int? nb = !string.IsNullOrEmpty(values[5]) && int.TryParse(values[5], out n) ? n : (int?)null;
-                    int? nc = !string.IsNullOrEmpty(values[6]) && int.TryParse(values[6], out n) ? n : (int?)null;
-                    bool ea = !string.IsNullOrEmpty(values[7]);
-                    bool eb = !string.IsNullOrEmpty(values[8]);
-                    bool ec = !string.IsNullOrEmpty(values[9]);
+                    //parse points as list
+                    var pts = points.ToList();
 
-                    //Add triangle to TIN builder
-                    tinBuilder.AddTriangle(tn, va, vb, vc, true);
-                    LogWriter.Add(LogType.verbose, "[Grafbat] Triangle (" + tn + ") set (P1= " + (va) + "; P2= " + (vb) + "; P3= " + (vc) + ")");
+                    //get index in list
+                    int p1 = pts.FindIndex(p => (int)p.UserData == va);
+                    int p2 = pts.FindIndex(p => (int)p.UserData == vb);
+                    int p3 = pts.FindIndex(p => (int)p.UserData == vc);
 
-                    OTriangle triangle = new OTriangle(tn, horList[hnr], pointList[va], pointList[vb], pointList[vc], na, nb, nc, ea, eb, ec);
-                    triList[tn] = triangle;
+                    //check if horizon filtering is enabled
+                    if (config.onlyHorizon.GetValueOrDefault())
+                    {
+                        //check if face horizon fits to filter
+                        if(hnr == config.horizonFilter)
+                        {
+                            //add
+                            triMap.Add(new Triangulator.triangleMap()
+                            {
+                                triNumber = tn,
+                                triValues = new int[] { p1, p2, p3 }
+                            });
+                            LogWriter.Add(LogType.verbose, "[Grafbat] Triangle ("+ tn + ") set - horizon filter (" + config.horizonFilter + ")");
+                        }
+                        else
+                        {
+                            LogWriter.Add(LogType.debug, "[Grafbat] Triangle has been skipped - out of horizon filter + ("+ config.horizonFilter +")");
+                        }
+                    }
+                    //add all faces
+                    else
+                    {
+                        triMap.Add(new Triangulator.triangleMap()
+                        {
+                            triNumber = tn,
+                            triValues = new int[] { p1, p2, p3 }
+                        });
+                        LogWriter.Add(LogType.verbose, "[Grafbat] Triangle (" + tn + ") set");
+                    }
                 }
             }
+            
+            
+            //handle result
+            res.pointList = points.ToList();
+            if (config.breakline.GetValueOrDefault())
+            {
+                res.currentConversion = DtmConversionType.points_breaklines;
+                res.lines = lines;
+            }
+            else
+            {
+                //set converison type
+                res.currentConversion = DtmConversionType.conversion;
+                res.triMap = triMap;
+            }
+
+            return true;
         }
     }
 }
