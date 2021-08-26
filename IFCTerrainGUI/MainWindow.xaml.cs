@@ -280,6 +280,9 @@ namespace IFCTerrainGUI
 
             //start mapping process which currently begins with the selection of the file reader
             bool processingResult = conInt.mapProcess(init.config, init.config91391, init.config18740);
+
+            e.Result = processingResult;
+
         }
 
         /// <summary>
@@ -298,14 +301,15 @@ namespace IFCTerrainGUI
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
 
-            //logging stat
-            /*
-            double numPoints = (double)result.wPoints / (double)result.rPoints;
-            double numFaces = (double)result.wFaces / (double)result.rFaces;
-            guiLog.setLog("Conversion completed!");
-            guiLog.setLog("Results: " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " % )");
-            guiLog.setLog("and "+ result.wFaces + " triangles (" + Math.Round(numFaces * 100, 2) + " %) processed.");
-            */
+            //check if processing result is true / false
+            if (e.Result.Equals(true))
+            {
+                guiLog.setLog("Processing successful.");
+            }
+            else
+            {
+                guiLog.setLog("Processing failed! -> Please check log file!");
+            }
         }
         #endregion background worker
 

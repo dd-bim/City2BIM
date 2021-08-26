@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//integration of the BimGisCad library
-using BimGisCad.Collections;                        //MESH --> will be removed
-using BimGisCad.Representation.Geometry.Composed;   //TIN --> will be removed
+using NetTopologySuite.Geometries;
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -23,27 +21,27 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// [FILE-READING] transfer point list (for NTS only)
         /// </summary>
-        public List<NetTopologySuite.Geometries.Point> pointList { get; set; }
+        public List<Point> pointList { get; set; }
 
         /// <summary>
         /// [FILE-READING] transfer triangles (NTS)
         /// </summary>
-        public List<NetTopologySuite.Geometries.Polygon> triangleList { get; set; }
+        public List<Polygon> triangleList { get; set; }
 
         /// <summary>
         /// [FILE-READING] transfer breaklines (NTS)
         /// </summary>
-        public List<NetTopologySuite.Geometries.LineString> lines { get; set; }
+        public List<LineString> lines { get; set; }
 
         /// <summary>
         /// [FILE-WRITING] unqiue list of coordinates in a dtm
         /// </summary>
-        public NetTopologySuite.Geometries.CoordinateList coordinateList { get; set; } = null;
+        public CoordinateList coordinateList { get; set; } = null;
 
         /// <summary>
         /// [FILE - WRITING] txt export (only internal support)
         /// </summary>
-        public NetTopologySuite.Geometries.GeometryCollection geomStore { get; set; } = null;
+        public GeometryCollection geomStore { get; set; } = null;
 
         /// <summary>
         /// [FILE-WRITING] mapped int values (point indicies) 
@@ -53,7 +51,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// [IFCTerrain] exchange origin
         /// </summary>
-        public NetTopologySuite.Geometries.Coordinate origin { get; set; } = null;
+        public Coordinate origin { get; set; } = null;
     }
 
     /// <summary>

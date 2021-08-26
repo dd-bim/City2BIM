@@ -40,21 +40,11 @@ namespace BIMGISInteropLibs.GEOgraf
             //check if file exsists 
             if (File.Exists(config.filePath))
             {
-                //check if reading "only" point data (&breaklines)
-                if (!config.readPoints.GetValueOrDefault())
+                //read faces (& breaklines)
+                if (!readFaces(config, res))
                 {
-                    //read faces (& breaklines)
-                    if (!readFaces(config, res))
-                    {
-                        return null;
-                    }
+                    return null;
                 }
-                else
-                {
-                    
-                }
-                
-               
             }
             //if file path isn't valid
             else
@@ -82,15 +72,7 @@ namespace BIMGISInteropLibs.GEOgraf
             var lines = new List<LineString>();
             var triMap = new HashSet<Triangulator.triangleMap>();
 
-            string[] filterBreakline = config.breakline_layer.Split(';');
-
-            HashSet<int> breaklineFilter = new HashSet<int>();
-            foreach(var input in filterBreakline)
-            {
-                int.TryParse(input, out int hor);
-                breaklineFilter.Add(hor);
-            }
-
+            string horizonFilter = string.Empty;
 
             //pass through each line of the file
             foreach (var line in File.ReadAllLines(config.filePath))
@@ -101,22 +83,34 @@ namespace BIMGISInteropLibs.GEOgraf
                 //read point data
                 if (line.StartsWith("PK") && values.Length > 4
                     && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int pnr)
-                    && int.TryParse(values[1].Substring(0, values[1].IndexOf('.')), out int pointtype)
+                    //&& int.TryParse(values[1].Substring(0, values[1].IndexOf('.')+3), out int pointtype)
                     && double.TryParse(values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double x)
                     && double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
                     && double.TryParse(values[4], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
                 {
-                    //create new point
-                    Point p = new Point(x, y, z);
 
-                    //set point number
-                    p.UserData = pnr;
+                    var pT = values[1].Split('.');
+                    int.TryParse(pT[1], out int pointtype);
 
-                    //add point to hash set
-                    points.Add(p);
+                    if (horizonFilter.Contains(pointtype.ToString()) || !config.readPoints.GetValueOrDefault())
+                    {
+                        //create new point
+                        Point p = new Point(x, y, z);
 
-                    //logging
-                    LogWriter.Add(LogType.verbose, "[Grafbat] Point (" + (p.UserData) + ") set (x= " + x + "; y= " + y + "; z= " + z + ")");
+                        //set point number
+                        p.UserData = pnr;
+
+                        //add point to hash set
+                        points.Add(p);
+
+                        //logging
+                        LogWriter.Add(LogType.verbose, "[Grafbat] Point (" + p.UserData + ") set (x= " + x + "; y= " + y + "; z= " + z + ")");
+
+                    }
+                    else
+                    {
+                        LogWriter.Add(LogType.verbose, "[Grafbat] Point (" + pnr + ") has not been added.");
+                    }
 
                 }
 
@@ -129,7 +123,7 @@ namespace BIMGISInteropLibs.GEOgraf
                     && int.TryParse(values[2].Split('.').GetValue(1).ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int la)
                     )
                 {
-                    if (breaklineFilter.Contains(la))
+                    if (config.breakline_layer.Contains(la.ToString()))
                     {
                         var pts = points.ToList();
 
@@ -155,6 +149,7 @@ namespace BIMGISInteropLibs.GEOgraf
 
                 //read faces
                 if (line.StartsWith("DG") && values.Length > 9
+                    && config.readPoints.GetValueOrDefault() == false
                     && config.breakline.GetValueOrDefault() == false
                     && int.TryParse(values[0].Substring(2, values[0].IndexOf(':') - 2), out int tn)
                     && int.TryParse(values[0].Substring(values[0].IndexOf(':') + 1, 3), out int hnr)
@@ -174,7 +169,7 @@ namespace BIMGISInteropLibs.GEOgraf
                     if (config.onlyHorizon.GetValueOrDefault())
                     {
                         //check if face horizon fits to filter
-                        if(hnr == config.horizonFilter)
+                        if(hnr == config.horizon)
                         {
                             //add
                             triMap.Add(new Triangulator.triangleMap()
@@ -207,14 +202,30 @@ namespace BIMGISInteropLibs.GEOgraf
             res.pointList = points.ToList();
             if (config.breakline.GetValueOrDefault())
             {
-                res.currentConversion = DtmConversionType.points_breaklines;
-                res.lines = lines;
+                if(lines.Count > 0)
+                {
+                    res.currentConversion = DtmConversionType.points_breaklines;
+                    res.lines = lines;
+                }
+                else { return false; }
+            }
+            else if(config.readPoints.GetValueOrDefault()
+                && !config.breakline.GetValueOrDefault())
+            {
+                res.currentConversion = DtmConversionType.points;
             }
             else
             {
-                //set converison type
-                res.currentConversion = DtmConversionType.conversion;
-                res.triMap = triMap;
+                if(triMap.Count > 0)
+                {
+                    //set converison type
+                    res.currentConversion = DtmConversionType.conversion;
+                    res.triMap = triMap;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             return true;

@@ -24,7 +24,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer
         /// </summary>
-        public bool mapProcess(Config config, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740, double? breakDist = null)
+        public bool mapProcess(Config config, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740)
         {
             LogWriter.Add(LogType.info, "Processing-Protocol for IFCTerrain");
             LogWriter.Add(LogType.info, "--------------------------------------------------");

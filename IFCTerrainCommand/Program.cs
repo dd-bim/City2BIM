@@ -82,7 +82,7 @@ namespace IFCTerrainCommand
                         Console.WriteLine("Want to convert more files? (j/n)");
 
                         //wait for user feedback
-                        restart = System.Console.ReadLine();
+                        restart = Console.ReadLine();
                     }
                 }
                 //for error handling --> user can input file path again
@@ -91,7 +91,7 @@ namespace IFCTerrainCommand
                     Console.WriteLine("Want to try again? ('j' or 'n')");
 
                     //wait for user input
-                    restart = System.Console.ReadLine();
+                    restart = Console.ReadLine();
                 }
             } while (restart.Contains('j') || restart.Contains('J'));
         }
@@ -113,15 +113,12 @@ namespace IFCTerrainCommand
                 //init logger
                 BIMGISInteropLibs.Logging.LogWriterIfcTerrain.initLogger(jSettings);
 
-                //set to default values
-                double? breakDist = 0.0;
-
                 //create new instance of the ConnectionInterface
                 var conn = new ConnectionInterface();
 
                 //start mapping process
                 //TODO: add jSettings for metadata to IfcPropertySet
-                conn.mapProcess(jSettings, null, null, breakDist);
+                conn.mapProcess(jSettings, null, null);
             }
             //finish programm
             return;

@@ -139,9 +139,6 @@ namespace GuiHandler.userControler.Reb
                     lbRebSelect.Items.Add(h);
                 }
             }
-
-
-            
             
             //apply layout - all items will be listed
             this.lbRebSelect.UpdateLayout();
