@@ -24,107 +24,65 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// file reading / tin build process
         /// </summary>
         /// <param name="config">setting to config file processing and conversion process</param>
-        /// <returns></returns>
-        public static Result mapProcess(Config config, Result.conversionEnum processingEnum)
+        public static Result mapProcess(Config config)
         {
-            //set grid size (as default value)
-            config.gridSize = 1;
-
             //init transfer class (DTM2BIM)
-            Result res = new Result();
+            Result resTerrain = new Result();
             
-            //init transfer class (mainly used in ifc terrain)
-            IfcTerrain.Result resTerrain = new IfcTerrain.Result();
-
-            #region file reading
-            //mapping on basis of data type
             switch (config.fileType)
             {
-                //grid reader
-                case IfcTerrainFileType.Grid:
-                    throw new NotImplementedException();
-
                 case IfcTerrainFileType.DXF:
-                    throw new NotImplementedException();
-
-                case IfcTerrainFileType.REB:
-                    throw new NotImplementedException();
-
-                case IfcTerrainFileType.Grafbat:
-                    throw new NotImplementedException();
+                    //read dxfFile via filepath
+                    if (DXF.ReaderTerrain.readFile(config.filePath, out DxfFile dxfFile))
+                    {
+                        //read dtm
+                        resTerrain = DXF.ReaderTerrain.readDxf(config, dxfFile);
+                    }
+                    break;
 
                 case IfcTerrainFileType.LandXML:
-                    throw new NotImplementedException();
+                    resTerrain = LandXML.ReaderTerrain.readDtmData(config);
+                    break;
 
                 case IfcTerrainFileType.CityGML:
-                    throw new NotImplementedException();
+                    resTerrain = CityGML.CityGMLReaderTerrain.readTin(config);
+                    break;
+
+                case IfcTerrainFileType.Grafbat:
+                    resTerrain = GEOgraf.ReadOUT.readOutData(config);
+                    break;
 
                 case IfcTerrainFileType.PostGIS:
-                    throw new NotImplementedException();
-            }
-            #endregion file reading
-            /*
-            #region point list
-            //init empty point list
-            dynamic dgmPtList = new List<Point3>();
+                    resTerrain = PostGIS.ReaderTerrain.readPostGIS(config);
+                    break;
 
-            if (resTerrain.Tin.Points == null)
-            {
-                foreach (Point3 p in resTerrain.Mesh.Points)
-                {
-                    dgmPtList.Add(p);
-                }
+                case IfcTerrainFileType.Grid:
+                    resTerrain = ElevationGrid.ReaderTerrain.readGrid(config);
+                    break;
+
+                case IfcTerrainFileType.REB:
+                    resTerrain = REB.ReaderTerrain.readDtm(config);
+                    break;
             }
-            else if (resTerrain.Mesh == null)
+
+            //error handling
+            if (resTerrain == null)
             {
-                foreach (Point3 p in resTerrain.Tin.Points)
-                {
-                    {
-                        dgmPtList.Add(p);
-                    }
-                }
+                //[TODO] LogWriter.Add(LogType.error, "[READER] File reading failed (result is null) - processing canceld!");
+                return null;
             }
-            else
+            else if (resTerrain.pointList == null)
             {
-                //TODO error catcher
+                //[TODO] LogWriter.Add(LogType.error, "[READER] File reading failed (point list is empty) - processing canceld!");
                 return null;
             }
 
-            //set to result point list
-            res.dtmPoints = dgmPtList;
-            #endregion point list
-
-            //init face list
-            dynamic dgmFaceList = new List<DtmFace>();
-            
-            if (processingEnum == Result.conversionEnum.ConversionViaFaces)
+            if(resTerrain.currentConversion != DtmConversionType.conversion)
             {
-                if (resTerrain.Tin.Points == null)
-                {
-                    //set to result facet list
-                    foreach (int fe in resTerrain.Mesh.FaceEdges)
-                    {
-                        int p1 = resTerrain.Mesh.EdgeVertices[fe];
-                        int p2 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[fe]];
-                        int p3 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[resTerrain.Mesh.EdgeNexts[fe]]];
-
-                        //add face index to list
-                        dgmFaceList.Add(new DtmFace(p1, p2, p3));
-                    }
-                }
-                else
-                {
-                    //
-                    foreach(var tri in resTerrain.Tin.TriangleVertexPointIndizes())
-                    {
-                        dgmFaceList.Add(new DtmFace(tri[0], tri[1], tri[2]));
-                    }
-                }
+                Triangulator.DelaunayTriangulation.triangulate(resTerrain);
             }
-            
-            res.terrainFaces = dgmFaceList;
-            */
-            return res;
+
+            return resTerrain;
         }
     }
 }

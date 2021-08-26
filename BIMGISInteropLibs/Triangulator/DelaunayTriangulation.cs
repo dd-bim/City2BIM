@@ -169,9 +169,6 @@ namespace BIMGISInteropLibs.Triangulator
             map = new HashSet<triangleMap>();
 
             //
-            int triNumber = 0;
-
-            //
             foreach (var triangle in geometryCollection.Geometries)
             {
                 int[] coordIndex = new int[3];
@@ -184,7 +181,7 @@ namespace BIMGISInteropLibs.Triangulator
 
                 map.Add(new triangleMap()
                 {
-                    triNumber = triNumber++,
+                    triNumber = map.Count,
                     triValues = coordIndex
                 });
             }

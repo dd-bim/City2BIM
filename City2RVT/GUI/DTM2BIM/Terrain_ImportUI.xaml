@@ -90,51 +90,9 @@
                 <ComboBox x:Name="cbProcessing" Grid.Column="1" SelectionChanged="cbProcessing_SelectionChanged">
                     <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)"></ComboBoxItem>
                     <ComboBoxItem x:Name="cbFaces" Content="... Points/ Faces (Conversion)"></ComboBoxItem>
-                    <ComboBoxItem x:Name="cbDT" Content="... Delauny Trinagulation"></ComboBoxItem>
                 </ComboBox>
             </Grid>
-
-
         </GroupBox>
-
-        <!-- spatial filter-->
-        <!--<GroupBox
-            x:Name="gbSpatialFilter"
-            Grid.Row="2"
-            Grid.Column="1"
-            Header="Spatial Filter"
-            IsEnabled="False"
-            Visibility="Hidden"
-            >
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="13*"/>
-                    <ColumnDefinition Width="59*"/>
-                    <ColumnDefinition Width="121*"/>
-                    <ColumnDefinition Width="120*"/>
-                    <ColumnDefinition Width="72*"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox x:Name="chkSpatialFilter" Content="Enable" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="chkSpatialFilter_Checked" Grid.ColumnSpan="2" Margin="8,14"></CheckBox>
-                <ComboBox x:Name="cbFilterSelection" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,11" IsEnabled="False" SelectionChanged="ComboBox_SelectionChanged">
-                    <ComboBoxItem x:Name="cbCircle" Content="Circle"/>
-                    <ComboBoxItem x:Name="cbSquare" Content="Square"/>
-                </ComboBox>
-
-                <TextBlock Text="Radius / Distance [m]:" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Margin="2,14"/>
-
-                <TextBox
-                    x:Name="tbFilterValue"
-                    Grid.Column="4" 
-                    HorizontalAlignment="Stretch" 
-                    VerticalAlignment="Center" 
-                    Height="22" 
-                    VerticalContentAlignment="Center" 
-                    HorizontalContentAlignment="Center" Margin="0,11">
-                    500
-                </TextBox>
-
-            </Grid>
-        </GroupBox>-->
 
         <!--bounding box -->
         <GroupBox
@@ -151,7 +109,6 @@
             Grid.Column="1"
             Header="Metadata"
             >
-
         </GroupBox>
 
         <!-- logging -->

@@ -7,8 +7,6 @@ using init = GuiHandler.InitClass;
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
 
-using BIMGISInteropLibs.RvtTerrain;
-
 namespace City2RVT.GUI.DTM2BIM
 {
     /// <summary>
@@ -45,37 +43,6 @@ namespace City2RVT.GUI.DTM2BIM
             //start mapping process
             startImport = true;
 
-            //set min dist to default value (TODO - generic)
-            init.config.minDist = 1;
-
-            //set is3D to default value (TODO - generic)
-            init.config.is3D = true;
-
-            /* Spatial Filter
-            if (chkSpatialFilter.IsChecked == true)
-            {
-                //set filter will be used
-                useFilter = true;
-
-                try
-                {
-                    //
-                    filterValue = double.Parse(tbFilterValue.Text);
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    //TODO error logging
-                }
-                
-            }
-            else
-            {
-                //set filter will not be used
-                useFilter = false;
-            }
-            */
-
             Close();
         }
 
@@ -86,24 +53,20 @@ namespace City2RVT.GUI.DTM2BIM
         {
             if (cbFaces.IsSelected)
             {
-                Result.processingEnum =   Result.conversionEnum.ConversionViaFaces;
-            }
-            else if (cbPoints.IsSelected)
-            {
-                Result.processingEnum = Result.conversionEnum.ConversionViaPoints;
+                init.config.readPoints = false;
             }
             else
             {
-                
+                init.config.readPoints = true;
             }
             
             if(cbProcessing.SelectedIndex != -1)
             {
                 //set task to done
-                GuiHandler.GuiSupport.selectProcessing = true;
+                guiLog.selectProcessing = true;
                 
                 //ready checker
-                enableStartBtn(GuiHandler.GuiSupport.rdyDTM2BIM());
+                enableStartBtn(guiLog.rdyDTM2BIM());
 
                 return;
             }
@@ -132,31 +95,5 @@ namespace City2RVT.GUI.DTM2BIM
         {
             guiLog.clearLog();
         }
-
-        /* Spatial Filter
-private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-{
-   if (cbSquare.IsSelected)
-   {
-       isSquare = true;
-   }
-   else if(cbCircle.IsSelected)
-   {
-       isSquare = false;
-   }
-}
-
-private void chkSpatialFilter_Checked(object sender, RoutedEventArgs e)
-{
-   if(chkSpatialFilter.IsChecked == true)
-   {
-       cbFilterSelection.IsEnabled = true;
-   }
-   else
-   {
-       cbFilterSelection.IsEnabled = false;
-   }
-}
-*/
     }
 }
