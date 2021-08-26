@@ -524,5 +524,15 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public string spatialExpansion { get; set; }
 
+        /// <summary>
+        /// deviation - location (german: Abweichung - Lage)
+        /// </summary>
+        public string deviationPosition { get; set; }
+
+        /// <summary>
+        /// deviation - height (german: Abweichung - Höhe)
+        /// </summary>
+        public string deviationAltitude { get; set; }
+
     }
 }
