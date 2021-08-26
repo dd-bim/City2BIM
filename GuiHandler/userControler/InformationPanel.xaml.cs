@@ -18,32 +18,61 @@ using System.Runtime.CompilerServices;
 
 namespace GuiHandler.userControler
 {
+    public class infoPanel : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+        private string _fileName { get; set; }
+
+        public string fileName
+        {
+            get { return _fileName; }
+            set
+            {
+                _fileName = value;
+                NotifyPropertyChanged(nameof(fileName));
+            }
+        }
+
+        private string _fileType { get; set; }
+
+        public string fileType
+        {
+            get { return _fileType; }
+            set
+            {
+                _fileType = value;
+                NotifyPropertyChanged(nameof(fileType));
+            }
+        }
+
+    } 
+
     /// <summary>
     /// Interaktionslogik für InformationPanel.xaml
     /// </summary>
     public partial class InformationPanel : UserControl
     {
+        public static ObservableCollection<infoPanel> info { get; set; }
+
         public InformationPanel()
         {
             InitializeComponent();
-            DataContext = this;
+
+            info = new ObservableCollection<infoPanel>();
+
+            guiInfo.DataContext = info;
+
+            info.Add(new infoPanel());
+            
         }
-
-        string _fileName;
-
-        public string fileName 
-        { 
-            get { return _fileName; }
-            set
-            {
-                if (_fileName == value) return;
-                _fileName = value;
-                var handler = StringPropertyChanged;
-                if (handler != null) handler(this, EventArgs.Empty);
-            }
-        }
-
-        public event EventHandler StringPropertyChanged;
     }
-
 }

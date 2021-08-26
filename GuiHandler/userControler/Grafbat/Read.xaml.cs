@@ -46,8 +46,9 @@ namespace GuiHandler.userControler.Grafbat
 
                 //gui logging (user information)
                 guiLog.setLog("File selected! --> Please make settings and confirm.");
-
-                //TODO logging
+                
+                //display short information about imported file to user
+                guiLog.fileImported();
 
                 return;
             }

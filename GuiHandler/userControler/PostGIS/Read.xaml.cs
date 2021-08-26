@@ -41,7 +41,7 @@ namespace GuiHandler.userControler.PostGIS
         {
 
             #region logging [TODO]
-            //add logging
+           
             #endregion logging [TODO]
 
             #region set json settings
@@ -109,14 +109,7 @@ namespace GuiHandler.userControler.PostGIS
             #endregion set json settings
 
             #region gui feedback
-            //return info to database
-            //((MainWindow)Application.Current.MainWindow).tbFileName.Text = init.config.database;
-
-            //return info to file type
-            //((MainWindow)Application.Current.MainWindow).tbFileType.Text = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS.ToString() + " request";
-
-            //return info to breaklines
-            //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breaklines";
+            guiLog.fileImported();
 
             //gui logging (user information)
             guiLog.setLog("PostGIS settings applyed.");

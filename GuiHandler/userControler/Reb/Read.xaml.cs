@@ -94,11 +94,8 @@ namespace GuiHandler.userControler.Reb
                 #endregion logging
 
                 #region gui feedback
-                //here a feedback is given to the gui for the user (info panel)
-                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
-
-                //conversion to string, because stored as enumeration
-                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = init.config.fileType.ToString();
+                //display short information about imported file to user
+                guiLog.fileImported();
                 #endregion gui feedback
             }
         }

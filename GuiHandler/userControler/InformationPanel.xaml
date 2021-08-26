@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GuiHandler.userControler"
              mc:Ignorable="d" 
-             d:DesignHeight="185" d:DesignWidth="385">
+             d:DesignHeight="185" d:DesignWidth="385"
+             Name="guiInfo">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -15,17 +16,11 @@
         <StackPanel Grid.Column="0" Orientation="Vertical">
             <TextBlock x:Name="ipFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
             <TextBlock x:Name="ipFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
-            <TextBlock x:Name="ipLayerDtm" Text="Layer/ Horizon" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-            <TextBlock x:Name="ipFileSpecific" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-            <TextBlock x:Name="ipFileSpecific2" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
         </StackPanel>
 
         <StackPanel x:Name="stPanel" Grid.Column="1">
-            <TextBox x:Name="messageText" Text="{Binding fileName, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Center" IsReadOnly="True"/>
-            <TextBox x:Name="tbFileType" x:FieldModifier="public" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-            <TextBox x:Name="tbLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-            <TextBox x:Name="tbFileSpecific" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-            <TextBox x:Name="tbFileSpecific2" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+            <TextBox x:Name="messageText" Text="{Binding fileName}" Height="25" VerticalAlignment="Center" IsReadOnly="True"/>
+            <TextBox x:Name="tbFileType" Height="25" VerticalAlignment="Center" Text="{Binding fileType}" Margin="0,5,0,0" IsReadOnly="True"/>
         </StackPanel>
     </Grid>
 </UserControl>

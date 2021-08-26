@@ -105,16 +105,10 @@ namespace GuiHandler.userControler.Dxf
                 //MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
-                #region gui feedback
-                //here a feedback is given to the gui for the user (info panel)
-                support.setFileName(init.config.fileName);
-
-
-
-                //conversion to string, because stored as enumeration
-                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
-
-                #endregion gui feedback
+               
+                //display short information about imported file to user
+                support.fileImported();
+                
                 return; //do not add anything after this
             }
             return; //do not add anything after this

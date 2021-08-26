@@ -114,8 +114,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
             //gui logging (user information)
             
-            //((MainWindow)Application.Current.MainWindow).ucUILog.tbGuiLogging.Items.Add("[LoGeoRef50] CRS Metadata adopted!");
-                
+            
             //Close window
             Close();
         }

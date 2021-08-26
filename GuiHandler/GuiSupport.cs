@@ -9,7 +9,9 @@ using System.Windows.Controls; //TextBox
 using System.Windows.Data;
 using System.Windows.Input;
 
-
+using GuiHandler.userControler;
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
 namespace GuiHandler
 {
     public class GuiSupport
@@ -113,9 +115,10 @@ namespace GuiHandler
             userControler.UILog.LogMessages.Clear();
         }
 
-        public static void setFileName(string fileName)
+        public static void fileImported()
         {
-            //userControler.InformationPanel.fileName = fileName;
+            InformationPanel.info.LastOrDefault().fileName = init.config.fileName;
+            InformationPanel.info.LastOrDefault().fileType = init.config.fileType.ToString();
         }
     }
 }

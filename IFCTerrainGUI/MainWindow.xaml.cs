@@ -61,11 +61,6 @@ namespace IFCTerrainGUI
         }
 
         /// <summary>
-        /// class for logging
-        /// </summary>
-        public Result result { get; set; }
-        
-        /// <summary>
         /// opens documentation
         /// </summary>
         private void tbDocumentation_MouseDown(object sender, MouseButtonEventArgs e)
@@ -73,7 +68,7 @@ namespace IFCTerrainGUI
             //direct Link to GITHUB - Repro so it should be accessable for "all"
             string docuPath = "https://github.com/dd-bim/City2BIM/wiki/IFC-Terrain";
             //opens link
-            System.Diagnostics.Process.Start(docuPath);
+            Process.Start(docuPath);
         }
 
         /// <summary>
@@ -124,7 +119,7 @@ namespace IFCTerrainGUI
                 init.config.destFileName = sfd.FileName;
 
                 //set task (file opening) to true
-                GuiHandler.GuiSupport.selectStoreLocation = true;
+                guiLog.selectStoreLocation = true;
 
                 //check if all task are allready done
                 MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
@@ -139,10 +134,10 @@ namespace IFCTerrainGUI
             else
             {
                 //set task (file opening) to true
-                GuiHandler.GuiSupport.selectStoreLocation = false;
+                guiLog.selectStoreLocation = false;
 
                 //check to deactivate start button
-                MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
+                MainWindowBib.enableStart(guiLog.readyState());
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.warning, "[GUI] Storage location was not set."));
@@ -220,7 +215,7 @@ namespace IFCTerrainGUI
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
+                    Debug.Write(ex.Message.ToString() + Environment.NewLine);
                     LogWriter.Entries.Add(new LogPair(LogType.error, "Metadata - processing: " + ex.Message.ToString()));
                 }
             }
@@ -246,7 +241,7 @@ namespace IFCTerrainGUI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
+                Debug.Write(ex.Message.ToString() + Environment.NewLine);
 
                 LogWriter.Entries.Add(new LogPair(LogType.error, "Json Config - processing: " + ex.Message.ToString()));
             }

@@ -61,6 +61,9 @@ namespace GuiHandler.userControler.XML
                 //set JSON settings of file name
                 init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
 
+                //display short information about imported file to user
+                guiLog.fileImported();
+
                 //TODO logging
                 return;
             }
