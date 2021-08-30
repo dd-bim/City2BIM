@@ -220,7 +220,7 @@ namespace BIMGISInteropLibs.DXF
         /// <summary>
         /// reading breaklines in an dxf file via current settings 
         /// </summary>
-        private static void readBreaklines(DxfFile dxfFile, string breaklineLayer , double scale, Result res)
+        private static void readBreaklines(DxfFile dxfFile, string breaklineLayer, double scale, Result res)
         {
             //set conversion type --> breaklines will be processed
             res.currentConversion = DtmConversionType.points_breaklines;
@@ -228,19 +228,18 @@ namespace BIMGISInteropLibs.DXF
             var lines = new List<LineString>();
 
             LogWriter.Add(LogType.verbose, "[DXF] read breaklines ...");
-
             foreach (var entity in dxfFile.Entities)
             {
-                if(entity.Layer == breaklineLayer && entity.EntityType.Equals(DxfEntityType.Line))
+                if (entity.Layer == breaklineLayer && entity.EntityType.Equals(DxfEntityType.Line))
                 {
                     var dxfLine = (DxfLine)entity;
-                    
+
                     CoordinateZ pA = new CoordinateZ(dxfLine.P1.X * scale, dxfLine.P1.Y * scale, dxfLine.P1.Z * scale);
                     CoordinateZ pE = new CoordinateZ(dxfLine.P2.X * scale, dxfLine.P2.Y * scale, dxfLine.P2.Z * scale);
                     LineString line = new LineString(new CoordinateZ[] { pA, pE });
 
                     lines.Add(line);
-                    LogWriter.Add(LogType.verbose, "[DXF] Breakline set.");
+                    LogWriter.Add(LogType.verbose, "[DXF] Breakline '"+line.Count+"' set.");
                 }
             }
             res.lines = lines;

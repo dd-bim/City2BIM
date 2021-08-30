@@ -69,11 +69,6 @@ namespace GuiHandler.userControler.Grid
                 guiLog.setLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
-                #region gui feedback
-                //display short information about imported file to user
-                guiLog.fileImported();
-                #endregion gui feedback
-
                 //enable grid size field
                 stpGridSize.IsEnabled = true;
 
@@ -153,9 +148,6 @@ namespace GuiHandler.userControler.Grid
             {
                 //set text to info panel
                 //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
-
-                //set json settings grid size
-                init.config.gridSize = Convert.ToInt32(tbGridSize.Text);
             }
             if (chkGridBB.IsChecked == true)
             {
@@ -202,6 +194,9 @@ namespace GuiHandler.userControler.Grid
 
             //[DTM2BIM] check if all task are allready done
             GuiSupport.rdyDTM2BIM();
+
+            //display short information about imported file to user
+            guiLog.fileReaded();
 
             //gui logging (user information)
             guiLog.setLog("Grid settings applyed.");

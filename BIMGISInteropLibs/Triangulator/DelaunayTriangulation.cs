@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using NTS = NetTopologySuite;
 using NetTopologySuite.Triangulate;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.Triangulate.QuadEdge;
 
 using BIMGISInteropLibs.Logging;
-using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log message
 
 namespace BIMGISInteropLibs.Triangulator
 {
@@ -27,9 +26,12 @@ namespace BIMGISInteropLibs.Triangulator
         /// <param name="precision"></param>
         public static void setUp(double precision)
         {
+            geometryFactory = new GeometryFactory(new PrecisionModel(), 25833);
+            /*
             NTS.NtsGeometryServices.Instance = new NTS.NtsGeometryServices(
                 new PrecisionModel(precision));
             geometryFactory = NTS.NtsGeometryServices.Instance.CreateGeometryFactory();
+            */
         }
 
         /// <summary>
@@ -88,14 +90,15 @@ namespace BIMGISInteropLibs.Triangulator
                     Point[] pointList = result.pointList.ToArray();
 
                     //set points as multi point
-                    MultiPoint pointCollection2 = new MultiPoint(pointList);
+                    pointCollection = new MultiPoint(pointList);
 
                     //set sites
-                    builder.SetSites(pointCollection2);
+                    builder.SetSites(pointCollection);
 
+                    //set constraints
                     breaklines = new GeometryCollection(result.lines.ToArray());
+                   
                     builder.Constraints = breaklines;
-
                     break;
             }
 
@@ -153,7 +156,7 @@ namespace BIMGISInteropLibs.Triangulator
             //create coord seqeuenz
             var coordSeq = geometryFactory.CoordinateSequenceFactory.Create(coordinates.ToArray());
            
-            setIndexTriangulation(triangles, coordSeq, out HashSet<triangleMap> map);
+            setIndexTriangulation(result.geomStore, coordSeq, out HashSet<triangleMap> map);
 
             result.triMap = map;
 

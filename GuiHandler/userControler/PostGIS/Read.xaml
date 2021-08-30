@@ -52,78 +52,116 @@
 
                 </Grid>
             </GroupBox>
-            
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                <TextBlock Text="Processing via..." Margin="5,5,5,5"/>
-                <RadioButton x:Name="rbPostGisFaces" Content="Faces" Margin="5,5,5,5" IsChecked="True" ToolTip="Use this option to convert a existing TIN or to recalculate it by using breaklines."/>
-                <RadioButton x:Name="rbPostGisPoints" Content="Points" Margin="5,5,5,5" ToolTip="Use this option to calculate a TIN of 3D point data. Processing breaklines is optional."/>
-            </StackPanel>
-            
-            <GroupBox Header="TIN Geometry">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="1.4*"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="1.4*"/>
-                    </Grid.ColumnDefinitions>
-                    <!-- first row with host and port-->
-                    <TextBlock Text="Table" VerticalAlignment="Center" Margin="5,0"/>
-                    <TextBox x:Name="tbTinTable" Grid.Column="1" Margin="0,0,2,0"/>
-                    <TextBlock Text="Column" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
-                    <TextBox x:Name="tbTinColumn" Grid.Column="3"/>
-                </Grid>
 
-            </GroupBox>
-
-            <GroupBox Header="TIN Identifier">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="1.4*"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="1.4*"/>
-                    </Grid.ColumnDefinitions>
-                    <!-- first row with host and port-->
-                    <TextBlock Text="Column" VerticalAlignment="Center" Margin="5,0"/>
-                    <TextBox x:Name="tbTinIdColumn" Grid.Column="1" TextChanged="tb_TextChanged"/>
-                    <TextBlock Text="Value" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
-                    <TextBox x:Name="tbTinIdValue" Grid.Column="3" TextChanged="tb_TextChanged"/>
-                </Grid>
-            </GroupBox>
-
-            <GroupBox Header="Breaklines">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.7*"/>
-                        <ColumnDefinition/>
-
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
-                        <RowDefinition Height="5"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="5"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="5"/>
-                        <RowDefinition Height="20"/>
-                    </Grid.RowDefinitions>
-
-                    <!--  -->
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                        <TextBlock Text="Process Breaklines?" Margin="0,0,5,0"/>
-                        <RadioButton x:Name="rbProcessBlTrue" Content="Yes" Margin="2" Checked="rbProcessBlTrue_Checked"/>
-                        <RadioButton x:Name="rbProcessBlFalse" Content="No" Margin="2" IsChecked="{x:Null}" Checked="rbProcessBlFalse_Checked"/>
+            <GroupBox>
+                <GroupBox.Header>
+                    <CheckBox 
+                        x:Name="chkPrepQuery"
+                        Content="Prepared query" 
+                        VerticalContentAlignment="Bottom"
+                        Checked="chkPrepQuery_Checked"
+                        Unchecked="chkPrepQuery_Unchecked"/>
+                </GroupBox.Header>
+                <StackPanel
+                    IsEnabled="{Binding ElementName=chkPrepQuery, Path=IsChecked}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Processing via..." Margin="5,5,5,5"/>
+                        <RadioButton x:Name="rbPostGisFaces" Content="Faces" Margin="5,5,5,5" IsChecked="True" ToolTip="Use this option to convert a existing TIN or to recalculate it by using breaklines."/>
+                        <RadioButton x:Name="rbPostGisPoints" Content="Points" Margin="5,5,5,5" ToolTip="Use this option to calculate a TIN of 3D point data. Processing breaklines is optional."/>
                     </StackPanel>
+                    <GroupBox Header="TIN Geometry">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="1.4*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="1.4*"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- first row with host and port-->
+                            <TextBlock Text="Table" VerticalAlignment="Center" Margin="5,0"/>
+                            <TextBox x:Name="tbTinTable" Grid.Column="1" Margin="0,0,2,0" TextChanged="tb_TextChanged"/>
+                            <TextBlock Text="Column" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
+                            <TextBox x:Name="tbTinColumn" Grid.Column="3" TextChanged="tb_TextChanged"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="TIN Identifier">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="1.4*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="1.4*"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- first row with host and port-->
+                            <TextBlock Text="Column" VerticalAlignment="Center" Margin="5,0"/>
+                            <TextBox x:Name="tbTinIdColumn" Grid.Column="1" TextChanged="tb_TextChanged"/>
+                            <TextBlock Text="Value" Grid.Column="2" VerticalAlignment="Center" Margin="5,0"/>
+                            <TextBox x:Name="tbTinIdValue" Grid.Column="3" TextChanged="tb_TextChanged"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <CheckBox
+                                x:Name="chkPrepStatementBreakline"
+                                Content="Process breaklines"
+                                VerticalContentAlignment="Bottom"
+                                Checked="chkPrepStatementBreakline_Checked"
+                                Unchecked="chkPrepStatementBreakline_Unchecked"/>
+                        </GroupBox.Header>
+                        <StackPanel
+                            IsEnabled="{Binding ElementName=chkPrepStatementBreakline, Path=IsChecked}">
+                            <DockPanel Margin="2">
+                                <TextBlock Text="Table" Margin="3" Width="120"/>
+                                <TextBox x:Name="tbBlTable"
+                                         TextChanged="tb_TextChanged"
+                                         VerticalContentAlignment="Center"/>
+                            </DockPanel>
+                            <DockPanel Margin="2">
+                                <TextBlock Text="Column (geometry)" Margin="3" Width="120"/>
+                                <TextBox x:Name="tbBlGeomColumn"
+                                         TextChanged="tb_TextChanged"
+                                         VerticalContentAlignment="Center"/>
+                            </DockPanel>
+                            <DockPanel Margin="2">
+                                <TextBlock Text="Column (TIN ID)" Margin="3" Width="120"/>
+                                <TextBox x:Name="tbBlTinIdColumn"
+                                         TextChanged="tb_TextChanged"
+                                         VerticalContentAlignment="Center"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </GroupBox>
 
-                    <TextBlock Grid.Row="2" Text="Table" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-                    <TextBlock Grid.Row="4" Text="Column (geometry)" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-                    <TextBlock Grid.Row="6" Text="Column (TIN-ID)" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-
-                    <TextBox x:Name="tbBlTable" Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" TextChanged="tb_TextChanged" IsEnabled="False"/>
-                    <TextBox x:Name="tbBlGeomColumn" Grid.Row="4" Grid.Column="1" Margin="5,0,0,0" TextChanged="tb_TextChanged" IsEnabled="False"/>
-                    <TextBox x:Name="tbBlTinIdColumn" Grid.Row="6" Grid.Column="1" Margin="5,0,0,0" TextChanged="tb_TextChanged" IsEnabled="False"/>
-                </Grid>
+            <GroupBox>
+                <GroupBox.Header>
+                    <CheckBox 
+                        x:Name="chkCustomQuery"
+                        Content="Custom query" 
+                        VerticalContentAlignment="Bottom"
+                        Checked="chkCustomQuery_Checked"/>
+                </GroupBox.Header>
+                <StackPanel
+                    IsEnabled="{Binding ElementName=chkCustomQuery, Path=IsChecked, FallbackValue=False}">
+                    <TextBlock Text="Query string for TIN data:"/>
+                    <TextBox
+                        x:Name="tbQueryString"
+                        Height="50"
+                        TextWrapping="Wrap"
+                        TextChanged="tb_TextChanged"
+                        VerticalScrollBarVisibility="Visible"/>
+                    <CheckBox 
+                        x:Name="chkCustomBreakline"
+                        Content="Query string for breakline data:"/>
+                    <TextBox 
+                        x:Name="tbBreaklineQueryString"
+                        IsEnabled="{Binding ElementName=chkCustomBreakline, Path=IsChecked}"
+                        Height="50"
+                        TextWrapping="Wrap"
+                        TextChanged="tb_TextChanged"
+                        VerticalScrollBarVisibility="Visible"
+                        />
+                </StackPanel>
             </GroupBox>
         </StackPanel>
         <Button x:Name="btnProcessPostGis" Grid.Row="2" Content="Apply 'PostGIS' query settings" IsEnabled="False" Click="btnProcessPostGis_Click" />

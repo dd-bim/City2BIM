@@ -46,10 +46,6 @@ namespace GuiHandler.userControler.Grafbat
 
                 //gui logging (user information)
                 guiLog.setLog("File selected! --> Please make settings and confirm.");
-                
-                //display short information about imported file to user
-                guiLog.fileImported();
-
                 return;
             }
         }
@@ -141,6 +137,9 @@ namespace GuiHandler.userControler.Grafbat
                 //gui logging (user information)
                 guiLog.setLog("Grafbat settings applyed.");
 
+                //display short information about imported file to user
+                guiLog.fileReaded();
+
                 //check if all task are allready done
                 guiLog.readyState();
                 #endregion error handling
@@ -149,24 +148,7 @@ namespace GuiHandler.userControler.Grafbat
             {
                 guiLog.setLog("Error in settings. Please check!");
             }
-
-
-
-
-
             #endregion set config
-
-            #region gui info panel
-            // storage location
-            //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
-
-            //file tpye
-            //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, init.config.fileType.ToString());
-            #endregion gui info panel
-
-
-
-
         }
 
         private void rbGraftbatReadFaces_Unchecked(object sender, RoutedEventArgs e)

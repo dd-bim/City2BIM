@@ -106,8 +106,7 @@ namespace GuiHandler.userControler.Dxf
                 #endregion logging
 
                
-                //display short information about imported file to user
-                support.fileImported();
+
                 
                 return; //do not add anything after this
             }
@@ -336,6 +335,10 @@ namespace GuiHandler.userControler.Dxf
                 {
                     init.config.readPoints = true;
                 }
+                else
+                {
+                    init.config.readPoints = false;
+                }
 
                 //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
                 /*
@@ -357,6 +360,9 @@ namespace GuiHandler.userControler.Dxf
                 //TODO enable start button
 
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
+
+                //display short information about imported file to user
+                support.fileReaded();
 
                 //gui logging (user information)
                 support.setLog("DXF settings applyed.");

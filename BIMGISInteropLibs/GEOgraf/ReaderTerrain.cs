@@ -177,11 +177,11 @@ namespace BIMGISInteropLibs.GEOgraf
                                 triNumber = tn,
                                 triValues = new int[] { p1, p2, p3 }
                             });
-                            LogWriter.Add(LogType.verbose, "[Grafbat] Triangle ("+ tn + ") set - horizon filter (" + config.horizonFilter + ")");
+                            LogWriter.Add(LogType.verbose, "[Grafbat] Triangle ("+ tn + ") set - horizon filter (" + config.horizon + ")");
                         }
                         else
                         {
-                            LogWriter.Add(LogType.debug, "[Grafbat] Triangle has been skipped - out of horizon filter + ("+ config.horizonFilter +")");
+                            LogWriter.Add(LogType.debug, "[Grafbat] Triangle has been skipped - out of horizon filter + ("+ config.horizon +")");
                         }
                     }
                     //add all faces

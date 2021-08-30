@@ -92,11 +92,6 @@ namespace GuiHandler.userControler.Reb
                 //gui logging (user information)
                 guiLog.setLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
-
-                #region gui feedback
-                //display short information about imported file to user
-                guiLog.fileImported();
-                #endregion gui feedback
             }
         }
 
@@ -205,6 +200,9 @@ namespace GuiHandler.userControler.Reb
 
             //check if all task are allready done
             //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState()); (TODO)
+
+            //display short information about imported file to user
+            guiLog.fileReaded();
 
             //gui logging (user information)
             guiLog.setLog("REB settings applyed.");

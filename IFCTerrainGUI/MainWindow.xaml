@@ -262,8 +262,8 @@
             Grid.Column="1"
             Grid.Row="13"
             Grid.RowSpan="4"         
-            Header="Current Terrain (Information panel)"
-            Margin="0,0,0,5">
+            Header="Information panel"
+            Margin="0,5,0,5">
             <!-- add user controler for information panel -->
             <uC:InformationPanel/>
         </GroupBox>

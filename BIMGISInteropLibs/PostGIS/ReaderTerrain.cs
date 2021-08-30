@@ -120,13 +120,20 @@ namespace BIMGISInteropLibs.PostGIS
             //local storage
             var triangleMap = new HashSet<Triangulator.triangleMap>();
 
-            //TODO add custom query
-            string select =
+            string select = null;
+            if (!string.IsNullOrEmpty(config.queryString))
+            {
+                select = config.queryString;
+            }
+            else
+            {
+                select =
                 "SELECT " + "ST_AsEWKT(" + config.tin_column + ") " +
                 "as wkt FROM " + config.schema + "." + config.tin_table +
                 " WHERE " + config.tinid_column + " = " + "'" + config.tin_id + "'";
-
-            LogWriter.Add(LogType.debug, "[PostGIS] Query string for TIN data: " + Environment.NewLine + select);
+            }
+            LogWriter.Add(LogType.debug, "[PostGIS] Query string for TIN data: " 
+                + Environment.NewLine + select);
 
             using (var cmd = new NpgsqlCommand(select, connection))
             using (var reader = cmd.ExecuteReader())
@@ -217,17 +224,23 @@ namespace BIMGISInteropLibs.PostGIS
         {
             //open connection
             connection.Open();
-            
-            //TODO --> custom query string
-            string selectBreakline =
-                "SELECT " + config.breakline_table + "." + config.breakline_column 
-                + " FROM " + config.schema + "." + config.breakline_table 
-                + " JOIN " + config.schema + "." + config.tin_table 
-                + " ON (" + config.breakline_table + "." + config.breakline_tin_id 
-                + " = " + config.tin_table + "." + config.tinid_column 
-                + ") WHERE " + config.tin_table + "." + config.tinid_column 
-                + " = " + "'" +  config.tin_id + "'";
-            
+
+            string selectBreakline = null;
+            if (!string.IsNullOrEmpty(config.breaklineQueryString))
+            {
+                selectBreakline = config.breaklineQueryString;
+            }
+            else
+            {
+                selectBreakline =
+                "SELECT " + config.breakline_table + "." + config.breakline_column
+                + " FROM " + config.schema + "." + config.breakline_table
+                + " JOIN " + config.schema + "." + config.tin_table
+                + " ON (" + config.breakline_table + "." + config.breakline_tin_id
+                + " = " + config.tin_table + "." + config.tinid_column
+                + ") WHERE " + config.tin_table + "." + config.tinid_column
+                + " = " + "'" + config.tin_id + "'";
+            }
             LogWriter.Add(LogType.debug, "[PostGIS] Query string for #breakline# data: " + Environment.NewLine + selectBreakline);
 
             //local storage for breaklines
@@ -329,7 +342,6 @@ namespace BIMGISInteropLibs.PostGIS
                 "WHERE " + config.tinid_column + " = " + "'" + config.tin_id + "'";
 
             LogWriter.Add(LogType.debug, "[PostGIS] Query string for #point# data: " + Environment.NewLine + select);
-
 
             //start reading from postgis db
             using (var cmd = new NpgsqlCommand(select, connection))

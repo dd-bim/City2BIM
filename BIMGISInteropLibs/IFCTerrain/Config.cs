@@ -43,7 +43,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         REB,
     }
 
-   
+
     /// <summary>
     /// Establishes the connection between Reader, Writers, GUI and Command
     /// </summary>
@@ -64,7 +64,8 @@ namespace BIMGISInteropLibs.IfcTerrain
         public string fileName { get; set; }
 
         /// <summary>
-        /// filetype of the file to be converted
+        /// filetype of the file to be converted <para/>
+        /// [TODO] detect through reader
         /// </summary>
         public IfcTerrainFileType fileType { get; set; }
 
@@ -105,7 +106,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// minimum distance (used for IFC writer processing) [TODO].
         /// </summary>
         public double minDist { get; set; }
-        
+
         /// <summary>
         /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not
         /// </summary>
@@ -117,7 +118,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// the site name in the out put IFC file (IfcSite)
         /// </summary>
         public string siteName { get; set; }
-        
+
         /// <summary>
         /// the project name in the output IFC file (IfcProject)
         /// </summary>
@@ -160,7 +161,10 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public bool? exportMetadataDin18740 { get; set; }
 
-        
+        /// <summary>
+        /// Decides whether break edges are to be processed(true).
+        /// </summary>
+        public bool? breakline { get; set; }
 
         //below the required attributes to process the georeferencing
         #region GeoRef - Attributes
@@ -303,24 +307,9 @@ namespace BIMGISInteropLibs.IfcTerrain
         public bool? onlyHorizon { get; set; }
 
         /// <summary>
-        /// Input only if "onlyHorizon" is true. Designation of specific horizons. Separation via: "/" ";" "," permissible
-        /// </summary>
-        public int? horizonFilter { get; set; }
-
-        /// <summary>
-        /// Decides whether all types(=false) or only selected ones(=true) are to be used.If filtering is to be used, the entry must be made via "layer".
-        /// </summary>
-        public bool? onlyTypes { get; set; }
-
-        /// <summary>
         /// Name of the layer that contains the breakline. (only one layer is allowed)
         /// </summary>
         public string breakline_layer { get; set; }
-
-        /// <summary>
-        /// Decides whether break edges are to be processed(true).
-        /// </summary>
-        public bool? breakline { get; set; }
         #endregion
 
         //for postgis processing
@@ -389,6 +378,17 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// Specify the column that contains the TIN ID 
         /// </summary>
         public string breakline_tin_id { get; set; }
+
+        /// <summary>
+        /// String to query TIN data via user query
+        /// </summary>
+        public string queryString {get; set;}
+
+        /// <summary>
+        /// string to query breaklines via user query
+        /// </summary>
+        public string breaklineQueryString {get; set;}
+
         #endregion
         #endregion
     }

@@ -54,7 +54,53 @@ namespace GuiHandler.userControler
             }
         }
 
-    } 
+        private bool _breakline { get; set; }
+
+        public bool breakline
+        {
+            get { return _breakline; }
+            set
+            {
+                _breakline = value;
+                NotifyPropertyChanged(nameof(breakline));
+            }
+        }
+        private string _breaklineLayer { get; set; }
+
+        public string breaklineLayer
+        {
+            get { return _breaklineLayer; }
+            set
+            {
+                _breaklineLayer = value;
+                NotifyPropertyChanged(nameof(breaklineLayer));
+            }
+        }
+
+        private bool _points { get; set; }
+
+        public bool points
+        {
+            get { return _points; }
+            set
+            {
+                _points = value;
+                NotifyPropertyChanged(nameof(points));
+            }
+        }
+
+        private bool _faces { get; set; }
+
+        public bool faces
+        {
+            get { return _faces; }
+            set
+            {
+                _faces = value;
+                NotifyPropertyChanged(nameof(faces));
+            }
+        }
+    }
 
     /// <summary>
     /// Interaktionslogik für InformationPanel.xaml

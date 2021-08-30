@@ -8,19 +8,44 @@
              d:DesignHeight="185" d:DesignWidth="385"
              Name="guiInfo">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <DockPanel Margin="2">
+                <TextBlock Text="File name:" Width="70" Margin="5"/>
+                <TextBox Text="{Binding fileName}" 
+                         VerticalContentAlignment="Center"
+                         IsReadOnly="True"/>
+            </DockPanel>
+            <DockPanel Margin="2">
+                <TextBlock Text="File type:" Width="70" Margin="5"/>
+                <TextBox Text="{Binding fileType}"
+                         VerticalContentAlignment="Center"
+                         IsReadOnly="True"/>
+            </DockPanel>
+            <DockPanel Margin="2">
+                <TextBlock Text="Breaklines:" Width="70" Margin="5"/>
+                <CheckBox VerticalAlignment="Center"
+                          IsEnabled="False"
+                          IsChecked="{Binding breakline}"/>
+                <TextBlock Text="Layer/Horizon:" Width="80" Margin="5"/>
+                <TextBox Text="{Binding breaklineLayer}"
+                         VerticalContentAlignment="Center"
+                         IsReadOnly="True"/>
+            </DockPanel>
+            <DockPanel Margin="2">
+                <TextBlock Text="Conversion via: " Margin="5"/>
+                <CheckBox 
+                    Content="...Faces"
+                    VerticalAlignment="Center" 
+                    IsEnabled="False" Width="60"
+                    IsChecked="{Binding faces}"/>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical">
-            <TextBlock x:Name="ipFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
-            <TextBlock x:Name="ipFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
-        </StackPanel>
-
-        <StackPanel x:Name="stPanel" Grid.Column="1">
-            <TextBox x:Name="messageText" Text="{Binding fileName}" Height="25" VerticalAlignment="Center" IsReadOnly="True"/>
-            <TextBox x:Name="tbFileType" Height="25" VerticalAlignment="Center" Text="{Binding fileType}" Margin="0,5,0,0" IsReadOnly="True"/>
+                <CheckBox 
+                    x:Name="chkPoints"
+                    Content="... Points"
+                    VerticalAlignment="Center" 
+                    IsEnabled="False"
+                    IsChecked="{Binding points}"/>
+            </DockPanel>
         </StackPanel>
     </Grid>
 </UserControl>
