@@ -33,8 +33,17 @@ namespace GuiHandler
         /// <returns></returns>
         public static Config clearConfig()
         {
+            //store file path (for opening)
+            string filePath = InitClass.config.destFileName;
+
+            //reset config
             GuiSupport.resetTasks();
             Config config = new Config();
+
+            //set file path (for fiel opening)
+            config.destFileName = filePath;
+
+            //return neraly empty config
             return config;
         }
     }

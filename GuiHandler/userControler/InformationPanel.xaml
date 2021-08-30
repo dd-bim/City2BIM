@@ -9,7 +9,7 @@
              Name="guiInfo">
     <Grid>
         <StackPanel>
-            <DockPanel Margin="2">
+            <DockPanel Margin="2,4,2,2">
                 <TextBlock Text="File name:" Width="70" Margin="5"/>
                 <TextBox Text="{Binding fileName}" 
                          VerticalContentAlignment="Center"
@@ -22,30 +22,31 @@
                          IsReadOnly="True"/>
             </DockPanel>
             <DockPanel Margin="2">
+                <TextBlock Text="Conversion:" Width="70" Margin="5"/>
+                <CheckBox 
+                    Content="Faces"
+                    VerticalContentAlignment="Center"
+                    IsEnabled="False" 
+                    IsChecked="{Binding faces}" Margin="0,5,5,5"/>
+
+                <CheckBox 
+                    x:Name="chkPoints"
+                    Content="Points"
+                    VerticalContentAlignment="Center"
+                    IsEnabled="False"
+                    IsChecked="{Binding points}" Margin="5"/>
+            </DockPanel>
+            <DockPanel Margin="2">
                 <TextBlock Text="Breaklines:" Width="70" Margin="5"/>
                 <CheckBox VerticalAlignment="Center"
                           IsEnabled="False"
                           IsChecked="{Binding breakline}"/>
                 <TextBlock Text="Layer/Horizon:" Width="80" Margin="5"/>
-                <TextBox Text="{Binding breaklineLayer}"
+                <TextBox Text="{Binding breaklineLayer, FallbackValue=' ... '}"
                          VerticalContentAlignment="Center"
                          IsReadOnly="True"/>
             </DockPanel>
-            <DockPanel Margin="2">
-                <TextBlock Text="Conversion via: " Margin="5"/>
-                <CheckBox 
-                    Content="...Faces"
-                    VerticalAlignment="Center" 
-                    IsEnabled="False" Width="60"
-                    IsChecked="{Binding faces}"/>
-
-                <CheckBox 
-                    x:Name="chkPoints"
-                    Content="... Points"
-                    VerticalAlignment="Center" 
-                    IsEnabled="False"
-                    IsChecked="{Binding points}"/>
-            </DockPanel>
+            
         </StackPanel>
     </Grid>
 </UserControl>

@@ -300,6 +300,7 @@ namespace IFCTerrainGUI
             if (e.Result.Equals(true))
             {
                 guiLog.setLog("Processing successful.");
+                guiLog.resetTasks();
                 init.config = init.clearConfig();
             }
             else

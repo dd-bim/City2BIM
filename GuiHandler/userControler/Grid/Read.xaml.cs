@@ -140,22 +140,10 @@ namespace GuiHandler.userControler.Grid
         private void btnProcessGrid_Click(object sender, RoutedEventArgs e)
         {
             #region set json settings
-            if (chkCalculateTin.IsChecked == true)
-            {
-                
-            }
-            else
-            {
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
-            }
-            if (chkGridBB.IsChecked == true)
+            if (chkGridBB.IsChecked.GetValueOrDefault())
             {
                 //bounding box will be used
                 init.config.bBox = true;
-
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will be used.";
 
                 //set bb north to json
                 init.config.bbNorth = Convert.ToDouble(tbBBNorth.Text);
@@ -171,29 +159,22 @@ namespace GuiHandler.userControler.Grid
             }
             else
             {
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will not be used.";
-
                 //bounding box will not be used
                 init.config.bBox = false;
             }
+
+            init.config.readPoints = true;
             #endregion set json settings
-
-            //input in info panel
-            //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = init.config.gridSize.ToString();
-
-            //set text in info panel
-            //((MainWindow)Application.Current.MainWindow).ipFileSpecific2.Text = "Bounding Box";
 
             //error handling
             //set task (file opening) to true
-            GuiSupport.taskfileOpening = true;
+            guiLog.taskfileOpening = true;
 
             //[IfcTerrain] check if all task are allready done
-            GuiSupport.readyState();
+            guiLog.readyState();
 
             //[DTM2BIM] check if all task are allready done
-            GuiSupport.rdyDTM2BIM();
+            guiLog.rdyDTM2BIM();
 
             //display short information about imported file to user
             guiLog.fileReaded();

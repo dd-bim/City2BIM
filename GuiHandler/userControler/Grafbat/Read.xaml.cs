@@ -79,6 +79,8 @@ namespace GuiHandler.userControler.Grafbat
             }
             else
             {
+                init.config.readPoints = false;
+
                 //
                 if (!rbGrafbatAllHorizons.IsChecked.GetValueOrDefault()
                     && !string.IsNullOrEmpty(tbGraftbatFilteringHorizon.Text))
@@ -105,6 +107,8 @@ namespace GuiHandler.userControler.Grafbat
             if (rbGraftbatBreaklinesNo.IsChecked.GetValueOrDefault())
             {
                 guiLog.setLog("Breaklines will not processed!");
+                init.config.breakline = false;
+                init.config.breakline_layer = null;
             }
             else
             {

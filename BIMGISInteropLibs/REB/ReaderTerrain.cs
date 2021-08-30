@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 //embed for file handling
 using System.IO;
 
-//BimGisCad embed
-using BimGisCad.Representation.Geometry.Elementary;     //Points, Lines, ... 
-using BimGisCad.Representation.Geometry.Composed;       //TIN
-
 //Transfer class (Result) for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
 
@@ -106,6 +102,10 @@ namespace BIMGISInteropLibs.REB
                                    && long.TryParse(line.Substring(10, 10), out long p1)
                                    && long.TryParse(line.Substring(20, 10), out long p2))
                                 {
+
+                                    
+
+                                    //rebBreaklines.Add(new LineString())
                                     /*
                                     if (rebData.Lines.TryGetValue(hz, out var ls))
                                     {

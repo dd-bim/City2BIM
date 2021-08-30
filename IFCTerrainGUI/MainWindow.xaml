@@ -10,6 +10,7 @@
         xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
         xmlns:ucPostGIS ="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
+        xmlns:ucGeoJson ="clr-namespace:GuiHandler.userControler.GeoJSON;assembly=GuiHandler"
         xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         mc:Ignorable="d"
@@ -84,7 +85,7 @@
             x:Name="tabControlImport" 
             Grid.Column="1"
             Grid.Row="2"
-            Grid.RowSpan="11"            
+            Grid.RowSpan="12"            
             >
             <!--DXF-->
             <TabItem x:Name="tabPageDxf"        
@@ -135,6 +136,21 @@
                 Header="REB (DA45, DA49, DA58)">
                 <!-- add user controler for reading reb data -->
                 <ucReb:Read/>
+            </TabItem>
+
+            <!-- GeoJSON -->
+            <TabItem
+                x:Name="tabPageGeoJson"
+                Header="JSON (GeoJSON)">
+                <ucGeoJson:Read/>
+            </TabItem>
+            
+            <!-- SHAPE -->
+            <TabItem 
+                x:Name="tabPageShape"
+                Header="Shape (shp)"
+                IsEnabled="False">
+                
             </TabItem>
             <!-- more tabs (if needed) have to be added here-->
         </TabControl>
@@ -260,8 +276,8 @@
         <!-- info panel -->
         <GroupBox
             Grid.Column="1"
-            Grid.Row="13"
-            Grid.RowSpan="4"         
+            Grid.Row="14"
+            Grid.RowSpan="3"         
             Header="Information panel"
             Margin="0,5,0,5">
             <!-- add user controler for information panel -->

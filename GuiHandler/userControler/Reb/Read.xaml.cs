@@ -174,20 +174,20 @@ namespace GuiHandler.userControler.Reb
             //blank json settings 
             init.config.layer = null;
 
+            if (rbRebFaces.IsChecked.GetValueOrDefault())
+            { init.config.readPoints = false;}
+            else { init.config.readPoints = true;}
+
             //get selected horizon
-            int horizon = (int)this.lbRebSelect.SelectedItem;
+            int horizon = (int)lbRebSelect.SelectedItem;
 
             //passed to json settings
             init.config.horizon = horizon;
 
             //Decision if breaklines shall be used
             if (rbProcessBlTrue.IsChecked == true)
-            {
-                init.config.breakline = true;
-            }
-
-            //visual output on the GUI (layer selection) (need to convert to string!)
-            //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
+            { init.config.breakline = true; }
+            else { init.config.breakline = false; }
 
             //set task (file opening) to true
             guiLog.taskfileOpening = true;
@@ -197,9 +197,6 @@ namespace GuiHandler.userControler.Reb
 
             //[DTM2BIM] check if all task are allready done
             guiLog.rdyDTM2BIM();
-
-            //check if all task are allready done
-            //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState()); (TODO)
 
             //display short information about imported file to user
             guiLog.fileReaded();

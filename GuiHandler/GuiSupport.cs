@@ -127,7 +127,7 @@ namespace GuiHandler
             InformationPanel.info.LastOrDefault().fileName = init.config.fileName;
             InformationPanel.info.LastOrDefault().fileType = init.config.fileType.ToString();
             InformationPanel.info.LastOrDefault().breakline = init.config.breakline.GetValueOrDefault();
-            if (init.config.horizon.HasValue)
+            if (init.config.fileType.Equals(BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat))
             {
                 InformationPanel.info.LastOrDefault().breaklineLayer = init.config.horizon.ToString();
             }

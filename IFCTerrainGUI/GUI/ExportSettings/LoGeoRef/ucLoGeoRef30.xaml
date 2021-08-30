@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              mc:Ignorable="d" 
-             d:DesignHeight="185" d:DesignWidth="373" FontFamily="Bahnschhrift">
+             d:DesignHeight="185" d:DesignWidth="373">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -26,10 +26,10 @@
                 
                 <StackPanel >
                     <RadioButton x:Name="rbLoGeoRef30Default" Margin="5,5,0,0" Checked="rbLoGeoRef30Default_Checked" Unchecked="rbLoGeoRef30Default_Unchecked" Content="Default (project center)" ToolTip="X,Y,Z - values are calculated from the data set."/>
-                    <RadioButton x:Name="rbLoGeoRef30User" Content="User specific" Margin="5,5,0,0" ToolTip="Input of X, Y, Z values." Checked="rbLoGeoRef30User_Checked" Unchecked="rbLoGeoRef30User_Unchecked"/>
+                    <RadioButton x:Name="rbLoGeoRef30User" Content="User specific" Margin="5,5,0,0" ToolTip="Input of X, Y, Z values." Checked="rbLoGeoRef30User_Checked"/>
                 </StackPanel>
 
-                <Grid x:Name="inputGrid" Grid.Column="1" IsEnabled="False">
+                <Grid x:Name="inputGrid" Grid.Column="1" IsEnabled="{Binding ElementName=rbLoGeoRef30User, Path=IsChecked}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="3*"/>
@@ -43,7 +43,10 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="X [m]:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox x:Name="tbLoGeoRef30ValueX" Grid.Row="0" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"></TextBox>
+                    <TextBox x:Name="tbLoGeoRef30ValueX" 
+                             Grid.Row="0" Grid.Column="2" Height="18"
+                             TextChanged="tbInput_TextChanged" 
+                             PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"/>
 
                     <TextBlock Text="Y [m]:" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBox x:Name="tbLoGeoRef30ValueY" Grid.Row="1" Grid.Column="2" Height="18" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"></TextBox>
@@ -63,9 +66,16 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
-                <CheckBox x:Name="chkRotationLevel30" Content="Enable Input - Rotation" VerticalContentAlignment="Center" HorizontalAlignment="Center" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values (0 degree)." Checked="chkRotationLevel30_Checked" Unchecked="chkRotationLevel30_Unchecked"/>
+                <CheckBox x:Name="chkRotationLevel30" Content="Enable Input - Rotation" 
+                          VerticalContentAlignment="Center" HorizontalAlignment="Center" ToolTip="Enable this to input a rotation. Otherwise it will be set to default values (0 degree)." 
+                          />
                 <TextBlock Grid.Column="1" Text="Rotation [°]:" VerticalAlignment="Center"/>
-                <TextBox x:Name="tbRotationLevel30" Grid.Column="2" VerticalAlignment="Center" VerticalContentAlignment="Center" IsEnabled="False" TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"/>
+                <TextBox x:Name="tbRotationLevel30" 
+                         Grid.Column="2" 
+                         VerticalAlignment="Center" 
+                         VerticalContentAlignment="Center" 
+                         IsEnabled="{Binding ElementName=chkRotationLevel30, Path=IsChecked}" 
+                         TextChanged="tbInput_TextChanged" PreviewTextInput="tbLoGeoRef30Value_PreviewTextInput"/>
             </Grid>
         </GroupBox>
 

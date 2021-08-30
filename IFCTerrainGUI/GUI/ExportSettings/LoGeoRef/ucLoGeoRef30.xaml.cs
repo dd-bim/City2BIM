@@ -58,9 +58,6 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //set json settings (use of custom origin)
             init.config.customOrigin = true;
 
-            //enabling input fields
-            inputGrid.IsEnabled = true;
-           
             //check if input all input fields are filled 
             readyCheck();
         }
@@ -69,12 +66,6 @@ namespace IFCTerrainGUI.GUI.ExportSettings
         {
             //set task (file opening) to false: user have to apply settings
             GuiHandler.GuiSupport.selectGeoRef = false;
-        }
-
-        private void rbLoGeoRef30User_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //disable input fields
-            inputGrid.IsEnabled = false;
         }
 
         /// <summary>
@@ -130,6 +121,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             else if (valueXset && valueYset && valueZset && valueRotation)
             {
                 //enable apply button
+                btnLoGeoRef30Apply.IsEnabled = true;
+                return true;
+            }else if(valueRotation && rbLoGeoRef30Default.IsChecked.GetValueOrDefault())
+            {
                 btnLoGeoRef30Apply.IsEnabled = true;
                 return true;
             }
@@ -231,16 +226,6 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
             //if not valid no input follows
             e.Handled = regex.IsMatch(e.Text);
-        }
-
-        private void chkRotationLevel30_Checked(object sender, RoutedEventArgs e)
-        {
-            tbRotationLevel30.IsEnabled = true;
-        }
-
-        private void chkRotationLevel30_Unchecked(object sender, RoutedEventArgs e)
-        {
-            tbRotationLevel30.IsEnabled = false;
         }
     }
 }

@@ -146,7 +146,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 tbCrsName.Text = init.config.crsName.ToString();
 
                 //set description
-                tbDescription.Text = init.config.crsDescription.ToString();
+                tbDescription.Text = init.config.crsDescription;
 
                 //set geodetic datum
                 tbGeodeticDatum.Text = init.config.geodeticDatum;
