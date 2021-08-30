@@ -163,7 +163,7 @@ namespace GuiHandler.userControler.Dxf
                 foreach (var l in this.dxfFile.Layers)
                 {
                     //do not list, if layer is empty
-                    if (l.Handle != 0)
+                    if (l.Handle != null)
                     {
                         //list layer name to list boxes (so the user can select a layer (or more))
                         this.lbDxfDtmLayer.Items.Add(l.Name);
