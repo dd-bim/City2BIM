@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="GuiHandler.userControler.GeoJSON.Read"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GuiHandler.userControler.GeoJSON"
+             mc:Ignorable="d" 
+             d:DesignHeight="525" d:DesignWidth="385">
+    <Grid Margin="5">
+        <!-- small and simple layout -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        
+        <!-- add button to read file -->
+        <Button x:Name="btnReadGeoJson"
+                Content="Read 'GeoJSON'"
+                Click="btnReadGeoJson_Click"/>
+
+        <!-- add button to apply settings -->
+        <Button 
+            x:Name="btnProcessGeoJson"
+            Content="Apply 'GeoJSON' file settings"
+            Grid.Row="2"
+            Click="btnProcessGeoJson_Click"/>
+    </Grid>
+</UserControl>

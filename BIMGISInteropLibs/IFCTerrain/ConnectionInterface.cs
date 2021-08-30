@@ -70,6 +70,10 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.REB:
                     result = REB.ReaderTerrain.readDtm(config);
                     break;
+
+                case IfcTerrainFileType.GeoJSON:
+                    result = GeoJSON.ReaderTerrain.readGeoJson(config);
+                    break;
             }
 
             //error handling

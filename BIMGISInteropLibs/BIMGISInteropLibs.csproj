@@ -74,11 +74,11 @@
     <Reference Include="gdal_csharp, Version=1.0.7372.36899, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\GDAL.2.4.4\lib\net40\gdal_csharp.dll</HintPath>
     </Reference>
-    <Reference Include="GeoJSON.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GeoJSON.Net.1.1.64\lib\net45\GeoJSON.Net.dll</HintPath>
+    <Reference Include="GeoJSON.Net, Version=1.2.16.0, Culture=neutral, PublicKeyToken=42c00ea87f5f14d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\GeoJSON.Net.1.2.19\lib\net45\GeoJSON.Net.dll</HintPath>
     </Reference>
-    <Reference Include="IxMilia.Dxf, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IxMilia.Dxf.0.8.0\lib\netstandard2.0\IxMilia.Dxf.dll</HintPath>
+    <Reference Include="IxMilia.Dxf, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IxMilia.Dxf.0.8.1\lib\netstandard2.0\IxMilia.Dxf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -118,6 +118,12 @@
     </Reference>
     <Reference Include="NetTopologySuite, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
       <HintPath>..\packages\NetTopologySuite.2.3.0\lib\netstandard2.0\NetTopologySuite.dll</HintPath>
+    </Reference>
+    <Reference Include="NetTopologySuite.Features, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetTopologySuite.Features.2.0.0\lib\netstandard2.0\NetTopologySuite.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="NetTopologySuite.IO.GeoJSON, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetTopologySuite.IO.GeoJSON.2.0.4\lib\netstandard2.0\NetTopologySuite.IO.GeoJSON.dll</HintPath>
     </Reference>
     <Reference Include="NetTopologySuite.IO.PostGis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
       <HintPath>..\packages\NetTopologySuite.IO.PostGis.2.1.0\lib\netstandard2.0\NetTopologySuite.IO.PostGis.dll</HintPath>
@@ -249,6 +255,7 @@
     <Compile Include="EPSG\ProjCRS.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GEOgraf\ReaderTerrain.cs" />
+    <Compile Include="GeoJSON\ReaderTerrain.cs" />
     <Compile Include="Geometry\C2BEdge.cs" />
     <Compile Include="Geometry\C2BPlane.cs" />
     <Compile Include="Geometry\C2BSegment.cs" />

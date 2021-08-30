@@ -41,6 +41,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// daten arten (raster dataset)
         /// </summary>
         REB,
+
+        /// <summary>
+        /// GeoJSON
+        /// </summary>
+        GeoJSON
     }
 
 
