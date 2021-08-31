@@ -71,7 +71,7 @@ namespace BIMGISInteropLibs.IFC
             double originZ;
 
             //query whether a user has assigned "coordinates"
-            if (config.customOrigin.Value)
+            if (config.customOrigin.GetValueOrDefault())
             {
                 originX = config.xOrigin.Value;
                 originY = config.yOrigin.Value;

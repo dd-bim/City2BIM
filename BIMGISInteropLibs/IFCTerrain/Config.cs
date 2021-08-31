@@ -398,9 +398,10 @@ namespace BIMGISInteropLibs.IfcTerrain
 
         //for geojson
         #region GeoJSON
+        /// <summary>
+        /// geometry type to set the right reader
+        /// </summary>
         public GeometryType geometryType { get; set; }
-        
-        
         #endregion GeoJSON
         #endregion
     }

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GuiHandler.userControler.GeoJSON"
+             xmlns:it="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
              mc:Ignorable="d" 
              d:DesignHeight="525" d:DesignWidth="385">
     <Grid Margin="5">
@@ -24,6 +25,23 @@
             x:Name="btnProcessGeoJson"
             Content="Apply 'GeoJSON' file settings"
             Grid.Row="2"
-            Click="btnProcessGeoJson_Click"/>
+            Click="btnProcessGeoJson_Click"
+            IsEnabled="False"
+            />
+
+        <StackPanel Grid.Row="1">
+            <DockPanel Margin="0,5,0,5">
+                <TextBlock 
+                    Text="Geometry type: "
+                    VerticalAlignment="Center"/>
+                <ComboBox
+                    x:Name="cbGeomType"
+                    VerticalContentAlignment="Center"
+                    ItemsSource="{Binding}"
+                    SelectionChanged="cbGeomType_SelectionChanged"
+                    IsEnabled="False">
+                </ComboBox>
+            </DockPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

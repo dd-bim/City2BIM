@@ -14,6 +14,7 @@ using init = GuiHandler.InitClass;
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
 
+using BIMGISInteropLibs.IfcTerrain;
 namespace GuiHandler.userControler.GeoJSON
 {
     /// <summary>
@@ -24,8 +25,14 @@ namespace GuiHandler.userControler.GeoJSON
         public Read()
         {
             InitializeComponent();
-        }
 
+            //bind conversion types
+            cbGeomType.ItemsSource = new string[]{
+                    BIMGISInteropLibs.IfcTerrain.GeometryType.MultiPoint.ToString(),
+                    BIMGISInteropLibs.IfcTerrain.GeometryType.MultiPolygon.ToString(),
+                    BIMGISInteropLibs.IfcTerrain.GeometryType.GeometryCollection.ToString()
+                };
+        }
         /// <summary>
         /// Event to handle file dialog and set file
         /// </summary>
@@ -36,7 +43,7 @@ namespace GuiHandler.userControler.GeoJSON
             //create new file dialog
             OpenFileDialog ofd = new OpenFileDialog();
             //set filter
-            ofd.Filter = "GeoJSON files *.GeoJSON|*.geojson";
+            ofd.Filter = "GeoJSON files *.GeoJSON|*.geojson|Json *.json|*.json";
 
             //task to run when file has been selected
             if (ofd.ShowDialog().GetValueOrDefault())
@@ -45,17 +52,28 @@ namespace GuiHandler.userControler.GeoJSON
                 init.config.filePath = ofd.FileName;
 
                 //set file name
-                init.config.fileName = Path.GetFileName(ofd.FileName);
+                init.config.fileName = Path.GetFileNameWithoutExtension(ofd.FileName);
 
                 //set file type
-                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.GeoJSON;
+                init.config.fileType = IfcTerrainFileType.GeoJSON;
 
-                btnProcessGeoJson.IsEnabled = true;
+                cbGeomType.IsEnabled = true;
             }
         }
 
         private void btnProcessGeoJson_Click(object sender, RoutedEventArgs e)
         {
+            //set file type to geojson
+            init.config.fileType = IfcTerrainFileType.GeoJSON;
+            
+            if(init.config.geometryType == GeometryType.MultiPoint)
+            {
+                init.config.readPoints = true;
+            }
+            else{
+                init.config.readPoints = false;
+            }
+
             //
             guiLog.taskfileOpening = true;
             
@@ -71,6 +89,18 @@ namespace GuiHandler.userControler.GeoJSON
             //
             guiLog.readyState();
             
+        }
+
+        private void cbGeomType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cbGeomType.SelectedIndex != -1)
+            {
+                init.config.geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), cbGeomType.SelectedItem.ToString());
+                //
+                guiLog.setLog("Geometry type set to: " + init.config.geometryType);
+
+                btnProcessGeoJson.IsEnabled = true;
+            }
         }
     }
 }

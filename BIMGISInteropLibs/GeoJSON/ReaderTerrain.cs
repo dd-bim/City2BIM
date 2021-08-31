@@ -34,22 +34,20 @@ namespace BIMGISInteropLibs.GeoJSON
             //init result
             Result result = new Result();
 
-            //file reader (using NetTopologySuite to parse into NTS types)
-            //
-            var geojsonString = File.ReadAllText(config.filePath);
-
             //init storage classes
             var points = new HashSet<NTSGeometry.Point>();
             var triMap = new HashSet<Triangulator.triangleMap>();
 
-
             //switch between different geom type (from user selection)
             LogWriter.Add(LogType.info, "[GeoJSON] parsing geometry type: " + config.geometryType);
+
+            //read geojson as string
+            var geojsonString = File.ReadAllText(config.filePath);
+
 
             switch (config.geometryType)
             {
                 case GeometryType.MultiPoint:
-
 
                     dynamic multiPoint;
                     try
