@@ -395,7 +395,23 @@ namespace BIMGISInteropLibs.IfcTerrain
         public string breaklineQueryString {get; set;}
 
         #endregion
+
+        //for geojson
+        #region GeoJSON
+        public GeometryType geometryType { get; set; }
+        
+        
+        #endregion GeoJSON
         #endregion
+    }
+
+    public enum GeometryType
+    {
+        MultiPoint,
+
+        MultiPolygon,
+
+        GeometryCollection
     }
 
     /// <summary>

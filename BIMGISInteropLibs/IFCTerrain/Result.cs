@@ -39,7 +39,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         public CoordinateList coordinateList { get; set; } = null;
 
         /// <summary>
-        /// [FILE - WRITING] txt export (only internal support)
+        /// [FILE-WRITING] txt export (only internal support)
         /// </summary>
         public GeometryCollection geomStore { get; set; } = null;
 
