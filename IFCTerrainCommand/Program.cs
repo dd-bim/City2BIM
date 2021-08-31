@@ -118,7 +118,21 @@ namespace IFCTerrainCommand
 
                 //start mapping process
                 //TODO: add jSettings for metadata to IfcPropertySet
-                conn.mapProcess(jSettings, null, null);
+                bool result = conn.mapProcess(jSettings, null, null);
+
+                if (!result)
+                {
+                    Console.WriteLine("[ERROR] Processing failed. Please check log file!"
+                        + Environment.NewLine +"Close application with 'enter'");
+                    Console.ReadLine();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Processing succesful. Please check log file for more information!"
+                        + Environment.NewLine + "Go on application with 'enter'");
+                    Console.ReadLine();
+                }
             }
             //finish programm
             return;
