@@ -3,52 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 //XML - Reader
 using System.Xml;
 using System.Xml.Linq;
 
-//BimGisCad - Bibliothek einbinden
-using BimGisCad.Representation.Geometry.Composed;       //TIN
-using BimGisCad.Representation.Geometry.Elementary;     //Points, Lines, etc.
-
 //Transfer class for the reader (IFCTerrain + Revit)
 using BIMGISInteropLibs.IfcTerrain;
-
-//embed for error handling
-using System.Windows; //error handling (message box)
 
 //Logging
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
+using NetTopologySuite.Geometries; //geometries for further processing 
+using BIMGISInteropLibs.Geometry;
 namespace BIMGISInteropLibs.CityGML
 {
     class CityGMLReaderTerrain
     {
         /// <summary>
-        /// Reads a TIN from a CityGML file
+        /// Reads DTM from a CityGML file<para/>
+        /// [TODO] CityGML - Features review and expand ("gml::MultiCurve", "gml::Multipoint", ...)
         /// </summary>
-        /// <param name="fileName">Location of the CityGML file</param>
-        /// <returns>TIN (in the form of result.tin)</returns>
-        public static Result ReadTin(JsonSettings jSettings)
+        public static Result readTin(Config config)
         {
-            //read file name from settings
-            string fileName = jSettings.filePath;
+            var cityGmlResult = new Result();
 
-            //TIN-Builder
-            var tinB = Tin.CreateBuilder(true);
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Create TIN builder"));
+            HashSet<Point> pointList = new HashSet<Point>();
             
-            //init hash set
-            var pList = new HashSet<Geometry.uPoint3>();
-
-            //create new result to be able to transfer later
-            var result = new Result();
+            var triangleMap = new HashSet<Triangulator.triangleMap>();
 
             try
             {
-                using (var reader = XmlReader.Create(fileName))
+                using (var reader = XmlReader.Create(config.filePath))
                 {
                     bool isRelief = false;
                     reader.MoveToContent();
@@ -78,48 +66,49 @@ namespace BIMGISInteropLibs.CityGML
                                         string[] pl;
                                         if (posList.Any()
                                             && (pl = posList.First().Value.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)).Length == 12
-                                            && pl[0] == pl[9] && pl[1] == pl[10] && pl[2] == pl[11]
-                                            && Point3.Create(pl, out var pt1)
-                                            && Point3.Create(pl, out var pt2)
-                                            && Point3.Create(pl, out var pt3))
+                                            && pl[0] == pl[9] && pl[1] == pl[10] && pl[2] == pl[11])
                                         {
-                                            //add points to point list
-                                            int pnrP1 = Geometry.terrain.addToList(pList, pt1);
-                                            int pnrP2 = Geometry.terrain.addToList(pList, pt2);
-                                            int pnrP3 = Geometry.terrain.addToList(pList, pt3);
+                                            //read coordinate values
+                                            double.TryParse(pl[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double p1X);
+                                            double.TryParse(pl[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double p1Y);
+                                            double.TryParse(pl[2], NumberStyles.Any, CultureInfo.InvariantCulture, out double p1Z);
                                             
-                                            //add triangle via indicies
-                                            tinB.AddTriangle(pnrP1, pnrP2, pnrP3);
-                                            LogWriter.Add(LogType.verbose, "[CityGML] Triangle set (" + pnrP1 + "; " + pnrP2 + "; " + pnrP3 + ")");
+                                            //set coordinate
+                                            int p1 =  terrain.addPoint(pointList, new Point(p1X, p1Y, p1Z));
+
+                                            double.TryParse(pl[3], NumberStyles.Any, CultureInfo.InvariantCulture, out double p2X);
+                                            double.TryParse(pl[4], NumberStyles.Any, CultureInfo.InvariantCulture, out double p2Y);
+                                            double.TryParse(pl[5], NumberStyles.Any, CultureInfo.InvariantCulture, out double p2Z);
+                                            
+                                            //set coordinate
+                                            int p2 = terrain.addPoint(pointList, new Point(p2X, p2Y, p2Z));
+
+                                            double.TryParse(pl[6], NumberStyles.Any, CultureInfo.InvariantCulture, out double p3X);
+                                            double.TryParse(pl[7], NumberStyles.Any, CultureInfo.InvariantCulture, out double p3Y);
+                                            double.TryParse(pl[8], NumberStyles.Any, CultureInfo.InvariantCulture, out double p3Z);
+                                            
+                                            //set coordinate
+                                            int p3 = terrain.addPoint(pointList, new Point(p3X, p3Y, p3Z));
+
+                                            //add indexed map
+                                            triangleMap.Add(new Triangulator.triangleMap()
+                                            {
+                                                triNumber = triangleMap.Count,
+                                                triValues = new int[] {p1, p2, p3} 
+                                            });
                                         }
                                         reader.Read();
                                     }
-
-                                    //loop through point list 
-                                    foreach (Geometry.uPoint3 pt in pList)
-                                    {
-                                        //add point to tin builder
-                                        tinB.AddPoint(pt.pnr, pt.point3);
-                                    }
-
-                                    //Generate TIN from TIN Builder
-                                    Tin tin = tinB.ToTin(out var pointIndex2NumberMap, out var triangleIndex2NumberMap);
-                                    
                                     //logging
-                                    LogWriter.Entries.Add(new LogPair(LogType.verbose, "[CityGML] Create TIN via TIN builder."));
+                                    LogWriter.Add(LogType.info, "Reading CityGML data successful.");
                                     
-                                    //handover tin to result
-                                    result.Tin = tin;
-
-                                    //add to results (stats)
-                                    result.rPoints = tin.Points.Count;
-                                    result.rFaces = tin.NumTriangles;
-
-                                    //logging
-                                    LogWriter.Entries.Add(new LogPair(LogType.info, "Reading CityGML data successful."));
-                                    LogWriter.Entries.Add(new LogPair(LogType.debug, "Points: " + result.Tin.Points.Count + "; Triangles: " + result.Tin.NumTriangles + " processed"));
+                                    //TODO add case destinction
+                                    cityGmlResult.currentConversion = DtmConversionType.conversion;
+                                    cityGmlResult.pointList = pointList.ToList();
+                                    cityGmlResult.triMap = triangleMap;
+                                  
                                     //Result handed over
-                                    return result;
+                                    return cityGmlResult;
                                 }
                             }
                         }
@@ -127,19 +116,16 @@ namespace BIMGISInteropLibs.CityGML
                     else
                     {
                         //error logging
-                        LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] file (" + jSettings.fileName + ") no TIN data found!"));
-                        MessageBox.Show("CityGML file contains no TIN data!", "CityGML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LogWriter.Add(LogType.error, "[CityGML] file (" + config.fileName + ") no TIN data found!");
                     }
-                    return result;
+                    return null;
                 }
             }
-            //[TODO]: Pass error message and "Error"
             catch (Exception ex)
             {
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.error, "[CityGML] file could not be read (" + jSettings.fileName + ")"));
-                MessageBox.Show("CityGML file could not be read: \n" + ex.Message, "LandXML file reader", MessageBoxButton.OK, MessageBoxImage.Error);
-                return result;
+                LogWriter.Add(LogType.error, "[CityGML] Error: " + ex.Message);
+                return null;
             }
         } //End ReadTIN
     }

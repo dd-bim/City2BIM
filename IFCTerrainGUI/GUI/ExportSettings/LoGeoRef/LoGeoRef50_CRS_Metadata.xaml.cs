@@ -114,8 +114,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
 
             //gui logging (user information)
             
-            //((MainWindow)Application.Current.MainWindow).ucUILog.tbGuiLogging.Items.Add("[LoGeoRef50] CRS Metadata adopted!");
-                
+            
             //Close window
             Close();
         }
@@ -147,7 +146,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
                 tbCrsName.Text = init.config.crsName.ToString();
 
                 //set description
-                tbDescription.Text = init.config.crsDescription.ToString();
+                tbDescription.Text = init.config.crsDescription;
 
                 //set geodetic datum
                 tbGeodeticDatum.Text = init.config.geodeticDatum;

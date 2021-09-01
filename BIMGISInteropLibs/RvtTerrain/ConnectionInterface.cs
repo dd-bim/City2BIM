@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//BimGisCad
-using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
-
 //used for result class (may update to seperate class for rvtTerrain)
 using BIMGISInteropLibs.IfcTerrain;
+
+using geojson = BIMGISInteropLibs.GeoJSON.ReaderTerrain;
 
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
@@ -24,126 +23,69 @@ namespace BIMGISInteropLibs.RvtTerrain
         /// file reading / tin build process
         /// </summary>
         /// <param name="config">setting to config file processing and conversion process</param>
-        /// <returns></returns>
-        public static Result mapProcess(JsonSettings config, BIMGISInteropLibs.RvtTerrain.Result.conversionEnum processingEnum)
+        public static Result mapProcess(Config config)
         {
-            //set grid size (as default value)
-            config.gridSize = 1;
-
             //init transfer class (DTM2BIM)
-            Result res = new Result();
+            Result resTerrain = new Result();
             
-            //init transfer class (mainly used in ifc terrain)
-            IfcTerrain.Result resTerrain = new IfcTerrain.Result();
-
-            #region file reading
-            //mapping on basis of data type
             switch (config.fileType)
             {
-                //grid reader
-                case IfcTerrainFileType.Grid:
-                    resTerrain = ElevationGrid.ReaderTerrain.ReadGrid(config);
-                    break;
-
                 case IfcTerrainFileType.DXF:
-
-                    //dxf file reader (output used for process terrain information)
-                    DXF.ReaderTerrain.ReadFile(config.filePath, out DxfFile dxfFile);
-
-                    //[TODO]loop for distinguishing whether it is a tin or not (processing via points and lines)
-                   
-                    //Reader (if dxf file contains 3dfaces & procssing as conversion)
-                    resTerrain = DXF.ReaderTerrain.ReadDxfTin(dxfFile, config);
+                    //read dxfFile via filepath
+                    if (DXF.ReaderTerrain.readFile(config.filePath, out DxfFile dxfFile))
+                    {
+                        //read dtm
+                        resTerrain = DXF.ReaderTerrain.readDxf(config, dxfFile);
+                    }
                     break;
 
-                case IfcTerrainFileType.REB:
-                    //REB file reader
-                    REB.RebDaData rebData = REB.ReaderTerrain.ReadReb(config.filePath);
-
-                    //use REB data via processing with converter
-                    resTerrain = REB.ReaderTerrain.ConvertRebToTin(rebData, config);
-                    break;
-
-                case IfcTerrainFileType.Grafbat:
-                    resTerrain = GEOgraf.ReadOUT.ReadOutData(config, out IReadOnlyDictionary<int, int> pointIndex2NumberMap, out IReadOnlyDictionary<int, int> triangleIndex2NumerMap);
-                    break;
-
-                //XML
                 case IfcTerrainFileType.LandXML:
-                    resTerrain = LandXML.ReaderTerrain.ReadTin(config);
+                    resTerrain = LandXML.ReaderTerrain.readDtmData(config);
                     break;
 
                 case IfcTerrainFileType.CityGML:
-                    resTerrain = CityGML.CityGMLReaderTerrain.ReadTin(config);
+                    resTerrain = CityGML.CityGMLReaderTerrain.readTin(config);
+                    break;
+
+                case IfcTerrainFileType.Grafbat:
+                    resTerrain = GEOgraf.ReadOUT.readOutData(config);
                     break;
 
                 case IfcTerrainFileType.PostGIS:
-                    resTerrain = PostGIS.ReaderTerrain.ReadPostGIS(config);
+                    resTerrain = PostGIS.ReaderTerrain.readPostGIS(config);
+                    break;
+
+                case IfcTerrainFileType.Grid:
+                    resTerrain = ElevationGrid.ReaderTerrain.readGrid(config);
+                    break;
+
+                case IfcTerrainFileType.REB:
+                    resTerrain = REB.ReaderTerrain.readDtm(config);
+                    break;
+
+                case IfcTerrainFileType.GeoJSON:
+                    resTerrain = geojson.readGeoJson(config);
                     break;
             }
-            #endregion file reading
 
-            #region point list
-            //init empty point list
-            dynamic dgmPtList = new List<Point3>();
-
-            if (resTerrain.Tin.Points == null)
+            //error handling
+            if (resTerrain == null)
             {
-                foreach (Point3 p in resTerrain.Mesh.Points)
-                {
-                    dgmPtList.Add(p);
-                }
+                //[TODO] LogWriter.Add(LogType.error, "[READER] File reading failed (result is null) - processing canceld!");
+                return null;
             }
-            else if (resTerrain.Mesh == null)
+            else if (resTerrain.pointList == null)
             {
-                foreach (Point3 p in resTerrain.Tin.Points)
-                {
-                    {
-                        dgmPtList.Add(p);
-                    }
-                }
-            }
-            else
-            {
-                //TODO error catcher
+                //[TODO] LogWriter.Add(LogType.error, "[READER] File reading failed (point list is empty) - processing canceld!");
                 return null;
             }
 
-            //set to result point list
-            res.dtmPoints = dgmPtList;
-            #endregion point list
-
-            //init face list
-            dynamic dgmFaceList = new List<DtmFace>();
-
-            if (processingEnum == Result.conversionEnum.ConversionViaFaces)
+            if(resTerrain.currentConversion != DtmConversionType.conversion)
             {
-                if (resTerrain.Tin.Points == null)
-                {
-                    //set to result facet list
-                    foreach (int fe in resTerrain.Mesh.FaceEdges)
-                    {
-                        int p1 = resTerrain.Mesh.EdgeVertices[fe];
-                        int p2 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[fe]];
-                        int p3 = resTerrain.Mesh.EdgeVertices[resTerrain.Mesh.EdgeNexts[resTerrain.Mesh.EdgeNexts[fe]]];
-
-                        //add face index to list
-                        dgmFaceList.Add(new DtmFace(p1, p2, p3));
-                    }
-                }
-                else
-                {
-                    //
-                    foreach(var tri in resTerrain.Tin.TriangleVertexPointIndizes())
-                    {
-                        dgmFaceList.Add(new DtmFace(tri[0], tri[1], tri[2]));
-                    }
-                }
+                Triangulator.DelaunayTriangulation.triangulate(resTerrain);
             }
 
-            res.terrainFaces = dgmFaceList;
-
-            return res;
+            return resTerrain;
         }
     }
 }

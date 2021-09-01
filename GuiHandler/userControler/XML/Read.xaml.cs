@@ -58,6 +58,9 @@ namespace GuiHandler.userControler.XML
                 //set the save path of the file to be converted
                 init.config.filePath = ofd.FileName;
 
+                //set JSON settings of file name
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
+
                 //TODO logging
                 return;
             }
@@ -113,8 +116,8 @@ namespace GuiHandler.userControler.XML
             //[DTM2BIM] check if all task are allready done
             GuiSupport.rdyDTM2BIM();
 
-            //set json settings isTin to true
-            init.config.isTin = true;
+            //display short information about imported file to user
+            guiLog.fileReaded();
 
             //send gui logging
             guiLog.setLog("XML settings applyed.");

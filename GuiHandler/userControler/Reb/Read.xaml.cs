@@ -44,10 +44,6 @@ namespace GuiHandler.userControler.Reb
             //create the task when the "do task" is completed
             backgroundWorkerReb.RunWorkerCompleted += BackgroundWorkerReb_RunWorkerCompleted;
         }
-        /// <summary>
-        /// container for reb Data
-        /// </summary>
-        private RebDaData rebData = null;
 
         /// <summary>
         /// opens file dialgo as soon as a file has been selected further functions are triggerd
@@ -68,6 +64,9 @@ namespace GuiHandler.userControler.Reb
 
                 //set JSON settings of file path
                 init.config.filePath = ofd.FileName;
+
+                //set JSON settings of file name
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)
@@ -93,14 +92,6 @@ namespace GuiHandler.userControler.Reb
                 //gui logging (user information)
                 guiLog.setLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
-
-                #region gui feedback
-                //here a feedback is given to the gui for the user (info panel)
-                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
-
-                //conversion to string, because stored as enumeration
-                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = init.config.fileType.ToString();
-                #endregion gui feedback
             }
         }
 
@@ -116,7 +107,7 @@ namespace GuiHandler.userControler.Reb
         private void BackgroundWorkerReb_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task
-            e.Result = ReaderTerrain.ReadReb(init.config.filePath);
+            e.Result = ReaderTerrain.readHorizon(init.config.filePath);
         }
 
         /// <summary>
@@ -131,36 +122,21 @@ namespace GuiHandler.userControler.Reb
             this.lbRebSelect.Items.Clear();
 
             //if file fits to rebdata
-            if (e.Result is RebDaData rebData)
+            if(e.Result != null)
             {
-                //Assignment
-                this.rebData = rebData;
-
-                //traversing all horizons
-                foreach (var horizon in rebData.GetHorizons())
+                HashSet<int> horizons = new HashSet<int>();
+                horizons = e.Result as HashSet<int>;
+                foreach(int h in horizons)
                 {
-                    //list the horizon
-                    this.lbRebSelect.Items.Add(horizon);
+                    lbRebSelect.Items.Add(h);
                 }
-                //gui logging (user information)
-                //MainWindowBib.setGuiLog("Readed reb layers: " + lbRebSelect.Items.Count);
             }
-            //if the file could not be read
-            else
-            {
-                //go through all layers (one by one) of selected reb file
-                this.rebData = null;
-
-                //TODO add throw error + log
-            }
+            
             //apply layout - all items will be listed
             this.lbRebSelect.UpdateLayout();
 
             //release complete gui again
             IsEnabled = true;
-
-            //set to json settings
-            init.config.isTin = true;
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
@@ -198,44 +174,32 @@ namespace GuiHandler.userControler.Reb
             //blank json settings 
             init.config.layer = null;
 
+            if (rbRebFaces.IsChecked.GetValueOrDefault())
+            { init.config.readPoints = false;}
+            else { init.config.readPoints = true;}
+
             //get selected horizon
-            int horizon = (int)this.lbRebSelect.SelectedItem;
+            int horizon = (int)lbRebSelect.SelectedItem;
 
             //passed to json settings
             init.config.horizon = horizon;
 
-            //Processing options
-            if (rbRebFaces.IsChecked == true && rbProcessBlFalse.IsChecked == true)
-            {
-                //Process exisitng TIN
-                init.config.isTin = true;
-            }
-            else
-            {
-                //Calculate TIN from point data
-                init.config.calculateTin = true;
-            }
-
             //Decision if breaklines shall be used
             if (rbProcessBlTrue.IsChecked == true)
-            {
-                init.config.breakline = true;
-            }
-
-            //visual output on the GUI (layer selection) (need to convert to string!)
-            //((MainWindow)Application.Current.MainWindow).tbLayerDtm.Text = horizon.ToString();
+            { init.config.breakline = true; }
+            else { init.config.breakline = false; }
 
             //set task (file opening) to true
-            GuiSupport.taskfileOpening = true;
+            guiLog.taskfileOpening = true;
 
             //[IfcTerrain] check if all task are allready done
-            GuiSupport.readyState();
+            guiLog.readyState();
 
             //[DTM2BIM] check if all task are allready done
-            GuiSupport.rdyDTM2BIM();
+            guiLog.rdyDTM2BIM();
 
-            //check if all task are allready done
-            //MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState()); (TODO)
+            //display short information about imported file to user
+            guiLog.fileReaded();
 
             //gui logging (user information)
             guiLog.setLog("REB settings applyed.");

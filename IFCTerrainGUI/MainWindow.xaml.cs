@@ -61,11 +61,6 @@ namespace IFCTerrainGUI
         }
 
         /// <summary>
-        /// class for logging
-        /// </summary>
-        public Result result { get; set; }
-        
-        /// <summary>
         /// opens documentation
         /// </summary>
         private void tbDocumentation_MouseDown(object sender, MouseButtonEventArgs e)
@@ -73,7 +68,7 @@ namespace IFCTerrainGUI
             //direct Link to GITHUB - Repro so it should be accessable for "all"
             string docuPath = "https://github.com/dd-bim/City2BIM/wiki/IFC-Terrain";
             //opens link
-            System.Diagnostics.Process.Start(docuPath);
+            Process.Start(docuPath);
         }
 
         /// <summary>
@@ -124,7 +119,7 @@ namespace IFCTerrainGUI
                 init.config.destFileName = sfd.FileName;
 
                 //set task (file opening) to true
-                GuiHandler.GuiSupport.selectStoreLocation = true;
+                guiLog.selectStoreLocation = true;
 
                 //check if all task are allready done
                 MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
@@ -139,10 +134,10 @@ namespace IFCTerrainGUI
             else
             {
                 //set task (file opening) to true
-                GuiHandler.GuiSupport.selectStoreLocation = false;
+                guiLog.selectStoreLocation = false;
 
                 //check to deactivate start button
-                MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
+                MainWindowBib.enableStart(guiLog.readyState());
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.warning, "[GUI] Storage location was not set."));
@@ -154,9 +149,8 @@ namespace IFCTerrainGUI
         /// </summary>
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            //json settings set 3D to true [TODO]
-            init.config.is3D = true;
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'is3D'-value to default (true)"));
+            //
+            LogWriter.initLogger(init.config);
 
             //json settings set minDist to 1.0 (default value) [TODO]
             init.config.minDist = 1.0;
@@ -169,11 +163,11 @@ namespace IFCTerrainGUI
 
             string fileType = init.config.fileType.ToString();
             string ifcVersion = init.config.outIFCType.ToString();
-            string shape = init.config.surfaceType.ToString();
+            string shape = init.config.outSurfaceType.ToString();
 
             #region metadata
             //will be executed if user select export of meta data
-            if (init.config.exportMetadataFile)
+            if (init.config.exportMetadataFile.GetValueOrDefault())
             {
                 try
                 {
@@ -183,7 +177,7 @@ namespace IFCTerrainGUI
                     var export187406 = new JProperty("DIN 18740-6", "NOT EXPORTED");
 
                     //check if metadata should be exported according to DIN 91391-2
-                    if (init.config.exportMetadataDin91391)
+                    if (init.config.exportMetadataDin91391.GetValueOrDefault())
                     {
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata]***DIN SPEC 91391-2***"));
                         //Assignment all obligatory variables
@@ -201,7 +195,7 @@ namespace IFCTerrainGUI
                     }
 
                     //check if metadata should be exported according to DIN 18740-6
-                    if (init.config.exportMetadataDin18740)
+                    if (init.config.exportMetadataDin18740.GetValueOrDefault())
                     {
                         //set export string
                         export187406 = new JProperty("DIN 18740-6", JObject.FromObject(init.config18740));
@@ -221,7 +215,7 @@ namespace IFCTerrainGUI
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
+                    Debug.Write(ex.Message.ToString() + Environment.NewLine);
                     LogWriter.Entries.Add(new LogPair(LogType.error, "Metadata - processing: " + ex.Message.ToString()));
                 }
             }
@@ -234,7 +228,11 @@ namespace IFCTerrainGUI
                 LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][JsonSettings] start serializing json"));
 
                 //convert to json object
-                string jExportText = JsonConvert.SerializeObject(init.config, Formatting.Indented);
+                string jExportText = JsonConvert.SerializeObject(init.config, Formatting.Indented, new JsonSerializerSettings
+                {
+                    //ignore null values
+                    NullValueHandling = NullValueHandling.Ignore
+                });
 
                 //export json settings
                 File.WriteAllText(dirPath + @"\config_" + fileType + "_" + ifcVersion + "_" + shape + ".json", jExportText);
@@ -243,7 +241,7 @@ namespace IFCTerrainGUI
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.Write(ex.Message.ToString() + Environment.NewLine);
+                Debug.Write(ex.Message.ToString() + Environment.NewLine);
 
                 LogWriter.Entries.Add(new LogPair(LogType.error, "Json Config - processing: " + ex.Message.ToString()));
             }
@@ -276,7 +274,10 @@ namespace IFCTerrainGUI
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
 
             //start mapping process which currently begins with the selection of the file reader
-            result = conInt.mapProcess(init.config, init.config91391, init.config18740);
+            bool processingResult = conInt.mapProcess(init.config, init.config91391, init.config18740);
+
+            e.Result = processingResult;
+
         }
 
         /// <summary>
@@ -295,12 +296,17 @@ namespace IFCTerrainGUI
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
 
-            //logging stat
-            double numPoints = (double)result.wPoints / (double)result.rPoints;
-            double numFaces = (double)result.wFaces / (double)result.rFaces;
-            guiLog.setLog("Conversion completed!");
-            guiLog.setLog("Results: " + result.wPoints + " points (" + Math.Round(numPoints * 100, 2) + " % )");
-            guiLog.setLog("and "+ result.wFaces + " triangles (" + Math.Round(numFaces * 100, 2) + " %) processed.");
+            //check if processing result is true / false
+            if (e.Result.Equals(true))
+            {
+                guiLog.setLog("Processing successful.");
+                guiLog.resetTasks();
+                init.config = init.clearConfig();
+            }
+            else
+            {
+                guiLog.setLog("Processing failed! -> Please check log file!");
+            }
         }
         #endregion background worker
 

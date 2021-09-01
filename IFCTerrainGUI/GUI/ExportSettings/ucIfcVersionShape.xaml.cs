@@ -134,22 +134,22 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             //GeometricCurveSet GCS
             if (this.ifcGCS.IsSelected)
             {
-                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.GCS;
+                init.config.outSurfaceType = BIMGISInteropLibs.IFC.SurfaceType.GCS;
             }
             //Shell Based Surface Model (SBSM)
             else if (this.ifcSBSM.IsSelected)
             {
-                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.SBSM;
+                init.config.outSurfaceType = BIMGISInteropLibs.IFC.SurfaceType.SBSM;
             }
             //Triangulated Face Set (TFS)
             else if (this.ifcTFS.IsSelected)
             {
-                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.TFS;
+                init.config.outSurfaceType = BIMGISInteropLibs.IFC.SurfaceType.TFS;
             }
             //Triangulated Irregular Network (TIN) [currently not supported]
             else if (this.ifcTIN.IsSelected)
             {
-                init.config.surfaceType = BIMGISInteropLibs.IFC.SurfaceType.TIN;
+                init.config.outSurfaceType = BIMGISInteropLibs.IFC.SurfaceType.TIN;
             }
 
             //check if an item was selected

@@ -39,14 +39,10 @@ namespace GuiHandler.userControler.PostGIS
         /// </summary>
         private void btnProcessPostGis_Click(object sender, RoutedEventArgs e)
         {
-
-            #region logging [TODO]
-            //add logging
-            #endregion logging [TODO]
-
             #region set json settings
             //set "fileType" to PostGIS
             init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS;
+            init.config.fileName = tbDatabase.Text;
 
             //set host
             init.config.host = this.tbHost.Text;
@@ -65,77 +61,62 @@ namespace GuiHandler.userControler.PostGIS
 
             //set schema
             init.config.schema = this.tbSchema.Text;
-
-            //set tin geom (table)
-            init.config.tin_table = this.tbTinTable.Text;
-
-            //set tin geom (column)
-            init.config.tin_column = this.tbTinColumn.Text;
-
-            //set tin id (colum)
-            init.config.tinid_column = this.tbTinIdColumn.Text;
-
-            //set tin id (value)
-            init.config.tin_id = this.tbTinIdValue.Text;
-
-            #region processing options
-            if (rbPostGisFaces.IsChecked == true && rbProcessBlFalse.IsChecked == true)
+            if (chkPrepQuery.IsChecked.GetValueOrDefault())
             {
-                //set is TIN
-                init.config.isTin = true;
-                init.config.calculateTin = false;
-            }
-            else if (rbPostGisFaces.IsChecked == true && rbProcessBlTrue.IsChecked == true)
-            {
-                init.config.recalculateTin = true;
-                init.config.isTin = false;
-            }
-            else if (rbPostGisPoints.IsChecked == true)
-            {
-                init.config.calculateTin = true;
-                init.config.isTin = false;
-            }
-            #endregion processing options
+                //set tin geom (table)
+                init.config.tin_table = this.tbTinTable.Text;
 
-            #region breaklines
-            //check if breaklines should be processed
-            if (rbProcessBlTrue.IsChecked == true)
-            {
-                //breakline will be processed
-                init.config.breakline = true;
+                //set tin geom (column)
+                init.config.tin_column = this.tbTinColumn.Text;
 
-                //set bl table
-                init.config.breakline_table = this.tbBlTable.Text;
+                //set tin id (colum)
+                init.config.tinid_column = this.tbTinIdColumn.Text;
 
-                //set bl column
-                init.config.breakline_column = this.tbBlGeomColumn.Text;
+                //set tin id (value)
+                init.config.tin_id = this.tbTinIdValue.Text;
+                
+                #region breaklines
+                //check if breaklines should be processed
+                if (chkPrepStatementBreakline.IsChecked.GetValueOrDefault())
+                {
+                    //breakline will be processed
+                    init.config.breakline = true;
 
-                //set bl tin id (column)
-                init.config.breakline_tin_id = this.tbBlTinIdColumn.Text;
+                    //set bl table
+                    init.config.breakline_table = tbBlTable.Text;
 
-                //gui feedback
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will be processed";
+                    //set bl column
+                    init.config.breakline_column = this.tbBlGeomColumn.Text;
+
+                    //set bl tin id (column)
+                    init.config.breakline_tin_id = this.tbBlTinIdColumn.Text;
+                }
+                else
+                {
+                    //breakline will not processed
+                    init.config.breakline = false;
+                }
+                #endregion breaklines
             }
             else
             {
-                //breakline will not processed
-                init.config.breakline = false;
-
-                //gui feedback
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = "Breaklines will NOT be processed";
+                if (chkCustomBreakline.IsChecked.GetValueOrDefault())
+                {
+                    init.config.breakline = true;
+                    init.config.queryString = tbQueryString.Text;
+                    init.config.breaklineQueryString = tbBreaklineQueryString.Text;
+                }
+                else
+                {
+                    init.config.breakline = false;
+                    init.config.queryString = tbQueryString.Text;
+                }
             }
-            #endregion breaklines
             #endregion set json settings
 
             #region gui feedback
-            //return info to database
-            //((MainWindow)Application.Current.MainWindow).tbFileName.Text = init.config.database;
-
-            //return info to file type
-            //((MainWindow)Application.Current.MainWindow).tbFileType.Text = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS.ToString() + " request";
-
-            //return info to breaklines
-            //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Breaklines";
+            //display short information about imported file to user
+            guiLog.fileReaded();
 
             //gui logging (user information)
             guiLog.setLog("PostGIS settings applyed.");
@@ -165,35 +146,67 @@ namespace GuiHandler.userControler.PostGIS
             if (this.inputHost && this.inputPort
                 && this.inputUsername && this.inputPassword
                 && this.inputDatabase && this.inputSchema
-                && this.inputGeomTable && this.inputGeomColumn
-                && this.inputTinId && this.inputTinValue)
+               )
             {
-                if (this.rbProcessBlFalse.IsChecked == true)
+                if (chkPrepQuery.IsChecked.GetValueOrDefault())
                 {
-                    //enable process postgis button
-                    this.btnProcessPostGis.IsEnabled = true;
+                    if (inputGeomTable
+                        && inputGeomColumn
+                        && inputTinId
+                        && inputTinValue)
+                    {
+                        if (!chkPrepStatementBreakline.IsChecked.GetValueOrDefault())
+                        {
+                            btnProcessPostGis.IsEnabled = true;
+                        }
+                        else if (chkPrepStatementBreakline.IsChecked.GetValueOrDefault()
+                            && inputBlTable
+                            && inputBlColumn
+                            && inputBlTinId)
+                        {
+                            btnProcessPostGis.IsEnabled = true;
+                        }
+                        else
+                        {
+                            btnProcessPostGis.IsEnabled = false;
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        btnProcessPostGis.IsEnabled = false;
+                        return false;
+                    }
                 }
-                else if ((this.rbProcessBlTrue.IsChecked == true)
-                    && this.inputBlTable
-                    && this.inputBlColumn
-                    && this.inputBlTinId)
+                else if (chkCustomQuery.IsChecked.GetValueOrDefault())
                 {
-                    //enable process postgis button
-                    this.btnProcessPostGis.IsEnabled = true;
+                    if (!chkCustomBreakline.IsChecked.GetValueOrDefault()
+                        && inputUserQuery)
+                    {
+                        btnProcessPostGis.IsEnabled = true;
+                    }
+                    else if(chkCustomBreakline.IsChecked.GetValueOrDefault()
+                        && inputUserQuery
+                        && inputUserBlQuery)
+                    {
+                        btnProcessPostGis.IsEnabled = true;
+                    }
+                    else
+                    {
+                        btnProcessPostGis.IsEnabled = false;
+                    }
                 }
                 else
                 {
-                    this.btnProcessPostGis.IsEnabled = false;
+                    btnProcessPostGis.IsEnabled = false;
+                    return false;
                 }
-                //return
-                return true;
             }
             else
             {
-                //disable process postgis button
-                this.btnProcessPostGis.IsEnabled = false;
-                return false;
+                btnProcessPostGis.IsEnabled = false;
             }
+            return false;
         }
         #region input fields checker
         #region database & tin geom
@@ -266,6 +279,8 @@ namespace GuiHandler.userControler.PostGIS
         private bool inputBlTinId { get; set; }
 
         #endregion breaklines
+        private bool inputUserQuery { get; set; }
+        private bool inputUserBlQuery { get; set; }
         #endregion input fields checker
 
         /// <summary>
@@ -397,59 +412,53 @@ namespace GuiHandler.userControler.PostGIS
                 this.inputBlColumn = false;
             }
 
-            if (!string.IsNullOrEmpty(this.tbBlTinIdColumn.Text))
+            if (!string.IsNullOrEmpty(tbBlTinIdColumn.Text))
             {
-                this.inputBlTinId = true;
+                inputBlTinId = true;
             }
             else
             {
                 this.inputBlTinId = false;
             }
 
+            if (!string.IsNullOrEmpty(tbQueryString.Text))
+            { inputUserQuery = true; } 
+            else { inputUserQuery = false; }
+
+            if (!string.IsNullOrEmpty(tbBreaklineQueryString.Text))
+            { inputUserBlQuery = true; } 
+            else { inputUserBlQuery = false; }
+
             //check if all fields are not empty
             readyState();
             return;
         }
 
-        private void rbProcessBlTrue_Checked(object sender, RoutedEventArgs e)
+        private void chkPrepStatementBreakline_Checked(object sender, RoutedEventArgs e)
         {
-            //try
             readyState();
-
-            //enable textboxes for input
-            this.tbBlTable.IsEnabled = true;
-            this.tbBlGeomColumn.IsEnabled = true;
-            this.tbBlTinIdColumn.IsEnabled = true;
         }
 
-        private void rbProcessBlFalse_Checked(object sender, RoutedEventArgs e)
+        private void chkPrepStatementBreakline_Unchecked(object sender, RoutedEventArgs e)
         {
-            //try
             readyState();
-
-            //disable textboxes for input
-            this.tbBlTable.IsEnabled = false;
-            this.tbBlGeomColumn.IsEnabled = false;
-            this.tbBlTinIdColumn.IsEnabled = false;
         }
 
-        private void btnSample_Click(object sender, RoutedEventArgs e)
+        private void chkCustomQuery_Checked(object sender, RoutedEventArgs e)
         {
-            tbHost.Text = "https://terrain.dd-bim.org/";
-            tbPort.Text = "5432";
-            tbUser.Text = "marcus";
-            tbPwd.Password = "123456";
-            tbDatabase.Text = "tt";
-            tbSchema.Text = "terraintwin";
-            tbTinTable.Text = "tin";
-            tbTinColumn.Text = "geometry";
-            tbTinIdValue.Text = "3";
-            tbTinIdColumn.Text = "tin_id";
+            chkPrepQuery.IsChecked = false;
+            readyState();
         }
 
-        private void btnExcute_Click(object sender, RoutedEventArgs e)
+        private void chkPrepQuery_Checked(object sender, RoutedEventArgs e)
         {
-            //BIMGISInteropLibs.PostGIS.RvtReaderTerrain.RvtReadPostGIS(init.config);
+            chkCustomQuery.IsChecked = false;
+            readyState();
+        }
+
+        private void chkPrepQuery_Unchecked(object sender, RoutedEventArgs e)
+        {
+            readyState();
         }
     }
 }

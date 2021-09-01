@@ -82,7 +82,7 @@ namespace IFCTerrainCommand
                         Console.WriteLine("Want to convert more files? (j/n)");
 
                         //wait for user feedback
-                        restart = System.Console.ReadLine();
+                        restart = Console.ReadLine();
                     }
                 }
                 //for error handling --> user can input file path again
@@ -91,7 +91,7 @@ namespace IFCTerrainCommand
                     Console.WriteLine("Want to try again? ('j' or 'n')");
 
                     //wait for user input
-                    restart = System.Console.ReadLine();
+                    restart = Console.ReadLine();
                 }
             } while (restart.Contains('j') || restart.Contains('J'));
         }
@@ -105,23 +105,34 @@ namespace IFCTerrainCommand
             foreach (string path in files)
             {
                 //read json as text
-                string jText = System.IO.File.ReadAllText(path);
+                string jText = File.ReadAllText(path);
 
                 //create collection from each json file
-                JsonSettings jSettings = JsonConvert.DeserializeObject<JsonSettings>(jText);
+                Config jSettings = JsonConvert.DeserializeObject<Config>(jText);
 
-                //set to default values
-                double? breakDist = 0.0;
-                double? refLatitude = 0.0;
-                double? refLongitude = 0.0;
-                double? refElevation = 0.0;
+                //init logger
+                BIMGISInteropLibs.Logging.LogWriterIfcTerrain.initLogger(jSettings);
 
                 //create new instance of the ConnectionInterface
                 var conn = new ConnectionInterface();
 
                 //start mapping process
                 //TODO: add jSettings for metadata to IfcPropertySet
-                conn.mapProcess(jSettings, null, null, breakDist, refLatitude, refLongitude, refElevation);
+                bool result = conn.mapProcess(jSettings, null, null);
+
+                if (!result)
+                {
+                    Console.WriteLine("[ERROR] Processing failed. Please check log file!"
+                        + Environment.NewLine +"Close application with 'enter'");
+                    Console.ReadLine();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Processing succesful. Please check log file for more information!"
+                        + Environment.NewLine + "Go on application with 'enter'");
+                    Console.ReadLine();
+                }
             }
             //finish programm
             return;

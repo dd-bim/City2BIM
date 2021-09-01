@@ -50,7 +50,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
 
                 //commit transaction
                 txn.Commit();
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "IFC shape representation commited."));
+                LogWriter.Add(LogType.debug, "IFC shape representation commited.");
                 //return shape
                 return shape;
             }

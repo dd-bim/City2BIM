@@ -5,11 +5,11 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using BIMGISInteropLibs.Geometry;
 
-using BIMGISInteropLibs.RvtTerrain;
-
-using BimGisCad.Representation.Geometry.Elementary;
-
 using Autodesk.Revit.UI; //Task dialog
+using geom = NetTopologySuite.Geometries;
+
+
+using BIMGISInteropLibs.IfcTerrain; // for dtm processing result handling
 
 namespace City2RVT.Builder
 {
@@ -35,10 +35,10 @@ namespace City2RVT.Builder
         /// <summary>
         /// function to create DTM via points only
         /// </summary>
-        public void createDTMviaPoints(BIMGISInteropLibs.RvtTerrain.Result result)
+        public void createDTMviaPoints(BIMGISInteropLibs.IfcTerrain.Result result)
         {
             //transform input points to revit
-            var revDTMpts = transPts(result.dtmPoints);
+            var revDTMpts = transPts(result.pointList);
 
             //transaction for surface / dtm creation
             using (Transaction t = new Transaction(doc, "Create TopoSurface"))
@@ -49,30 +49,43 @@ namespace City2RVT.Builder
                 {
                     //create surf var via points
                     var surface = TopographySurface.Create(doc, revDTMpts);
+
+                    if (surface.IsValidObject)
+                    {
+                        //data storage
+                        storeTerrainIDInExtensibleStorage(doc, surface.Id);
+
+                        //pin surface
+                        surface.Pinned = true;
+
+                        //commit transaction
+                        t.Commit();
+
+                        //set to true
+                        importSuccesful = true;
+
+                        //for logging / user feedback
+                        GUI.Cmd_ReadTerrain.numPoints = revDTMpts.Count;
+
+                        return;
+                    }
+                    else
+                    {
+                        t.RollBack();
+
+                        return;
+                    }
                     
-                    //data storage
-                    storeTerrainIDInExtensibleStorage(doc, surface.Id);
-                    
-                    //pin surface
-                    surface.Pinned = true;
-
-                    //commit transaction
-                    t.Commit();
-
-                    //set to true
-                    importSuccesful = true;
-
-                    result.numPoints = revDTMpts.Count;
-
-                    return;
                 }
                 catch(Exception ex)
                 {
                     //TODO logging
 
+                    //Task dialog
+                    TaskDialog.Show("DGM error", ex.Message);
+
                     //set to false
                     importSuccesful = false;
-
 
                     //write exception to console
                     Console.WriteLine(ex);
@@ -88,17 +101,14 @@ namespace City2RVT.Builder
         /// <summary>
         /// method to create DTM using point list and list of facets
         /// </summary>
-        public void createDTM(BIMGISInteropLibs.RvtTerrain.Result result)
+        public void createDTM(BIMGISInteropLibs.IfcTerrain.Result result)
         {
-            //get points from result / exchange class
-            var terrainPoints = result.dtmPoints;
-
             //init facet list
             List<PolymeshFacet> terrainFaces = new List<PolymeshFacet>();
 
-            foreach(BIMGISInteropLibs.RvtTerrain.DtmFace f in result.terrainFaces)
+            foreach(var face in result.triMap)
             {
-                PolymeshFacet pm = new PolymeshFacet(f.p1, f.p2, f.p3);
+                PolymeshFacet pm = new PolymeshFacet(face.triValues[0], face.triValues[1], face.triValues[2]);
                 terrainFaces.Add(pm);
             }
 
@@ -108,14 +118,13 @@ namespace City2RVT.Builder
             try
             {
                 //transform input points to revit
-                revDTMpts = transPts(terrainPoints);
+                revDTMpts = transPts(result.pointList);
             }
             catch (Exception ex)
             {
                 TaskDialog.Show("Error - Transform points", ex.Message);
             }
             
-
             //transaction for surface / dtm creation
             using (Transaction t = new Transaction(doc, "Create TopoSurface"))
             {
@@ -126,22 +135,24 @@ namespace City2RVT.Builder
                     //create surf var via points & faces
                     var surface = TopographySurface.Create(doc, revDTMpts, terrainFaces);
 
-                    //data storage
-                    storeTerrainIDInExtensibleStorage(doc, surface.Id);
-
-                    //pin surface
-                    surface.Pinned = true;
-
                     if (surface.IsValidObject)
                     {
+                        //data storage
+                        storeTerrainIDInExtensibleStorage(doc, surface.Id);
+
+                        //pin surface
+                        surface.Pinned = true;
+
                         //commit transaction
                         t.Commit();
 
                         //set to true
                         importSuccesful = true;
 
-                        result.numPoints = revDTMpts.Count;
-                        result.numFacets = terrainFaces.Count;
+                        //set for logging / user feedback
+                        GUI.Cmd_ReadTerrain.numPoints = revDTMpts.Count;
+                        GUI.Cmd_ReadTerrain.numFacets = terrainFaces.Count;
+
                     }
                     else
                     {
@@ -157,14 +168,14 @@ namespace City2RVT.Builder
                 catch (Exception ex)
                 {
                     //TODO logging
-
-                    //set to false
-                    importSuccesful = false;
-
+                    TaskDialog.Show("DTM error", ex.Message);
 
                     //write exception to console
                     Console.WriteLine(ex);
 
+                    //set to false
+                    importSuccesful = false;
+                    
                     //roll back cause of error
                     t.RollBack();
 
@@ -178,7 +189,7 @@ namespace City2RVT.Builder
         /// <summary>
         /// function to transform points to revit crs
         /// </summary>
-        private List<XYZ> transPts(List<Point3> terrainPoints)
+        private List<XYZ> transPts(List<geom.Point> terrainPoints)
         {
             //init new list
             var revDTMpts = new List<XYZ>();
@@ -234,35 +245,5 @@ namespace City2RVT.Builder
                 trans.Commit();
             }
         }
-        /* Spatial Filter
-        
-        public OGRSpatialFilter SpatialFilter { get => spatialFilter; }
-
-        private OGRSpatialFilter spatialFilter { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void setSpatialFilter(bool isSquare, Document doc, double distance)
-        {
-            //
-            var pbp = utils.getProjectBasePointMeter(doc);
-        
-            //
-            if (isSquare)
-            {
-                this.spatialFilter = new OGRRectangularSpatialFilter(pbp.X, pbp.Y, distance, distance);
-            }
-            else if (!isSquare)
-            {
-                this.spatialFilter = new OGRCircularSpatialFilter(pbp.X, pbp.Y, distance);
-            }
-            else
-            {
-                this.spatialFilter = null;
-            }
-            return;
-        }
-        */
     }
 }

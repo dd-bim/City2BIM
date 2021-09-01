@@ -280,18 +280,18 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             init.config.logeoref = BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef50;
 
             //if custom origin: set values of input fields to json settings
-            if (init.config.customOrigin)
+            if (init.config.customOrigin.GetValueOrDefault())
             {
                 //set to json settings
-                init.config.xOrigin = Double.Parse(tbLoGeoRef50ValueX.Text, CultureInfo.CurrentCulture);
-                init.config.yOrigin = Double.Parse(tbLoGeoRef50ValueY.Text, CultureInfo.CurrentCulture);
-                init.config.zOrigin = Double.Parse(tbLoGeoRef50ValueZ.Text, CultureInfo.CurrentCulture);
+                init.config.xOrigin = double.Parse(tbLoGeoRef50ValueX.Text, CultureInfo.CurrentCulture);
+                init.config.yOrigin = double.Parse(tbLoGeoRef50ValueY.Text, CultureInfo.CurrentCulture);
+                init.config.zOrigin = double.Parse(tbLoGeoRef50ValueZ.Text, CultureInfo.CurrentCulture);
             }
 
             if(chkRoation.IsChecked == true)
             {
                 //parse to double
-                Double.TryParse(tbRotation50.Text, out double rotation);
+                double.TryParse(tbRotation50.Text, out double rotation);
 
                 //set rotation to json settings
                 init.config.trueNorth = rotation;
@@ -305,7 +305,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             if (this.chkScaleLevel50.IsChecked == true)
             {
                 //set rotation to json settings
-                init.config.scale = Double.Parse(tbScaleLevel50.Text);
+                init.config.scale = double.Parse(tbScaleLevel50.Text);
             }
             else
             {
@@ -317,10 +317,10 @@ namespace IFCTerrainGUI.GUI.ExportSettings
             guiLog.setLog("LoGeoRef50 set.");
 
             //set task (logeoref) to true
-            GuiHandler.GuiSupport.selectGeoRef = true;
+            guiLog.selectGeoRef = true;
 
             //check if all tasks are allready done
-            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
+            MainWindowBib.enableStart(guiLog.readyState());
         }
 
         /// <summary>

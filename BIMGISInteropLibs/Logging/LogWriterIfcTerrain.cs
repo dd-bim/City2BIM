@@ -19,43 +19,65 @@ namespace BIMGISInteropLibs.Logging
         public static List<LogPair> Entries { get; set; } = new List<LogPair>();
 
         /// <summary>
-        /// function to write log file
+        /// logger (for use during the runtime)
         /// </summary>
-        /// <param name="path">log file path</param>
-        /// <param name="minLevel">min level for log output</param>
-        public static void WriteLogFile(string path, LogType minLevel, string fileName)
+        private static Serilog.Core.Logger logger { get; set; }
+
+        /// <summary>
+        /// init instance of log writer
+        /// </summary>
+        public static void initLogger(IfcTerrain.Config config)
         {
+            //get file path from config
+            string path = config.logFilePath;
+
+            //init logfile name
+            string logfileName;
+
+            if(config.fileName != null)
+            {
+                //set filepath
+                logfileName = System.IO.Path.GetFileNameWithoutExtension(config.fileName);
+            }
+            else
+            {
+                //set alternativ log file name (e.g. postgis)
+                logfileName = config.fileType.ToString();
+            }
+            //get verbosity level from json settings
+            var minLevel = config.verbosityLevel;
+
             //create level switching var
             var levelSwitch = new Serilog.Core.LoggingLevelSwitch();
 
             //change the minimum level for output in the log file
             switch (minLevel)
             {
-                case (LogType.error):
+                case LogType.error:
                     {
                         levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Verbose;
                         break;
                     }
 
-                case (LogType.warning):
+                case LogType.warning:
                     {
                         levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Warning;
                         break;
                     }
 
-                case (LogType.info):
+                case LogType.info:
                     {
                         levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Information;
                         break;
                     }
 
-                case (LogType.debug):
+                case LogType.debug:
                     {
                         levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Debug;
                         break;
                     }
 
-                case (LogType.verbose):
+                case LogType.verbose:
                     {
                         levelSwitch.MinimumLevel = Serilog.Events.LogEventLevel.Verbose;
                         break;
@@ -63,50 +85,57 @@ namespace BIMGISInteropLibs.Logging
             }
 
             //get current time in wanted format
-            var date = DateTime.Now.ToString("HH_mm_ss");
+            var date = DateTime.Now.ToString("HH_mm");
 
             //create logger
             Serilog.Core.Logger results = new LoggerConfiguration()
                 //write logging file to path --> use fileType and date for log file name
-                .WriteTo.File(path + "/" + fileName + "_" + date + ".log")
-                //change minimum level
+                .WriteTo.File(path + "\\" + logfileName + "_" + date + ".log")
+                //change minimum level (set by config)
                 .MinimumLevel.ControlledBy(levelSwitch)
                 //init logger (have to be at the end of this config)
                 .CreateLogger();
 
-            //start logging protocol 
-            results.Information("Log-Protocol for IFCTerrain");
-            results.Information("--------------------------------------------------");
+            //set logging instance
+            logger = results;
+        }
 
+        /// <summary>
+        /// function to write log file
+        /// </summary>
+        /// <param name="path">log file path</param>
+        /// <param name="minLevel">min level for log output</param>
+        public static void WriteLogFile()
+        {
             //go through each logging message
             foreach (var log in Entries)
             {
                 //differentiation into the individual log types and set output message
                 switch (log.Type)
                 {
-                    case (LogType.error):
+                    case LogType.error:
                         {
-                            results.Error(log.Message);
+                            logger.Error(log.Message);
                             break;
                         }
-                    case (LogType.warning):
+                    case LogType.warning:
                         {
-                            results.Warning(log.Message);
+                            logger.Warning(log.Message);
                             break;
                         }
-                    case (LogType.info):
+                    case LogType.info:
                         {
-                            results.Information(log.Message);
+                            logger.Information(log.Message);
                             break;
                         }
-                    case (LogType.debug):
+                    case LogType.debug:
                         {
-                            results.Debug(log.Message);
+                            logger.Debug(log.Message);
                             break;
                         }
-                    case (LogType.verbose):
+                    case LogType.verbose:
                         {
-                            results.Verbose(log.Message);
+                            logger.Verbose(log.Message);
                             break;
                         }
                 }
@@ -120,7 +149,14 @@ namespace BIMGISInteropLibs.Logging
         /// </summary>
         public static void Add(LogType logType, string message)
         {
-            LogWriterIfcTerrain.Entries.Add(new LogPair(logType, message));
+            //set entrie
+            Entries.Add(new LogPair(logType, message));
+
+            //console logging
+            Console.WriteLine(message);
+
+            //write to log file
+            WriteLogFile();
         }
     }
 }

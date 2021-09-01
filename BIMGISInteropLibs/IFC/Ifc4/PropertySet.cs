@@ -34,50 +34,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             //create entity
             var entity = model.Instances.OfType<IfcSite>().FirstOrDefault();
 
-            #region Examples
-            /* 
-            //create only one property
-            var prop = model.Instances.New<IfcPropertySingleValue>(p =>
-            {
-                p.Name = "TestProperty";
-                p.NominalValue = new IfcLabel("SamplePropertyValue");
-            });
-            //create property set
-            var pSet = model.Instances.New<IfcPropertySet>(pset =>
-            {
-                //title of pset
-                pset.Name = "Metadata DIN SPEC 91391-2"; //ATTENTION: DON'T start with 'Pset_'!
-
-                //description
-                pset.Description = "Storage of metadata according to DIN SPEC 91391-2";
-
-                //add the properties
-                pset.HasProperties.AddRange(new[] {
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "unique Identificator";
-                        p.NominalValue = new IfcLabel(jSettings.id.ToString());
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "Length property";
-                        p.NominalValue = new IfcLengthMeasure(56.0);
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "Number property";
-                        p.NominalValue = new IfcNumericMeasure(789.2);
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "Logical property";
-                        p.NominalValue = new IfcLogical(true);
-                    })
-                });
-            });
-            */
-            #endregion Examples
-
             //create property set
             var pSet = model.Instances.New<IfcPropertySet>(pset =>
             {
@@ -137,9 +93,9 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Meta scheme";
-                        if (!string.IsNullOrEmpty(jSettings.metaScheme))
+                        if (!string.IsNullOrEmpty(jSettings.metadataSchema))
                         {
-                            p.NominalValue = new IfcText(jSettings.metaScheme);
+                            p.NominalValue = new IfcText(jSettings.metadataSchema);
                         }
                     }),
                 });

@@ -62,7 +62,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             init.config91391.projectId = this.tbProjectId.Text;
 
             //#8 meta scheme
-            init.config91391.metaScheme = this.tbMetaShema.Text;
+            init.config91391.metadataSchema = this.tbMetaShema.Text;
 
             //gui logging (user information)
             guiLog.setLog("Metadata DIN 91391-2 adopted!");

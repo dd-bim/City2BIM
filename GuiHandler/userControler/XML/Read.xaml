@@ -26,7 +26,7 @@
         <Button
             x:Name="btnProcessXml"
             Grid.Row="3"
-            Content="Process 'LandXML/ CityGML'" 
+            Content="Apply 'LandXML/ CityGML' file settings" 
             Click="btnProcessXml_Click"
             IsEnabled="False"
             />

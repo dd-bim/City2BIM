@@ -14,6 +14,10 @@ using init = GuiHandler.InitClass;
 
 using rvtRes = BIMGISInteropLibs.RvtTerrain;
 
+//embed for file logging
+using BIMGISInteropLibs.Logging;                                    //acess to logger
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
+
 namespace City2RVT.GUI
 {
     /// <remarks>
@@ -22,6 +26,10 @@ namespace City2RVT.GUI
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Cmd_ReadTerrain : IExternalCommand
     {
+        public static int numPoints { get; set; }
+
+        public static int numFacets { get; set; }
+
         // The main Execute method (inherited from IExternalCommand) must be public
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -38,6 +46,7 @@ namespace City2RVT.GUI
             uC.Grafbat.Read ucGrafbat = new uC.Grafbat.Read();
             uC.XML.Read ucXml = new uC.XML.Read();
             uC.PostGIS.Read ucPostGIS = new uC.PostGIS.Read();
+            uC.GeoJSON.Read ucGeoJson = new uC.GeoJSON.Read();
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();
@@ -45,6 +54,9 @@ namespace City2RVT.GUI
             #region version handler
             //get current revit version
             utils.rvtVersion rvtVersion = utils.GetVersionInfo(doc.Application);
+
+            //logwriter
+            LogWriter.initLogger(init.config);
 
             if (rvtVersion.Equals(utils.rvtVersion.NotSupported))
             {
@@ -63,33 +75,41 @@ namespace City2RVT.GUI
             if(terrainUI.startTerrainImport)
             {
                 //start mapping process
-                var res = BIMGISInteropLibs.RvtTerrain.ConnectionInterface.mapProcess(init.config, rvtRes.Result.processingEnum);
+                var res = rvtRes.ConnectionInterface.mapProcess(init.config);
 
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
 
-                if (rvtRes.Result.processingEnum == rvtRes.Result.conversionEnum.ConversionViaPoints)
+                if (res != null && init.config.readPoints.GetValueOrDefault())
                 {
                     //create dtm (via points)
                     rev.createDTMviaPoints(res);
                 }
-                else
+                else if(res != null && !init.config.readPoints.GetValueOrDefault())
                 {
                     //create dtm via points & faces
                     rev.createDTM(res);
+                }
+                else
+                {
+                    //
+                    TaskDialog.Show("DTM processing", "File reading failed. Please check log file!");
+
+                    return Result.Failed;
                 }
 
                 //error handlings
                 if (rev.terrainImportSuccesful)
                 {
                     dynamic resLog;
-                    if (rvtRes.Result.processingEnum == rvtRes.Result.conversionEnum.ConversionViaPoints)
+                    
+                    if (init.config.readPoints.GetValueOrDefault())
                     {
-                        resLog = "Points: " + res.numPoints;
+                        resLog = "Points: " + numPoints;
                     }
                     else
                     {
-                        resLog = "Points: " + res.numPoints + " Faces: " + res.numFacets;
+                        resLog = "Points: " + numPoints + " Faces: " + numFacets;
                     }
 
                     //reset config

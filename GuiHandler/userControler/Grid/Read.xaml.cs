@@ -58,6 +58,9 @@ namespace GuiHandler.userControler.Grid
 
                 //set JSON settings of file path
                 init.config.filePath = ofd.FileName;
+
+                //set JSON settings of file name
+                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 #region logging
@@ -65,14 +68,6 @@ namespace GuiHandler.userControler.Grid
 
                 guiLog.setLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
-
-                #region gui feedback
-                //here a feedback is given to the gui for the user (info panel)
-                //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
-
-                //conversion to string, because stored as enumeration
-                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = init.config.fileType.ToString();
-                #endregion gui feedback
 
                 //enable grid size field
                 stpGridSize.IsEnabled = true;
@@ -82,7 +77,7 @@ namespace GuiHandler.userControler.Grid
 
                 chkGridBB.IsEnabled = true;
 
-                chkCalculateTin.IsEnabled = true;
+                chkCalculateTin.IsEnabled = false;
             }
         }
 
@@ -145,38 +140,10 @@ namespace GuiHandler.userControler.Grid
         private void btnProcessGrid_Click(object sender, RoutedEventArgs e)
         {
             #region set json settings
-            if (chkCalculateTin.IsChecked == true)
-            {
-                //TIN will be calculated
-                init.config.calculateTin = true;
-
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "TIN will be calculated";
-
-                //set json setting tin
-                init.config.isTin = true;
-            }
-            else
-            {
-                //MESh willbe calculated
-                init.config.calculateTin = false;
-
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).ipFileSpecific.Text = "Grid size [m]";
-
-                //set json settings grid size
-                init.config.gridSize = Convert.ToInt32(tbGridSize.Text);
-
-                //set json setting tin
-                init.config.isTin = false;
-            }
-            if (chkGridBB.IsChecked == true)
+            if (chkGridBB.IsChecked.GetValueOrDefault())
             {
                 //bounding box will be used
                 init.config.bBox = true;
-
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will be used.";
 
                 //set bb north to json
                 init.config.bbNorth = Convert.ToDouble(tbBBNorth.Text);
@@ -192,29 +159,25 @@ namespace GuiHandler.userControler.Grid
             }
             else
             {
-                //set text to info panel
-                //((MainWindow)Application.Current.MainWindow).tbFileSpecific2.Text = "Bounding Box will not be used.";
-
                 //bounding box will not be used
                 init.config.bBox = false;
             }
+
+            init.config.readPoints = true;
             #endregion set json settings
-
-            //input in info panel
-            //((MainWindow)Application.Current.MainWindow).tbFileSpecific.Text = init.config.gridSize.ToString();
-
-            //set text in info panel
-            //((MainWindow)Application.Current.MainWindow).ipFileSpecific2.Text = "Bounding Box";
 
             //error handling
             //set task (file opening) to true
-            GuiSupport.taskfileOpening = true;
+            guiLog.taskfileOpening = true;
 
             //[IfcTerrain] check if all task are allready done
-            GuiSupport.readyState();
+            guiLog.readyState();
 
             //[DTM2BIM] check if all task are allready done
-            GuiSupport.rdyDTM2BIM();
+            guiLog.rdyDTM2BIM();
+
+            //display short information about imported file to user
+            guiLog.fileReaded();
 
             //gui logging (user information)
             guiLog.setLog("Grid settings applyed.");

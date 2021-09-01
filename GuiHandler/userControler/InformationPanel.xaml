@@ -5,27 +5,48 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GuiHandler.userControler"
              mc:Ignorable="d" 
-             d:DesignHeight="185" d:DesignWidth="385">
+             d:DesignHeight="185" d:DesignWidth="385"
+             Name="guiInfo">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <DockPanel Margin="2,4,2,2">
+                <TextBlock Text="File name:" Width="70" Margin="5"/>
+                <TextBox Text="{Binding fileName}" 
+                         VerticalContentAlignment="Center"
+                         IsReadOnly="True"/>
+            </DockPanel>
+            <DockPanel Margin="2">
+                <TextBlock Text="File type:" Width="70" Margin="5"/>
+                <TextBox Text="{Binding fileType}"
+                         VerticalContentAlignment="Center"
+                         IsReadOnly="True"/>
+            </DockPanel>
+            <DockPanel Margin="2">
+                <TextBlock Text="Conversion:" Width="70" Margin="5"/>
+                <CheckBox 
+                    Content="Faces"
+                    VerticalContentAlignment="Center"
+                    IsEnabled="False" 
+                    IsChecked="{Binding faces}" Margin="0,5,5,5"/>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical">
-            <TextBlock x:Name="ipFileName" Text="File name" Height="25" Margin="5,5,0,0" VerticalAlignment="Bottom"/>
-            <TextBlock x:Name="ipFileType" Text="File type" Height="25" Margin="5,5,0,0"/>
-            <TextBlock x:Name="ipLayerDtm" Text="Layer/ Horizon" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-            <TextBlock x:Name="ipFileSpecific" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-            <TextBlock x:Name="ipFileSpecific2" Text="File specific" Height="25" VerticalAlignment="Center" Margin="5,5,0,0"/>
-        </StackPanel>
-
-        <StackPanel x:Name="stPanel" Grid.Column="1">
-            <TextBox x:Name="messageText" Text="{Binding fileName, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Center" IsReadOnly="True"/>
-            <TextBox x:Name="tbFileType" x:FieldModifier="public" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-            <TextBox x:Name="tbLayerDtm" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-            <TextBox x:Name="tbFileSpecific" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
-            <TextBox x:Name="tbFileSpecific2" Height="25" VerticalAlignment="Center" Text="" Margin="0,5,0,0" IsReadOnly="True"/>
+                <CheckBox 
+                    x:Name="chkPoints"
+                    Content="Points"
+                    VerticalContentAlignment="Center"
+                    IsEnabled="False"
+                    IsChecked="{Binding points}" Margin="5"/>
+            </DockPanel>
+            <DockPanel Margin="2">
+                <TextBlock Text="Breaklines:" Width="70" Margin="5"/>
+                <CheckBox VerticalAlignment="Center"
+                          IsEnabled="False"
+                          IsChecked="{Binding breakline}"/>
+                <TextBlock Text="Layer/Horizon:" Width="80" Margin="5"/>
+                <TextBox Text="{Binding breaklineLayer, FallbackValue=' ... '}"
+                         VerticalContentAlignment="Center"
+                         IsReadOnly="True"/>
+            </DockPanel>
+            
         </StackPanel>
     </Grid>
 </UserControl>

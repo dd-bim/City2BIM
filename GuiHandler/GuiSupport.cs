@@ -9,7 +9,9 @@ using System.Windows.Controls; //TextBox
 using System.Windows.Data;
 using System.Windows.Input;
 
-
+using GuiHandler.userControler;
+//shortcut to set json settings
+using init = GuiHandler.InitClass;
 namespace GuiHandler
 {
     public class GuiSupport
@@ -83,7 +85,9 @@ namespace GuiHandler
         /// </summary>
         public static bool selectProcessing { get; set; }
 
-        //
+        /// <summary>
+        /// support function to reset tasks
+        /// </summary>
         public static void resetTasks()
         {
             selectProcessing = false;
@@ -102,7 +106,7 @@ namespace GuiHandler
         /// <param name="message"></param>
         public static void setLog(string message)
         {
-            userControler.UILog.LogMessages.Add(message);
+            UILog.LogMessages.Add(message);
         }
 
         /// <summary>
@@ -110,12 +114,42 @@ namespace GuiHandler
         /// </summary>
         public static void clearLog()
         {
-            userControler.UILog.LogMessages.Clear();
+            UILog.LogMessages.Clear();
         }
 
-        public static void setFileName(string fileName)
+
+        /// <summary>
+        /// unterstützende FUnktion um das info panel zu füllen
+        /// [TODO]: clean up code (this solution is a very bad databinding example)
+        /// </summary>
+        public static void fileReaded()
         {
-            //userControler.InformationPanel.fileName = fileName;
+            InformationPanel.info.LastOrDefault().fileName = init.config.fileName;
+            InformationPanel.info.LastOrDefault().fileType = init.config.fileType.ToString();
+            InformationPanel.info.LastOrDefault().breakline = init.config.breakline.GetValueOrDefault();
+            if (init.config.fileType.Equals(BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat))
+            {
+                InformationPanel.info.LastOrDefault().breaklineLayer = init.config.horizon.ToString();
+            }
+            else if (!string.IsNullOrEmpty(init.config.breakline_layer))
+            {
+                InformationPanel.info.LastOrDefault().breaklineLayer = init.config.breakline_layer;
+            }
+            else
+            {
+                InformationPanel.info.LastOrDefault().breaklineLayer = null;
+            }
+
+            if (init.config.readPoints.GetValueOrDefault())
+            {
+                InformationPanel.info.LastOrDefault().points = init.config.readPoints.GetValueOrDefault();
+                InformationPanel.info.LastOrDefault().faces = false;
+            }
+            else
+            {
+                InformationPanel.info.LastOrDefault().points = false;
+                InformationPanel.info.LastOrDefault().faces = true;
+            }
         }
     }
 }

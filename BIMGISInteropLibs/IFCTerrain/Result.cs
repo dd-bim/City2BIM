@@ -4,12 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//integration of the BimGisCad library
-using BimGisCad.Collections;                        //MESH --> will be removed
-using BimGisCad.Representation.Geometry.Elementary; //LINE
-using BimGisCad.Representation.Geometry.Composed;   //TIN
-
-using IxMilia.Dxf; //for DXF processing
+using NetTopologySuite.Geometries;
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -19,48 +14,74 @@ namespace BIMGISInteropLibs.IfcTerrain
     public class Result
     {
         /// <summary>
-        /// transfer class of an MESH
+        /// internale use
         /// </summary>
-        public Mesh Mesh { get; set; } = null;
+        public DtmConversionType currentConversion { get; set; }
 
         /// <summary>
-        /// transfer class of break edges
+        /// [FILE-READING] transfer point list (for NTS only)
         /// </summary>
-        public Dictionary<int, Line3> Breaklines { get; set; } = null;
+        public List<Point> pointList { get; set; }
 
         /// <summary>
-        /// transfer class for tin
+        /// [FILE-READING] transfer triangles (NTS)
         /// </summary>
-        public Tin Tin { get; set; }
+        public List<Polygon> triangleList { get; set; }
 
         /// <summary>
-        /// Number of points read
+        /// [FILE-READING] transfer breaklines (NTS)
         /// </summary>
-        public int rPoints { get; set; }
+        public List<LineString> lines { get; set; }
 
         /// <summary>
-        /// Number of points processed
+        /// [FILE-WRITING] unqiue list of coordinates in a dtm
         /// </summary>
-        public int wPoints { get; set; }
+        public CoordinateList coordinateList { get; set; } = null;
 
         /// <summary>
-        /// Number of lines read
+        /// [FILE-WRITING] txt export (only internal support)
         /// </summary>
-        public int rLines { get; set; }
+        public GeometryCollection geomStore { get; set; } = null;
 
         /// <summary>
-        /// Number of lines processed
+        /// [FILE-WRITING] mapped int values (point indicies) 
         /// </summary>
-        public int wLines { get; set; }
-        
-        /// <summary>
-        /// Number of lines read
-        /// </summary>
-        public int rFaces { get; set; }
+        public HashSet<Triangulator.triangleMap> triMap { get; set; } = new HashSet<Triangulator.triangleMap>();
 
         /// <summary>
-        /// Number of lines processed
+        /// [IFCTerrain] exchange origin
         /// </summary>
-        public int wFaces { get; set; }
+        public Coordinate origin { get; set; } = null;
+    }
+
+    /// <summary>
+    /// different szenarios for dtm conversion
+    /// </summary>
+    public enum DtmConversionType
+    {
+        /// <summary>
+        /// dtm contains points --> need to do a delauny triangulation
+        /// </summary>
+        points,
+
+        /// <summary>
+        /// dtm contains faces --> conversion of the given faces
+        /// </summary>
+        faces,
+
+        /// <summary>
+        /// dtm contains points & breaklines --> need to do a conforming delauny triangulation
+        /// </summary>
+        points_breaklines,
+
+        /// <summary>
+        /// dtm contains faces & breaklines --> need to do a conforming delauny triangulation
+        /// </summary>
+        faces_breaklines,
+
+        /// <summary>
+        /// dtm contains index map (delauany triangulation is not necessary) (no breakline processing)
+        /// </summary>
+        conversion
     }
 }

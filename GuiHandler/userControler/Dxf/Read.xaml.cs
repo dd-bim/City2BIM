@@ -105,16 +105,9 @@ namespace GuiHandler.userControler.Dxf
                 //MainWindowBib.setGuiLog("File selected! --> Please make settings and confirm.");
                 #endregion logging
 
-                #region gui feedback
-                //here a feedback is given to the gui for the user (info panel)
-                support.setFileName(init.config.fileName);
+               
 
-
-
-                //conversion to string, because stored as enumeration
-                //((MainWindow)Application.Current.MainWindow).tbFileType.Text = MainWindow.jSettings.fileType.ToString();
-
-                #endregion gui feedback
+                
                 return; //do not add anything after this
             }
             return; //do not add anything after this
@@ -136,7 +129,7 @@ namespace GuiHandler.userControler.Dxf
         private void BackgroundWorkerDxf_DoWork(object sender, DoWorkEventArgs e)
         {
             //background task: file reading
-            e.Result = ReaderTerrain.ReadFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
+            e.Result = ReaderTerrain.readFile((string)e.Argument, out this.dxfFile) ? (string)e.Argument : "";
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - started!"));
         }
 
@@ -170,7 +163,7 @@ namespace GuiHandler.userControler.Dxf
                 foreach (var l in this.dxfFile.Layers)
                 {
                     //do not list, if layer is empty
-                    if (l.Handle != 0)
+                    if (l.Handle != null)
                     {
                         //list layer name to list boxes (so the user can select a layer (or more))
                         this.lbDxfDtmLayer.Items.Add(l.Name);
@@ -337,45 +330,39 @@ namespace GuiHandler.userControler.Dxf
                     init.config.breakline = false;
                 }
 
+                //case distinction --> only the point data are read from a DXF file
+                if (rbDxfFaces.IsChecked != true)
+                {
+                    init.config.readPoints = true;
+                }
+                else
+                {
+                    init.config.readPoints = false;
+                }
+
                 //Selection accordingly in isTin (set json settings) is needed at the ConnectionInterface to decide which dxf reader to use
                 /*
                  * Should it be necessary to implement more distinctions, then the case distinctions should run via switch cases 
                  * and be converted in the JSON settings via an enumeration.
                  */
                 //Processing options
-                if (rbDxfFaces.IsChecked == true && rbDxfBreaklinesFalse.IsChecked == true)
-                {
-                    //processing faces (true)
-                    init.config.isTin = true;
-                }
-                else if (rbDxfFaces.IsChecked == true && rbDxfBreaklinesTrue.IsChecked == true)
-                {
-                    init.config.recalculateTin = true;
-                    init.config.isTin = false;
-                }
-                else if (rbDxfPoints.IsChecked == true)
-                {
-                    init.config.calculateTin = true;
-                    init.config.isTin = false;
-                }
-                else
-                {
-                    //processing points / lines (false)
-                    init.config.isTin = false;
-                }
+
 
                 //set task (file opening) to true
-                GuiSupport.taskfileOpening = true;
+                support.taskfileOpening = true;
 
                 //[IfcTerrain] check if all task are allready done
-                GuiSupport.readyState();
+                support.readyState();
 
                 //[DTM2BIM] check if all task are allready done
-                GuiSupport.rdyDTM2BIM();
+                support.rdyDTM2BIM();
 
                 //TODO enable start button
 
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Selection (file reader) done and applyed by user."));
+
+                //display short information about imported file to user
+                support.fileReaded();
 
                 //gui logging (user information)
                 support.setLog("DXF settings applyed.");

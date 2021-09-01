@@ -115,20 +115,16 @@ namespace City2RVT.GUI
             #endregion IFC Export panel
 
             #region survPlan panel
-
-            // Code für Integrieren von Surveyorsplan2Revit. Klappt aber noch nicht, daher für Release auskommentiert.
-            //----------------------------------------------------------------------
-            
-            RibbonPanel panelSurveyorsPlan = application.CreateRibbonPanel(tabName, "Surveyorsplan2Revit");
-
-            PushButton buttonsurvPlan = panelSurveyorsPlan.AddItem(new PushButtonData("Surveyorsplan2Revit", "Surveyorsplan2Revit", thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.importLageplan")) as PushButton;
-            buttonsurvPlan.ToolTip = "Show and edit properties.";
+            RibbonPanel panelSurveyorsPlan = application.CreateRibbonPanel(tabName, "Surveyorsplan2BIM");
+            PushButton buttonsurvPlan = panelSurveyorsPlan.AddItem(new PushButtonData("SurveyorsplanImporter", "Import Surveyorsplan", thisAssemblyPath, "City2RVT.GUI.Cmd_Surveyorsplan")) as PushButton;
+            buttonsurvPlan.ToolTip = "Import functionality for Surveyorsplan data.";
             buttonsurvPlan.LargeImage = getBitmapFromResx(ResourcePictures.Vermesser32);
 
+            /*
             PushButton buttonattribute = panelSurveyorsPlan.AddItem(new PushButtonData("Attribute", "Attribute", thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.Attributes")) as PushButton;
             buttonattribute.ToolTip = "Show and edit properties.";
             buttonattribute.LargeImage = getBitmapFromResx(ResourcePictures.Attribute32);
-            
+            */
             #endregion survPlan panel
 
             #region DataCat panel

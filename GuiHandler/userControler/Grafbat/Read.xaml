@@ -15,7 +15,7 @@
             <RowDefinition Height="45"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="70"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="140"/>
             <RowDefinition/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
@@ -39,19 +39,10 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     IsChecked="True"
-                    ToolTip="Processing takes place via triangles (must be included in the OUT file)">
+                    ToolTip="Processing takes place via triangles (must be included in the OUT file)"
+                    Unchecked="rbGraftbatReadFaces_Unchecked">
                     <RadioButton.Content>
                         <TextBlock Text="... Triangles" TextWrapping="Wrap" />
-                    </RadioButton.Content>
-                </RadioButton>
-                <RadioButton
-                    x:Name="rbGraftbatReadPointsLines"
-                    HorizontalAlignment="Center"
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    IsEnabled="False">
-                    <RadioButton.Content>
-                        <TextBlock Text="... Points/ Lines" TextWrapping="Wrap"/>
                     </RadioButton.Content>
                 </RadioButton>
 
@@ -60,9 +51,9 @@
                     HorizontalAlignment="Center"
                     Grid.Column="2"
                     VerticalAlignment="Center"
-                    IsEnabled="False"
-                    ToolTip="currently not supported"
-                    Visibility="Hidden">
+                    Checked="rbGraftbatReadPoints_Checked"
+                    Unchecked="rbGraftbatReadPoints_Unchecked"
+                    ToolTip="Please note: a delaunay or constrained delaunay triangulation will be done!">
                     <RadioButton.Content>
                         <TextBlock Text="... Points" TextWrapping="Wrap"/>
                     </RadioButton.Content>
@@ -73,7 +64,7 @@
         <!-- point type filter -->
         <GroupBox
             x:Name="gbPointtypes"
-            Grid.Row="2"
+            Grid.Row="3"
             Header="Pointtypes"
             IsEnabled="False">
             <Grid>
@@ -83,7 +74,9 @@
                 </Grid.ColumnDefinitions>
                 <CheckBox
                     x:Name="chkGrafbatFilteringPointtypes"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Checked="chkGrafbatFilteringPointtypes_Checked"
+                    Unchecked="chkGrafbatFilteringPointtypes_Unchecked">
                     <TextBlock
                         Text="Process only following point types (e.g.: 20,30)"
                         TextWrapping="Wrap">
@@ -99,20 +92,25 @@
 
         <!-- horizon filter -->
         <GroupBox
-            Grid.Row="3"
-            Header="Horizon"
-            IsEnabled="False">
+            x:Name="gbHorizon"
+            Grid.Row="2"
+            Header="Horizon">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <RadioButton x:Name="rbGrafbatAllHorizons">
+                <RadioButton x:Name="rbGrafbatAllHorizons" 
+                             IsChecked="True">
                     <TextBlock Text="Process all horizons" TextWrapping="Wrap"/>
                 </RadioButton>
 
-                <RadioButton x:Name="rbGrafbatHorizonSelect" Grid.Column="1" ToolTip="Please insert the number of the horizon into the textfield!">
+                <RadioButton x:Name="rbGrafbatHorizonSelect" 
+                             Grid.Column="1" 
+                             ToolTip="Please insert the number of the horizon into the textfield!"
+                             Checked="rbGrafbatHorizonSelect_Checked"
+                             Unchecked="rbGrafbatHorizonSelect_Unchecked">
                     <TextBlock Text="Process only horizon" TextWrapping="Wrap"/>
                 </RadioButton>
 
@@ -124,39 +122,11 @@
             </Grid>
         </GroupBox>
 
-        <!-- point status -->
-        <GroupBox
-            Grid.Row="4"
-            Header="Point status"
-            IsEnabled="False">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <TextBlock 
-                    x:Name="tbGraftbatPointStatusHint"
-                    Grid.Column="0"
-                    Text="Ignore status 'invalid':">
-                </TextBlock>
-                <CheckBox 
-                    Grid.Column="1"
-                    Content="position"
-                    HorizontalAlignment="Center"/>
-                <CheckBox 
-                    Grid.Column="2"
-                    Content="height"
-                    HorizontalAlignment="Center"/>
-            </Grid>
-        </GroupBox>
-
         <!-- break edge processing -->
         <GroupBox
             Grid.Column="1"
-            Grid.Row="5"
-            Header="Breaklines"
-            IsEnabled="False">
+            Grid.Row="4"
+            Header="Breaklines">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -171,7 +141,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock x:Name="tbGraftbatBreaklineQuestion" Text="Process Breaklines?" VerticalAlignment="Center" Grid.Row="1"/>
-                <RadioButton x:Name="rbGraftbatBreaklinesYes" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Content="Yes"/>
+                <RadioButton x:Name="rbGraftbatBreaklinesYes" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Content="Yes" Checked="rbGraftbatBreaklinesYes_Checked" Unchecked="rbGraftbatBreaklinesYes_Unchecked"/>
                 <RadioButton x:Name="rbGraftbatBreaklinesNo" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Content="No" IsChecked="True"/>
                 <TextBlock x:Name="tbGraftbatBreaklinesHint" Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Center" Text="Insert GEOgraf types of breaklines (e.g.: 100,200,...)"/>
                 <TextBox x:Name="tbGraftbatBreaklinesInput" Grid.Row="3" Grid.ColumnSpan="3" IsEnabled="False"/>
