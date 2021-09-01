@@ -402,6 +402,16 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// geometry type to set the right reader
         /// </summary>
         public GeometryType geometryType { get; set; }
+
+        /// <summary>
+        /// file path to breakline file (JSON)
+        /// </summary>
+        public string breaklineFile { get; set; }
+
+        /// <summary>
+        /// breakline geometry type to specific reading
+        /// </summary>
+        public GeometryType breaklineGeometryType { get; set; }
         #endregion GeoJSON
         #endregion
     }
@@ -412,7 +422,12 @@ namespace BIMGISInteropLibs.IfcTerrain
 
         MultiPolygon,
 
-        GeometryCollection
+        GeometryCollection,
+
+        MultiLineString,
+
+        FeatureCollection
+
     }
 
     /// <summary>

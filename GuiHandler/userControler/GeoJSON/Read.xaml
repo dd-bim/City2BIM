@@ -17,7 +17,7 @@
         
         <!-- add button to read file -->
         <Button x:Name="btnReadGeoJson"
-                Content="Read 'GeoJSON'"
+                Content="Read 'GeoJSON' data"
                 Click="btnReadGeoJson_Click"/>
 
         <!-- add button to apply settings -->
@@ -39,6 +39,36 @@
                     VerticalContentAlignment="Center"
                     ItemsSource="{Binding}"
                     SelectionChanged="cbGeomType_SelectionChanged"
+                    IsEnabled="False">
+                </ComboBox>
+            </DockPanel>
+            
+            <!-- breakline data section -->
+            <DockPanel 
+                Visibility="Hidden"
+                Margin="0,15,0,0">
+                <CheckBox 
+                    x:Name="chkBreakline"
+                    Content="Breakline" VerticalContentAlignment="Center" Margin="5,0"/>
+                <Button 
+                    x:Name="btnOpenBreaklineFile"
+                    Content="Read 'GeoJSON' breakline file"
+                    IsEnabled="{Binding ElementName=chkBreakline, Path=IsChecked}"
+                    Click="btnOpenBreaklineFile_Click"/>
+            </DockPanel>
+            
+            
+            <DockPanel
+                Visibility="Hidden"
+                Margin="0,5,0,5">
+                <TextBlock 
+                    Text="Geometry type: "
+                    VerticalAlignment="Center"/>
+                <ComboBox
+                    x:Name="cbGeomTypeBreakline"
+                    VerticalContentAlignment="Center"
+                    ItemsSource="{Binding}"
+                    SelectionChanged="cbGeomTypeBreakline_SelectionChanged"
                     IsEnabled="False">
                 </ComboBox>
             </DockPanel>

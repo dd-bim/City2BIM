@@ -13,7 +13,8 @@ using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 using Newtonsoft.Json;
-using GeoJSON.Net.Geometry;
+
+using geom = GeoJSON.Net.Geometry;
 using gn = GeoJSON.Net;
 using NTSGeometry = NetTopologySuite.Geometries;
 
@@ -26,9 +27,6 @@ namespace BIMGISInteropLibs.GeoJSON
     {
         public static Result readGeoJson(Config config)
         {
-            //
-            config.fileName = Path.GetFileName(config.filePath);
-
             LogWriter.Add(LogType.verbose, "[GeoJSON] start reading...");
 
             //init result
@@ -42,8 +40,7 @@ namespace BIMGISInteropLibs.GeoJSON
             LogWriter.Add(LogType.info, "[GeoJSON] parsing geometry type: " + config.geometryType);
 
             //read geojson as string
-            var geojsonString = File.ReadAllText(config.filePath);
-
+            string geojsonString = File.ReadAllText(config.filePath);
 
             switch (config.geometryType)
             {
@@ -52,7 +49,7 @@ namespace BIMGISInteropLibs.GeoJSON
                     dynamic multiPoint;
                     try
                     {
-                        multiPoint = JsonConvert.DeserializeObject<MultiPoint>(geojsonString);
+                        multiPoint = JsonConvert.DeserializeObject<geom.MultiPoint>(geojsonString);
                     }
                     catch (Exception ex)
                     {
@@ -85,7 +82,7 @@ namespace BIMGISInteropLibs.GeoJSON
                     dynamic multiPolygon;
                     try
                     {
-                        multiPolygon = JsonConvert.DeserializeObject<MultiPolygon>(geojsonString);
+                        multiPolygon = JsonConvert.DeserializeObject<geom.MultiPolygon>(geojsonString);
                     }
                     catch (Exception ex)
                     {
@@ -116,7 +113,7 @@ namespace BIMGISInteropLibs.GeoJSON
                     dynamic geometryCollection;
                     try
                     {
-                        geometryCollection = JsonConvert.DeserializeObject<GeometryCollection>(geojsonString);
+                        geometryCollection = JsonConvert.DeserializeObject<geom.GeometryCollection>(geojsonString);
                     }
                     catch(Exception ex)
                     {
@@ -134,7 +131,7 @@ namespace BIMGISInteropLibs.GeoJSON
                     {
                         if (geom.Type == gn.GeoJSONObjectType.Polygon)
                         {
-                            readPolygon(points, triMap, geom as Polygon);
+                            readPolygon(points, triMap, geom as geom.Polygon);
                         }
                     }
                     
@@ -152,10 +149,33 @@ namespace BIMGISInteropLibs.GeoJSON
             return null;
         }
 
+        
+        public static bool readBreakline(Config config, Result result)
+        {
+            List<NTSGeometry.LineString> lines = new List<NTSGeometry.LineString>();
+            
+            if (File.Exists(config.breaklineFile))
+            {
+                string breaklineDataString = File.ReadAllText(config.breaklineFile);
+
+                switch (config.breaklineGeometryType)
+                {
+                    case GeometryType.FeatureCollection:
+
+                        break;
+
+                    case GeometryType.MultiPolygon:
+
+                        break;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// convert point (GeoJSON) to point (NTS)
         /// </summary>
-        private static NTSGeometry.Point pointToNts(Point p)
+        private static NTSGeometry.Point pointToNts(geom.Point p)
         {
             var x = p.Coordinates.Longitude;
             var y = p.Coordinates.Latitude;
@@ -167,7 +187,7 @@ namespace BIMGISInteropLibs.GeoJSON
         /// <summary>
         /// read polygon
         /// </summary>
-        private static void readPolygon(HashSet<NTSGeometry.Point> points, HashSet<Triangulator.triangleMap> triMap, Polygon polygon)
+        private static void readPolygon(HashSet<NTSGeometry.Point> points, HashSet<Triangulator.triangleMap> triMap, geom.Polygon polygon)
         {
             var lineString = polygon.Coordinates[0];
 
@@ -183,7 +203,7 @@ namespace BIMGISInteropLibs.GeoJSON
                 int i = 0;
                 do
                 {
-                    Point p = new Point(lineString.Coordinates[i]);
+                    geom.Point p = new geom.Point(lineString.Coordinates[i]);
                     var pt = pointToNts(p);
 
                     int j = terrain.addPoint(points, pt);

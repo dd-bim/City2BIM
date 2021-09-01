@@ -46,6 +46,7 @@ namespace City2RVT.GUI
             uC.Grafbat.Read ucGrafbat = new uC.Grafbat.Read();
             uC.XML.Read ucXml = new uC.XML.Read();
             uC.PostGIS.Read ucPostGIS = new uC.PostGIS.Read();
+            uC.GeoJSON.Read ucGeoJson = new uC.GeoJSON.Read();
 
             //init main window
             Terrain_ImportUI terrainUI = new Terrain_ImportUI();

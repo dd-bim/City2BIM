@@ -29,7 +29,14 @@ namespace BIMGISInteropLibs.IfcTerrain
             LogWriter.Add(LogType.info, "Processing-Protocol for IFCTerrain");
             LogWriter.Add(LogType.info, "--------------------------------------------------");
             LogWriter.Add(LogType.verbose, "Mapping process started.");
-            
+
+            //check if file exists otherwise return allready here false
+            if (!File.Exists(config.filePath)) 
+            {
+                LogWriter.Add(LogType.error, "[READER] File not found at path: " + config.filePath);
+                return false;
+            }
+
             //The processing is basically done by a reader and a writer (these are included in the corresponding regions)
             #region reader
             //initalize transfer class
@@ -74,6 +81,15 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.GeoJSON:
                     result = GeoJSON.ReaderTerrain.readGeoJson(config);
                     break;
+                    //breakline processing (first check and with the method breaklines will be processed)
+                    /*
+                    if (config.breakline.GetValueOrDefault()
+                        && GeoJSON.ReaderTerrain.readBreakline(config, result))
+                    {
+                        LogWriter.Add(LogType.info, "[READER] Breaklines are considered!");
+                    };
+                    break;
+                    */
             }
 
             //error handling

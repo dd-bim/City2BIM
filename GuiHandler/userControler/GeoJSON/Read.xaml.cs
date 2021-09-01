@@ -27,11 +27,19 @@ namespace GuiHandler.userControler.GeoJSON
             InitializeComponent();
 
             //bind conversion types
-            cbGeomType.ItemsSource = new string[]{
-                    BIMGISInteropLibs.IfcTerrain.GeometryType.MultiPoint.ToString(),
-                    BIMGISInteropLibs.IfcTerrain.GeometryType.MultiPolygon.ToString(),
-                    BIMGISInteropLibs.IfcTerrain.GeometryType.GeometryCollection.ToString()
-                };
+            cbGeomType.ItemsSource = new string[]
+            {
+                GeometryType.MultiPoint.ToString(),
+                GeometryType.MultiPolygon.ToString(),
+                GeometryType.GeometryCollection.ToString()
+            };
+
+            cbGeomTypeBreakline.ItemsSource = new string[]
+            {
+                GeometryType.MultiLineString.ToString(),
+                GeometryType.MultiPolygon.ToString(),
+                GeometryType.FeatureCollection.ToString()
+            };
         }
         /// <summary>
         /// Event to handle file dialog and set file
@@ -74,6 +82,16 @@ namespace GuiHandler.userControler.GeoJSON
                 init.config.readPoints = false;
             }
 
+            //breakline processing
+            if (chkBreakline.IsChecked.GetValueOrDefault())
+            {
+                init.config.breakline = true;
+            }
+            else
+            {
+                init.config.breakline = false;
+            }
+
             //
             guiLog.taskfileOpening = true;
             
@@ -100,6 +118,35 @@ namespace GuiHandler.userControler.GeoJSON
                 guiLog.setLog("Geometry type set to: " + init.config.geometryType);
 
                 btnProcessGeoJson.IsEnabled = true;
+            }
+        }
+
+        private void cbGeomTypeBreakline_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(cbGeomTypeBreakline.SelectedIndex != -1)
+            {
+                init.config.breaklineGeometryType = (GeometryType)Enum.Parse(typeof(GeometryType), cbGeomTypeBreakline.SelectedItem.ToString());
+                guiLog.setLog("Breakline geometry type set to: " + init.config.breaklineGeometryType);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void btnOpenBreaklineFile_Click(object sender, RoutedEventArgs e)
+        {
+            //create new file dialog
+            OpenFileDialog ofd = new OpenFileDialog();
+            //set filter
+            ofd.Filter = "GeoJSON files *.GeoJSON|*.geojson|Json *.json|*.json";
+
+            //task to run when file has been selected
+            if (ofd.ShowDialog().GetValueOrDefault())
+            {
+                //set file path
+                init.config.breaklineFile = ofd.FileName;
+
+                cbGeomTypeBreakline.IsEnabled = true;
             }
         }
     }

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//BimGisCad
-using BimGisCad.Representation.Geometry.Elementary; //Points, Lines, ...
-
 //used for result class (may update to seperate class for rvtTerrain)
 using BIMGISInteropLibs.IfcTerrain;
+
+using geojson = BIMGISInteropLibs.GeoJSON.ReaderTerrain;
 
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
@@ -62,6 +61,10 @@ namespace BIMGISInteropLibs.RvtTerrain
 
                 case IfcTerrainFileType.REB:
                     resTerrain = REB.ReaderTerrain.readDtm(config);
+                    break;
+
+                case IfcTerrainFileType.GeoJSON:
+                    resTerrain = geojson.readGeoJson(config);
                     break;
             }
 

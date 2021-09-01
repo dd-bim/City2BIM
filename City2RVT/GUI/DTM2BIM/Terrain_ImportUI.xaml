@@ -9,6 +9,7 @@
         xmlns:Grafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
         xmlns:Xml="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
         xmlns:PostGIS="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
+        xmlns:GeoJSON="clr-namespace:GuiHandler.userControler.GeoJSON;assembly=GuiHandler"
         xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
         xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
         mc:Ignorable="d" 
@@ -66,6 +67,13 @@
                 <!-- user controler reb-->
                 <Reb:Read/>
             </TabItem>
+
+            <TabItem Header="GeoJSON (JSON)">
+                <!-- [TODO]: check reading doesnt parse to diff obj types
+                user controler geojson -->
+                <GeoJSON:Read/>
+            </TabItem>
+          
         </TabControl>
 
         <!-- import button (for execution)-->
@@ -107,8 +115,10 @@
             Grid.Row="2"
             Grid.RowSpan="2"
             Grid.Column="1"
-            Header="Metadata"
+            Header="Information panel"
             >
+            <uC:InformationPanel/>
+
         </GroupBox>
 
         <!-- logging -->
