@@ -41,7 +41,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// daten arten (raster dataset)
         /// </summary>
         REB,
-
         /// <summary>
         /// GeoJSON
         /// </summary>
@@ -62,7 +61,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public string filePath { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
         /// <summary>
         /// name of the file to be converted (without path)
         /// </summary>
@@ -243,7 +241,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         #endregion
 
         #endregion unspecific file attributes
-
         #region file specific attributes
 
         //for dxf processing
@@ -270,12 +267,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         //for elevation grid processing
         #region GRID
         /// <summary>
-        /// The distance between points in the grid input file
-        /// </summary>
-        public int? gridSize { get; set; }
-
-        #region BoundingBox
-        /// <summary>
         /// Decision whether BoundingBox should be processed (yes = true)
         /// </summary>
         public bool? bBox { get; set; }
@@ -299,9 +290,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// WEST value of the bounding box
         /// </summary>
         public double? bbWest { get; set; }
-
-
-        #endregion
         #endregion
 
         //for grafbat processing

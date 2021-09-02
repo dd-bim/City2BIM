@@ -33,7 +33,11 @@ namespace BIMGISInteropLibs.IFC
         Step, 
         ifcXML, 
         ifcZip,
-        text = 17
+        //only cmd export options
+        wkt = 17,
+        wkb = 18,
+        gml2 = 19,
+        gml3 = 20
     }
 
     /// <summary>
