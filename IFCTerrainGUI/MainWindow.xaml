@@ -149,7 +149,7 @@
             <TabItem 
                 x:Name="tabPageShape"
                 Header="Shape (shp)"
-                IsEnabled="False">
+                Visibility="Collapsed">
                 
             </TabItem>
             <!-- more tabs (if needed) have to be added here-->

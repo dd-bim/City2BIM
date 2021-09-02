@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel; //interface --> property changed
+using System.Collections.ObjectModel; //observable collection
 
 using System.Text.RegularExpressions; //include to be able to restrict textbox entries
 using Microsoft.Win32; //used for file handling
@@ -33,9 +35,20 @@ namespace GuiHandler.userControler.Grid
     /// </summary>
     public partial class Read : UserControl
     {
+        public ObservableCollection<checker> checker { get; set; }
+
         public Read()
         {
             InitializeComponent();
+
+            checker = new ObservableCollection<checker>();
+
+            ucGrid.DataContext = checker;
+            
+            checker.Add(new checker());
+
+            
+            
         }
 
         /// <summary>
@@ -66,72 +79,11 @@ namespace GuiHandler.userControler.Grid
                 #region logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
-                guiLog.setLog("File selected! --> Please make settings and confirm.");
+                guiLog.setLog("File selected! --> Please make settings and apply.");
                 #endregion logging
 
-                //enable grid size field
-                stpGridSize.IsEnabled = true;
-
-                //set default value
-                tbGridSize.Text = "1";
-
                 chkGridBB.IsEnabled = true;
-
-                chkCalculateTin.IsEnabled = false;
             }
-        }
-
-        /// <summary>
-        /// will be executed as soon as the checkbox is selected
-        /// </summary>
-        private void chkGridBB_Checked(object sender, RoutedEventArgs e)
-        {
-            //enable input fields for bounding box
-            tbBBNorth.IsEnabled = tbBBEast.IsEnabled = tbBBSouth.IsEnabled = tbBBWest.IsEnabled = true;
-
-            //diable process button grid --> user need to input in bounding box
-            btnProcessGrid.IsEnabled = false;
-
-            //check if all textboxes may allready are filled 
-            readyCheck();
-        }
-
-        /// <summary>
-        /// will be executed as soon as the checkbox is not selected anymore
-        /// </summary>
-        private void chkGridBB_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //disable input fields for bounding box
-            tbBBNorth.IsEnabled = tbBBEast.IsEnabled = tbBBSouth.IsEnabled = tbBBWest.IsEnabled = false;
-
-            //check all textboxes
-            readyCheck();
-        }
-
-        /// <summary>
-        /// will be executed as soon as the checkbox is selected
-        /// </summary>
-        private void chkCalculateTin_Checked(object sebder, RoutedEventArgs e)
-        {
-            //Reset grid size text field
-            tbGridSize.Text = "";
-            tbGridSize.IsEnabled = false;
-
-            //Check all textboxes
-            readyCheck();
-        }
-
-        /// <summary>
-        /// will be executed as soon as the checkbox is not selected anymore
-        /// </summary>
-        private void chkCalculateTin_Unchecked(object sebder, RoutedEventArgs e)
-        {
-            //Reset grid size text field
-            tbGridSize.Text = "1";
-            tbGridSize.IsEnabled = true;
-
-            //Check all textboxes
-            readyCheck();
         }
 
         /// <summary>
@@ -144,18 +96,6 @@ namespace GuiHandler.userControler.Grid
             {
                 //bounding box will be used
                 init.config.bBox = true;
-
-                //set bb north to json
-                init.config.bbNorth = Convert.ToDouble(tbBBNorth.Text);
-
-                //set bb north to json
-                init.config.bbEast = Convert.ToDouble(tbBBEast.Text);
-
-                //set bb north to json
-                init.config.bbSouth = Convert.ToDouble(tbBBSouth.Text);
-
-                //set bb north to json
-                init.config.bbWest = Convert.ToDouble(tbBBWest.Text);
             }
             else
             {
@@ -181,155 +121,12 @@ namespace GuiHandler.userControler.Grid
 
             //gui logging (user information)
             guiLog.setLog("Grid settings applyed.");
-
-            //check if all task are allready done
-            //TODO
         }
-
-        /// <summary>
-        /// Check that all required tb fields are not empty (via booleans)
-        /// </summary>
-        private bool readyCheck()
-        {
-            //if all tbs checker set to true
-            if (bbNorth && bbEast && bbSouth && bbWest && gridSize && (validationError == 0))
-            {
-                //enable process grid button
-                btnProcessGrid.IsEnabled = true;
-                //return
-                return true;
-            }
-            else if (gridSize && chkGridBB.IsChecked == false)
-            {
-                //enable process grid button
-                btnProcessGrid.IsEnabled = true;
-                //return
-                return true;
-            }
-            else if (chkCalculateTin.IsChecked == true)
-            {
-                btnProcessGrid.IsEnabled = true;
-                return true;
-            }
-            else
-            {
-                //disable process grid button
-                btnProcessGrid.IsEnabled = false;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// boolean value - to check if tb NORTH is not empty
-        /// </summary>
-        private bool bbNorth { get; set; }
-
-        /// <summary>
-        /// boolean value - to check if tb EAST is not empty
-        /// </summary>
-        private bool bbEast { get; set; }
-
-        /// <summary>
-        /// boolean value - to check if tb SOUTH is not empty
-        /// </summary>
-        private bool bbSouth { get; set; }
-
-        /// <summary>
-        /// boolean value - to check if tb WEST is not empty
-        /// </summary>
-        private bool bbWest { get; set; }
-
-        /// <summary>
-        /// boolean value - to check if tb GRID SIZE is not empty
-        /// </summary>
-        private bool gridSize { get; set; }
-
-        /// <summary>
-        /// counter of validation errors
-        /// </summary>
-        private int validationError { get; set; }
-
-        #region textbox changes to check if all four values are set
-        /// <summary>
-        /// as soon as a text field is changed, this function is called up
-        /// </summary>
-        private void tbBB_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //check if tb north is not empty
-            if (!string.IsNullOrEmpty(tbBBNorth.Text))
-            {
-                //set to true
-                bbNorth = true;
-            }
-            //if tb north is empty
-            else
-            {
-                //set to FALSE
-                bbNorth = false;
-            }
-
-            //check if tb east is not empty
-            if (!string.IsNullOrEmpty(tbBBEast.Text))
-            {
-                //set to true
-                bbEast = true;
-            }
-            //if tb east is empty
-            else
-            {
-                //set to FALSE
-                bbEast = false;
-            }
-
-            //check if tb south is not empty
-            if (!string.IsNullOrEmpty(tbBBSouth.Text))
-            {
-                //set to true
-                bbSouth = true;
-            }
-            //if tb south is empty
-            else
-            {
-                //set to FALSE
-                bbSouth = false;
-            }
-
-
-            //check if tb west is not empty
-            if (!string.IsNullOrEmpty(tbBBWest.Text))
-            {
-                //set to true
-                bbWest = true;
-            }
-            //if tb west is empty
-            else
-            {
-                //set to FALSE
-                bbWest = false;
-            }
-
-            //check if GRID SIZE is not empty
-            if (!string.IsNullOrEmpty(tbGridSize.Text))
-            {
-                //set to true
-                gridSize = true;
-            }
-            //if tb west is empty
-            else
-            {
-                //set to FALSE
-                gridSize = false;
-            }
-
-            //check if all fields are not empty
-            readyCheck();
-        }
-        #endregion textbox changes to check if all values are set
 
         /// <summary>
         /// check the textbox input if it corresponds to the regex
         /// </summary>
-        private void tbGridSize_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void tbBB_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             //regex only numbers (no comma or dot)
             Regex regex = new Regex("^[0-9]*$");
@@ -338,16 +135,56 @@ namespace GuiHandler.userControler.Grid
             e.Handled = !regex.IsMatch(e.Text);
         }
 
-        /// <summary>
-        /// check the textboxes (bounding box values) input if it corresponds to the regex
-        /// </summary>
-        private void tbBB_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            //regex only numbers (no comma or dot)
-            Regex regex = new Regex("^[a-zA-Z]*$");
 
-            //if not valid no input follows
-            e.Handled = regex.IsMatch(e.Text);
+        
+    }
+    
+    public class checker : INotifyPropertyChanged
+    {
+
+        /// <summary>
+        /// do not rename (otherwise whole 'store' interface is not valid)
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// method to check if property has 'really' changed
+        /// </summary>
+        /// <param name="info"></param>
+        private void NotifyPropertyChanged(string info)
+        {
+            if (PropertyChanged != null)
+            {
+                
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
         }
+
+        private bool _boundingBox { get; set; }
+
+        public bool boundingBox
+        {
+            get { return _boundingBox; }
+            set
+            {
+                _boundingBox = value;
+                NotifyPropertyChanged(nameof(boundingBox));
+            }
+        }
+
+        private bool _enableApply { get; set; }
+
+        private bool enableApply
+        {
+            get { return _enableApply; }
+            set
+            {
+                _enableApply = value;
+                NotifyPropertyChanged(nameof(enableApply));
+            }
+        }
+
     }
 }
+
+
