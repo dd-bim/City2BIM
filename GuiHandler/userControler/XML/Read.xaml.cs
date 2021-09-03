@@ -38,22 +38,46 @@ namespace GuiHandler.userControler.XML
                 {
                     //jump to this case if LandXML was selected
                     case 1:
+
+                        //bind to data contexts
+                        init.config.fileName = ofd.FileName;
+
+                        //enable breakline
+                        chkBreakline.IsEnabled = true;
+
+                        rbGeodeticCRS.IsEnabled = true;
+                        rbMathematicCRS.IsEnabled = true;
+
                         //json settings set the file type (via enumeration from logic)
                         init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXML;
-
-                        //Stack panel visible as user can decide whether to process break edges
-                        stpXmlSelectBreakline.Visibility = Visibility;
+                        
                         break;
 
                     //jump to this case if CityGML was selected
                     case 2:
+
+                        //enable breakline
+                        chkBreakline.IsEnabled = false;
+
+                        //enable breakline
+                        chkBreakline.IsChecked = false;
+
+                        rbGeodeticCRS.IsEnabled = true;
+                        rbGeodeticCRS.IsChecked = true;
+                        rbMathematicCRS.IsEnabled = false;
+                        rbMathematicCRS.IsChecked = false;
+
+                        //bind to data context
+                        init.config.fileName = ofd.FileName;
+
                         //json settings set the file type (via enumeration from logic)
                         init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.CityGML;
 
-                        //activate button process xml (otherwise the processing can't go on)
-                        btnProcessXml.IsEnabled = true;
                         break;
                 }
+
+                //
+                btnProcessXml.IsEnabled = true;
 
                 //set the save path of the file to be converted
                 init.config.filePath = ofd.FileName;
@@ -67,45 +91,30 @@ namespace GuiHandler.userControler.XML
         }
 
         /// <summary>
-        /// is activated as soon as the radio button is pressed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void rbXmlBltrue_Checked(object sender, RoutedEventArgs e)
-        {
-            //set settings (break edges) to true (so they should be processed by the reader)
-            init.config.breakline = true;
-
-            //activate button process xml (otherwise the processing can't go on)
-            btnProcessXml.IsEnabled = true;
-        }
-
-        /// <summary>
-        /// is activated as soon as the radio button is pressed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void rbXmlBlfalse_Checked(object sender, RoutedEventArgs e)
-        {
-            //set settings (break edges) to FALSE (so they will not be processed by the reader)
-            init.config.breakline = false;
-
-            //activate button process xml (otherwise the processing can't go on)
-            btnProcessXml.IsEnabled = true;
-        }
-
-        /// <summary>
         /// passes to the current GUI (the readed JSON settings)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnProcessXml_Click(object sender, RoutedEventArgs e)
         {
-            //storage location
-            //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileName, init.config.filePath);
+            //
+            if(init.config.fileType.Equals(BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.LandXML)
+                && chkBreakline.IsChecked.GetValueOrDefault())
+            {
+                init.config.breakline = true;
+            }
+            else { init.config.breakline = false; }
 
-            //file tpye
-            //MainWindowBib.setTextBoxText(((MainWindow)Application.Current.MainWindow).tbFileType, init.config.fileType.ToString());
+            //
+            if (rbGeodeticCRS.IsChecked.GetValueOrDefault())
+            {
+                init.config.mathematicCRS = false;
+            }
+            if (rbMathematicCRS.IsChecked.GetValueOrDefault())
+            {
+                init.config.mathematicCRS = true;
+            }
+
 
             //set task (file opening) to true
             GuiSupport.taskfileOpening = true;

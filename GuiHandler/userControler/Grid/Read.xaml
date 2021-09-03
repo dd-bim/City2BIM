@@ -93,10 +93,7 @@
                     <RadioButton
                         x:Name="rbMathematicCRS"
                         Content="YXZ (left handed)" Margin="5"/>
-
                 </DockPanel>
-                
-                
             </GroupBox>
             
 
