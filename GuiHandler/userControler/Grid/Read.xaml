@@ -10,68 +10,98 @@
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="50"/>
             <RowDefinition/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         <Button x:Name="btnReadGrid" Content="Read 'Grid' file" Click="btnReadGrid_Click"/>
         <Button x:Name="btnProcessGrid" Grid.Row="3" Content="Apply 'Grid' file settings" 
-                Click="btnProcessGrid_Click" IsEnabled="{Binding enableApply}"/>
+                Click="btnProcessGrid_Click" 
+                IsEnabled="{Binding enableApply}"/>
 
-        <GroupBox
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Header="Bounding Box"
-            >
-            <Grid>
-                
+        <StackPanel
+            Grid.Row="1">
 
-                <StackPanel>
-                    <CheckBox
+            <GroupBox
+            Header="Bounding Box">
+                <Grid>
+
+
+                    <StackPanel>
+                        <CheckBox
                         x:Name="chkGridBB" 
                         Content="Bounding Box" Margin="5" 
                         HorizontalAlignment="Center"
                         VerticalContentAlignment="Center"
                         Padding="3"
                         IsEnabled="False"
-                        IsChecked="{Binding boundingBox, Mode=OneWayToSource}"/>
+                        IsChecked="{Binding boundingBox, Mode=OneWayToSource}"
+                            Checked="chkGridBB_Check"
+                            Unchecked="chkGridBB_Check"/>
 
 
-                    <TextBlock Text="Point 1 (North-West)" Margin="5"/>
+                        <TextBlock Text="Point 1 (North-West)" Margin="5"/>
 
-                    <DockPanel HorizontalAlignment="Center" Margin="0,5">
-                        <TextBlock Text="X [m]:" Margin="5"/>
-                        <TextBox Width="100"
+                        <DockPanel HorizontalAlignment="Center" Margin="0,5">
+                            <TextBlock Text="X [m]:" Margin="5"/>
+                            <TextBox Width="100"
                                  x:Name="tbP1X"
                                  IsEnabled="{Binding ElementName=chkGridBB, Path=IsChecked}"
                                  VerticalContentAlignment="Center"
-                                 PreviewTextInput="tbBB_PreviewTextInput"/>
-                        <TextBlock Text="Y [m]:" Margin="5"/>
-                        <TextBox Width="100"
+                                 PreviewTextInput="tbBB_PreviewTextInput"
+                                 TextChanged="tbBB_TextChanged"/>
+                            <TextBlock Text="Y [m]:" Margin="5"/>
+                            <TextBox Width="100"
                                  x:Name="tbP1Y"
                                  IsEnabled="{Binding ElementName=chkGridBB, Path=IsChecked}"
                                  VerticalContentAlignment="Center"
-                                 PreviewTextInput="tbBB_PreviewTextInput"/>
-                    </DockPanel>
+                                 PreviewTextInput="tbBB_PreviewTextInput"
+                                 TextChanged="tbBB_TextChanged"/>
+                        </DockPanel>
 
-                    <TextBlock Text="Point 2 (South-East)" Margin="5"/>
+                        <TextBlock Text="Point 2 (South-East)" Margin="5"/>
 
-                    <DockPanel HorizontalAlignment="Center" Margin="0,5">
-                        <TextBlock Text="X [m]:" Margin="5"/>
-                        <TextBox Width="100" 
+                        <DockPanel HorizontalAlignment="Center" Margin="0,5">
+                            <TextBlock Text="X [m]:" Margin="5"/>
+                            <TextBox Width="100" 
                                  x:Name="tbP2X"
                                  IsEnabled="{Binding ElementName=chkGridBB, Path=IsChecked}"
                                  VerticalContentAlignment="Center"
-                                 PreviewTextInput="tbBB_PreviewTextInput"/>
-                        <TextBlock Text="Y [m]:" Margin="5"/>
-                        <TextBox Width="100"
+                                 TextChanged="tbBB_TextChanged"
+                                     PreviewTextInput="tbBB_PreviewTextInput"/>
+                            <TextBlock Text="Y [m]:" Margin="5"/>
+                            <TextBox Width="100"
                                  x:Name="tbP2Y"
                                  IsEnabled="{Binding ElementName=chkGridBB, Path=IsChecked}"
                                  VerticalContentAlignment="Center"
+                                 TextChanged="tbBB_TextChanged"
                                  PreviewTextInput="tbBB_PreviewTextInput"/>
-                    </DockPanel>
-                </StackPanel>
-            </Grid>
-        </GroupBox>
+                        </DockPanel>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox
+                Header="Coordinate system config"
+                >
+                <DockPanel
+                    HorizontalAlignment="Center">
+                    <RadioButton
+                        x:Name="rbGeodeticCRS"
+                        Content="XYZ (default; right handed)" 
+                        Margin="5"
+                        IsChecked="True"/>
+                    <RadioButton
+                        x:Name="rbMathematicCRS"
+                        Content="YXZ (left handed)" Margin="5"/>
+
+                </DockPanel>
+                
+                
+            </GroupBox>
+            
+
+        </StackPanel>
+        
+        
     </Grid>
 </UserControl>

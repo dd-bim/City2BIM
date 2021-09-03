@@ -68,7 +68,7 @@
                 <Reb:Read/>
             </TabItem>
 
-            <TabItem Header="GeoJSON (JSON)">
+            <TabItem Header="JSON (GeoJSON)">
                 <!-- [TODO]: check reading doesnt parse to diff obj types
                 user controler geojson -->
                 <GeoJSON:Read/>

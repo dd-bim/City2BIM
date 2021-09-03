@@ -87,7 +87,10 @@ namespace BIMGISInteropLibs.ElevationGrid
                                     && x >= config.bbNorth && x <= config.bbSouth)
                                 {
                                     //Prepare Point Data for NetTopologySuite
-                                    pointList.Add(new Point(x, y, z));
+                                    if (config.mathematicCRS.GetValueOrDefault())
+                                    { pointList.Add(new Point(y, x, z)); }
+                                    else { pointList.Add(new Point(x, y, z)); }
+
                                 }
                             }
                         }
@@ -107,7 +110,9 @@ namespace BIMGISInteropLibs.ElevationGrid
                                 && double.TryParse(str[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
                             {
                                 //Prepare Point Data for NetTopologySuite
-                                pointList.Add(new Point(x, y, z));
+                                if (config.mathematicCRS.GetValueOrDefault())
+                                { pointList.Add(new Point(y, x, z)); }
+                                else { pointList.Add(new Point(x, y, z)); }
                             }
                         }
                         break;

@@ -44,11 +44,8 @@ namespace GuiHandler.userControler.Grid
             checker = new ObservableCollection<checker>();
 
             ucGrid.DataContext = checker;
-            
-            checker.Add(new checker());
 
-            
-            
+            checker.Add(new Grid.checker());                     
         }
 
         /// <summary>
@@ -83,7 +80,10 @@ namespace GuiHandler.userControler.Grid
                 #endregion logging
 
                 chkGridBB.IsEnabled = true;
+
+                checkApply();
             }
+            
         }
 
         /// <summary>
@@ -96,11 +96,26 @@ namespace GuiHandler.userControler.Grid
             {
                 //bounding box will be used
                 init.config.bBox = true;
+
+                init.config.bbNorth = double.Parse(tbP1X.Text);
+                init.config.bbWest = double.Parse(tbP1Y.Text);
+                init.config.bbSouth = double.Parse(tbP2X.Text);
+                init.config.bbEast = double.Parse(tbP2Y.Text);
             }
             else
             {
                 //bounding box will not be used
                 init.config.bBox = false;
+            }
+
+            if (rbGeodeticCRS.IsChecked.GetValueOrDefault())
+            {
+                init.config.mathematicCRS = false;
+            }
+
+            if (rbMathematicCRS.IsChecked.GetValueOrDefault())
+            {
+                init.config.mathematicCRS = true;
             }
 
             init.config.readPoints = true;
@@ -133,15 +148,66 @@ namespace GuiHandler.userControler.Grid
 
             //if not valid no input follows
             e.Handled = !regex.IsMatch(e.Text);
+
+            //
+            checkBondingBoxValues();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private void checkApply()
+        {
+            checkBondingBoxValues();
 
-        
+            var chk = checker.LastOrDefault() as checker;
+
+            if (chk.boundingBox
+                && chk.bbValues)
+            {
+                chk.enableApply = true;
+            }
+            else if (!chk.boundingBox)
+            {
+                chk.enableApply = true;
+            }
+            else
+            {
+                chk.enableApply = false;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void checkBondingBoxValues()
+        {
+            var chk = checker.LastOrDefault() as checker;
+
+            if (!string.IsNullOrEmpty(tbP1X.Text) 
+                && !string.IsNullOrEmpty(tbP1Y.Text)
+                && !string.IsNullOrEmpty(tbP2X.Text)
+                && !string.IsNullOrEmpty(tbP2Y.Text))
+            {
+                chk.bbValues = true;
+                return;
+            }
+            chk.bbValues = false;
+        }
+
+        private void chkGridBB_Check(object sender, RoutedEventArgs e)
+        {
+            checkApply();
+        }
+
+        private void tbBB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            checkApply();
+        }
     }
-    
+
     public class checker : INotifyPropertyChanged
     {
-
         /// <summary>
         /// do not rename (otherwise whole 'store' interface is not valid)
         /// </summary>
@@ -155,7 +221,6 @@ namespace GuiHandler.userControler.Grid
         {
             if (PropertyChanged != null)
             {
-                
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
         }
@@ -174,7 +239,7 @@ namespace GuiHandler.userControler.Grid
 
         private bool _enableApply { get; set; }
 
-        private bool enableApply
+        public bool enableApply
         {
             get { return _enableApply; }
             set
@@ -184,6 +249,17 @@ namespace GuiHandler.userControler.Grid
             }
         }
 
+        private bool _bbValues { get; set; }
+
+        public bool bbValues
+        {
+            get { return _bbValues; }
+            set
+            {
+                _bbValues = value;
+                NotifyPropertyChanged(nameof(bbValues));
+            }
+        }
     }
 }
 

@@ -97,7 +97,8 @@ namespace BIMGISInteropLibs.Triangulator
 
                     //set constraints
                     breaklines = new GeometryCollection(result.lines.ToArray());
-                   
+
+                    //set constraints to builder 
                     builder.Constraints = breaklines;
                     break;
             }

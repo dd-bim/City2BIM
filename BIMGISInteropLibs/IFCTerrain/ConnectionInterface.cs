@@ -38,6 +38,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 LogWriter.Add(LogType.error, "[READER] File not found at path: " + config.filePath);
                 return false;
             }
+            LogWriter.Add(LogType.verbose, "[READER] can read file: " + config.filePath);
 
             //The processing is basically done by a reader and a writer (these are included in the corresponding regions)
             #region reader
@@ -83,7 +84,8 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.GeoJSON:
                     result = GeoJSON.ReaderTerrain.readGeoJson(config);
                     break;
-                    //breakline processing (first check and with the method breaklines will be processed)
+                    //breakline processing
+                    //(first check and with the method breaklines will be processed)
                     /*
                     if (config.breakline.GetValueOrDefault()
                         && GeoJSON.ReaderTerrain.readBreakline(config, result))

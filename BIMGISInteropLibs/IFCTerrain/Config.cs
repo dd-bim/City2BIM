@@ -169,6 +169,12 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public bool? breakline { get; set; }
 
+        /// <summary>
+        /// default (false) -> right handed crs (XYZ) <para/>
+        /// (true) -> left handed crs (YXZ)
+        /// </summary>
+        public bool? mathematicCRS { get; set; }
+
         //below the required attributes to process the georeferencing
         #region GeoRef - Attributes
 
