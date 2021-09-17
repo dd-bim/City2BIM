@@ -19,16 +19,18 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 using NetTopologySuite.Geometries;
 using BIMGISInteropLibs.Geometry;
 
+using Npgsql.NetTopologySuite;
+
 namespace BIMGISInteropLibs.PostGIS
 {
     public class ReaderTerrain
     {
         public static Result readPostGIS(Config config)
         {
+            NpgsqlConnection.GlobalTypeMapper.UseNetTopologySuite(handleOrdinates: Ordinates.XYZ);
+
             if (connectDB(config, out NpgsqlConnection connection))
             {
-                NpgsqlConnection.GlobalTypeMapper.UseNetTopologySuite();
-
                 //init new result
                 var res = new Result();
                 LogWriter.Add(LogType.verbose, "[PostGIS] connected to Database: " + connection.Database);
@@ -38,7 +40,7 @@ namespace BIMGISInteropLibs.PostGIS
                     //try to open connection
                     connection.Open();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogWriter.Add(LogType.error, "[PostGIS] " + ex);
                     LogWriter.Add(LogType.error, "[PostGIS] can not open a valid connection!");
@@ -63,7 +65,7 @@ namespace BIMGISInteropLibs.PostGIS
                 }
 
                 //reading breaklines (if user made selection)
-                if(config.breakline.GetValueOrDefault()
+                if (config.breakline.GetValueOrDefault()
                     && !readBreaklines(config, connection, res))
                 {
                     return null; //return null if something failed
@@ -111,7 +113,7 @@ namespace BIMGISInteropLibs.PostGIS
                 return false;
             }
         }
-    
+
         /// <summary>
         /// reading tin data from database and set them to result class
         /// </summary>
@@ -119,6 +121,9 @@ namespace BIMGISInteropLibs.PostGIS
         {
             //local storage
             var triangleMap = new HashSet<Triangulator.triangleMap>();
+
+            //
+            var points = new HashSet<Point>();
 
             string select = null;
             if (!string.IsNullOrEmpty(config.queryString))
@@ -132,18 +137,51 @@ namespace BIMGISInteropLibs.PostGIS
                 "as wkt FROM " + config.schema + "." + config.tin_table +
                 " WHERE " + config.tinid_column + " = " + "'" + config.tin_id + "'";
             }
-            LogWriter.Add(LogType.debug, "[PostGIS] Query string for TIN data: " 
+            LogWriter.Add(LogType.debug, "[PostGIS] Query string for TIN data: "
                 + Environment.NewLine + select);
 
             using (var cmd = new NpgsqlCommand(select, connection))
-            using (var reader = cmd.ExecuteReader())
+            using (var reader = cmd.ExecuteReader(System.Data.CommandBehavior.SingleResult))
             {
                 //read data from query
                 reader.Read();
 
+                /*
+                //
+                var queryData = reader[0] as GeometryCollection;
+                if (queryData == null)
+                {
+                    return false;
+                }
+                //loop through all polygons
+                foreach (var polygon in queryData.Geometries)
+                {
+
+                    int p1 = terrain.addPoint(points, new Point(polygon.Coordinates[0]));
+                    int p2 = terrain.addPoint(points, new Point(polygon.Coordinates[1]));
+                    int p3 = terrain.addPoint(points, new Point(polygon.Coordinates[2]));
+
+                    triangleMap.Add(new Triangulator.triangleMap()
+                    {
+                        triNumber = triangleMap.Count,
+                        triValues = new int[] { p1, p2, p3 }
+                    });
+
+                }
+
+                //set type to conversion
+                res.currentConversion = DtmConversionType.conversion;
+
+                //set point list
+                res.pointList = points.ToList();
+
+                //set triangle map (needed for conversion)
+                res.triMap = triangleMap;
+                */
+
                 //parse string
                 string queryData;
-               
+
                 try
                 {
                    queryData = reader[0].ToString();
@@ -210,9 +248,8 @@ namespace BIMGISInteropLibs.PostGIS
                 res.currentConversion = DtmConversionType.conversion;
                 res.pointList = pointList.ToList();
                 res.triMap = triangleMap;
-
             }
-
+            
             connection.Close();
             return true;
         }
@@ -258,7 +295,7 @@ namespace BIMGISInteropLibs.PostGIS
                     {
                         //get data (row wise) from query
                         queryData = reader.GetValue(0) as LineString;
-                        
+
                         //check if line string ist "closed" polygon
                         if (queryData.IsClosed)
                         {
@@ -271,9 +308,9 @@ namespace BIMGISInteropLibs.PostGIS
                             {
                                 //coordinate for line string
                                 Coordinate[] cs = new CoordinateZ[2];
-                            
+
                                 //check if it is "last" line
-                                if(!(coords[v].Equals(coords[0])
+                                if (!(coords[v].Equals(coords[0])
                                     && v != 0))
                                 {
                                     //start point
@@ -295,7 +332,7 @@ namespace BIMGISInteropLibs.PostGIS
                             while (v < coords.Count());
                         }
                         //add line (only for lines which are not closed
-                        else if(queryData.Coordinates.Count() == 2)
+                        else if (queryData.Coordinates.Count() == 2)
                         {
                             //add line to list
                             lines.Add(queryData);
@@ -308,7 +345,7 @@ namespace BIMGISInteropLibs.PostGIS
                     }
                     catch (Exception ex)
                     {
-                        LogWriter.Add(LogType.error,"[PostGIS] " + ex.Message);
+                        LogWriter.Add(LogType.error, "[PostGIS] " + ex.Message);
                         return false;
                     }
                 };
@@ -355,7 +392,7 @@ namespace BIMGISInteropLibs.PostGIS
                     MultiPoint multiPoint = reader.GetValue(0) as MultiPoint;
                     LogWriter.Add(LogType.debug, "[PostGIS] Readed points: " + multiPoint.Count);
 
-                    foreach(Point p in multiPoint)
+                    foreach (Point p in multiPoint)
                     {
                         points.Add(p);
                     }

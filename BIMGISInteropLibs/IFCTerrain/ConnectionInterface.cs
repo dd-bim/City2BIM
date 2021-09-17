@@ -33,7 +33,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             LogWriter.Add(LogType.verbose, "Mapping process started.");
 
             //check if file exists otherwise return allready here false
-            if (!File.Exists(config.filePath)) 
+            if (!File.Exists(config.filePath) && !config.fileType.Equals(IfcTerrainFileType.PostGIS)) 
             {
                 LogWriter.Add(LogType.error, "[READER] File not found at path: " + config.filePath);
                 return false;

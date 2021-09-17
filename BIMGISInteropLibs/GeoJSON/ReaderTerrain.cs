@@ -161,7 +161,7 @@ namespace BIMGISInteropLibs.GeoJSON
                 switch (config.breaklineGeometryType)
                 {
                     case GeometryType.FeatureCollection:
-
+                        
                         break;
 
                     case GeometryType.MultiPolygon:
@@ -219,5 +219,18 @@ namespace BIMGISInteropLibs.GeoJSON
                 triValues = tri
             });
         }
+    }
+    public enum GeometryType
+    {
+        MultiPoint,
+
+        MultiPolygon,
+
+        GeometryCollection,
+
+        MultiLineString,
+
+        FeatureCollection
+
     }
 }
