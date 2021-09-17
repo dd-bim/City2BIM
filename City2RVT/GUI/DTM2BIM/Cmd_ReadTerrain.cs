@@ -27,7 +27,6 @@ namespace City2RVT.GUI
     public class Cmd_ReadTerrain : IExternalCommand
     {
         public static int numPoints { get; set; }
-
         public static int numFacets { get; set; }
 
         // The main Execute method (inherited from IExternalCommand) must be public
@@ -58,6 +57,8 @@ namespace City2RVT.GUI
             //logwriter
             LogWriter.initLogger(init.config);
 
+            BIMGISInteropLibs.IfcTerrain.Config config;
+
             if (rvtVersion.Equals(utils.rvtVersion.NotSupported))
             {
                 //error massage
@@ -69,23 +70,25 @@ namespace City2RVT.GUI
             {
                 //show main window to user (start dialog for settings)
                 terrainUI.ShowDialog();
+
+                config = terrainUI.DataContext as BIMGISInteropLibs.IfcTerrain.Config;
             }
             #endregion
 
             if(terrainUI.startTerrainImport)
             {
                 //start mapping process
-                var res = rvtRes.ConnectionInterface.mapProcess(init.config);
+                var res = rvtRes.ConnectionInterface.mapProcess(config);
 
                 //init surface builder
                 var rev = new Builder.RevitTopoSurfaceBuilder(doc);
 
-                if (res != null && init.config.readPoints.GetValueOrDefault())
+                if (res != null && config.rvtReadPoints.GetValueOrDefault())
                 {
                     //create dtm (via points)
                     rev.createDTMviaPoints(res);
                 }
-                else if(res != null && !init.config.readPoints.GetValueOrDefault())
+                else if(res != null && !config.rvtReadPoints.GetValueOrDefault())
                 {
                     //create dtm via points & faces
                     rev.createDTM(res);
@@ -103,7 +106,7 @@ namespace City2RVT.GUI
                 {
                     dynamic resLog;
                     
-                    if (init.config.readPoints.GetValueOrDefault())
+                    if (config.rvtReadPoints.GetValueOrDefault())
                     {
                         resLog = "Points: " + numPoints;
                     }
@@ -113,7 +116,7 @@ namespace City2RVT.GUI
                     }
 
                     //reset config
-                    init.clearConfig();
+                    //init.clearConfig();
 
                     //show info dialog (may update to better solution)
                     TaskDialog.Show("DTM import", "DTM import finished!" + Environment.NewLine + resLog);
@@ -124,7 +127,7 @@ namespace City2RVT.GUI
                 else
                 {
                     //reset config
-                    init.clearConfig();
+                    //init.clearConfig();
 
                     //TODO improve error message
                     TaskDialog.Show("DTM import failed!", "The DTM import failed.");
@@ -135,7 +138,7 @@ namespace City2RVT.GUI
             else
             {
                 //reset config
-                init.clearConfig();
+                //init.clearConfig();
 
                 //user canceld / closed window
                 return Result.Cancelled;

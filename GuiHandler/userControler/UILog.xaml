@@ -98,7 +98,8 @@
                   ItemsSource="{Binding}"
                   Loaded="ListBox_OnLoaded"
                   IsTextSearchEnabled="False"
-                  Focusable="False">
+                  Focusable="False"
+                  >
             <ListView.Resources>
                 <!-- disable header -->
                 <Style TargetType="GridViewColumnHeader">
@@ -140,7 +141,13 @@
                 <GridView>
                     <GridView.Columns>
                         <!-- bind displayed member (otherwise it is not resolved) -->
-                        <GridViewColumn DisplayMemberBinding="{Binding logMessage}" Width="340" />
+                        <GridViewColumn Width="340">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding logMessage}" TextWrapping="Wrap" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView.Columns>
                 </GridView>
             </ListView.View>

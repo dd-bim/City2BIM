@@ -1,7 +1,7 @@
 ﻿<Window x:Class="City2RVT.GUI.DTM2BIM.Terrain_ImportUI"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:Dxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
         xmlns:Grid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
@@ -11,124 +11,273 @@
         xmlns:PostGIS="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
         xmlns:GeoJSON="clr-namespace:GuiHandler.userControler.GeoJSON;assembly=GuiHandler"
         xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
+        xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
+        xmlns:CityGML="clr-namespace:GuiHandler.userControler.CityGML;assembly=GuiHandler"
+        xmlns:GuiHandler="clr-namespace:GuiHandler;assembly=GuiHandler"
         xmlns:local="clr-namespace:City2RVT.GUI.DTM2BIM"
-        mc:Ignorable="d" 
-        Height="650" 
+        mc:Ignorable="d"
+        Height="750"
         Width="800"
         Title="Import Terrain Data"
-        ResizeMode="NoResize" Closed="Window_Closed">
+        ResizeMode="NoResize"
+        Closed="Window_Closed">
+
+    <Window.Resources>
+        <!-- get config (need to bind settings)-->
+        <IfcTerrain:Config x:Key="config" />
+
+        <!-- provide data from enum (file type) -->
+        <ObjectDataProvider x:Key="enumFileType"
+                            ObjectType="{x:Type IfcTerrain:IfcTerrainFileType}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="IfcTerrain:IfcTerrainFileType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <!-- implement converter -->
+        <local:EnumConverter x:Key="enumConverter" />
+
+        <!--#region layout for toggle button-->
+        <Style TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Viewbox>
+                            <Border x:Name="Border"
+                                    CornerRadius="10"
+                                    Background="#FFFFFFFF"
+                                    Width="40"
+                                    Height="20">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0.5"
+                                                      Direction="0"
+                                                      Opacity="0.3" />
+                                </Border.Effect>
+                                <Ellipse x:Name="Ellipse"
+                                         Fill="#FFFFFFFF"
+                                         Stretch="Uniform"
+                                         Margin="2 1 2 1"
+                                         Stroke="Gray"
+                                         StrokeThickness="0.2"
+                                         HorizontalAlignment="Stretch">
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect BlurRadius="10"
+                                                          ShadowDepth="1"
+                                                          Opacity="0.3"
+                                                          Direction="260" />
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Border>
+                        </Viewbox>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Checked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="Border"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="#FF4CD661"
+                                                        Duration="0:0:0.1" />
+                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="20 1 2 1"
+                                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="Unchecked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="Border"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="White"
+                                                        Duration="0:0:0.1" />
+                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="2 1 2 1"
+                                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--#endregion -->
+        
+    </Window.Resources>
+    <!-- most important step!!! bind config to data context-->
+    <Window.DataContext>
+        <Binding Source="{StaticResource config}" />
+    </Window.DataContext>
+
     <Grid>
         <!--grid definitions for gui layout-->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="0.8*"/>
-            <RowDefinition Height="0.8*"/>
-            <RowDefinition Height="0.8*"/>
-            <RowDefinition/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="80" />
+            <RowDefinition Height="0.8*" />
+            <RowDefinition Height="0.8*" />
+            <RowDefinition Height="0.8*" />
+            <RowDefinition />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
         <!-- Textbox "File Settings"-->
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="File Settings"/>
+        <TextBlock HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Text="File Settings" />
 
         <!-- Textbox "Import Settings"-->
-        <TextBlock  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="Import Settings"/>
+        <TextBlock  Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Import Settings" />
 
         <!-- Tab Manager-->
-        <TabControl Grid.Row="1" Grid.RowSpan="5">
-            <TabItem Header="CAD (DXF)">
+        <TabControl Grid.Row="1"
+                    Grid.RowSpan="5"
+                    SelectedIndex="{Binding Source={StaticResource config}, Path=fileType, Converter={StaticResource enumConverter}, ConverterParameter={x:Type IfcTerrain:IfcTerrainFileType}}"
+                    IsSynchronizedWithCurrentItem="True">
+            <TabItem Header="CAD (DXF)"
+                     TabIndex="0">
                 <!-- user controler dxf-->
-                <Dxf:Read/>
+                <Dxf:Read />
 
             </TabItem>
-            <TabItem Header="TIN (LandXML, CityGML)">
+            <TabItem Header="TIN (LandXML)"
+                     TabIndex="1">
                 <!-- user controler xml-->
-                <Xml:Read/>
+                <Xml:Read />
             </TabItem>
-            <TabItem Header="GEOgraf (OUT)">
+
+            <TabItem Header="TIN (CityGML)"
+                     TabIndex="2">
+                <CityGML:Read />
+            </TabItem>
+            
+            <TabItem Header="GEOgraf (OUT)"
+                     TabIndex="3">
                 <!-- user controler grafbat-->
-                <Grafbat:Read/>
+                <Grafbat:Read />
             </TabItem>
-            <TabItem Header="Database (PostGIS)">
+            <TabItem Header="Database (PostGIS)"
+                     TabIndex="4">
                 <!-- user controler postgis-->
-                <PostGIS:Read/>
+                <PostGIS:Read />
             </TabItem>
-            <TabItem Header="Grid (XYZ)">
+            <TabItem Header="Grid (XYZ)"
+                     TabIndex="5">
                 <!-- user controler grid-->
-                <Grid:Read/>
+                <Grid:Read />
 
             </TabItem>
-            <TabItem Header="REB (DA45, DA49, DA58)">
+            <TabItem Header="REB (DA45, DA49, DA58)"
+                     TabIndex="6">
                 <!-- user controler reb-->
-                <Reb:Read/>
+                <Reb:Read />
             </TabItem>
 
-            <TabItem Header="JSON (GeoJSON)">
+            <TabItem Header="JSON (GeoJSON)" Visibility="Collapsed"
+                     TabIndex="7">
                 <!-- [TODO]: check reading doesnt parse to diff obj types
                 user controler geojson -->
-                <GeoJSON:Read/>
+                <GeoJSON:Read />
             </TabItem>
-          
+
         </TabControl>
 
         <!-- import button (for execution)-->
-        <Button x:Name="btnStartImport" Grid.Row="6" Grid.ColumnSpan="2" Content="Import" Margin="2,5,2,2" FontSize="16" FontWeight="Bold" Click="btnStartImport_Click" IsEnabled="False"/>
+        <Button x:Name="btnStartImport"
+                Grid.Row="6"
+                Grid.ColumnSpan="2"
+                Content="Start Import"
+                Margin="2,5,2,2"
+                FontSize="16"
+                FontWeight="Bold"
+                Click="btnStartImport_Click">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="IsEnabled"
+                            Value="True" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding fileName}"
+                                           Value="{x:Null}" />
+                                <Condition Binding="{Binding filePath}"
+                                           Value="{x:Null}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled"
+                                    Value="False" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
         <!-- config import -->
-        <GroupBox 
-            Grid.Row="1"
-            Grid.Column="1"
-            Header="Settings">
-
+        <GroupBox Grid.Row="1"
+                  Grid.Column="1"
+                  Header="Settings">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="1.8*"/>
+                <StackPanel>
+                    <TextBlock Grid.Column="0"
+                               Text="Process DTM import via:"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center" 
+                               Margin="5"/>
 
-                </Grid.ColumnDefinitions>
+                    <DockPanel
+                        HorizontalAlignment="Center">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="Faces"
+                                   ToolTip="DTM will be converted via Faces and Points! A Delaunay triangulation is calculated (if necessary)." />
 
-                <TextBlock Grid.Column="0" Text="Process DTM import via:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <ToggleButton Margin="5"
+                                      Height="15"
+                                      IsChecked="{Binding Source={StaticResource config}, Path=rvtReadPoints, FallbackValue=false, Mode=TwoWay}" />
 
-                <!-- conversion selection -->
-                <ComboBox x:Name="cbProcessing" Grid.Column="1" SelectionChanged="cbProcessing_SelectionChanged">
-                    <ComboBoxItem x:Name="cbPoints" Content="... only Points (Conversion)"></ComboBoxItem>
-                    <ComboBoxItem x:Name="cbFaces" Content="... Points/ Faces (Conversion)"></ComboBoxItem>
-                </ComboBox>
+                        <TextBlock Margin="0,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Points"
+                                   ToolTip="Only the points of the DXF file are readed. Then a Delaunay triangulation will be executed." />
+                    </DockPanel>
+                </StackPanel>
             </Grid>
         </GroupBox>
 
         <!--bounding box -->
-        <GroupBox
-            Grid.Row="2"
-            Grid.Column="1"
-            Header="Bounding Box"
-            Visibility="Hidden">
+        <GroupBox Grid.Row="2"
+                  Grid.Column="1"
+                  Header="Bounding Box"
+                  Visibility="Hidden">
         </GroupBox>
 
         <!-- metadata -->
-        <GroupBox
-            Grid.Row="2"
-            Grid.RowSpan="2"
-            Grid.Column="1"
-            Header="Information panel"
-            >
-            <uC:InformationPanel/>
+        <GroupBox Grid.Row="2"
+                  Grid.RowSpan="2"
+                  Grid.Column="1"
+                  Header="Information panel">
+            <uC:InformationPanel />
 
         </GroupBox>
 
         <!-- logging -->
-        <GroupBox
-            Grid.Row="4"
-            Grid.RowSpan="2"
-            Grid.Column="1"
-            Header="Logging"
-            >
-            <uC:UILog/>
+        <GroupBox Grid.Row="4"
+                  Grid.RowSpan="2"
+                  Grid.Column="1"
+                  Header="Logging">
+            <uC:UILog />
         </GroupBox>
 
     </Grid>

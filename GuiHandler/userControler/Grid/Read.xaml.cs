@@ -131,9 +131,6 @@ namespace GuiHandler.userControler.Grid
             //[DTM2BIM] check if all task are allready done
             guiLog.rdyDTM2BIM();
 
-            //display short information about imported file to user
-            guiLog.fileReaded();
-
             //gui logging (user information)
             guiLog.setLog(LogType.info, "Grid settings applyed.");
         }

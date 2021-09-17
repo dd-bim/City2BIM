@@ -25,7 +25,8 @@
         Icon="Resources/DD_BIM_ICON.ico"
         FontFamily="Bahnschrift"
         FontSize="12"
-        ResizeMode="CanMinimize">
+        ResizeMode="CanMinimize"
+        Loaded="IFCTerrainGUI_Loaded">
 
     <Window.Resources>
         <!-- get config to use in data binding -->
@@ -164,7 +165,7 @@
                      Header="TIN (LandXML)"
                      TabIndex="1">
                 <!--include the controller to read a land xml file -->
-                <ucLandXml:Read DataContext="{Binding Source={StaticResource config}}"/>
+                <ucLandXml:Read DataContext="{Binding Source={StaticResource config}}" />
             </TabItem>
 
             <!-- CityGML -->
@@ -196,7 +197,6 @@
             <!--ElevationGrid-->
             <TabItem x:Name="tabPageGrid"
                      Header="Grid (XYZ)"
-                     IsEnabled="True"
                      TabIndex="5">
                 <!-- add user controler for reading reb data -->
                 <ucGrid:Read />
@@ -217,11 +217,6 @@
                      TabIndex="7">
                 <ucGeoJson:Read DataContext="{Binding Source={StaticResource config}}" />
             </TabItem>
-
-            <!-- ESRI SHAPE -->
-            <TabItem x:Name="tabPageShape"
-                     Header="Shape (shp)"
-                     Visibility="Collapsed" />
         </TabControl>
 
         <!-- add Group Box for IFC - Version
@@ -253,8 +248,7 @@
                   Grid.Row="9"
                   Grid.RowSpan="5"
                   Header="Metadata"
-                  Margin="0,0,0,5"
-                  >
+                  Margin="0,0,0,5">
             <TabControl Background="Transparent">
                 <TabItem Header="IFC project settings">
                     <!-- add user controler to set ifc project metadata -->
@@ -264,10 +258,10 @@
                 <TabItem Header="Metadata export">
                     <ucIfcMetadata:ucMetaIfcJson />
                 </TabItem>
-                
+
             </TabControl>
-            
-           
+
+
         </GroupBox>
 
         <!-- Logging container -->
@@ -315,7 +309,7 @@
                                 <DataTrigger Binding="{Binding Source={StaticResource config}, Path=destFileName}"
                                              Value="{x:Null}">
                                     <Setter Property="Text"
-                                            Value="First set the storage location!"/>
+                                            Value="First set the storage location!" />
                                     <Setter Property="TextBlock.Foreground"
                                             Value="OrangeRed" />
                                 </DataTrigger>
@@ -323,6 +317,8 @@
                         </Style>
                     </TextBox.Style>
                 </TextBox>
+
+                <!-- start button to 'kick off' conversion-->
                 <Button x:Name="btnStart"
                         Content="Start"
                         Grid.Column="2"
@@ -330,7 +326,27 @@
                         ToolTip="Please set all the required settings first. Once these have been made, this button will be enabled."
                         ToolTipService.ShowOnDisabled="True"
                         Margin="0,0,5,0"
-                        FontWeight="Bold" />
+                        FontWeight="Bold">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled"
+                                    Value="True" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding fileName}"
+                                                   Value="{x:Null}" />
+                                        <Condition Binding="{Binding filePath}"
+                                                   Value="{x:Null}" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled"
+                                            Value="False" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                            
+                        </Style>
+                    </Button.Style>
+                </Button>
 
                 <Button Content="Open location"
                         Grid.Column="3"

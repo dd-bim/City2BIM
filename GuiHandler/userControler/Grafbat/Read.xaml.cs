@@ -141,9 +141,6 @@ namespace GuiHandler.userControler.Grafbat
                 //gui logging (user information)
                 guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Grafbat settings applyed.");
 
-                //display short information about imported file to user
-                guiLog.fileReaded();
-
                 //check if all task are allready done
                 guiLog.readyState();
                 #endregion error handling

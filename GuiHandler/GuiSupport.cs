@@ -123,38 +123,5 @@ namespace GuiHandler
         }
 
 
-        /// <summary>
-        /// unterstützende FUnktion um das info panel zu füllen
-        /// [TODO]: clean up code (this solution is a very bad databinding example)
-        /// </summary>
-        public static void fileReaded()
-        {/*
-            InformationPanel.info.LastOrDefault().fileName = init.config.fileName;
-            InformationPanel.info.LastOrDefault().fileType = init.config.fileType.ToString();
-            InformationPanel.info.LastOrDefault().breakline = init.config.breakline.GetValueOrDefault();
-            if (init.config.fileType.Equals(BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat))
-            {
-                InformationPanel.info.LastOrDefault().breaklineLayer = init.config.horizon.ToString();
-            }
-            else if (!string.IsNullOrEmpty(init.config.breakline_layer))
-            {
-                InformationPanel.info.LastOrDefault().breaklineLayer = init.config.breakline_layer;
-            }
-            else
-            {
-                InformationPanel.info.LastOrDefault().breaklineLayer = null;
-            }
-
-            if (init.config.readPoints.GetValueOrDefault())
-            {
-                InformationPanel.info.LastOrDefault().points = init.config.readPoints.GetValueOrDefault();
-                InformationPanel.info.LastOrDefault().faces = false;
-            }
-            else
-            {
-                InformationPanel.info.LastOrDefault().points = false;
-                InformationPanel.info.LastOrDefault().faces = true;
-            }*/
-        }
     }
 }

@@ -115,8 +115,6 @@ namespace GuiHandler.userControler.PostGIS
             #endregion set json settings
 
             #region gui feedback
-            //display short information about imported file to user
-            guiLog.fileReaded();
 
             //gui logging (user information)
             guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "PostGIS settings applyed.");

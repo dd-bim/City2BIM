@@ -70,7 +70,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         #region unspecific file attributes
         #region file handling
 
-        [JsonIgnore]
+        
         private string _filePath { get; set; }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _fileName { get; set; }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private IfcTerrainFileType _fileType { get; set; }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _destFileName { get; set; }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// init value is set to info
         /// </summary>
-        [JsonIgnore]
+        
         private LogType _verbosityLevel { get; set; } = LogType.info;
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// init to IFC schema version 4
         /// </summary>
-        [JsonIgnore]
+        
         private IFC.IfcVersion _outIFCType { get; set; } = IFC.IfcVersion.IFC4;
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// init to SBSM (most bim authoring softwares can read that)
         /// </summary>
-        [JsonIgnore]
+        
         private IFC.SurfaceType _outSurfaceType { get; set; } = IFC.SurfaceType.SBSM;
 
         /// <summary> 
@@ -195,7 +195,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private IFC.IfcFileType _outFileType { get; set; }
 
         /// <summary>
@@ -219,8 +219,8 @@ namespace BIMGISInteropLibs.IfcTerrain
         public double minDist { get; set; }
 
 
-        [JsonIgnore]
-        public bool? _geoElement { get; set; } = false;
+        
+        private bool? _geoElement { get; set; } = false;
         /// <summary>
         /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not
         /// </summary>
@@ -240,7 +240,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
-        [JsonIgnore]
+        
         private string _siteName { get; set; } = "Terrain";
         
         /// <summary>
@@ -256,7 +256,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _projectName { get; set; } = "Project title";
 
         /// <summary>
@@ -272,7 +272,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _editorsOrganisationName { get; set; } = "HTW Dresden - DD BIM";
 
         /// <summary>        
@@ -288,7 +288,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _editorsFamilyName { get; set; } = "...";
 
         /// <summary>        
@@ -304,7 +304,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _editorsGivenName { get; set; } = "...";
 
         /// <summary>        
@@ -342,7 +342,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public bool? exportMetadataDin18740 { get; set; }
 
-        [JsonIgnore]
+        
         private bool? _breakline { get; set; } = false;
 
         /// <summary>
@@ -361,7 +361,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private bool? _mathematicCRS { get; set; } = false;
 
         /// <summary>
@@ -385,7 +385,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// set to default value
         /// </summary>
-        [JsonIgnore]
+        
         private IFC.LoGeoRef _logeoref { get; set; } = IFC.LoGeoRef.LoGeoRef30;
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private bool? _customOrigin { get; set; } = false;
 
         /// <summary>
@@ -416,7 +416,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 NotifyPropertyChanged(nameof(customOrigin));
             }
         }
-        [JsonIgnore]
+        
         private double? _xOrigin { get; set; } = 0;
 
         /// <summary>
@@ -433,7 +433,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         }
 
 
-        [JsonIgnore]
+        
         private double? _yOrigin { get; set; } = 0;
 
         /// <summary>
@@ -449,7 +449,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private double? _zOrigin { get; set; } = 0;
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// set default value to 0 (no rotation)
         /// </summary>
-        [JsonIgnore]
+        
         private double? _trueNorth { get; set; } = 0;
 
         /// <summary>
@@ -488,7 +488,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// set default value to 1 (no scaling)
         /// </summary>
-        [JsonIgnore]
+        
         private double? _scale { get; set; } = 1;
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private int? _crsName { get; set; }
 
         /// <summary>
@@ -520,7 +520,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _crsDescription { get; set; }
 
         /// <summary>
@@ -536,7 +536,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _geodeticDatum { get; set; }
 
         /// <summary>
@@ -552,7 +552,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _verticalDatum { get; set; }
 
         /// <summary>
@@ -568,7 +568,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
         
-        [JsonIgnore]
+        
         private string _projectionName { get; set; }
 
         /// <summary>
@@ -584,7 +584,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        [JsonIgnore]
+        
         private string _projectionZone { get; set; }
 
         /// <summary>
@@ -607,15 +607,28 @@ namespace BIMGISInteropLibs.IfcTerrain
 
         //for dxf processing
         #region DXF
+        
+        private string _layer { get; set; }
+
         /// <summary>
         /// Name of the layer that contains terrain information in an input DXF file
         /// </summary>
-        public string layer { get; set; }
+        public string layer 
+        { 
+            get { return _layer; }
+            set
+            {
+                _layer = value;
+                NotifyPropertyChanged(nameof(layer));
+            }
+        }
+
+        
+        private bool? _readPoints { get; set; } = false;
 
         /// <summary>
         /// read only point data from dxf file
         /// </summary>
-        private bool? _readPoints { get; set; } = false;
         public bool? readPoints
         {
             get { return _readPoints; }
@@ -623,6 +636,22 @@ namespace BIMGISInteropLibs.IfcTerrain
             {
                 _readPoints = value;
                 NotifyPropertyChanged(nameof(readPoints));
+            }
+        }
+        
+        
+        private bool? _rvtReadPoints { get; set; } = false;
+
+        /// <summary>
+        /// read only point data from dxf file
+        /// </summary>
+        public bool? rvtReadPoints
+        {
+            get { return _rvtReadPoints; }
+            set
+            {
+                _rvtReadPoints = value;
+                NotifyPropertyChanged(nameof(rvtReadPoints));
             }
         }
         #endregion
@@ -670,7 +699,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// </summary>
         public bool? onlyHorizon { get; set; }
 
-        [JsonIgnore]
+        
         private string _breakline_layer { get; set; }
 
         /// <summary>
@@ -766,7 +795,7 @@ namespace BIMGISInteropLibs.IfcTerrain
 
         #endregion
 
-        [JsonIgnore]
+        
         private GeoJSON.GeometryType? _geometryType { get; set; } = GeoJSON.GeometryType.MultiPoint;
 
         //for geojson

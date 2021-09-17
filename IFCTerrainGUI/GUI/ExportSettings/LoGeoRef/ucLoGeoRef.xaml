@@ -118,8 +118,6 @@
 
     </UserControl.Resources>
 
-    
-    
     <Grid>
         <StackPanel>
             <!--#region information / description line-->
@@ -138,7 +136,8 @@
                           SelectedItem="{Binding Path=logeoref}"
                           VerticalContentAlignment="Center"
                           HorizontalContentAlignment="Center"
-                          Height="25">
+                          Height="25"
+                          SelectionChanged="cbLoGeoRef_SelectionChanged">
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
                             <Style.Triggers>
@@ -216,7 +215,8 @@
                 <ToggleButton Width="30"
                               Margin="5,0"
                               IsChecked="{Binding customOrigin}"
-                              />
+                              Checked="btnChkOrigin"
+                              Unchecked="btnChkOrigin" />
                 <TextBlock Text="Custom origin (input)" />
             </DockPanel>
             
@@ -260,7 +260,7 @@
                                   VerticalAlignment="Center"
                                   VerticalContentAlignment="Center"
                                   HorizontalContentAlignment="Right"
-                                  Width="70" />
+                                  Width="70"/>
 
                         <!-- input box for rotation -->
                         <TextBox IsEnabled="{Binding ElementName=chkRotation, Path=IsChecked}"

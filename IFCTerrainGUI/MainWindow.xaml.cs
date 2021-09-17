@@ -326,8 +326,19 @@ namespace IFCTerrainGUI
                 config.fileName = null;
             }
         }
+
+        /// <summary>
+        /// remove log entrys when loaded
+        /// </summary>
+        private void IFCTerrainGUI_Loaded(object sender, RoutedEventArgs e)
+        {
+            guiLog.clearLog();
+        }
     }
 
+    /// <summary>
+    /// class to convert integer values of tab index to file type enumeration
+    /// </summary>
     public class EnumConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
