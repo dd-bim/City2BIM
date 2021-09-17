@@ -1,44 +1,96 @@
 ﻿<UserControl x:Class="IFCTerrainGUI.GUI.ExportSettings.Metadata.ucMetaIfcProject"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
-             mc:Ignorable="d" 
-             d:DesignHeight="213" d:DesignWidth="373">
-    <Grid Margin="2">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="1.8*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="213"
+             d:DesignWidth="373">
+    <!-- define some static resources (to bind parameters)-->
+    <UserControl.Resources>
+        <!-- controls the width of the text blocks -->
+        <sys:Int16 x:Key="tbWidth">80</sys:Int16>
 
-        <TextBlock Grid.ColumnSpan="2" Text="Here you can make settings that are saved in the IFCProject entity." TextAlignment="Center" TextWrapping="Wrap"/>
+        <!-- controls the width of the text blocks -->
+        <sys:Int16 x:Key="tbHeight">22</sys:Int16>
 
-        <!-- text blocks (visual information) -->
-        <TextBlock Grid.Row="1" Text="Site Name" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Title of IfcSite entity"/>
-        <TextBlock Grid.Row="2" Text="Project Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcProject"/>
-        <TextBlock Grid.Row="3" Text="Organisation Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcOwnerHistory"/>
-        <TextBlock Grid.Row="4" Text="Given Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcOwnerHistory"/>
-        <TextBlock Grid.Row="5" Text="Family Name:" VerticalAlignment="Center" Margin="7,0,0,0" ToolTip="Stored in IfcOwnerHistory"/>
+        <!-- controls the margin of the text boxes-->
+        <sys:String x:Key="dpMargin">0,3</sys:String>
+    </UserControl.Resources>
 
-        <!-- text boxex (input fields) -->
-        <TextBox x:Name="tbSiteName" Grid.Row="1" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbProjectName" Grid.Row="2" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbOrganisationName" Grid.Row="3" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbGivenName" Grid.Row="4" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbFamilyName" Grid.Row="5" Grid.Column="1" Margin="0,2" VerticalContentAlignment="Center"/>
+    <Grid Margin="5">
+        <StackPanel>
+            <TextBlock Text="Store metadata to IfcProject."
+                       TextAlignment="Center"
+                       TextWrapping="Wrap" />
 
+            <!--#region IfcSite name -->
+            <DockPanel ToolTip="Title of IfcSite entity"
+                       Margin="{Binding Source={StaticResource dpMargin}}">
+                <TextBlock Text="Site Name:"
+                           Width="{Binding Source={StaticResource tbWidth}}"
+                           VerticalAlignment="Center" />
+                <!-- binding text from config -->
+                <TextBox Text="{Binding siteName, UpdateSourceTrigger=PropertyChanged}"
+                         Height="{Binding Source={StaticResource tbHeight}}"
+                         VerticalContentAlignment="Center" />
+            </DockPanel>
+            <!--#endregion-->
 
-        <Button x:Name="btnMetadataApply" Grid.Row="7" Grid.ColumnSpan="2" Content="Apply 'IFC project settings'" Click="btnMetadataApply_Click" VerticalAlignment="Center"/>
+            <!--#region title of ifc project -->
+            <DockPanel ToolTip="Name of IfcProject"
+                       Margin="{Binding Source={StaticResource dpMargin}}">
+                <TextBlock Text="Project Name:"
+                           Width="{Binding Source={StaticResource tbWidth}}"
+                           VerticalAlignment="Center" />
+                <!-- binding text from config -->
+                <TextBox Text="{Binding projectName, UpdateSourceTrigger=PropertyChanged}"
+                         Height="{Binding Source={StaticResource tbHeight}}"
+                         VerticalContentAlignment="Center" />
+            </DockPanel>
+            <!--#endregion-->
+
+            <!--#region name of editors organisation -->
+            <DockPanel ToolTip="Name of your organisation | Stored in IfcOwnerHistory"
+                       Margin="{Binding Source={StaticResource dpMargin}}">
+                <TextBlock Text="Organisation:"
+                           Width="{Binding Source={StaticResource tbWidth}}"
+                           VerticalAlignment="Center" />
+                <!-- binding text from config -->
+                <TextBox Text="{Binding editorsOrganisationName, UpdateSourceTrigger=PropertyChanged}"
+                         Height="{Binding Source={StaticResource tbHeight}}"
+                         VerticalContentAlignment="Center" />
+            </DockPanel>
+            <!--#endregion-->
+
+            <!--#region given name of editor -->
+            <DockPanel ToolTip="Stored in IfcOwnerHistory"
+                       Margin="{Binding Source={StaticResource dpMargin}}">
+                <TextBlock Text="Given Name:"
+                           Width="{Binding Source={StaticResource tbWidth}}"
+                           VerticalAlignment="Center" />
+                <!-- binding text from config -->
+                <TextBox Text="{Binding editorsGivenName, UpdateSourceTrigger=PropertyChanged}"
+                         Height="{Binding Source={StaticResource tbHeight}}"
+                         VerticalContentAlignment="Center" />
+            </DockPanel>
+            <!--#endregion-->
+
+            <!--#region given name of editor -->
+            <DockPanel ToolTip="Stored in IfcOwnerHistory"
+                       Margin="{Binding Source={StaticResource dpMargin}}">
+                <TextBlock Text="Family Name:"
+                           Width="{Binding Source={StaticResource tbWidth}}"
+                           VerticalAlignment="Center" />
+                <!-- binding text from config -->
+                <TextBox Text="{Binding editorsFamilyName, UpdateSourceTrigger=PropertyChanged}"
+                         Height="{Binding Source={StaticResource tbHeight}}"
+                         VerticalContentAlignment="Center" />
+            </DockPanel>
+            <!--#endregion-->
+
+        </StackPanel>
     </Grid>
 </UserControl>

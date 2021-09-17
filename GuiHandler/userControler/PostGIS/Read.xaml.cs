@@ -42,7 +42,7 @@ namespace GuiHandler.userControler.PostGIS
             #region set json settings
             //set "fileType" to PostGIS
             init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.PostGIS;
-            init.config.fileName = tbDatabase.Text;
+            //init.config.fileName = tbDatabase.Text;
 
             //set host
             init.config.host = this.tbHost.Text;
@@ -119,7 +119,7 @@ namespace GuiHandler.userControler.PostGIS
             guiLog.fileReaded();
 
             //gui logging (user information)
-            guiLog.setLog("PostGIS settings applyed.");
+            guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "PostGIS settings applyed.");
             #endregion gui feedback
 
             #region error handling

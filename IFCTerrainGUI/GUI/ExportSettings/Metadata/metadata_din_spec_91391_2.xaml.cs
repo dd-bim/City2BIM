@@ -65,7 +65,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             init.config91391.metadataSchema = this.tbMetaShema.Text;
 
             //gui logging (user information)
-            guiLog.setLog("Metadata DIN 91391-2 adopted!");
+            guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Metadata DIN 91391-2 adopted!");
 
             //unlock MainWindow
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;

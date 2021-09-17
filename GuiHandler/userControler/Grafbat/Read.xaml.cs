@@ -36,7 +36,7 @@ namespace GuiHandler.userControler.Grafbat
                 init.config.filePath = ofd.FileName;
 
                 //set JSON settings of file name
-                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
+                //init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
 
                 //set the save path of the file to be converted
                 init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grafbat;
@@ -45,7 +45,7 @@ namespace GuiHandler.userControler.Grafbat
                 btnProcessGraftbat.IsEnabled = true;
 
                 //gui logging (user information)
-                guiLog.setLog("File selected! --> Please make settings and confirm.");
+                guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "File selected! --> Please make settings and confirm.");
                 return;
             }
         }
@@ -70,11 +70,11 @@ namespace GuiHandler.userControler.Grafbat
                 {
                     //set filtering to config
                     init.config.layer = tbPointTypes.Text;
-                    guiLog.setLog("Pointtype(s): '" + tbPointTypes.Text + "' will be used for processing");
+                    guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Pointtype(s): '" + tbPointTypes.Text + "' will be used for processing");
                 }
                 else
                 {
-                    guiLog.setLog("Pointtype has not been applyed. All point types will be user for conversion!");
+                    guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Pointtype has not been applyed. All point types will be user for conversion!");
                 }
             }
             else
@@ -88,7 +88,7 @@ namespace GuiHandler.userControler.Grafbat
                     //TODO do via textbox
                     if (!int.TryParse(tbGraftbatFilteringHorizon.Text, out int hor))
                     {
-                        guiLog.setLog("Horizon can't be parsed to integer value. Please check input!");
+                        guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Horizon can't be parsed to integer value. Please check input!");
                         init.config.onlyHorizon = false;
                         localCheck = false;
                     }
@@ -99,14 +99,14 @@ namespace GuiHandler.userControler.Grafbat
 
                         //set horizon
                         init.config.horizon = hor;
-                        guiLog.setLog("Horizon '" + hor + "' has been set");
+                        guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Horizon '" + hor + "' has been set");
                     }
                 }
             }
 
             if (rbGraftbatBreaklinesNo.IsChecked.GetValueOrDefault())
             {
-                guiLog.setLog("Breaklines will not processed!");
+                guiLog.setLog(BIMGISInteropLibs.Logging.LogType.warning, "Breaklines will not processed!");
                 init.config.breakline = false;
                 init.config.breakline_layer = null;
             }
@@ -117,11 +117,11 @@ namespace GuiHandler.userControler.Grafbat
                 if (!string.IsNullOrEmpty(tbGraftbatBreaklinesInput.Text))
                 {
                     init.config.breakline_layer = tbGraftbatBreaklinesInput.Text;
-                    guiLog.setLog("Breaklines of type: '" + tbGraftbatBreaklinesInput.Text + "' will be processed!");
+                    guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Breaklines of type: '" + tbGraftbatBreaklinesInput.Text + "' will be processed!");
                 }
                 else
                 {
-                    guiLog.setLog("Please input breakline types!");
+                    guiLog.setLog(BIMGISInteropLibs.Logging.LogType.warning, "Please input breakline types!");
                     localCheck = false;
                 }
             }
@@ -139,7 +139,7 @@ namespace GuiHandler.userControler.Grafbat
                 guiLog.rdyDTM2BIM();
 
                 //gui logging (user information)
-                guiLog.setLog("Grafbat settings applyed.");
+                guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Grafbat settings applyed.");
 
                 //display short information about imported file to user
                 guiLog.fileReaded();
@@ -150,7 +150,7 @@ namespace GuiHandler.userControler.Grafbat
             }
             else
             {
-                guiLog.setLog("Error in settings. Please check!");
+                guiLog.setLog(BIMGISInteropLibs.Logging.LogType.error, "Error in settings. Please check!");
             }
             #endregion set config
         }

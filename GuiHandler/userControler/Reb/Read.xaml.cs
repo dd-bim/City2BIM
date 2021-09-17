@@ -66,7 +66,7 @@ namespace GuiHandler.userControler.Reb
                 init.config.filePath = ofd.FileName;
 
                 //set JSON settings of file name
-                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
+                //init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)
@@ -90,7 +90,7 @@ namespace GuiHandler.userControler.Reb
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
                 //gui logging (user information)
-                guiLog.setLog("File selected! --> Please make settings and confirm.");
+                guiLog.setLog(LogType.info, "File selected! --> Please make settings and confirm.");
                 #endregion logging
             }
         }
@@ -202,7 +202,7 @@ namespace GuiHandler.userControler.Reb
             guiLog.fileReaded();
 
             //gui logging (user information)
-            guiLog.setLog("REB settings applyed.");
+            guiLog.setLog(LogType.info, "REB settings applyed.");
 
             return;
         }

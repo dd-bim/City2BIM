@@ -4,32 +4,62 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 
-//logging
-using BIMGISInteropLibs.Logging; //access to log writer
-using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
-
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
+using System.ComponentModel; //interface property changed
 
 namespace GuiHandler.userControler
 {
+
+    public class logEntry : INotifyPropertyChanged
+    {
+        /// <summary>
+        /// do not rename (otherwise whole 'logEntry' interface is not valid)
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// function to check if property is really changed
+        /// </summary>
+        /// <param name="info"></param>
+        private void NotifyPropertyChanged(string info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+        private BIMGISInteropLibs.Logging.LogType _logType { get; set; }
+
+        public BIMGISInteropLibs.Logging.LogType logType
+        {
+            get { return _logType; }
+            set
+            {
+                _logType = value;
+                NotifyPropertyChanged(nameof(logType));
+            }
+        }
+
+        private string _logMessage { get; set; }
+
+        public string logMessage
+        {
+            get { return _logMessage; }
+            set
+            {
+                _logMessage = value;
+                NotifyPropertyChanged(nameof(logMessage));
+            }
+        }
+    }
+
     /// <summary>
     /// Interaktionslogik für UILog.xaml
     /// </summary>
     public partial class UILog : UserControl
     {
-        /// <summary>
-        /// used to store log messages
-        /// </summary>
-        private static readonly ObservableCollection<string> _LogMessages = new ObservableCollection<string>();
-
-        /// <summary>
-        /// data binding - bind log messages
-        /// </summary>
-        public static ObservableCollection<string> LogMessages
-        {
-            get { return _LogMessages; }
-        }
+        
+        public static ObservableCollection<logEntry> logEntries { get; set; }
 
         /// <summary>
         /// init ui and apply data context
@@ -37,35 +67,15 @@ namespace GuiHandler.userControler
         public UILog()
         {
             InitializeComponent();
-            DataContext = this;
+
+            //init new observable collection
+            logEntries = new ObservableCollection<logEntry>();
+
+            //set data context to list view
+            lvGuiLogging.DataContext = logEntries;
         }
 
-        /// <summary>
-        /// swtiching verbosity levels
-        /// </summary>
-        private void selectVerbosityLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //check and set the choosen verbo level into json settings
-            if (minVerbose.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.verbose;
-            }
-            else if (minDebug.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.debug;
-            }
-            else if (minInformation.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.info;
-            }
-            else if (minWarning.IsSelected)
-            {
-                init.config.verbosityLevel = LogType.warning;
-            }
-
-            //logging
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "Verbosity level changed to: " + init.config.verbosityLevel.ToString()));
-        }
+        
 
         #region auto scroll in logging field
         //source: https://stackoverflow.com/questions/2337822/wpf-listbox-scroll-to-end-automatically

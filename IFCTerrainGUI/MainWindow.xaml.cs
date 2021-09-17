@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic; //used to outsource auxiliary functions
+//using IFCTerrainGUI.GUI.MainWindowLogic; //used to outsource auxiliary functions
 
 //integrate logic from BIMGISInteropsLibs 
 using BIMGISInteropLibs.IfcTerrain; //used for JsonSettings, ...
@@ -54,7 +54,7 @@ namespace IFCTerrainGUI
             backgroundWorkerIfc.RunWorkerCompleted += BackgroundWorkerIfc_RunWorkerCompleted;
 
             //gui logging
-            guiLog.setLog("Welcome to IFCTerrain");
+            guiLog.setLog(LogType.info, "Welcome to IFCTerrain");
 
             //file logging
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "GUI initialized."));
@@ -78,6 +78,9 @@ namespace IFCTerrainGUI
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Industry Fundation Classes| *.ifc|IFCXML File | *.ifcXML|IFCZIP | *.ifcZIP";
+
+            var config = DataContext as Config;
+
             //open file handler
             if (sfd.ShowDialog() == true)
             {
@@ -87,7 +90,7 @@ namespace IFCTerrainGUI
                     //jump to this case if STEP was selected
                     case 1:
                         //json settings                        
-                        init.config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.Step;
+                        config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.Step;
 
                         //set settings for DIN SPEC 91391
                         init.config91391.mimeType = "application/x-step";
@@ -95,7 +98,7 @@ namespace IFCTerrainGUI
                     //jump to this case if ifcXML was selected
                     case 2:
                         //json setting file format
-                        init.config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcXML;
+                        config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcXML;
 
                         //set settings for DIN SPEC 91391
                         init.config91391.mimeType = "application/xml";
@@ -103,44 +106,24 @@ namespace IFCTerrainGUI
                     //jump to this case if ifcXML was selected
                     case 3:
                         //json setting file format
-                        init.config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcZip;
+                        config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcZip;
 
                         //set settings for DIN SPEC 91391
                         init.config91391.mimeType = "application/zip";
                         break;
                 }
-                //below settings regardless of format
-
-                //gui information
-                MainWindowBib.setTextBoxText(tbIfcDir, sfd.FileName);
-                guiLog.setLog("Storage location set.");
+                
+                guiLog.setLog(LogType.info, "Storage location set.");
 
                 //set filepath to jSettings
-                init.config.destFileName = sfd.FileName;
-
-                //set task (file opening) to true
-                guiLog.selectStoreLocation = true;
-
-                //check if all task are allready done
-                MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
+                config.destFileName = sfd.FileName;
 
                 //set logging path
-                string logPath = System.IO.Path.GetDirectoryName(init.config.destFileName);
-                init.config.logFilePath = logPath;
+                string logPath = System.IO.Path.GetDirectoryName(config.destFileName);
+                config.logFilePath = logPath;
 
                 //logging
-                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Storage location set to: " + init.config.logFilePath));
-            }
-            else
-            {
-                //set task (file opening) to true
-                guiLog.selectStoreLocation = false;
-
-                //check to deactivate start button
-                MainWindowBib.enableStart(guiLog.readyState());
-
-                //logging
-                LogWriter.Entries.Add(new LogPair(LogType.warning, "[GUI] Storage location was not set."));
+                LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Storage location set to: " + config.logFilePath));
             }
             return;
         }
@@ -149,25 +132,24 @@ namespace IFCTerrainGUI
         /// </summary>
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            //
-            LogWriter.initLogger(init.config);
+            //get config
+            var config = DataContext as Config;
 
-            //json settings set minDist to 1.0 (default value) [TODO]
-            init.config.minDist = 1.0;
-            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][JsonSetting] set 'minDist'-value to default (1.0 m)"));
+            //init logger
+            LogWriter.initLogger(config);
 
             //read export specific settings
             //get filepath
-            string dirPath = System.IO.Path.GetDirectoryName(init.config.destFileName);
-            string dirName = System.IO.Path.GetFileNameWithoutExtension(init.config.destFileName);
+            string dirPath = System.IO.Path.GetDirectoryName(config.destFileName);
+            string dirName = System.IO.Path.GetFileNameWithoutExtension(config.destFileName);
 
-            string fileType = init.config.fileType.ToString();
-            string ifcVersion = init.config.outIFCType.ToString();
-            string shape = init.config.outSurfaceType.ToString();
+            string fileType = config.fileType.ToString();
+            string ifcVersion = config.outIFCType.ToString();
+            string shape = config.outSurfaceType.ToString();
 
             #region metadata
             //will be executed if user select export of meta data
-            if (init.config.exportMetadataFile.GetValueOrDefault())
+            if (config.exportMetadataFile.GetValueOrDefault())
             {
                 try
                 {
@@ -228,7 +210,7 @@ namespace IFCTerrainGUI
                 LogWriter.Entries.Add(new LogPair(LogType.info, "[GUI][JsonSettings] start serializing json"));
 
                 //convert to json object
-                string jExportText = JsonConvert.SerializeObject(init.config, Formatting.Indented, new JsonSerializerSettings
+                string jExportText = JsonConvert.SerializeObject(config, Formatting.Indented, new JsonSerializerSettings
                 {
                     //ignore null values
                     NullValueHandling = NullValueHandling.Ignore
@@ -253,7 +235,7 @@ namespace IFCTerrainGUI
             Mouse.OverrideCursor = Cursors.Wait;
 
             //kick off background worker ifc
-            backgroundWorkerIfc.RunWorkerAsync();
+            backgroundWorkerIfc.RunWorkerAsync(config);
         }
 
         #region background worker
@@ -267,6 +249,9 @@ namespace IFCTerrainGUI
         /// </summary>
         private void BackgroundWorkerIfc_DoWork(object sender, DoWorkEventArgs e)
         {
+            //get config 
+            var config = e.Argument as Config;
+
             //Interface between GUI, reader and writer
             ConnectionInterface conInt = new ConnectionInterface();
 
@@ -274,24 +259,19 @@ namespace IFCTerrainGUI
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
 
             //start mapping process which currently begins with the selection of the file reader
-            bool processingResult = conInt.mapProcess(init.config, init.config91391, init.config18740);
+            bool processingResult = conInt.mapProcess(config, init.config91391, init.config18740);
 
+            //set result from processing (needed to handle in 'RunWorkerCompleted')
             e.Result = processingResult;
-
         }
 
         /// <summary>
         /// Executed after the conversion is done
-        /// TODO: catching errors & output to user
-        /// TODO: LOGGING
         /// </summary>
         private void BackgroundWorkerIfc_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //release the MainWindow (conversion is completed)
             this.IsEnabled = true;
-
-            //enable open storage button
-            this.btnOpenStore.IsEnabled = true;
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
@@ -299,13 +279,11 @@ namespace IFCTerrainGUI
             //check if processing result is true / false
             if (e.Result.Equals(true))
             {
-                guiLog.setLog("Processing successful.");
-                guiLog.resetTasks();
-                init.config = init.clearConfig();
+                guiLog.setLog(LogType.info, "Processing successful.");
             }
             else
             {
-                guiLog.setLog("Processing failed! -> Please check log file!");
+                guiLog.setLog(LogType.error, "Processing failed! -> Please check log file!");
             }
         }
         #endregion background worker
@@ -315,8 +293,11 @@ namespace IFCTerrainGUI
         /// </summary>
         private void btnOpenStore_Click(object sender, RoutedEventArgs e)
         {
+            //get config from data context
+            var config = DataContext as Config;
+
             //get file path
-            string path = System.IO.Path.GetDirectoryName(init.config.destFileName);
+            string path = System.IO.Path.GetDirectoryName(config.destFileName);
 
             //check if 'path' exsists
             if (Directory.Exists(path))
@@ -327,8 +308,38 @@ namespace IFCTerrainGUI
             else
             {
                 //gui logging (user information)
-                guiLog.setLog("File path could not be opened!");
+                guiLog.setLog(LogType.warning, "File path could not be opened!");
             }
+        }
+
+        /// <summary>
+        /// reset file path (kind of error handling)
+        /// </summary>
+        private void tabControlImport_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(e.Source is TabControl)
+            {
+                //get config from data context
+                var config = DataContext as Config;
+
+                config.filePath = null;
+                config.fileName = null;
+            }
+        }
+    }
+
+    public class EnumConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+                          System.Globalization.CultureInfo culture)
+        {
+            return (int)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+                                  System.Globalization.CultureInfo culture)
+        {
+            return (IfcTerrainFileType)value;
         }
     }
 }

@@ -103,6 +103,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -123,22 +127,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef30.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef40.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef50.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\ucMetadata.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -149,6 +137,9 @@
     </Compile>
     <Compile Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml.cs">
       <DependentUpon>LoGeoRef50_CRS_Metadata.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef.xaml.cs">
+      <DependentUpon>ucLoGeoRef.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml.cs">
       <DependentUpon>metadata_din_18740_6.xaml</DependentUpon>
@@ -164,18 +155,6 @@
     </Compile>
     <Compile Include="GUI\ExportSettings\ucIfcVersionShape.xaml.cs">
       <DependentUpon>ucIfcVersionShape.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef30.xaml.cs">
-      <DependentUpon>ucLoGeoRef30.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef40.xaml.cs">
-      <DependentUpon>ucLoGeoRef40.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef50.xaml.cs">
-      <DependentUpon>ucLoGeoRef50.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\ucMetadata.xaml.cs">
-      <DependentUpon>ucMetadata.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
     <Compile Include="MainWindow.xaml.cs">

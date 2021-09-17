@@ -85,7 +85,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             init.config18740.deviationAltitude = this.tbDeviationAltitude.Text.ToString();
 
             //gui logging (user information)
-            guiLog.setLog("Metadata DIN 18740-6 adopted!");
+            guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "Metadata DIN 18740-6 adopted!");
 
             //unlock MainWindow
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;

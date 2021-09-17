@@ -70,13 +70,13 @@ namespace GuiHandler.userControler.Grid
                 init.config.filePath = ofd.FileName;
 
                 //set JSON settings of file name
-                init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
+                //init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 #region logging
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
 
-                guiLog.setLog("File selected! --> Please make settings and apply.");
+                guiLog.setLog(LogType.info, "File selected! --> Please make settings and apply.");
                 #endregion logging
 
                 chkGridBB.IsEnabled = true;
@@ -135,7 +135,7 @@ namespace GuiHandler.userControler.Grid
             guiLog.fileReaded();
 
             //gui logging (user information)
-            guiLog.setLog("Grid settings applyed.");
+            guiLog.setLog(LogType.info, "Grid settings applyed.");
         }
 
         /// <summary>

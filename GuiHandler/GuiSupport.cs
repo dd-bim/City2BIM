@@ -103,10 +103,15 @@ namespace GuiHandler
         /// <summary>
         /// method to set gui messages
         /// </summary>
-        /// <param name="message"></param>
-        public static void setLog(string message)
+        public static void setLog(BIMGISInteropLibs.Logging.LogType logType, string message)
         {
-            UILog.LogMessages.Add(message);
+            UILog.logEntries.Add(new logEntry()
+            {
+                logType = logType,
+                logMessage = message
+            });
+
+            Console.WriteLine(message);
         }
 
         /// <summary>
@@ -114,7 +119,7 @@ namespace GuiHandler
         /// </summary>
         public static void clearLog()
         {
-            UILog.LogMessages.Clear();
+            UILog.logEntries.Clear();
         }
 
 
@@ -123,7 +128,7 @@ namespace GuiHandler
         /// [TODO]: clean up code (this solution is a very bad databinding example)
         /// </summary>
         public static void fileReaded()
-        {
+        {/*
             InformationPanel.info.LastOrDefault().fileName = init.config.fileName;
             InformationPanel.info.LastOrDefault().fileType = init.config.fileType.ToString();
             InformationPanel.info.LastOrDefault().breakline = init.config.breakline.GetValueOrDefault();
@@ -149,7 +154,7 @@ namespace GuiHandler
             {
                 InformationPanel.info.LastOrDefault().points = false;
                 InformationPanel.info.LastOrDefault().faces = true;
-            }
+            }*/
         }
     }
 }

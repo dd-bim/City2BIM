@@ -82,7 +82,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 //set to true
                 init.config.exportMetadataFile = true;
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'JSON' set."));
-                guiLog.setLog("Metadata export 'JSON' set.");
+                guiLog.setLog(LogType.info, "Metadata export 'JSON' set.");
 
             }
 
@@ -92,7 +92,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
                 //set output of IfcPropertySet to true
                 init.config.outIfcPropertySet = true;
                 LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'IfcPropertySet' set."));
-                guiLog.setLog("Metadata export 'IfcPropertySet' set.");
+                guiLog.setLog(LogType.info, "Metadata export 'IfcPropertySet' set.");
             }
 
             //check if export of DIN 91391-2
@@ -121,7 +121,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             GuiHandler.GuiSupport.selectMetadata = true;
 
             //gui logging
-            guiLog.setLog("Metadata 'export' set.");
+            guiLog.setLog(LogType.info, "Metadata 'export' set.");
 
             //check if all task are allready done
             MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());

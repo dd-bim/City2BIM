@@ -61,6 +61,9 @@
     <Compile Include="GuiSupport.cs" />
     <Compile Include="InitClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="userControler\CityGML\Read.xaml.cs">
+      <DependentUpon>Read.xaml</DependentUpon>
+    </Compile>
     <Compile Include="userControler\Dxf\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
@@ -90,6 +93,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="userControler\CityGML\Read.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="userControler\Dxf\Read.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

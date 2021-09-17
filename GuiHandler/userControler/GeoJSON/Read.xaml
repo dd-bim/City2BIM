@@ -1,77 +1,122 @@
 ﻿<UserControl x:Class="GuiHandler.userControler.GeoJSON.Read"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GuiHandler.userControler.GeoJSON"
              xmlns:it="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
-             mc:Ignorable="d" 
-             d:DesignHeight="525" d:DesignWidth="385">
+             xmlns:geoJson="clr-namespace:BIMGISInteropLibs.GeoJSON;assembly=BIMGISInteropLibs"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="525"
+             d:DesignWidth="385"
+             x:Name="ucGeoJson">
+
+    <!-- define static resources -->
+    <UserControl.Resources>
+        <!-- get enum for geometry type -->
+        <ObjectDataProvider x:Key="geoJsonEnum"
+                            ObjectType="{x:Type geoJson:GeometryType}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="geoJson:GeometryType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+    </UserControl.Resources>
+
     <Grid Margin="5">
-        <!-- small and simple layout -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-        
         <!-- add button to read file -->
-        <Button x:Name="btnReadGeoJson"
-                Content="Read 'GeoJSON' data"
-                Click="btnReadGeoJson_Click"/>
-
-        <!-- add button to apply settings -->
-        <Button 
-            x:Name="btnProcessGeoJson"
-            Content="Apply 'GeoJSON' file settings"
-            Grid.Row="2"
-            Click="btnProcessGeoJson_Click"
-            IsEnabled="False"
-            />
-
         <StackPanel Grid.Row="1">
+            <Button x:Name="btnReadGeoJson"
+                    Content="Read 'GeoJSON' data"
+                    Click="btnReadGeoJson_Click" />
+
+            <!-- textblock for user information -->
+            <TextBlock VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="10"
+                       TextWrapping="Wrap">
+                <TextBlock.Style>
+                    <!-- set default text -->
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Text"
+                                Value="Please continue with the further settings." />
+                        <Setter Property="TextBlock.Foreground"
+                                Value="Blue" />
+                        <Style.Triggers>
+                            <!-- trigger -> change text when a dxf file is read (may update the condition) -->
+                            <DataTrigger Binding="{Binding Path=fileName}"
+                                         Value="{x:Null}">
+                                <Setter Property="Text"
+                                        Value="Please import a GeoJson file!" />
+                                <Setter Property="TextBlock.Foreground"
+                                        Value="OrangeRed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+
             <DockPanel Margin="0,5,0,5">
-                <TextBlock 
-                    Text="Geometry type: "
-                    VerticalAlignment="Center"/>
-                <ComboBox
-                    x:Name="cbGeomType"
-                    VerticalContentAlignment="Center"
-                    ItemsSource="{Binding}"
-                    SelectionChanged="cbGeomType_SelectionChanged"
-                    IsEnabled="False">
+                <TextBlock Text="Geometry type: "
+                           VerticalAlignment="Center" />
+
+                <!-- combo box to select dtm geometry type-->
+                <ComboBox x:Name="cbGeomType"
+                          VerticalContentAlignment="Center"
+                          ItemsSource="{Binding Source={StaticResource geoJsonEnum}}"
+                          SelectedItem="{Binding Path=geometryType}"
+                          IsSynchronizedWithCurrentItem="True">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Style.Triggers>
+                                <!-- hide MultiLineString (not supported for DTM processing) -->
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
+                                             Value="3">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                </DataTrigger>
+
+                                <!-- hide FeatureCollection (not supported for DTM processing) -->
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
+                                             Value="4">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
                 </ComboBox>
             </DockPanel>
-            
+
+            <!--#region breakline settings -->
             <!-- breakline data section -->
-            <DockPanel 
-                Visibility="Hidden"
-                Margin="0,15,0,0">
-                <CheckBox 
-                    x:Name="chkBreakline"
-                    Content="Breakline" VerticalContentAlignment="Center" Margin="5,0"/>
-                <Button 
-                    x:Name="btnOpenBreaklineFile"
-                    Content="Read 'GeoJSON' breakline file"
-                    IsEnabled="{Binding ElementName=chkBreakline, Path=IsChecked}"
-                    Click="btnOpenBreaklineFile_Click"/>
+            <DockPanel Visibility="Collapsed"
+                       Margin="0,15,0,0">
+                <CheckBox x:Name="chkBreakline"
+                          Content="Breakline"
+                          VerticalContentAlignment="Center"
+                          Margin="5,0" />
+                <Button x:Name="btnOpenBreaklineFile"
+                        Content="Read 'GeoJSON' breakline file"
+                        IsEnabled="{Binding ElementName=chkBreakline, Path=IsChecked}"
+                        Click="btnOpenBreaklineFile_Click" />
             </DockPanel>
-            
-            
-            <DockPanel
-                Visibility="Hidden"
-                Margin="0,5,0,5">
-                <TextBlock 
-                    Text="Geometry type: "
-                    VerticalAlignment="Center"/>
-                <ComboBox
-                    x:Name="cbGeomTypeBreakline"
-                    VerticalContentAlignment="Center"
-                    ItemsSource="{Binding}"
-                    SelectionChanged="cbGeomTypeBreakline_SelectionChanged"
-                    IsEnabled="False">
+
+
+            <DockPanel Visibility="Collapsed"
+                       Margin="0,5,0,5">
+                <TextBlock Text="Geometry type: "
+                           VerticalAlignment="Center" />
+                <ComboBox x:Name="cbGeomTypeBreakline"
+                          VerticalContentAlignment="Center"
+                          IsEnabled="False">
                 </ComboBox>
             </DockPanel>
+            <!--#endregion -->
+
         </StackPanel>
     </Grid>
 </UserControl>

@@ -1,30 +1,61 @@
-﻿<Window x:Name="IFCTerrainGUI" x:Class="IFCTerrainGUI.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ucExportSettings ="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
-        xmlns:ucDxf ="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
-        xmlns:ucGrid ="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
-        xmlns:ucReb ="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
-        xmlns:ucGrafbat ="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
-        xmlns:ucXml ="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
-        xmlns:ucPostGIS ="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
-        xmlns:ucGeoJson ="clr-namespace:GuiHandler.userControler.GeoJSON;assembly=GuiHandler"
+        xmlns:ucExportSettings="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+        xmlns:ucDxf="clr-namespace:GuiHandler.userControler.Dxf;assembly=GuiHandler"
+        xmlns:ucGrid="clr-namespace:GuiHandler.userControler.Grid;assembly=GuiHandler"
+        xmlns:ucReb="clr-namespace:GuiHandler.userControler.Reb;assembly=GuiHandler"
+        xmlns:ucGrafbat="clr-namespace:GuiHandler.userControler.Grafbat;assembly=GuiHandler"
+        xmlns:ucLandXml="clr-namespace:GuiHandler.userControler.XML;assembly=GuiHandler"
+        xmlns:ucCityGml="clr-namespace:GuiHandler.userControler.CityGML;assembly=GuiHandler"
+        xmlns:ucPostGIS="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
+        xmlns:ucGeoJson="clr-namespace:GuiHandler.userControler.GeoJSON;assembly=GuiHandler"
         xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
+        xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
+        xmlns:LoGeoRef="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.LoGeoRef"
+        xmlns:ucIfcMetadata="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
+        x:Name="IFCTerrainGUI"
+        x:Class="IFCTerrainGUI.MainWindow"
         mc:Ignorable="d"
-        Title="IFCTerrain GUI" 
-        Height="880" Width="800" Icon="Resources/DD_BIM_ICON.ico"
-        FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize" 
-        >
+        Title="IFCTerrain GUI"
+        Height="880"
+        Width="800"
+        Icon="Resources/DD_BIM_ICON.ico"
+        FontFamily="Bahnschrift"
+        FontSize="12"
+        ResizeMode="CanMinimize">
+
+    <Window.Resources>
+        <!-- get config to use in data binding -->
+        <IfcTerrain:Config x:Key="config" />
+
+        <!-- provide data from enum (file type) -->
+        <ObjectDataProvider x:Key="enumFileType"
+                            ObjectType="{x:Type IfcTerrain:IfcTerrainFileType}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="IfcTerrain:IfcTerrainFileType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <local:EnumConverter x:Key="enumConverter" />
+    </Window.Resources>
+
+    <!-- set config to data context -->
+    <Window.DataContext>
+        <Binding Source="{StaticResource config}" />
+    </Window.DataContext>
+
     <Grid x:Name="MainGrid">
         <!-- add background coloring -->
         <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#FFF0F0F0" Offset="1"/>
-                <GradientStop Color="White"/>
+            <LinearGradientBrush EndPoint="0.5,1"
+                                 StartPoint="0.5,0">
+                <GradientStop Color="#FFF0F0F0"
+                              Offset="1" />
+                <GradientStop Color="White" />
             </LinearGradientBrush>
         </Grid.Background>
 
@@ -32,258 +63,307 @@
         here the whole grid of the GUI (Main Window) is created
         -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7"/>
+            <ColumnDefinition Width="7" />
             <ColumnDefinition />
-            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="10" />
             <ColumnDefinition />
-            <ColumnDefinition Width="7"/>
+            <ColumnDefinition Width="7" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="7"/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="7"/>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="7" />
+            <RowDefinition Height="51" />
+            <RowDefinition Height="51*" />
+            <RowDefinition Height="51*" />
+            <RowDefinition Height="51*" />
+            <RowDefinition Height="51*" />
+            <RowDefinition Height="51*" />
+            <RowDefinition Height="51*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="7" />
         </Grid.RowDefinitions>
         <!--#endregion grid definition-->
 
-        <!--#region header-->
+        <!-- the main grid ends here (no more code to add from here on)-->
         <!-- Logo -->
-        <Image x:Name="imgDdBimLogo" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0" HorizontalAlignment="Center" Source="Resources/DD_BIM_LOGO.png" VerticalAlignment="Top"/>
+        <Image x:Name="imgDdBimLogo"
+               Grid.Column="1"
+               Grid.ColumnSpan="3"
+               Grid.Row="0"
+               HorizontalAlignment="Center"
+               Source="Resources/DD_BIM_LOGO.png"
+               VerticalAlignment="Top" />
 
         <!-- Textbox "Import Settings"-->
-        <TextBlock x:Name="tbImportSettings" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Text="Import Settings"/>
+        <TextBlock x:Name="tbImportSettings"
+                   Grid.Column="1"
+                   Grid.Row="0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Text="Import Settings" />
 
         <!-- Textbox "Export Settings"-->
-        <TextBlock x:Name="tbExportSettings" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Text="Export Settings"/>
+        <TextBlock x:Name="tbExportSettings"
+                   Grid.Column="3"
+                   Grid.Row="0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Text="Export Settings" />
 
         <!-- Textbox "Documentation" (if the linking is no longer correct, this has to be updated in the used function)-->
-        <TextBlock x:Name="tbDocumentation" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="16" Text="Documentation" ToolTip="Here you can access the documentation for further information (external link to github repository)" MouseDown="tbDocumentation_MouseDown" Foreground="#FF223E92" TextDecorations="Underline" Cursor="Help"/>
-
-        <!--#endregion header-->
+        <TextBlock x:Name="tbDocumentation"
+                   Grid.Column="3"
+                   Grid.Row="0"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Bottom"
+                   FontSize="16"
+                   Text="Documentation"
+                   ToolTip="Here you can access the documentation for further information (external link to github repository)"
+                   MouseDown="tbDocumentation_MouseDown"
+                   Foreground="#FF223E92"
+                   TextDecorations="Underline"
+                   Cursor="Help" />
 
         <!--#region Selection field for the import of the different data formats
         #1 The tabs are created the logic is integrated by referenced user controllers. Changes must be made in the controller!
         #2 If a new tab is to be created, then this is to be created over a TabItem. 
         The layout can be created here and should then be swapped out as a user controller for a better overview.
         -->
-        <TabControl 
-            x:Name="tabControlImport" 
-            Grid.Column="1"
-            Grid.Row="2"
-            Grid.RowSpan="12"            
-            >
+        <TabControl x:Name="tabControlImport"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    Grid.RowSpan="12"
+                    SelectedIndex="{Binding Path=fileType, Converter={StaticResource enumConverter}, ConverterParameter={x:Type IfcTerrain:IfcTerrainFileType}}"
+                    IsSynchronizedWithCurrentItem="True"
+                    Background="Transparent"
+                    SelectionChanged="tabControlImport_SelectionChanged">
+            <!-- more tabs (if needed) have to be added here-->
             <!--DXF-->
-            <TabItem x:Name="tabPageDxf"        
-                     Header="CAD (DXF)">
+            <TabItem x:Name="tabPageDxf"
+                     Header="CAD (DXF)"
+                     TabIndex="0">
                 <!--include the controller to read a dxf file (Attention: Background Worker is used here!) Changes have to be done there!!!-->
                 <!--<ucDxf:ucReadDxf/>-->
-                <ucDxf:Read/>
+                <ucDxf:Read DataContext="{Binding Source={StaticResource config}}" />
             </TabItem>
 
-            <!--XML-->
-            <TabItem 
-                x:Name ="tabPageXml"       
-                Header="TIN (LandXML, CityGML)"
-                >
-                <!--include the controller to read a xml file -->
-                <ucXml:Read/>
+            <!--LandXML-->
+            <TabItem x:Name="tabPageXml"
+                     Header="TIN (LandXML)"
+                     TabIndex="1">
+                <!--include the controller to read a land xml file -->
+                <ucLandXml:Read DataContext="{Binding Source={StaticResource config}}"/>
+            </TabItem>
+
+            <!-- CityGML -->
+            <TabItem x:Name="tabPageCityGml"
+                     Header="TIN (CityGML)"
+                     TabIndex="2">
+                <!--include the controller to read a city gml file -->
+                <ucCityGml:Read DataContext="{Binding Source={StaticResource config}}" />
             </TabItem>
 
             <!--Grafbat-->
-            <TabItem x:Name ="tabPageGrafbat"   Header="GEOgraf (OUT)">
+            <TabItem x:Name="tabPageGrafbat"
+                     Header="GEOgraf (OUT)"
+                     TabIndex="3">
                 <!-- reference to the user controller (logic is outsourced there)-->
-                <ucGrafbat:Read/>
+                <ucGrafbat:Read />
             </TabItem>
 
             <!--PostGIS-->
-            <TabItem 
-                x:Name ="tabPagePostGis"   
-                Header="Database (PostGIS)">
-                
+            <TabItem x:Name="tabPagePostGis"
+                     Header="Database (PostGIS)"
+                     TabIndex="4">
+
                 <!-- add user controler for postgis reading-->
-                <ucPostGIS:Read/>
+                <ucPostGIS:Read />
 
             </TabItem>
 
             <!--ElevationGrid-->
-            <TabItem 
-                x:Name ="tabPageGrid"      
-                Header="Grid (XYZ)"
-                IsEnabled="True">
+            <TabItem x:Name="tabPageGrid"
+                     Header="Grid (XYZ)"
+                     IsEnabled="True"
+                     TabIndex="5">
                 <!-- add user controler for reading reb data -->
-                <ucGrid:Read/>
-                
+                <ucGrid:Read />
+
             </TabItem>
 
             <!--REB-->
-            <TabItem 
-                x:Name ="tabPageReb"       
-                Header="REB (DA45, DA49, DA58)">
+            <TabItem x:Name="tabPageReb"
+                     Header="REB (DA45, DA49, DA58)"
+                     TabIndex="6">
                 <!-- add user controler for reading reb data -->
-                <ucReb:Read/>
+                <ucReb:Read />
             </TabItem>
 
             <!-- GeoJSON -->
-            <TabItem
-                x:Name="tabPageGeoJson"
-                Header="JSON (GeoJSON)">
-                <ucGeoJson:Read/>
+            <TabItem x:Name="tabPageGeoJson"
+                     Header="JSON (GeoJSON)"
+                     TabIndex="7">
+                <ucGeoJson:Read DataContext="{Binding Source={StaticResource config}}" />
             </TabItem>
-            
-            <!-- SHAPE -->
-            <TabItem 
-                x:Name="tabPageShape"
-                Header="Shape (shp)"
-                Visibility="Collapsed">
-                
-            </TabItem>
-            <!-- more tabs (if needed) have to be added here-->
+
+            <!-- ESRI SHAPE -->
+            <TabItem x:Name="tabPageShape"
+                     Header="Shape (shp)"
+                     Visibility="Collapsed" />
         </TabControl>
-        <!--#endregion Selection field for the import of the different data formats-->
 
         <!-- add Group Box for IFC - Version
         placeholder for panel
         -->
-        <Grid 
-            Grid.Column="3"
-            Grid.Row="2"
-            Grid.RowSpan="2">
-            <!-- add user controler version + shape-->
-            <ucExportSettings:ucIfcVersionShape/>
+        <Grid Grid.Column="3"
+              Grid.Row="2"
+              Grid.RowSpan="2">
+            <GroupBox Header="General IFC settings"
+                      Margin="0,0,0,5">
+                <!-- add user controler version + shape-->
+                <ucExportSettings:ucIfcVersionShape DataContext="{Binding Source={StaticResource config}}" />
+            </GroupBox>
         </Grid>
 
         <!-- add group box for georef -->
-        <GroupBox
-            Grid.Column="3"
-            Grid.Row="4"
-            Grid.RowSpan="5"
-            Header="Georeferencing (LoGeoRef)"
-            Margin="0,0,0,5">
-            
-            <!-- add the user controller-->
-            <TabControl x:Name="tbCLoGeoRef">
-                <TabItem x:Name="tabLoGeoRef30" Header="Level 30">
-                    <!-- add controler for LoGeoRef 30-->
-                    <ucExportSettings:ucLoGeoRef30/>
-                </TabItem>
+        <GroupBox Grid.Column="3"
+                  Grid.Row="4"
+                  Grid.RowSpan="5"
+                  Header="Georeferencing (LoGeoRef)"
+                  Margin="0,0,0,5">
 
-                <TabItem Header="Level 40">
-                    <!-- add controler for LoGeoRef 40-->
-                    <ucExportSettings:ucLoGeoRef40/>
-                </TabItem>
-
-                <TabItem x:Name="tabLoGeoRef50" Header="Level 50" IsEnabled="False">
-                    <!-- add controler for LoGeoRef 50-->
-                    <ucExportSettings:ucLoGeoRef50/>
-                </TabItem>
-            </TabControl>
+            <!-- add user controler for LoGeoRef -->
+            <LoGeoRef:ucLoGeoRef DataContext="{Binding Source={StaticResource config}}" />
         </GroupBox>
 
         <!-- group box for meta data settings (placeholder only) -->
-        <GroupBox
-            Grid.Column="3"
-            Grid.Row="9"
-            Grid.RowSpan="5"
-            Header="Metadata"
-            Margin="0,0,0,5">
-            <ucExportSettings:ucMetadata/>
+        <GroupBox Grid.Column="3"
+                  Grid.Row="9"
+                  Grid.RowSpan="5"
+                  Header="Metadata"
+                  Margin="0,0,0,5"
+                  >
+            <TabControl Background="Transparent">
+                <TabItem Header="IFC project settings">
+                    <!-- add user controler to set ifc project metadata -->
+                    <ucIfcMetadata:ucMetaIfcProject DataContext="{Binding Source={StaticResource config}}" />
+                </TabItem>
+
+                <TabItem Header="Metadata export">
+                    <ucIfcMetadata:ucMetaIfcJson />
+                </TabItem>
+                
+            </TabControl>
+            
+           
         </GroupBox>
 
         <!-- Logging container -->
-        <GroupBox
-            Grid.Column="3"
-            Grid.Row="14"
-            Grid.RowSpan="3"
-            Header="Logging"
-            Margin="0,0,0,5">
+        <GroupBox Grid.Column="3"
+                  Grid.Row="14"
+                  Grid.RowSpan="3"
+                  Header="Logging"
+                  Margin="0,0,0,5">
             <!-- add user controler -->
-
-            <uC:UILog/>
+            <uC:UILog DataContext="{Binding Source={StaticResource config}}" />
         </GroupBox>
 
         <!-- storage of the converted data (ifc file, ifc xml, config, log) -->
-        <GroupBox
-            Grid.Row="17"
-            Grid.Column="1"
-            Grid.ColumnSpan="3"
-            Header="Target file location" FontSize="14">
-            <Grid>
+        <GroupBox Grid.Row="17"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="3"
+                  Header="Target file location"
+                  FontSize="14">
+            <Grid Margin="0,2,0,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.2*"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.2*"/>
-                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.2*" />
                 </Grid.ColumnDefinitions>
 
-                <Button
-                    x:Name="btnChooseStorageLocation"
-                    Content="Choose"
-                    FontWeight="Bold"
-                    Grid.Column="0"
-                    Height="25" Click="btnChooseStorageLocation_Click"
-                    ToolTip="Please select the location for the IFC file (includes config and metadata if necessary)!"
-                    />
+                <Button x:Name="btnChooseStorageLocation"
+                        Content="Choose"
+                        FontWeight="Bold"
+                        Grid.Column="0"
+                        Click="btnChooseStorageLocation_Click"
+                        ToolTip="Please select the location for the IFC file (includes config and metadata if necessary)!" />
+                <!-- Text="{Binding Source={StaticResource config}, Path=destFileName}"-->
+                <TextBox x:Name="tbIfcDir"
+                         Margin="5,0,5,0"
+                         Grid.Column="1"
+                         Padding="2,0,0,0"
+                         IsReadOnly="True"
+                         VerticalContentAlignment="Center">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Text"
+                                    Value="{Binding Source={StaticResource config}, Path=destFileName}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={StaticResource config}, Path=destFileName}"
+                                             Value="{x:Null}">
+                                    <Setter Property="Text"
+                                            Value="First set the storage location!"/>
+                                    <Setter Property="TextBlock.Foreground"
+                                            Value="OrangeRed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <Button x:Name="btnStart"
+                        Content="Start"
+                        Grid.Column="2"
+                        Click="btnStart_Click"
+                        ToolTip="Please set all the required settings first. Once these have been made, this button will be enabled."
+                        ToolTipService.ShowOnDisabled="True"
+                        Margin="0,0,5,0"
+                        FontWeight="Bold" />
 
-                <TextBox
-                    x:Name="tbIfcDir"
-                    Margin="5,0,5,0"
-                    Grid.Column="1"
-                    IsReadOnly="True"
-                    Height="25"
-                    Background="#FFDDDDDD"
-                    VerticalContentAlignment="Center"
-                    />
-                <Button
-                    x:Name="btnStart"
-                    Content="Start"
-                    Grid.Column="2"
-                    Height="25"
-                    Click="btnStart_Click"
-                    ToolTip="Please set all the required settings first. Once these have been made, this button will be enabled."
-                    ToolTipService.ShowOnDisabled="True"
-                    IsEnabled="False"
-                    Margin="0,0,5,0"
-                    FontWeight="Bold"
-                    />
-
-                <Button
-                    x:Name="btnOpenStore"
-                    Content="Open location"
-                    Grid.Column="3"
-                    IsEnabled="False"
-                    Height="25"
-                    ToolTip="After conversion you can open the storage location here!"
-                    ToolTipService.ShowOnDisabled="True" Click="btnOpenStore_Click"
-                    />
+                <Button Content="Open location"
+                        Grid.Column="3"
+                        ToolTip="Open the storage location here!"
+                        ToolTipService.ShowOnDisabled="True"
+                        Click="btnOpenStore_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled"
+                                    Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={StaticResource config}, Path=destFileName}"
+                                             Value="{x:Null}">
+                                    <Setter Property="IsEnabled"
+                                            Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
         </GroupBox>
 
-        <!-- info panel -->
-        <GroupBox
-            Grid.Column="1"
-            Grid.Row="14"
-            Grid.RowSpan="3"         
-            Header="Information panel"
-            Margin="0,5,0,5">
-            <!-- add user controler for information panel -->
-            <uC:InformationPanel/>
+        <GroupBox Grid.Column="1"
+                  Grid.Row="14"
+                  Grid.RowSpan="3"
+                  Header="Information panel"
+                  Margin="0,5,0,5">
+            <uC:InformationPanel DataContext="{Binding Source={StaticResource config}}" />
+
+
+
         </GroupBox>
 
-        <!-- the main grid ends here (no more code to add from here on)-->
     </Grid>
 </Window>

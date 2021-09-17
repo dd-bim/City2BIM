@@ -6,64 +6,150 @@
              xmlns:local="clr-namespace:GuiHandler.userControler.XML"
              mc:Ignorable="d" 
              d:DesignHeight="525" d:DesignWidth="385">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Viewbox>
+                            <Border x:Name="Border"
+                                    CornerRadius="10"
+                                    Background="#FFFFFFFF"
+                                    Width="40"
+                                    Height="20">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0.5"
+                                                      Direction="0"
+                                                      Opacity="0.3" />
+                                </Border.Effect>
+                                <Ellipse x:Name="Ellipse"
+                                         Fill="#FFFFFFFF"
+                                         Stretch="Uniform"
+                                         Margin="2 1 2 1"
+                                         Stroke="Gray"
+                                         StrokeThickness="0.2"
+                                         HorizontalAlignment="Stretch">
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect BlurRadius="10"
+                                                          ShadowDepth="1"
+                                                          Opacity="0.3"
+                                                          Direction="260" />
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Border>
+                        </Viewbox>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Checked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="Border"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="#FF4CD661"
+                                                        Duration="0:0:0.1" />
+                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="20 1 2 1"
+                                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="Unchecked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="Border"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="White"
+                                                        Duration="0:0:0.1" />
+                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="2 1 2 1"
+                                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+    </UserControl.Resources>
+    
     <Grid Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-        <Button
-            x:Name="btnReadXml"
-            Grid.Row="0"
-            Content="Read 'LandXML/ CityGML'"
-            Click="btnReadXml_Click">
-        </Button>
+        <StackPanel>
+            <Button x:Name="btnReadXml"
+                    Grid.Row="0"
+                    Content="Read 'LandXML'"
+                    Click="btnReadXml_Click">
+            </Button>
 
-        <Button
-            x:Name="btnProcessXml"
-            Grid.Row="2"
-            Content="Apply 'LandXML/ CityGML' file settings" 
-            Click="btnProcessXml_Click"
-            IsEnabled="False"
-            />
+            <!-- textblock for user information -->
+            <TextBlock VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="10"
+                       TextWrapping="Wrap">
+                <TextBlock.Style>
+                    <!-- set default text -->
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Text"
+                                Value="Please continue with the further settings." />
+                        <Setter Property="TextBlock.Foreground"
+                                Value="Blue" />
+                        <Style.Triggers>
+                            <!-- trigger -> change text when a dxf file is read (may update the condition) -->
+                            <DataTrigger Binding="{Binding Path=fileName}"
+                                         Value="{x:Null}">
+                                <Setter Property="Text"
+                                        Value="Please import a LandXML file!" />
+                                <Setter Property="TextBlock.Foreground"
+                                        Value="OrangeRed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
 
-        <StackPanel
-            Grid.Row="1">
+            <!-- breakline settings -->
             <DockPanel
                 Margin="0,5">
                 <GroupBox Header="Breakline processing">
-                    <CheckBox
-                        x:Name="chkBreakline" 
-                        Content="Enable breakline processing"
-                        HorizontalAlignment="Center"
-                        Margin="5"
-                        IsEnabled="False"
-                        />
+                    <CheckBox x:Name="chkBreakline"
+                              Content="Enable breakline processing"
+                              HorizontalAlignment="Center"
+                              VerticalContentAlignment="Bottom"
+                              Margin="10"
+                              IsChecked="{Binding breakline, UpdateSourceTrigger=PropertyChanged}">
+                        <CheckBox.Style>
+                            <Style TargetType="CheckBox">
+                                <Setter Property="IsEnabled"
+                                        Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=fileName}"
+                                                 Value="{x:Null}">
+                                        <Setter Property="IsEnabled"
+                                                Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>    
+                            </Style>
+                        </CheckBox.Style>
+                    </CheckBox>
                 </GroupBox>
-
-
             </DockPanel>
             
             
-
-
-
+            <!-- settings for left or right handed -->
             <GroupBox
                 Header="Coordinate system config"
                 >
-                <DockPanel
-                    HorizontalAlignment="Center">
-                    <RadioButton
-                        x:Name="rbGeodeticCRS"
-                        Content="XYZ (default; right handed)" 
-                        Margin="5"
-                        IsChecked="True"/>
-                    <RadioButton
-                        x:Name="rbMathematicCRS"
-                        Content="YXZ (left handed)" Margin="5"/>
+                <DockPanel Margin="10"
+                           HorizontalAlignment="Center">
+                    <TextBlock Text="XYZ (right handed)"
+                               ToolTip="Default value"/>
+                    <ToggleButton IsChecked="{Binding mathematicCRS, UpdateSourceTrigger=PropertyChanged}"
+                        Width="40"
+                        Height="15"/>
+                    <TextBlock Text="YXZ (left handed)"
+                               ToolTip="Only change to this if needed!"/>
                 </DockPanel>
             </GroupBox>
 

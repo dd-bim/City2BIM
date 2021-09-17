@@ -25,21 +25,6 @@ namespace GuiHandler.userControler.GeoJSON
         public Read()
         {
             InitializeComponent();
-
-            //bind conversion types
-            cbGeomType.ItemsSource = new string[]
-            {
-                GeometryType.MultiPoint.ToString(),
-                GeometryType.MultiPolygon.ToString(),
-                GeometryType.GeometryCollection.ToString()
-            };
-
-            cbGeomTypeBreakline.ItemsSource = new string[]
-            {
-                GeometryType.MultiLineString.ToString(),
-                GeometryType.MultiPolygon.ToString(),
-                GeometryType.FeatureCollection.ToString()
-            };
         }
         /// <summary>
         /// Event to handle file dialog and set file
@@ -56,82 +41,19 @@ namespace GuiHandler.userControler.GeoJSON
             //task to run when file has been selected
             if (ofd.ShowDialog().GetValueOrDefault())
             {
-                //set file path
-                init.config.filePath = ofd.FileName;
+                //get config (casted as Config)
+                var config = DataContext as Config;
 
-                //set file name
-                init.config.fileName = Path.GetFileNameWithoutExtension(ofd.FileName);
+                //set file path & fiel name
+                config.filePath = ofd.FileName;
+                config.fileName = Path.GetFileName(ofd.FileName);
 
-                //set file type
-                init.config.fileType = IfcTerrainFileType.GeoJSON;
-
-                cbGeomType.IsEnabled = true;
-            }
-        }
-
-        private void btnProcessGeoJson_Click(object sender, RoutedEventArgs e)
-        {
-            //set file type to geojson
-            init.config.fileType = IfcTerrainFileType.GeoJSON;
-            
-            if(init.config.geometryType == GeometryType.MultiPoint)
-            {
-                init.config.readPoints = true;
-            }
-            else{
-                init.config.readPoints = false;
-            }
-
-            //breakline processing
-            if (chkBreakline.IsChecked.GetValueOrDefault())
-            {
-                init.config.breakline = true;
-            }
-            else
-            {
-                init.config.breakline = false;
-            }
-
-            //
-            guiLog.taskfileOpening = true;
-            
-            //
-            guiLog.rdyDTM2BIM();
-            
-            //
-            guiLog.setLog("GeoJSON settings applyed.");
-
-            //
-            guiLog.fileReaded();
-            
-            //
-            guiLog.readyState();
-            
-        }
-
-        private void cbGeomType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cbGeomType.SelectedIndex != -1)
-            {
-                init.config.geometryType = (GeometryType)Enum.Parse(typeof(GeometryType), cbGeomType.SelectedItem.ToString());
-                //
-                guiLog.setLog("Geometry type set to: " + init.config.geometryType);
-
-                btnProcessGeoJson.IsEnabled = true;
-            }
-        }
-
-        private void cbGeomTypeBreakline_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(cbGeomTypeBreakline.SelectedIndex != -1)
-            {
-                init.config.breaklineGeometryType = (GeometryType)Enum.Parse(typeof(GeometryType), cbGeomTypeBreakline.SelectedItem.ToString());
-                guiLog.setLog("Breakline geometry type set to: " + init.config.breaklineGeometryType);
+                guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "GeoJSON file readed: " + config.fileName);
             }
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         private void btnOpenBreaklineFile_Click(object sender, RoutedEventArgs e)
         {
