@@ -42,5 +42,17 @@ namespace GuiHandler.userControler.XML
                 config.fileName = Path.GetFileName(ofd.FileName);
             }
         }
+
+        private void tgbtnCRS_Checked(object sender, RoutedEventArgs e)
+        {
+            var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+            config.invertedCRS = true;
+        }
+
+        private void tgbtnCRS_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+            config.invertedCRS = false;
+        }
     }
 }

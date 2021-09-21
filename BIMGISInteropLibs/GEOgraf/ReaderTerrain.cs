@@ -72,7 +72,12 @@ namespace BIMGISInteropLibs.GEOgraf
             var lines = new List<LineString>();
             var triMap = new HashSet<Triangulator.triangleMap>();
 
+
             string horizonFilter = string.Empty;
+            if (config.readPoints.GetValueOrDefault() && !string.IsNullOrEmpty(config.horizonFilter))
+            {
+                horizonFilter = config.horizonFilter;
+            }
 
             //pass through each line of the file
             foreach (var line in File.ReadAllLines(config.filePath))
@@ -88,11 +93,10 @@ namespace BIMGISInteropLibs.GEOgraf
                     && double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
                     && double.TryParse(values[4], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
                 {
-
                     var pT = values[1].Split('.');
                     int.TryParse(pT[1], out int pointtype);
 
-                    if (horizonFilter.Contains(pointtype.ToString()) || !config.readPoints.GetValueOrDefault())
+                    if (horizonFilter.Contains(pointtype.ToString()) || !config.filterPoints.GetValueOrDefault())
                     {
                         //create new point
                         Point p = new Point(x, y, z);

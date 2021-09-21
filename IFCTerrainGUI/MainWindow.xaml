@@ -25,11 +25,11 @@
         Icon="Resources/DD_BIM_ICON.ico"
         FontFamily="Bahnschrift"
         FontSize="12"
-        ResizeMode="CanMinimize"
+        
         Loaded="IFCTerrainGUI_Loaded">
 
     <Window.Resources>
-        <!-- get config to use in data binding -->
+        <!-- get config to use in data binding ResizeMode="CanMinimize"-->
         <IfcTerrain:Config x:Key="config" />
 
         <!-- provide data from enum (file type) -->
@@ -165,7 +165,7 @@
                      Header="TIN (LandXML)"
                      TabIndex="1">
                 <!--include the controller to read a land xml file -->
-                <ucLandXml:Read DataContext="{Binding Source={StaticResource config}}" />
+                <ucLandXml:Read DataContext="{Binding Source={StaticResource config}}"/>
             </TabItem>
 
             <!-- CityGML -->
@@ -181,7 +181,7 @@
                      Header="GEOgraf (OUT)"
                      TabIndex="3">
                 <!-- reference to the user controller (logic is outsourced there)-->
-                <ucGrafbat:Read />
+                <ucGrafbat:Read DataContext="{Binding Source={StaticResource config}}"/>
             </TabItem>
 
             <!--PostGIS-->
@@ -190,7 +190,7 @@
                      TabIndex="4">
 
                 <!-- add user controler for postgis reading-->
-                <ucPostGIS:Read />
+                <ucPostGIS:Read DataContext="{Binding Source={StaticResource config}}"/>
 
             </TabItem>
 
@@ -199,7 +199,7 @@
                      Header="Grid (XYZ)"
                      TabIndex="5">
                 <!-- add user controler for reading reb data -->
-                <ucGrid:Read />
+                <ucGrid:Read DataContext="{Binding Source={StaticResource config}}"/>
 
             </TabItem>
 
@@ -208,7 +208,7 @@
                      Header="REB (DA45, DA49, DA58)"
                      TabIndex="6">
                 <!-- add user controler for reading reb data -->
-                <ucReb:Read />
+                <ucReb:Read  DataContext="{Binding Source={StaticResource config}}"/>
             </TabItem>
 
             <!-- GeoJSON -->
@@ -299,19 +299,22 @@
                          Margin="5,0,5,0"
                          Grid.Column="1"
                          Padding="2,0,0,0"
-                         IsReadOnly="True"
                          VerticalContentAlignment="Center">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Setter Property="Text"
                                     Value="{Binding Source={StaticResource config}, Path=destFileName}" />
+                            <Setter Property="IsReadOnly"
+                                    Value="False" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Source={StaticResource config}, Path=destFileName}"
                                              Value="{x:Null}">
                                     <Setter Property="Text"
-                                            Value="First set the storage location!" />
+                                            Value="Set the storage location!" />
                                     <Setter Property="TextBlock.Foreground"
                                             Value="OrangeRed" />
+                                    <Setter Property="IsReadOnly"
+                                            Value="True" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -332,16 +335,10 @@
                             <Setter Property="IsEnabled"
                                     Value="True" />
                             <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding fileName}"
-                                                   Value="{x:Null}" />
-                                        <Condition Binding="{Binding filePath}"
-                                                   Value="{x:Null}" />
-                                    </MultiDataTrigger.Conditions>
+                                <DataTrigger Binding="{Binding filePath}" Value="{x:Null}">
                                     <Setter Property="IsEnabled"
                                             Value="False" />
-                                </MultiDataTrigger>
+                                </DataTrigger>
                             </Style.Triggers>
                             
                         </Style>

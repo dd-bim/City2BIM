@@ -8,7 +8,9 @@ using System.ComponentModel; //interface property changed
 
 namespace GuiHandler.userControler
 {
-
+    /// <summary>
+    /// store log entries with different verbosity level (has no connection with the output config file) 
+    /// </summary>
     public class logEntry : INotifyPropertyChanged
     {
         /// <summary>
@@ -30,6 +32,9 @@ namespace GuiHandler.userControler
 
         private BIMGISInteropLibs.Logging.LogType _logType { get; set; }
 
+        /// <summary>
+        /// store log type via enumeration
+        /// </summary>
         public BIMGISInteropLibs.Logging.LogType logType
         {
             get { return _logType; }
@@ -39,9 +44,12 @@ namespace GuiHandler.userControler
                 NotifyPropertyChanged(nameof(logType));
             }
         }
-
+        
         private string _logMessage { get; set; }
 
+        /// <summary>
+        /// message which will be logged
+        /// </summary>
         public string logMessage
         {
             get { return _logMessage; }
@@ -58,7 +66,9 @@ namespace GuiHandler.userControler
     /// </summary>
     public partial class UILog : UserControl
     {
-        
+        /// <summary>
+        /// create obs collection to store log entries
+        /// </summary>
         public static ObservableCollection<logEntry> logEntries { get; set; }
 
         /// <summary>
@@ -71,11 +81,9 @@ namespace GuiHandler.userControler
             //init new observable collection
             logEntries = new ObservableCollection<logEntry>();
 
-            //set data context to list view
+            //set data context 'log entries' to list view ('container')
             lvGuiLogging.DataContext = logEntries;
         }
-
-        
 
         #region auto scroll in logging field
         //source: https://stackoverflow.com/questions/2337822/wpf-listbox-scroll-to-end-automatically
@@ -119,5 +127,19 @@ namespace GuiHandler.userControler
             return null;
         }
         #endregion
+
+        /// <summary>
+        /// function to set some user feedback / gui logging 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void selectVerbosityLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //get config
+            var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+
+            //gui log
+            GuiSupport.setLog(BIMGISInteropLibs.Logging.LogType.info, "Verbosity level set to: " + config.verbosityLevel);
+        }
     }
 }

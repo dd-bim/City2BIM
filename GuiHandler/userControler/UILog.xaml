@@ -28,7 +28,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <DockPanel>
+        <DockPanel ToolTip="The verbosity level affects the log file. (not the GUI)">
             <TextBlock Text="Choose Verbosity Level:"
                        VerticalAlignment="Center"
                        Margin="5,0,0,0" />
@@ -37,7 +37,8 @@
                       Margin="10,0,0,0"
                       VerticalContentAlignment="Center"
                       ItemsSource="{Binding Source={StaticResource loggingEnum}}"
-                      SelectedItem="{Binding Path=verbosityLevel}">
+                      SelectedItem="{Binding Path=verbosityLevel}"
+                      SelectionChanged="selectVerbosityLevel_SelectionChanged">
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="ComboBoxItem">
                         <Style.Triggers>

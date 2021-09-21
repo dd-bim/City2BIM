@@ -13,8 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic; //include for error handling
-
 //logging
 using BIMGISInteropLibs.Logging; //access to log writer
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
@@ -117,14 +115,9 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             }
             */
 
-            //set task (metadata) to true
-            GuiHandler.GuiSupport.selectMetadata = true;
 
             //gui logging
             guiLog.setLog(LogType.info, "Metadata 'export' set.");
-
-            //check if all task are allready done
-            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
         }
 
         /// <summary>

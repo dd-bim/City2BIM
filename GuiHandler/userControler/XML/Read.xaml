@@ -1,11 +1,13 @@
 ﻿<UserControl x:Class="GuiHandler.userControler.XML.Read"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GuiHandler.userControler.XML"
-             mc:Ignorable="d" 
-             d:DesignHeight="525" d:DesignWidth="385">
+             xmlns:uc="clr-namespace:GuiHandler.userControler"
+             mc:Ignorable="d"
+             d:DesignHeight="525"
+             d:DesignWidth="385">
     <UserControl.Resources>
         <Style TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
@@ -44,12 +46,10 @@
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="Border"
                                                         Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                        To="#FF4CD661"
-                                                        Duration="0:0:0.1" />
+                                                        To="#FF4CD661" />
                                         <ThicknessAnimation Storyboard.TargetName="Ellipse"
                                                             Storyboard.TargetProperty="Margin"
-                                                            To="20 1 2 1"
-                                                            Duration="0:0:0.1" />
+                                                            To="20 1 2 1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
@@ -58,12 +58,10 @@
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="Border"
                                                         Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                        To="White"
-                                                        Duration="0:0:0.1" />
+                                                        To="White" />
                                         <ThicknessAnimation Storyboard.TargetName="Ellipse"
                                                             Storyboard.TargetProperty="Margin"
-                                                            To="2 1 2 1"
-                                                            Duration="0:0:0.1" />
+                                                            To="2 1 2 1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
@@ -72,9 +70,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
     </UserControl.Resources>
-    
+
     <Grid Margin="5">
         <StackPanel>
             <Button x:Name="btnReadXml"
@@ -110,8 +107,7 @@
             </TextBlock>
 
             <!-- breakline settings -->
-            <DockPanel
-                Margin="0,5">
+            <DockPanel Margin="0,5">
                 <GroupBox Header="Breakline processing">
                     <CheckBox x:Name="chkBreakline"
                               Content="Enable breakline processing"
@@ -129,27 +125,19 @@
                                         <Setter Property="IsEnabled"
                                                 Value="False" />
                                     </DataTrigger>
-                                </Style.Triggers>    
+                                </Style.Triggers>
                             </Style>
                         </CheckBox.Style>
                     </CheckBox>
                 </GroupBox>
             </DockPanel>
-            
-            
+
+
             <!-- settings for left or right handed -->
-            <GroupBox
-                Header="Coordinate system config"
-                >
-                <DockPanel Margin="10"
-                           HorizontalAlignment="Center">
-                    <TextBlock Text="XYZ (right handed)"
-                               ToolTip="Default value"/>
-                    <ToggleButton IsChecked="{Binding mathematicCRS, UpdateSourceTrigger=PropertyChanged}"
-                        Width="40"
-                        Height="15"/>
-                    <TextBlock Text="YXZ (left handed)"
-                               ToolTip="Only change to this if needed!"/>
+            <GroupBox Header="Coordinate system config">
+                <DockPanel HorizontalAlignment="Center">
+                    <!-- add user controler for left / right handed crs -->
+                    <uc:ucCRS />
                 </DockPanel>
             </GroupBox>
 

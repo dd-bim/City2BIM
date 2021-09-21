@@ -140,17 +140,14 @@ namespace GuiHandler.userControler.Dxf
             //opens the dialog window (if a file is selected, everything inside the loop is executed)
             if (ofd.ShowDialog() == true)
             {
-                if (ofd.CheckFileExists)
-                {
-                    //get current store
-                    var item = store.LastOrDefault(); //do not need 'as' it is implizit inculded
+                //get current store
+                var item = store.LastOrDefault(); //do not need 'as' it is implizit inculded
 
-                    //bind file path
-                    item.dxfFilePath = ofd.FileName;
+                //bind file path
+                item.dxfFilePath = ofd.FileName;
 
-                    //kick off BackgroundWorker
-                    backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
-                }
+                //kick off BackgroundWorker
+                backgroundWorkerDxf.RunWorkerAsync(ofd.FileName);
 
                 //lock current MainWindow (because Background Worker is triggered)
                 //so the user can not change any settings during the time the background worker is running
@@ -180,7 +177,6 @@ namespace GuiHandler.userControler.Dxf
         {
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Background Worker DXF - started!"));
 
-            
             //get current store
             var item = store.LastOrDefault();
 
@@ -202,7 +198,6 @@ namespace GuiHandler.userControler.Dxf
                 catch(Exception ex)
                 {
                     e.Cancel = true;
-                    support.setLog(LogType.error, ex.Message);
                     LogWriter.Entries.Add(new LogPair(LogType.error, "[GUI] DXF file reading: "+ ex.Message));
                     return;
                 }
@@ -214,8 +209,17 @@ namespace GuiHandler.userControler.Dxf
         /// </summary>
         private void BackgroundWorkerDxf_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            //enable UI
+            IsEnabled = true;
+
+            //change cursor to wait animation (for user feedback)
+            Mouse.OverrideCursor = null;
+
+
             if (e.Cancelled)
             {
+                support.setLog(LogType.error, "File reading failed!");
+
                 //ERROR --> do not try to list layers
                 return;
             }
@@ -240,13 +244,6 @@ namespace GuiHandler.userControler.Dxf
 
             //refresh view (otherwise will not be shown in GUI)
             view.Refresh();
-
-            //enable UI
-            IsEnabled = true;
-
-            //change cursor to wait animation (for user feedback)
-            Mouse.OverrideCursor = null;
-
 
             //get config
             var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;

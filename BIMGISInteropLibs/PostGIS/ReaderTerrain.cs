@@ -91,11 +91,11 @@ namespace BIMGISInteropLibs.PostGIS
                     config.host,
                     config.port,
                     config.user,
-                    config.password,
+                    config.pwd,
                     config.database
                     );
 
-            LogWriter.Add(LogType.verbose, "[PostGIS] Connection string: " + connString);
+            LogWriter.Entries.Add(new LogPair(LogType.verbose, "[PostGIS] Connection string: " + connString));
 
             //build connection
             try
@@ -109,7 +109,7 @@ namespace BIMGISInteropLibs.PostGIS
                 //set connection to null --> processing have to be stopped
                 connection = null;
 
-                LogWriter.Add(LogType.error, ex.Message);
+                LogWriter.Entries.Add(new LogPair(LogType.error, ex.Message));
                 return false;
             }
         }
@@ -263,7 +263,7 @@ namespace BIMGISInteropLibs.PostGIS
             connection.Open();
 
             string selectBreakline = null;
-            if (!string.IsNullOrEmpty(config.breaklineQueryString))
+            if (!string.IsNullOrEmpty(config.breaklineQueryString) && config.breakline.GetValueOrDefault())
             {
                 selectBreakline = config.breaklineQueryString;
             }

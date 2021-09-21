@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
+namespace GuiHandler.userControler
 {
     /// <summary>
-    /// Interaction logic for ucMetaIfcProject.xaml
+    /// Interaktionslogik für ucFacesPoints.xaml
     /// </summary>
-    public partial class ucMetaIfcProject : UserControl
+    public partial class ucFacesPoints : UserControl
     {
-        public ucMetaIfcProject()
+        public ucFacesPoints()
         {
             InitializeComponent();
         }

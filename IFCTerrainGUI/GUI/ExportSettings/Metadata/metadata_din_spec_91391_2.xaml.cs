@@ -12,8 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic; //gui logging
-
 //shortcut to set json settings
 using init = GuiHandler.InitClass;
 
@@ -70,8 +68,7 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             //unlock MainWindow
             ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
 
-            //check state
-            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
+            
 
             //close current window
             Close();

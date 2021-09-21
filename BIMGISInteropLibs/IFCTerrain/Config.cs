@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 using BIMGISInteropLibs.Logging; //include for verbosity level
 using System.ComponentModel;//interface property changed
-using Newtonsoft.Json; //to ignore 'private' output fields
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -49,15 +48,20 @@ namespace BIMGISInteropLibs.IfcTerrain
         GeoJSON
     }
 
-
     /// <summary>
     /// Establishes the connection between Reader, Writers, GUI and Command
     /// </summary>
     public class Config : INotifyPropertyChanged
     {
         #region data binding
+        /// <summary>
+        /// event needed for interface (DO NOT RENAME)
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// function to check if property has 'really' been changed 
+        /// </summary>
         private void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
@@ -67,7 +71,9 @@ namespace BIMGISInteropLibs.IfcTerrain
         }
         #endregion data binding
 
+
         #region unspecific file attributes
+        
         #region file handling
 
         
@@ -361,20 +367,36 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        
-        private bool? _mathematicCRS { get; set; } = false;
+        private string _breakline_layer { get; set; }
 
         /// <summary>
-        /// default (false) -> right handed crs (XYZ) <para/>
-        /// (true) -> left handed crs (YXZ)
+        /// Name of the layer that contains the breakline. (only one layer is allowed)
         /// </summary>
-        public bool? mathematicCRS 
-        { 
-            get { return _mathematicCRS; }
+        public string breakline_layer
+        {
+            get { return _breakline_layer; }
             set
             {
-                _mathematicCRS = value;
-                NotifyPropertyChanged(nameof(mathematicCRS));
+                _breakline_layer = value;
+                NotifyPropertyChanged(nameof(breakline_layer));
+            }
+        }
+
+        private bool _invertedCRS { get; set; } = false;
+
+        /// <summary>
+        /// [FALSE]: right handed; [TRUE]: left handed
+        /// </summary>
+        public bool invertedCRS
+        {
+            get
+            {
+                return _invertedCRS;
+            }
+            set
+            {
+                _invertedCRS = value;
+                NotifyPropertyChanged(nameof(invertedCRS));
             }
         }
 
@@ -385,7 +407,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// set to default value
         /// </summary>
-        
+
         private IFC.LoGeoRef _logeoref { get; set; } = IFC.LoGeoRef.LoGeoRef30;
 
         /// <summary>
@@ -401,7 +423,6 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        
         private bool? _customOrigin { get; set; } = false;
 
         /// <summary>
@@ -623,7 +644,10 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        
+
+        /// <summary>
+        /// init with false value (so faces are set by default)
+        /// </summary>
         private bool? _readPoints { get; set; } = false;
 
         /// <summary>
@@ -658,148 +682,380 @@ namespace BIMGISInteropLibs.IfcTerrain
 
         //for reb processing
         #region REB
+        private int? _horizon { get; set; }
+
+
         /// <summary>
         /// Number of the horizon that contains terrain information
         /// </summary>
-        public int? horizon { get; set; }
+        public int? horizon 
+        {
+            get { return _horizon; }
+            set
+            {
+                _horizon = value;
+                NotifyPropertyChanged(nameof(horizon));
+            }
+        }
+
+
         #endregion
 
         //for elevation grid processing
         #region GRID
+        private bool? _bBox { get; set; } = false;
         /// <summary>
         /// Decision whether BoundingBox should be processed (yes = true)
         /// </summary>
-        public bool? bBox { get; set; }
+        public bool? bBox 
+        {
+            get { return _bBox; }
+            set
+            {
+                _bBox = value;
+                NotifyPropertyChanged(nameof(bBox));
+            }
+        }
+
+        private double? _bbP1X { get; set; }
 
         /// <summary>
-        /// NORTH value of the bounding box
+        ///  P1 x-value of the bounding box
         /// </summary>
-        public double? bbNorth { get; set; }
+        public double? bbP1X 
+        {
+            get { return _bbP1X; }
+            set
+            {
+                _bbP1X = value;
+                NotifyPropertyChanged(nameof(bbP1X));
+            }
+        }
+
+        private double? _bbP1Y { get; set; }
 
         /// <summary>
-        /// EAST value of the bounding box
+        /// P1 y-value of the bounding box
         /// </summary>
-        public double? bbEast { get; set; }
+        public double? bbP1Y
+        {
+            get { return _bbP1Y; }
+            set
+            {
+                _bbP1Y = value;
+                NotifyPropertyChanged(nameof(bbP1Y));
+            }
+        }
+
+        private double? _bbP2X { get; set; }
 
         /// <summary>
-        /// SOUTH value of the bounding box
+        ///  P2 x-value of the bounding box
         /// </summary>
-        public double? bbSouth { get; set; }
+        public double? bbP2X
+        {
+            get { return _bbP2X; }
+            set
+            {
+                _bbP2X = value;
+                NotifyPropertyChanged(nameof(bbP2X));
+            }
+        }
+
+        private double? _bbP2Y { get; set; }
 
         /// <summary>
-        /// WEST value of the bounding box
+        /// P2 y-value of the bounding box
         /// </summary>
-        public double? bbWest { get; set; }
+        public double? bbP2Y
+        {
+            get { return _bbP2Y; }
+            set
+            {
+                _bbP2Y = value;
+                NotifyPropertyChanged(nameof(bbP2Y));
+            }
+        }
         #endregion
 
-        //for grafbat processing
+        
         #region GEOgraf OUT
+        private bool? _onlyHorizon { get; set; } = false;
+
         /// <summary>
         /// Decides whether all horizons (=false) or only selected ones (=true) are to be used. If filtering is to be used, the entry must be made via "horizonFilter".
         /// </summary>
-        public bool? onlyHorizon { get; set; }
-
-        
-        private string _breakline_layer { get; set; }
-
-        /// <summary>
-        /// Name of the layer that contains the breakline. (only one layer is allowed)
-        /// </summary>
-        public string breakline_layer
-        {
-            get { return _breakline_layer; }
+        public bool? onlyHorizon 
+        { 
+            get { return _onlyHorizon; }
             set
             {
-                _breakline_layer = value;
-                NotifyPropertyChanged(nameof(breakline_layer));
+                _onlyHorizon = value;
+                NotifyPropertyChanged(nameof(onlyHorizon));
+            }
+        }
+
+        private bool? _filterPoints { get; set; } = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? filterPoints 
+        {
+            get { return _filterPoints; }
+            set
+            {
+                _filterPoints = value;
+                NotifyPropertyChanged(nameof(filterPoints));
+            }
+        }
+
+
+        private string _horizonFilter { get; set; }
+
+        /// <summary>
+        /// filtering point types
+        /// </summary>
+        public string horizonFilter 
+        {
+            get { return _horizonFilter; }
+            set
+            {
+                _horizonFilter = value;
+                NotifyPropertyChanged(nameof(horizonFilter));
             }
         }
         #endregion
 
         //for postgis processing
         #region PostGIS
+        private string _host { get; set; }
+
         /// <summary>
         /// Link to the host database
         /// </summary>
-        public string host { get; set; }
+        public string host 
+        {
+            get { return _host; }
+            set
+            {
+                _host = value;
+                NotifyPropertyChanged(nameof(host));
+            }
+        }
 
+        private int? _port { get; set; }
+        
         /// <summary>
         /// Specifying the port for the database connection
         /// </summary>
-        public int? port { get; set; }
+        public int? port 
+        { 
+            get { return _port; }
+            set
+            {
+                _port = value;
+                NotifyPropertyChanged(nameof(_port));
+            }
+        }
+
+        private string _user { get; set; }
 
         /// <summary>
-        /// Specification of the user name for authentication with the database
+        /// username 
         /// </summary>
-        public string user { get; set; }
+        public string user
+        {
+            get { return _user; }
+            set
+            {
+                _user = value;
+                NotifyPropertyChanged(nameof(user));
+            }
+        }
+
+        private string _pwd { get; set; }
 
         /// <summary>
         /// Specification of the password for authentication with the database
         /// </summary>
-        public string password { get; set; }
+        public string pwd
+        {
+            get { return _pwd; }
+            set
+            {
+                _pwd = value;
+                NotifyPropertyChanged(nameof(pwd));
+            }
+        }
+
+        private string _database { get; set; }
 
         /// <summary>
         /// target database
         /// </summary>
-        public string database { get; set; }
+        public string database
+        {
+            get { return _database; }
+            set
+            {
+                _database = value;
+                NotifyPropertyChanged(nameof(database));
+            }
+        }
+
+        private string _schema { get; set; }
 
         /// <summary>
-        /// target shema
+        /// target database
         /// </summary>
-        public string schema { get; set; }
+        public string schema
+        {
+            get { return _schema; }
+            set
+            {
+                _schema = value;
+                NotifyPropertyChanged(nameof(schema));
+            }
+        }
+
+        private string _tin_table { get; set; }
 
         /// <summary>
         /// Specify the table that contains the TIN
         /// </summary>
-        public string tin_table { get; set; }
+        public string tin_table
+        {
+            get { return _tin_table; }
+            set
+            {
+                _tin_table = value;
+                NotifyPropertyChanged(nameof(tin_table));
+            }
+        }
+
+        private string _tin_column { get; set; }
 
         /// <summary>
-        /// Specify the column that contains the geometry of the TIN
+        ///Specify the column that contains the geometry of the TIN
         /// </summary>
-        public string tin_column { get; set; }
+        public string tin_column
+        {
+            get { return _tin_column; }
+            set
+            {
+                _tin_column = value;
+                NotifyPropertyChanged(nameof(tin_column));
+            }
+        }
+
+        private string _tinid_column { get; set; }
+
+    /// <summary>
+    /// Specify the column that contains the ID of the TIN
+    /// </summary>
+    public string  tinid_column
+        {
+            get { return _tinid_column; }
+            set
+            {
+                _tinid_column = value;
+                NotifyPropertyChanged(nameof(tinid_column));
+            }
+        }
+        private string _tin_id { get; set; }
 
         /// <summary>
-        /// Specify the column that contains the ID of the TIN
+        ///  Specification of a TIN ID to be read out
         /// </summary>
-        public string tinid_column { get; set; }
+        public string tin_id
+        {
+            get { return _tin_id; }
+            set
+            {
+                _tin_id = value;
+                NotifyPropertyChanged(nameof(tin_id));
+            }
+        }
 
-        /// <summary>
-        /// Specification of a TIN ID to be read out
-        /// </summary>
-        public dynamic tin_id { get; set; }
+        private string _breakline_table { get; set; }
 
         /// <summary>
         /// Specify the table that contains the geometry of the break lines
         /// </summary>
-        public string breakline_table { get; set; }
+        public string breakline_table
+        {
+            get { return _breakline_table; }
+            set
+            {
+                _breakline_table = value;
+                NotifyPropertyChanged(nameof(breakline_table));
+            }
+        }
+
+        private string _breakline_column { get; set; }
 
         /// <summary>
         /// Specify the column that contains the geometry of the break lines
         /// </summary>
-        public string breakline_column { get; set; }
+        public string breakline_column
+        {
+            get { return _breakline_column; }
+            set
+            {
+                _breakline_column = value;
+                NotifyPropertyChanged(nameof(breakline_column));
+            }
+        }
+
+        private string _breakline_tin_id { get; set; }
 
         /// <summary>
         /// Specify the column that contains the TIN ID 
         /// </summary>
-        public string breakline_tin_id { get; set; }
+        public string breakline_tin_id
+        {
+            get { return _breakline_tin_id; }
+            set
+            {
+                _breakline_tin_id = value;
+                NotifyPropertyChanged(nameof(breakline_tin_id));
+            }
+        }
+        private string _queryString { get; set; }
 
         /// <summary>
         /// String to query TIN data via user query
         /// </summary>
-        public string queryString { get; set; }
+        public string queryString
+        {
+            get { return _queryString; }
+            set
+            {
+                _queryString = value;
+                NotifyPropertyChanged(nameof(queryString));
+            }
+        }
+
+        private string _breaklineQueryString { get; set; }
 
         /// <summary>
         /// string to query breaklines via user query
         /// </summary>
-        public string breaklineQueryString { get; set; }
-
+        public string breaklineQueryString
+        {
+            get { return _breaklineQueryString; }
+            set
+            {
+                _breaklineQueryString = value;
+                NotifyPropertyChanged(nameof(breaklineQueryString));
+            }
+        }
         #endregion
-
-        
-        private GeoJSON.GeometryType? _geometryType { get; set; } = GeoJSON.GeometryType.MultiPoint;
 
         //for geojson
         #region GeoJSON
+        private GeoJSON.GeometryType? _geometryType { get; set; } = GeoJSON.GeometryType.MultiPoint;
         /// <summary>
         /// geometry type to set the right reader
         /// </summary>
@@ -822,13 +1078,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// breakline geometry type to specific reading
         /// </summary>
         public GeoJSON.GeometryType? breaklineGeometryType { get; set; }
-
-
         #endregion GeoJSON
         #endregion
     }
 
-    
+
 
     /// <summary>
     /// storage for json settings (according to standard: DIN SPEC 91391-2)

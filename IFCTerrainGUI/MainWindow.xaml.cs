@@ -135,6 +135,25 @@ namespace IFCTerrainGUI
             //get config
             var config = DataContext as Config;
 
+            if (string.IsNullOrEmpty(config.destFileName))
+            {
+                MessageBoxResult res = MessageBox.Show(
+                "No file path has been set! Do you want to set one?",
+                "File path invalid",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+                if(res == MessageBoxResult.Yes)
+                {
+                    btnChooseStorageLocation_Click(sender, e);
+                }
+                else
+                {
+                    guiLog.setLog(LogType.error, "File path is empty. Processing aborted!");
+                    return;
+                }
+            }
+
             //init logger
             LogWriter.initLogger(config);
 

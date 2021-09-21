@@ -3,7 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GuiHandler.userControler.Dxf"
-             xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
+             xmlns:ucTool="clr-namespace:GuiHandler.userControler"
              x:Class="GuiHandler.userControler.Dxf.Read"
              x:Name="ucDXF"
              mc:Ignorable="d"
@@ -14,71 +14,7 @@
     <UserControl.Resources>
         <!-- to store dxf file (as data context) -->
         <local:store x:Key="store" />
-        <Style TargetType="{x:Type ToggleButton}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Viewbox>
-                            <Border x:Name="Border"
-                                    CornerRadius="10"
-                                    Background="#FFFFFFFF"
-                                    Width="40"
-                                    Height="20">
-                                <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="0.5"
-                                                      Direction="0"
-                                                      Opacity="0.3" />
-                                </Border.Effect>
-                                <Ellipse x:Name="Ellipse"
-                                         Fill="#FFFFFFFF"
-                                         Stretch="Uniform"
-                                         Margin="2 1 2 1"
-                                         Stroke="Gray"
-                                         StrokeThickness="0.2"
-                                         HorizontalAlignment="Stretch">
-                                    <Ellipse.Effect>
-                                        <DropShadowEffect BlurRadius="10"
-                                                          ShadowDepth="1"
-                                                          Opacity="0.3"
-                                                          Direction="260" />
-                                    </Ellipse.Effect>
-                                </Ellipse>
-                            </Border>
-                        </Viewbox>
-                        <ControlTemplate.Triggers>
-                            <EventTrigger RoutedEvent="Checked">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetName="Border"
-                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                        To="#FF4CD661"
-                                                        Duration="0:0:0.1" />
-                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
-                                                            Storyboard.TargetProperty="Margin"
-                                                            To="20 1 2 1"
-                                                            Duration="0:0:0.1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                            <EventTrigger RoutedEvent="Unchecked">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetName="Border"
-                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                        To="White"
-                                                        Duration="0:0:0.1" />
-                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
-                                                            Storyboard.TargetProperty="Margin"
-                                                            To="2 1 2 1"
-                                                            Duration="0:0:0.1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        
 
     </UserControl.Resources>
 
@@ -174,20 +110,8 @@
                                     Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center"
                                        Text="Processing via..." />
-                            <DockPanel>
-                                <TextBlock Margin="10,0,0,0"
-                                           VerticalAlignment="Center"
-                                           Text="Faces"
-                                           ToolTip="DTM will be converted via Faces and Points!" />
-                                <ToggleButton Margin="5"
-                                              Height="15"
-                                              IsChecked="{Binding readPoints, FallbackValue=false, Mode=TwoWay}" />
-                                <TextBlock Margin="0,0,0,0"
-                                           VerticalAlignment="Center"
-                                           Text="Points"
-                                           ToolTip="Only the points of the DXF file are readed. Then a Delaunay triangulation will be executed." />
-                            </DockPanel>
 
+                            <ucTool:ucFacesPoints />
                         </StackPanel>
                     </Grid>
                 </GroupBox>
