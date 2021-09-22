@@ -273,6 +273,8 @@
     <Compile Include="Geometry\terrain.cs" />
     <Compile Include="IfcTerrain\Common.cs" />
     <Compile Include="IfcTerrain\Config.cs" />
+    <Compile Include="IfcTerrain\configDin18740.cs" />
+    <Compile Include="IfcTerrain\configDin91391.cs" />
     <Compile Include="IfcTerrain\Result.cs" />
     <Compile Include="IFC\Ifc2x3\GeometricCurveSet.cs" />
     <Compile Include="IFC\Ifc2x3\LoGeoRef\Level30.cs" />

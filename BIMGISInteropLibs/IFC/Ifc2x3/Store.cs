@@ -35,8 +35,8 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             Result result,
             Config jSt,
             WriteInput writeInput,
-            JsonSettings_DIN_SPEC_91391_2 jsonSettings_DIN_SPEC,
-            JsonSettings_DIN_18740_6 jsonSettings_DIN_18740_6,
+            configDin91391 jsonSettings_DIN_SPEC,
+            configDin18740 jsonSettings_DIN_18740_6,
             double? refLatitude = null,
             double? refLongitude = null,
             double? refElevation = null)
@@ -61,6 +61,8 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
             switch (loGeoRef)
             {
                 //Level 50 --> NOT SUPPORTED!
+                case IFC.LoGeoRef.LoGeoRef50:
+                    throw new NotImplementedException("LoGeoRef50 is not supported in ifc version 2x3");
 
                 //Level 40
                 case IFC.LoGeoRef.LoGeoRef40:

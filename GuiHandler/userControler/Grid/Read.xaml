@@ -8,7 +8,8 @@
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="385"
-             x:Name="ucGrid">
+             x:Name="ucGrid"
+             Loaded="ucGrid_Loaded">
 
     <UserControl.Resources>
         <Style TargetType="{x:Type ToggleButton}">

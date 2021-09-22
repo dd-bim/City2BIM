@@ -91,7 +91,7 @@ namespace BIMGISInteropLibs.LandXML
                                         dynamic p = null;
 
                                         //create point
-                                        if (config.invertedCRS)
+                                        if (config.invertedCRS.GetValueOrDefault())
                                         {
                                             p = new Point(y, x, z);
 
@@ -159,7 +159,7 @@ namespace BIMGISInteropLibs.LandXML
                                         double.TryParse(pts[i + 1], NumberStyles.Float, CultureInfo.InvariantCulture, out double X);
                                         double.TryParse(pts[i + 2], NumberStyles.Float, CultureInfo.InvariantCulture, out double Z);
 
-                                        if (config.invertedCRS)
+                                        if (config.invertedCRS.GetValueOrDefault())
                                         {
                                             coords.Add(new CoordinateZ(Y, X, Z));
                                         }

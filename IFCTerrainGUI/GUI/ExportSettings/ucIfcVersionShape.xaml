@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
+             xmlns:export="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.LoGeoRef"
              xmlns:Ifc="clr-namespace:BIMGISInteropLibs.IFC;assembly=BIMGISInteropLibs"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -16,6 +16,8 @@
 
     <!--#region define resources for databinding & layout-->
     <UserControl.Resources>
+        <export:ucLoGeoRef x:Key="ucLoGeoRef" />
+
         <!--#region toggle button design -->
         <Style TargetType="{x:Type ToggleButton}">
             <Setter Property="IsChecked"

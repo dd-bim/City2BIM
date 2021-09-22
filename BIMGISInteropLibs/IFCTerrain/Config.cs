@@ -71,9 +71,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         }
         #endregion data binding
 
-
-        #region unspecific file attributes
-        
         #region file handling
 
         
@@ -293,8 +290,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 NotifyPropertyChanged(nameof(editorsOrganisationName));
             }
         }
-
-        
+                
         private string _editorsFamilyName { get; set; } = "...";
 
         /// <summary>        
@@ -326,29 +322,68 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
+
+        private bool? _exportMetadataFile { get; set; } = false;
+
+        [Newtonsoft.Json.JsonIgnore]
         /// <summary>
-        /// Decide whether metadata should be exported as a separate JSON file<para/>
-        /// TODO: support of IFCTerrain Command
+        /// Decide whether metadata should be exported as a separate JSON file
         /// </summary>
-        public bool? exportMetadataFile { get; set; }
+        public bool? exportMetadataFile
+        {
+            get { return _exportMetadataFile; }
+            set
+            {
+                _exportMetadataFile = value;
+                NotifyPropertyChanged(nameof(exportMetadataFile));
+            }
+        }
+
+        private bool? _outIfcPropertySet { get; set; } = false;
 
         /// <summary>
         /// Decide whehter metadata should be stored as IfcPropertySets
         /// </summary>
-        public bool? outIfcPropertySet { get; set; }
-        #endregion
+        public bool? outIfcPropertySet
+        {
+            get { return _outIfcPropertySet; }
+            set
+            {
+                _outIfcPropertySet = value;
+                NotifyPropertyChanged(nameof(outIfcPropertySet));
+            }
+        }
+
+        private bool? _exportMetadataDin91391 { get; set; } = false;
 
         /// <summary>
         /// Decide whether metadata (according to DIN SPEC 91391-2) should be exported
         /// </summary>
-        public bool? exportMetadataDin91391 { get; set; }
+        public bool? exportMetadataDin91391
+        {
+            get { return _exportMetadataDin91391; }
+            set
+            {
+                _exportMetadataDin91391 = value;
+                NotifyPropertyChanged(nameof(exportMetadataDin91391));
+            }
+        }
+
+        private bool? _exportMetadataDin18740 { get; set; } = false;
 
         /// <summary>
         /// Decide whether metadata (according to DIN 18740-6) should be exported
         /// </summary>
-        public bool? exportMetadataDin18740 { get; set; }
+        public bool? exportMetadataDin18740
+        {
+            get { return _exportMetadataDin18740; }
+            set
+            {
+                _exportMetadataDin18740 = value;
+                NotifyPropertyChanged(nameof(exportMetadataDin18740));
+            }
+        }
 
-        
         private bool? _breakline { get; set; } = false;
 
         /// <summary>
@@ -382,12 +417,12 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        private bool _invertedCRS { get; set; } = false;
+        private bool? _invertedCRS { get; set; } = false;
 
         /// <summary>
         /// [FALSE]: right handed; [TRUE]: left handed
         /// </summary>
-        public bool invertedCRS
+        public bool? invertedCRS
         {
             get
             {
@@ -1068,162 +1103,12 @@ namespace BIMGISInteropLibs.IfcTerrain
                 NotifyPropertyChanged(nameof(geometryType));
             }
         }
-
-        /// <summary>
-        /// file path to breakline file (JSON)
-        /// </summary>
-        public string breaklineFile { get; set; }
-
-        /// <summary>
-        /// breakline geometry type to specific reading
-        /// </summary>
-        public GeoJSON.GeometryType? breaklineGeometryType { get; set; }
         #endregion GeoJSON
+
         #endregion
     }
 
 
 
-    /// <summary>
-    /// storage for json settings (according to standard: DIN SPEC 91391-2)
-    /// </summary>
-    public class JsonSettings_DIN_SPEC_91391_2
-    {
-        /// <summary>
-        /// unique Identificator (obligatory)
-        /// </summary>
-        public Guid id { get; set; }
-
-        /// <summary>
-        /// file name (obligatory)
-        /// </summary>
-        public string name { get; set; }
-
-        /// <summary>
-        /// type (e.g.: DTM) (obligatory)
-        /// </summary>
-        public string type { get; set; }
-
-        /// <summary>
-        /// supplementary description (opitonal)
-        /// </summary>
-        public string description { get; set; }
-
-        /// <summary>
-        /// creation date (opitonal)
-        /// </summary>
-        public string created { get; set; }
-
-        /// <summary>
-        /// [leave emtpy] upload date (opitonal)
-        /// </summary>
-        public string uploaded { get; set; }
-
-        /// <summary>
-        /// refernz to creator of the container (optional)
-        /// </summary>
-        public string creator { get; set; }
-
-        /// <summary>
-        /// [leave empty!] refernz to sender of the container (optional)
-        /// </summary>
-        public string sender { get; set; }
-
-        /// <summary>
-        /// [leave empty]: refenz(es) to to receiver (multiple possible) (optional)
-        /// </summary>
-        public string[] recipients { get; set; }
-
-        /// <summary>
-        /// revision number (obligatory)
-        /// </summary>
-        public string revision { get; set; }
-
-        /// <summary>
-        /// version number (optional)
-        /// </summary>
-        public string version { get; set; }
-
-        /// <summary>
-        /// [leave empty]: status of container
-        /// </summary>
-        public string status { get; set; }
-
-        /// <summary>
-        /// [leave empty]: contents of the container
-        /// </summary>
-        public string content { get; set; }
-
-        /// <summary>
-        /// [leave empty]: reference to location (download address)
-        /// </summary>
-        public string location { get; set; }
-
-        /// <summary>
-        /// project id (obligatory)
-        /// </summary>
-        public string projectId { get; set; }
-
-        /// <summary>
-        /// reference to schema (for more metadata) (optional)
-        /// </summary>
-        public string metadataSchema { get; set; }
-
-        /// <summary>
-        /// mime type eg.: application/x-step
-        /// </summary>
-        public string mimeType { get; set; }
-    }
-
-    /// <summary>
-    /// storage for json settings (according to standard: DIN 18740-6)
-    /// </summary>
-    public class JsonSettings_DIN_18740_6
-    {
-        /// <summary>
-        /// model typ - here dtm (german: Modelltyp; nur DGM) [Verweis auf: 91391-2?]
-        /// </summary>
-        public string modelType { get; set; }
-
-        /// <summary>
-        /// data structure - here mesh (german: Datenstruktur; nur Dreiecksvermaschung)
-        /// </summary>
-        public string dataStructure { get; set; }
-
-        /// <summary>
-        /// date of the dataset (german: Erfassungsdatum)
-        /// </summary>
-        public string topicality { get; set; }
-
-        /// <summary>
-        /// position reference system (german: Lagereferenzsystem)
-        /// </summary>
-        public string positionReferenceSystem { get; set; }
-
-        /// <summary>
-        /// altitude reference system (german: Höhenreferenzsystem)
-        /// </summary>
-        public string altitudeReferenceSystem { get; set; }
-
-        /// <summary>
-        /// projection
-        /// </summary>
-        public string projection { get; set; }
-
-        /// <summary>
-        /// spatial expansion (german: Gebietsausdehnung)
-        /// </summary>
-        public string spatialExpansion { get; set; }
-
-        /// <summary>
-        /// deviation - location (german: Abweichung - Lage)
-        /// </summary>
-        public string deviationPosition { get; set; }
-
-        /// <summary>
-        /// deviation - height (german: Abweichung - Höhe)
-        /// </summary>
-        public string deviationAltitude { get; set; }
-
-    }
+    
 }

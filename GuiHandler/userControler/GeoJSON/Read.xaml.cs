@@ -8,9 +8,6 @@ using System.Windows.Controls;
 using System.IO;
 using Microsoft.Win32; //File Dialog
 
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
-
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
 
@@ -57,6 +54,7 @@ namespace GuiHandler.userControler.GeoJSON
         /// </summary>
         private void btnOpenBreaklineFile_Click(object sender, RoutedEventArgs e)
         {
+            /*
             //create new file dialog
             OpenFileDialog ofd = new OpenFileDialog();
             //set filter
@@ -66,10 +64,11 @@ namespace GuiHandler.userControler.GeoJSON
             if (ofd.ShowDialog().GetValueOrDefault())
             {
                 //set file path
-                init.config.breaklineFile = ofd.FileName;
+                config.breaklineFile = ofd.FileName;
 
                 cbGeomTypeBreakline.IsEnabled = true;
             }
+            */
         }
     }
 }

@@ -63,7 +63,6 @@
                           Margin="5"
                           ToolTip="[Keep in mind] Using points, a delaunay triangulation is performed."
                           ToolTipService.ShowOnDisabled="True" />
-                <TextBlock Text="{Binding queryString}" />
             </DockPanel>
             <DockPanel Margin="2"
                        ToolTip="[Keep in mind] Using breaklines, a constrained delaunay triangulation is performed."

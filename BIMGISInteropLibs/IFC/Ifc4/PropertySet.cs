@@ -29,7 +29,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// <param name="model">exchange the whole ifc model</param>
         /// <param name="jSettings">json settings where meta data are stored</param>
         /// <returns></returns>
-        public static void CreatePSetMetaDin91391(IfcStore model, JsonSettings_DIN_SPEC_91391_2 jSettings)
+        public static void CreatePSetMetaDin91391(IfcStore model, configDin91391 jSettings)
         {
             //create entity
             var entity = model.Instances.OfType<IfcSite>().FirstOrDefault();
@@ -48,7 +48,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Unique Identificator";
-                        p.NominalValue = new IfcLabel(jSettings.id.ToString());
+                        p.NominalValue = new IfcLabel(jSettings.guid.ToString());
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
@@ -112,7 +112,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
         /// </summary>
         /// <param name="model">exchange the whole ifc model</param>
         /// <param name="jSettings">json settings where meta data are stored</param>
-        public static void CreatePSetMetaDin18740(IfcStore model, JsonSettings_DIN_18740_6 jSettings)
+        public static void CreatePSetMetaDin18740(IfcStore model, configDin18740 settings)
         {
             //create entity
             var entity = model.Instances.OfType<IfcSite>().FirstOrDefault();
@@ -131,67 +131,52 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Model type";
-                        if (!string.IsNullOrEmpty(jSettings.modelType))
+                        if (!string.IsNullOrEmpty(settings.modelType))
                         {
-                            p.NominalValue = new IfcText(jSettings.modelType);
+                            p.NominalValue = new IfcText(settings.modelType);
                         }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Data model";
-                        if (!string.IsNullOrEmpty(jSettings.dataStructure))
+                        if (!string.IsNullOrEmpty(settings.dataStructure.ToString()))
                         {
-                            p.NominalValue = new IfcText(jSettings.dataStructure);
+                            p.NominalValue = new IfcText(settings.dataStructure.ToString());
                         }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Topicality";
-                        if (!string.IsNullOrEmpty(jSettings.topicality))
+                        if (!string.IsNullOrEmpty(settings.topicality.ToShortDateString()))
                         {
-                            p.NominalValue = new IfcText(jSettings.topicality);
+                            p.NominalValue = new IfcText(settings.topicality.ToShortDateString());
                         }
                     }),
+
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Positon reference system";
-                        if (!string.IsNullOrEmpty(jSettings.positionReferenceSystem))
+                        if (!string.IsNullOrEmpty(settings.positionReferenceSystem))
                         {
-                            p.NominalValue = new IfcText(jSettings.positionReferenceSystem);
+                            p.NominalValue = new IfcText(settings.positionReferenceSystem);
                         }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Altitude reference system";
-                        if (!string.IsNullOrEmpty(jSettings.altitudeReferenceSystem))
+                        if (!string.IsNullOrEmpty(settings.altitudeReferenceSystem))
                         {
-                            p.NominalValue = new IfcText(jSettings.altitudeReferenceSystem);
+                            p.NominalValue = new IfcText(settings.altitudeReferenceSystem);
                         }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Projection";
-                        if (!string.IsNullOrEmpty(jSettings.projection))
+                        if (!string.IsNullOrEmpty(settings.projection))
                         {
-                            p.NominalValue = new IfcText(jSettings.projection);
+                            p.NominalValue = new IfcText(settings.projection);
                         }
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "Deviation - position";
-                        if (!string.IsNullOrEmpty(jSettings.deviationPosition))
-                        {
-                            p.NominalValue = new IfcText(jSettings.deviationPosition);
-                        }
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "Deviation - altitude";
-                        if (!string.IsNullOrEmpty(jSettings.deviationAltitude))
-                        {
-                            p.NominalValue = new IfcText(jSettings.deviationAltitude);
-                        }
-                    }),
+                    })
                 });
             });
 

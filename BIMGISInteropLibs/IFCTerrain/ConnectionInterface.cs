@@ -26,7 +26,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer
         /// </summary>
-        public bool mapProcess(Config config, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740)
+        public bool mapProcess(Config config, configDin91391 jSettings_DIN91931, configDin18740 jSettings_DIN18740)
         {
             LogWriter.Add(LogType.info, "Processing-Protocol for IFCTerrain");
             LogWriter.Add(LogType.info, "--------------------------------------------------");
@@ -102,7 +102,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 LogWriter.Add(LogType.error, "[READER] File reading failed (result is null) - processing canceld!");
                 return false;
             }
-            else if(result.pointList == null)
+            else if(result.pointList == null || result.pointList.Count.Equals(0))
             {
                 LogWriter.Add(LogType.error, "[READER] File reading failed (point list is empty) - processing canceld!");
                 return false;
@@ -199,7 +199,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 case IfcVersion.IFC4dot3:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("IFC4.3 is not implemented yet.");
             }
 
             //access to file writer
@@ -302,8 +302,6 @@ namespace BIMGISInteropLibs.IfcTerrain
                         //
                         NetTopologySuite.IO.GML3.GML3Writer gml3Writer 
                             = new NetTopologySuite.IO.GML3.GML3Writer();
-
-                        
 
                         //
                         var xmlWriterGml3 = XmlWriter.Create(

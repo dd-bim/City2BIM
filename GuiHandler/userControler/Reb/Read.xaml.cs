@@ -21,9 +21,6 @@ using BIMGISInteropLibs.REB; //include to read reb file
 using BIMGISInteropLibs.Logging;                                    //acess to logger
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
 
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
-
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
 
@@ -58,15 +55,14 @@ namespace GuiHandler.userControler.Reb
             if (ofd.ShowDialog() == true)
             {
                 #region JSON settings
-                //set JSON settings of file format 
-                //(Referencing to the BIMGISInteropsLibs, for which fileTypes an enumeration is used).
-                init.config.fileType = BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.REB;
-
+                //get config
+                var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+                
                 //set JSON settings of file path
-                init.config.filePath = ofd.FileName;
+                config.filePath = ofd.FileName;
 
                 //set JSON settings of file name
-                //init.config.fileName = System.IO.Path.GetFileName(ofd.FileName);
+                config.fileName = System.IO.Path.GetFileName(ofd.FileName);
                 #endregion JSON settings
 
                 //lock current MainWindow (because Background Worker is triggered)
@@ -76,22 +72,8 @@ namespace GuiHandler.userControler.Reb
                 //set mouse cursor to wait
                 Mouse.OverrideCursor = Cursors.Wait;
 
-                #region backgroundWorker
                 //kick off BackgroundWorker
                 backgroundWorkerReb.RunWorkerAsync(ofd.FileName);
-                #endregion backgroundWorker
-
-                #region error handling [TODO]
-                //TODO: buttons to be released here otherwise the user can't go on
-                #endregion error handling
-
-                #region logging
-                //logging
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] File (" + ofd.FileName + ") selected!"));
-
-                //gui logging (user information)
-                guiLog.setLog(LogType.info, "File selected! --> Please make settings and confirm.");
-                #endregion logging
             }
         }
 
@@ -106,8 +88,10 @@ namespace GuiHandler.userControler.Reb
         /// </summary>
         private void BackgroundWorkerReb_DoWork(object sender, DoWorkEventArgs e)
         {
+            string filePath = e.Argument.ToString();
+
             //background task
-            e.Result = ReaderTerrain.readHorizon(init.config.filePath);
+            e.Result = ReaderTerrain.readHorizon(filePath);
         }
 
         /// <summary>
@@ -115,21 +99,15 @@ namespace GuiHandler.userControler.Reb
         /// </summary>
         private void BackgroundWorkerReb_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //disable btn process reb 
-            this.btnProcessReb.IsEnabled = false;
-
-            //delete all items in list box 
-            this.lbRebSelect.Items.Clear();
-
             //if file fits to rebdata
             if(e.Result != null)
             {
-                HashSet<int> horizons = new HashSet<int>();
-                horizons = e.Result as HashSet<int>;
-                foreach(int h in horizons)
+                List<int> horizons = new List<int>();
+                foreach(var item in e.Result as HashSet<int>)
                 {
-                    lbRebSelect.Items.Add(h);
+                    horizons.Add(item);
                 }
+                lbRebSelect.ItemsSource = horizons;
             }
             
             //apply layout - all items will be listed
@@ -140,70 +118,17 @@ namespace GuiHandler.userControler.Reb
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
-
-            //release selection
-            this.lbRebSelect.IsEnabled = true;
         }
         #endregion background worker reb
 
-
-        /// <summary>
-        /// is executed as soon as the selection has been changed in the List Box (horizon)
-        /// </summary>
-        private void lbRebSelect_SelectionChanged(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //check if an item was selected
-            if (this.lbRebSelect.SelectedIndex != -1)
+            var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+
+            if (config.fileType.Equals(BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.REB))
             {
-                //enable process button
-                this.btnProcessReb.IsEnabled = true;
+                config.readPoints = true;
             }
-            //disable process button (user have to select horizon first)
-            else
-            {
-                //disable 
-                this.btnProcessReb.IsEnabled = false;
-            }
-        }
-
-        /// <summary>
-        /// Logic that is executed as soon as the "process key" is pressed
-        /// </summary>
-        private void btnProcessReb_Click(object sender, RoutedEventArgs e)
-        {
-            //blank json settings 
-            init.config.layer = null;
-
-            if (rbRebFaces.IsChecked.GetValueOrDefault())
-            { init.config.readPoints = false;}
-            else { init.config.readPoints = true;}
-
-            //get selected horizon
-            int horizon = (int)lbRebSelect.SelectedItem;
-
-            //passed to json settings
-            init.config.horizon = horizon;
-
-            //Decision if breaklines shall be used
-            if (rbProcessBlTrue.IsChecked == true)
-            { init.config.breakline = true; }
-            else { init.config.breakline = false; }
-
-            //set task (file opening) to true
-            guiLog.taskfileOpening = true;
-
-            //[IfcTerrain] check if all task are allready done
-            guiLog.readyState();
-
-            //[DTM2BIM] check if all task are allready done
-            guiLog.rdyDTM2BIM();
-
-
-            //gui logging (user information)
-            guiLog.setLog(LogType.info, "REB settings applyed.");
-
-            return;
         }
     }
 }
-

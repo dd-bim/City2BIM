@@ -16,9 +16,6 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
-
 namespace GuiHandler.userControler
 {
     /// <summary>

@@ -16,6 +16,7 @@
         xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
         xmlns:LoGeoRef="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.LoGeoRef"
         xmlns:ucIfcMetadata="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
+        xmlns:config="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
         x:Name="IFCTerrainGUI"
         x:Class="IFCTerrainGUI.MainWindow"
         mc:Ignorable="d"
@@ -31,6 +32,12 @@
     <Window.Resources>
         <!-- get config to use in data binding ResizeMode="CanMinimize"-->
         <IfcTerrain:Config x:Key="config" />
+
+        <!-- get config to use in data binding (DIN 18740-6)-->
+        <config:configDin18740 x:Key="configDin187406" />
+        
+        <!-- get config to use in data binding (DIN SPEC 91391-2)-->
+        <config:configDin91391 x:Key="configDin913912" />
 
         <!-- provide data from enum (file type) -->
         <ObjectDataProvider x:Key="enumFileType"

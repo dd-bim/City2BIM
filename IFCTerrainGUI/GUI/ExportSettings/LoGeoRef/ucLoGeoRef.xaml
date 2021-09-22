@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.LoGeoRef"
              xmlns:Ifc="clr-namespace:BIMGISInteropLibs.IFC;assembly=BIMGISInteropLibs"
-             xmlns:config="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
              mc:Ignorable="d"
              d:DesignHeight="229"
              d:DesignWidth="373">
@@ -80,7 +79,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <!--#region provide data from enum (LoGeoRef)-->
         <ObjectDataProvider x:Key="enumLoGeoRef"
                             ObjectType="{x:Type Ifc:LoGeoRef}"
@@ -113,7 +112,7 @@
         <!-- init class to validate scaling -->
         <local:tbRule x:Key="tbRule" />
 
-        <local:HasAllTextConverter x:Key="tbConverter"/>
+        <local:HasAllTextConverter x:Key="tbConverter" />
         <!--#endregion-->
 
     </UserControl.Resources>
@@ -126,11 +125,9 @@
                            FontWeight="Bold"
                            Width="70"
                            VerticalAlignment="Center" />
-                <TextBlock
-                    Width="150"
-                    TextWrapping="Wrap"
-                    Text="Choose georeferencing concept (LoGeoRef):" 
-                    />
+                <TextBlock Width="150"
+                           TextWrapping="Wrap"
+                           Text="Choose georeferencing concept (LoGeoRef):" />
                 <ComboBox x:Name="cbLoGeoRef"
                           ItemsSource="{Binding Source={StaticResource enumLoGeoRef}}"
                           SelectedItem="{Binding Path=logeoref}"
@@ -138,26 +135,35 @@
                           HorizontalContentAlignment="Center"
                           Height="25"
                           SelectionChanged="cbLoGeoRef_SelectionChanged">
+
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
                             <Style.Triggers>
                                 <MultiDataTrigger>
+                                    <!-- set condition to define that TFS should be disabled-->
                                     <MultiDataTrigger.Conditions>
+                                        <!-- first condition ('select') TFS item-->
                                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                                                    Value="LoGeoRef50" />
-
+                                        <!-- secound condition when 'IFC2x3' is selected -->
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.outIFCType}"
+                                                   Value="0"/>
                                     </MultiDataTrigger.Conditions>
+                                    <!-- disable TFS -->
                                     <Setter Property="IsEnabled"
-                                            Value="True" />
+                                            Value="False" /> 
+                                    <!-- remove selection from TFS -->
+                                    <Setter Property="IsSelected"
+                                            Value="False" />
                                 </MultiDataTrigger>
-                            </Style.Triggers>                            
-                        </Style>
+                            </Style.Triggers>
+                        </Style>   
                     </ComboBox.ItemContainerStyle>
                 </ComboBox>
             </DockPanel>
             <!--#endregion -->
-            
-            
+
+
             <DockPanel Margin="5">
                 <TextBlock Text="Storage:"
                            FontWeight="Bold"
@@ -177,7 +183,7 @@
                                 <DataTrigger Binding="{Binding ElementName=cbLoGeoRef, Path=SelectedIndex}"
                                              Value="0">
                                     <Setter Property="Text"
-                                            Value="IfcSite"/>
+                                            Value="IfcSite" />
                                     <Setter Property="TextBlock.Foreground"
                                             Value="Black" />
                                     <Setter Property="ToolTip"
@@ -199,7 +205,7 @@
                                 </DataTrigger>
                             </Style.Triggers>
 
-                        </Style>    
+                        </Style>
                     </TextBlock.Style>
                 </TextBlock>
             </DockPanel>
@@ -208,8 +214,7 @@
             <DockPanel Margin="5">
                 <TextBlock Text="Origin:"
                            FontWeight="Bold"
-                           Width="70"
-                           />
+                           Width="70" />
                 <TextBlock Text="Calculate from dataset" />
                 <!-- style is set from user control resource (bind current check status to config) -->
                 <ToggleButton Width="30"
@@ -219,7 +224,7 @@
                               Unchecked="btnChkOrigin" />
                 <TextBlock Text="Custom origin (input)" />
             </DockPanel>
-            
+
             <!--#region input fields for custom origin XYZ values-->
             <!-- bin input (X/Y/Z) to config (is initalized with 0 values) -->
             <DockPanel Margin="5"
@@ -227,32 +232,32 @@
                 <TextBlock Text="X [m]:" />
                 <TextBox Width="90"
                          Text="{Binding xOrigin, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource ErrorToolTip}"/>
-                <TextBlock Text="Y [m]:" 
-                           Margin="5,0,0,0"/>
+                         Style="{StaticResource ErrorToolTip}" />
+                <TextBlock Text="Y [m]:"
+                           Margin="5,0,0,0" />
                 <TextBox Width="90"
                          Text="{Binding yOrigin, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource ErrorToolTip}"/>
+                         Style="{StaticResource ErrorToolTip}" />
                 <TextBlock Text="Z [m]:"
                            Margin="5,0,0,0" />
                 <TextBox Text="{Binding zOrigin, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource ErrorToolTip}"/>
+                         Style="{StaticResource ErrorToolTip}" />
             </DockPanel>
             <!--#endregion -->
             <!--#endregion-->
-            
+
             <!--#region additional input fields -->
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                
+
                 <!--#region rotation && scaling -->
                 <StackPanel>
                     <TextBlock Text="CRS settings"
                                HorizontalAlignment="Center"
-                               FontStyle="Italic"/>
+                               FontStyle="Italic" />
                     <!--#region rotation-->
                     <DockPanel x:Name="dpRotation">
                         <CheckBox x:Name="chkRotation"
@@ -260,7 +265,7 @@
                                   VerticalAlignment="Center"
                                   VerticalContentAlignment="Center"
                                   HorizontalContentAlignment="Right"
-                                  Width="70"/>
+                                  Width="70" />
 
                         <!-- input box for rotation -->
                         <TextBox IsEnabled="{Binding ElementName=chkRotation, Path=IsChecked}"
@@ -281,74 +286,15 @@
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
-                            
+
                         </TextBox>
                     </DockPanel>
                     <!--#endregion -->
-                    
+
                     <!--#region scaling -->
                     <DockPanel x:Name="dpScale"
                                Grid.Column="0">
-                        
-                        <!--#region trigger -->
-                        <DockPanel.Style>
-                            <!-- set default value (false) -->
-                            <Style TargetType="DockPanel">
-                                <Setter Property="IsEnabled"
-                                        Value="False" />
-                                <Style.Triggers>
-                                    <!-- data trigger via selected index of combo box -->
-                                    <DataTrigger Binding="{Binding ElementName=cbLoGeoRef, Path=SelectedIndex}"
-                                                 Value="2">
-                                        <!-- enable dock panel -->
-                                        <Setter Property="IsEnabled"
-                                                Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>    
-                            </Style>
-                        </DockPanel.Style>
-                        <!--#endregion -->
-                        
-                        <CheckBox x:Name="chkScale"
-                                  Content="Scale:"
-                                  VerticalAlignment="Center"
-                                  VerticalContentAlignment="Center" 
-                                  HorizontalContentAlignment="Right"
-                                  Width="70"/>
-                        <TextBox IsEnabled="{Binding ElementName=chkScale, Path=IsChecked}"
-                                 VerticalContentAlignment="Center"
-                                 Margin="5,2"
-                                 Style="{StaticResource ErrorToolTip}"
-                                 Height="20">
-                            <TextBox.Text>
-                                <Binding Path="scale"
-                                         ConverterCulture="de-DE"
-                                         StringFormat="F6"
-                                         UpdateSourceTrigger="PropertyChanged">
-                                    <Binding.ValidationRules>
-                                        <!-- set range of scale rule -->
-                                        <local:tbRule 
-                                            validationName="scale"
-                                            min="0.5"
-                                            max="1.5" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </DockPanel>
-                    <!--#endregion -->
 
-                </StackPanel>
-                <!--#endregion -->
-
-                <!--#region epsg code-->
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="CRS metadata"
-                               HorizontalAlignment="Center"
-                               FontStyle="Italic" />
-
-                    <DockPanel x:Name="dpEpsg">
-                        
                         <!--#region trigger -->
                         <DockPanel.Style>
                             <!-- set default value (false) -->
@@ -367,11 +313,69 @@
                             </Style>
                         </DockPanel.Style>
                         <!--#endregion -->
-                        
+
+                        <CheckBox x:Name="chkScale"
+                                  Content="Scale:"
+                                  VerticalAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  HorizontalContentAlignment="Right"
+                                  Width="70" />
+                        <TextBox IsEnabled="{Binding ElementName=chkScale, Path=IsChecked}"
+                                 VerticalContentAlignment="Center"
+                                 Margin="5,2"
+                                 Style="{StaticResource ErrorToolTip}"
+                                 Height="20">
+                            <TextBox.Text>
+                                <Binding Path="scale"
+                                         ConverterCulture="de-DE"
+                                         StringFormat="F6"
+                                         UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <!-- set range of scale rule -->
+                                        <local:tbRule validationName="scale"
+                                                      min="0.5"
+                                                      max="1.5" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </DockPanel>
+                    <!--#endregion -->
+
+                </StackPanel>
+                <!--#endregion -->
+
+                <!--#region epsg code-->
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="CRS metadata"
+                               HorizontalAlignment="Center"
+                               FontStyle="Italic" />
+
+                    <DockPanel x:Name="dpEpsg">
+
+                        <!--#region trigger -->
+                        <DockPanel.Style>
+                            <!-- set default value (false) -->
+                            <Style TargetType="DockPanel">
+                                <Setter Property="IsEnabled"
+                                        Value="False" />
+                                <Style.Triggers>
+                                    <!-- data trigger via selected index of combo box -->
+                                    <DataTrigger Binding="{Binding ElementName=cbLoGeoRef, Path=SelectedIndex}"
+                                                 Value="2">
+                                        <!-- enable dock panel -->
+                                        <Setter Property="IsEnabled"
+                                                Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+                        <!--#endregion -->
+
                         <CheckBox x:Name="chkEpsg"
                                   Content="EPSG code:"
                                   VerticalAlignment="Center"
-                                  VerticalContentAlignment="Center"/>
+                                  VerticalContentAlignment="Center" />
                         <TextBox x:Name="tbEpsg"
                                  IsEnabled="{Binding ElementName=chkEpsg, Path=IsChecked}"
                                  Margin="5,2,0,2"
@@ -380,18 +384,17 @@
                                  VerticalContentAlignment="Center"
                                  MaxLength="5">
                             <TextBox.Text>
-                                <Binding 
-                                    Path="crsName"
-                                    ConverterCulture="de-DE"
-                                    StringFormat="F0"
-                                    UpdateSourceTrigger="PropertyChanged"
-                                    Mode="TwoWay">
+                                <Binding Path="crsName"
+                                         ConverterCulture="de-DE"
+                                         StringFormat="F0"
+                                         UpdateSourceTrigger="PropertyChanged"
+                                         Mode="TwoWay">
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
                     </DockPanel>
 
-                    <!-- button to set metadata settings -->                    
+                    <!-- button to set metadata settings -->
                     <Button Content="Query EPSG code"
                             x:Name="btnEpsgQuery"
                             Height="20"
@@ -400,8 +403,7 @@
                         <Button.IsEnabled>
                             <MultiBinding Converter="{StaticResource tbConverter}">
                                 <Binding ElementName="tbEpsg"
-                                         Path="Text" 
-                                         />
+                                         Path="Text" />
                             </MultiBinding>
                         </Button.IsEnabled>
                     </Button>
@@ -437,7 +439,7 @@
 
             </Grid>
             <!--#endregion -->
-            
+
         </StackPanel>
 
     </Grid>

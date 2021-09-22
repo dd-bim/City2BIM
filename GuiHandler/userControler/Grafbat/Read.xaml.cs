@@ -3,9 +3,6 @@ using System.Windows.Controls;
 
 using Microsoft.Win32; //used for file handling
 
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
-
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
 

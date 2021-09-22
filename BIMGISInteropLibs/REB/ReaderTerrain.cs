@@ -87,8 +87,17 @@ namespace BIMGISInteropLibs.REB
                                    )
                                 {
                                     //add point to point list
-                                    coordinates.Add(new CoordinateZ(x * scale, y * scale, z * scale));
-                                    points.Add(new Point(x * scale, y * scale, z * scale));
+                                    if (config.invertedCRS.GetValueOrDefault())
+                                    {
+                                        coordinates.Add(new CoordinateZ(y * scale, x * scale, z * scale));
+                                        points.Add(new Point(y * scale, x * scale, z * scale));
+                                    }
+                                    else
+                                    {
+                                        coordinates.Add(new CoordinateZ(x * scale, y * scale, z * scale));
+                                        points.Add(new Point(x * scale, y * scale, z * scale));
+                                    }
+                                    
 
                                     LogWriter.Add(LogType.verbose, "[REB] add coordinate(X: " + x*scale + "; Y:" + y*scale + "; Z: "+ z*scale+")");
                                 }
@@ -102,9 +111,6 @@ namespace BIMGISInteropLibs.REB
                                    && long.TryParse(line.Substring(10, 10), out long p1)
                                    && long.TryParse(line.Substring(20, 10), out long p2))
                                 {
-
-                                    
-
                                     //rebBreaklines.Add(new LineString())
                                     /*
                                     if (rebData.Lines.TryGetValue(hz, out var ls))

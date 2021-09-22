@@ -5,33 +5,96 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
         mc:Ignorable="d"
-        Title="Metadata - DIN SPEC 91391-2" 
-        Height="350" Width="400" 
-        FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize" Closing="Window_Closing">
+        Title="Metadata - DIN SPEC 91391-2"
+        Height="350"
+        Width="400"
+        FontFamily="Bahnschrift"
+        FontSize="12"
+        ResizeMode="CanMinimize"
+        Closing="Window_Closing">
     <Grid Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition/>
-            <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>
-        <!-- info text -->
-        <TextBlock Text="Here you can assign metadata (according to DIN 91391-2)." Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
-       
-        <TextBlock Text="unique Identificator" Grid.Row="2" VerticalAlignment="Center"/>
+        <StackPanel>
+
+            <TextBlock Text="Here you can assign metadata (according to DIN 91391-2)."
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="5"/>
+
+            <DockPanel Margin="3">
+                <TextBlock Text="unique Identificator"
+                           Margin="5"
+                           Width="120"
+                           VerticalAlignment="Center" />
+                <TextBox VerticalContentAlignment="Center"
+                         Text="{Binding guid}"
+                         />
+            </DockPanel>
+            <DockPanel Margin="3">
+                <TextBlock Text="Description"
+                           Margin="5"
+                           Width="120"
+                           VerticalAlignment="Center" />
+                <TextBox TextWrapping="Wrap"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding description}"
+                         Height="50"/>
+            </DockPanel>
+
+            <DockPanel Margin="3">
+                <TextBlock Text="Creator"
+                           Margin="5"
+                           Width="120"
+                           VerticalAlignment="Center" />
+                <TextBox VerticalContentAlignment="Center" 
+                         Text="{Binding creator}"/>
+            </DockPanel>
+
+            <DockPanel Margin="3">
+                <TextBlock Text="Revision"
+                           Margin="5"
+                           Width="120"
+                           VerticalAlignment="Center" />
+                <TextBox VerticalContentAlignment="Center"
+                         Text="{Binding revision}" />
+            </DockPanel>
+
+            <DockPanel Margin="3">
+                <TextBlock Text="Version"
+                           Margin="5"
+                           Width="120"
+                           VerticalAlignment="Center" />
+                <TextBox VerticalContentAlignment="Center"
+                         Text="{Binding version}" />
+            </DockPanel>
+
+            <DockPanel Margin="3">
+                <TextBlock Text="Project ID"
+                           Margin="5"
+                           Width="120"
+                           VerticalAlignment="Center" />
+                <TextBox VerticalContentAlignment="Center"
+                         Text="{Binding projectId}" />
+            </DockPanel>
+
+            <DockPanel Margin="3">
+                <TextBlock Text="Meta schema"
+                           Margin="5"
+                           Width="120"
+                           VerticalAlignment="Center" />
+                <TextBox VerticalContentAlignment="Center"
+                         Text="{Binding metadataSchema}" />
+            </DockPanel>
+
+            <Button Margin="3"
+                    Content="Apply and Close" 
+                    Height="25"
+                    Click="Button_Click"/>
+        </StackPanel>
+        <!--
+        
+        
         <TextBlock Text="Description" Grid.Row="3" Grid.RowSpan="2" VerticalAlignment="Center"/>
         <TextBlock Text="Creator" Grid.Row="5" VerticalAlignment="Center"/>
         <TextBlock Text="Revision" Grid.Row="6" VerticalAlignment="Center"/>
@@ -41,7 +104,7 @@
         
 
 
-        <!-- input fields -->
+      
         <TextBox x:Name="tbUUID" Grid.Row="2" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" IsReadOnly="True"/>
 
         <TextBox x:Name="tbDescription" Grid.Row="3" Grid.RowSpan="2" Grid.Column="1" Margin="0,1" TextAlignment="Left" TextWrapping="Wrap"/>
@@ -55,9 +118,6 @@
         <TextBox x:Name="tbProjectId" Grid.Row="8" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
 
         <TextBox x:Name="tbMetaShema" Grid.Row="9" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
-
-
-        <!--apply button-->
-        <Button x:Name="btnApplyMetadata913912" Grid.Row="19" Grid.ColumnSpan="2" Content="Apply and Close - Window" Click="btnApplyMetadata913912_Click"/>
+-->
     </Grid>
 </Window>

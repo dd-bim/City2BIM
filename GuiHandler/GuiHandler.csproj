@@ -90,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GuiSupport.cs" />
-    <Compile Include="InitClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="userControler\CityGML\Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>

@@ -9,9 +9,6 @@ using City2RVT.GUI.DTM2BIM; //include for terrain gui (Remove by sucess)
 //short cut for user controler
 using uC = GuiHandler.userControler;
 
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
-
 using rvtRes = BIMGISInteropLibs.RvtTerrain;
 
 //embed for file logging
@@ -54,10 +51,10 @@ namespace City2RVT.GUI
             //get current revit version
             utils.rvtVersion rvtVersion = utils.GetVersionInfo(doc.Application);
 
-            //logwriter
-            LogWriter.initLogger(init.config);
-
             BIMGISInteropLibs.IfcTerrain.Config config;
+
+            //logwriter
+            //LogWriter.initLogger(config);
 
             if (rvtVersion.Equals(utils.rvtVersion.NotSupported))
             {

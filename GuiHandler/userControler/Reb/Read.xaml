@@ -4,34 +4,71 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GuiHandler.userControler.Reb"
+             xmlns:uc="clr-namespace:GuiHandler.userControler"
              mc:Ignorable="d" 
-             d:DesignHeight="525" d:DesignWidth="385">
+             d:DesignHeight="525" d:DesignWidth="385"
+             Loaded="UserControl_Loaded">
     <Grid Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
+        <StackPanel>
+            <Button x:Name="btnReadReb"
+                    Content="Read 'REB' file"
+                    Click="btnReadReb_Click" />
 
-        <Button x:Name="btnReadReb" Grid.ColumnSpan="2" Content="Read 'REB' file" Click="btnReadReb_Click"/>
-        <ListBox x:Name="lbRebSelect" Grid.Row="1" Grid.Column="1" Margin="0,5" SelectionChanged="lbRebSelect_SelectionChanged" IsEnabled="False"/>
-        <TextBlock Grid.Row="1" Margin="5" Text="Select Horizon"/>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            <TextBlock Text="Processing via..." />
-            <RadioButton x:Name="rbRebFaces" Content="Faces" Margin="5,0,0,0" IsChecked="True" ToolTip="Use this option to convert a existing TIN or to recalculate it by using breaklines."/>
-            <RadioButton x:Name="rbRebPoints" Content="Points" Margin="5,0,0,0" ToolTip="Use this option to calculate a TIN of 3D point data. Processing breaklines is optional."/>
+            <!-- textblock for user hints -->
+            <TextBlock VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="10"
+                       TextWrapping="Wrap">
+                <TextBlock.Style>
+                    <!-- set default text -->
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Text"
+                                Value="Please continue with the further settings!" />
+                        <Setter Property="TextBlock.Foreground"
+                                Value="DarkBlue" />
+                        <Style.Triggers>
+                            <!-- trigger -> change text when a dxf file is read (may update the condition) -->
+                            <DataTrigger Binding="{Binding Path=filePath}"
+                                         Value="{x:Null}">
+                                <Setter Property="Text"
+                                        Value="Please import a REB file!" />
+                                <Setter Property="TextBlock.Foreground"
+                                        Value="OrangeRed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            
+            <DockPanel>
+                <TextBlock Grid.Row="1"
+                           Margin="5"
+                           Text="Select Horizon:" />
+                
+                <ListBox x:Name="lbRebSelect"
+                         Margin="0,5"
+                         Height="120"
+                         ItemsSource="{Binding}"
+                         SelectedItem="{Binding Path=horizon}"
+                         IsSynchronizedWithCurrentItem="True"/>
+            </DockPanel>
+            
+            <GroupBox Header="Processing via ..." IsEnabled="False">
+                <uc:ucFacesPoints/>
+            </GroupBox>
+
+            <GroupBox Header="CRS settings">
+                <uc:ucCRS />
+            </GroupBox>
+
+            <GroupBox Header="Breakline settings" IsEnabled="False">
+                <DockPanel HorizontalAlignment="Center">
+                    <TextBlock Text="Process breaklines?"
+                               VerticalAlignment="Center"/>
+                    <CheckBox Content="Yes" 
+                              Margin="5"/>
+                </DockPanel>
+            </GroupBox>
         </StackPanel>
-        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            <TextBlock Text="Process Breaklines?"/>
-            <RadioButton x:Name="rbProcessBlTrue" Content="Yes" Margin="5,0,0,0"/>
-            <RadioButton x:Name="rbProcessBlFalse" Content="No" Margin="5,0,0,0" IsChecked="True"/>
-        </StackPanel>
-        <Button x:Name="btnProcessReb" Grid.Row="4" Grid.ColumnSpan="2" Content="Apply 'REB' file settings" Click="btnProcessReb_Click" IsEnabled="False"/>
     </Grid>
 </UserControl>

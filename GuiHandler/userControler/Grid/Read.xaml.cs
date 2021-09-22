@@ -54,6 +54,16 @@ namespace GuiHandler.userControler.Grid
                 config.fileName = Path.GetFileName(ofd.FileName);
             }
         }
+
+        private void ucGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+
+            if (config.fileType.Equals(BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType.Grid))
+            {
+                config.readPoints = true;
+            }
+        }
     }
 }
 

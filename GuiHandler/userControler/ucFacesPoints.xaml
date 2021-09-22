@@ -69,7 +69,7 @@
             <TextBlock Margin="0,0,0,0"
                        VerticalAlignment="Center"
                        Text="Points"
-                       ToolTip="Only the points of the DXF file are readed. Then a Delaunay triangulation will be executed." />
+                       ToolTip="Only the points of the selected file will be readed. Then a Delaunay triangulation will be executed." />
         </DockPanel>
     </Grid>
 </UserControl>

@@ -152,6 +152,7 @@ namespace BIMGISInteropLibs.GeoJSON
         
         public static bool readBreakline(Config config, Result result)
         {
+            /*
             List<NTSGeometry.LineString> lines = new List<NTSGeometry.LineString>();
             
             if (File.Exists(config.breaklineFile))
@@ -169,6 +170,7 @@ namespace BIMGISInteropLibs.GeoJSON
                         break;
                 }
             }
+            */
             return false;
         }
 

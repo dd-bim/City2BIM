@@ -215,7 +215,6 @@ namespace GuiHandler.userControler.Dxf
             //change cursor to wait animation (for user feedback)
             Mouse.OverrideCursor = null;
 
-
             if (e.Cancelled)
             {
                 support.setLog(LogType.error, "File reading failed!");

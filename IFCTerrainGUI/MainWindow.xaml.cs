@@ -28,9 +28,6 @@ using System.ComponentModel; //used for background worker
 using BIMGISInteropLibs.Logging; //access to log writer
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
-
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
 
@@ -81,6 +78,8 @@ namespace IFCTerrainGUI
 
             var config = DataContext as Config;
 
+            var config91391 = TryFindResource("configDin913912") as configDin91391;
+
             //open file handler
             if (sfd.ShowDialog() == true)
             {
@@ -93,7 +92,7 @@ namespace IFCTerrainGUI
                         config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.Step;
 
                         //set settings for DIN SPEC 91391
-                        init.config91391.mimeType = "application/x-step";
+                        config91391.mimeType = "application/x-step";
                         break;
                     //jump to this case if ifcXML was selected
                     case 2:
@@ -101,7 +100,7 @@ namespace IFCTerrainGUI
                         config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcXML;
 
                         //set settings for DIN SPEC 91391
-                        init.config91391.mimeType = "application/xml";
+                        config91391.mimeType = "application/xml";
                         break;
                     //jump to this case if ifcXML was selected
                     case 3:
@@ -109,7 +108,7 @@ namespace IFCTerrainGUI
                         config.outFileType = BIMGISInteropLibs.IFC.IfcFileType.ifcZip;
 
                         //set settings for DIN SPEC 91391
-                        init.config91391.mimeType = "application/zip";
+                        config91391.mimeType = "application/zip";
                         break;
                 }
                 
@@ -124,6 +123,9 @@ namespace IFCTerrainGUI
 
                 //logging
                 LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI] Storage location set to: " + config.logFilePath));
+
+                //set to true for error handling
+                e.Handled = true;
             }
             return;
         }
@@ -134,6 +136,9 @@ namespace IFCTerrainGUI
         {
             //get config
             var config = DataContext as Config;
+            var config91391 = TryFindResource("configDin913912") as configDin91391;
+            var config18740 = TryFindResource("configDin187406") as configDin18740;
+
 
             if (string.IsNullOrEmpty(config.destFileName))
             {
@@ -146,6 +151,12 @@ namespace IFCTerrainGUI
                 if(res == MessageBoxResult.Yes)
                 {
                     btnChooseStorageLocation_Click(sender, e);
+
+                    if(e.Handled == false)
+                    {
+                        guiLog.setLog(LogType.warning, "File path setting has been canceld!");
+                        return;
+                    }
                 }
                 else
                 {
@@ -178,28 +189,27 @@ namespace IFCTerrainGUI
                     var export187406 = new JProperty("DIN 18740-6", "NOT EXPORTED");
 
                     //check if metadata should be exported according to DIN 91391-2
-                    if (init.config.exportMetadataDin91391.GetValueOrDefault())
+                    if (config.exportMetadataDin91391.GetValueOrDefault())
                     {
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata]***DIN SPEC 91391-2***"));
                         //Assignment all obligatory variables
                         //set file name
-                        init.config91391.name = System.IO.Path.GetFileName(init.config.destFileName);
+                        config91391.name = System.IO.Path.GetFileName(config.destFileName);
 
                         //set mime type
-                        init.config91391.mimeType = "application/x-step";
+                        config91391.mimeType = "application/x-step";
 
                         //set export string
-                        export913912 = new JProperty("DIN SEPC 91391-2", JObject.FromObject(init.config91391));
+                        export913912 = new JProperty("DIN SEPC 91391-2", JObject.FromObject(config91391));
                         
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
-
                     }
 
                     //check if metadata should be exported according to DIN 18740-6
-                    if (init.config.exportMetadataDin18740.GetValueOrDefault())
+                    if (config.exportMetadataDin18740.GetValueOrDefault())
                     {
                         //set export string
-                        export187406 = new JProperty("DIN 18740-6", JObject.FromObject(init.config18740));
+                        export187406 = new JProperty("DIN 18740-6", JObject.FromObject(config18740));
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] ***DIN 18740-6***"));
                         LogWriter.Entries.Add(new LogPair(LogType.verbose, "[GUI][Metadata] set all meta data to JsonProperty."));
                     }
@@ -220,7 +230,6 @@ namespace IFCTerrainGUI
                     LogWriter.Entries.Add(new LogPair(LogType.error, "Metadata - processing: " + ex.Message.ToString()));
                 }
             }
-
             #endregion metadata
 
             //serialize json file
@@ -271,6 +280,9 @@ namespace IFCTerrainGUI
             //get config 
             var config = e.Argument as Config;
 
+            var config18740 = TryFindResource("configDin187406") as configDin18740;
+            var config91391 = TryFindResource("configDin913912") as configDin91391;
+
             //Interface between GUI, reader and writer
             ConnectionInterface conInt = new ConnectionInterface();
 
@@ -278,7 +290,7 @@ namespace IFCTerrainGUI
             LogWriter.Entries.Add(new LogPair(LogType.verbose, "[BackgroundWorker][IFC] started."));
 
             //start mapping process which currently begins with the selection of the file reader
-            bool processingResult = conInt.mapProcess(config, init.config91391, init.config18740);
+            bool processingResult = conInt.mapProcess(config, config91391, config18740);
 
             //set result from processing (needed to handle in 'RunWorkerCompleted')
             e.Result = processingResult;
@@ -294,6 +306,13 @@ namespace IFCTerrainGUI
 
             //set mouse cursor to default
             Mouse.OverrideCursor = null;
+
+            if(e.Error != null)
+            {
+                guiLog.setLog(LogType.error, e.Error.Message);
+                return;
+            }
+
 
             //check if processing result is true / false
             if (e.Result.Equals(true))
@@ -343,6 +362,7 @@ namespace IFCTerrainGUI
 
                 config.filePath = null;
                 config.fileName = null;
+                config.readPoints = false;
             }
         }
 

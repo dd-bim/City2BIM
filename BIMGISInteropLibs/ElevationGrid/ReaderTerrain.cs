@@ -87,7 +87,7 @@ namespace BIMGISInteropLibs.ElevationGrid
                                     && x >= config.bbP1X && x <= config.bbP2X)
                                 {
                                     //Prepare Point Data for NetTopologySuite
-                                    if (config.invertedCRS)
+                                    if (config.invertedCRS.GetValueOrDefault())
                                     { pointList.Add(new Point(y, x, z)); }
                                     else { pointList.Add(new Point(x, y, z)); }
 
@@ -110,7 +110,7 @@ namespace BIMGISInteropLibs.ElevationGrid
                                 && double.TryParse(str[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
                             {
                                 //Prepare Point Data for NetTopologySuite
-                                if (config.invertedCRS)
+                                if (config.invertedCRS.GetValueOrDefault())
                                 { pointList.Add(new Point(y, x, z)); }
                                 else { pointList.Add(new Point(x, y, z)); }
                             }

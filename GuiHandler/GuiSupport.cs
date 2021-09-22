@@ -10,8 +10,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 
 using GuiHandler.userControler;
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
+
 namespace GuiHandler
 {
     public class GuiSupport
