@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows;
-
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
+using System.Windows.Data; //interface for converter 
 
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
+
+//shortcut to set log type
+using BIMGISInteropLibs.Logging;
 
 namespace City2RVT.GUI.DTM2BIM
 {
@@ -32,7 +33,7 @@ namespace City2RVT.GUI.DTM2BIM
             InitializeComponent();
 
             //send gui logging
-            guiLog.setLog("Welcome to DTM2BIM");
+            guiLog.setLog(LogType.info, "Welcome to DTM2BIM");
         }
 
         /// <summary>
@@ -47,53 +48,30 @@ namespace City2RVT.GUI.DTM2BIM
         }
 
         /// <summary>
-        /// error handling for processing selection
-        /// </summary>
-        private void cbProcessing_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            if (cbFaces.IsSelected)
-            {
-                init.config.readPoints = false;
-            }
-            else
-            {
-                init.config.readPoints = true;
-            }
-            
-            if(cbProcessing.SelectedIndex != -1)
-            {
-                //set task to done
-                guiLog.selectProcessing = true;
-                
-                //ready checker
-                enableStartBtn(guiLog.rdyDTM2BIM());
-
-                return;
-            }
-            return;
-        }
-
-        /// <summary>
-        /// enable or disable button (error handling)
-        /// </summary>
-        private void enableStartBtn(bool enable)
-        {
-            if (enable)
-            {
-                this.btnStartImport.IsEnabled = true;
-            }
-            else
-            {
-                this.btnStartImport.IsEnabled = false;
-            }
-        }
-
-        /// <summary>
         /// clear log on closing window
         /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
             guiLog.clearLog();
+        }
+    }
+
+
+    /// <summary>
+    /// class to convert integer values of tab index to file type enumeration
+    /// </summary>
+    public class EnumConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+                          System.Globalization.CultureInfo culture)
+        {
+            return (int)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+                                  System.Globalization.CultureInfo culture)
+        {
+            return (BIMGISInteropLibs.IfcTerrain.IfcTerrainFileType)value;
         }
     }
 }

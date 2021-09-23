@@ -360,7 +360,6 @@
     <Compile Include="Reader\ReadCityGML.cs" />
     <Compile Include="Reader\FileDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reader\ReadTerrain.cs" />
     <Compile Include="Builder\RevitCityBuilder.cs" />
     <Compile Include="Builder\RevitTopoSurfaceBuilder.cs" />
     <Compile Include="Builder\Revit_Build.cs" />

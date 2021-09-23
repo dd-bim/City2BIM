@@ -138,8 +138,8 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Npgsql, Version=5.0.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Npgsql.5.0.7\lib\netstandard2.0\Npgsql.dll</HintPath>
+    <Reference Include="Npgsql, Version=5.0.10.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.5.0.10\lib\netstandard2.0\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql.LegacyPostgis, Version=5.0.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.LegacyPostgis.5.0.7\lib\netstandard2.0\Npgsql.LegacyPostgis.dll</HintPath>
@@ -273,6 +273,8 @@
     <Compile Include="Geometry\terrain.cs" />
     <Compile Include="IfcTerrain\Common.cs" />
     <Compile Include="IfcTerrain\Config.cs" />
+    <Compile Include="IfcTerrain\configDin18740.cs" />
+    <Compile Include="IfcTerrain\configDin91391.cs" />
     <Compile Include="IfcTerrain\Result.cs" />
     <Compile Include="IFC\Ifc2x3\GeometricCurveSet.cs" />
     <Compile Include="IFC\Ifc2x3\LoGeoRef\Level30.cs" />

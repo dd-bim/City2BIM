@@ -4,47 +4,124 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
+        x:Name="metadataWindow"
         Title="LoGeoRef50 - CRS Metadata" 
         Height="350" Width="400"
         FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize" Closing="Window_Closing" Loaded="Window_Loaded">
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition/>
-            <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
-        <!--info texts-->
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Hier können Sie die für LoGeoRef50 benötigten Metadaten vergeben." HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Row="1" Text="CRS - Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-        <TextBlock Grid.Row="2" Grid.RowSpan="2" Text="Description:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-        <TextBlock Grid.Row="4" Text="Geodetic datum:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-        <TextBlock Grid.Row="5" Text="Vertical datum:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-        <TextBlock Grid.Row="6" Text="Projection name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
-        <TextBlock Grid.Row="7" Text="Projection zone:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
+        ResizeMode="CanMinimize">
 
-        <!-- input fields -->
-        <TextBox x:Name="tbCrsName" Grid.Row="1" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" PreviewTextInput="tbCrsName_PreviewTextInput"/>
-        <TextBox x:Name="tbDescription" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Margin="0,1" TextAlignment="Left" TextWrapping="Wrap"/>
-        <TextBox x:Name="tbGeodeticDatum" Grid.Row="4" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbVerticalDatum" Grid.Row="5" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbProjectionName" Grid.Row="6" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbProjectionZone" Grid.Row="7" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
+
+
+    <Window.Resources>
+        <!-- controls the width of the text boxes -->
+        <sys:Int16 x:Key="tbWidth">100</sys:Int16>
+        
+        <!-- controls the margin of the text boxes-->
+        <sys:Int16 x:Key="tbMargin">5</sys:Int16>
+        
+        <!-- controls the margin of the dock panels -->
+        <sys:String x:Key="dockMargin">0,2</sys:String>
+    </Window.Resources>
+
+    <Grid Margin="5">
+        <!-- stackpanel to group all different input fields -->
+        <StackPanel>
+            <TextBlock 
+                Text="Here you can assign the metadata required for LoGeoRef50." 
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Margin="5"/>
+
+            <DockPanel Margin="{Binding Source={StaticResource dockMargin}}">
+                <TextBlock 
+                    Text="CRS - Name:" 
+                    VerticalAlignment="Center"
+                    Width="{Binding Source={StaticResource tbWidth}}"
+                    Margin="{Binding Source={StaticResource tbMargin}}"/>
+                <TextBox 
+                    x:Name="tbCrsName"
+                    Text="{Binding Path=crsName, ConverterCulture=de-DE, StringFormat=F0, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    MaxLength="5"
+                    VerticalContentAlignment="Center"/>
+            </DockPanel>
+
+            <!--#region description -->
+            <DockPanel Margin="{Binding Source={StaticResource dockMargin}}">
+                <TextBlock 
+                    Text="Description:" 
+                    VerticalAlignment="Center"
+                    Width="{Binding Source={StaticResource tbWidth}}"
+                    Margin="{Binding Source={StaticResource tbMargin}}"/>
+                <TextBox 
+                    x:Name="tbDescription"
+                    Text="{Binding Path=crsDescription}"
+                    VerticalContentAlignment="Center"
+                    TextWrapping="Wrap"/>
+            </DockPanel>
+            <!--#endregion-->
+
+            <!--#region geodetic datum -->
+            <DockPanel Margin="{Binding Source={StaticResource dockMargin}}">
+                <TextBlock 
+                    Text="Geodetic datum:" 
+                    VerticalAlignment="Center"
+                    Width="{Binding Source={StaticResource tbWidth}}"
+                    Margin="{Binding Source={StaticResource tbMargin}}"/>
+                <TextBox
+                    Text="{Binding Path=geodeticDatum}"
+                    VerticalContentAlignment="Center"
+                    TextWrapping="Wrap"/>
+            </DockPanel>
+            <!--#endregion-->
+
+            <!--#region vertical datum -->
+            <DockPanel Margin="{Binding Source={StaticResource dockMargin}}">
+                <TextBlock 
+                    Text="Vertical datum:" 
+                    VerticalAlignment="Center"
+                    Width="{Binding Source={StaticResource tbWidth}}"
+                    Margin="{Binding Source={StaticResource tbMargin}}"/>
+                <TextBox Text="{Binding Path=verticalDatum}"
+                         VerticalContentAlignment="Center" 
+                    TextWrapping="Wrap"/>
+            </DockPanel>
+            <!--#endregion-->
+
+            <!--#region projection name -->
+            <DockPanel Margin="{Binding Source={StaticResource dockMargin}}">
+                <TextBlock 
+                    Text="Projection name:" 
+                    VerticalAlignment="Center"
+                    Width="{Binding Source={StaticResource tbWidth}}"
+                    Margin="{Binding Source={StaticResource tbMargin}}"/>
+                <TextBox Text="{Binding Path=projectionName}"
+                         VerticalContentAlignment="Center"
+                    TextWrapping="Wrap"/>
+            </DockPanel>
+            <!--#endregion-->
+
+            <!--#region projection zone -->
+            <DockPanel Margin="{Binding Source={StaticResource dockMargin}}">
+                <TextBlock 
+                    Text="Projection zone:" 
+                    VerticalAlignment="Center"
+                    Width="{Binding Source={StaticResource tbWidth}}"
+                    Margin="{Binding Source={StaticResource tbMargin}}"/>
+                <TextBox Text="{Binding Path=projectionZone}"
+                         VerticalContentAlignment="Center"
+                    TextWrapping="Wrap"/>
+            </DockPanel>
+            <!--#endregion-->
+        </StackPanel>
 
         <!--Button to set settings and close window-->
-        <Button x:Name="btnApplyCrsMetadata" Grid.Row="9" Grid.ColumnSpan="2" Content="Apply and close - Window" Click="btnApplyCrsMetadata_Click"/>
+        <Button 
+            x:Name="btnClose"
+            VerticalAlignment="Bottom"
+                Content="Close"
+                Click="btnClose_Click"
+                Height="25"/>
 
     </Grid>
 </Window>

@@ -88,9 +88,19 @@ namespace BIMGISInteropLibs.LandXML
                                         double.TryParse(pt[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double y);
                                         double.TryParse(pt[2], NumberStyles.Any, CultureInfo.InvariantCulture, out double z);
 
-                                        //create point
-                                        Point p = new Point(x, y, z);
+                                        dynamic p = null;
 
+                                        //create point
+                                        if (config.invertedCRS.GetValueOrDefault())
+                                        {
+                                            p = new Point(y, x, z);
+
+                                        }
+                                        else
+                                        {
+                                            p = new Point(x, y, z);
+                                        }
+                                        
                                         //set point number
                                         p.UserData = pnr;
 
@@ -149,7 +159,15 @@ namespace BIMGISInteropLibs.LandXML
                                         double.TryParse(pts[i + 1], NumberStyles.Float, CultureInfo.InvariantCulture, out double X);
                                         double.TryParse(pts[i + 2], NumberStyles.Float, CultureInfo.InvariantCulture, out double Z);
 
-                                        coords.Add(new CoordinateZ(X, Y, Z));
+                                        if (config.invertedCRS.GetValueOrDefault())
+                                        {
+                                            coords.Add(new CoordinateZ(Y, X, Z));
+                                        }
+                                        else
+                                        {
+                                            coords.Add(new CoordinateZ(X, Y, Z));
+                                        }
+
                                         j = j + 3;
                                     }
                                     while (j < pts.Length);
@@ -165,8 +183,8 @@ namespace BIMGISInteropLibs.LandXML
                                     if (!(coords[v].Equals(coords[0])
                                         && v != 0))
                                     {
-                                        cs[0] = coords[v++];
-                                        cs[1] = coords[v];
+                                        cs[0] = coords[v];
+                                        cs[1] = coords[v++];
                                         
                                         LineString ls = new LineString(cs);
                                         lines.Add(ls);

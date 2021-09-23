@@ -13,23 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace IFCTerrainGUI.GUI.ExportSettings
+namespace GuiHandler.userControler
 {
     /// <summary>
-    /// Interaktionslogik für ucMetadata.xaml
+    /// Interaktionslogik für ucCRS.xaml
     /// </summary>
-    public partial class ucMetadata : UserControl
+    public partial class ucCRS : UserControl
     {
-        public ucMetadata()
+        public ucCRS()
         {
             InitializeComponent();
         }
-
-        /*
-         * PLACEHOLDER
-         * all logic is seperated into user controler
-         * these are in the "Metadata" folder
-         */
-                
     }
 }

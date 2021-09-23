@@ -12,18 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
 
 namespace GuiHandler.userControler
 {
     /// <summary>
-    /// Interaktionslogik für InformationPanel.xaml
+    /// Interaktionslogik für ucFacesPoints.xaml
     /// </summary>
-    public partial class InformationPanel : UserControl
+    public partial class ucFacesPoints : UserControl
     {
-        public InformationPanel()
+        public ucFacesPoints()
         {
             InitializeComponent();
         }

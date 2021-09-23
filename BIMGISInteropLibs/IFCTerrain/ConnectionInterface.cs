@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Xml;
 
 //embed IFC
 using BIMGISInteropLibs.IFC;    //IFC-Writer
@@ -16,6 +17,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 using IxMilia.Dxf;
 
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -24,18 +26,19 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// ConnectionInterface between file reader and ifc writer
         /// </summary>
-        public bool mapProcess(Config config, JsonSettings_DIN_SPEC_91391_2 jSettings_DIN91931, JsonSettings_DIN_18740_6 jSettings_DIN18740)
+        public bool mapProcess(Config config, configDin91391 jSettings_DIN91931, configDin18740 jSettings_DIN18740)
         {
             LogWriter.Add(LogType.info, "Processing-Protocol for IFCTerrain");
             LogWriter.Add(LogType.info, "--------------------------------------------------");
             LogWriter.Add(LogType.verbose, "Mapping process started.");
 
             //check if file exists otherwise return allready here false
-            if (!File.Exists(config.filePath)) 
+            if (!File.Exists(config.filePath) && !config.fileType.Equals(IfcTerrainFileType.PostGIS)) 
             {
                 LogWriter.Add(LogType.error, "[READER] File not found at path: " + config.filePath);
                 return false;
             }
+            LogWriter.Add(LogType.verbose, "[READER] can read file: " + config.filePath);
 
             //The processing is basically done by a reader and a writer (these are included in the corresponding regions)
             #region reader
@@ -81,7 +84,8 @@ namespace BIMGISInteropLibs.IfcTerrain
                 case IfcTerrainFileType.GeoJSON:
                     result = GeoJSON.ReaderTerrain.readGeoJson(config);
                     break;
-                    //breakline processing (first check and with the method breaklines will be processed)
+                    //breakline processing
+                    //(first check and with the method breaklines will be processed)
                     /*
                     if (config.breakline.GetValueOrDefault()
                         && GeoJSON.ReaderTerrain.readBreakline(config, result))
@@ -98,7 +102,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                 LogWriter.Add(LogType.error, "[READER] File reading failed (result is null) - processing canceld!");
                 return false;
             }
-            else if(result.pointList == null)
+            else if(result.pointList == null || result.pointList.Count.Equals(0))
             {
                 LogWriter.Add(LogType.error, "[READER] File reading failed (point list is empty) - processing canceld!");
                 return false;
@@ -146,16 +150,18 @@ namespace BIMGISInteropLibs.IfcTerrain
 
             //from here are the IFC writers
             #region writer
-            #region [TODO] small export of geometry as WKT (in a txt file)
-            if (config.outFileType == IfcFileType.text)
+            #region small export of geometry as WKT/ WKB / GML (in a txt file)
+            if (config.outFileType != IfcFileType.Step
+                && config.outFileType != IfcFileType.ifcXML
+                && config.outFileType != IfcFileType.ifcZip)
             {
-                var exportGeom = result.geomStore;
-                using (StreamWriter sw = new StreamWriter(Path.GetFullPath(config.destFileName)+".txt"))
+                if(writeToText(config, result))
                 {
-                    //NetTopologySuite.IO.WKTWriter writer = new NetTopologySuite.IO.WKTWriter();
-                    sw.WriteLine(exportGeom);
+                    LogWriter.Add(LogType.info, "File created please check file path: "
+                        + Environment.NewLine + Path.GetDirectoryName(config.destFileName));
+                    return true;
                 }
-                return true;
+                else { return false; }
             }
             #endregion
             //set write input
@@ -193,7 +199,7 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 case IfcVersion.IFC4dot3:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("IFC4.3 is not implemented yet.");
             }
 
             //access to file writer
@@ -206,6 +212,113 @@ namespace BIMGISInteropLibs.IfcTerrain
             #endregion writer
             
             return true;
+        }
+
+        private static bool writeToText(Config config, Result result)
+        {
+            //xml writer settings
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
+            xmlWriterSettings.Encoding = Encoding.UTF8;
+            xmlWriterSettings.Indent = true;
+            xmlWriterSettings.OmitXmlDeclaration = true;
+            xmlWriterSettings.NewLineOnAttributes = true;
+
+            if(result.currentConversion == DtmConversionType.conversion)
+            {
+                List<Polygon> polygons = new List<Polygon>();
+
+                var pointList = result.pointList.ToArray();
+
+                foreach(var tri in result.triMap)
+                {
+                    List<Coordinate> coordinates = new  List<Coordinate>();
+
+                    foreach(var pointIndex in tri.triValues)
+                    {
+                        Coordinate c = pointList[pointIndex].Coordinate;
+                        coordinates.Add(c);
+                    }
+
+                    //
+                    coordinates.Add(coordinates.First());
+                    //
+                    LinearRing linearRing = new LinearRing(coordinates.ToArray());
+                    //
+                    polygons.Add(new Polygon(linearRing));
+                }
+
+                GeometryCollection geometryCollection = new GeometryCollection(polygons.ToArray());
+
+                result.geomStore = geometryCollection;
+            }
+
+
+            var exportGeom = result.geomStore;
+            try
+            {
+                LogWriter.Add(LogType.info, "Export geometry as: " + config.outFileType.ToString());
+                switch (config.outFileType)
+                {
+                    case IfcFileType.wkt:
+                        using (StreamWriter sw = new StreamWriter(Path.ChangeExtension(config.destFileName, "txt")))
+                        {
+                            WKTWriter wktWriter = new WKTWriter(3);
+                            
+                            //set that formatted is true formatted 
+                            wktWriter.Formatted = true;
+
+                            //set to xyz (so z value will not be dropped)
+                            wktWriter.OutputOrdinates = Ordinates.XYZ;
+                            wktWriter.WriteFormatted(exportGeom, sw);
+                        }
+                        return true;
+                    case IfcFileType.wkb:
+                        using (StreamWriter sw = new StreamWriter(Path.ChangeExtension(config.destFileName, "txt")))
+                        {
+                            //set byte order
+                            ByteOrder byteOrder = ByteOrder.BigEndian;
+                            
+                            //set wkb writer (without dropping z value)
+                            WKBWriter wkbWriter = new WKBWriter(byteOrder, true, true);
+                           
+                            var bytes = wkbWriter.Write(exportGeom);
+                            sw.BaseStream.Write(bytes, 0, bytes.Length);
+                        }
+                        return true;
+
+                    case IfcFileType.gml2:
+                        //
+                        NetTopologySuite.IO.GML2.GMLWriter gml2Writer
+                            = new NetTopologySuite.IO.GML2.GMLWriter();
+
+                        //
+                        var xmlWriterGml2 = XmlWriter.Create(Path.ChangeExtension(config.destFileName, "gml"), xmlWriterSettings);
+                        gml2Writer.Write(exportGeom, xmlWriterGml2);
+                        
+                        return true;
+
+                    case IfcFileType.gml3:
+
+                        //
+                        NetTopologySuite.IO.GML3.GML3Writer gml3Writer 
+                            = new NetTopologySuite.IO.GML3.GML3Writer();
+
+                        //
+                        var xmlWriterGml3 = XmlWriter.Create(
+                            Path.ChangeExtension(config.destFileName, "gml"), xmlWriterSettings);
+                        
+                        gml3Writer.Write(exportGeom, xmlWriterGml3);
+                      
+                        return true;
+
+                    default: return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogWriter.Add(LogType.error, ex.Message);
+                return false;
+            }
         }
     }
 }

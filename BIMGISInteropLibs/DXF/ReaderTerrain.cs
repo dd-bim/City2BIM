@@ -106,8 +106,6 @@ namespace BIMGISInteropLibs.DXF
             {
                 LogWriter.Add(LogType.debug, "[DXF] Reading 3DFaces...");
 
-                config.minDist = 1;
-
                 //read faces
                 readFaces(dxfFile, config.layer, scale, config.minDist, dxfResult);
             } 
@@ -166,15 +164,6 @@ namespace BIMGISInteropLibs.DXF
 
                     //log
                     LogWriter.Add(LogType.verbose, "[DXF] Triangle set.");
-
-                    //CoordinateZ p4 = new CoordinateZ(face.FourthCorner.X * scale, face.FourthCorner.Y * scale, face.FourthCorner.Z * scale);
-
-                    /*
-                    Coordinate[] coords = new Coordinate[] { p1, p2, p3, p1 };
-                    Polygon triangle = new Polygon(new LinearRing(coords));
-                    //add polygon to list
-                    triangleList.Add(triangle);
-                    */
                 }
             }
 
@@ -211,10 +200,20 @@ namespace BIMGISInteropLibs.DXF
                     //log
                     LogWriter.Add(LogType.verbose, "[DXF] Point data added.");
                 }
+                else if (entity.Layer == dxfLayer && entity is Dxf3DFace face)
+                {
+                    //set points from each face
+                    int p1 = terrain.addPoint(pointList, new Point(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale));
+                    int p2 = terrain.addPoint(pointList, new Point(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale));
+                    int p3 = terrain.addPoint(pointList, new Point(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale));
+                }
             }
 
-            //set to result
-            dxfResult.pointList = pointList.ToList();
+            if(!pointList.Count.Equals(null))
+            {
+                //set to result
+                dxfResult.pointList = pointList.ToList();
+            }
         }
 
         /// <summary>

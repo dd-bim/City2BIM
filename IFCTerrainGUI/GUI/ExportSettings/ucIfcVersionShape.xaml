@@ -1,53 +1,232 @@
 ﻿<UserControl x:Class="IFCTerrainGUI.GUI.ExportSettings.ucIfcVersionShape"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:export="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.LoGeoRef"
+             xmlns:Ifc="clr-namespace:BIMGISInteropLibs.IFC;assembly=BIMGISInteropLibs"
              xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings"
              xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="95" d:DesignWidth="385">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <GroupBox
-            Header="IFC Version">
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="95"
+             d:DesignWidth="385"
+             Width="373"
+             Height="76">
+
+    <!--#region define resources for databinding & layout-->
+    <UserControl.Resources>
+        <export:ucLoGeoRef x:Key="ucLoGeoRef" />
+
+        <!--#region toggle button design -->
+        <Style TargetType="{x:Type ToggleButton}">
+            <Setter Property="IsChecked"
+                    Value="{Binding Path=geoElement}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Viewbox>
+                            <Border x:Name="Border"
+                                    CornerRadius="10"
+                                    Background="#FFFFFFFF"
+                                    Width="40"
+                                    Height="20">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0.5"
+                                                      Direction="0"
+                                                      Opacity="0.3" />
+                                </Border.Effect>
+                                <Ellipse x:Name="Ellipse"
+                                         Fill="#FFFFFFFF"
+                                         Stretch="Uniform"
+                                         Margin="2 1 2 1"
+                                         Stroke="DarkGray"
+                                         StrokeThickness="0.2"
+                                         HorizontalAlignment="Stretch">
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect BlurRadius="5"
+                                                          ShadowDepth="0.5"
+                                                          Opacity="0.2"
+                                                          Direction="260" />
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Border>
+                        </Viewbox>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=cbIfcVersion, Path=SelectedIndex}"
+                                         Value="0">
+                                <Setter Property="IsEnabled"
+                                        Value="False" />
+                                <Setter Property="IsChecked"
+                                        Value="False" />
+                            </DataTrigger>
+                            <!--#region layout -->
+                            <EventTrigger RoutedEvent="Checked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="Border"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="LimeGreen"
+                                                        Duration="0:0:0.1" />
+                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="20 1 2 1"
+                                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="Unchecked">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="Border"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="White"
+                                                        Duration="0:0:0.1" />
+                                        <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="2 1 2 1"
+                                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <!--#endregion-->
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--#endregion-->
+
+        <!-- provide data from enumeration (IfcVersion)-->
+        <ObjectDataProvider x:Key="ifcVersion"
+                            ObjectType="{x:Type Ifc:IfcVersion}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Ifc:IfcVersion" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <!-- provide data from enum (IfcShapeRepresentation)-->
+        <ObjectDataProvider x:Key="ifcShape"
+                            ObjectType="{x:Type Ifc:SurfaceType}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Ifc:SurfaceType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <!--#endregion -->
+    
+    <!--#region layout-->
+    <Grid Margin="5,0">
+        <StackPanel Height="73">
             
-            <!-- stack panel -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <ComboBox x:Name="cbIfcVersion" Width="100" VerticalAlignment="Center" SelectionChanged="cbIfcVersion_SelectionChanged" ToolTip="Please select IFC schema version. The supported functionalities differ!">
-                    <!--default seeting GCS-->
-                    <ComboBoxItem x:Name="ifc2x3" Content="IFC 2x3"/>
-                    <ComboBoxItem x:Name="ifc4" Content="IFC 4"/>
-                    <ComboBoxItem x:Name="ifc4dot3" Content="IFC 4.3" IsEnabled="False"/>
+            <!-- text blocks for information only -->
+            <DockPanel>
+                <TextBlock Text="IFC Version:"
+                           TextAlignment="Center"
+                           Width="120"
+                           Margin="0,0,5,3" />
+
+                <TextBlock Text="IFC Shape Representation:"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,3" />
+            </DockPanel>
+
+            <!--#region selection of IfcVersion / IfcShape -->
+            <DockPanel>
+                <!-- combo box to select ifc version (binded to config) -->
+                <ComboBox x:Name="cbIfcVersion"
+                          ItemsSource="{Binding Source={StaticResource ifcVersion}}"
+                          SelectedItem="{Binding Path=outIFCType}"
+                          Width="120"
+                          Margin="0,0,5,0"
+                          VerticalAlignment="Center"
+                          HorizontalContentAlignment="Center"
+                          VerticalContentAlignment="Center"
+                          Height="25"
+                          ToolTip="Please select IFC schema version!"
+                          IsSynchronizedWithCurrentItem="True">
+                    
+                    <!-- trigger to disable IFC4.3 -->
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Style.Triggers>
+                                <!-- disable value 2 (Ifc4dot3) (in this case the third item) -->
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
+                                             Value="2">
+                                    <Setter Property="IsEnabled"
+                                            Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
                 </ComboBox>
-                <CheckBox x:Name="chkIfcGeoEl" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Content="IfcGeographicalElement" Margin="7,0,0,0" IsEnabled="False" ToolTip="Only available under version Ifc 4!" ToolTipService.ShowOnDisabled="True" Checked="chkIfcGeoEl_Checked" Unchecked="chkIfcGeoEl_Unchecked"/>
-            </StackPanel>
 
-        </GroupBox>
+                <!-- combo box to select shape representation (binded to config) -->
+                <ComboBox x:Name="cbShapeRepres"
+                          Height="25"
+                          VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Center"
+                          ItemsSource="{Binding Source={StaticResource ifcShape}}"
+                          SelectedItem="{Binding Path=outSurfaceType}"
+                          ToolTip="Please select one of the supported shape representations. &#x0a;
+                              Keep in mind: not all software can handle all shape representations."
+                          IsSynchronizedWithCurrentItem="True">
 
-        <GroupBox 
-            Grid.Row="1"
-            Header="IFC Shape Representation"
-            >
+                    <!--  -->
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Style.Triggers>
+                                <!-- disable IFC TIN (until implemented) -->
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
+                                             Value="TIN">
+                                    <Setter Property="IsEnabled"
+                                            Value="False" />
+                                </DataTrigger>
 
-            <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Horizontal">
-                <ComboBox x:Name="cbShapeRepres" Width="200" SelectionChanged="cbShapeRepres_SelectionChanged" ToolTip="Please select one of the supported shape representations. &#x0a;Keep in mind: not all software can handle all shape representations.">
-                    <!--default seeting GCS-->
-                    <ComboBoxItem x:Name="ifcGCS" Content="IfcGeometricCurveSet"/>
-                    <ComboBoxItem x:Name="ifcSBSM" Content="IfcShellBasedSurfaceModell"/>
-                    <ComboBoxItem x:Name="ifcTFS" Content="IfcTriangulatedFaceSet" IsEnabled="False"/>
-                    <ComboBoxItem x:Name="ifcTIN" Content="IfcTriangulatedIrregularNetwork" IsEnabled="False"/>
+                                <!-- diable IFC TFS if IFC2x3 (below with 'value 0') is selected-->
+                                <MultiDataTrigger>
+                                    <!-- set condition to define that TFS should be disabled-->
+                                    <MultiDataTrigger.Conditions>
+                                        <!-- first condition ('select') TFS item-->
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
+                                                   Value="TFS" />
+                                        <!-- secound condition when 'IFC2x3' is selected -->
+                                        <Condition Binding="{Binding ElementName=cbIfcVersion, Path=SelectedIndex}"
+                                                   Value="0" />
+                                    </MultiDataTrigger.Conditions>
+                                    <!-- disable TFS -->
+                                    <Setter Property="IsEnabled"
+                                            Value="False" />
+                                    <!-- remove selection from TFS -->
+                                    <Setter Property="IsSelected"
+                                            Value="False" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
                 </ComboBox>
-
-                <TextBlock Text="Min. distance:" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                <TextBox x:Name="tbMinDist" x:FieldModifier="public" Width="30" Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding Path=MinDistInput}" PreviewTextInput="NumberValidationTextBox" IsEnabled="False" ToolTip="[Currently not available!] Outlook: thinning out meshes" ToolTipService.ShowOnDisabled="True"/>
-
-                <TextBlock Text="[m]" Margin="5,0,0,0" VerticalAlignment="Center"/>
-            </StackPanel>
-        </GroupBox>
+            </DockPanel>
+            <!--#endregion-->
             
+            <!--#region toggle button design -->
+            <DockPanel Margin="0,2,0,0"
+                       HorizontalAlignment="Center">
+                <!-- text to visualize *false* value-->
+                <TextBlock VerticalAlignment="Center"
+                           Text="IfcSite" />
+                <!-- toggle button (style is changed via resource) & check will bind to config-->
+                <ToggleButton x:Name="chkGeo"
+                              Width="40"
+                              Margin="5">
+                </ToggleButton>
+                <!-- text to visualize *true* value-->
+                <TextBlock VerticalAlignment="Center"
+                           Text="IfcGeographicElement" />
+            </DockPanel>
+            <!--#endregion-->
+        </StackPanel>
     </Grid>
+    <!--#endregion layout--> 
 </UserControl>

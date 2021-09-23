@@ -13,14 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IFCTerrainGUI.GUI.MainWindowLogic; //include for error handling
-
 //logging
 using BIMGISInteropLibs.Logging; //access to log writer
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
-
-//shortcut to set json settings
-using init = GuiHandler.InitClass;
 
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
@@ -46,101 +41,20 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             //so the user can not change any settings during the time the background worker is running
             ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
 
+            //get config via key
+            var config = TryFindResource("configDin187406");
+
             //create new instance of window
-            metadata_din_18740_6 metadata_Din_18740_6 = new metadata_din_18740_6();
-            
-            //open window
-            metadata_Din_18740_6.ShowDialog();
-        }
+            metadata_din_18740_6 window = new metadata_din_18740_6();
 
-        
-        /// <summary>
-        /// enable button to input all metadata
-        /// </summary>
-        private void chkDin18740Export_Checked(object sender, RoutedEventArgs e)
-        {
-            btnOpenWindowMetadata187406.IsEnabled = true;
-        }
+            //set data context
+            window.DataContext = config;
 
-        /// <summary>
-        /// disable button (input window not needed)
-        /// </summary>
-        private void chkDin18740Export_Unchecked(object sender, RoutedEventArgs e)
-        {
-            btnOpenWindowMetadata187406.IsEnabled = false;
-        }
+            //open window - for input metadata
+            window.ShowDialog();
 
-
-        /// <summary>
-        /// set all json settings (most import button in this controler)
-        /// </summary>
-        private void btnAplly_Click(object sender, RoutedEventArgs e)
-        {
-            //export metadata json
-            if (chkJsonExport.IsChecked == true)
-            {
-                //set to true
-                init.config.exportMetadataFile = true;
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'JSON' set."));
-                guiLog.setLog("Metadata export 'JSON' set.");
-
-            }
-
-            //export as property set
-            if (chkIfcPropertySet.IsChecked == true)
-            {
-                //set output of IfcPropertySet to true
-                init.config.outIfcPropertySet = true;
-                LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Metadata export 'IfcPropertySet' set."));
-                guiLog.setLog("Metadata export 'IfcPropertySet' set.");
-            }
-
-            //check if export of DIN 91391-2
-            if (chkDin91391Export.IsChecked == true)
-            {
-                init.config.exportMetadataDin91391 = true;
-            }
-
-            //check if export of DIN 18740-6
-            if (chkDin18740Export.IsChecked == true)
-            {
-                init.config.exportMetadataDin18740 = true;
-            }
-            /*
-            //if non of those should not be exported set json settings (too)
-            else
-            {
-                //set json setting to false
-                MainWindow.jSettings.exportMetadataFile = false;
-                MainWindow.jSettings.exportMetadataDin91391 = false;
-                MainWindow.jSettings.exportMetadataDin18740 = false;
-            }
-            */
-
-            //set task (metadata) to true
-            GuiHandler.GuiSupport.selectMetadata = true;
-
-            //gui logging
-            guiLog.setLog("Metadata 'export' set.");
-
-            //check if all task are allready done
-            MainWindowBib.enableStart(GuiHandler.GuiSupport.readyState());
-        }
-
-        /// <summary>
-        /// error handling - enable button
-        /// </summary>
-        private void chkDin91391Export_Checked(object sender, RoutedEventArgs e)
-        {
-            btnOpenWindowMetadata913912.IsEnabled = true;
-        }
-
-        /// <summary>
-        /// error handling - disable button
-        /// </summary>
-        private void chkDin91391Export_Unchecked(object sender, RoutedEventArgs e)
-        {
-            btnOpenWindowMetadata913912.IsEnabled = false;
+            //enable gui
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
         }
 
         /// <summary>
@@ -152,9 +66,20 @@ namespace IFCTerrainGUI.GUI.ExportSettings.Metadata
             //so the user can not change any settings during the time the background worker is running
             ((MainWindow)Application.Current.MainWindow).IsEnabled = false;
 
+            //get config via key
+            var config = TryFindResource("configDin913912");
+
             //open window for user input
-            metadata_din_spec_91391_2 metadata_Din_Spec_91391_2 = new metadata_din_spec_91391_2();
-            metadata_Din_Spec_91391_2.ShowDialog();
+            metadata_din_spec_91391_2 window = new metadata_din_spec_91391_2();
+
+            //set data context
+            window.DataContext = config;
+            
+            //open window - for input metadata
+            window.ShowDialog();
+
+            //enable gui
+            ((MainWindow)Application.Current.MainWindow).IsEnabled = true;
         }
     }
 }

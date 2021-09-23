@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E898E701-4CEA-48B5-923D-CE85D393BC76}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>IFCTerrainGUI</RootNamespace>
     <AssemblyName>IFCTerrainGUI</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
@@ -17,6 +17,7 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,7 +30,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -103,6 +103,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -123,22 +127,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef30.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef40.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef50.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ExportSettings\ucMetadata.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -149,6 +137,9 @@
     </Compile>
     <Compile Include="GUI\ExportSettings\LoGeoRef\LoGeoRef50_CRS_Metadata.xaml.cs">
       <DependentUpon>LoGeoRef50_CRS_Metadata.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef.xaml.cs">
+      <DependentUpon>ucLoGeoRef.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ExportSettings\Metadata\metadata_din_18740_6.xaml.cs">
       <DependentUpon>metadata_din_18740_6.xaml</DependentUpon>
@@ -165,19 +156,6 @@
     <Compile Include="GUI\ExportSettings\ucIfcVersionShape.xaml.cs">
       <DependentUpon>ucIfcVersionShape.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef30.xaml.cs">
-      <DependentUpon>ucLoGeoRef30.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef40.xaml.cs">
-      <DependentUpon>ucLoGeoRef40.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\LoGeoRef\ucLoGeoRef50.xaml.cs">
-      <DependentUpon>ucLoGeoRef50.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ExportSettings\ucMetadata.xaml.cs">
-      <DependentUpon>ucMetadata.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\MainWindowLogic\MainWindowBib.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -229,7 +207,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.8 %28x86 und x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

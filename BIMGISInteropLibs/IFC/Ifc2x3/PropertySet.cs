@@ -24,7 +24,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// </summary>
         /// <param name="model">exchange the whole ifc model</param>
         /// <param name="jSettings">json settings where meta data are stored (possible example)</param>
-        public static void CreatePSetMetaDin91391(IfcStore model, JsonSettings_DIN_SPEC_91391_2 jSettings)
+        public static void CreatePSetMetaDin91391(IfcStore model, configDin91391 jSettings)
         {
             //create entity
             var entity = model.Instances.OfType<IfcSite>().FirstOrDefault();
@@ -43,7 +43,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Unique Identificator";
-                        p.NominalValue = new IfcLabel(jSettings.id.ToString());
+                        p.NominalValue = new IfcLabel(jSettings.guid.ToString());
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
@@ -107,7 +107,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
         /// </summary>
         /// <param name="model">exchange the whole ifc model</param>
         /// <param name="jSettings">json settings where meta data are stored</param>
-        public static void CreatePSetMetaDin18740(IfcStore model, JsonSettings_DIN_18740_6 jSettings)
+        public static void CreatePSetMetaDin18740(IfcStore model, configDin18740 jSettings)
         {
             //create entity
             var entity = model.Instances.OfType<IfcSite>().FirstOrDefault();
@@ -134,17 +134,17 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Data model";
-                        if (!string.IsNullOrEmpty(jSettings.dataStructure))
+                        if (!string.IsNullOrEmpty(jSettings.dataStructure.ToString()))
                         {
-                            p.NominalValue = new IfcText(jSettings.dataStructure);
+                            p.NominalValue = new IfcText(jSettings.dataStructure.ToString());
                         }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
                     {
                         p.Name = "Topicality";
-                        if (!string.IsNullOrEmpty(jSettings.topicality))
+                        if (!string.IsNullOrEmpty(jSettings.topicality.ToShortDateString()))
                         {
-                            p.NominalValue = new IfcText(jSettings.topicality);
+                            p.NominalValue = new IfcText(jSettings.topicality.ToShortDateString());
                         }
                     }),
                     model.Instances.New<IfcPropertySingleValue>(p =>
@@ -170,23 +170,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                         {
                             p.NominalValue = new IfcText(jSettings.projection);
                         }
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "Deviation - position";
-                        if (!string.IsNullOrEmpty(jSettings.deviationPosition))
-                        {
-                            p.NominalValue = new IfcText(jSettings.deviationPosition);
-                        }
-                    }),
-                    model.Instances.New<IfcPropertySingleValue>(p =>
-                    {
-                        p.Name = "Deviation - altitude";
-                        if (!string.IsNullOrEmpty(jSettings.deviationAltitude))
-                        {
-                            p.NominalValue = new IfcText(jSettings.deviationAltitude);
-                        }
-                    }),
+                    })
                 });
             });
 

@@ -152,6 +152,7 @@ namespace BIMGISInteropLibs.GeoJSON
         
         public static bool readBreakline(Config config, Result result)
         {
+            /*
             List<NTSGeometry.LineString> lines = new List<NTSGeometry.LineString>();
             
             if (File.Exists(config.breaklineFile))
@@ -161,7 +162,7 @@ namespace BIMGISInteropLibs.GeoJSON
                 switch (config.breaklineGeometryType)
                 {
                     case GeometryType.FeatureCollection:
-
+                        
                         break;
 
                     case GeometryType.MultiPolygon:
@@ -169,6 +170,7 @@ namespace BIMGISInteropLibs.GeoJSON
                         break;
                 }
             }
+            */
             return false;
         }
 
@@ -219,5 +221,18 @@ namespace BIMGISInteropLibs.GeoJSON
                 triValues = tri
             });
         }
+    }
+    public enum GeometryType
+    {
+        MultiPoint,
+
+        MultiPolygon,
+
+        GeometryCollection,
+
+        MultiLineString,
+
+        FeatureCollection
+
     }
 }

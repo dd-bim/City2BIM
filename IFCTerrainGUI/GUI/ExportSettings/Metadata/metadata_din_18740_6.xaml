@@ -4,109 +4,205 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
+        xmlns:config="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
         mc:Ignorable="d"
-        Title="Metadata - DIN 18740-6" 
-        Height="450" Width="500" 
-        FontFamily="Bahnschrift" FontSize="12"
-        ResizeMode="CanMinimize" Closing="Window_Closing">
+        Title="Metadata - DIN 18740-6"
+        Height="450"
+        Width="350"
+        FontFamily="Bahnschrift"
+        FontSize="12"
+        ResizeMode="CanResize">
+
+    <Window.Resources>
+        <!--#region provide data from enum (data structures types)-->
+        <ObjectDataProvider x:Key="enumDataStructure"
+                            ObjectType="{x:Type config:dataStructureTypes}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="config:dataStructureTypes" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--#endregion -->
+
+        <!--#region provide data from enum (representation)-->
+        <ObjectDataProvider x:Key="enumDtmRepresentation"
+                            ObjectType="{x:Type config:dtmRepresentation}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="config:dtmRepresentation" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--#endregion -->
+
+        <!--#region provide data from enum (survey data Aquisition Method)-->
+        <ObjectDataProvider x:Key="enumDataAquisitionMethod"
+                            ObjectType="{x:Type config:dataAquisitionMethod}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="config:dataAquisitionMethod" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--#endregion -->
+
+        <!--#region style for toggle button -->
+        <Style TargetType="{x:Type ToggleButton}">
+
+            <Setter Property="MaxHeight"
+                    Value="15" />
+            <Setter Property="MaxWidth"
+                    Value="30" />
+            <Setter Property="MinHeight"
+                    Value="15" />
+            <Setter Property="MinWidth"
+                    Value="30" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="bk"
+                                Background="LightGray"
+                                CornerRadius="8">
+                            <Ellipse x:Name="ep"
+                                     Fill="#ff6600"
+                                     HorizontalAlignment="Left"
+                                     Margin="2"
+                                     Width="10" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked"
+                                     Value="true">
+                                <Setter TargetName="ep"
+                                        Property="HorizontalAlignment"
+                                        Value="Right" />
+                                <Setter TargetName="ep"
+                                        Property="Fill"
+                                        Value="#0099ff" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--#endregion -->
+    </Window.Resources>
+
     <Grid Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1.1*"/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
+        <StackPanel>
+            <TextBlock Text="Here you can assign metadata (according to DIN 18740-6)."
+                       Grid.ColumnSpan="3"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       FontSize="14"
+                       Margin="5" />
 
-            <RowDefinition/>
-            <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>
-        <!-- info text -->
-        <TextBlock Text="Here you can assign metadata (according to DIN 18740-6)." Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" FontSize="14"/>
-        <TextBlock Text="At least the following information must be provided!" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Text="Model type" Grid.Row="2" VerticalAlignment="Center"/>
-        <TextBlock Text="Data model" Grid.Row="3" VerticalAlignment="Center"/>
-        <TextBlock Text="Representation" Grid.Row="4" VerticalAlignment="Center"/>
-        <TextBlock Text="Acquisition date" Grid.Row="5" VerticalAlignment="Center"/>
-        <TextBlock Text="Acquisition method" Grid.Row="6" VerticalAlignment="Center"/>
-        <TextBlock Text="Position reference system" Grid.Row="7" VerticalAlignment="Center"/>
-        <TextBlock Text="Altitude reference system" Grid.Row="8" VerticalAlignment="Center"/>
-        <TextBlock Text="Projection" Grid.Row="9" VerticalAlignment="Center"/>
-        <TextBlock Text="Spatial expansion" Grid.Row="10" VerticalAlignment="Center" ToolTip="räumliche Umfang des Datensatzes"/>
-        <TextBlock Text="Deviation - horizontal" Grid.Row="11" VerticalAlignment="Center"/>
-        <TextBlock Text="Deviation - vertical" Grid.Row="12" VerticalAlignment="Center"/>
+            <GroupBox Header="DTM Metadata">
+                <StackPanel>
+                    <DockPanel Margin="3">
+                        <TextBlock Width="120"
+                                   Text="Model type"
+                                   Margin="5" />
+                        <TextBox Text="{Binding modelType}"
+                                 VerticalContentAlignment="Center" />
+                    </DockPanel>
+
+                    <DockPanel Margin="3">
+                        <TextBlock Width="120"
+                                   Text="Data model"
+                                   Margin="5" />
+                        <ComboBox ItemsSource="{Binding Source={StaticResource enumDataStructure}}"
+                                  SelectedItem="{Binding dataStructure}"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  VerticalContentAlignment="Center" />
+                    </DockPanel>
+
+                    <DockPanel Margin="3">
+                        <TextBlock Width="120"
+                                   Text="Representation"
+                                   Margin="5" />
+                        <ComboBox ItemsSource="{Binding Source={StaticResource enumDtmRepresentation}}"
+                                  SelectedItem="{Binding dtmRepresentation}"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  VerticalContentAlignment="Center"
+                                  IsReadOnly="True" />
+                    </DockPanel>
+
+                    <DockPanel Margin="3">
+                        <TextBlock Width="120"
+                                   Text="Aquisition method"
+                                   Margin="5" />
+                        <ComboBox ItemsSource="{Binding Source={StaticResource enumDataAquisitionMethod}}"
+                                  SelectedItem="{Binding dataAquisitionMethod}"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  VerticalContentAlignment="Center"
+                                  IsReadOnly="True" />
+                    </DockPanel>
+
+                    <DockPanel Margin="3">
+                        <TextBlock Width="120"
+                                   Text="Topicality (Acquisition)"
+                                   Margin="5" />
+                        <DatePicker SelectedDate="{Binding topicality}"
+                                    VerticalContentAlignment="Center"
+                                    VerticalAlignment="Center" />
+                    </DockPanel>
+                </StackPanel>
+            </GroupBox>
 
 
-        <!-- input fields -->
-        <ComboBox x:Name="selectModelType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem x:Name="itemDtm" Content="DTM" IsSelected="True"/>
-            <ComboBoxItem x:Name="itemDsm" Content="DSM" />
-        </ComboBox>
+            <GroupBox Margin="3"
+                      Header="Reference system"
+                      x:Name="gbRefSystem">
+                <StackPanel Margin="3">
+                    <!--epsg code to query -->
+                    <DockPanel Margin="3">
+                        <TextBlock Width="100"
+                                   Text="EPSG code"
+                                   Margin="5" />
+                        <TextBox x:Name="tbEpsg"
+                                 Width="100"
+                                 Text="{Binding Path=epsgCode, ConverterCulture=de-DE, StringFormat=F0, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                 VerticalContentAlignment="Center"
+                                 MaxLength="5" />
+                        <Button x:Name="epsgCode"
+                                Content="query"
+                                Margin="5,0,0,0"
+                                Click="epsgCode_Click" />
+                    </DockPanel>
 
-        <ComboBox x:Name="selectDataStructure" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem Content="Mesh" IsSelected="True"/>
-            <ComboBoxItem Content="Tin"/>
-        </ComboBox>
+                    <DockPanel Margin="3">
+                        <TextBlock Text="Position reference"
+                                   Margin="5"
+                                   Width="100" />
+                        <TextBox VerticalContentAlignment="Center"
+                                 Text="{Binding positionReferenceSystem}" />
+                    </DockPanel>
 
-        <ComboBox x:Name="selectedRep" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem x:Name="itemPc" Content="Point Cloud" />
-            <ComboBoxItem x:Name="itemIsoline" Content="Isoline" />
-            <ComboBoxItem x:Name="itemColor" Content="Color encoded" />
-            <ComboBoxItem x:Name="itemShading" Content="Shading" IsSelected="True"/>
-        </ComboBox>
+                    <DockPanel Margin="3">
+                        <TextBlock Text="Altitude reference"
+                                   Margin="5"
+                                   Width="100" />
+                        <TextBox VerticalContentAlignment="Center"
+                                 Text="{Binding altitudeReferenceSystem}" />
+                    </DockPanel>
 
+                    <DockPanel Margin="3">
+                        <TextBlock Text="Projection"
+                                   Margin="5"
+                                   Width="100" />
+                        <TextBox VerticalContentAlignment="Center"
+                                 Text="{Binding projection}" />
+                    </DockPanel>
+                </StackPanel>
+            </GroupBox>
 
-        <DatePicker x:Name="entryDate" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"></DatePicker>
-
-        <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem Content="Terrestrial survey" IsSelected="True"/>
-            <ComboBoxItem Content="Photogrammetry"/>
-            <ComboBoxItem Content="Airborne laserscanning"/>
-            <ComboBoxItem Content="InSAR"/>
-        </ComboBox>
-
-        <ComboBox x:Name="selectPosRef" Grid.Row="7" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center">
-            <ComboBoxItem x:Name="itemETRS" Content="ETRS 89"/>
-            <ComboBoxItem x:Name="itemGK" Content="Gauß-Krüger"/>
-            <ComboBoxItem x:Name="itemPosRefUser" Content="EPSG"/>
-        </ComboBox>
-
-        <TextBox x:Name="tbInputPosRef" Grid.Row="7" Grid.Column="2" Margin="0,1" VerticalContentAlignment="Center" Text="input strip/ code number"/>
-
-        <ComboBox x:Name="selectAltitudeRef" Grid.Row="8" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" SelectionChanged="selectAltitudeRef_SelectionChanged">
-            <ComboBoxItem x:Name="itemDhhn92" Content="DHHN92"/>
-            <ComboBoxItem x:Name="itemDhhn16"  Content="DHHN16"/>
-            <ComboBoxItem x:Name="itemAltitudeUser" Content="User input:"/>
-        </ComboBox>
-
-        <TextBox x:Name="tbInputAltitude" Grid.Row="8" Grid.Column="2" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False"/>
-
-        <ComboBox x:Name="selectProjection" Grid.Row="9" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center" SelectionChanged="selectProjection_SelectionChanged">
-            <ComboBoxItem x:Name="itemGcg2011" Content="GCG2011"/>
-            <ComboBoxItem x:Name="itemGcg2005" Content="GCG2005"/>
-            <ComboBoxItem x:Name="itemProjectUser" Content="User input:"/>
-        </ComboBox>
-
-        <TextBox x:Name="tbInputProjection" Grid.Row="9" Grid.Column="2" Margin="0,1" VerticalContentAlignment="Center" IsEnabled="False"/>
-
-        <CheckBox Grid.Row="10" Grid.Column="1" VerticalContentAlignment="Center" Content="export Bounding Box" IsEnabled="False" ToolTip="[Currently not supported]" ToolTipService.ShowOnDisabled="True"/>
-
-        <TextBox x:Name="tbDeviationPosition" Grid.Row="11" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="tbDeviationAltitude" Grid.Row="12" Grid.Column="1" Margin="0,1" VerticalContentAlignment="Center"/>
-        
-        <!--apply button-->
-        <Button x:Name="btnApplyMetadata187406" Grid.Row="19" Grid.ColumnSpan="3" Content="Apply and Close - Window" Click="btnApplyMetadata187406_Click"/>
+            <!--apply button-->
+            <Button x:Name="btnClose"
+                    Margin="3"
+                    Content="Apply and Close"
+                    Height="25"
+                    Click="btnClose_Click"/>
+        </StackPanel>
     </Grid>
 </Window>

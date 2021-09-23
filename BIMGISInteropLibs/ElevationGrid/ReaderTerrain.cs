@@ -83,11 +83,14 @@ namespace BIMGISInteropLibs.ElevationGrid
                                 && double.TryParse(str[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
                             {
                                 //Filter coordinates by min and max values of the bounding box (x & y)
-                                if (y >= config.bbWest && y <= config.bbEast
-                                    && x >= config.bbNorth && x <= config.bbSouth)
+                                if (y >= config.bbP2Y && y <= config.bbP1Y
+                                    && x >= config.bbP1X && x <= config.bbP2X)
                                 {
                                     //Prepare Point Data for NetTopologySuite
-                                    pointList.Add(new Point(x, y, z));
+                                    if (config.invertedCRS.GetValueOrDefault())
+                                    { pointList.Add(new Point(y, x, z)); }
+                                    else { pointList.Add(new Point(x, y, z)); }
+
                                 }
                             }
                         }
@@ -107,7 +110,9 @@ namespace BIMGISInteropLibs.ElevationGrid
                                 && double.TryParse(str[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
                             {
                                 //Prepare Point Data for NetTopologySuite
-                                pointList.Add(new Point(x, y, z));
+                                if (config.invertedCRS.GetValueOrDefault())
+                                { pointList.Add(new Point(y, x, z)); }
+                                else { pointList.Add(new Point(x, y, z)); }
                             }
                         }
                         break;

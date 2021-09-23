@@ -130,7 +130,7 @@ namespace IFCTerrainCommand
                 else
                 {
                     Console.WriteLine("Processing succesful. Please check log file for more information!"
-                        + Environment.NewLine + "Go on application with 'enter'");
+                        + Environment.NewLine + "You can close application or use 'enter'");
                     Console.ReadLine();
                 }
             }

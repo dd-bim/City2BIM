@@ -1,52 +1,90 @@
 ﻿<UserControl x:Class="GuiHandler.userControler.InformationPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GuiHandler.userControler"
-             mc:Ignorable="d" 
-             d:DesignHeight="185" d:DesignWidth="385"
+             xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
+             mc:Ignorable="d"
+             d:DesignHeight="120"
+             d:DesignWidth="385"
              Name="guiInfo">
     <Grid>
         <StackPanel>
             <DockPanel Margin="2,4,2,2">
-                <TextBlock Text="File name:" Width="70" Margin="5"/>
-                <TextBox Text="{Binding fileName}" 
+                <TextBlock Text="File name:"
+                           Width="70"
+                           Margin="5" />
+                <TextBox Text="{Binding Path=fileName}"
                          VerticalContentAlignment="Center"
-                         IsReadOnly="True"/>
+                         IsReadOnly="True"
+                         Padding="2,0"/>
             </DockPanel>
             <DockPanel Margin="2">
-                <TextBlock Text="File type:" Width="70" Margin="5"/>
-                <TextBox Text="{Binding fileType}"
+                <TextBlock Text="File type:"
+                           Width="70"
+                           Margin="5" />
+                <TextBox Text="{Binding Path=fileType}"
                          VerticalContentAlignment="Center"
-                         IsReadOnly="True"/>
+                         IsReadOnly="True"
+                         Padding="2,0"/>
             </DockPanel>
             <DockPanel Margin="2">
-                <TextBlock Text="Conversion:" Width="70" Margin="5"/>
-                <CheckBox 
-                    Content="Faces"
-                    VerticalContentAlignment="Center"
-                    IsEnabled="False" 
-                    IsChecked="{Binding faces}" Margin="0,5,5,5"/>
-
-                <CheckBox 
-                    x:Name="chkPoints"
-                    Content="Points"
-                    VerticalContentAlignment="Center"
-                    IsEnabled="False"
-                    IsChecked="{Binding points}" Margin="5"/>
+                <TextBlock Text="Conversion:"
+                           Width="70"
+                           Margin="5" />
+                <!-- this checkbox will be controlled by config ('readPoints') -->
+                <CheckBox Content="Faces"
+                          VerticalContentAlignment="Center"
+                          IsEnabled="False"
+                          Margin="0,5,5,5">
+                    <CheckBox.Style>
+                        <Style TargetType="CheckBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=chkPoints, Path=IsChecked}"
+                                             Value="True">
+                                    <Setter Property="IsChecked"
+                                            Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=chkPoints, Path=IsChecked}"
+                                             Value="False">
+                                    <Setter Property="IsChecked"
+                                            Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </CheckBox.Style>
+                </CheckBox>
+                <CheckBox x:Name="chkPoints"
+                          Content="Points"
+                          VerticalContentAlignment="Center"
+                          IsEnabled="False"
+                          IsChecked="{Binding Path=readPoints}"
+                          Margin="5"
+                          ToolTip="[Keep in mind] Using points, a delaunay triangulation is performed."
+                          ToolTipService.ShowOnDisabled="True" />
             </DockPanel>
-            <DockPanel Margin="2">
-                <TextBlock Text="Breaklines:" Width="70" Margin="5"/>
+            <DockPanel Margin="2"
+                       ToolTip="[Keep in mind] Using breaklines, a constrained delaunay triangulation is performed."
+                       ToolTipService.ShowOnDisabled="True">
+                <TextBlock Text="Breaklines:"
+                           Width="70"
+                           Margin="5" />
                 <CheckBox VerticalAlignment="Center"
                           IsEnabled="False"
-                          IsChecked="{Binding breakline}"/>
-                <TextBlock Text="Layer/Horizon:" Width="80" Margin="5"/>
-                <TextBox Text="{Binding breaklineLayer, FallbackValue=' ... '}"
+                          IsChecked="{Binding Path=breakline}" />
+                <TextBlock Text="Layer/Horizon:"
+                           Width="80"
+                           Margin="5" />
+                <TextBox Text="{Binding 
+                    Path=breakline_layer, 
+                    NotifyOnSourceUpdated=True,
+                    Mode=OneWay,
+                    ValidatesOnDataErrors=True}"
                          VerticalContentAlignment="Center"
-                         IsReadOnly="True"/>
+                         IsReadOnly="True" 
+                         Padding="2,0"/>
             </DockPanel>
-            
         </StackPanel>
     </Grid>
 </UserControl>
