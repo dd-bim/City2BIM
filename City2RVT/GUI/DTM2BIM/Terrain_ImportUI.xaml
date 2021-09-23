@@ -105,7 +105,7 @@
             </Setter>
         </Style>
         <!--#endregion -->
-        
+
     </Window.Resources>
     <!-- most important step!!! bind config to data context-->
     <Window.DataContext>
@@ -164,14 +164,15 @@
                      TabIndex="2">
                 <CityGML:Read />
             </TabItem>
-            
+
             <TabItem Header="GEOgraf (OUT)"
                      TabIndex="3">
                 <!-- user controler grafbat-->
                 <Grafbat:Read />
             </TabItem>
             <TabItem Header="Database (PostGIS)"
-                     TabIndex="4" Visibility="Collapsed">
+                     TabIndex="4"
+                     Visibility="Collapsed">
                 <!-- user controler postgis-->
                 <PostGIS:Read />
             </TabItem>
@@ -187,7 +188,8 @@
                 <Reb:Read />
             </TabItem>
 
-            <TabItem Header="JSON (GeoJSON)" Visibility="Collapsed"
+            <TabItem Header="JSON (GeoJSON)"
+                     Visibility="Collapsed"
                      TabIndex="7">
                 <!-- [TODO]: check reading doesnt parse to diff obj types
                 user controler geojson -->
@@ -234,11 +236,10 @@
                     <TextBlock Grid.Column="0"
                                Text="Process DTM import via:"
                                VerticalAlignment="Center"
-                               HorizontalAlignment="Center" 
-                               Margin="5"/>
+                               HorizontalAlignment="Center"
+                               Margin="5" />
 
-                    <DockPanel
-                        HorizontalAlignment="Center">
+                    <DockPanel HorizontalAlignment="Center">
                         <TextBlock VerticalAlignment="Center"
                                    Text="Faces"
                                    ToolTip="DTM will be converted via Faces and Points! A Delaunay triangulation is calculated (if necessary)." />
@@ -272,9 +273,30 @@
 
         </GroupBox>
 
-        <!-- logging -->
+        <!-- log file settings -->
         <GroupBox Grid.Row="4"
-                  Grid.RowSpan="2"
+                  Grid.Column="1"
+                  Header="Log file path">
+            <StackPanel>
+                
+                <TextBlock Text="Log file path: "
+                           HorizontalAlignment="Center"/>
+                <DockPanel>
+                    <Button Content="Edit"
+                            Margin="5"
+                            Width="50"/>
+                    <TextBox Text="{Binding logFilePath}"
+                             Margin="5" />
+                </DockPanel>
+                
+
+                
+            </StackPanel>
+
+        </GroupBox>
+
+        <!-- logging -->
+        <GroupBox Grid.Row="5"
                   Grid.Column="1"
                   Header="Logging">
             <uC:UILog />

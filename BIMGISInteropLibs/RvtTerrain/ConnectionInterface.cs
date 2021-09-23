@@ -12,6 +12,8 @@ using geojson = BIMGISInteropLibs.GeoJSON.ReaderTerrain;
 //IxMilia: for processing dxf files
 using IxMilia.Dxf;
 
+using Serilog;
+
 namespace BIMGISInteropLibs.RvtTerrain
 {
     /// <summary>
@@ -71,19 +73,22 @@ namespace BIMGISInteropLibs.RvtTerrain
             //error handling
             if (resTerrain == null)
             {
-                //[TODO] LogWriter.Add(LogType.error, "[READER] File reading failed (result is null) - processing canceld!");
+                Log.Error("[READER] File reading failed (result is null) - processing canceld!");
                 return null;
             }
-            else if (resTerrain.pointList == null)
+            else if (resTerrain.pointList == null || resTerrain.pointList.Count.Equals(0))
             {
-                //[TODO] LogWriter.Add(LogType.error, "[READER] File reading failed (point list is empty) - processing canceld!");
+                Log.Error("[READER] File reading failed(point list is empty) - processing canceld!");
                 return null;
             }
 
             if(resTerrain.currentConversion != DtmConversionType.conversion)
             {
+                Log.Information("A Delaunay triangulation will be calculated...");
                 Triangulator.DelaunayTriangulation.triangulate(resTerrain);
             }
+
+            Log.Information("File readed. Result => Faces (Triangles): " + resTerrain.triMap.Count + " Points: " + resTerrain.pointList);
 
             return resTerrain;
         }
