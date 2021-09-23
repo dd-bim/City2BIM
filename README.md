@@ -6,7 +6,7 @@ We provide for the BIM authoring software **Revit** a small Plugin. This include
 - City2BIM - Import of **3D city models** (CityGML buildings, ALKIS parcels, ALKIS land uses, ALKIS building surrounds)
 - City2IFC - improved **export to IFC** (work in progress)
 
-For the **openBIM** context we provide a small open source software **IfcTerrain**. For creating digital terrain models (DTM) using the IndustryFoundation Classes (IFC) for “openBIM” (vender neutral Building Information Modelling) projects. The software can convert many standard formats and model representations of DTM. 
+For the **openBIM** context we provide a small open source software **IfcTerrain**. For creating digital terrain models (DTM) using the IndustryFoundation Classes (IFC) for “openBIM” (vender neutral Building Information Modelling) projects. The software can convert many standard formats and model representations of DTM. You can also use IfcTerrain as a [Web Tool](https://ifcterrain.dd-bim.org/). 
 
 ---
 
