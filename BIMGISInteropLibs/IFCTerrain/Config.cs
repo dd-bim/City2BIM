@@ -72,8 +72,6 @@ namespace BIMGISInteropLibs.IfcTerrain
         #endregion data binding
 
         #region file handling
-
-        
         private string _filePath { get; set; }
 
         /// <summary>
@@ -89,7 +87,6 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
-        
         private string _fileName { get; set; }
 
         /// <summary>
@@ -136,10 +133,22 @@ namespace BIMGISInteropLibs.IfcTerrain
                 NotifyPropertyChanged(nameof(destFileName));
             }
         }
+
+        private string _logFilePath { get; set; }
+
+
         /// <summary>
         /// Destination location for the log file
         /// </summary>
-        public string logFilePath { get; set; }
+        public string logFilePath 
+        { 
+            get { return _logFilePath; }
+            set
+            {
+                _logFilePath = value;
+                NotifyPropertyChanged(nameof(logFilePath));
+            }
+        }
 
         /// <summary>
         /// init value is set to info
@@ -215,14 +224,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         }
         #endregion
 
-        #region only used for processing [Settings]
-        /// <summary>
-        /// minimum distance (used for IFC writer processing) [TODO].
-        /// </summary>
-        public double minDist { get; set; }
-
-
-        
+        #region only used for processing [Settings]       
         private bool? _geoElement { get; set; } = false;
         /// <summary>
         /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not
@@ -701,6 +703,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         
         private bool? _rvtReadPoints { get; set; } = false;
 
+        [Newtonsoft.Json.JsonIgnore]
         /// <summary>
         /// read only point data from dxf file
         /// </summary>

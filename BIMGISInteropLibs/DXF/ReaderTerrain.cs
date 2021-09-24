@@ -107,7 +107,7 @@ namespace BIMGISInteropLibs.DXF
                 LogWriter.Add(LogType.debug, "[DXF] Reading 3DFaces...");
 
                 //read faces
-                readFaces(dxfFile, config.layer, scale, config.minDist, dxfResult);
+                readFaces(dxfFile, config.layer, scale, dxfResult);
             } 
             else
             {
@@ -133,7 +133,7 @@ namespace BIMGISInteropLibs.DXF
         /// <summary>
         /// reading faces of dxf file
         /// </summary>
-        private static void readFaces(DxfFile dxfFile, string dxfLayer, double scale, double minDist, Result dxfResult)
+        private static void readFaces(DxfFile dxfFile, string dxfLayer, double scale, Result dxfResult)
         {
             //set conversion type (needed for processing via NTS
             dxfResult.currentConversion = DtmConversionType.conversion;
