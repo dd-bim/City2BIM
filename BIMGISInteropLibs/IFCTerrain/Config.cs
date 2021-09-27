@@ -108,6 +108,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// filetype of the file to be converted
         /// </summary>
+        [DefaultValue(99)]
         public IfcTerrainFileType fileType 
         {
             get { return _fileType; }
