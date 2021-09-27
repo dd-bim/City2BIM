@@ -139,7 +139,6 @@ namespace IFCTerrainGUI
             var config91391 = TryFindResource("configDin913912") as configDin91391;
             var config18740 = TryFindResource("configDin187406") as configDin18740;
 
-
             if (string.IsNullOrEmpty(config.destFileName))
             {
                 MessageBoxResult res = MessageBox.Show(
@@ -241,7 +240,10 @@ namespace IFCTerrainGUI
                 string jExportText = JsonConvert.SerializeObject(config, Formatting.Indented, new JsonSerializerSettings
                 {
                     //ignore null values
-                    NullValueHandling = NullValueHandling.Ignore
+                    NullValueHandling = NullValueHandling.Ignore,
+
+                    //ignore default values
+                    DefaultValueHandling = DefaultValueHandling.Ignore
                 });
 
                 //export json settings

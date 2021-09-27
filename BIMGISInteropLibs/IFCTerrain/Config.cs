@@ -229,6 +229,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Setting, that decides whether the output IFC file should contain an IfcGeographicElement of the terrain or not
         /// </summary>
+        [DefaultValue(false)]
         public bool? geoElement
         {
             get
@@ -331,6 +332,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decide whether metadata should be exported as a separate JSON file
         /// </summary>
+        [DefaultValue(false)]
         public bool? exportMetadataFile
         {
             get { return _exportMetadataFile; }
@@ -346,6 +348,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decide whehter metadata should be stored as IfcPropertySets
         /// </summary>
+        [DefaultValue(false)]
         public bool? outIfcPropertySet
         {
             get { return _outIfcPropertySet; }
@@ -361,6 +364,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decide whether metadata (according to DIN SPEC 91391-2) should be exported
         /// </summary>
+        [DefaultValue(false)]
         public bool? exportMetadataDin91391
         {
             get { return _exportMetadataDin91391; }
@@ -376,6 +380,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decide whether metadata (according to DIN 18740-6) should be exported
         /// </summary>
+        [DefaultValue(false)]
         public bool? exportMetadataDin18740
         {
             get { return _exportMetadataDin18740; }
@@ -391,6 +396,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decides whether break edges are to be processed(true).
         /// </summary>
+        [DefaultValue(false)]
         public bool? breakline
         {
             get
@@ -424,6 +430,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// [FALSE]: right handed; [TRUE]: left handed
         /// </summary>
+        [DefaultValue(false)]
         public bool? invertedCRS
         {
             get
@@ -450,6 +457,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decides which level of georef to use
         /// </summary>
+        [DefaultValue(30)]
         public IFC.LoGeoRef logeoref
         {
             get { return _logeoref; }
@@ -465,6 +473,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Describes whether the project coordinate origin should be set to the user defined position or not.
         /// </summary>
+        [DefaultValue(false)]
         public bool? customOrigin
         {
             get { return _customOrigin; }
@@ -475,11 +484,12 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
         
-        private double? _xOrigin { get; set; } = 0;
+        private double? _xOrigin { get; set; } = 0.0;
 
         /// <summary>
         /// x - value of a user defined georeferencing
         /// </summary>
+        [DefaultValue(0.0)]
         public double? xOrigin 
         {
             get { return _xOrigin; }
@@ -492,11 +502,12 @@ namespace BIMGISInteropLibs.IfcTerrain
 
 
         
-        private double? _yOrigin { get; set; } = 0;
+        private double? _yOrigin { get; set; } = 0.0;
 
         /// <summary>
         /// y - value of a user defined georeferencing
         /// </summary>
+        [DefaultValue(0.0)]
         public double? yOrigin
         {
             get { return _yOrigin; }
@@ -508,11 +519,12 @@ namespace BIMGISInteropLibs.IfcTerrain
         }
 
         
-        private double? _zOrigin { get; set; } = 0;
+        private double? _zOrigin { get; set; } = 0.0;
 
         /// <summary>
         /// z - value of a user defined georeferencing
         /// </summary>
+        [DefaultValue(0.0)]
         public double? zOrigin
         {
             get { return _zOrigin; }
@@ -527,11 +539,12 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// set default value to 0 (no rotation)
         /// </summary>
         
-        private double? _trueNorth { get; set; } = 0;
+        private double? _trueNorth { get; set; } = 0.0;
 
         /// <summary>
         /// rotation against true north
         /// </summary>
+        [DefaultValue(0.0)]
         public double? trueNorth
         {
             get { return _trueNorth; }
@@ -547,11 +560,12 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// set default value to 1 (no scaling)
         /// </summary>
         
-        private double? _scale { get; set; } = 1;
+        private double? _scale { get; set; } = 1.0;
 
         /// <summary>
         /// [LoGeoRef50] scaling 
         /// </summary>
+        [DefaultValue(1.0)]
         public double? scale
         {
             get { return _scale; }
@@ -690,6 +704,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// read only point data from dxf file
         /// </summary>
+        [DefaultValue(false)]
         public bool? readPoints
         {
             get { return _readPoints; }
@@ -745,6 +760,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decision whether BoundingBox should be processed (yes = true)
         /// </summary>
+        [DefaultValue(false)]
         public bool? bBox 
         {
             get { return _bBox; }
@@ -823,6 +839,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// Decides whether all horizons (=false) or only selected ones (=true) are to be used. If filtering is to be used, the entry must be made via "horizonFilter".
         /// </summary>
+        [DefaultValue(false)]
         public bool? onlyHorizon 
         { 
             get { return _onlyHorizon; }
@@ -838,6 +855,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(false)]
         public bool? filterPoints 
         {
             get { return _filterPoints; }
@@ -1097,6 +1115,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// geometry type to set the right reader
         /// </summary>
+        [DefaultValue(0)]
         public GeoJSON.GeometryType? geometryType
         {
             get { return _geometryType; }
