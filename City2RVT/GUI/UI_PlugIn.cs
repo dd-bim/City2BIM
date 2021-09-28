@@ -115,12 +115,13 @@ namespace City2RVT.GUI
             #endregion IFC Export panel
 
             #region survPlan panel
+            /*
             RibbonPanel panelSurveyorsPlan = application.CreateRibbonPanel(tabName, "Surveyorsplan2BIM");
             PushButton buttonsurvPlan = panelSurveyorsPlan.AddItem(new PushButtonData("SurveyorsplanImporter", "Import Surveyorsplan", thisAssemblyPath, "City2RVT.GUI.Cmd_Surveyorsplan")) as PushButton;
             buttonsurvPlan.ToolTip = "Import functionality for Surveyorsplan data.";
             buttonsurvPlan.LargeImage = getBitmapFromResx(ResourcePictures.Vermesser32);
 
-            /*
+            
             PushButton buttonattribute = panelSurveyorsPlan.AddItem(new PushButtonData("Attribute", "Attribute", thisAssemblyPath, "City2RVT.Surveyorsplan2Revit.Attributes")) as PushButton;
             buttonattribute.ToolTip = "Show and edit properties.";
             buttonattribute.LargeImage = getBitmapFromResx(ResourcePictures.Attribute32);

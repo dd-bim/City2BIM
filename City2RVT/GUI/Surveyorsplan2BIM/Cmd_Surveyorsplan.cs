@@ -29,12 +29,10 @@ namespace City2RVT.GUI
             //Prop_GeoRefSettings.SetInitialSettings(doc);
 
             //init import ui
-            Surveyorsplan_ImportUI importUI = new Surveyorsplan_ImportUI(doc);
+            Surveyorsplan_ImportUI importUI = new Surveyorsplan_ImportUI();
 
             //show main window
             importUI.ShowDialog();
-
-            
 
             //TODO
             return Result.Succeeded;
