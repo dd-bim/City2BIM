@@ -122,9 +122,10 @@ namespace IFCTerrainCommand
 
                 if (!result)
                 {
-                    Console.WriteLine("[ERROR] Processing failed. Please check log file!"
-                        + Environment.NewLine +"Close application with 'enter'");
-                    Console.ReadLine();
+                    Console.WriteLine("[ERROR] Processing failed. Please check log file!");
+                    
+                    //Console.WriteLine("Close application with 'enter'");
+                    //Console.ReadLine();
                     break;
                 }
                 else

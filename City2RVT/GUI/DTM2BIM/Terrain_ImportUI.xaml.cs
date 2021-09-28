@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data; //interface for converter 
+using System.Windows.Forms;
+using System.IO;
 
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
@@ -53,6 +55,24 @@ namespace City2RVT.GUI.DTM2BIM
         private void Window_Closed(object sender, EventArgs e)
         {
             guiLog.clearLog();
+        }
+
+        /// <summary>
+        /// edit log file path
+        /// </summary>
+        private void btnEditLogPath_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult res = fbd.ShowDialog();
+
+                if(res == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+
+                    config.logFilePath = fbd.SelectedPath;
+                }
+            }
         }
     }
 

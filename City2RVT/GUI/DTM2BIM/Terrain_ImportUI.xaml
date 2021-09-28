@@ -282,9 +282,11 @@
                 <TextBlock Text="Log file path: "
                            HorizontalAlignment="Center"/>
                 <DockPanel>
-                    <Button Content="Edit"
+                    <Button x:Name="btnEditLogPath"
+                            Content="Edit"
                             Margin="5"
-                            Width="50"/>
+                            Width="50"
+                            Click="btnEditLogPath_Click"/>
                     <TextBox Text="{Binding logFilePath}"
                              Margin="5" />
                 </DockPanel>

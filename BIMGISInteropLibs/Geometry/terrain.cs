@@ -22,10 +22,12 @@ namespace BIMGISInteropLibs.Geometry
             {
                 points.Add(p);
                 p.UserData = points.Count-1;
+                LogWriter.Add(LogType.verbose, "[READER] Unique point (" + p.UserData + ") added.");
                 return (int)p.UserData;
             }
 
             points.TryGetValue(p, out var pt);
+            LogWriter.Add(LogType.verbose, "[READER] Found unique point (" + p.UserData + "). Nothing has been added");
             return (int)pt.UserData;
         }
     }
