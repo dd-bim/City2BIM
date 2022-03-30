@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <RevitAddIns>
 	<AddIn Type="Application">
-		<Name>City2RVT</Name>
-		<Assembly>City2RVT.dll</Assembly>
+		<Name>CityBIM</Name>
+		<Assembly>CityBIM\City2RVT.dll</Assembly>
 		<AddInId>
 			2100CA8E-05C6-4A55-A25E-188EFBF59439
 		</AddInId>

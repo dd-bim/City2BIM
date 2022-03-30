@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define City2RVT_TargetDir=$(var.City2RVT.TargetDir)?>
+	<Product Id="9A46DFDE-9769-4873-98FC-D47022420735" 
+			 Name="CityBIM" 
+			Language="1033" 
+			Version="1.0.0.0" 
+			Manufacturer="HTW Dresden" 
+			UpgradeCode="7A2FCCB4-D07A-4BAD-9F24-F29962051272">
+		<Package Id="*" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+		
+	
+		<!--  Directory Structure  -->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="CommonAppDataFolder">
+				<Directory Id="AutodeskDir" Name="Autodesk">
+					<Directory Id="RevitDir" Name="Revit">
+						<Directory Id="AddinDir" Name="Addins">
+							<Directory Id="YearDir" Name="2022">
+								<!--<Directory Id="City2BIM_Root" Name="City2BIM">-->
+								<Directory Id="APPLICATIONFOLDER" Name="CityBIM">
+									<Directory Id="GDALSub" Name="gdal"></Directory>
+								</Directory>	
+							</Directory>
+						</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+		
+		
+		<!--  Components  -->
+		<!--  Dlls  -->
+		<!--<ComponentGroup Id="MainComponentGroup" Directory="City2BIM_Root">-->
+		<ComponentGroup Id="MainComponentGroup" Directory="APPLICATIONFOLDER">
+			
+			<!--  HTW DLLs  -->
+			<Component Id="CMP_City2BIMDLL" Guid="0237A836-A94F-4DC7-A43A-3E04A2D83423">
+				<File Id="FILE_City2BIMDLL" Source="$(var.City2RVT.TargetDir)City2RVT.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="CMP_BIMGISInteropDLL" Guid="AECBB752-4586-4B22-B748-605C48017820">
+				<File Id="FILE_BIMGISInteropDLL" Source="$(var.BIMGISInteropLibs.TargetDir)BIMGISInteropLibs.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="CMP_BIMGISCADDLL" Guid="425AB31C-FEBD-44C8-A1F0-AD35B1F268F8">
+				<File Id="FILE_BIMGISCADDLL" Source="$(var.BIMGISInteropLibs.TargetDir)BIMGISCAD.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="GuiHandler.dll" Guid="39ef5233-d208-4610-899b-4787daf27b49">
+			  <File Id="GuiHandler.dll" Name="GuiHandler.dll" Source="$(var.City2RVT_TargetDir)GuiHandler.dll" KeyPath="yes" />
+			</Component>
+			
+			
+			<!--  Logging  -->
+			<Component Id="Serilog.Sinks.File.dll" Guid="ad27bbe3-8d60-4f80-85d0-1019e9f5199d">
+			  <File Id="Serilog.Sinks.File.dll" Name="Serilog.Sinks.File.dll" Source="$(var.City2RVT_TargetDir)Serilog.Sinks.File.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Serilog.dll" Guid="9de4e4a5-c98b-4d56-8b34-3a3edbca7916">
+			  <File Id="Serilog.dll" Name="Serilog.dll" Source="$(var.City2RVT_TargetDir)Serilog.dll" KeyPath="yes"/>
+			</Component>
+			<Component Id="NLog.dll" Guid="0789eeed-7e18-4b2c-9622-d8e370ba302f">
+			  <File Id="NLog.dll" Name="NLog.dll" Source="$(var.City2RVT_TargetDir)NLog.dll" KeyPath="yes" />
+			</Component>
+			
+			
+			<!--  GeoData Formats  -->
+			<Component Id="GeoJSON.Net.dll" Guid="9e2e8951-682f-4d54-9174-3c9a4f080a11">
+			  <File Id="GeoJSON.Net.dll" Name="GeoJSON.Net.dll" Source="$(var.City2RVT_TargetDir)GeoJSON.Net.dll" KeyPath="yes" />
+			</Component>
+			
+			<Component Id="Npgsql.dll" Guid="9a667e3a-d0dc-40d1-a145-b23fa09a0928">
+			  <File Id="Npgsql.dll" Name="Npgsql.dll" Source="$(var.City2RVT_TargetDir)Npgsql.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="netDxf.dll" Guid="fdd1e2f1-af10-4f85-b208-2556e198e67f">
+			  <File Id="netDxf.dll" Name="netDxf.dll" Source="$(var.City2RVT_TargetDir)netDxf.dll" KeyPath="yes" />
+			</Component>
+			
+			
+			<!--  Net TopologySuite  -->
+			<Component Id="NetTopologySuite.dll" Guid="b2e95cc7-1e7d-4ce0-b469-535ea61a7536">
+			  <File Id="NetTopologySuite.dll" Name="NetTopologySuite.dll" Source="$(var.City2RVT_TargetDir)NetTopologySuite.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Npgsql.NetTopologySuite.dll" Guid="3d6bf477-dcaa-450b-8358-f1cb3d7807a7">
+			  <File Id="Npgsql.NetTopologySuite.dll" Name="Npgsql.NetTopologySuite.dll" Source="$(var.City2RVT_TargetDir)Npgsql.NetTopologySuite.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="NetTopologySuite.IO.PostGis.dll" Guid="054cc273-079e-4baf-9e05-c04cd28c0f42">
+			  <File Id="NetTopologySuite.IO.PostGis.dll" Name="NetTopologySuite.IO.PostGis.dll" Source="$(var.City2RVT_TargetDir)NetTopologySuite.IO.PostGis.dll" KeyPath="yes" />
+			</Component>
+			
+			
+			<!--  GDAL Dependendies  -->	
+			<Component Id="gdal_csharp.dll" Guid="0b06c31b-b5ed-4b53-95f6-6546f1ac27a1">
+			  <File Id="gdal_csharp.dll" Name="gdal_csharp.dll" Source="$(var.City2RVT_TargetDir)gdal_csharp.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="ogr_csharp.dll" Guid="9c6604e8-197a-4184-ac44-fad1599ce8e0">
+			  <File Id="ogr_csharp.dll" Name="ogr_csharp.dll" Source="$(var.City2RVT_TargetDir)ogr_csharp.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="COMP_gdalconst_csharp.dll" Guid="0F11E8E4-7FCF-43E7-BBBF-0DD68605EDF4">
+			  <File Id="FILE_gdalconst_csharp.dll" Name="gdalconst_csharp.dll" Source="$(var.City2RVT_TargetDir)gdalconst_csharp.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="osr_csharp.dll" Guid="316d0366-f283-4fce-915f-a29e34267843">
+			  <File Id="osr_csharp.dll" Name="osr_csharp.dll" Source="$(var.City2RVT_TargetDir)osr_csharp.dll" KeyPath="yes" />
+			</Component>
+			
+			<!--  XBIM Dependencies  -->
+			<Component Id="Xbim.Ifc2x3.dll" Guid="3c0735c8-44eb-42b3-8bb9-4330e907f142">
+			  <File Id="Xbim.Ifc2x3.dll" Name="Xbim.Ifc2x3.dll" Source="$(var.City2RVT_TargetDir)Xbim.Ifc2x3.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Xbim.Ifc4.dll" Guid="617a7664-2fdc-4441-b59e-1f24ad4a1987">
+			  <File Id="Xbim.Ifc4.dll" Name="Xbim.Ifc4.dll" Source="$(var.City2RVT_TargetDir)Xbim.Ifc4.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Xbim.Ifc.dll" Guid="8e660d33-b0be-45d9-a73f-331afd0c77cd">
+			  <File Id="Xbim.Ifc.dll" Name="Xbim.Ifc.dll" Source="$(var.City2RVT_TargetDir)Xbim.Ifc.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Xbim.Common.dll" Guid="dbcf7654-61ae-404f-b4a6-404b2830dfcc">
+			  <File Id="Xbim.Common.dll" Name="Xbim.Common.dll" Source="$(var.City2RVT_TargetDir)Xbim.Common.dll" />
+			</Component>
+			<Component Id="IxMilia.Dxf.dll" Guid="6743af72-b9c9-4d22-b53e-91dd2f4c6469">
+			  <File Id="IxMilia.Dxf.dll" Name="IxMilia.Dxf.dll" Source="$(var.City2RVT_TargetDir)IxMilia.Dxf.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Newtonsoft.Json.dll" Guid="073cddeb-4485-477c-a33a-a313044de374">
+			  <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.City2RVT_TargetDir)Newtonsoft.Json.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="RestSharp.dll" Guid="efa1dcdb-e24b-4615-9771-8b8854301efe">
+			  <File Id="RestSharp.dll" Name="RestSharp.dll" Source="$(var.City2RVT_TargetDir)RestSharp.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="NLog.config" Guid="483a5b0e-ba44-4f6a-9aff-67238d8cf639">
+			  <File Id="NLog.config" Name="NLog.config" Source="$(var.City2RVT_TargetDir)NLog.config" KeyPath="yes" />
+			</Component>
+			<Component Id="Xbim.IO.MemoryModel.dll" Guid="144353ee-4977-40b6-bca7-460dd491f384">
+			  <File Id="Xbim.IO.MemoryModel.dll" Name="Xbim.IO.MemoryModel.dll" Source="$(var.City2RVT_TargetDir)Xbim.IO.MemoryModel.dll" KeyPath="yes"/>
+			</Component>
+			
+			<!--  DataCat Dependencies  -->
+			<Component Id="System.IdentityModel.Tokens.Jwt.dll" Guid="a0403038-6635-46e5-bcf3-8b9661f9986e">
+			  <File Id="System.IdentityModel.Tokens.Jwt.dll" Name="System.IdentityModel.Tokens.Jwt.dll" Source="$(var.City2RVT_TargetDir)System.IdentityModel.Tokens.Jwt.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Microsoft.IdentityModel.Tokens.dll" Guid="92952754-222b-44f2-b3a1-4347de3fb7e2">
+			  <File Id="Microsoft.IdentityModel.Tokens.dll" Name="Microsoft.IdentityModel.Tokens.dll" Source="$(var.City2RVT_TargetDir)Microsoft.IdentityModel.Tokens.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Microsoft.IdentityModel.Logging.dll" Guid="9A13F403-2741-4FC4-AF17-0CA18BA17942">
+			  <File Id="Microsoft.IdentityModel.Logging.dll" Name="Microsoft.IdentityModel.Logging.dll" Source="$(var.City2RVT_TargetDir)Microsoft.IdentityModel.Logging.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="Microsoft.IdentityModel.JsonWebTokens.dll" Guid="83B8EE3E-27CF-48E3-84F1-0CB1F8150952">
+			  <File Id="Microsoft.IdentityModel.JsonWebTokens.dll" Name="Microsoft.IdentityModel.JsonWebTokens.dll" Source="$(var.City2RVT_TargetDir)Microsoft.IdentityModel.JsonWebTokens.dll" KeyPath="yes" />
+			</Component>
+			
+			<!--  Geographic Lib Dependencies  -->
+			<Component Id="NETGeographic.dll" Guid="bd30a256-e93d-4c0e-a0a5-61214d2ed139">
+			  <File Id="NETGeographic.dll" Name="NETGeographic.dll" Source="$(var.City2RVT_TargetDir)NETGeographic.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="COMP_egm2008.egm.cof" Guid="1369FFD9-F444-460A-87EC-97F9F176F990">
+			  <File Id="FILE_egm2008.egm.cof" Name="egm2008.egm.cof" Source="$(var.City2RVT_TargetDir)egm2008.egm.cof" KeyPath="yes" />
+			</Component>
+			<Component Id="COMP_egm2008.egm" Guid="C6C66D6E-E009-4A13-8371-B97749A03B18">
+			  <File Id="FILE_egm2008.egm" Name="egm2008.egm" Source="$(var.City2RVT_TargetDir)egm2008.egm" KeyPath="yes" />
+			</Component>
+			<Component Id="COMP_Geograhpic.dll" Guid="A859B056-5F63-4033-9FAA-455498F5DB49">
+			  <File Id="FILE_Geograhpic.dll" Name="Geographic.dll" Source="$(var.City2RVT_TargetDir)Geographic.dll" KeyPath="yes" />
+			</Component>
+		
+		</ComponentGroup>
+		
+		<!--  Addin Manifest  -->
+		<ComponentGroup Id="AddinManifest" Directory="YearDir">
+			<Component Id="CMP_AddinManifest" Guid="86D37093-7582-4869-9D40-4B87B14BE880">
+				<File Id="FILE_Manifest" Source="$(var.City2RVT.ProjectDir)City2RVT.addin" KeyPath="yes" />
+			</Component>
+		</ComponentGroup>
+		
+	
+		<!--  Features  -->
+		<Feature Id="City2BIMMainProduct" Title="City2BIM Plugin" Level="1">
+			<ComponentGroupRef Id="MainComponentGroup" />
+			<ComponentGroupRef Id="AddinManifest" />
+			<ComponentGroupRef Id="GDAL_comGroup"/>
+		</Feature>
+	
+		
+		<!-- UI of Installer -->
+		<Property Id="ApplicationFolderName" Value="CityBIM"></Property>
+		<Property Id="WixAppFolder" Value="WixPerMachineFolder"></Property>
+		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER"></Property>
+		<WixVariable Id="WixUILicenseRtf" Value="CityBIMLicense.rtf"/>
+		<UIRef Id="WixUI_InstallDir"/>
+		
+
+	</Product>
+</Wix>
