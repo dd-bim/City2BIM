@@ -246,6 +246,7 @@ namespace City2RVT
         {
             R20 = 2020,
             R21 = 2021,
+            R22 = 2022,
             
             /// <summary>
             /// if this is selected give an information that it is currently not supported
@@ -270,6 +271,9 @@ namespace City2RVT
                     break;
                 case 2021:
                     rV = rvtVersion.R21;
+                    break;
+                case 2022:
+                    rV = rvtVersion.R22;
                     break;
                 default:
                     rV = 0;
