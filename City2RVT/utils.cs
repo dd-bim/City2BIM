@@ -77,8 +77,14 @@ namespace City2RVT
                     if (ent.IsValid())
                     {
                         ElementId terrainID =  ent.Get<ElementId>(terrainIDSchema.GetField("terrainID"));
-                        trans.Commit();
-                        return terrainID;
+                        var element = doc.GetElement(terrainID);
+                        
+                        //if user deleted a former dtm the id still exits in the dataStorage, so make sure the dtm still exists in the project,
+                        //otherwise return null
+                        if (element != null) {
+                            trans.Commit();
+                            return terrainID;
+                        }
                     }
                 }
             }
