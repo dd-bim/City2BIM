@@ -117,8 +117,8 @@ namespace City2RVT.Builder
 
             try
             {
-                //transform input points to revit
-                revDTMpts = transPts(result.pointList);
+                //transform triangulated nts coords to revit
+                revDTMpts = transCoords(result.coordinateList);
             }
             catch (Exception ex)
             {
@@ -211,6 +211,25 @@ namespace City2RVT.Builder
         }
 
         /// <summary>
+        /// function to transform NTS coordinates to revit crs
+        /// </summary>
+        private List<XYZ> transCoords(List<geom.Coordinate> coordinateList)
+        {
+            //init new list
+            var revDTMpts = new List<XYZ>();
+
+            //loop through
+            foreach (var coord in coordinateList)
+            {
+                C2BPoint c2bpoint = new C2BPoint(coord.X, coord.Y, coord.Z);
+                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(c2bpoint, true);
+
+                revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));
+            }
+            return revDTMpts;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="doc"></param>
@@ -234,6 +253,23 @@ namespace City2RVT.Builder
 
                     terrainIDSchema = sb.Finish();
                 }
+
+                //search for exsiting terrainIDs and delete them
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                IList<Element> dataStorageList = collector.OfClass(typeof(DataStorage)).ToElements();
+
+                if (dataStorageList.Count > 0)
+                {
+                    foreach(var ds in dataStorageList)
+                    {
+                        var existingEnt = ds.GetEntity(terrainIDSchema);
+                        if (existingEnt.IsValid())
+                        {
+                            ds.DeleteEntity(terrainIDSchema);
+                        }
+                    }
+                }
+
 
                 Entity ent = new Entity(terrainIDSchema);
                 Field terrainIDField = terrainIDSchema.GetField("terrainID");
