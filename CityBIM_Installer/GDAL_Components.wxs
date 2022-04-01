@@ -10,6 +10,536 @@
 	</Fragment>
 	<Fragment>
 		<ComponentGroup Id="GDAL_comGroup">
+			<Component Id="cmp7F4550B9A1483F80BB1B4F3C7979278B" Directory="GDALSub" Guid="F17A1DD5-2084-49A1-B366-945E15536D50">
+				<File Id="filBFE84FB87F7B2246DD2C00BB70E7F9BA" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\GDALLicense.rtf" />
+			</Component>
+			<Component Id="cmp09CFAB6C29FBCC948F150A6D4BA0D4C0" Directory="GDALSub" Guid="28B3C1D2-CBAC-4FEA-8B44-170E6EE922C2">
+				<File Id="filDA22B27ADB26087B302B9457E5FF7E11" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\GISInternalsLicense.rtf" />
+			</Component>
+			<Component Id="cmp5B9FF7E748693790C0AC5CCFC41F85F6" Directory="GDALSub" Guid="66601BDD-6049-4444-9E26-D6D4E7801423">
+				<File Id="fil0F5BD12A707C010790B37F32D70FAD9F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\license.txt" />
+			</Component>
+			<Component Id="cmpFE6FA837AA0B5208C7DBAE80E60D30B6" Directory="GDAL_data" Guid="49DF4CCC-FF8D-4936-8DE6-437000A84E6D">
+				<File Id="filDBAC83F8C3533843B22A9F66513EF7E5" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\bag_template.xml" />
+			</Component>
+			<Component Id="cmp4B58703E85D10A9FD50E49B35CE92D61" Directory="GDAL_data" Guid="381E0E49-85B9-41F8-BEE1-FB9D9A1EA7FD">
+				<File Id="fil31713457F82F9DDA07240801359C6A50" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\cubewerx_extra.wkt" />
+			</Component>
+			<Component Id="cmp2613874ECBBD0CFDB0BECF0CDC0EE45D" Directory="GDAL_data" Guid="793DF05C-629E-483A-9FFB-82974D18396D">
+				<File Id="filF11C527F180AA65C2F64B978A6BC5B95" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\default.rsc" />
+			</Component>
+			<Component Id="cmp3412C9A332812CB0720BA1F353FE2AA4" Directory="GDAL_data" Guid="75C06688-0F44-43C8-BCDE-D78EA8773349">
+				<File Id="fil0A5E32D04C3DDFA4218F10845FBF872D" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ecw_cs.wkt" />
+			</Component>
+			<Component Id="cmp4019D7DCEE7B7ECF409344794E0A6A84" Directory="GDAL_data" Guid="11BDD783-F9F4-4651-A613-74C19468E0ED">
+				<File Id="filF80C8238D62B955A50718072D02E74A4" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\eedaconf.json" />
+			</Component>
+			<Component Id="cmp1F1AAA6324B1814DCE8DBFC5CB3C83BF" Directory="GDAL_data" Guid="566FA612-9A39-4336-89CE-80E6FA18E447">
+				<File Id="filE7432957B0FE4508610866C19A0E1EB8" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\epsg.wkt" />
+			</Component>
+			<Component Id="cmpC080BE860C389F27146333F6200A6CA9" Directory="GDAL_data" Guid="3F043EE7-C71D-4FDC-983E-32E56EFA2575">
+				<File Id="fil0E28846EC260B735499D5B6757FE7B07" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\esri_StatePlane_extra.wkt" />
+			</Component>
+			<Component Id="cmp7185A93D6197A5BAD622B57719D38E21" Directory="GDAL_data" Guid="BC4CEF68-167B-4513-9D14-C8EE9AC37E8D">
+				<File Id="fil8E8A05F38A3E3458B76359F9DAD943CE" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gdalicon.png" />
+			</Component>
+			<Component Id="cmpCE9E4F5A4B5CAF93CEE9D5E7E4D4D08B" Directory="GDAL_data" Guid="9AA5F967-0700-4CEB-B35D-081074900217">
+				<File Id="filE205FF9BE390F380697D889075F0799C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\GDALLogoBW.svg" />
+			</Component>
+			<Component Id="cmpACFBA20181027BE701AA3D0226E76D55" Directory="GDAL_data" Guid="AFF9D8D8-EEBD-4FE6-86B7-2F6F387620C9">
+				<File Id="fil0ED894FFBB77EEA074CACCCA2A386F9B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\GDALLogoColor.svg" />
+			</Component>
+			<Component Id="cmp5B812A948F957E48CF493DC8F9761166" Directory="GDAL_data" Guid="F2F8509A-CAFD-45CC-8BFB-06821EA9B265">
+				<File Id="fil3B24FBDA7CD17BB6F475004CBBEA078E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\GDALLogoGS.svg" />
+			</Component>
+			<Component Id="cmpD45826255816B1EEF97D4F4EA097A46C" Directory="GDAL_data" Guid="215A1844-CC7F-4C28-9346-80B9205D0409">
+				<File Id="fil5520AE162089D2EF7300FCDEA7F993A7" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gdalmdiminfo_output.schema.json" />
+			</Component>
+			<Component Id="cmpE16CE546317FC4581BC22D65191FAF5E" Directory="GDAL_data" Guid="8BF76776-6FF6-4DED-B150-5F1A64F6EC7F">
+				<File Id="fil430C329414E52EA4BA9557FADA585793" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gdalvrt.xsd" />
+			</Component>
+			<Component Id="cmpDFB6D8F6930B2360F12984F8EBBB4CE7" Directory="GDAL_data" Guid="79290413-FD00-43D1-9A3A-DA2997640942">
+				<File Id="fil490629E4456D0D21E0608AD9029F96E1" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gmlasconf.xml" />
+			</Component>
+			<Component Id="cmp0A50C8FBD683218A346810559B393304" Directory="GDAL_data" Guid="27697A87-5600-4955-A23A-E191A01000A5">
+				<File Id="fil0FFDD0BE2D335889CECF59CC5B9EE16C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gmlasconf.xsd" />
+			</Component>
+			<Component Id="cmp535B003D02327BC1A00BFEAE4D3EEE7C" Directory="GDAL_data" Guid="C22E9822-1F4B-4A61-9C2B-26881B82F7E1">
+				<File Id="fil2B5F71C1D33B4244D04CC0E3C57073E4" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gml_registry.xml" />
+			</Component>
+			<Component Id="cmp7A6AEB58C551F80AC7E7FCC094DF420E" Directory="GDAL_data" Guid="E3D39D71-C5AA-4090-B3F7-C73D6C4DEADE">
+				<File Id="fil843BBFA99D4B923F3D72410C314DC3FF" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gt_datum.csv" />
+			</Component>
+			<Component Id="cmpD4ECAC19FE61EFF6858737C5F9FD37D1" Directory="GDAL_data" Guid="92709860-F041-433F-ADA6-06EE0F33E3F2">
+				<File Id="filEC1C5BFB80C509BD23C9B7760038776F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\gt_ellips.csv" />
+			</Component>
+			<Component Id="cmp9060E17C5F72A7F55041632B25143502" Directory="GDAL_data" Guid="538EA1AD-3E0F-4BBA-8810-C829EA80D88E">
+				<File Id="filD8FA09A9A021A1104CD36FBFE2323B46" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\header.dxf" />
+			</Component>
+			<Component Id="cmpD3C44B1115FAC791719240CBCED6A748" Directory="GDAL_data" Guid="49B8D478-8427-48D3-AAA9-C9DB7376D171">
+				<File Id="fil610503532218B79794EC85DBC8AEE8A6" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\inspire_cp_BasicPropertyUnit.gfs" />
+			</Component>
+			<Component Id="cmp75E47C0CAB6E66B761B407E6825B7513" Directory="GDAL_data" Guid="62A34DBA-A286-4228-955D-07B210E05C90">
+				<File Id="fil4E275859CA1D51AC80C4E99DA8BABA97" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\inspire_cp_CadastralBoundary.gfs" />
+			</Component>
+			<Component Id="cmp4BF2345156CC194EC5411BFBC125F2EE" Directory="GDAL_data" Guid="5F0595EF-C0C3-4240-8B0B-2C6600C3F092">
+				<File Id="filA030A768BE9F8B4796074AE6F07AAAE9" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\inspire_cp_CadastralParcel.gfs" />
+			</Component>
+			<Component Id="cmpEEA6E81D2BF5CCDA2A6025D1701099B5" Directory="GDAL_data" Guid="D0A6FF36-CD37-4105-9720-8F5BB25CCFA6">
+				<File Id="filE6385D8ADC06C1BE7DC6BC1524E8815E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\inspire_cp_CadastralZoning.gfs" />
+			</Component>
+			<Component Id="cmp9625850E2829C5E978DA13951261A723" Directory="GDAL_data" Guid="37792EDA-231F-45A2-90BB-CCC3150A9FEA">
+				<File Id="fil682EE90F471B4B983EB7F6BFAA9479E5" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_AdmArea.gfs" />
+			</Component>
+			<Component Id="cmpF2C0AB90A5A8FDF3F575F6C92B9DFA21" Directory="GDAL_data" Guid="81EDAA55-A47D-4A1F-9E37-AB2B11594773">
+				<File Id="filEF4ACAA39B423E59EE918410CD4EC294" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_AdmBdry.gfs" />
+			</Component>
+			<Component Id="cmpBFD1175B448CB54FE275253BCF5205C7" Directory="GDAL_data" Guid="FB8F0D94-5F5F-4801-A1F9-EBA4F894631E">
+				<File Id="fil701D66410B1774E371F9B59764CCF507" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_AdmPt.gfs" />
+			</Component>
+			<Component Id="cmp7F9700CFB75698C058BB9A787C4AB0AD" Directory="GDAL_data" Guid="13E792FA-336C-4B0B-8F42-6E748350B99C">
+				<File Id="filBAABCD93D5070A1DEA0C0E70B3B5AC67" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_BldA.gfs" />
+			</Component>
+			<Component Id="cmp7A6FC0B8B527323FDF7BEEC9A46DD443" Directory="GDAL_data" Guid="79A069D9-C3E2-479F-9572-D3D24272B892">
+				<File Id="fil27ACA62B5A6F6DA49A3F8D5F7CDB0F05" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_BldL.gfs" />
+			</Component>
+			<Component Id="cmpB866A36DC18CFF8556736044EEB35F0D" Directory="GDAL_data" Guid="6F560B54-2976-4496-BC4A-3B4349DA8028">
+				<File Id="fil62F0A2A80D23787E706278A39AC128DF" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_Cntr.gfs" />
+			</Component>
+			<Component Id="cmp9BB3E38B6D38645017F4BC6F7D66D255" Directory="GDAL_data" Guid="A010092B-69B7-436E-A51A-A3ED00A1FCAC">
+				<File Id="fil504CB4A2EF25F519A09C3289C550E0D8" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_CommBdry.gfs" />
+			</Component>
+			<Component Id="cmp3CAA1E4EF39865B7F24DBF8F641EDF3D" Directory="GDAL_data" Guid="045A6B23-2EC8-44EA-8D66-6AC43CCBBF4F">
+				<File Id="fil0080F04F3CC28DB8C559ACB1042A714A" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_CommPt.gfs" />
+			</Component>
+			<Component Id="cmp75DBDCF455A24C01B0E91719AA76E4CF" Directory="GDAL_data" Guid="F5D4B44E-7DC9-409C-9254-7C74B382E6B9">
+				<File Id="filFEEFAD76AA4923EED804A0F8EF8AA5C5" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_Cstline.gfs" />
+			</Component>
+			<Component Id="cmp29A923E60F2633B637C6262D9923B717" Directory="GDAL_data" Guid="92ED9030-6810-427B-8457-F725188FE2DD">
+				<File Id="fil18E34669291B5874A39A842699B4EC69" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_ElevPt.gfs" />
+			</Component>
+			<Component Id="cmpA53088A986472C952C1C3D876DFB2332" Directory="GDAL_data" Guid="AB353322-8873-4E49-8D3D-E8FB7F08C986">
+				<File Id="filB9CFA0151CB415C5F6A8DAE5B0032D6F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_GCP.gfs" />
+			</Component>
+			<Component Id="cmp156AACFD6AC9DDC4916F6C560FBF2B6F" Directory="GDAL_data" Guid="736E8636-F785-4897-AE19-EB0248544D07">
+				<File Id="fil54B7980EC427DBE207139D705780B865" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_LeveeEdge.gfs" />
+			</Component>
+			<Component Id="cmp0CDB1EF737D7B2E28DE083B8B9BE9298" Directory="GDAL_data" Guid="495E3941-7F0D-4231-A4C3-EB7D398B6762">
+				<File Id="fil470EF05A2D0BCB89B35B55074D1219DD" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RailCL.gfs" />
+			</Component>
+			<Component Id="cmp5C454B3F0F1BD50014A236216892EDF6" Directory="GDAL_data" Guid="F1FFB8E6-4782-45A9-B301-81CCD3DCBE39">
+				<File Id="filA2F0311E6558FE27727135AC6C2A7E13" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RdArea.gfs" />
+			</Component>
+			<Component Id="cmpE88A20B2A8C962C5EC9804CFA93C9C67" Directory="GDAL_data" Guid="B4B646A5-C22B-4515-911D-092FCC8CF817">
+				<File Id="fil4A20F821D0EBBE7B58128368A0069AAD" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RdASL.gfs" />
+			</Component>
+			<Component Id="cmpFDFD85DDA7A463899F0410C02DE5CCD4" Directory="GDAL_data" Guid="09F3A76C-3AF8-4140-B2A9-A2835AAD5CBD">
+				<File Id="filF053368508BAA60F941738824FBC0296" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RdCompt.gfs" />
+			</Component>
+			<Component Id="cmpA5040D716F29B45E41E9DDB5A0DFACC9" Directory="GDAL_data" Guid="1E126D4F-E7D8-4981-81CA-594FE20C43AC">
+				<File Id="filD009AD7DF40385990A66C88A0D6EFB08" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RdEdg.gfs" />
+			</Component>
+			<Component Id="cmp8321AA01DE4569B948A73C83814E37CE" Directory="GDAL_data" Guid="9F8FFABD-B184-4DB5-99B0-875D00EE38F3">
+				<File Id="filE3F10FE0304DB91D36FD0289FCD5AF95" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RdMgtBdry.gfs" />
+			</Component>
+			<Component Id="cmp4689FE3A31BA155BB96B736D6B625C40" Directory="GDAL_data" Guid="51DE49CC-5F5E-4CFA-916B-8F1735A58F5D">
+				<File Id="fil0E120FE59DA91CE9446DB2B82A1D4AB6" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RdSgmtA.gfs" />
+			</Component>
+			<Component Id="cmp0850F19B0C12DC773F3FB1714D385ECD" Directory="GDAL_data" Guid="F2D8EFDB-ECAE-4331-83C2-A0233E4E9361">
+				<File Id="fil96F5F5D138205ADD357C64716DEAE601" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_RvrMgtBdry.gfs" />
+			</Component>
+			<Component Id="cmp28B65AB566140BAE1D7588A60B8D3227" Directory="GDAL_data" Guid="49FFA127-D6D5-4601-8CAC-E22444AC7589">
+				<File Id="fil8B56DF94DAA8262A268B8656C458FBBB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_SBAPt.gfs" />
+			</Component>
+			<Component Id="cmpE7CDB5142224F9A035B4309B99FBDB18" Directory="GDAL_data" Guid="5017DC8C-20EA-413B-BEC8-84F1E2E52DA5">
+				<File Id="fil65CEC9E1F37BDEC3CBD1EC18C7483A37" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_SBArea.gfs" />
+			</Component>
+			<Component Id="cmp894CC86C4A1C73C2D1C2D33627AE432C" Directory="GDAL_data" Guid="69435D60-C334-45E5-B1AF-99276AAEFA95">
+				<File Id="fil49A8E33B90B9B82D506631AF25F468CD" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_SBBdry.gfs" />
+			</Component>
+			<Component Id="cmpBF3430C748C09A1446B1DF6F2306589E" Directory="GDAL_data" Guid="F4AED61C-793B-4C82-B5F0-C69E78DA53F2">
+				<File Id="fil10FD9C8F90D99BE61E62C7725B65C4AB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_WA.gfs" />
+			</Component>
+			<Component Id="cmpA30BBB387C2B36A7F29D087D33DA7BE6" Directory="GDAL_data" Guid="A8D4A49C-9865-47EB-A178-6E1F622EAAC4">
+				<File Id="filF6EC9064516855FA6416B45EC13F215E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_WL.gfs" />
+			</Component>
+			<Component Id="cmp2A92C13933AEA8D3EEA2CC1E616CC71A" Directory="GDAL_data" Guid="8ACB72F0-0F80-4CB3-B17D-A388827A33F0">
+				<File Id="filBFED232C22DD21F6D1336613E7352CEA" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_WStrA.gfs" />
+			</Component>
+			<Component Id="cmp1183839A7789387C64151BBA39273A7E" Directory="GDAL_data" Guid="F8782C54-C9BC-4916-968C-20D904F72A3E">
+				<File Id="fil71B09F3487E9B409B6357DB783343378" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\jpfgdgml_WStrL.gfs" />
+			</Component>
+			<Component Id="cmp26A6DD2102359C2117550F3DEF5891E2" Directory="GDAL_data" Guid="32A8924A-1251-47D9-A38A-DCB058C03655">
+				<File Id="fil6EF81B2FC29508C3786A456E04D2B675" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\netcdf_config.xsd" />
+			</Component>
+			<Component Id="cmp260CAA502F6360C71D4959343A6CCD01" Directory="GDAL_data" Guid="6005B99E-AA22-4CEA-AA3B-C6AAD2F05118">
+				<File Id="fil948C81586CE5FBB537F2A830F9B7EB9D" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\nitf_spec.xml" />
+			</Component>
+			<Component Id="cmp98A8901F2980DA6A4A9EE4A271C3237E" Directory="GDAL_data" Guid="81922D8E-1B7A-425A-AAC9-07A80DB68C1B">
+				<File Id="filEB92B7111A74450AF7F17E164A8FFC1F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\nitf_spec.xsd" />
+			</Component>
+			<Component Id="cmpB03952B8A0A557DE78565322F32347E8" Directory="GDAL_data" Guid="AF0505CB-BBDA-4AC9-8C59-559BF4D94184">
+				<File Id="filE51F75A8988E2822DB1E0484230F4946" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ogrvrt.xsd" />
+			</Component>
+			<Component Id="cmp578F98EE2F87BA53E1C2E8C075108AF6" Directory="GDAL_data" Guid="9DD77499-A467-40CF-A8A7-9E687E21D2F7">
+				<File Id="fil63E06005F81311E91B810C93791E4E70" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\osmconf.ini" />
+			</Component>
+			<Component Id="cmp315D36F26480754D93EFAB50D673AAAE" Directory="GDAL_data" Guid="3F567BE4-1403-4767-9452-B5131CBF0540">
+				<File Id="fil16236AEE3CF1AFEDE673AEB938117145" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ozi_datum.csv" />
+			</Component>
+			<Component Id="cmp2091264413A93228DA1BEC87DC86F0FE" Directory="GDAL_data" Guid="1C21FE42-F107-40A2-9702-4AAEFB6F6D0A">
+				<File Id="fil9832E8D3FD645FB1CA559B92C4FD7D12" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ozi_ellips.csv" />
+			</Component>
+			<Component Id="cmp897FA4D0860D2D35EE0E2DD38491947E" Directory="GDAL_data" Guid="EF803B89-8847-439B-BF22-77F54BED2987">
+				<File Id="fil3400033EB8CC2E4386FD47081ECBC9D8" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\pci_datum.txt" />
+			</Component>
+			<Component Id="cmp131C9651EFF843B23D16F99ECFC185D4" Directory="GDAL_data" Guid="DB0971D0-13F2-41F5-9AAF-2F5F40DA5E25">
+				<File Id="fil48FE7DF85C193A5BEB7915A84063F816" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\pci_ellips.txt" />
+			</Component>
+			<Component Id="cmp2E8D8335257E8F0338D3FC29736601E9" Directory="GDAL_data" Guid="2BA5F2A6-32B2-4C1B-9D5E-1B7D920F620F">
+				<File Id="filEE083A56DC95CD9D2272747069A9522C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\pdfcomposition.xsd" />
+			</Component>
+			<Component Id="cmp6A14E5BA9292C3F619F33D3248CB4C44" Directory="GDAL_data" Guid="9BB83A6D-7DAB-402A-B2EB-CDE7142056DC">
+				<File Id="filEFB68982C5CDE17E38563231621A96B9" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\pds4_template.xml" />
+			</Component>
+			<Component Id="cmp0015D28750E5AC5DA800AB7D248E7373" Directory="GDAL_data" Guid="03A8FDA7-09F9-48B2-847D-AA7B4E71488B">
+				<File Id="fil003BA8B1EA456F9C73550174C8E33207" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\plscenesconf.json" />
+			</Component>
+			<Component Id="cmp022756B066B040BE196D05750773645C" Directory="GDAL_data" Guid="0C2AB31F-F974-4B30-98FF-4F5CE0B2D4EC">
+				<File Id="fil216C928CC365E33C72D4A168C41B99EC" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ruian_vf_ob_v1.gfs" />
+			</Component>
+			<Component Id="cmpD9E74563061169980043D8CD7A10A6BC" Directory="GDAL_data" Guid="1CC49996-6C3D-4CAD-87E2-826C5E539A9B">
+				<File Id="fil46E80BF9CE8539AE104872591011845F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ruian_vf_st_uvoh_v1.gfs" />
+			</Component>
+			<Component Id="cmp3F18765F66E78EAB58F1214FCE15062A" Directory="GDAL_data" Guid="FCEF67D3-772F-4BED-912D-4236A08B2F61">
+				<File Id="fil7830ECF4A445DB4AD3E63C3152B7E2BA" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ruian_vf_st_v1.gfs" />
+			</Component>
+			<Component Id="cmp6F80D1E626648544DB208910D2B404C6" Directory="GDAL_data" Guid="0D09B80E-2318-4E7B-9DB7-70F8803C0F59">
+				<File Id="fil5A71F44EA32EBE03260DA9786D645F3F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\ruian_vf_v1.gfs" />
+			</Component>
+			<Component Id="cmp8F6106298D562DB08048B12684BA50B3" Directory="GDAL_data" Guid="DE01E257-5630-4AFB-8F3A-75F3CE06703E">
+				<File Id="fil5B6BB96354BE8851478466BE28CCA50C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\s57agencies.csv" />
+			</Component>
+			<Component Id="cmp5671A68D4BB87F7EE30E814221257FEF" Directory="GDAL_data" Guid="D564FDBE-2E34-4914-914B-ECCC2A082083">
+				<File Id="filB95A237D03D75D6D76DD42B7BC29E6CA" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\s57attributes.csv" />
+			</Component>
+			<Component Id="cmp79C15F0E01134CCF31ED46A148101A76" Directory="GDAL_data" Guid="0F5D687D-F748-4A2C-AB8A-43B193EB849C">
+				<File Id="fil411D72A5D3A82E1363B3586B7962FB6F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\s57expectedinput.csv" />
+			</Component>
+			<Component Id="cmpC8E97FF25D0D42A0D43C9AA8396218CD" Directory="GDAL_data" Guid="437F69B2-81E7-4D6C-98F2-ACF07E68987F">
+				<File Id="filA36577F996325F3FBBC159ADE0B58A32" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\s57objectclasses.csv" />
+			</Component>
+			<Component Id="cmp1B73BA5CE920B33240087FB3DFC7ECCE" Directory="GDAL_data" Guid="7D3FA0DB-22D2-4A1E-8C45-C19BF9B15321">
+				<File Id="fil577D9D4E3E3E7D956A6DF65C8D31A8C8" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\seed_2d.dgn" />
+			</Component>
+			<Component Id="cmp110C40370AB98ACD3BC794699F1BEAFC" Directory="GDAL_data" Guid="25C974A6-C7F2-4ACC-8AEB-5C3A3F082440">
+				<File Id="filA6B51281DDE423E7C1250A25C23B3883" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\seed_3d.dgn" />
+			</Component>
+			<Component Id="cmpD2AAF77011C43BFF2899A3B7ABA39FD3" Directory="GDAL_data" Guid="3509E2E4-D948-41C2-9B7B-6DBED76DE55C">
+				<File Id="fil189B8C5287B9D4C5541A32BE025C0C3B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\stateplane.csv" />
+			</Component>
+			<Component Id="cmp6AE5651B425F2E4DE024DD1B53BC3BA4" Directory="GDAL_data" Guid="44AF732D-343D-4ADC-BE5F-84C045700BD5">
+				<File Id="filD3DB14C161B2AA81012820ABAAE37AE3" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\template_tiles.mapml" />
+			</Component>
+			<Component Id="cmp1094DCC2E9B9774A2819876D8E0CB32D" Directory="GDAL_data" Guid="B40F8F10-4B38-4ED4-9983-8DC92FC7B1E7">
+				<File Id="fil7618A19173045056C6B4E4DE354BB8FB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\tms_LINZAntarticaMapTileGrid.json" />
+			</Component>
+			<Component Id="cmp4DA98154F553096B8A13C12363D736C8" Directory="GDAL_data" Guid="41A46D7F-FDAC-433F-A775-F82EA04B2351">
+				<File Id="fil6509671AFAEBA73148C5604B1075A3FC" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\tms_MapML_APSTILE.json" />
+			</Component>
+			<Component Id="cmpC3CD9FC7F714F96911BF029F7A4A48F3" Directory="GDAL_data" Guid="2B9D9831-9074-4DE1-BCCA-C9B0800E7ADF">
+				<File Id="fil56EE201BC0DC545B6CF211BDD94FA285" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\tms_MapML_CBMTILE.json" />
+			</Component>
+			<Component Id="cmpAEE5E3A9528EABB53F278D2D10597600" Directory="GDAL_data" Guid="86713DD0-94EF-4A40-8426-889FE0C204AC">
+				<File Id="fil63BAB509FDE8499BD483B54F3F1B8B41" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\tms_NZTM2000.json" />
+			</Component>
+			<Component Id="cmpDFFD646EB7003A38224F47BC73346172" Directory="GDAL_data" Guid="9D91F07F-A73E-41BF-B1B3-8B712E85FB94">
+				<File Id="filD2A6C7FBC2D7FDE9036F3F4F35195257" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\trailer.dxf" />
+			</Component>
+			<Component Id="cmp12D736791A744A7C8FDB8A6A60ACC5CC" Directory="GDAL_data" Guid="1AADA166-EA94-48C6-80C8-151943A66315">
+				<File Id="filD821284AE120D78A2A12F7F37EE601CF" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\vdv452.xml" />
+			</Component>
+			<Component Id="cmp5AC59BD654C76B0F0ADA00B154B68C4B" Directory="GDAL_data" Guid="88E07486-2997-49C6-8924-731B6B503425">
+				<File Id="fil52F05B880A25FC682C7F7D4BB70A4587" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\vdv452.xsd" />
+			</Component>
+			<Component Id="cmpF3DFFFD929315B448405D9CF0EDC4826" Directory="GDAL_data" Guid="8E673F4D-ACF0-44F3-9A8A-0BD04AA05F31">
+				<File Id="filC6C5A9A3688A63A030567A6C8A92B58F" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\data\vicar.json" />
+			</Component>
+			<Component Id="cmp8E7A5085B44C6C3C6EDBB930B62B4431" Directory="GDAL_share" Guid="5C7A3184-CC9E-4760-AED8-1DD7E00AA561">
+				<File Id="filDAD26B98AA6487E7B043034748F01C5B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\CH" />
+			</Component>
+			<Component Id="cmp2319E096909722030243B2D90DA1C8A7" Directory="GDAL_share" Guid="2FAC8A5E-3AFA-4CDD-834A-926FC7474067">
+				<File Id="fil474E5F24AA30C3F9C5DB325A1FF3C060" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\deformation_model.schema.json" />
+			</Component>
+			<Component Id="cmpEF65114BD40FEFB8AFA8412499864BB9" Directory="GDAL_share" Guid="FBE75C5E-0907-42C5-98A2-CFED05E9EA8C">
+				<File Id="fil326A7A5CE16A54099796AD60745E2CA4" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\GL27" />
+			</Component>
+			<Component Id="cmp767325F554BF0D3DEDD204B6CACABC97" Directory="GDAL_share" Guid="F031D5E9-49EA-49C6-BA17-95F81CC131BD">
+				<File Id="fil24D0A6E1D40E4B4E409D7F4B41DC063B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\ITRF2000" />
+			</Component>
+			<Component Id="cmpEAA784882796BF432F1A8228D4EE2CAD" Directory="GDAL_share" Guid="CE43ECB1-08B2-448F-A181-F5292C57C4D4">
+				<File Id="fil8465DDD172B16EFBF8F22BB6546BBDAD" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\ITRF2008" />
+			</Component>
+			<Component Id="cmp0359F480D771E65083254BE01EC50D42" Directory="GDAL_share" Guid="B178AE22-0363-4B9E-9AEC-ABD985E773F5">
+				<File Id="fil918B110EBCC7B6D62B5C06E94DE55488" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\ITRF2014" />
+			</Component>
+			<Component Id="cmp815EE73838DFEE49FD5942726C36D60B" Directory="GDAL_share" Guid="B4508198-1F7C-422F-A687-9CB67F9B215A">
+				<File Id="filF703210DF91210BE600080C431971071" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\nad.lst" />
+			</Component>
+			<Component Id="cmp38F979E8606CE848053B7C50322683E3" Directory="GDAL_share" Guid="853DDCB1-A246-4DF0-AF12-C20A4776F430">
+				<File Id="filC695FEC7210FBAC5AC27FC4A8645C4F1" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\nad27" />
+			</Component>
+			<Component Id="cmp4AFD0B3FCC42AAF6FD5C7636E5396D09" Directory="GDAL_share" Guid="9EDA9745-07E2-4B91-998D-001559D2E93E">
+				<File Id="fil1B1B5A4D796836198B7D635DE94B0300" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\nad83" />
+			</Component>
+			<Component Id="cmpABA0C116CD73C231810E5C2222ADD01D" Directory="GDAL_share" Guid="EC65F9EE-B0BD-4E92-B96D-F8C007623E58">
+				<File Id="fil271CBE9B085090BF045DE6C68BD05222" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\other.extra" />
+			</Component>
+			<Component Id="cmp2C104082E97EBF9A69AB5089258B3CA5" Directory="GDAL_share" Guid="B6D639D4-D32A-44D5-9668-2C33CCD40E82">
+				<File Id="fil0F77B9F6F0AFF031874723BE1ABCD4D1" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\proj.db" />
+			</Component>
+			<Component Id="cmpCC1E518452F445BB1A496CDF05D908C3" Directory="GDAL_share" Guid="604EA0BF-7B31-4818-99B7-2B0872646873">
+				<File Id="fil9DEC072DD85449E267DBF2E6AB579FB8" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\proj.ini" />
+			</Component>
+			<Component Id="cmp0F7636E94BD40B83D52C527B0C7E17DF" Directory="GDAL_share" Guid="9C73B182-60E6-40C0-BEAA-E098CF1865DB">
+				<File Id="fil5CF9087476ADE80B78355B2271E390CC" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\projjson.schema.json" />
+			</Component>
+			<Component Id="cmp1FEF4E5255BA4B3CAA840D1FCBF489EA" Directory="GDAL_share" Guid="ED98A179-FA18-447B-BA3E-26CE8253C865">
+				<File Id="fil3F386CAF230626108EE0EFE8105E9094" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\triangulation.schema.json" />
+			</Component>
+			<Component Id="cmp02BB05CDB1196153BC7DB879AB4007AB" Directory="GDAL_share" Guid="22A3C062-DB5D-446E-A243-F5D22F37F320">
+				<File Id="fil0F63922109DEBA5815A9FE7B2D124BD7" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\share\world" />
+			</Component>
+			<Component Id="cmpFE6261DB639C83FB6C8B8D6AA620E613" Directory="GDAL_x64" Guid="160067BF-EB3E-40A5-A202-23BA9F644392">
+				<File Id="fil8CAE1A55FCEBDA885B9C9B1F49BA03EF" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\adrg.dll" />
+			</Component>
+			<Component Id="cmp8E7BB996BA6494C0CCB943F755ED77ED" Directory="GDAL_x64" Guid="64A012E7-084D-4E98-A40C-86FF6B5574CD">
+				<File Id="fil502B1F79CA63E47856782E80D855CA98" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\concrt140.dll" />
+			</Component>
+			<Component Id="cmp63B72F68966F87F5E23C711DDE80AD23" Directory="GDAL_x64" Guid="56334A57-395B-4C56-8EA6-ACD6A034494E">
+				<File Id="filBFE4B0BB5075C11C6EADF1897108062D" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\freexl.dll" />
+			</Component>
+			<Component Id="cmp61D2AAF0BD42726CE90F4B9DB04C08F5" Directory="GDAL_x64" Guid="72B586F7-15E8-421D-915C-65775D6B430F">
+				<File Id="fil87CC627242723FCC3937FCDFC9433A6B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\gdal304.dll" />
+			</Component>
+			<Component Id="cmp284661C67257A3480534B798BE3A1B01" Directory="GDAL_x64" Guid="C3DC5E6C-A120-46B4-A889-E544AF45A450">
+				<File Id="filB27138FE7FA1BE68D66D4F8AF7531722" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\gdalconst_wrap.dll" />
+			</Component>
+			<Component Id="cmp54E638FF2CFF0C6727E2650643A01DBB" Directory="GDAL_x64" Guid="9754436E-F8C3-4959-84B9-63CAF2693517">
+				<File Id="filCFE5781364C01516BE2A7A472B3219AB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\gdal_wrap.dll" />
+			</Component>
+			<Component Id="cmp6D5DB3D5197D59C6898A3AA8DF66F324" Directory="GDAL_x64" Guid="DE165DD6-9924-4DF9-B1E6-BA22FBD0C0E7">
+				<File Id="filAF63C3CAF23D188D7B55D09903FCEDB2" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\geos.dll" />
+			</Component>
+			<Component Id="cmp2885477C0AAF7BD2020A8D54263A2DAC" Directory="GDAL_x64" Guid="5775D2D8-7376-4B64-B8C8-CB3C2B2EB6BF">
+				<File Id="filE26198695001D17FE4D473497507B00A" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\geos_c.dll" />
+			</Component>
+			<Component Id="cmp9F94D949B45AC279E4C943540CE1A788" Directory="GDAL_x64" Guid="F3957401-4CC0-4F7E-AAAB-71A83EC06329">
+				<File Id="fil1BF88003BA1E3E9FB63097E4D92B8E2A" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\iconv-2.dll" />
+			</Component>
+			<Component Id="cmp805BA62FEF62F0823637555C44C5FFD3" Directory="GDAL_x64" Guid="1366FFFF-FC51-413D-A55F-AE6BEE1FAF74">
+				<File Id="fil3B62EB322111247407EB64D139C70EC7" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\libcrypto-1_1-x64.dll" />
+			</Component>
+			<Component Id="cmp17D3D6DACB45449DD6E374EC3E469299" Directory="GDAL_x64" Guid="665620C4-3B7A-45B8-B912-36C922CAECDE">
+				<File Id="fil077067CC9395CC95A321406EE1699FFC" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\libcurl.dll" />
+			</Component>
+			<Component Id="cmpEDE77A90ADBBA0F0CFAAEDF3BD2DD368" Directory="GDAL_x64" Guid="9A81285F-D2AE-4826-B88C-7BDF5C19B5D8">
+				<File Id="fil6FFC3B5EEF519AEF16D6BDAB734E0A37" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\libexpat.dll" />
+			</Component>
+			<Component Id="cmp51726061435AD936816B22617CB71923" Directory="GDAL_x64" Guid="2957D04F-6040-4B78-BDA5-1CFFC861DAE7">
+				<File Id="fil0DCB94294A691CB05552D9F6424DEABE" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\libmysql.dll" />
+			</Component>
+			<Component Id="cmpFA7EF35F21F90BE019895082BC06455C" Directory="GDAL_x64" Guid="3CDF2F43-D9EF-4861-AD53-EEF48DC6E9CA">
+				<File Id="filD3F2AC32DD24129D3B05659696FB858B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\libpq.dll" />
+			</Component>
+			<Component Id="cmp3A4E7916C0784903A6CB93EDCA1B1004" Directory="GDAL_x64" Guid="EF9F8ADF-654F-467B-A06A-53D50E6B30E5">
+				<File Id="filC23E4C6601831BE359AA321AA982E72B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\librttopo.dll" />
+			</Component>
+			<Component Id="cmp1C51A655A9741047CA6CC8F2F24E2AEA" Directory="GDAL_x64" Guid="A4A495C1-B1D1-4D59-B9CD-875202BBDE02">
+				<File Id="fil6182B5DA95E6A6C7B3BE6047B61FDD86" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\libssl-1_1-x64.dll" />
+			</Component>
+			<Component Id="cmp444E90A39347125C5ECDF2B229E65C19" Directory="GDAL_x64" Guid="DFB1CCC0-55AF-432C-9B05-6B37EB4F3D43">
+				<File Id="fil8B138A3A8FA185700F4D02F543CD08E2" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\libxml2.dll" />
+			</Component>
+			<Component Id="cmpCBA96C7666D41199218028D61C492618" Directory="GDAL_x64" Guid="54852F44-EE87-4DF8-9BF5-59D798E46315">
+				<File Id="filC5CC94B6A2AB7B9D1E96850F34C7259C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\msvcp140.dll" />
+			</Component>
+			<Component Id="cmp2A64DB6609A6A1C67F668E993538F942" Directory="GDAL_x64" Guid="F46D047F-0F20-46A6-BD58-86B374B49B4A">
+				<File Id="fil07DCC4AFB6449719B8731E6C4757DB8D" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\msvcp140_1.dll" />
+			</Component>
+			<Component Id="cmp003150B943B2BABD813D897C2479468A" Directory="GDAL_x64" Guid="BA7E18D3-B39E-4434-B04E-75E982EE2DBC">
+				<File Id="fil3EA421B57F2E33B885E89E9E38E30976" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\msvcp140_2.dll" />
+			</Component>
+			<Component Id="cmpC44EE13FF3B88365A66A02830E1EA1A1" Directory="GDAL_x64" Guid="D9E58B19-1412-4B2E-A955-C449AB32C584">
+				<File Id="fil72D2FFF8A95D88BD8EA9B205FDAC8EDB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\ogdi.dll" />
+			</Component>
+			<Component Id="cmp2327AA2EA1A34D521D2D9210E753802D" Directory="GDAL_x64" Guid="2EF3729C-0F76-47B8-9B65-2479848D5959">
+				<File Id="fil6A387D5BF1D6531BB3C01A370A948F50" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\ogr_wrap.dll" />
+			</Component>
+			<Component Id="cmp94CAE5E8F33FAEE7FDAF92F627E31FF0" Directory="GDAL_x64" Guid="4ABD6541-1495-4BBF-9458-F4BEA0ECD092">
+				<File Id="filDC2B86F5B2CC49E5C781E9EF06101754" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\openjp2.dll" />
+			</Component>
+			<Component Id="cmp1943D1C3D9BD7F05DCA53203C0530599" Directory="GDAL_x64" Guid="80D3849C-9F82-487F-A751-E5A726F92BC1">
+				<File Id="fil44BBC0DAA030E9C0883A688CFED3C6F9" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\osr_wrap.dll" />
+			</Component>
+			<Component Id="cmpDB03A4E9768427F4C8153760B328853A" Directory="GDAL_x64" Guid="16B8CC68-766C-4159-BA26-D732AC49C9BA">
+				<File Id="fil10A58BD0F569ABC80EEA1A38E6BE82A2" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\proj_7_2.dll" />
+			</Component>
+			<Component Id="cmpC69755992FA5CCFFDDC030B68361CF8F" Directory="GDAL_x64" Guid="582DA0C1-30E5-4BD0-9895-9CD167F0E279">
+				<File Id="filB81D1AD606CBF4E0DDC784FB32C5D8AA" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\remote.dll" />
+			</Component>
+			<Component Id="cmp0DFD48EEB5F9188C109942F16587F492" Directory="GDAL_x64" Guid="4ACB8129-F659-4C32-BC05-114E11BD3D87">
+				<File Id="fil1F404D0A5BEFDE71D3B2587AC988D81B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\rpf.dll" />
+			</Component>
+			<Component Id="cmpFA973EB8EB26B6E2A4CEE35757C67122" Directory="GDAL_x64" Guid="7B7CC630-102D-42F3-9790-1FB45DCE93C4">
+				<File Id="fil63ABBEF7EFEED4247623C76890B4968E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\skeleton.dll" />
+			</Component>
+			<Component Id="cmp7A44606FA9CFC7D2774B4EE0CF91EF4C" Directory="GDAL_x64" Guid="3C5F136F-9248-46FA-B168-7438F6EE2F51">
+				<File Id="fil6CC9137AFFC92E6C49E8FF16312CCA92" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\spatialite.dll" />
+			</Component>
+			<Component Id="cmp7608E6D195A4EB48C3E42DFDEDA1E569" Directory="GDAL_x64" Guid="37ECBAD7-27E3-4DF4-9CEF-D12D8ADE9B36">
+				<File Id="fil247FD12B6FB85D2DDB12565B2FEEC56C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\sqlite3.dll" />
+			</Component>
+			<Component Id="cmp1E0CE0018D33EAF48390EA4F3A399466" Directory="GDAL_x64" Guid="E766359F-537A-44A4-9182-1CBAD997D1D6">
+				<File Id="fil836EFD162ABAC83F031A61B13247F7B7" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\tiff.dll" />
+			</Component>
+			<Component Id="cmpED22D9089E6693A93FF3581469310D73" Directory="GDAL_x64" Guid="636BB974-D840-4183-A481-BF989C3112CC">
+				<File Id="filE65BFA7DF5F0F9DE5166A551C7971E00" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\tiffxx.dll" />
+			</Component>
+			<Component Id="cmp17142CEA5F93141D9999172C27B9A9D6" Directory="GDAL_x64" Guid="215B56B7-9B1E-4CFC-AB4A-10B122CFB5C9">
+				<File Id="fil9F84DD8CC1C4B9EAEBE0397E60DF86F2" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\vcruntime140.dll" />
+			</Component>
+			<Component Id="cmpF264901A1A42AD115D24EF578EFF9929" Directory="GDAL_x64" Guid="23124205-1FAC-4079-BCD8-556A5B62ACE7">
+				<File Id="fil1F144483B971A7C21B5D160DE3F71F6E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\vcruntime140_1.dll" />
+			</Component>
+			<Component Id="cmpA07F6750460FF0A41F5D29AEE63D48A4" Directory="GDAL_x64" Guid="389C678C-450C-400F-9E58-44577C78B848">
+				<File Id="fil6718EDC61FC0AFA0B66C662751B38B71" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\vrf.dll" />
+			</Component>
+			<Component Id="cmpA40F1F247CEBEF00F76E149500595A87" Directory="GDAL_x64" Guid="3E651CC1-F9FD-45F7-A875-629388456FBB">
+				<File Id="filE45E9D7F08BC515550003800CE5AD6AC" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\xerces-c_3_2.dll" />
+			</Component>
+			<Component Id="cmp73C2DFDF104C8C87C31AB9E7E76D8D14" Directory="GDAL_x64" Guid="C22FF5F9-0E9E-4EB9-A58F-F5E138E50D36">
+				<File Id="filB741056ECE1C5A6107F67BFE32F7DD69" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\zlib.dll" />
+			</Component>
+			<Component Id="cmp83CC8D5C2F052EF46D91D738B200F683" Directory="GDAL_x64" Guid="8767F4AF-AFC9-4DA0-B0CB-86A2D991E1F9">
+				<File Id="fil5B8289BFCAADD635E1C4B045DC0F932E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x64\zstd.dll" />
+			</Component>
+			<Component Id="cmp007D6725D213B6F58992AE2402DE6AFE" Directory="GDAL_x86" Guid="367319A5-8AA4-4AC4-9FE4-3808C9308B74">
+				<File Id="fil6100B6C3F7914C4A558A5F8A5F68A529" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\adrg.dll" />
+			</Component>
+			<Component Id="cmpB538D54D45D32DFDB47407B06BB9B0D3" Directory="GDAL_x86" Guid="4793D513-EEE6-4E44-B109-BDA9939F56F6">
+				<File Id="filDD6A63AF564DC3FB2CD0115F23C26C77" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\concrt140.dll" />
+			</Component>
+			<Component Id="cmpF56468ACD1BB93A3EA97DD8A4E9275A6" Directory="GDAL_x86" Guid="F0D96D6C-6740-4412-9A67-03E271ED234C">
+				<File Id="fil67ED7170C09E4393767C6308C57BFDEB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\freexl.dll" />
+			</Component>
+			<Component Id="cmp226724B97768E1C084199166E7111BC3" Directory="GDAL_x86" Guid="C4CAD309-19DC-49DC-8E00-2B35E6F9953E">
+				<File Id="filAA709AFA5810824A7AA23FBA9410B51C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\gdal304.dll" />
+			</Component>
+			<Component Id="cmp88FA2FF8F0EA866C6CD9090FE8BA6AF7" Directory="GDAL_x86" Guid="BB090B71-8704-4B94-8CA0-9A60725130F7">
+				<File Id="filCB6B8E326A4B02159DA5268ACB97D4B8" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\gdalconst_wrap.dll" />
+			</Component>
+			<Component Id="cmp190030F5EB96E2A5CCAD6E6DC987A7D1" Directory="GDAL_x86" Guid="8839E7F9-0474-41FA-B614-DCEB8B973772">
+				<File Id="filB74DDA7C8A1CE2350D402FC4C575C1E2" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\gdal_wrap.dll" />
+			</Component>
+			<Component Id="cmp58FF2F3F94034C829A8ED1411802718F" Directory="GDAL_x86" Guid="BA450E61-96FC-4EDA-AC89-6983072B782D">
+				<File Id="filE62EF796C7FAB09B09826285B1A322F5" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\geos.dll" />
+			</Component>
+			<Component Id="cmp426F15667C0E72A6422F011243664E22" Directory="GDAL_x86" Guid="A42AAF3B-4B9E-4F3A-90C5-DFBECD1A1A3F">
+				<File Id="fil2D9A8CE48B604A5B766CC1DCDFC02473" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\geos_c.dll" />
+			</Component>
+			<Component Id="cmp1ED7DEE9CFC0F1424B39BEDDCEC90EBA" Directory="GDAL_x86" Guid="F2F5E41E-9ACA-45A5-A45E-B396C48FD8DF">
+				<File Id="filD955A815B18452920F5EDFBFEFE54B0A" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\iconv-2.dll" />
+			</Component>
+			<Component Id="cmp62A66376ABE612EDABD1EA0C95811161" Directory="GDAL_x86" Guid="484E0A07-BB8A-4055-832D-8B9104ABB786">
+				<File Id="filDF02E1DB1FF5A463D47F7F36E19AB4E2" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\libcrypto-1_1.dll" />
+			</Component>
+			<Component Id="cmp35AA65DA504131502E95E1E2849C1F61" Directory="GDAL_x86" Guid="688BB67A-A971-4FB0-B4FF-26FE04A75CA8">
+				<File Id="fil6405ECAF89F1EF0F5BA893DB686F00AA" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\libcurl.dll" />
+			</Component>
+			<Component Id="cmp9050641CC59FB49314070DB98292BB46" Directory="GDAL_x86" Guid="63E93020-8DB6-418B-9A4B-1786015C4F78">
+				<File Id="fil0A4472943D7609A700485A52D258B750" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\libexpat.dll" />
+			</Component>
+			<Component Id="cmp10B225A3D02F1EC5475D7DE7D3974D85" Directory="GDAL_x86" Guid="7904BBA0-0D2D-426E-BE81-61F7383C5ADD">
+				<File Id="fil0C3AA637CDB5785201596F9A58D93D13" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\libmysql.dll" />
+			</Component>
+			<Component Id="cmpC1F4E3AD9F0390F748D4E944F964575C" Directory="GDAL_x86" Guid="01CBEA5B-4A42-4268-AB0D-8401F04E47F9">
+				<File Id="filC9C18F59877B1FBCB112504976F6C8FC" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\libpq.dll" />
+			</Component>
+			<Component Id="cmp1224BF8D2DDD49AA30D55C0FE011159A" Directory="GDAL_x86" Guid="9CC7C716-DA3E-411D-9768-F93438161481">
+				<File Id="fil45B9446C3C61DE05D07D2AB5C84833F6" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\librttopo.dll" />
+			</Component>
+			<Component Id="cmp68084DCBB90606946EF1EC42BB6872B8" Directory="GDAL_x86" Guid="A07391DD-7F66-4564-ACAD-47F9B793842B">
+				<File Id="fil6BED023B59362B10CE490A324380AB83" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\libssl-1_1.dll" />
+			</Component>
+			<Component Id="cmp6A1B22082C3764441A56D12FCB57F42C" Directory="GDAL_x86" Guid="32DFEB70-5DD4-4A3A-A4D7-C977D4450E40">
+				<File Id="filD3B8D960D11A96FE53713D30BB5FD02A" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\libxml2.dll" />
+			</Component>
+			<Component Id="cmp5F9D3630323D6B931039EF8AD884A718" Directory="GDAL_x86" Guid="FF5B3C76-BAD0-4080-8901-16A07072FC16">
+				<File Id="fil3CCE7EBBC2D9933A9B0DDD44159BE9FD" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\msvcp140.dll" />
+			</Component>
+			<Component Id="cmp2728C926866CFDF267AD7614CC25A4A1" Directory="GDAL_x86" Guid="14C6B657-3F2F-4FD7-A846-449C9AB41994">
+				<File Id="fil1B029F160FF31466A55789005287A647" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\msvcp140_1.dll" />
+			</Component>
+			<Component Id="cmp0C9C3D8A56AEB1B28022CF77C5CAA2C6" Directory="GDAL_x86" Guid="E1087BA3-0500-4147-968E-D0775B228E15">
+				<File Id="filFD29F943D7CA70D5221ADB387F76147B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\msvcp140_2.dll" />
+			</Component>
+			<Component Id="cmp7E837B3317451DD1DB959FF4F9A13CE2" Directory="GDAL_x86" Guid="26A7EB9C-3BAA-49F5-8931-1A243D8DE54C">
+				<File Id="fil5EFFE502AC099468B12E06553BAD43AB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\ogdi.dll" />
+			</Component>
+			<Component Id="cmp5CF6FBA523459541FD39B96361EEF739" Directory="GDAL_x86" Guid="A5477EC5-334A-457E-86D7-6F2FBCEB27C5">
+				<File Id="fil84AEAD66262EB498FE2E3F344CB42373" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\ogr_wrap.dll" />
+			</Component>
+			<Component Id="cmp48C7E76EC3323AC844858C0CF92FC41A" Directory="GDAL_x86" Guid="EFDA7BC0-88A8-4B4A-A7D1-499A8169325C">
+				<File Id="filD530EB9C0FDA753751C6864D574B545C" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\openjp2.dll" />
+			</Component>
+			<Component Id="cmp0C10480E0929C8F663CA4F82EC8FEF9F" Directory="GDAL_x86" Guid="88830D84-15F0-46B8-8BEC-CB84BE7E0B14">
+				<File Id="filC58E3C9CF37A9DA36BD285936A5160DF" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\osr_wrap.dll" />
+			</Component>
+			<Component Id="cmp0A290692B744B4830EBF83C93DD57BBE" Directory="GDAL_x86" Guid="73117B28-36DF-40B2-B187-C7B8398A1209">
+				<File Id="filC1E8AAD7E90A35985F72066A02DEB038" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\proj_7_2.dll" />
+			</Component>
+			<Component Id="cmp49FB43E48C66A886ED0C1955D89E9FF6" Directory="GDAL_x86" Guid="3FBDEB58-46E4-4E6A-989F-92061DA1BC31">
+				<File Id="filC6A528CFBA90E5F4DB36BDF1E5719873" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\remote.dll" />
+			</Component>
+			<Component Id="cmpA72684CDB5B261304D3C208005201C54" Directory="GDAL_x86" Guid="DDA1FA36-8F57-4617-AEFC-DAFF095D3F6E">
+				<File Id="fil218CFA9D0E0A07425738D76D8D0C54EB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\rpf.dll" />
+			</Component>
+			<Component Id="cmp122CE88464C66E600828C64CC3CE626F" Directory="GDAL_x86" Guid="B49E7356-9796-4C29-9F7B-AB32951C0E7B">
+				<File Id="fil41F5D1C4034EC3D7463E84C5EA9DF58E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\skeleton.dll" />
+			</Component>
+			<Component Id="cmp060EF8EDF62FAB387284EFEB289E2408" Directory="GDAL_x86" Guid="2D92C5DE-991A-48EA-AB9F-541332A6A4B3">
+				<File Id="fil214184897517FCDBEC92848D7742ACF3" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\spatialite.dll" />
+			</Component>
+			<Component Id="cmp6A1488367FD7D738A01D20CFF78DEB5A" Directory="GDAL_x86" Guid="A7027163-AA9B-4728-A32F-4F3F211FA58A">
+				<File Id="fil9BF47F6BE921E43BB5E9DA9037688D54" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\sqlite3.dll" />
+			</Component>
+			<Component Id="cmp96073E43CC10CC20DBFCDDBB603345DC" Directory="GDAL_x86" Guid="E251704D-FAB1-4EA1-8D09-FE665A5A8450">
+				<File Id="fil25622E112C0B9788211B64F2CFF2E8E1" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\tiff.dll" />
+			</Component>
+			<Component Id="cmpA904280636FF3B8A1A6FDDEDFFCFE655" Directory="GDAL_x86" Guid="B212B11D-2A9B-41D4-B7C0-1FC6DA045B05">
+				<File Id="filBE83A22CB3465DDA74EE900FCE7EE817" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\tiffxx.dll" />
+			</Component>
+			<Component Id="cmp54B9AC46789ECC0222B61444CBAB5B55" Directory="GDAL_x86" Guid="3B74A462-10F5-4412-BBD8-D07AE8B01F46">
+				<File Id="fil386C594ACB59D83040476BB098D1220E" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\vcruntime140.dll" />
+			</Component>
+			<Component Id="cmpBB80D42D7FCD813C40FC7CC24D3B2358" Directory="GDAL_x86" Guid="EBC49699-6EB8-445A-9E63-DAEA46F37436">
+				<File Id="fil70779E9FA34633F6EF7B4772C691F95D" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\vrf.dll" />
+			</Component>
+			<Component Id="cmp1C5EEF64572E33CBB6B1D66D995EF463" Directory="GDAL_x86" Guid="D33FB2F9-8234-46E0-9BE0-8A7F461A54DD">
+				<File Id="fil4B64897AAA9A552D0E3B61D3DC0B6C06" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\xerces-c_3_2.dll" />
+			</Component>
+			<Component Id="cmp9EF69A183A7D920BD49729424BFFA70A" Directory="GDAL_x86" Guid="5409A763-A051-4BFC-B205-C1774B011E77">
+				<File Id="fil798D0DA4E1409B5E842A1B3FCD3A53CD" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\zlib.dll" />
+			</Component>
+			<Component Id="cmpF29B25772D6759A3AE361086DE8E91BA" Directory="GDAL_x86" Guid="9811C128-B194-4B6A-BE40-1D732E80A7B0">
+				<File Id="fil44C63507357CD9E59C58F28C99D0AC0B" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\zstd.dll" />
+			</Component>
+		</ComponentGroup>
+		
+		
+		<!--
+		<ComponentGroup Id="GDAL_comGroup">
 			<Component Id="cmp7F4550B9A1483F80BB1B4F3C7979278B" Directory="GDALSub" Guid="47104223-8C9C-46E6-8E2D-C922861C5A28">
 				<File Id="filBFE84FB87F7B2246DD2C00BB70E7F9BA" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\GDALLicense.rtf" />
 			</Component>
@@ -518,5 +1048,6 @@
 				<File Id="filD157E48196D21F0F747BD0B95466D7FB" KeyPath="yes" Source="$(var.City2RVT.TargetDir)\gdal\x86\zlib1.dll" />
 			</Component>
 		</ComponentGroup>
+		-->
 	</Fragment>
 </Wix>

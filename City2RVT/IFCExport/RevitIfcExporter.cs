@@ -46,6 +46,7 @@ namespace City2RVT.IFCExport
 
             //setting unit to meters --> for ifc export
             // TODO check if that is working as expected
+            /*
             using (Transaction trans = new Transaction(this.doc, "set units to meter"))
             {
                 trans.Start();
@@ -55,6 +56,8 @@ namespace City2RVT.IFCExport
                 doc.SetUnits(units);
                 trans.Commit();
             }
+            */
+            
         }
 
         public void startRevitIfcExport(string outFilePath, ExternalCommandData commandData)
