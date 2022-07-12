@@ -112,6 +112,15 @@ namespace City2RVT.GUI.City2BIM
                     C2BPoint lowerCorner = cityReader.LowerCornerPt;
                     var attributes = cityReader.Attributes;
 
+
+                    //Field names in extensible storage does not allow "-" 
+                    foreach (var attr in attributes)
+                    {
+                        if (attr.Name.Contains("-")) {
+                            attr.Name = attr.Name.Replace('-', '_');
+                        }
+                    }
+
                     if (gmlBuildings.Count < 1)
                     {
                         TaskDialog.Show("Error", "No CityGML buildings read from file, canceling import!");
