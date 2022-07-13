@@ -26,7 +26,7 @@ namespace BIMGISInteropLibs.OGR
 
         //private List<List<C2BSegment>> segments { get; set; }
 
-        public Dictionary<string, string> Properties { get => properties; }
+        public Dictionary<string, string> Properties { get => properties; set => properties=value; }
         private Dictionary<string, string> properties { get; set; }
 
         public GeoObject(string usageType, string gmlID, OSGeo.OGR.wkbGeometryType geomType, OSGeo.OGR.Geometry geom ,Dictionary<string, string> properties)
