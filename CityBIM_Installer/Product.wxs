@@ -3,7 +3,7 @@
 	<Product Id="9A46DFDE-9769-4873-98FC-D47022420735" 
 			 Name="CityBIM" 
 			Language="1033" 
-			Version="1.6.1" 
+			Version="1.6.2" 
 			Manufacturer="HTW Dresden" 
 			UpgradeCode="7A2FCCB4-D07A-4BAD-9F24-F29962051272">
 		<Package Id="*" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
