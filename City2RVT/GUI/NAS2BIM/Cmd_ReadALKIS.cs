@@ -57,6 +57,44 @@ namespace City2RVT.GUI
                     var GeoObjs = ogrReader.getGeoObjectsForLayer(layer, dialog.SpatialFilter);
                     Log.Information(string.Format("Total of {0} features in layer {1}", GeoObjs.Count, layerName));
                     var fieldList = ogrReader.getFieldNamesForLayer(layer);
+
+                    for (int i=0; i<fieldList.Count; i++)
+                    {
+                        if (fieldList[i].Contains("|"))
+                        {
+                            fieldList[i] = fieldList[i].Replace('|', '_');
+                        }
+                        else if (fieldList[i].Contains("-"))
+                        {
+                            fieldList[i] = fieldList[i].Replace('-', '_');
+                        }
+                    }
+
+                    
+                    foreach (var GeoObj in GeoObjs)
+                    {
+                        Dictionary<string, string> newPropDict = new Dictionary<string, string>();
+                        
+                        foreach(KeyValuePair<string,string> entry in GeoObj.Properties)
+                        {
+                            if (entry.Key.Contains("|"))
+                            {
+                                var newKey = entry.Key.Replace('|', '_');
+                                newPropDict[newKey] = entry.Value;
+                            }
+                            else if (entry.Key.Contains("-"))
+                            {
+                                var newKey = entry.Key.Replace('-', '_');
+                                newPropDict[newKey] = entry.Value;
+                            }
+                            else
+                            {
+                                newPropDict[entry.Key] = entry.Value;
+                            }
+                        }
+                        GeoObj.Properties = newPropDict;
+                    }
+
                     GeoObjBuilder.buildGeoObjectsFromList(GeoObjs, dialog.Drape, fieldList);
                     Log.Information(string.Format("Finished importing layer {0}", layerName));
                 }

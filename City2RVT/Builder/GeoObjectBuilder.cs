@@ -110,13 +110,6 @@ namespace City2RVT.Builder
                         Entity ent = new Entity(currentSchema);
                         foreach(KeyValuePair<string, string> prop in GeoObj.Properties)
                         {
-                            //is needed because some attribute are using the | symbol for long attribute names
-                            if (prop.Key.Contains("|"))
-                            {
-                                string firstPart = prop.Key.Split('|')[0];
-                                ent.Set<string>(firstPart, prop.Value);
-                                continue;
-                            }
                             ent.Set<string>(prop.Key, prop.Value);
                         }
                         
