@@ -318,6 +318,7 @@
     </Compile>
     <Compile Include="IFCExport\IfcUtils.cs" />
     <Compile Include="IFCExport\RevitIfcExporter.cs" />
+    <Compile Include="Localization.de.Designer.cs" />
     <Compile Include="Localization.Designer.cs">
       <DependentUpon>Localization.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -425,7 +426,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="City2RVT.addin">
+    <None Include="CityBIM.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="img\HideLayerIcon_32px_96dpi.png" />
@@ -437,6 +438,7 @@
     <None Include="img\queryDataCat.png" />
     <None Include="img\overViewIcon.png" />
     <Content Include="img\HelpIcon_32px.png" />
+    <EmbeddedResource Include="Localization.de.resx" />
     <EmbeddedResource Include="Localization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Localization.Designer.cs</LastGenOutput>
