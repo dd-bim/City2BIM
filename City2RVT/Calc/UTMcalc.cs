@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Windows.Forms;
 using System.Reflection;
 using NETGeographicLib;
 
-namespace City2RVT.Calc
+namespace CityBIM.Calc
 {
     public static class UTMcalc
     {

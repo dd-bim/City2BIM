@@ -11,7 +11,7 @@ using geom = NetTopologySuite.Geometries;
 
 using BIMGISInteropLibs.IfcTerrain; // for dtm processing result handling
 
-namespace City2RVT.Builder
+namespace CityBIM.Builder
 {
     internal class RevitTopoSurfaceBuilder
     {

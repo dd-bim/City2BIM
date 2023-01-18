@@ -1,9 +1,9 @@
-﻿<Window x:Class="City2RVT.GUI.DataCat.DataCatPropertySetterWindow"
+﻿<Window x:Class="CityBIM.GUI.DataCat.DataCatPropertySetterWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:City2RVT.GUI.DataCat"
+             xmlns:local="clr-namespace:CityBIM.GUI.DataCat"
              mc:Ignorable="d" 
              MinHeight="450" MinWidth="550" Height="450" Width="550">
 

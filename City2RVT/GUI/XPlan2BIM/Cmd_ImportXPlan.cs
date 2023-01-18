@@ -10,14 +10,14 @@ using Autodesk.Revit.DB;
 /// </summary>
 using System.Xml.Linq;
 using BIMGISInteropLibs.XPlanung;
-using City2RVT.Builder;
-using City2RVT.Reader;
+using CityBIM.Builder;
+using CityBIM.Reader;
 using BIMGISInteropLibs.OGR;
 using Serilog;
 
-using City2RVT.GUI.XPlan2BIM;
+using CityBIM.GUI.XPlan2BIM;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.

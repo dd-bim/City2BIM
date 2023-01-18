@@ -1,10 +1,10 @@
-﻿<Window x:Class="City2RVT.GUI.DataCat.LoginScreen"
+﻿<Window x:Class="CityBIM.GUI.DataCat.LoginScreen"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:City2RVT.GUI.DataCat"
-             xmlns:lang="clr-namespace:City2RVT"
+             xmlns:local="clr-namespace:CityBIM.GUI.DataCat"
+             xmlns:lang="clr-namespace:CityBIM"
              mc:Ignorable="d" 
              Height="360" Width="450" MinWidth="450" MinHeight="360">
     <Border Margin="5">

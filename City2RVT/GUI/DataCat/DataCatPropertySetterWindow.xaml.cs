@@ -3,10 +3,10 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 
-using City2RVT.ExternalDataCatalog;
+using CityBIM.ExternalDataCatalog;
 
 
-namespace City2RVT.GUI.DataCat
+namespace CityBIM.GUI.DataCat
 {
     /// <summary>
     /// Interaction logic for DataCatPropertySetterWindow.xaml

@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using System.Collections.Generic;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     public static class Prop_NAS_settings
     {

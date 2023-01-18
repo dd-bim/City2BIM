@@ -5,9 +5,9 @@ using System.Linq;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
 
-using City2RVT.ExternalDataCatalog;
+using CityBIM.ExternalDataCatalog;
 
-namespace City2RVT.GUI.DataCat
+namespace CityBIM.GUI.DataCat
 {
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     public class Cmd_DataCatLogin : IExternalCommand

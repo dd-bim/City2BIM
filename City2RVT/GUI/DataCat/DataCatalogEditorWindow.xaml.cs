@@ -6,9 +6,9 @@ using System.Windows.Controls;
 
 using Newtonsoft.Json;
 
-using City2RVT.GUI.Properties;
+using CityBIM.GUI.Properties;
 
-namespace City2RVT.GUI.DataCat
+namespace CityBIM.GUI.DataCat
 {
     /// <summary>
     /// Interaction logic for DataCatalogEditorWindow.xaml

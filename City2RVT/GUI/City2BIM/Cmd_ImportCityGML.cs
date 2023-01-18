@@ -10,10 +10,10 @@ using Serilog;
 using BIMGISInteropLibs.CityGML;
 using BIMGISInteropLibs.Geometry;
 using BIMGISInteropLibs.WFS;
-using City2RVT.Builder;
+using CityBIM.Builder;
 
-//namespace City2RVT.GUI
-namespace City2RVT.GUI.City2BIM
+//namespace CityBIM.GUI
+namespace CityBIM.GUI.City2BIM
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.
@@ -128,7 +128,7 @@ namespace City2RVT.GUI.City2BIM
                     }
 
                     //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu
-                    RevitCityBuilder cityModel = new City2RVT.Builder.RevitCityBuilder(doc, gmlBuildings, lowerCorner, attributes, importSettings.CodeTranslate);
+                    RevitCityBuilder cityModel = new CityBIM.Builder.RevitCityBuilder(doc, gmlBuildings, lowerCorner, attributes, importSettings.CodeTranslate);
 
                     if (importSettings.ImportGeomType == CityGeometry.Solid)
                         cityModel.CreateBuildings();

@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 
 
-namespace City2RVT.GUI.City2BIM
+namespace CityBIM.GUI.City2BIM
 {
     /// <summary>
     /// Interaction logic for CityGML_ImportUI.xaml
@@ -32,16 +32,16 @@ namespace City2RVT.GUI.City2BIM
         private string serverURL { get; set; }
         public string ServerURL { get { return serverURL; } }
         */
-        public City2RVT.Builder.CityGMLImportSettings ImportSettings { get { return importSettings; } }
-        private City2RVT.Builder.CityGMLImportSettings importSettings { get; set; }
+        public CityBIM.Builder.CityGMLImportSettings ImportSettings { get { return importSettings; } }
+        private CityBIM.Builder.CityGMLImportSettings importSettings { get; set; }
 
         public CityGML_ImportUI()
         {
             InitializeComponent();
             CityGML_ImportUI_Loaded();
 
-            Lat_Box.Text = City2RVT.GUI.Prop_GeoRefSettings.WgsCoord[0].ToString();
-            Long_Box.Text = City2RVT.GUI.Prop_GeoRefSettings.WgsCoord[1].ToString();
+            Lat_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[0].ToString();
+            Long_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[1].ToString();
         }
 
         private void CityGML_ImportUI_Loaded()
@@ -104,8 +104,8 @@ namespace City2RVT.GUI.City2BIM
 
             if (rb.Name.Equals("siteLocation"))
             {
-                Lat_Box.Text = City2RVT.GUI.Prop_GeoRefSettings.WgsCoord[0].ToString();
-                Long_Box.Text = City2RVT.GUI.Prop_GeoRefSettings.WgsCoord[1].ToString();
+                Lat_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[0].ToString();
+                Long_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[1].ToString();
                 Lat_Box.IsReadOnly = true;
                 Long_Box.IsReadOnly = true;
             }
@@ -118,18 +118,18 @@ namespace City2RVT.GUI.City2BIM
 
         private void import_Btn_Click(object sender, RoutedEventArgs e)
         {
-            City2RVT.Builder.CoordOrder co = City2RVT.Builder.CoordOrder.ENH;
+            CityBIM.Builder.CoordOrder co = CityBIM.Builder.CoordOrder.ENH;
 
             if (NEHOrder_Radio.IsChecked == true)
             {
-                co = City2RVT.Builder.CoordOrder.NEH;
+                co = CityBIM.Builder.CoordOrder.NEH;
             }
 
-            City2RVT.Builder.CitySource cs = City2RVT.Builder.CitySource.File;
+            CityBIM.Builder.CitySource cs = CityBIM.Builder.CitySource.File;
 
             if (srcServer.IsChecked == true)
             {
-                cs = City2RVT.Builder.CitySource.Server;
+                cs = CityBIM.Builder.CitySource.Server;
             }
 
             BIMGISInteropLibs.CityGML.CityGml_Codelist.Codelist cl;
@@ -171,7 +171,7 @@ namespace City2RVT.GUI.City2BIM
                 cl = BIMGISInteropLibs.CityGML.CityGml_Codelist.Codelist.none;
             }
 
-            City2RVT.Builder.CityGeometry cg = Builder.CityGeometry.Solid;
+            CityBIM.Builder.CityGeometry cg = Builder.CityGeometry.Solid;
             
             if (faces_radio.IsChecked == true)
             {
@@ -184,7 +184,7 @@ namespace City2RVT.GUI.City2BIM
                 saveServerResponse = true;
             }
 
-            var importSettings = new City2RVT.Builder.CityGMLImportSettings();
+            var importSettings = new CityBIM.Builder.CityGMLImportSettings();
             importSettings.CoordOrder = co;
             importSettings.ImportSource = cs;
             importSettings.CodeTranslate = cl;

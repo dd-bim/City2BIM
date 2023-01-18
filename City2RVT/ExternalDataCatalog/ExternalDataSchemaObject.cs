@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace City2RVT.ExternalDataCatalog
+namespace CityBIM.ExternalDataCatalog
 {
     public class ExternalDataSchemaObject
     {

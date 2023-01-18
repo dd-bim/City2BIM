@@ -1,7 +1,7 @@
 ﻿using BIMGISInteropLibs.Geometry;
-using City2RVT.GUI;
+using CityBIM.GUI;
 
-namespace City2RVT.Calc
+namespace CityBIM.Calc
 {
     public static class GeorefCalc
     {

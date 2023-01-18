@@ -3,13 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Xml;
-using System.Windows.Forms;
 using Xml_AttrRep = BIMGISInteropLibs.Semantic.Xml_AttrRep;
 
-namespace City2RVT.Builder
+namespace CityBIM.Builder
 {
     internal class Revit_Semantic
     {
@@ -72,40 +70,6 @@ namespace City2RVT.Builder
                 doc.Application.SharedParametersFilename = this.userDefinedParameterFile;
         }
 
-        public void CreateProjectInformationParameter(List<string> projInfoList, Autodesk.Revit.ApplicationServices.Application app, CategorySet projCatSet, BuiltInParameterGroup builtInParameterGroup)
-        {
-            DefinitionFile defFile = default;
-            GUI.XPlan2BIM.XPlan_Parameter parameter = new GUI.XPlan2BIM.XPlan_Parameter();
-            string paramFile = doc.Application.SharedParametersFilename;
-
-            foreach (var p in projInfoList)
-            {
-                defFile = parameter.CreateDefinitionFile(paramFile, app, doc, p, "ProjectInformation");
-            }
-
-            foreach (DefinitionGroup dg in defFile.Groups)
-            {
-                foreach (var projInfoName in projInfoList)
-                {
-                    if (dg.Name == "ProjectInformation")
-                    {
-                        ExternalDefinition externalDefinition = dg.Definitions.get_Item(projInfoName) as ExternalDefinition;
-
-                        Transaction tProjectInfo = new Transaction(doc, "Insert Project Information");
-                        {
-                            tProjectInfo.Start();
-                            InstanceBinding newIB = app.Create.NewInstanceBinding(projCatSet);
-                            if (externalDefinition != null)
-                            {
-                                doc.ParameterBindings.Insert(externalDefinition, newIB, builtInParameterGroup);
-                            }
-                            //logger.Info("Applied Parameters to '" + projInfoName + "'. ");
-                        }
-                        tProjectInfo.Commit();
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Creates Project Information for the revit project where the data is imported to, like general data or postal address 
@@ -119,7 +83,7 @@ namespace City2RVT.Builder
             projectInformationList.Add("Gebaeudeklasse");
             projectInformationList.Add("Bauweise");
 
-            CreateProjectInformationParameter(projectInformationList, app, projCategorySet, BuiltInParameterGroup.PG_GENERAL);
+            //CreateProjectInformationParameter(projectInformationList, app, projCategorySet, BuiltInParameterGroup.PG_GENERAL);
 
             List<string> projectAddressList = new List<string>();
             projectAddressList.Add("Address Line");
@@ -128,7 +92,7 @@ namespace City2RVT.Builder
             projectAddressList.Add("Region");
             projectAddressList.Add("Country");
 
-            CreateProjectInformationParameter(projectAddressList, app, projCategorySet, BuiltInParameterGroup.PG_DATA);
+            //CreateProjectInformationParameter(projectAddressList, app, projCategorySet, BuiltInParameterGroup.PG_DATA);
 
             List<string> crsList = new List<string>();
             crsList.Add("GeodeticDatum");
@@ -136,7 +100,7 @@ namespace City2RVT.Builder
             crsList.Add("MapProjection");
             crsList.Add("MapZone");
 
-            CreateProjectInformationParameter(crsList, app, projCategorySet, BuiltInParameterGroup.PG_ANALYTICAL_MODEL);
+            //CreateProjectInformationParameter(crsList, app, projCategorySet, BuiltInParameterGroup.PG_ANALYTICAL_MODEL);
         }
 
         private ParameterType GetParameterType(Xml_AttrRep.AttrType gmlType)

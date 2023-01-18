@@ -14,7 +14,7 @@ using Xbim.Ifc4.ProductExtension;
 using Xbim.Ifc4.GeometricConstraintResource;
 using Xbim.Ifc4.TopologyResource;
 
-namespace City2RVT.IFCExport
+namespace CityBIM.IFCExport
 {
     class IfcUtils
     {

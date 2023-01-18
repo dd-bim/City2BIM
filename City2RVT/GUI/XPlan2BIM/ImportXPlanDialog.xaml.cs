@@ -10,9 +10,9 @@ using Serilog;
 
 using BIMGISInteropLibs.XPlanung;
 using BIMGISInteropLibs.OGR;
-using City2RVT.GUI.Modify;
+using CityBIM.GUI.Modify;
 
-namespace City2RVT.GUI.XPlan2BIM
+namespace CityBIM.GUI.XPlan2BIM
 {
     /// <summary>
     /// Interaction logic for ImportXPlanDialog.xaml

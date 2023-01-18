@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace City2RVT.Calc
+namespace CityBIM.Calc
 {
     //The following class refers to the Project Nayuki:
 

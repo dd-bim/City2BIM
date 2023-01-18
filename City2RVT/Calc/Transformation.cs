@@ -1,37 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Architecture;
-using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.Attributes;
 
-using Xbim.Common;
-using Xbim.Common.Step21;
-using Xbim.Ifc;
-using Xbim.Ifc4.PresentationOrganizationResource;
-using Xbim.Ifc4.GeometricConstraintResource;
-using Xbim.Ifc4.GeometricModelResource;
-using Xbim.Ifc4.GeometryResource;
-using Xbim.Ifc4.Interfaces;
-using Xbim.Ifc4.Kernel;
-using Xbim.Ifc4.ProductExtension;
-using Xbim.Ifc4.RepresentationResource;
-using Xbim.Ifc4.PresentationAppearanceResource;
-using System.Windows.Forms;
-using Xbim.Ifc4.TopologyResource;
-using Xbim.Ifc4.MeasureResource;
-using Xbim.Ifc4.PropertyResource;
-using Xbim.Ifc4.SharedBldgElements;
-using Xbim.Ifc4.ProfileResource;
-using Xbim.Ifc4.MaterialResource;
 
-namespace City2RVT.Calc
+namespace CityBIM.Calc
 {
     class Transformation
     {

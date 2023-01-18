@@ -1,9 +1,9 @@
 ﻿using Autodesk.Revit.DB;
-using City2RVT.GUI;
+using CityBIM.GUI;
 using BIMGISInteropLibs.Geometry;
 using System.Collections.Generic;
 
-namespace City2RVT.Builder
+namespace CityBIM.Builder
 {
     public static class Revit_Build
     {

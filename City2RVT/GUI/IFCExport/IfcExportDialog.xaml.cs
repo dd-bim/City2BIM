@@ -4,9 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-using City2RVT.IFCExport;
+using CityBIM.IFCExport;
 
-namespace City2RVT.GUI.IFCExport
+namespace CityBIM.GUI.IFCExport
 {
     /// <summary>
     /// Interaction logic for IfcExportDialog.xaml

@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace City2RVT.ExternalDataCatalog
+namespace CityBIM.ExternalDataCatalog
 {
     public class ExternalDataClient: RestClient
     {

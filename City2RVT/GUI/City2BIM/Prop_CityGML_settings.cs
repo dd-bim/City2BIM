@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     public class Prop_CityGML_settings
     {

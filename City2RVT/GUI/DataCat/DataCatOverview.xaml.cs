@@ -9,10 +9,10 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Newtonsoft.Json;
 
-using City2RVT.ExternalDataCatalog;
+using CityBIM.ExternalDataCatalog;
 using System.ComponentModel;
 
-namespace City2RVT.GUI.DataCat
+namespace CityBIM.GUI.DataCat
 {
     /// <summary>
     /// Interaction logic for DataCatOverview.xaml
@@ -55,12 +55,12 @@ namespace City2RVT.GUI.DataCat
 
             var revitElementId = new ElementId(int.Parse(entry.RevitID));
             var revitElement = doc.GetElement(revitElementId);
-            var revitEntity = revitElement.GetEntity(City2RVT.utils.getSchemaByName("ExternalDataCatalogSchema"));
+            var revitEntity = revitElement.GetEntity(CityBIM.utils.getSchemaByName("ExternalDataCatalogSchema"));
 
             var dict = revitEntity.Get<IDictionary<string, string>>("Objects");
 
-            var myList = dict.Values.ToList().Select(obj => City2RVT.ExternalDataCatalog.ExternalDataSchemaObject.fromJSONString(obj)).ToList();
-            var containerList = myList.Select(obj => City2RVT.ExternalDataCatalog.ExternalDataEditorContainer.fromExternalDataSchemaObject(obj)).ToList();
+            var myList = dict.Values.ToList().Select(obj => CityBIM.ExternalDataCatalog.ExternalDataSchemaObject.fromJSONString(obj)).ToList();
+            var containerList = myList.Select(obj => CityBIM.ExternalDataCatalog.ExternalDataEditorContainer.fromExternalDataSchemaObject(obj)).ToList();
 
             tabControl.ItemsSource = containerList;
             tabControl.SelectedIndex = 0;
@@ -71,24 +71,24 @@ namespace City2RVT.GUI.DataCat
         {
             var entry = ((FrameworkElement)sender).DataContext as DataGridEntry;
 
-            var schema = City2RVT.utils.getSchemaByName("ExternalDataCatalogSchema");
+            var schema = CityBIM.utils.getSchemaByName("ExternalDataCatalogSchema");
 
             Element revitElement = this.doc.GetElement(new ElementId(int.Parse(entry.RevitID)));
             var entity = revitElement.GetEntity(schema);
 
             var objectDictionary = entity.Get<IDictionary<string, string>>("Objects");
 
-            List<City2RVT.ExternalDataCatalog.ExternalDataSchemaObject> objList = objectDictionary.Select(o => JsonConvert.DeserializeObject<City2RVT.ExternalDataCatalog.ExternalDataSchemaObject>(o.Value)).ToList();
+            List<CityBIM.ExternalDataCatalog.ExternalDataSchemaObject> objList = objectDictionary.Select(o => JsonConvert.DeserializeObject<CityBIM.ExternalDataCatalog.ExternalDataSchemaObject>(o.Value)).ToList();
 
         }
 
         private void save_Click(object sender, RoutedEventArgs e)
         {
-            var dataEditorContainerList = tabControl.Items.OfType<City2RVT.ExternalDataCatalog.ExternalDataEditorContainer>().ToList();
+            var dataEditorContainerList = tabControl.Items.OfType<CityBIM.ExternalDataCatalog.ExternalDataEditorContainer>().ToList();
             var selectedEntry = EntriesGrid.SelectedItem as DataGridEntry;
 
             var revitElement = this.doc.GetElement(new ElementId(int.Parse(selectedEntry.RevitID)));
-            var revitEntity = revitElement.GetEntity(City2RVT.utils.getSchemaByName("ExternalDataCatalogSchema"));
+            var revitEntity = revitElement.GetEntity(CityBIM.utils.getSchemaByName("ExternalDataCatalogSchema"));
 
             if (revitEntity.IsValid())
             {

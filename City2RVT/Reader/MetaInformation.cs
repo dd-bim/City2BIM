@@ -9,7 +9,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using System.Linq;
 
-namespace City2RVT.Reader
+namespace CityBIM.Reader
 {
     class MetaInformation
     {

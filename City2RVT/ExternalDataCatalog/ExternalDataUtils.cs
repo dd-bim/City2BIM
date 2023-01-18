@@ -6,9 +6,9 @@ using System.Linq;
 using Newtonsoft.Json;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
-using City2RVT;
+using CityBIM;
 
-namespace City2RVT.ExternalDataCatalog
+namespace CityBIM.ExternalDataCatalog
 {
     public class ExternalDataUtils
     {

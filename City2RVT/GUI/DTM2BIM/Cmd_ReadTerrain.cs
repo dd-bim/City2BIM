@@ -16,9 +16,8 @@ using Serilog;
 using BIMGISInteropLibs.Logging;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-using System.Windows.Forms;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.

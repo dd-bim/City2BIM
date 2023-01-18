@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 using Autodesk.Revit.UI;
 
-namespace City2RVT.GUI.Properties
+namespace CityBIM.GUI.Properties
 {
     /// <summary>
     /// Interaction logic for PropertyWindow.xaml

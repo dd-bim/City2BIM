@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     public class GUI_helper
     {

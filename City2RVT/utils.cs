@@ -11,7 +11,7 @@ using OSGeo.GDAL;
 using OSGeo.OGR;
 using Serilog;
 
-namespace City2RVT
+namespace CityBIM
 {
     public class utils
     {

@@ -9,7 +9,7 @@ using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using Serilog;
 
-namespace City2RVT.GUI.Properties
+namespace CityBIM.GUI.Properties
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.

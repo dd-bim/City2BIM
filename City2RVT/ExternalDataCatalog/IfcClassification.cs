@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace City2RVT.ExternalDataCatalog
+namespace CityBIM.ExternalDataCatalog
 {
     public class IfcClassification
     {

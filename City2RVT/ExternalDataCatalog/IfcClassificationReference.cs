@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace City2RVT.ExternalDataCatalog
+namespace CityBIM.ExternalDataCatalog
 {
     public class IfcClassificationReference
     {

@@ -18,10 +18,10 @@ using Xbim.Ifc4.ProductExtension;
 using Newtonsoft.Json;
 using Serilog;
 
-using City2RVT.Calc;
-using City2RVT.ExternalDataCatalog;
+using CityBIM.Calc;
+using CityBIM.ExternalDataCatalog;
 
-namespace City2RVT.IFCExport
+namespace CityBIM.IFCExport
 {
     public class RevitIfcExporter
     {
@@ -34,7 +34,7 @@ namespace City2RVT.IFCExport
         private XbimEditorCredentials editor = new XbimEditorCredentials
         {
             ApplicationDevelopersName = "HTW Dresden",
-            ApplicationFullName = "HTW Dresden City2RVT Plugin",
+            ApplicationFullName = "HTW Dresden CityBIM Plugin",
             ApplicationIdentifier = "htwdd",
             ApplicationVersion = "1.0.0",
             EditorsOrganisationName = "HTW Dresden"

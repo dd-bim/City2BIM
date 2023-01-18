@@ -1,9 +1,9 @@
-﻿<Window x:Class="City2RVT.GUI.NAS2BIM.ImportDialogAlkis"
+﻿<Window x:Class="CityBIM.GUI.NAS2BIM.ImportDialogAlkis"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:lang="clr-namespace:City2RVT"
+             xmlns:lang="clr-namespace:CityBIM"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="500" 
             Width="550" Height="620" MinWidth="550" MinHeight="620">

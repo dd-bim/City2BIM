@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BIMGISInteropLibs.Alkis;
-using City2RVT.Reader;
-using City2RVT.Builder;
-using City2RVT.GUI.NAS2BIM;
+using CityBIM.Reader;
+using CityBIM.Builder;
+using CityBIM.GUI.NAS2BIM;
 using BIMGISInteropLibs.OGR;
 using Serilog;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.

@@ -5,11 +5,11 @@ using System.Windows;
 using Microsoft.Win32;
 
 using Autodesk.Revit.UI;
-using City2RVT.GUI.Modify;
+using CityBIM.GUI.Modify;
 using BIMGISInteropLibs.OGR;
 using Serilog;
 
-namespace City2RVT.GUI.NAS2BIM
+namespace CityBIM.GUI.NAS2BIM
 {
     /// <summary>
     /// Interaction logic for ImportDialogAlkis.xaml

@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using System.Collections.ObjectModel;
-using City2RVT.GUI;
+using CityBIM.GUI;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using BIMGISInteropLibs.CityGML;
 
-namespace City2RVT.Builder
+namespace CityBIM.Builder
 {
     internal class RevitCityBuilder
     {

@@ -9,16 +9,16 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI;
 
-using City2RVT.ExternalDataCatalog;
+using CityBIM.ExternalDataCatalog;
 
-namespace City2RVT.GUI.DataCat
+namespace CityBIM.GUI.DataCat
 {
     [Transaction(TransactionMode.Manual)]
     public class Cmd_DataCatOverview: IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            var schema = City2RVT.utils.getSchemaByName("ExternalDataCatalogSchema");
+            var schema = CityBIM.utils.getSchemaByName("ExternalDataCatalogSchema");
 
             if (schema == null)
             {
@@ -38,7 +38,7 @@ namespace City2RVT.GUI.DataCat
                 var entity = commandData.Application.ActiveUIDocument.Document.GetElement(elementId).GetEntity(schema);
 
                 var objectsStringDict = entity.Get<IDictionary<string, string>>("Objects");
-                var externalObjectsList = objectsStringDict.Values.Select(obj => City2RVT.ExternalDataCatalog.ExternalDataSchemaObject.fromJSONString(obj)).ToList();
+                var externalObjectsList = objectsStringDict.Values.Select(obj => CityBIM.ExternalDataCatalog.ExternalDataSchemaObject.fromJSONString(obj)).ToList();
 
                 foreach (var obj in externalObjectsList)
                 {

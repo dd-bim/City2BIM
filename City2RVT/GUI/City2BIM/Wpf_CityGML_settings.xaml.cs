@@ -4,7 +4,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     /// <summary>
     /// Interaction logic for CityGML_settings.xaml

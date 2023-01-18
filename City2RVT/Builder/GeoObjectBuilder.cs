@@ -11,9 +11,9 @@ using OSGeo.OGR;
 
 using BIMGISInteropLibs.OGR;
 using BIMGISInteropLibs.Geometry;
-using City2RVT.Calc;
+using CityBIM.Calc;
 
-namespace City2RVT.Builder
+namespace CityBIM.Builder
 {
     class GeoObjectBuilder
     {
@@ -498,13 +498,13 @@ namespace City2RVT.Builder
                 {
                     if (seg.isCurve)
                     {
-                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var unprojectedPntStart = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
                         var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
 
-                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var unprojectedPntEnd = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
                         var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
 
-                        var unprojectedPntMid = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, true, null);
+                        var unprojectedPntMid = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, true, null);
                         var revitPntMid = Revit_Build.GetRevPt(unprojectedPntMid);
 
                         XYZ upDirection = new XYZ(0.0, 0.0, 1.0);
@@ -533,10 +533,10 @@ namespace City2RVT.Builder
                     }
                     else
                     {
-                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var unprojectedPntStart = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
                         var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
 
-                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var unprojectedPntEnd = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
                         var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
 
                         XYZ upDirection = new XYZ(0.0, 0.0, 1.0);
@@ -570,13 +570,13 @@ namespace City2RVT.Builder
                 {
                     if (seg.isCurve)
                     {
-                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var unprojectedPntStart = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
                         var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
 
-                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var unprojectedPntEnd = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
                         var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
 
-                        var unprojectedPntMid = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, true, null);
+                        var unprojectedPntMid = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.midPoint, true, null);
                         var revitPntMid = Revit_Build.GetRevPt(unprojectedPntMid);
 
                         Arc result = Arc.Create(revitPntStart, revitPntEnd, revitPntMid);
@@ -589,10 +589,10 @@ namespace City2RVT.Builder
                     }
                     else
                     {
-                        var unprojectedPntStart = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
+                        var unprojectedPntStart = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.startPoint, true, null);
                         var revitPntStart = Revit_Build.GetRevPt(unprojectedPntStart);
 
-                        var unprojectedPntEnd = City2RVT.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
+                        var unprojectedPntEnd = CityBIM.Calc.GeorefCalc.CalcUnprojectedPoint(seg.endPoint, true, null);
                         var revitPntEnd = Revit_Build.GetRevPt(unprojectedPntEnd);
 
                         Line result = Line.CreateBound(revitPntStart, revitPntEnd);

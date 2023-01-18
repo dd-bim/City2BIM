@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.

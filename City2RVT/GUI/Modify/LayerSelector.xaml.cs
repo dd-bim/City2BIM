@@ -5,7 +5,7 @@ using System.Windows.Controls;
 
 using Autodesk.Revit.UI;
 
-namespace City2RVT.GUI.Modify
+namespace CityBIM.GUI.Modify
 {
     /// <summary>
     /// Interaction logic for LayerSelector.xaml

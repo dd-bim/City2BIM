@@ -8,11 +8,11 @@ using Xbim.Ifc;
 using Xbim.Ifc4.ProductExtension;
 using Serilog;
 
-using City2RVT.IFCExport;
-using City2RVT.GUI.IFCExport;
+using CityBIM.IFCExport;
+using CityBIM.GUI.IFCExport;
 
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     /// <remarks>
     /// The "HelloWorld" external command. The class must be Public.

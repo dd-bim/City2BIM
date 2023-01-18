@@ -1,6 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     public static class Prop_GeoRefSettings
     {

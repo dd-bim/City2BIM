@@ -1,8 +1,8 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BIMGISInteropLibs.Geometry;
-using City2RVT.GUI;
-using City2RVT.Builder;
+using CityBIM.GUI;
+using CityBIM.Builder;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -11,7 +11,7 @@ using BIMGISInteropLibs.WFS;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using BIMGISInteropLibs.CityGML;
 
-namespace City2RVT.Reader
+namespace CityBIM.Reader
 {
     public class ReadCityGML
     {

@@ -9,9 +9,9 @@ using Autodesk.Revit.DB.Architecture;
 using BIMGISInteropLibs.Geometry;
 using BIMGISInteropLibs.Alkis;
 using BIMGISInteropLibs.Semantic;
-using City2RVT.Calc;
+using CityBIM.Calc;
 
-namespace City2RVT.Builder
+namespace CityBIM.Builder
 {
     class AlkisBuilder
     {

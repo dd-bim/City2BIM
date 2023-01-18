@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace City2RVT {
+namespace CityBIM {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace City2RVT {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("City2RVT.Localization", typeof(Localization).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CityBIM.Localization", typeof(Localization).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -124,7 +124,7 @@ namespace City2RVT {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to City2RVT IfcExport.
+        ///   Looks up a localized string similar to CityBIM IfcExport.
         /// </summary>
         public static string IfcExportDialog {
             get {

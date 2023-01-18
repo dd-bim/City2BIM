@@ -11,9 +11,9 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using Newtonsoft.Json;
 
-using City2RVT.ExternalDataCatalog;
+using CityBIM.ExternalDataCatalog;
 
-namespace City2RVT.GUI.DataCat
+namespace CityBIM.GUI.DataCat
 {
     /// <summary>
     /// Interaction logic for findSubjectResultForm.xaml
@@ -74,14 +74,14 @@ namespace City2RVT.GUI.DataCat
             }
 
 
-            else if (selectedItem.GetType() == typeof(City2RVT.ExternalDataCatalog.Property))
+            else if (selectedItem.GetType() == typeof(CityBIM.ExternalDataCatalog.Property))
             {
                 TaskDialog.Show("Warning", "Please do not select a property but an object type");
             }
 
-            else if (selectedItem.GetType() == typeof(City2RVT.ExternalDataCatalog.Node))
+            else if (selectedItem.GetType() == typeof(CityBIM.ExternalDataCatalog.Node))
             {
-                var node = selectedItem as City2RVT.ExternalDataCatalog.Node;
+                var node = selectedItem as CityBIM.ExternalDataCatalog.Node;
 
                 foreach (var id in sel.GetElementIds())
                 {

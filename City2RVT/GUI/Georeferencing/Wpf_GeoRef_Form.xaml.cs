@@ -7,9 +7,9 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using City2RVT.Calc;
+using CityBIM.Calc;
 
-namespace City2RVT.GUI
+namespace CityBIM.GUI
 {
     /// <summary>
     /// Interaction logic for GeoRef_Form.xaml

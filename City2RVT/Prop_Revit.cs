@@ -3,9 +3,9 @@ using System.Windows.Forms;
 using System;
 
 using System.IdentityModel.Tokens.Jwt;
-using City2RVT.ExternalDataCatalog;
+using CityBIM.ExternalDataCatalog;
 
-namespace City2RVT
+namespace CityBIM
 {
     public static class Prop_Revit
     {

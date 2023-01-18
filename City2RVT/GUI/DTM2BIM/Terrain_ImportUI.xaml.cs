@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Data; //interface for converter 
+using System.Windows.Data; //interface for converter
 using System.Windows.Forms;
-using System.IO;
 
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
@@ -10,7 +9,8 @@ using guiLog = GuiHandler.GuiSupport;
 //shortcut to set log type
 using BIMGISInteropLibs.Logging;
 
-namespace City2RVT.GUI.DTM2BIM
+
+namespace CityBIM.GUI.DTM2BIM
 {
     /// <summary>
     /// Interaktionslogik für Terrain_ImportUI.xaml

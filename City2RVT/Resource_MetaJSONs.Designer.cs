@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace City2RVT {
+namespace CityBIM {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace City2RVT {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("City2RVT.Resource_MetaJSONs", typeof(Resource_MetaJSONs).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CityBIM.Resource_MetaJSONs", typeof(Resource_MetaJSONs).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

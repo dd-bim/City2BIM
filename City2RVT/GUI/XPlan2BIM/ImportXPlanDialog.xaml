@@ -1,10 +1,10 @@
-﻿<Window x:Class="City2RVT.GUI.XPlan2BIM.ImportXPlanDialog"
+﻿<Window x:Class="CityBIM.GUI.XPlan2BIM.ImportXPlanDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:City2RVT.GUI.XPlan2BIM"
-             xmlns:lang="clr-namespace:City2RVT"
+             xmlns:local="clr-namespace:CityBIM.GUI.XPlan2BIM"
+             xmlns:lang="clr-namespace:CityBIM"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="500"
         Width="550" Height="620" MinWidth="550" MinHeight="620">

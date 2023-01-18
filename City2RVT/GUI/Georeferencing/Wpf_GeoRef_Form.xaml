@@ -1,10 +1,10 @@
-﻿<Window x:Class="City2RVT.GUI.Wpf_GeoRef_Form"
+﻿<Window x:Class="CityBIM.GUI.Wpf_GeoRef_Form"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:City2RVT.GUI"
-        xmlns:lang="clr-namespace:City2RVT"
+        xmlns:local="clr-namespace:CityBIM.GUI"
+        xmlns:lang="clr-namespace:CityBIM"
         mc:Ignorable="d"
         Title="{x:Static lang:Localization.Wpf_GeoRef_Form}" Height="670" Width="1000">
     <Grid Margin="0,0,0,0">

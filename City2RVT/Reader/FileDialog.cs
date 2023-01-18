@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace City2RVT.Reader
+namespace CityBIM.Reader
 {
     internal class FileDialog
     {

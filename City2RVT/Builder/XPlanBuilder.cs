@@ -12,10 +12,10 @@ using BIMGISInteropLibs.Alkis;
 using BIMGISInteropLibs.Geometry;
 using BIMGISInteropLibs.Semantic;
 using BIMGISInteropLibs.XPlanung;
-using City2RVT.Calc;
-using City2RVT;
+using CityBIM.Calc;
+using CityBIM;
 
-namespace City2RVT.Builder
+namespace CityBIM.Builder
 {
     public class XPlanBuilder
     {

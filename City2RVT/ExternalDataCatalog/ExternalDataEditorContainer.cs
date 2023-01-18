@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using City2RVT.GUI.Properties;
+using CityBIM.GUI.Properties;
 
-namespace City2RVT.ExternalDataCatalog
+namespace CityBIM.ExternalDataCatalog
 {
     public class ExternalDataEditorContainer
     {

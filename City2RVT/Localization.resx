@@ -139,7 +139,7 @@
     <value>set selected object</value>
   </data>
   <data name="IfcExportDialog" xml:space="preserve">
-    <value>City2RVT IfcExport</value>
+    <value>CityBIM IfcExport</value>
   </data>
   <data name="IfcExportDialog_cancelBtn" xml:space="preserve">
     <value>cancel</value>

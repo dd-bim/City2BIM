@@ -47,7 +47,7 @@ namespace GuiHandler.userControler.PostGIS
                 }
                 catch (Exception ex)
                 {
-                    
+                    Console.WriteLine(ex.ToString());
                 }
             }
            
