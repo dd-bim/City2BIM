@@ -1,366 +1,178 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CityBIM</RootNamespace>
-    <AssemblyName>CityBIM</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>CityBIM</AssemblyTitle>
+    <Product>CityBIM</Product>
+    <Copyright>Copyright ©  2019</Copyright>
+    <LangVersion>7.1</LangVersion>
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.1</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.1</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>img\HideLayerIcon_32px_96dpi.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdWindows, Version=3.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Revit_All_Main_Versions_API_x64.2021.1.4\lib\net48\AdWindows.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Esent.Interop, Version=1.9.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\ManagedEsent.1.9.4\lib\net40\Esent.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="gdalconst_csharp, Version=3.4.2.0, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.3.4.2\lib\netstandard2.0\gdalconst_csharp.dll</HintPath>
-    </Reference>
-    <Reference Include="gdal_csharp, Version=3.4.2.0, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.3.4.2\lib\netstandard2.0\gdal_csharp.dll</HintPath>
-    </Reference>
-    <Reference Include="GeoJSON.Net, Version=1.2.16.0, Culture=neutral, PublicKeyToken=42c00ea87f5f14d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\GeoJSON.Net.1.2.19\lib\net45\GeoJSON.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Configuration, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Configuration.5.0.0\lib\net461\Microsoft.Extensions.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Configuration.Binder.5.0.0\lib\net461\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=5.0.0.2, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.5.0.2\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.5.0.0\lib\net461\Microsoft.Extensions.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Options, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Options.5.0.0\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives, Version=5.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Primitives.5.0.1\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.6.12.2\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Logging.6.12.2\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.12.2\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
-    </Reference>
+    <PackageReference Include="GDAL" Version="3.4.2" />
+    <PackageReference Include="GDAL.Native" Version="3.4.2" />
+    <PackageReference Include="GeoJSON.Net" Version="1.2.19" />
+    <PackageReference Include="IxMilia.Dxf" Version="0.8.1" />
+    <PackageReference Include="ManagedEsent" Version="1.9.4" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="5.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.12.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.12.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.2" />
+    <PackageReference Include="netDXF" Version="2.2.0.1" />
+    <PackageReference Include="NetTopologySuite" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2021.1.4" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="5.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.2" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="5.0.0" />
+    <PackageReference Include="System.Security.Permissions" Version="5.0.0" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="5.0.1" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Xbim.Common" Version="5.1.323" />
+    <PackageReference Include="Xbim.Essentials" Version="5.1.323" />
+    <PackageReference Include="Xbim.Ifc" Version="5.1.323" />
+    <PackageReference Include="Xbim.Ifc2x3" Version="5.1.323" />
+    <PackageReference Include="Xbim.Ifc4" Version="5.1.323" />
+    <PackageReference Include="Xbim.IO.Esent" Version="5.1.323" />
+    <PackageReference Include="Xbim.IO.MemoryModel" Version="5.1.323" />
+    <PackageReference Include="Xbim.Tessellator" Version="5.1.323" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GeographicLib\NETGeographic.dll</HintPath>
-    </Reference>
-    <Reference Include="NetTopologySuite, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f580a05016ebada1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetTopologySuite.2.3.0\lib\netstandard2.0\NetTopologySuite.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ogr_csharp, Version=3.4.2.0, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.3.4.2\lib\netstandard2.0\ogr_csharp.dll</HintPath>
-    </Reference>
-    <Reference Include="osr_csharp, Version=3.4.2.0, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.3.4.2\lib\netstandard2.0\osr_csharp.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RestSharp, Version=106.12.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPI, Version=21.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Revit_All_Main_Versions_API_x64.2021.1.4\lib\net48\RevitAPI.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI, Version=21.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Revit_All_Main_Versions_API_x64.2021.1.4\lib\net48\RevitAPIUI.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.2.10.0\lib\net46\Serilog.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.File, Version=5.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.File.5.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.ConfigurationManager, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Configuration.ConfigurationManager.5.0.0\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
     <Reference Include="System.Data.OracleClient" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.12.2\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
-    </Reference>
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Net" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
-    <Reference Include="System.Security.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.AccessControl.5.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Permissions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Permissions.5.0.0\lib\net461\System.Security.Permissions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
-    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Encodings.Web, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encodings.Web.5.0.1\lib\net461\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Json, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.5.0.2\lib\net461\System.Text.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UIFramework, Version=21.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Revit_All_Main_Versions_API_x64.2021.1.4\lib\net48\UIFramework.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="Xbim.Common, Version=5.1.0.0, Culture=neutral, PublicKeyToken=11e3655e576ec5a9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbim.Common.5.1.323\lib\net47\Xbim.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Xbim.Ifc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=11e3655e576ec5a9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbim.Ifc.5.1.323\lib\net47\Xbim.Ifc.dll</HintPath>
-    </Reference>
-    <Reference Include="Xbim.Ifc2x3, Version=5.1.0.0, Culture=neutral, PublicKeyToken=11e3655e576ec5a9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbim.Ifc2x3.5.1.323\lib\net47\Xbim.Ifc2x3.dll</HintPath>
-    </Reference>
-    <Reference Include="Xbim.Ifc4, Version=5.1.0.0, Culture=neutral, PublicKeyToken=11e3655e576ec5a9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbim.Ifc4.5.1.323\lib\net47\Xbim.Ifc4.dll</HintPath>
-    </Reference>
-    <Reference Include="Xbim.IO.Esent, Version=5.1.0.0, Culture=neutral, PublicKeyToken=11e3655e576ec5a9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbim.IO.Esent.5.1.323\lib\net47\Xbim.IO.Esent.dll</HintPath>
-    </Reference>
-    <Reference Include="Xbim.IO.MemoryModel, Version=5.1.0.0, Culture=neutral, PublicKeyToken=11e3655e576ec5a9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbim.IO.MemoryModel.5.1.323\lib\net47\Xbim.IO.MemoryModel.dll</HintPath>
-    </Reference>
-    <Reference Include="Xbim.Tessellator, Version=5.1.0.0, Culture=neutral, PublicKeyToken=11e3655e576ec5a9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbim.Tessellator.5.1.323\lib\net47\Xbim.Tessellator.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builder\AlkisBuilder.cs" />
-    <Compile Include="Builder\GeoObjectBuilder.cs" />
-    <Compile Include="Builder\XPlanBuilder.cs" />
-    <Compile Include="Calc\ConvexHull.cs" />
-    <Compile Include="Calc\GeorefCalc.cs" />
-    <Compile Include="Calc\Transformation.cs" />
-    <Compile Include="Calc\UTMcalc.cs" />
-    <Compile Include="ExternalDataCatalog\DataGridEntry.cs" />
-    <Compile Include="ExternalDataCatalog\ExternalDataClient.cs" />
-    <Compile Include="ExternalDataCatalog\ExternalDataEditorContainer.cs" />
-    <Compile Include="ExternalDataCatalog\ExternalDataSchemaObject.cs" />
-    <Compile Include="ExternalDataCatalog\ExternalDataUtils.cs" />
-    <Compile Include="ExternalDataCatalog\IfcClassification.cs" />
-    <Compile Include="ExternalDataCatalog\IfcClassificationReference.cs" />
-    <Compile Include="GdalConfiguration.cs" />
-    <Compile Include="GUI\City2BIM\CityGML_ImportUI.xaml.cs">
+    <Compile Update="GUI\City2BIM\CityGML_ImportUI.xaml.cs">
       <DependentUpon>CityGML_ImportUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\City2BIM\Prop_CityGML_settings.cs" />
-    <Compile Include="GUI\Cmd_Documentation.cs" />
-    <Compile Include="GUI\DataCat\Cmd_DataCatLogin.cs" />
-    <Compile Include="GUI\DataCat\Cmd_DataCatOverview.cs" />
-    <Compile Include="GUI\DataCat\Cmd_DataCatSubjQuery.cs" />
-    <Compile Include="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
+    <Compile Update="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
       <DependentUpon>DataCatalogEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DataCat\DataCatOverview.xaml.cs">
+    <Compile Update="GUI\DataCat\DataCatOverview.xaml.cs">
       <DependentUpon>DataCatOverview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DataCat\DataCatPropertySetterWindow.xaml.cs">
+    <Compile Update="GUI\DataCat\DataCatPropertySetterWindow.xaml.cs">
       <DependentUpon>DataCatPropertySetterWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DataCat\findSubjectResultForm.xaml.cs">
+    <Compile Update="GUI\DataCat\findSubjectResultForm.xaml.cs">
       <DependentUpon>findSubjectResultForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DataCat\LoginScreen.xaml.cs">
+    <Compile Update="GUI\DataCat\LoginScreen.xaml.cs">
       <DependentUpon>LoginScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DTM2BIM\Terrain_ImportUI.xaml.cs">
+    <Compile Update="GUI\DTM2BIM\Terrain_ImportUI.xaml.cs">
       <DependentUpon>Terrain_ImportUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Georeferencing\Prop_GeoRefSettings.cs" />
-    <Compile Include="GUI\GUI_helper.cs" />
-    <Compile Include="GUI\IFCExport\IfcExportDialog.xaml.cs">
+    <Compile Update="GUI\IFCExport\IfcExportDialog.xaml.cs">
       <DependentUpon>IfcExportDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Modify\LayerSelector.xaml.cs">
+    <Compile Update="GUI\Modify\LayerSelector.xaml.cs">
       <DependentUpon>LayerSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\NAS2BIM\ImportDialogAlkis.xaml.cs">
+    <Compile Update="GUI\NAS2BIM\ImportDialogAlkis.xaml.cs">
       <DependentUpon>ImportDialogAlkis.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Properties\Cmd_properties.cs" />
-    <Compile Include="GUI\Properties\PropertyWindow.xaml.cs">
+    <Compile Update="GUI\Properties\PropertyWindow.xaml.cs">
       <DependentUpon>PropertyWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Modify\Cmd_HideLayers.cs" />
-    <Compile Include="GUI\XPlan2BIM\Cmd_ImportXPlan.cs" />
-    <Compile Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml.cs">
+    <Compile Update="GUI\XPlan2BIM\ImportXPlanDialog.xaml.cs">
       <DependentUpon>ImportXPlanDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IFCExport\IfcUtils.cs" />
-    <Compile Include="IFCExport\RevitIfcExporter.cs" />
-    <Compile Include="Localization.de.Designer.cs" />
-    <Compile Include="Localization.Designer.cs">
+    <Compile Update="Localization.Designer.cs">
       <DependentUpon>Localization.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reader\MetaInformation.cs" />
-    <Compile Include="Reader\ReadCityGML.cs" />
-    <Compile Include="Reader\FileDialog.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Builder\RevitCityBuilder.cs" />
-    <Compile Include="Builder\RevitTopoSurfaceBuilder.cs" />
-    <Compile Include="Builder\Revit_Build.cs" />
-    <Compile Include="Prop_Revit.cs" />
-    <Compile Include="Builder\Revit_Semantic.cs" />
-    <Compile Include="GUI\City2BIM\Wpf_CityGML_settings.xaml.cs">
+    <Compile Update="GUI\City2BIM\Wpf_CityGML_settings.xaml.cs">
       <DependentUpon>Wpf_CityGML_settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\City2BIM\Cmd_ImportCityGML.cs" />
-    <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLFaces.cs" />
-    <Compile Include="GUI\City2BIM\Cmd_ReadCityGMLSolids.cs" />
-    <Compile Include="GUI\DTM2BIM\Cmd_ReadTerrain.cs" />
-    <Compile Include="GUI\Georeferencing\Cmd_GeoRefUI.cs" />
-    <Compile Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml.cs">
+    <Compile Update="GUI\Georeferencing\Wpf_GeoRef_Form.xaml.cs">
       <DependentUpon>Wpf_GeoRef_Form.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\IFCExport\Cmd_ExportIFC.cs" />
-    <Compile Include="GUI\NAS2BIM\Prop_NAS_settings.cs" />
-    <Compile Include="GUI\NAS2BIM\Cmd_ReadALKIS.cs" />
-    <Compile Include="GUI\UI_PlugIn.cs" />
-    <Compile Include="ResourcePictures.Designer.cs">
+    <Compile Update="ResourcePictures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourcePictures.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Resource_MetaJSONs.Designer.cs">
+    <Compile Update="Resource_MetaJSONs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_MetaJSONs.resx</DependentUpon>
     </Compile>
-    <Compile Include="utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\City2BIM\CityGML_ImportUI.xaml">
@@ -420,7 +232,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="CityBIM.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -434,8 +245,7 @@
     <None Include="img\queryDataCat.png" />
     <None Include="img\overViewIcon.png" />
     <Content Include="img\HelpIcon_32px.png" />
-    <EmbeddedResource Include="Localization.de.resx" />
-    <EmbeddedResource Include="Localization.resx">
+    <EmbeddedResource Update="Localization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Localization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -453,7 +263,6 @@
     <Resource Include="img\HideLayerIcon_32px_96dpi.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Include="app.config" />
     <None Include="bin\Debug\ALKIS_32px_96dpi.png" />
     <None Include="bin\Debug\ALKISset_32px.png" />
     <None Include="bin\Debug\citygml_32px_96dpi.png" />
@@ -485,47 +294,114 @@
     <None Include="egm2008.egm.cof">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ResourcePictures.resx">
+    <EmbeddedResource Update="ResourcePictures.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resource_MetaJSONs.resx">
+    <EmbeddedResource Update="Resource_MetaJSONs.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource_MetaJSONs.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BimGisCad\BimGisCad.csproj">
-      <Project>{4dafbbd2-ad9c-4e52-9219-7e4f6e30866b}</Project>
-      <Name>BimGisCad</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj">
-      <Project>{1af486e9-ed18-492c-8400-3b446bc9390d}</Project>
-      <Name>BIMGISInteropLibs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GuiHandler\GuiHandler.csproj">
-      <Project>{24352448-2cab-4638-b4db-326539381408}</Project>
-      <Name>GuiHandler</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\BimGisCad\BimGisCad.csproj" />
+    <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj" />
+    <ProjectReference Include="..\GuiHandler\GuiHandler.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="..\packages\GDAL.Native.3.4.2\build\netstandard2.0\GDAL.Native.targets" Condition="Exists('..\packages\GDAL.Native.3.4.2\build\netstandard2.0\GDAL.Native.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\GDAL.Native.3.4.2\build\netstandard2.0\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.3.4.2\build\netstandard2.0\GDAL.Native.targets'))" />
-  </Target>
+  <ItemGroup>
+    <Compile Remove="bin\Debug\ResourcePictures.Designer.cs" />
+    <Compile Remove="bin\Revit2021_Debug\ResourcePictures.Designer.cs" />
+    <Compile Remove="obj\Revit2021_Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GeneratedInternalTypeHelper.g.i.cs" />
+    <Compile Remove="obj\x64\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
+    <Compile Remove="obj\x64\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
+    <Compile Remove="obj\x64\Debug\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\x64\Release\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
+    <Compile Remove="obj\x64\Release\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\City2BIM\CityGML_ImportUI.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\City2BIM\CityGML_ImportUI.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\City2BIM\Wpf_CityGML_settings.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\City2BIM\Wpf_CityGML_settings.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\DataCatalogEditorWindow.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\DataCatalogEditorWindow.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\DataCatOverview.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\DataCatOverview.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\DataCatPropertySetterWindow.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\DataCatPropertySetterWindow.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\findSubjectResultForm.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\findSubjectResultForm.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\LoginScreen.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DataCat\LoginScreen.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\DTM2BIM\Terrain_ImportUI.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\Georeferencing\Wpf_GeoRef_Form.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\Georeferencing\Wpf_GeoRef_Form.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\IFCExport\IfcExportDialog.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\IFCExport\IfcExportDialog.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\Modify\LayerSelector.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\Modify\LayerSelector.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\NAS2BIM\ImportDialogAlkis.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\NAS2BIM\ImportDialogAlkis.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\Properties\PropertyWindow.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\Properties\PropertyWindow.g.i.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\XPlan2BIM\ImportXPlanDialog.g.cs" />
+    <Compile Remove="obj\Revit2021_Debug\GUI\XPlan2BIM\ImportXPlanDialog.g.i.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\City2BIM\CityGML_ImportUI.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\City2BIM\Wpf_CityGML_settings.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\DataCat\DataCatalogEditorWindow.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\DataCat\DataCatOverview.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\DataCat\DataCatPropertySetterWindow.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\DataCat\findSubjectResultForm.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\DataCat\LoginScreen.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\Georeferencing\Wpf_GeoRef_Form.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\IFCExport\IfcExportDialog.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\Modify\LayerSelector.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\NAS2BIM\ImportDialogAlkis.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\Properties\PropertyWindow.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\Properties\Wpf_CreateMetaJSON.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\Properties\Wpf_showLayer.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\Surveyorsplan2BIM\Surveyorsplan_ImportUI.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\XPlan2BIM\ImportXPlanDialog.g.cs" />
+    <Compile Remove="obj\x64\Debug\GUI\XPlan2BIM\Wpf_XPlan2IFC.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\City2BIM\CityGML_ImportUI.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\City2BIM\Wpf_CityGML_settings.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\DataCat\DataCatalogEditorWindow.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\DataCat\DataCatOverview.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\DataCat\DataCatPropertySetterWindow.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\DataCat\findSubjectResultForm.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\DataCat\LoginScreen.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\Georeferencing\Wpf_GeoRef_Form.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\IFCExport\IfcExportDialog.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\Modify\LayerSelector.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\NAS2BIM\ImportDialogAlkis.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\Properties\PropertyWindow.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\Properties\Wpf_CreateMetaJSON.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\Properties\Wpf_showLayer.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\Surveyorsplan2BIM\Surveyorsplan_ImportUI.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\XPlan2BIM\ImportXPlanDialog.g.cs" />
+    <Compile Remove="obj\x64\Release\GUI\XPlan2BIM\Wpf_XPlan2IFC.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\City2BIM\CityGML_ImportUI.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\City2BIM\Wpf_CityGML_settings.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\DataCat\DataCatalogEditorWindow.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\DataCat\DataCatOverview.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\DataCat\DataCatPropertySetterWindow.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\DataCat\findSubjectResultForm.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\DataCat\LoginScreen.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\Georeferencing\Wpf_GeoRef_Form.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\IFCExport\IfcExportDialog.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\Modify\LayerSelector.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\NAS2BIM\ImportDialogAlkis.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\Properties\PropertyWindow.g.cs" />
+    <Compile Remove="obj\x64\Revit2021_Debug\GUI\XPlan2BIM\ImportXPlanDialog.g.cs" />
+  </ItemGroup>
 </Project>
