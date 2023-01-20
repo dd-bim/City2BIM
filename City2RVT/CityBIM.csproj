@@ -397,4 +397,5 @@
     <Compile Remove="obj\x64\Revit2021_Debug\GUI\Properties\PropertyWindow.g.cs" />
     <Compile Remove="obj\x64\Revit2021_Debug\GUI\XPlan2BIM\ImportXPlanDialog.g.cs" />
   </ItemGroup>
+  <Import Project="..\CommonRevit\CommonRevit.projitems" Label="Shared" />
 </Project>
