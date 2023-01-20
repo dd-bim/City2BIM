@@ -58,39 +58,33 @@ namespace CityBIM.GUI
                     Log.Information(string.Format("Total of {0} features in layer {1}", GeoObjs.Count, layerName));
                     var fieldList = ogrReader.getFieldNamesForLayer(layer);
 
-                    for (int i=0; i<fieldList.Count; i++)
+                    var newFieldList = new List<string>();
+                    for (int i = 0; i < fieldList.Count; i++)
                     {
-                        if (fieldList[i].Contains("|"))
+                        var newEntry = fieldList[i].Replace("|", "_").Replace("-", "_"); ;
+                        
+                        if (newEntry.Length > GeoObjectBuilder.REVIT_MAX_FIELD_NAME_LENGTH)
                         {
-                            fieldList[i] = fieldList[i].Replace('|', '_');
+                            newEntry = newEntry.Substring(0, GeoObjectBuilder.REVIT_MAX_FIELD_NAME_LENGTH);
                         }
-                        else if (fieldList[i].Contains("-"))
-                        {
-                            fieldList[i] = fieldList[i].Replace('-', '_');
-                        }
+                        
+                        newFieldList.Add(newEntry);
                     }
+                    fieldList = newFieldList;
 
-                    
                     foreach (var GeoObj in GeoObjs)
                     {
                         Dictionary<string, string> newPropDict = new Dictionary<string, string>();
-                        
-                        foreach(KeyValuePair<string,string> entry in GeoObj.Properties)
+
+                        foreach (KeyValuePair<string, string> entry in GeoObj.Properties)
                         {
-                            if (entry.Key.Contains("|"))
+                            var currentKey = entry.Key.Replace("|", "_").Replace("-","_");
+                            
+                            if (currentKey.Length > GeoObjectBuilder.REVIT_MAX_FIELD_NAME_LENGTH)
                             {
-                                var newKey = entry.Key.Replace('|', '_');
-                                newPropDict[newKey] = entry.Value;
+                                currentKey = currentKey.Substring(0, GeoObjectBuilder.REVIT_MAX_FIELD_NAME_LENGTH);
                             }
-                            else if (entry.Key.Contains("-"))
-                            {
-                                var newKey = entry.Key.Replace('-', '_');
-                                newPropDict[newKey] = entry.Value;
-                            }
-                            else
-                            {
-                                newPropDict[entry.Key] = entry.Value;
-                            }
+                            newPropDict[currentKey] = entry.Value;
                         }
                         GeoObj.Properties = newPropDict;
                     }

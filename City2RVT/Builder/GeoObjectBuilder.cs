@@ -19,6 +19,7 @@ namespace CityBIM.Builder
     {
         private readonly Document doc;
         private readonly View3D view3D;
+        public const int REVIT_MAX_FIELD_NAME_LENGTH = 60;
 
         public GeoObjectBuilder(Document doc)
         {
@@ -620,13 +621,7 @@ namespace CityBIM.Builder
             sb.SetVendorId("HTWDresden");
 
             foreach (var entry in fieldList)
-            {
-                if (entry.Contains("|"))
-                {
-                    string firstPart = entry.Split('|')[0];
-                    sb.AddSimpleField(firstPart, typeof(string));
-                    continue;
-                }
+            {               
                 sb.AddSimpleField(entry, typeof(string));
             }
 
