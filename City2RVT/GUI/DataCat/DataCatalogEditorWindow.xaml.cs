@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 
 using Newtonsoft.Json;
 
-using CityBIM.GUI.Properties;
+using CommonRevit.Semantics;
 
 namespace CityBIM.GUI.DataCat
 {

@@ -9,6 +9,8 @@ using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using Serilog;
 
+using CommonRevit.Semantics;
+
 namespace CityBIM.GUI.Properties
 {
     /// <remarks>

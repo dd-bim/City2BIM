@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using CityBIM.GUI.Properties;
+using CommonRevit.Semantics;
 
 namespace CityBIM.ExternalDataCatalog
 {
