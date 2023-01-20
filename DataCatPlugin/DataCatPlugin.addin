@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>DataCatPlugin</Name>
+		<Assembly>DataCat\DataCatPlugin.dll</Assembly>
+		<AddInId>
+			1920FAE6-634B-4D74-BB78-C078A69E4776
+		</AddInId>
+		<FullClassName>DataCatPlugin.UI_Plugin</FullClassName>
+		<VendorId>HTWDresden</VendorId>
+		<VendorDescription>Faculty of Spatial Information</VendorDescription>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+	</AddIn>
+</RevitAddIns>
