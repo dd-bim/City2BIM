@@ -39,8 +39,8 @@
   <ItemGroup>
     <PackageReference Include="GDAL" Version="3.4.2" />
     <PackageReference Include="GDAL.Native" Version="3.4.2" />
+    <PackageReference Include="GeographicLib.NET" Version="2.1.2" />
     <PackageReference Include="GeoJSON.Net" Version="1.2.19" />
-    <PackageReference Include="IxMilia.Dxf" Version="0.8.1" />
     <PackageReference Include="ManagedEsent" Version="1.9.4" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
@@ -66,7 +66,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="5.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.2" />
-    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
     <PackageReference Include="System.Security.AccessControl" Version="5.0.0" />
@@ -87,10 +87,6 @@
     <PackageReference Include="Xbim.Tessellator" Version="5.1.323" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="NETGeographic, Version=1.33.6487.10199, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\GeographicLib\NETGeographic.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Configuration" />
@@ -270,9 +266,6 @@
     <None Include="bin\Debug\DTM_32px_96dpi.png" />
     <None Include="bin\Debug\Georef_32px_96dpi.png" />
     <None Include="bin\Debug\IFC_32px_96dpi.png" />
-    <Content Include="Geographic.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="GUI\Georeferencing\img\Georef_96dpi.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef10.png" />
     <Content Include="GUI\Georeferencing\img\icon_georef20.png" />
