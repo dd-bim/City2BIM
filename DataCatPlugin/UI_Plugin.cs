@@ -40,6 +40,18 @@ namespace DataCatPlugin
             #endregion DataCat panel
 
 
+            #region IFC Export panel
+
+            RibbonPanel panelIFC = application.CreateRibbonPanel(pluginTabName, "IFC Export");
+
+            PushButton buttonIFC = panelIFC.AddItem(new PushButtonData("IFC_Exporter", "Export data to IFC-file",
+            thisAssemblyPath, "DataCatPlugin.GUI.Cmd_ExportIFC")) as PushButton;
+            buttonIFC.ToolTip = "Export functionality for writing IFC files.";
+            buttonIFC.LargeImage = getBitmapFromResx(ResourceImages.IFC_32px_96dpi);
+
+            #endregion IFC Export panel
+
+
             Log.Information("DataCatPlugin successfully started");
 
             return Result.Succeeded;
