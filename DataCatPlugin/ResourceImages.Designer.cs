@@ -63,6 +63,16 @@ namespace DataCatPlugin {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IFC_32px_96dpi {
+            get {
+                object obj = ResourceManager.GetObject("IFC_32px_96dpi", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap loginIcon32 {
             get {
                 object obj = ResourceManager.GetObject("loginIcon32", resourceCulture);
