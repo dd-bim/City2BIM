@@ -9,6 +9,9 @@
     <Import_RootNamespace>CommonRevit</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)IFC\IfcUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IFC\RevitIfcExporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Semantics\SchemaUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Semantics\AttributeContainer.cs" />
   </ItemGroup>
 </Project>
