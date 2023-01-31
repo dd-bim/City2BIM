@@ -1,6 +1,8 @@
 name: manual_build
 
 on: workflow_dispatch
+    push:
+      branches: Housekeeping
 
 jobs:
   build:
@@ -12,5 +14,11 @@ jobs:
         uses: actions/checkout@v3
         ref: 'Housekeeping'
 
-      - name Setup MSBuild
-        uses: microsoft
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+        
+      - name: Build Solution
+        run: msbuild.exe GeospatialEngineeringBIM.sln
