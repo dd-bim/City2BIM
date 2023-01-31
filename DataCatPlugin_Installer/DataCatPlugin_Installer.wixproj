@@ -1,0 +1,36 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.2">
+  <PropertyGroup>
+    <DefineConstants Condition=" '$(Configuration)' == 'Debug' ">HarvestPath=..\DataCatPlugin\bin\Debug\net48</DefineConstants>
+    <DefineConstants Condition=" '$(Configuration)' == 'Release' ">HarvestPath=..\DataCatPlugin\bin\Release\net48</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.2" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.0-rc.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataCatPlugin\DataCatPlugin.csproj">
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <!--
+		<HarvestProject Include="..\DataCatPlugin\DataCatPlugin.csproj">
+			<ProjectOutputGroups>Binaries</ProjectOutputGroups>
+		</HarvestProject>
+		-->
+    <HarvestDirectory Include="..\DataCatPlugin\bin\$(configuration)\net48\">
+      <!--
+			"..\DataCatPlugin\bin\Debug\net48\"
+			"..\DataCatPlugin\bin\$(configuration)\net48\"
+			-->
+      <!--<PreprocessorVariable>var.DataCatPlugin.TargetDir</PreprocessorVariable>-->
+      <PreprocessorVariable>var.HarvestPath</PreprocessorVariable>
+      <ComponentGroupName>HarvestedComponents</ComponentGroupName>
+      <DirectoryRefId>APPLICATIONFOLDER</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+    </HarvestDirectory>
+    <!--	<BindInputPaths Include="$(var.DataCatPlugin.TargetDir)" /> -->
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DataCatPluginLicense.rtf" />
+  </ItemGroup>
+</Project>
