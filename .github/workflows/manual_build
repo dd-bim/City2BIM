@@ -1,10 +1,16 @@
 name: manual_build
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   build:
   
     runs-on: windows-latest
     
-    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        ref: 'Housekeeping'
+
+      - name Setup MSBuild
+        uses: microsoft
