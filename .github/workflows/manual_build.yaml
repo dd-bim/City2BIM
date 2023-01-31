@@ -1,6 +1,7 @@
 name: manual_build
 
-on: workflow_dispatch:
+on: 
+    workflow_dispatch:
     push:
       branches: Housekeeping
 
@@ -12,7 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        ref: 'Housekeeping'
+        with:
+            ref: 'Housekeeping'
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.1
