@@ -12,11 +12,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <!--
-		<HarvestProject Include="..\DataCatPlugin\DataCatPlugin.csproj">
-			<ProjectOutputGroups>Binaries</ProjectOutputGroups>
-		</HarvestProject>
-		-->
     <HarvestDirectory Include="..\DataCatPlugin\bin\$(configuration)\net48\">
       <!--
 			"..\DataCatPlugin\bin\Debug\net48\"
