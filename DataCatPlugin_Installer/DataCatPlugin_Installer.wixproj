@@ -17,8 +17,8 @@
 			"..\DataCatPlugin\bin\Debug\net48\"
 			"..\DataCatPlugin\bin\$(configuration)\net48\"
 			-->
-      <!--<PreprocessorVariable>var.DataCatPlugin.TargetDir</PreprocessorVariable>-->
-      <PreprocessorVariable>var.HarvestPath</PreprocessorVariable>
+      <PreprocessorVariable>var.DataCatPlugin.TargetDir</PreprocessorVariable>
+			<!--<PreprocessorVariable>var.HarvestPath</PreprocessorVariable>-->
       <ComponentGroupName>HarvestedComponents</ComponentGroupName>
       <DirectoryRefId>APPLICATIONFOLDER</DirectoryRefId>
       <SuppressRootDirectory>true</SuppressRootDirectory>
