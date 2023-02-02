@@ -27,3 +27,9 @@ jobs:
         
       - name: Build Solution
         run: msbuild.exe -restore GeospatialEngineeringBIM.sln /p:Configuration=Release
+        
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@3
+        with:
+          name: DataCatPluginInstaller
+          path: $GITHUB_WORKSPACE/DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
