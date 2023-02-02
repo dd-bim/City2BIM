@@ -9,23 +9,37 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataCatPlugin\DataCatPlugin.csproj">
+      <Name>DataCatPlugin</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <HarvestDirectory Include="..\DataCatPlugin\bin\$(configuration)\net48\">
+    <HarvestDirectory Include="$(SolutionDir)DataCatPlugin\bin\$(configuration)\net48\">
       <!--
 			"..\DataCatPlugin\bin\Debug\net48\"
 			"..\DataCatPlugin\bin\$(configuration)\net48\"
+			"$(var.DataCatPlugin.TargetDir)"
 			-->
       <PreprocessorVariable>var.DataCatPlugin.TargetDir</PreprocessorVariable>
-			<!--<PreprocessorVariable>var.HarvestPath</PreprocessorVariable>-->
+      <!--<PreprocessorVariable>var.HarvestPath</PreprocessorVariable>-->
       <ComponentGroupName>HarvestedComponents</ComponentGroupName>
       <DirectoryRefId>APPLICATIONFOLDER</DirectoryRefId>
       <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressRegistry>true</SuppressRegistry>
+      <HarvestDirectoryAutogenerateGuids>false</HarvestDirectoryAutogenerateGuids>
+      <HarvestDirectoryGenerateGuidsNow>true</HarvestDirectoryGenerateGuidsNow>
     </HarvestDirectory>
     <!--	<BindInputPaths Include="$(var.DataCatPlugin.TargetDir)" /> -->
   </ItemGroup>
   <ItemGroup>
     <None Include="DataCatPluginLicense.rtf" />
   </ItemGroup>
+  
+	<!--
+		<Target Name="HarvestTarget" AfterTargets="BeforeBuild">
+    <Message Text="hier bin ich" Importance="high" />
+    <Message Text="$(SolutionDir)DataCatPlugin\bin\$(configuration)\net48\" Importance="high" />		
+	
+		
+  </Target>
+  -->
 </Project>
