@@ -26,4 +26,4 @@ jobs:
         run: nuget restore GeospatialEngineeringBIM.sln
         
       - name: Build Solution
-        run: msbuild.exe -restore GeospatialEngineeringBIM.sln
+        run: msbuild.exe -restore GeospatialEngineeringBIM.sln /p:Configuration=Release
