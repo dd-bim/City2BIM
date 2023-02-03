@@ -32,4 +32,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: DataCatPluginInstaller
-          path: $GITHUB_WORKSPACE/DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
+          path: ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
