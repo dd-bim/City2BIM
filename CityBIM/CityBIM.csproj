@@ -6,9 +6,6 @@
     <Product>CityBIM</Product>
     <Copyright>Copyright ©  2019</Copyright>
     <LangVersion>7.1</LangVersion>
-    <PostBuildEvent />
-    <PostBuildEvent />
-    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -30,7 +27,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>img\HideLayerIcon_32px_96dpi.ico</ApplicationIcon>
+    <ApplicationIcon>DD_BIM_ICON.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent />
@@ -57,7 +54,7 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.2" />
     <PackageReference Include="netDXF" Version="2.2.0.1" />
     <PackageReference Include="NetTopologySuite" Version="2.3.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2021.1.4" ExcludeAssets="runtime" />
     <PackageReference Include="Serilog" Version="2.10.0" />
@@ -159,11 +156,6 @@
       <DependentUpon>ResourcePictures.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Update="Resource_MetaJSONs.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource_MetaJSONs.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\City2BIM\CityGML_ImportUI.xaml">
@@ -228,32 +220,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="img\HideLayerIcon_32px_96dpi.png" />
-    <None Include="img\Vermesser32.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="img\Vermesser32.png" />
     <None Include="img\Attribute32.png" />
     <None Include="img\loginIcon32.png" />
     <None Include="img\queryDataCat.png" />
     <None Include="img\overViewIcon.png" />
+    <Content Include="DD_BIM_ICON.ico" />
     <Content Include="img\HelpIcon_32px.png" />
     <EmbeddedResource Update="Localization.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Localization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="meta_json_files\aaa.json" />
-    <EmbeddedResource Include="meta_json_files\aaaNeu.json" />
-    <EmbeddedResource Include="meta_json_files\xplan.json" />
-    <EmbeddedResource Include="meta_json_files\ZukunftBauAsJSON.json" />
-    <Resource Include="img\IFC_32px_96dpi.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\XPlan_32px.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="img\XPlan_32px.png" />
-    <Resource Include="img\HideLayerIcon_32px_96dpi.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <None Include="bin\Debug\ALKIS_32px_96dpi.png" />
     <None Include="bin\Debug\ALKISset_32px.png" />
     <None Include="bin\Debug\citygml_32px_96dpi.png" />
@@ -289,10 +266,6 @@
       <LastGenOutput>ResourcePictures.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resource_MetaJSONs.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource_MetaJSONs.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
