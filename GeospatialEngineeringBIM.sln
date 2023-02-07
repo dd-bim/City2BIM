@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityBIM", "City2RVT\CityBIM.csproj", "{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityBIM", "CityBIM\CityBIM.csproj", "{BE8F677A-59A8-4EA5-89C8-706E6C6A07A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIMGISInteropLibs", "BIMGISInteropLibs\BIMGISInteropLibs.csproj", "{1AF486E9-ED18-492C-8400-3B446BC9390D}"
 EndProject
@@ -17,13 +17,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiHandler", "GuiHandler\Gu
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup_Revit_2021", "Setup_Revit_2021\Setup_Revit_2021.vdproj", "{2CCFA139-BADA-42E5-806F-0BB64326B182}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "CityBIM_Installer", "CityBIM_Installer\CityBIM_Installer.wixproj", "{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataCatPlugin", "DataCatPlugin\DataCatPlugin.csproj", "{1106A8A5-7CCA-4D10-947C-71BB5D5962C7}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommonRevit", "CommonRevit\CommonRevit.shproj", "{D2709B80-47FD-45FB-A8A3-8A670A303E7D}"
 EndProject
 Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "DataCatPlugin_Installer", "DataCatPlugin_Installer\DataCatPlugin_Installer.wixproj", "{D046355C-1E56-4FB6-90BE-66E0E7D35828}"
+EndProject
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "CityBIM_InstallerWix4", "CityBIM_InstallerWix4\CityBIM_InstallerWix4.wixproj", "{0FAD7F0B-B677-4610-80F6-49148A71B2CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,16 +143,6 @@ Global
 		{2CCFA139-BADA-42E5-806F-0BB64326B182}.Release|x64.ActiveCfg = Release
 		{2CCFA139-BADA-42E5-806F-0BB64326B182}.Release|x86.ActiveCfg = Release
 		{2CCFA139-BADA-42E5-806F-0BB64326B182}.Release|x86.Build.0 = Release
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Debug|ARM64.ActiveCfg = Debug|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Debug|x64.ActiveCfg = Debug|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Debug|x86.ActiveCfg = Debug|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Debug|x86.Build.0 = Debug|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Release|Any CPU.ActiveCfg = Release|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Release|ARM64.ActiveCfg = Release|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Release|x64.ActiveCfg = Release|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Release|x86.ActiveCfg = Release|x86
-		{20AABEFC-CF46-4794-BA53-F9AD8AA100FB}.Release|x86.Build.0 = Release|x86
 		{1106A8A5-7CCA-4D10-947C-71BB5D5962C7}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{1106A8A5-7CCA-4D10-947C-71BB5D5962C7}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{1106A8A5-7CCA-4D10-947C-71BB5D5962C7}.Debug|ARM64.ActiveCfg = Debug|Any CPU
@@ -185,6 +175,22 @@ Global
 		{D046355C-1E56-4FB6-90BE-66E0E7D35828}.Release|x64.Build.0 = Release|x64
 		{D046355C-1E56-4FB6-90BE-66E0E7D35828}.Release|x86.ActiveCfg = Release|x86
 		{D046355C-1E56-4FB6-90BE-66E0E7D35828}.Release|x86.Build.0 = Release|x86
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|Any CPU.Build.0 = Debug|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|ARM64.Build.0 = Debug|ARM64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|x64.ActiveCfg = Debug|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|x64.Build.0 = Debug|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|x86.ActiveCfg = Debug|x86
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Debug|x86.Build.0 = Debug|x86
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|Any CPU.ActiveCfg = Release|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|Any CPU.Build.0 = Release|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|ARM64.ActiveCfg = Release|ARM64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|ARM64.Build.0 = Release|ARM64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|x64.ActiveCfg = Release|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|x64.Build.0 = Release|x64
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|x86.ActiveCfg = Release|x86
+		{0FAD7F0B-B677-4610-80F6-49148A71B2CD}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
