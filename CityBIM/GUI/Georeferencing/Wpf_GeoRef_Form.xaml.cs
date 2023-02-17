@@ -300,7 +300,7 @@ namespace CityBIM.GUI
                     { "Scale", Xml_AttrRep.AttrType.doubleAttribute },
             };
 
-            sem.CreateProjectParameters("ePSet_MapConversion", mapAttributes);
+            //sem.CreateProjectParameters("ePSet_MapConversion", mapAttributes);
 
             var crsAttributes = new Dictionary<string, Xml_AttrRep.AttrType>()
             {
@@ -312,7 +312,7 @@ namespace CityBIM.GUI
                     { "MapZone", Xml_AttrRep.AttrType.stringAttribute  },
             };
 
-            sem.CreateProjectParameters("ePSet_ProjectedCRS", crsAttributes);
+            //sem.CreateProjectParameters("ePSet_ProjectedCRS", crsAttributes);
 
             using (Transaction t = new Transaction(doc, "Apply georeferencing to Project Info"))
             {

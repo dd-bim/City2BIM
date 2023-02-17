@@ -13,7 +13,7 @@ namespace CityBIM.GUI.IFCExport
     /// </summary>
     public partial class IfcExportDialog : Window
     {
-        public RevitIfcExporter.ExportType ExportType;
+        public RevitGeoIfcExporter.ExportType ExportType;
         public bool startExport = false;
         public string ExportPath
         {

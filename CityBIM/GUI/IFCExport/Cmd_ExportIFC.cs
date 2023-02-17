@@ -36,7 +36,7 @@ namespace CityBIM.GUI
 
             if (dialog.startExport)
             {
-                RevitIfcExporter exporter = new RevitIfcExporter(doc);
+                RevitGeoIfcExporter exporter = new RevitGeoIfcExporter(doc);
 
                 exporter.startRevitIfcExport(dialog.ExportPath, commandData);
 
@@ -58,8 +58,6 @@ namespace CityBIM.GUI
                         {
                             exporter.addCityGMLAttributes(model, doc, cityGMLBuildingList);
                         }
-
-                        exporter.addExternalData(model, doc);
 
                         txn.Commit();
                     }
