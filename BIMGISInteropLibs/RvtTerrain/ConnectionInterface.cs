@@ -88,7 +88,7 @@ namespace BIMGISInteropLibs.RvtTerrain
                 Triangulator.DelaunayTriangulation.triangulate(resTerrain);
             }
 
-            Log.Information("File readed. Result => Faces (Triangles): " + resTerrain.triMap.Count + " Points: " + resTerrain.pointList);
+            Log.Information("File read. Result => Faces (Triangles): " + resTerrain.triMap.Count + " Points: " + resTerrain.pointList);
 
             return resTerrain;
         }

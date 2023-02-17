@@ -96,9 +96,9 @@ namespace BIMGISInteropLibs.DXF
             //Review, scale shouldn't be static
             if (!UnitToMeter.TryGetValue(dxfFile.Header.DefaultDrawingUnits, out double scale))
             {
-                //if scale can not be read readed
+                //if scale can not be read read
                 scale = 1.0;
-                LogWriter.Add(LogType.warning, "[DXF] Scale can not be readed!");
+                LogWriter.Add(LogType.warning, "[DXF] Scale can not be read!");
                 LogWriter.Add(LogType.warning, "[DXF] Scale has been set to: " + scale.ToString());
             }
 

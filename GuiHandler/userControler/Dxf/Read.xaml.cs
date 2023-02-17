@@ -192,7 +192,7 @@ namespace GuiHandler.userControler.Dxf
                         //open dxf file
                         item.dxfFile = DxfFile.Load(fileStream);
 
-                        LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] DXF file readed!"));
+                        LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] DXF file read!"));
                     }
                 }
                 catch(Exception ex)
@@ -253,10 +253,10 @@ namespace GuiHandler.userControler.Dxf
 
             //logging
             LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - completed!"));
-            LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - readed layers: " + lbDxfDtmLayer.Items.Count));
+            LogWriter.Entries.Add(new LogPair(LogType.debug, "[GUI] Background Worker DXF - read layers: " + lbDxfDtmLayer.Items.Count));
 
             //gui logging (user information)
-            support.setLog(LogType.info, "Readed dxf layers: " + lbDxfDtmLayer.Items.Count);
+            support.setLog(LogType.info, "Read dxf layers: " + lbDxfDtmLayer.Items.Count);
         }
     }
 }

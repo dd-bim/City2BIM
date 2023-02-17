@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Serilog;
 using OSGeo.OGR;
 
 
@@ -13,6 +14,7 @@ namespace BIMGISInteropLibs.OGR
     {
         public OGRALKISReader(string filePath)
         {
+            Log.Information("Starting OGR Reader");
             var nasDriver = Ogr.GetDriverByName("NAS");
             ds = nasDriver.Open(filePath, 0);
         }

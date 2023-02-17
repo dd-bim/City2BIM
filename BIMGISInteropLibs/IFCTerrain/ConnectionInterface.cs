@@ -114,7 +114,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             #endregion reader
             if(result.currentConversion == DtmConversionType.conversion)
             {
-                LogWriter.Add(LogType.info, "Faces readed: " + result.triMap.Count + " Points readed: " + result.pointList.Count);
+                LogWriter.Add(LogType.info, "Faces read: " + result.triMap.Count + " Points read: " + result.pointList.Count);
 
                 //log
                 LogWriter.Add(LogType.info, "Processing via delaunay triangulation is not necessary.");

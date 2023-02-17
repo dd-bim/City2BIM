@@ -57,7 +57,7 @@ namespace BIMGISInteropLibs.GeoJSON
                         break;
                     }
 
-                    LogWriter.Add(LogType.debug, "[GeoJSON] readed coordinates: " + multiPoint.Coordinates.Count);
+                    LogWriter.Add(LogType.debug, "[GeoJSON] read coordinates: " + multiPoint.Coordinates.Count);
 
                     //
                     foreach(var point in multiPoint.Coordinates)
@@ -104,8 +104,8 @@ namespace BIMGISInteropLibs.GeoJSON
                     result.pointList = points.ToList();
                     result.triMap = triMap;
 
-                    LogWriter.Add(LogType.info, "[GeoJSON] readed (unique) points: " + points.Count);
-                    LogWriter.Add(LogType.info, "[GeoJSON] readed polygons (triangles): " + triMap.Count);
+                    LogWriter.Add(LogType.info, "[GeoJSON] read (unique) points: " + points.Count);
+                    LogWriter.Add(LogType.info, "[GeoJSON] read polygons (triangles): " + triMap.Count);
                     return result;
 
                 case GeometryType.GeometryCollection:
