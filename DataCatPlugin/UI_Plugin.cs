@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 
@@ -18,9 +19,14 @@ namespace DataCatPlugin
             string pluginTabName = "DataCat";
             application.CreateRibbonTab(pluginTabName);
 
-            string logPath = Path.Combine(Path.GetDirectoryName(thisAssemblyPath), "DataCatPluginLog.log");
+            var programmDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var versionNumber = application.ControlledApplication.VersionNumber;
+            var filePath = "Autodesk\\Revit\\Addins\\" + versionNumber + "\\HTWDDLog.log";
+            var logPath = Path.Combine(programmDataPath, filePath);
 
-            Log.Logger = new LoggerConfiguration().WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, rollOnFileSizeLimit: true).CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, rollOnFileSizeLimit: true, shared: true).MinimumLevel.Debug().
+                CreateLogger();
 
             #region DataCat panel
 
@@ -50,6 +56,14 @@ namespace DataCatPlugin
             buttonIFC.LargeImage = getBitmapFromResx(ResourceImages.IFC_32px_96dpi);
 
             #endregion IFC Export panel
+
+
+            #region Logging
+            RibbonPanel panelLogger = application.CreateRibbonPanel(pluginTabName, "Logging");
+            PushButton buttonLog = panelLogger.AddItem(new PushButtonData("OpenLog", "Open Log File", thisAssemblyPath, "DataCatPlugin.GUI.Cmd_LogFile")) as PushButton;
+            buttonLog.ToolTip = "Opens the current Log file";
+            buttonLog.LargeImage = getBitmapFromResx(ResourceImages.LogIcon);
+            #endregion Logging
 
 
             Log.Information("DataCatPlugin successfully started");

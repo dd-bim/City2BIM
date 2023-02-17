@@ -20,16 +20,20 @@ namespace CityBIM.GUI
             string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
 
             // Add a new Tab
-            string tabName = "City2BIM";
+            string tabName = "CityBIM";
             application.CreateRibbonTab(tabName);
 
-            string logPath = Path.Combine(Path.GetDirectoryName(thisAssemblyPath), "CityBIMLog.log");
-            //string logPath = @"D:\dev\Projekte\CityBIMLog.log";
+            var programmDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var versionNumber = application.ControlledApplication.VersionNumber;
+            var filePath = "Autodesk\\Revit\\Addins\\" + versionNumber + "\\HTWDDLog.log";
+            var logPath = Path.Combine(programmDataPath, filePath);
+
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, rollOnFileSizeLimit: true)
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, rollOnFileSizeLimit: true, shared: true).MinimumLevel.Debug()
                 .CreateLogger();
 
-            Log.Information("Application started!");
+
+            Log.Information("CityBIM-Application started!");
             //Log.Information("assumed log path is: " + assumedLogPath);
 
             #region Georef panel
@@ -114,6 +118,14 @@ namespace CityBIM.GUI
 
             #endregion IFC Export panel
 
+
+            #region Logging
+            RibbonPanel panelLogger = application.CreateRibbonPanel(tabName, "Logging");
+            PushButton buttonLog = panelLogger.AddItem(new PushButtonData("OpenLog", "Open Log File", thisAssemblyPath, "CityBIM.GUI.Cmd_LogFile")) as PushButton;
+            buttonLog.ToolTip = "Opens the current Log file";
+            buttonLog.LargeImage = getBitmapFromResx(ResourcePictures.LogIcon);
+            #endregion Logging
+
             #region survPlan panel
             /*
             RibbonPanel panelSurveyorsPlan = application.CreateRibbonPanel(tabName, "Surveyorsplan2BIM");
@@ -128,22 +140,6 @@ namespace CityBIM.GUI
             */
             #endregion survPlan panel
 
-            #region DataCat panel
-            
-            RibbonPanel panelDataCat = application.CreateRibbonPanel(tabName, "DataCat");
-            PushButton loginDataCat = panelDataCat.AddItem(new PushButtonData("LoginBtn", "Login", thisAssemblyPath, "CityBIM.GUI.DataCat.Cmd_DataCatLogin")) as PushButton;
-            loginDataCat.ToolTip = "Login to server";
-            loginDataCat.LargeImage = getBitmapFromResx(ResourcePictures.loginIcon32);
-
-            PushButton querySubjects = panelDataCat.AddItem(new PushButtonData("QuerySubjBtn", "Query Catalog", thisAssemblyPath, "CityBIM.GUI.DataCat.Cmd_DataCatSubjQuery")) as PushButton;
-            querySubjects.ToolTip = "Query server with key word";
-            querySubjects.LargeImage = getBitmapFromResx(ResourcePictures.queryDataCat);
-
-            PushButton overviewEditor = panelDataCat.AddItem(new PushButtonData("OverviewBtn", "Overview", thisAssemblyPath, "CityBIM.GUI.DataCat.Cmd_DataCatOverview")) as PushButton;
-            overviewEditor.ToolTip = "Show overview of all data objects";
-            overviewEditor.LargeImage = getBitmapFromResx(ResourcePictures.overViewIcon);
-
-            #endregion DataCat panel
 
             #region Documentation
             RibbonPanel panelDocu = application.CreateRibbonPanel(tabName, "Documentation");
