@@ -93,7 +93,7 @@ namespace CityBIM
 
         public static XYZ getProjectBasePointMeter(Document doc)
         {
-            var projectBasePointFeet = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_ProjectBasePoint).FirstOrDefault() as BasePoint;
+            var projectBasePointFeet = BasePoint.GetProjectBasePoint(doc);
             return projectBasePointFeet.SharedPosition.Multiply(0.3048);
         }
 
