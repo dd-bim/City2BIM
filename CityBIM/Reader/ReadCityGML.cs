@@ -157,7 +157,7 @@ namespace CityBIM.Reader
 
 
                 Revit_Semantic citySem = new Builder.Revit_Semantic(doc); //Übergabe der Methoden-Rückgaben zum Schreiben nach Revit
-                citySem.CreateParameters(attributes); //erstellt Shared Parameters für Kategorie Umgebung
+                //citySem.CreateParameters(attributes); //erstellt Shared Parameters für Kategorie Umgebung
             }
         }
 
