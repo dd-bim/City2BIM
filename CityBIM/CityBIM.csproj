@@ -56,7 +56,7 @@
     <PackageReference Include="NetTopologySuite" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
-    <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2021.1.4" ExcludeAssets="runtime" />
+    <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2022.0.0" ExcludeAssets="runtime" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
@@ -106,21 +106,6 @@
     <Compile Update="GUI\City2BIM\CityGML_ImportUI.xaml.cs">
       <DependentUpon>CityGML_ImportUI.xaml</DependentUpon>
     </Compile>
-    <Compile Update="GUI\DataCat\DataCatalogEditorWindow.xaml.cs">
-      <DependentUpon>DataCatalogEditorWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\DataCat\DataCatOverview.xaml.cs">
-      <DependentUpon>DataCatOverview.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\DataCat\DataCatPropertySetterWindow.xaml.cs">
-      <DependentUpon>DataCatPropertySetterWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\DataCat\findSubjectResultForm.xaml.cs">
-      <DependentUpon>findSubjectResultForm.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\DataCat\LoginScreen.xaml.cs">
-      <DependentUpon>LoginScreen.xaml</DependentUpon>
-    </Compile>
     <Compile Update="GUI\DTM2BIM\Terrain_ImportUI.xaml.cs">
       <DependentUpon>Terrain_ImportUI.xaml</DependentUpon>
     </Compile>
@@ -144,9 +129,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="GUI\City2BIM\Wpf_CityGML_settings.xaml.cs">
-      <DependentUpon>Wpf_CityGML_settings.xaml</DependentUpon>
-    </Compile>
     <Compile Update="GUI\Georeferencing\Wpf_GeoRef_Form.xaml.cs">
       <DependentUpon>Wpf_GeoRef_Form.xaml</DependentUpon>
     </Compile>
@@ -159,30 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\City2BIM\CityGML_ImportUI.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\City2BIM\Wpf_CityGML_settings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\DataCat\DataCatalogEditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DataCat\DataCatOverview.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DataCat\DataCatPropertySetterWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DataCat\findSubjectResultForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DataCat\LoginScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -361,9 +319,6 @@
     <Compile Remove="obj\x64\Revit2021_Debug\GUI\NAS2BIM\ImportDialogAlkis.g.cs" />
     <Compile Remove="obj\x64\Revit2021_Debug\GUI\Properties\PropertyWindow.g.cs" />
     <Compile Remove="obj\x64\Revit2021_Debug\GUI\XPlan2BIM\ImportXPlanDialog.g.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\CommonRevit\CommonRevit.projitems" Label="Shared" />
 </Project>
