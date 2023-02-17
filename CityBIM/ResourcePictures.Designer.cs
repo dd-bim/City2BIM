@@ -61,16 +61,6 @@ namespace CityBIM {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] aaaNeu {
-            get {
-                object obj = ResourceManager.GetObject("aaaNeu", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap ALKIS_32px_96dpi {
@@ -206,6 +196,16 @@ namespace CityBIM {
         public static System.Drawing.Bitmap IFC_32px_96dpi {
             get {
                 object obj = ResourceManager.GetObject("IFC_32px_96dpi", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap LogIcon {
+            get {
+                object obj = ResourceManager.GetObject("LogIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
