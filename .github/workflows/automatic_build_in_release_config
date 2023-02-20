@@ -1,0 +1,37 @@
+name: automatic_build_in_release_config
+
+on: 
+  push
+
+jobs:
+  build:
+  
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+        
+      - name: Restore Packages
+        run: nuget restore GeospatialEngineeringBIM.sln
+        
+      - name: Build Solution
+        run: msbuild.exe -restore GeospatialEngineeringBIM.sln /p:Configuration=Release
+        
+      - name: Upload DataCatInstaller
+        uses: actions/upload-artifact@v3
+        with:
+          name: DataCatPluginInstaller
+          path: ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
+          
+      - name: Upload CityBIMInstaller
+        uses: actions/upload-artifact@v3
+        with:
+          name: CityBIMInstaller
+          path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
