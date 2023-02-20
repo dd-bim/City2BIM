@@ -1,0 +1,55 @@
+﻿<Window x:Class="DataCatPlugin.GUI.findSubjectResultForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataCatPlugin.GUI"
+             xmlns:DataCat="clr-namespace:DataCatPlugin.ExternalDataCatalog"
+             mc:Ignorable="d" 
+             Height="500" MinHeight="500" MinWidth="500" Width="500"
+             Name="findSubjectWindow" SizeChanged="findSubjectWindow_SizeChanged" Title="Query External Data Catalog">
+    <StackPanel Margin="10">
+        <Label x:Name="id1" Content="Search text for subjects"></Label>
+
+        <Grid Margin="0,0,0,10" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Padding="2" x:Name="SearchBox" Grid.Column="0" Margin="0 0 10 0" KeyDown="SearchBox_KeyDown"></TextBox>
+            <Button Name="queryBtn" Content="query" Grid.Column="1" Click="queryBtn_click"></Button>
+
+        </Grid>
+
+        <Grid Name="treeViewGrid" Height="300" MinHeight="300">
+            <TreeView Name="trvFindResult">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type DataCat:Node}" ItemsSource="{Binding properties}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding name}"></TextBlock>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type DataCat:Property}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding name}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </Grid>
+
+        <Grid Margin="0,13">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Name="setObjectBtn" Content="set selected object" Click="setObjectBtn_Click"></Button>
+            <Button Name="closeBtn" Content="close" Grid.Column="2" Click="closeBtn_Click"></Button>
+
+        </Grid>
+
+    </StackPanel>
+</Window>

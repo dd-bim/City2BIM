@@ -1,0 +1,40 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="CityBIMPlugin" Manufacturer="HTW Dresden" Version="1.6.2" 
+					 UpgradeCode="9A46DFDE-9769-4873-98FC-D47022420735" Scope="perMachine" >
+    <MajorUpgrade DowngradeErrorMessage="A newer version of CityBIM is already installed." />
+		<MediaTemplate EmbedCab="yes"/>
+
+		<ComponentGroup Id="AddinFileGroup" Directory="YearDir">
+			<Component Id="CMP_CityBIMPluginAddin" Guid="{7D7F10E4-98B6-42E2-ADD0-400BDF4E23D2}">
+				<File Id="FILE_CityBIMPluginAddin" Source="$(var.CityBIM.ProjectDir)CityBIM.addin" KeyPath="yes"/>
+			</Component>
+		</ComponentGroup>
+		
+    <Feature Id="CityBIMMainProduct" Title="CityBIMPlugin" Level="1">
+      <ComponentGroupRef Id="AddinFileGroup"/>
+			<ComponentGroupRef Id="HarvestedComponents"/>
+    </Feature>
+
+		<!-- UI of Installer-->
+		<Property Id="ApplicationFolderName" Value ="CityBIM"></Property>
+		<Property Id="WixAppFolder" Value="WixPerMachineFolder"></Property>
+		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER"></Property>
+		<WixVariable Id="WixUILicenseRtf" Value="CityBIMLicense.rtf"/>
+		<ui:WixUI Id="WixUI_InstallDir"/>
+
+
+		<!-- Dirctory Structure -->
+		<StandardDirectory Id="CommonAppDataFolder">
+			<Directory Id="AutodeskDir" Name="Autodesk">
+				<Directory Id="RevitDir" Name="Revit">
+					<Directory Id="AddinDir" Name="Addins">
+						<Directory Id="YearDir" Name="2022">
+							<Directory Id="APPLICATIONFOLDER" Name="CityBIM" ComponentGuidGenerationSeed="{D2926053-BC1E-4980-8276-00FD3B563132}">
+							</Directory>
+						</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+		</StandardDirectory>
+  </Package>
+</Wix>

@@ -161,7 +161,7 @@ namespace BIMGISInteropLibs.Triangulator
 
             result.triMap = map;
 
-            LogWriter.Add(LogType.info, "Points readed: " + coordinates.Count + "; Triangles readed: " + triangles.Count);
+            LogWriter.Add(LogType.info, "Points read: " + coordinates.Count + "; Triangles read: " + triangles.Count);
 
             return;
 

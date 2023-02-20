@@ -1,0 +1,52 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package 
+		Name="DataCatPlugin" 
+		Manufacturer="HTW Dresden" 
+		Version="1.0.0.0" 
+		UpgradeCode="5cd12f90-5fbc-4b52-a58a-392dde8142b2" 
+		Scope="perMachine"
+		ProductCode="*"
+		>
+		<MediaTemplate EmbedCab="yes"/>
+		
+		<MajorUpgrade DowngradeErrorMessage="A newer version of DataCatPlugin is already installed." />
+		
+		<ComponentGroup Id="MainComponentGroup" Directory="YearDir">
+			<Component Id="CMP_DataCatPluginAddin" Guid="{D888E4AE-993C-4C12-ADCE-48AD0C15C77A}">
+				<File Id="FILE_DataCatPluginAddin" Source="$(var.DataCatPlugin.ProjectDir)DataCatPlugin.addin" KeyPath="yes" />
+			</Component>
+			
+		</ComponentGroup>
+		
+		
+    <Feature Id="DataCatPluginMainProduct" Title="DataCatPlugin" Level="1">
+			<ComponentGroupRef Id="HarvestedComponents"/>
+			<ComponentGroupRef Id="MainComponentGroup"/>
+    </Feature>
+
+		
+		<!-- UI of Installer-->
+		<Property Id="ApplicationFolderName" Value ="DataCatPlugin"></Property>
+		<Property Id="WixAppFolder" Value="WixPerMachineFolder"></Property>
+		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER"></Property>
+		<WixVariable Id="WixUILicenseRtf" Value="DataCatPluginLicense.rtf"/>
+		<ui:WixUI Id="WixUI_InstallDir"/>
+		
+		
+		<!-- Dirctory Structure -->
+		<StandardDirectory Id="CommonAppDataFolder">
+			<Directory Id="AutodeskDir" Name="Autodesk">
+				<Directory Id="RevitDir" Name="Revit">
+					<Directory Id="AddinDir" Name="Addins">
+						<Directory Id="YearDir" Name="2022">
+							<Directory Id="APPLICATIONFOLDER" Name="DataCatPlugin">
+							</Directory>
+						</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+		</StandardDirectory>
+		
+		
+  </Package>
+</Wix>

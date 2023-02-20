@@ -117,8 +117,8 @@ namespace BIMGISInteropLibs.ElevationGrid
                         }
                         break;
                 }
-                //Log num of readed points
-                LogWriter.Add(LogType.debug, "[Grid] - readed points: " + pointList.Count);
+                //Log num of read points
+                LogWriter.Add(LogType.debug, "[Grid] - read points: " + pointList.Count);
 
                 //Close file reader
                 file.Close();

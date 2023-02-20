@@ -45,7 +45,7 @@ namespace GuiHandler.userControler.GeoJSON
                 config.filePath = ofd.FileName;
                 config.fileName = Path.GetFileName(ofd.FileName);
 
-                guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "GeoJSON file readed: " + config.fileName);
+                guiLog.setLog(BIMGISInteropLibs.Logging.LogType.info, "GeoJSON file read: " + config.fileName);
             }
         }
 

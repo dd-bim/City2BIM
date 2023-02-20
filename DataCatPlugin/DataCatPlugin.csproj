@@ -1,0 +1,90 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+	<UseWPF>true</UseWPF>
+	<Configurations>Debug;Release;Debug_All</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="RestSharp" Version="106.15.0" />
+	<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2022.0.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
+    <PackageReference Include="Xbim.Essentials" Version="5.1.341" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="GUI\DataCatalogEditorWindow.xaml.cs">
+      <DependentUpon>DataCatalogEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="GUI\DataCatOverview.xaml.cs">
+      <DependentUpon>DataCatOverview.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="GUI\DataCatPropertySetterWindow.xaml.cs">
+      <DependentUpon>DataCatPropertySetterWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="GUI\findSubjectResultForm.xaml.cs">
+      <DependentUpon>findSubjectResultForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="GUI\IfcExportDialog.xaml.cs">
+      <DependentUpon>IfcExportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="GUI\LoginScreen.xaml.cs">
+      <DependentUpon>LoginScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ResourceImages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResourceImages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ResourceImages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourceImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Import Project="..\CommonRevit\CommonRevit.projitems" Label="Shared" />
+
+	<!--<Choose>
+		<When Condition=" '$(RevitVersion)' == '2021'">
+			<ItemGroup>
+				<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2021.*" ExcludeAssets="runtime" />
+			</ItemGroup>
+		</When>
+		<When Condition=" '$(RevitVersion)' == '2022'">
+			<ItemGroup>
+				<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2022.*" ExcludeAssets="runtime" />
+			</ItemGroup>
+		</When>
+		<When Condition=" '$(RevitVersion)' == '2023'">
+			<ItemGroup>
+				<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2023.*"  />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+				<ItemGroup>
+					<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2022.*" ExcludeAssets="runtime"/>
+				</ItemGroup>
+		</Otherwise>
+	</Choose>
+
+	<PropertyGroup>
+		<OutRvt2021>$(MSBuildProjectDirectory)\bin\Debug_All\2021</OutRvt2021>
+		<OutRvt2022>$(MSBuildProjectDirectory)\bin\Debug_All\2022</OutRvt2022>
+		<OutRvt2023>$(MSBuildProjectDirectory)\bin\Debug_All\2023</OutRvt2023>
+	</PropertyGroup>
+	
+	
+	<Target Name="Build_All_Target" AfterTargets="Build" Condition="$(Configuration) == 'Debug_All'">
+		<Message Importance="high" Text="Starting to build project for multiple Revit Versions"></Message>
+		<MSBuild Projects="$(AssemblyName).csproj" Properties="RevitVersion=2021;OutputPath=$(OutRvt2021)"></MSBuild>
+		<MSBuild Projects="$(AssemblyName).csproj" Properties="RevitVersion=2022;OutputPath=$(OutRvt2022)"></MSBuild>
+		<MSBuild Projects="$(AssemblyName).csproj" Properties="RevitVersion=2023;OutputPath=$(OutRvt2023)"></MSBuild>
+	</Target>-->
+	
+</Project>

@@ -1,0 +1,32 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.2">
+	<PropertyGroup>
+		<DefineConstants Condition=" '$(Configuration)' == 'Debug' ">HarvestPath=..\CityBIM\bin\Debug\net48</DefineConstants>
+		<DefineConstants Condition=" '$(Configuration)' == 'Release' ">HarvestPath=..\CityBIM\bin\Release\net48</DefineConstants>
+	</PropertyGroup>
+  <ItemGroup>
+    <None Include="CityBIMLicense.rtf" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.2" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.0-rc.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CityBIM\CityBIM.csproj" />
+  </ItemGroup>
+	
+	<!-- Harvesting Project Output-->
+	
+	<ItemGroup>
+		<HarvestDirectory Include="$(SolutionDir)CityBIM\bin\$(configuration)\net48\" SuppressRegistry="true" SuppressRootDirectory="true" 
+											DirectoryRefID="APPLICATIONFOLDER" HarvestDirectoryGenerateGuidsNow="true">
+			<PreprocessorVariable>var.CityBIM.TargetDir</PreprocessorVariable>
+			<ComponentGroupName>HarvestedComponents</ComponentGroupName>			
+			
+			<HarvestDirectoryAutogenerateGuids>false</HarvestDirectoryAutogenerateGuids>
+			<HarvestDirectoryGenerateGuidsNow>true</HarvestDirectoryGenerateGuidsNow>
+			
+		</HarvestDirectory>
+		
+	</ItemGroup>
+	
+</Project>

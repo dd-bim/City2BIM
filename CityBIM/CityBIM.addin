@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>CityBIM</Name>
+		<Assembly>CityBIM\CityBIM.dll</Assembly>
+		<AddInId>
+			2100CA8E-05C6-4A55-A25E-188EFBF59439
+		</AddInId>
+		<FullClassName>CityBIM.GUI.UI_PlugIn</FullClassName>
+		<VendorId>HTWDresden</VendorId>
+		<VendorDescription>Faculty of Spatial Information</VendorDescription>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+	</AddIn>
+</RevitAddIns>
