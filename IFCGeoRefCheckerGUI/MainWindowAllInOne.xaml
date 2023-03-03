@@ -1,0 +1,151 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IFCGeoRefCheckerGUI"
+        xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels" x:Class="IFCGeoRefCheckerGUI.MainWindowAllInOne"
+        mc:Ignorable="d"
+        Title="IfcGeoRefChecker" Height="750" Width="650" MinWidth="650">
+    <Window.DataContext>
+        <vm:MainWindowViewModel></vm:MainWindowViewModel>
+    </Window.DataContext>
+
+    <Grid Margin="10,10,10,10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" >
+                <GroupBox Header="Set working directory">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="working directory" Grid.Row="0" Grid.Column="0"/>
+                        <TextBox Grid.Row="1" Grid.ColumnSpan="2" 
+                                 Text="{Binding workingDirViewModel.WorkingDirPath, TargetNullValue='Please choose path!'}" 
+                                 Margin="0,5,0,5" Padding="0,5,0,5" VerticalScrollBarVisibility="Auto" 
+                                 VerticalContentAlignment="Center" />
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <!--        Status View Model       -->
+            <Grid Grid.Row="1">
+                <GroupBox Header="Status report">
+                    <Grid Margin="5,5,5,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Label Content="Status:"></Label>
+                            <Label Content="0 file(s) loades"/>
+                            <Label Content="0 file(s) checked"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1">
+                            <Label Content="Loaded IFC-Files"></Label>
+                            <ListBox MinHeight="150" ScrollViewer.VerticalScrollBarVisibility="Auto" MaxHeight="150"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto" ItemsSource="{Binding filePanelViewModel.FilePaths}"
+                                     SelectionMode="Single" SelectedItem="{Binding filePanelViewModel.SelectedPath}">
+                            </ListBox>
+                        </StackPanel>
+                        <ProgressBar Grid.Row="3" Height="20" Margin="0,10,0,10" IsIndeterminate="{Binding checkViewModel.IsChecking}"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <!--        Check View Model        -->
+            <Grid Grid.Row="2">
+                <GroupBox Header="Check overview">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="LoGeoRef 10 (Address)" Grid.Column="0" Grid.Row="0"/>
+                        <Label Content="LoGeoRef 20 (Geolocation)" Grid.Column="0" Grid.Row="1"/>
+                        <Label Content="LoGeoRef 30 (Site location)" Grid.Column="0" Grid.Row="2"/>
+                        <Label Content="LoGeoRef 40 (Project location)" Grid.Column="0" Grid.Row="3"/>
+                        <Label Content="LoGeoRef 50 (CRS conversion)" Grid.Column="0" Grid.Row="4"/>
+
+                        <Label Content="{Binding checkViewModel.CheckerResults.level10Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level20Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level30Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level40Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level50Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center"/>
+
+                        <Button Content="Show protocoll" Grid.Column="3" Grid.Row="0" Command="{Binding checkViewModel.ShowLog}"></Button>
+                        
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <Grid Grid.Row="4" Grid.ColumnSpan="2">
+                <GroupBox Header="Log output" Margin="0,5,0,5">
+                    <RichTextBox x:Name="LogBox" Margin="0,5,0,5"></RichTextBox>
+                </GroupBox>
+            </Grid>
+            
+        </Grid>
+
+        <!--        Button Grid     -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Image Source="/IFCGeorefCheckerGUI;component/images/DD-BIM-LOGO.png" Margin="5,5,5,5"/>
+
+            <Button x:Name="SetWorkinDirBtn"  Grid.Row="1"
+                    Content="Set Working Directory" Margin="10,10,10,10"
+                    Padding="1,5,1,5" Click="SetWorkinDirBtn_Click" 
+                    />
+
+
+            <Button x:Name="LoadFilesBtn"  Grid.Row="2"
+                    Content="Load IFC-Files" Margin="10,10,10,10"
+                    Padding="1,5,1,5" Click="LoadFilesBtn_Click" />
+
+
+            <Button x:Name="CheckFileBtn"  Grid.Row="3"
+                    Content="Check selected file" Margin="10,10,10,10"
+                    Padding="1,5,1,5" Command="{Binding checkViewModel.CheckIFC}" CommandParameter="{Binding filePanelViewModel.FilePaths}"
+                    />
+
+        </Grid>
+
+
+
+    </Grid>
+</Window>
