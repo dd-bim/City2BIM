@@ -76,6 +76,33 @@ namespace IFCGeoRefCheckerGUI.ViewModels
         }
 
         private IDictionary<string, GeoRefChecker> checkerDict = new Dictionary<string, GeoRefChecker>();
+        public IDictionary<string, GeoRefChecker> CheckerDict
+        {
+            get => checkerDict;
+            set
+            {
+                if (checkerDict != value)
+                {
+                    checkerDict = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int nrOfChecks;
+
+        public int NrOfChecks
+        {
+            get => nrOfChecks;
+            set
+            {
+                if (nrOfChecks != value)
+                {
+                    nrOfChecks = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public DelegateCommand CheckIFC { get; set; }
         public DelegateCommand ShowLog { get; set; }
@@ -83,6 +110,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
         public event EventHandler? NoFileSelected;
         public event EventHandler? NoWorkingDirSelected;
         public event EventHandler? FileNotYetChecked;
+
         public CheckViewModel(IEventAggregator eventAggregator) 
         { 
             this.eventAggregator = eventAggregator;
@@ -142,13 +170,14 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                     {
                         var checker = new GeoRefChecker(model);
                         CheckerResults = checker.getCheckResults();
-                        if (checkerDict.ContainsKey(selectedPath))
+                        if (CheckerDict.ContainsKey(selectedPath))
                         {
-                            checkerDict[selectedPath] = checker;
+                            CheckerDict[selectedPath] = checker;
                         }
                         else
                         {
-                            checkerDict.Add(selectedPath, checker);
+                            CheckerDict.Add(selectedPath, checker);
+                            this.NrOfChecks = CheckerDict.Count;
                         }
                         checker.WriteProtocoll(WorkingDir!);
                     }
@@ -183,5 +212,6 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                 }
             }
         }
+
     }
 }
