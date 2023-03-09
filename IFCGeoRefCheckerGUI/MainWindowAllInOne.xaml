@@ -58,8 +58,8 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Label Content="Status:"></Label>
-                            <Label Content="0 file(s) loades"/>
-                            <Label Content="0 file(s) checked"/>
+                            <Label Content="{Binding filePanelViewModel.FilePaths.Count, Mode=OneWay}" ContentStringFormat=" {0} file(s) loaded"/>
+                            <Label Content="{Binding checkViewModel.NrOfChecks}" ContentStringFormat=" {0} file(s) checked"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1">
                             <Label Content="Loaded IFC-Files"></Label>
