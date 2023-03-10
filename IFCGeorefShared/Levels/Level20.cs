@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IFCGeorefShared.Levels
 {
-    internal class Level20 : Level00, IEquatable<Level20>
+    public class Level20 : Level00, IEquatable<Level20>
     {
         public double? Latitude { get; set; }
 
@@ -14,7 +14,7 @@ namespace IFCGeorefShared.Levels
 
         public bool Equals(Level20 other)
         {
-            if (other == null)
+            if (other == null || this == null)
                 return false;
             if (Latitude == other.Latitude &&
                Longitude == other.Longitude &&

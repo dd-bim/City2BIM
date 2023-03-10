@@ -6,7 +6,7 @@ using Xbim.Ifc4.Kernel;
 
 namespace IFCGeorefShared.Levels
 {
-    internal abstract class Level00
+    public abstract class Level00
     {
         public bool IsFullFilled { get; set; }
         public IIfcProduct? ReferencedEntity { get; set; }

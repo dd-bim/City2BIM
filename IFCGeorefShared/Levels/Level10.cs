@@ -8,7 +8,7 @@ using Xbim.Ifc4.Kernel;
 
 namespace IFCGeorefShared.Levels
 {
-    internal class Level10 : Level00
+    public class Level10 : Level00
     {
 
         internal IIfcPostalAddress? PostalAddress;
