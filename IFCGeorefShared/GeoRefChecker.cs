@@ -36,8 +36,30 @@ namespace IFCGeorefShared
             }
         }
 
-        IList<Level10> LoGeoRef10 { get; set; } = new List<Level10>();
-        IList<Level20> LoGeoRef20 { get; set; } = new List<Level20>();
+        private IList<Level10> loGeoRef10 = new List<Level10>();
+        public IList<Level10> LoGeoRef10
+        {
+            get => loGeoRef10;
+            set
+            {
+                if (loGeoRef10 != value)
+                {
+                    loGeoRef10 = value;
+                }
+            }
+        }
+        private IList<Level20> loGeoRef20 = new List<Level20>();
+        public IList<Level20> LoGeoRef20
+        {
+            get => loGeoRef20;
+            set 
+            {
+                if (loGeoRef20 != value) 
+                {
+                    loGeoRef20 = value;
+                }
+            }
+        }
         IList<Level30> LoGeoRef30 { get; set; } = new List<Level30>();
         IList<Level40> LoGeoRef40 { get; set; } = new List<Level40>();
         IList<Level50> LoGeoRef50 { get; set; } = new List<Level50>();
@@ -218,6 +240,11 @@ namespace IFCGeorefShared
             }
         }
     
+        private void updateAddress()
+        {
+            
+        }
+        
         public GeoRefCheckerResult getCheckResults()
         {
             var results = new GeoRefCheckerResult();

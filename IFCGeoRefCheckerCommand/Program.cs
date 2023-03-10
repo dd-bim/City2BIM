@@ -7,8 +7,9 @@ namespace IFCGeoRefCheckerCommand
     {
         static void Main(string[] args)
         {
-            string ifcFilePath = @"D:\Testdaten\GeoRefChecker\Buerogebaeude.ifc";
+            //string ifcFilePath = @"D:\Testdaten\GeoRefChecker\Buerogebaeude.ifc";
             //string ifcFilePath = @"D:\Testdaten\GeoRefChecker\301110Gebaeude-Gruppe.ifc";
+            string ifcFilePath = @"D:\Testdaten\GeoRefChecker\Ausgangsprojekt_Wand_edit_Lev50_ifc4.ifc";
 
             using (var model = IfcStore.Open(ifcFilePath))
             {

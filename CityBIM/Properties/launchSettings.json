@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "CityBIM": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    },
+    "DebugRevit": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Autodesk\\Revit 2022\\Revit.exe"
+    }
+  }
+}
