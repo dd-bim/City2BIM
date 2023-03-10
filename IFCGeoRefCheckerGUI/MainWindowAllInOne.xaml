@@ -16,7 +16,10 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         
         <Grid>
             <Grid.RowDefinitions>
@@ -107,12 +110,14 @@
                 </GroupBox>
             </Grid>
 
-            <Grid Grid.Row="4" Grid.ColumnSpan="2">
-                <GroupBox Header="Log output" Margin="0,5,0,5">
-                    <RichTextBox x:Name="LogBox" Margin="0,5,0,5"></RichTextBox>
-                </GroupBox>
-            </Grid>
             
+            
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <GroupBox Header="Log output" Margin="0,5,0,5">
+                <RichTextBox x:Name="LogBox" Margin="0,5,0,5"></RichTextBox>
+            </GroupBox>
         </Grid>
 
         <!--        Button Grid     -->
@@ -143,6 +148,10 @@
                     Padding="1,5,1,5" Command="{Binding checkViewModel.CheckIFC}" CommandParameter="{Binding filePanelViewModel.FilePaths}"
                     />
 
+            <Button Content="Update File" Grid.Row="4" Command="{Binding OpenUpdateDialogCommand}">
+                
+            </Button>
+            
         </Grid>
 
 

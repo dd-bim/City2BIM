@@ -1,0 +1,123 @@
+﻿<Window x:Class="IFCGeoRefCheckerGUI.UpdateGeoRefWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IFCGeoRefCheckerGUI"
+        xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels"
+        xmlns:vc="clr-namespace:IFCGeoRefCheckerGUI.ValueConverters"
+        mc:Ignorable="d"
+        Title="UpdateGeoRefWindow" Height="600" Width="800">
+    <Window.DataContext>
+        <vm:UpdateViewModel></vm:UpdateViewModel>
+    </Window.DataContext>
+    <Window.Resources>
+        <vc:RefEntityTypeConverter x:Key="EntityTypeConverter"/>
+        <vc:RefEntityGUIDConverter x:Key="EntityGUIDConverter"/>
+    </Window.Resources>
+    <Grid Margin="5,5,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Postal Address" Grid.Row="0">
+            <TabControl ItemsSource="{Binding Level10s}" Margin="0,3,0,3">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding referencedEntity}"/>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,3,0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBox Grid.Row="0" Grid.ColumnSpan="3" Margin="3,3,0,3" IsReadOnly="True" BorderThickness="0" Background="Transparent">
+                                <TextBox.Text>
+                                    <MultiBinding StringFormat="Referencing {0} with GUID {1}">
+                                        <Binding Path="referencedEntity"/>
+                                        <Binding Path="GUID"/>
+                                    </MultiBinding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Label Content="Address Lines:" Grid.Row="1" Grid.Column="0"/>
+                            <TextBox Text="{Binding AddressLine1}"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+                            <TextBox Text="{Binding AddressLine2}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+                            <Label Content="Postal Code:" Grid.Row="3" Grid.Column="0"/>
+                            <TextBox Text="{Binding PostalCode}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
+                            <Label Content="Town:" Grid.Row="3" Grid.Column="2"/>
+                            <TextBox Text="{Binding Town}" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center"/>
+                            <Label Content="Region:" Grid.Row="4" Grid.Column="0"/>
+                            <TextBox Text="{Binding Region}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center"/>
+                            <Label Content="Country:" Grid.Row="4" Grid.Column="2" />
+                            <TextBox Text="{Binding Country}"  Grid.Row="4" Grid.Column="3" VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </GroupBox>
+        <GroupBox Header="Geographic Location of Site" Grid.Row="1">
+            <TabControl ItemsSource="{Binding Level20s}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="IfcSite"/>
+                    </DataTemplate>    
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBox Margin="3,3,3,3" IsReadOnly="True" BorderThickness="0" Background="Transparent">
+                                <TextBox.Text>
+                                    <MultiBinding StringFormat="Referencing IfcSite with GUID {0}">
+                                        <Binding Path="ReferencedEntity" Converter="{StaticResource EntityGUIDConverter}"/>
+                                    </MultiBinding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <StackPanel  Grid.Row="1" Grid.Column="0" Margin="0,5,10,5">
+                                <DockPanel >
+                                    <Label Content="Latitude"/>
+                                    <TextBox Text="{Binding Latitude}" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel  Grid.Row="1" Grid.Column="1" Margin="0,5,0,5">
+                                <DockPanel >
+                                    <Label Content="Longitude" Margin="10,0,0,0"/>
+                                    <TextBox Text="{Binding Longitude}" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel  Grid.Row="2" Grid.Column="0" Margin="0,5,0,5">
+                                <DockPanel >
+                                    <Label Content="RefElevation"/>
+                                    <TextBox VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+            
+            
+        </GroupBox>
+    </Grid>
+</Window>

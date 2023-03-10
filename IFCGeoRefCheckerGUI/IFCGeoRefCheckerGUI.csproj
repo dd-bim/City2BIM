@@ -25,10 +25,6 @@
     </Resource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ValueConverters\" />
-  </ItemGroup>
-
   <Import Project="..\IFCGeorefShared\IFCGeorefShared.projitems" Label="Shared" />
 
 </Project>

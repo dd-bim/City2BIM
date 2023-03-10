@@ -34,7 +34,8 @@ namespace IFCGeoRefCheckerGUI
             ((MainWindowViewModel)DataContext).checkViewModel.NoFileSelected += NoFileSelectedMessageBox;
             ((MainWindowViewModel)DataContext).checkViewModel.NoWorkingDirSelected += NoWorkingDirSelectedMessageBox;
             ((MainWindowViewModel)DataContext).checkViewModel.FileNotYetChecked += NotYetCheckedMessageBox;
-
+            ((MainWindowViewModel)DataContext).OpenUpdateDialog += handleOpenDialogRequest;
+            
             Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.RichTextBox(LogBox, theme:RichTextBoxTheme.None).
                 MinimumLevel.Debug().CreateLogger();
 
@@ -85,6 +86,54 @@ namespace IFCGeoRefCheckerGUI
                 Log.Information($"Working Directory changed to {dialog.SelectedPath}");
             }
         }
+
+        private void handleOpenDialogRequest(object? sender, EventArgs e)
+        {
+            var vm = (MainWindowViewModel)DataContext;
+
+            if (string.IsNullOrEmpty(vm.SelectedPath))
+            {
+                this.NoFileSelectedMessageBox(this, EventArgs.Empty);
+            }
+            else if (!vm.checkViewModel.CheckerDict.ContainsKey(vm.SelectedPath))
+            {
+                this.NotYetCheckedMessageBox(this, EventArgs.Empty);
+            }
+            else
+            {
+                var dialog = new UpdateGeoRefWindow();
+                var updateViewModel = new UpdateViewModel(vm.checkViewModel.CheckerDict[vm.SelectedPath]);
+                dialog.DataContext = updateViewModel;
+                dialog.ShowDialog();
+            }
+
+            
+
+        }
+
+
+        /*private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var vm = ((MainWindowViewModel)DataContext);
+
+            var selectedFile = vm.SelectedPath;
+
+            if ( selectedFile == null )
+            {
+                this.NoFileSelectedMessageBox(this, EventArgs.Empty);
+            }
+
+            else if (!vm.checkViewModel.CheckerDict.ContainsKey(selectedFile))
+            {
+                this.NotYetCheckedMessageBox(this, EventArgs.Empty);
+            }
+
+            ((MainWindowViewModel)DataContext).OpenUpdateDialog += (s, ev) =>
+            {
+                UpdateGeoRefWindow dialog = new UpdateGeoRefWindow();
+                dialog.Show();
+            };
+        }*/
 
         /*
         private RichTextBoxConsoleTheme customTheme = new RichTextBoxConsoleTheme
