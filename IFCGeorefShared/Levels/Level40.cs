@@ -6,7 +6,7 @@ using Xbim.Ifc4.Interfaces;
 
 namespace IFCGeorefShared.Levels
 {
-    internal class Level40
+    public class Level40
     {
         public bool IsFullFilled { get; set; }
         public IIfcGeometricRepresentationContext? context;

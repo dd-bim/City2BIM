@@ -23,6 +23,12 @@ namespace IFCGeorefShared
         public string? TimeCheckedFileCreated { get; set; }
         public string? TimeChecked { get; set; }
 
+        private readonly Xbim.Common.Step21.XbimSchemaVersion ifcVersion;
+        public Xbim.Common.Step21.XbimSchemaVersion IFCVersion
+        {
+            get => ifcVersion;
+        }
+
         private string? protocollPath { get; set; }
         public string? ProtocollPath
         {
@@ -52,9 +58,9 @@ namespace IFCGeorefShared
         public IList<Level20> LoGeoRef20
         {
             get => loGeoRef20;
-            set 
+            set
             {
-                if (loGeoRef20 != value) 
+                if (loGeoRef20 != value)
                 {
                     loGeoRef20 = value;
                 }
@@ -62,7 +68,19 @@ namespace IFCGeorefShared
         }
         IList<Level30> LoGeoRef30 { get; set; } = new List<Level30>();
         IList<Level40> LoGeoRef40 { get; set; } = new List<Level40>();
-        IList<Level50> LoGeoRef50 { get; set; } = new List<Level50>();
+
+        private IList<Level50> loGeoRef50 = new List<Level50>();
+        public IList<Level50> LoGeoRef50
+        {
+            get => loGeoRef50;
+            set
+            {
+                if (loGeoRef50 != value)
+                {
+                    loGeoRef50 = value;
+                }
+            }
+        }
 
         private IfcStore model { get; set; }
         private List<IIfcSpatialStructureElement> BuildingsAndSites = new List<IIfcSpatialStructureElement>(); 
@@ -76,9 +94,11 @@ namespace IFCGeorefShared
             checkForLevel10();
             checkForLevel20();
             checkForLevel30();
-            checkForLevel40();
+            checkForLevel40And50();
 
             this.TimeChecked = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
+            this.ifcVersion = this.model.SchemaVersion;
+            
         }
 
         private void checkForLevel10()
@@ -169,7 +189,7 @@ namespace IFCGeorefShared
             }
         }
 
-        private void checkForLevel40()
+        private void checkForLevel40And50()
         {
             var projects = this.model.Instances.OfType<IIfcProject>().ToList();
 
@@ -231,7 +251,7 @@ namespace IFCGeorefShared
 
                         if (mapConv != null)
                         {
-                            lvl50.mapConversion = mapConv;
+                            lvl50.MapConversion = mapConv;
                             lvl50.IsFullFilled = true;
                         }
                     }
@@ -296,7 +316,7 @@ namespace IFCGeorefShared
             var sb = new StringBuilder();
 
             var lvl10Result = this.getCheckResults().level10Fulfilled;
-            var result = (lvl10Result.HasValue && lvl10Result.Value) ? $"LoGeoRef 10 is fullfilled" : $"LoGeoRef 10 is not fullfilled";
+            var result = (lvl10Result.HasValue && lvl10Result.Value) ? $"LoGeoRef 10 is fullfilled ✓" : $"LoGeoRef 10 is not fullfilled";
             sb.AppendLine(result);
             sb.AppendLine();
             sb.AppendLine(dashLine);
@@ -306,7 +326,7 @@ namespace IFCGeorefShared
             {
                 if (lvl10.IsFullFilled)
                 {
-                    string header = $"Postal address referenced by Entity: {lvl10.ReferencedEntity!.GetType().Name} with GUID {lvl10.ReferencedEntity.GlobalId}";
+                    string header = $"Postal address referenced by Entity #{lvl10.ReferencedEntity!.EntityLabel} {lvl10.ReferencedEntity!.GetType().Name} with GUID {lvl10.ReferencedEntity.GlobalId}";
                     sb.AppendLine(header);
 
                     var PostalAddress = lvl10.PostalAddress;
@@ -320,11 +340,11 @@ namespace IFCGeorefShared
                     sb.AppendLine(info);
 
                     sb.AppendLine();
-                    sb.AppendLine($"LoGeoRef10 is fullfilled");
+                    sb.AppendLine($"LoGeoRef10 is fullfilled ✓");
                 }
                 else
                 {
-                    sb.AppendLine($"No postal address found for Entity: {lvl10.ReferencedEntity!.GetType().Name} with GUID {lvl10.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"No postal address found for Entity #{lvl10.ReferencedEntity!.EntityLabel} {lvl10.ReferencedEntity!.GetType().Name} with GUID {lvl10.ReferencedEntity.GlobalId}");
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef10 is not fullfilled");
                 }
@@ -346,7 +366,7 @@ namespace IFCGeorefShared
             var sb = new StringBuilder();
 
             var lvl20Result = this.getCheckResults().level20Fulfilled;
-            var result = (lvl20Result.HasValue && lvl20Result.Value) ? $"LoGeoRef 20 is fullfilled" : $"LoGeoRef 20 is not fullfilled";
+            var result = (lvl20Result.HasValue && lvl20Result.Value) ? $"LoGeoRef 20 is fullfilled ✓" : $"LoGeoRef 20 is not fullfilled";
 
             sb.AppendLine(result);
             sb.AppendLine();
@@ -357,7 +377,7 @@ namespace IFCGeorefShared
             {
                 if (lvl20.IsFullFilled)
                 {
-                    sb.AppendLine($"Geographic location specified by Entity: {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"Geographic location specified by Entity #{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
                     sb.AppendLine(Invariant($"Latitude: {(lvl20!.Latitude != null ? lvl20!.Latitude : "not specified!")} \t\tLongitude: {(lvl20!.Longitude != null ? lvl20!.Longitude : "not specified!")}"));
                     sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : "not specified")}"));
                     sb.AppendLine();
@@ -365,7 +385,7 @@ namespace IFCGeorefShared
                 }
                 else
                 {
-                    sb.AppendLine($"No geographic location found for Entity: {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"No geographic location found for Entity #{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef20 is not fullfilled");
                 }
@@ -401,7 +421,7 @@ namespace IFCGeorefShared
             {
                 if (lvl30.plcmt != null)
                 {
-                    sb.AppendLine($"Upper most entity of spatial structures is: {lvl30.ReferencedEntity!.GetType().Name} with GUID: {lvl30.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"Upper most entity of spatial structures is: #{lvl30.ReferencedEntity!.EntityLabel} {lvl30.ReferencedEntity!.GetType().Name} with GUID: {lvl30.ReferencedEntity.GlobalId}");
                     sb.AppendLine((lvl30.IsFullFilled) ? $"Local placement of this entity has geographic context" : $"Local placement of this entity has no geographic context");
                     sb.AppendLine(Invariant($"Coordinates of the location are:\nX: {lvl30.plcmt.Location.X} \nY: {lvl30.plcmt.Location.Y} \nZ: {lvl30.plcmt.Location.Z}"));
                         
@@ -448,7 +468,7 @@ namespace IFCGeorefShared
             {
                 if (lvl40.context != null)
                 {
-                    sb.AppendLine($"IfcProject ({lvl40.project!.GlobalId}) references IfcGeometricRepresentationContext (Identifier: {lvl40.context.EntityLabel}) and type: {lvl40.context.ContextType}");
+                    sb.AppendLine($"IfcProject (#{lvl40.project!.EntityLabel}, {lvl40.project!.GlobalId}) references IfcGeometricRepresentationContext (Identifier: {lvl40.context.EntityLabel}) and type: {lvl40.context.ContextType}");
 
                     if (lvl40.IsFullFilled)
                     {
@@ -493,37 +513,43 @@ namespace IFCGeorefShared
 
             foreach (var lvl50 in this.LoGeoRef50)
             {
-                if (lvl50.mapConversion != null)
+                if (lvl50.MapConversion != null)
                 {
-                    var targetCRS = lvl50.mapConversion.TargetCRS;
-                    var eastings = lvl50.mapConversion.Eastings;
-                    var northings = lvl50.mapConversion.Northings;
-                    var height = lvl50.mapConversion.OrthogonalHeight;
-                    var xAxisAbscissa = lvl50.mapConversion.XAxisAbscissa;
-                    var XaxisOrdinate = lvl50.mapConversion.XAxisOrdinate;
+                    var targetCRS = lvl50.MapConversion.TargetCRS;
+                    var eastings = lvl50.MapConversion.Eastings;
+                    var northings = lvl50.MapConversion.Northings;
+                    var height = lvl50.MapConversion.OrthogonalHeight;
+                    var xAxisAbscissa = lvl50.MapConversion.XAxisAbscissa;
+                    var XaxisOrdinate = lvl50.MapConversion.XAxisOrdinate;
 
-                    sb.AppendLine($"IfcMapConversion defined in #{lvl50.mapConversion.EntityLabel}");
-                    sb.AppendLine($"Translation Eastings: {lvl50.mapConversion.Eastings}");
-                    sb.AppendLine($"Translation Northings: {lvl50.mapConversion.Northings}");
-                    sb.AppendLine($"Translation Height: {lvl50.mapConversion.OrthogonalHeight}");
-                    sb.AppendLine($"Rotation X-Axis Abscissa: {lvl50.mapConversion.XAxisAbscissa}");
-                    sb.AppendLine($"Rotation X-Axis Ordinate: {lvl50.mapConversion.XAxisOrdinate}");
-                    sb.AppendLine($"Scale: {lvl50.mapConversion.Scale}");
+                    sb.AppendLine($"IfcMapConversion defined in #{lvl50.MapConversion.EntityLabel}");
+                    sb.AppendLine($"Translation Eastings: {lvl50.MapConversion.Eastings}");
+                    sb.AppendLine($"Translation Northings: {lvl50.MapConversion.Northings}");
+                    sb.AppendLine($"Translation Height: {lvl50.MapConversion.OrthogonalHeight}");
+                    sb.AppendLine($"Rotation X-Axis Abscissa: {lvl50.MapConversion.XAxisAbscissa}");
+                    sb.AppendLine($"Rotation X-Axis Ordinate: {lvl50.MapConversion.XAxisOrdinate}");
+                    sb.AppendLine($"Scale: {lvl50.MapConversion.Scale}");
 
                     sb.AppendLine();
 
-                    sb.AppendLine($"Target CRS is: {lvl50.mapConversion.TargetCRS.Name}");
-                    sb.AppendLine($"Description: {(lvl50.mapConversion.TargetCRS.Description.HasValue ? lvl50.mapConversion.TargetCRS.Description : "not specified")}");
-                    sb.AppendLine($"Geodetic Datum: {(lvl50.mapConversion.TargetCRS.GeodeticDatum.HasValue ? lvl50.mapConversion.TargetCRS.GeodeticDatum : "not specified")}");
-                    sb.AppendLine($"Vertical Datum: {(lvl50.mapConversion.TargetCRS.VerticalDatum.HasValue ? lvl50.mapConversion.TargetCRS.VerticalDatum : "not specified")}");
+                    sb.AppendLine($"Target CRS is: {lvl50.MapConversion.TargetCRS.Name}");
+                    sb.AppendLine($"Description: {(lvl50.MapConversion.TargetCRS.Description.HasValue ? lvl50.MapConversion.TargetCRS.Description : "not specified")}");
+                    sb.AppendLine($"Geodetic Datum: {(lvl50.MapConversion.TargetCRS.GeodeticDatum.HasValue ? lvl50.MapConversion.TargetCRS.GeodeticDatum : "not specified")}");
+                    sb.AppendLine($"Vertical Datum: {(lvl50.MapConversion.TargetCRS.VerticalDatum.HasValue ? lvl50.MapConversion.TargetCRS.VerticalDatum : "not specified")}");
 
                 }
                 else
                 {
-                    sb.AppendLine($"{(lvl50.context != null ? $"No IfcMapConversion specified by IfcGeometricRepresentationContext {lvl50.context.ContextType}" : "Found no IfcGeometricRepresentationContext")}");
+                    sb.AppendLine($"{(lvl50.context != null ? $"No IfcMapConversion specified by #{lvl50.context.EntityLabel} IfcGeometricRepresentationContext {lvl50.context.ContextType}" : "Found no IfcGeometricRepresentationContext")}");
                     sb.AppendLine();
                     sb.AppendLine("LoGeoRef50 is not fullfilled");
+
                 }
+
+                sb.AppendLine();
+                sb.AppendLine(dashLine);
+                sb.AppendLine();
+
             }
 
             if (this.LoGeoRef50.Count < 1)
@@ -532,9 +558,8 @@ namespace IFCGeorefShared
             }
 
             sb.AppendLine();
-            sb.AppendLine(dashLine);
-            sb.AppendLine();
             sb.AppendLine(starLine);
+            sb.AppendLine();
 
             return sb.ToString();
         }

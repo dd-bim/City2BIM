@@ -6,26 +6,30 @@
         xmlns:local="clr-namespace:IFCGeoRefCheckerGUI"
         xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels"
         xmlns:vc="clr-namespace:IFCGeoRefCheckerGUI.ValueConverters"
-        mc:Ignorable="d"
-        Title="UpdateGeoRefWindow" Height="600" Width="800">
+        mc:Ignorable="d" Icon="/IFCGeorefCheckerGUI;component/images/DD-BIM-ICON.ico"
+        Title="UpdateGeoRefWindow" Height="600" Width="800"
+        SizeToContent="Height">
     <Window.DataContext>
         <vm:UpdateViewModel></vm:UpdateViewModel>
     </Window.DataContext>
     <Window.Resources>
         <vc:RefEntityTypeConverter x:Key="EntityTypeConverter"/>
         <vc:RefEntityGUIDConverter x:Key="EntityGUIDConverter"/>
+        <vc:IfcLabelConverter x:Key="LabelConverter"/>
     </Window.Resources>
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Postal Address" Grid.Row="0">
+        <GroupBox Header="Postal Address" Grid.Row="0" Margin="0,5,0,5">
             <TabControl ItemsSource="{Binding Level10s}" Margin="0,3,0,3">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding referencedEntity}"/>
+                        <TextBlock Text="{Binding ReferencedEntity}"/>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
@@ -47,7 +51,7 @@
                             <TextBox Grid.Row="0" Grid.ColumnSpan="3" Margin="3,3,0,3" IsReadOnly="True" BorderThickness="0" Background="Transparent">
                                 <TextBox.Text>
                                     <MultiBinding StringFormat="Referencing {0} with GUID {1}">
-                                        <Binding Path="referencedEntity"/>
+                                        <Binding Path="ReferencedEntity"/>
                                         <Binding Path="GUID"/>
                                     </MultiBinding>
                                 </TextBox.Text>
@@ -68,12 +72,13 @@
                 </TabControl.ContentTemplate>
             </TabControl>
         </GroupBox>
-        <GroupBox Header="Geographic Location of Site" Grid.Row="1">
+
+        <GroupBox Header="Geographic Location of Site" Grid.Row="1" Margin="0,5,0,5">
             <TabControl ItemsSource="{Binding Level20s}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="IfcSite"/>
-                    </DataTemplate>    
+                    </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
                     <DataTemplate>
@@ -116,8 +121,94 @@
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </TabControl>
-            
-            
+
+
         </GroupBox>
+
+        <GroupBox Header="Map Conversion" Grid.Row="2" Margin="0,5,0,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.ColumnSpan="2" Margin="0,3,0,3" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Eastings"/>
+                    <TextBox Grid.Column="1" Padding="0,2,0,2" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,2,0,2" Text="{Binding Level50.Eastings}" />
+                    <Label Grid.Column="2" Content="Northings"/>
+                    <TextBox Grid.Column="3" VerticalAlignment="Center" Margin="0,2,0,2" Text="{Binding Level50.Northings}" />
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,3,0,3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Grid North [°]"/>
+                    <TextBox Grid.Column="1" VerticalContentAlignment="Center" Padding="0,2,0,2" VerticalAlignment="Center"/>
+                    <Label Grid.Column="2" Content="Scale" Grid.ColumnSpan="2" Margin="0,0,31,0"/>
+                    <TextBox Grid.Column="3" VerticalContentAlignment="Center" Padding="0,2,0,2" VerticalAlignment="Center" Text="{Binding Level50.Scale}" />
+                </Grid>
+
+                <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,3,0,3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="EPSG-Code" Grid.ColumnSpan="2"/>
+                    <TextBox Text="{Binding Level50.Name}" Grid.Column="1" VerticalAlignment="Center" Padding="0,2,0,2"/>
+                    <Label Content="Map Zone" Grid.Column="2"/>
+                    <TextBox Grid.Column="3" VerticalAlignment="Center" Padding="0,2,0,2"/>
+                </Grid>
+
+                <Grid Grid.Row="3" Grid.ColumnSpan="2" Margin="0,3,0,3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.4*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Export as: "/>
+                    <RadioButton IsEnabled="{Binding IsIFC4}" GroupName="ExportType" Grid.Column="1" VerticalAlignment="Center">Map Conversion (Ifc4 only)</RadioButton>
+                    <RadioButton GroupName="ExportType" Grid.Column="2" VerticalAlignment="Center">Property Set (Pset_MapConversion)</RadioButton>
+                </Grid>
+                
+                
+                
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="IFC Export" Grid.Row="3" Margin="0,5,0,5">
+            <Grid Margin="0,3,0,3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Output Path:" Grid.Column="0"/>
+                <TextBox Grid.Column="1"></TextBox>
+                <Button Content="Set Path" Grid.Column="2" Margin="5,0,5,0" Padding="5,1,5,1"/>
+                <Button Content="Start Export" Grid.Column="3" Margin="5,0,5,0" Padding="5,1,5,1"/>
+            </Grid>
+        </GroupBox>
+        
+        <Button Content="MyButton" Grid.Row="4" Click="Button_Click" Margin="0,5,0,5"></Button>
     </Grid>
 </Window>

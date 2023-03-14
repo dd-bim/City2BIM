@@ -5,8 +5,8 @@ using Xbim.Ifc4.Interfaces;
 
 namespace IFCGeorefShared.Levels
 {
-    internal class Level50 : Level40
+    public class Level50 : Level40
     {
-        public IIfcMapConversion? mapConversion;
+        public IIfcMapConversion? MapConversion;
     }
 }

@@ -104,13 +104,19 @@ namespace IFCGeoRefCheckerGUI
                 var dialog = new UpdateGeoRefWindow();
                 var updateViewModel = new UpdateViewModel(vm.checkViewModel.CheckerDict[vm.SelectedPath]);
                 dialog.DataContext = updateViewModel;
-                dialog.ShowDialog();
+                //dialog.ShowDialog();
+                dialog.Title = $"Update {System.IO.Path.GetFileName(vm.SelectedPath)}";
+                dialog.Show();
             }
 
             
 
         }
 
+        private void LogBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.LogBox.ScrollToEnd();
+        }
 
         /*private void Window_Loaded(object sender, RoutedEventArgs e)
         {
