@@ -17,7 +17,7 @@ namespace IFCGeoRefCheckerGUI.ValueConverters
         public string? Town { get; set; }
 
         public string? GUID { get; set; }
-        public string? referencedEntity { get; set; }
+        public string? ReferencedEntity { get; set; }
 
         
     }
