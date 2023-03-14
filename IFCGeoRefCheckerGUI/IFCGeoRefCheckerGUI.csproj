@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\DD-BIM-ICON.ico" />
     <None Remove="images\DD-BIM-LOGO.png" />
   </ItemGroup>
 
@@ -21,6 +22,9 @@
 
   <ItemGroup>
     <Resource Include="images\DD-BIM-LOGO.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\DD-BIM-ICON.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
