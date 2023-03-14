@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IFCGeoRefCheckerGUI"
         xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels" x:Class="IFCGeoRefCheckerGUI.MainWindowAllInOne"
-        mc:Ignorable="d"
-        Title="IfcGeoRefChecker" Height="750" Width="650" MinWidth="650">
+        mc:Ignorable="d" Icon="/IFCGeorefCheckerGUI;component/images/DD-BIM-ICON.ico"
+        Title="IfcGeoRefChecker" Height="750" Width="650" MinWidth="650" MinHeight="750"
+        >
     <Window.DataContext>
         <vm:MainWindowViewModel></vm:MainWindowViewModel>
     </Window.DataContext>
@@ -51,7 +52,7 @@
 
             <!--        Status View Model       -->
             <Grid Grid.Row="1">
-                <GroupBox Header="Status report">
+                <GroupBox Header="Input IFC Files">
                     <Grid Margin="5,5,5,5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -66,7 +67,7 @@
                         </StackPanel>
                         <StackPanel Grid.Row="1">
                             <Label Content="Loaded IFC-Files"></Label>
-                            <ListBox MinHeight="150" ScrollViewer.VerticalScrollBarVisibility="Auto" MaxHeight="150"
+                            <ListBox MinHeight="175" ScrollViewer.VerticalScrollBarVisibility="Auto" MaxHeight="150"
                                      ScrollViewer.HorizontalScrollBarVisibility="Auto" ItemsSource="{Binding filePanelViewModel.FilePaths}"
                                      SelectionMode="Single" SelectedItem="{Binding filePanelViewModel.SelectedPath}">
                             </ListBox>
@@ -78,7 +79,7 @@
 
             <!--        Check View Model        -->
             <Grid Grid.Row="2">
-                <GroupBox Header="Check overview">
+                <GroupBox Header="Status report">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -116,7 +117,7 @@
 
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <GroupBox Header="Log output" Margin="0,5,0,5">
-                <RichTextBox x:Name="LogBox" Margin="0,5,0,5"></RichTextBox>
+                <RichTextBox x:Name="LogBox" Margin="0,5,0,5" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextChanged="LogBox_TextChanged"></RichTextBox>
             </GroupBox>
         </Grid>
 
@@ -148,7 +149,8 @@
                     Padding="1,5,1,5" Command="{Binding checkViewModel.CheckIFC}" CommandParameter="{Binding filePanelViewModel.FilePaths}"
                     />
 
-            <Button Content="Update File" Grid.Row="4" Command="{Binding OpenUpdateDialogCommand}">
+            <Button Content="Update File" Grid.Row="4" Command="{Binding OpenUpdateDialogCommand}"
+                    Margin="10,10,10,10" Padding="1,5,1,5">
                 
             </Button>
             
