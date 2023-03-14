@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+
 using Xbim.Ifc;
+using Serilog;
 
 namespace IFCGeoRefCheckerGUI.ViewModels
 {
@@ -166,6 +168,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                 else
                 {
                     this.IsChecking = true;
+                    Log.Information($"Starting to check {selectedPath}");
                     using (var model = IfcStore.Open(selectedPath))
                     {
                         var checker = new GeoRefChecker(model);
@@ -179,9 +182,11 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                             CheckerDict.Add(selectedPath, checker);
                             this.NrOfChecks = CheckerDict.Count;
                         }
+                        Log.Information($"Writing check protocoll to {WorkingDir}");
                         checker.WriteProtocoll(WorkingDir!);
                     }
                     this.IsChecking = false;
+                    Log.Information($"Finished checking {selectedPath}");
                 }
             });
             await task;
