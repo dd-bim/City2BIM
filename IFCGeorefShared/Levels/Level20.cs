@@ -12,7 +12,7 @@ namespace IFCGeorefShared.Levels
 
         public double? Elevation { get; set; }
 
-        public bool Equals(Level20 other)
+        public bool Equals(Level20? other)
         {
             if (other == null || this == null)
                 return false;

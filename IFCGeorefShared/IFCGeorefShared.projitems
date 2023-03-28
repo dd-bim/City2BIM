@@ -16,6 +16,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level30.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level40.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level50.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PlacementXYZ.cs" />
   </ItemGroup>
 </Project>
