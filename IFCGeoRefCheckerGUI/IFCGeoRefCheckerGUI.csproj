@@ -6,11 +6,16 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
+		<ApplicationIcon>images\DD-BIM-ICON.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="images\DD-BIM-ICON.ico" />
     <None Remove="images\DD-BIM-LOGO.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="images\DD-BIM-ICON.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +32,12 @@
     <Resource Include="images\DD-BIM-ICON.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Import Project="..\IFCGeorefShared\IFCGeorefShared.projitems" Label="Shared" />

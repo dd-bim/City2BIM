@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IFCGeoRefCheckerGUI"
         xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels" x:Class="IFCGeoRefCheckerGUI.MainWindowAllInOne"
-        mc:Ignorable="d" Icon="/IFCGeorefCheckerGUI;component/images/DD-BIM-ICON.ico"
+        mc:Ignorable="d"
         Title="IfcGeoRefChecker" Height="750" Width="650" MinWidth="650" MinHeight="750"
         >
     <Window.DataContext>
@@ -145,7 +145,7 @@
 
 
             <Button x:Name="CheckFileBtn"  Grid.Row="3"
-                    Content="Check selected file" Margin="10,10,10,10"
+                    Content="Check Selected File" Margin="10,10,10,10"
                     Padding="1,5,1,5" Command="{Binding checkViewModel.CheckIFC}" CommandParameter="{Binding filePanelViewModel.FilePaths}"
                     />
 
