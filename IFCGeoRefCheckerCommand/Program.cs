@@ -1,4 +1,6 @@
-﻿using IFCGeorefShared;
+﻿using CommandLine;
+using IFCGeorefShared;
+using Serilog;
 using Xbim.Ifc;
 
 namespace IFCGeoRefCheckerCommand
@@ -7,18 +9,71 @@ namespace IFCGeoRefCheckerCommand
     {
         static void Main(string[] args)
         {
-            //string ifcFilePath = @"D:\Testdaten\GeoRefChecker\Buerogebaeude.ifc";
-            //string ifcFilePath = @"D:\Testdaten\GeoRefChecker\301110Gebaeude-Gruppe.ifc";
-            string ifcFilePath = @"D:\Testdaten\GeoRefChecker\Ausgangsprojekt_Wand_edit_Lev50_ifc4.ifc";
 
-            using (var model = IfcStore.Open(ifcFilePath))
+#if DEBUG
+            args = new[] { "-f", @"..\..\..\input\Buerogebaeude.ifc", @"..\..\..\input\301110Gebaeude-Gruppe.ifc", "-w", @"..\..\..\workingDir" };
+#endif
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            CommandLine.Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(RunChecks).WithNotParsed(HandleParseError);
+
+        }
+        private static void RunChecks(CommandLineOptions options)
+        {
+            List<string> fileNames = options.InputFiles.ToList();
+            Log.Information($"A total of {fileNames.Count} files were specified.");
+
+            foreach (string file in fileNames)
             {
-                var checker = new GeoRefChecker(model);
+                if (!File.Exists(file)) 
+                {
+                    Log.Error($"Specified file does not exist or can not be read: {file}");
+                    continue;
+                }
 
-                checker.WriteProtocoll(@"D:\TestDaten\GeoRefChecker\IfcGeoRefChecker");
+                Log.Information($"Opening and checking file {file}");
+                using (var model = IfcStore.Open(file))
+                {
+                    var checker = new GeoRefChecker(model);
+                    
+                    try
+                    {
+                        Directory.CreateDirectory(options.workingDir);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is IOException || ex is DirectoryNotFoundException)
+                        {
+                            Log.Error($"Specified working dir {options.workingDir} is not valid!");
+                        }
+
+                        else
+                        {
+                            throw;
+                        }
+
+                        Log.Error($"Terminating check due to error");
+                        return;
+
+                    }
+
+                    Log.Information($"Writing protocoll to working directory {options.workingDir}");
+                    checker.WriteProtocoll(options.workingDir);
+                }
             }
 
-            Console.WriteLine("Check finished");
+            Log.Information($"Finished checking files");
+
         }
+
+        private static void HandleParseError(IEnumerable<Error> errors)
+        {
+            Log.Error($"Error while parsing command line arguments!");
+            foreach (Error error in errors)
+            {
+                Log.Error(error.ToString());
+            }
+        }
+
+        
     }
 }

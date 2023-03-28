@@ -8,10 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Xbim.Common" Version="5.1.341" />
     <PackageReference Include="Xbim.Ifc" Version="5.1.341" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="input\" />
+    <Folder Include="workingDir\" />
   </ItemGroup>
 
   <Import Project="..\IFCGeorefShared\IFCGeorefShared.projitems" Label="Shared" />
