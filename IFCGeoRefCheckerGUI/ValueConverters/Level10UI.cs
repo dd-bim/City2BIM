@@ -19,8 +19,21 @@ namespace IFCGeoRefCheckerGUI.ValueConverters
         public string? GUID { get; set; }
         public string? ReferencedEntity { get; set; }
 
-        
+        public bool hasData()
+        {
+            if (string.IsNullOrEmpty(AddressLine1) && 
+                string.IsNullOrEmpty(AddressLine2) &&
+                string.IsNullOrEmpty(PostalCode) &&
+                string.IsNullOrEmpty(Country) &&
+                string.IsNullOrEmpty(Region) &&
+                string.IsNullOrEmpty(Town)) 
+                {
+                return false;
+                }
+            return true;
+        }
     }
 
+    
 
 }
