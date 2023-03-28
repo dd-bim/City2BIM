@@ -161,7 +161,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                 {
                     NoFileSelected?.Invoke(this, EventArgs.Empty);
                 }
-                else if (String.IsNullOrEmpty(WorkingDir) || String.IsNullOrEmpty(Path.GetDirectoryName(WorkingDir)))
+                else if (String.IsNullOrEmpty(WorkingDir) || !System.IO.Directory.Exists(workingDir))
                 {
                     NoWorkingDirSelected?.Invoke(this, EventArgs.Empty);
                 }
@@ -182,7 +182,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                             CheckerDict.Add(selectedPath, checker);
                             this.NrOfChecks = CheckerDict.Count;
                         }
-                        Log.Information($"Writing check protocoll to {WorkingDir}");
+                        Log.Information($"Writing check protocol to {WorkingDir}");
                         checker.WriteProtocoll(WorkingDir!);
                     }
                     this.IsChecking = false;
