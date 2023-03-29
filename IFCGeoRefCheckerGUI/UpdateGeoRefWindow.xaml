@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:IFCGeoRefCheckerGUI"
         xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels"
         xmlns:vc="clr-namespace:IFCGeoRefCheckerGUI.ValueConverters"
-        mc:Ignorable="d" Icon="/IFCGeorefCheckerGUI;component/images/DD-BIM-ICON.ico"
+        mc:Ignorable="d"
         Title="UpdateGeoRefWindow" Height="600" Width="800"
         SizeToContent="Height">
     <Window.DataContext>
@@ -57,8 +57,8 @@
                                 </TextBox.Text>
                             </TextBox>
                             <Label Content="Address Lines:" Grid.Row="1" Grid.Column="0"/>
-                            <TextBox Text="{Binding AddressLine1}"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
-                            <TextBox Text="{Binding AddressLine2}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+                            <TextBox Text="{Binding AddressLine1}"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Center"/>
+                            <TextBox Text="{Binding AddressLine2}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Center"/>
                             <Label Content="Postal Code:" Grid.Row="3" Grid.Column="0"/>
                             <TextBox Text="{Binding PostalCode}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
                             <Label Content="Town:" Grid.Row="3" Grid.Column="2"/>
@@ -74,7 +74,7 @@
         </GroupBox>
 
         <GroupBox Header="Geographic Location of Site" Grid.Row="1" Margin="0,5,0,5">
-            <TabControl ItemsSource="{Binding Level20s}">
+            <TabControl ItemsSource="{Binding Level20s}" Margin="0,4,0,4">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="IfcSite"/>
@@ -114,7 +114,7 @@
                             <StackPanel  Grid.Row="2" Grid.Column="0" Margin="0,5,0,5">
                                 <DockPanel >
                                     <Label Content="RefElevation"/>
-                                    <TextBox VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding Elevation}"  VerticalAlignment="Center"/>
                                 </DockPanel>
                             </StackPanel>
                         </Grid>
@@ -203,12 +203,12 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="Output Path:" Grid.Column="0"/>
-                <TextBox Grid.Column="1"></TextBox>
-                <Button Content="Set Path" Grid.Column="2" Margin="5,0,5,0" Padding="5,1,5,1"/>
-                <Button Content="Start Export" Grid.Column="3" Margin="5,0,5,0" Padding="5,1,5,1"/>
+                <TextBox Text="{Binding OutIfcPath}" Grid.Column="1" VerticalAlignment="Center" Padding="0,3,0,3"></TextBox>
+                <Button Content="Set Path" x:Name="setOutBtn" Grid.Column="2" Margin="5,0,5,0" Padding="5,1,5,1" Click="setOutBtn_Click"/>
+                <Button Content="Start Export" x:Name="exportBtn" Grid.Column="3" Margin="5,0,5,0" Padding="5,1,5,1" Click="exportBtn_Click"/>
             </Grid>
         </GroupBox>
         
-        <Button Content="MyButton" Grid.Row="4" Click="Button_Click" Margin="0,5,0,5"></Button>
+        
     </Grid>
 </Window>
