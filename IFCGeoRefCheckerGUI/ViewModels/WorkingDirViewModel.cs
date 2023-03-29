@@ -30,27 +30,9 @@ namespace IFCGeoRefCheckerGUI.ViewModels
             }
         }
 
-        public DelegateCommand? DirChooseCommand { get; set; }
-
         public WorkingDirViewModel(IEventAggregator eventAggregator)
         {
-            //this.WorkingDirPath = "Please choose path!";
             this.eventAggregator = eventAggregator;
-
-            this.DirChooseCommand = new DelegateCommand(
-                (o) =>
-                {
-                    var dialog = new System.Windows.Forms.FolderBrowserDialog();
-
-                    var dialogResult = dialog.ShowDialog();
-                    
-                    if (dialogResult == System.Windows.Forms.DialogResult.OK)
-                    {
-                        this.WorkingDirPath = dialog.SelectedPath;
-                        this.RaisePropertyChanged(nameof(WorkingDirPath));
-                    }
-                }
-            );
         }
 
         private void WorkingDirChanged()
