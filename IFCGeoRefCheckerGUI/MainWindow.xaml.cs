@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 using Serilog;
 using Serilog.Sinks.RichTextBox.Themes;
 using Xbim.Common;
+using OSGeo.OGR;
+using IFCGeorefShared;
 
 namespace IFCGeoRefCheckerGUI
 {
@@ -40,6 +42,8 @@ namespace IFCGeoRefCheckerGUI
                 MinimumLevel.Debug().CreateLogger();
 
             Log.Information("GeoRefChecker started");
+
+            Settings.configureOgr();
 
         }
 
