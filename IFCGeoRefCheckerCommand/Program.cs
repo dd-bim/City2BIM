@@ -11,9 +11,10 @@ namespace IFCGeoRefCheckerCommand
         {
 
 #if DEBUG
-            args = new[] { "-f", @"..\..\..\input\Buerogebaeude.ifc", @"..\..\..\input\301110Gebaeude-Gruppe.ifc", "-w", @"..\..\..\workingDir" };
+            args = new[] { "-f", @"D:\Testdaten\GeoRefChecker\XPlanung 3D Tegel Projekt\XPlanung-3D_Bebauungsplan_12-50a.ifc", @"..\..\..\input\Buerogebaeude.ifc", @"..\..\..\input\301110Gebaeude-Gruppe.ifc", "-w", @"..\..\..\workingDir" };
 #endif
             Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            GdalConfiguration.ConfigureOgr();
             CommandLine.Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(RunChecks).WithNotParsed(HandleParseError);
 
         }
