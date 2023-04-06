@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Text;
 using static System.FormattableString;
 
 using Xbim.Common;
@@ -13,8 +14,9 @@ using Serilog;
 
 using IFCGeorefShared.Levels;
 using Xbim.Ifc4.ProductExtension;
-using System.Text;
-
+using OSGeo.OGR;
+using System.ComponentModel;
+using Xbim.Ifc.Extensions;
 
 namespace IFCGeorefShared
 {
@@ -83,6 +85,7 @@ namespace IFCGeorefShared
         }
 
         public string FilePath { get; }
+        public GeneralProperties? GenProps { get; set; }
         private IfcStore model { get; set; }
         private List<IIfcSpatialStructureElement> BuildingsAndSites = new List<IIfcSpatialStructureElement>(); 
 
@@ -94,14 +97,177 @@ namespace IFCGeorefShared
 
             checkForLevel10();
             checkForLevel20();
+            checkGeoLocation(this.LoGeoRef20);
             checkForLevel30();
             checkForLevel40And50();
+            checkGeneralProps();
 
             this.TimeChecked = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
             this.ifcVersion = this.model.SchemaVersion;
             this.FilePath = this.model.FileName;
         }
 
+        private void checkGeneralProps()
+        {
+            var allCartPoints = model.Instances.OfType<IIfcCartesianPoint>().ToList();
+            var allCartPointList2D = model.Instances.OfType<IIfcCartesianPointList2D>().ToList();
+            var allCartPointList3D = model.Instances.OfType<IIfcCartesianPointList3D>().ToList();
+
+            double maxX = 0, maxY = 0, maxZ = 0;
+
+            foreach (var pnt in allCartPoints)
+            {
+                if (Math.Abs(pnt.X) > maxX) maxX = Math.Abs(pnt.X);
+                if (Math.Abs(pnt.Y) > maxY) maxY = Math.Abs(pnt.Y);
+                if (Math.Abs(pnt.Z) > maxZ) maxZ = Math.Abs(pnt.Z);
+            }
+
+            foreach (var pntList in  allCartPointList3D)
+            {
+                foreach(var coords in pntList.CoordList)
+                {
+                    if (Math.Abs(coords[0]) > maxX) maxX = Math.Abs(coords[0]);
+                    if (Math.Abs(coords[1]) > maxY) maxY = Math.Abs(coords[1]);
+                    if (Math.Abs(coords[2]) > maxZ) maxZ = Math.Abs(coords[2]);
+                }
+            }
+
+            foreach (var pntList in allCartPointList2D)
+            {
+                foreach (var coords in pntList.CoordList)
+                {
+                    if (Math.Abs(coords[0]) > maxX) maxX = Math.Abs(coords[0]);
+                    if (Math.Abs(coords[1]) > maxY) maxY = Math.Abs(coords[1]);
+                }
+            }
+
+            if (maxX < 1000 && maxY < 1000 && maxZ < 1000) { Log.Information($"Maximum absolute coordinates are: {maxX} | {maxY} | {maxZ}"); }
+            else { Log.Warning($"Found big coordinate values! X: {maxX} Y: {maxY} Z {maxZ}"); }
+
+            var genProps = new GeneralProperties();
+            genProps.X = maxX;
+            genProps.Y = maxY;
+            genProps.Z = maxZ;
+            this.GenProps = genProps;
+            this.checkElevationConsistency();
+
+        }
+
+        private void checkGeoLocation(IList<Level20> lvl20s) 
+        {
+            var hasResults = lvl20s.Any(x => x.IsFullFilled);
+            if (!hasResults) return;
+
+            using (DataSource ds = Ogr.Open(Settings.GetSettings().RegionPath, 0))
+            {
+                if (ds == null)
+                {
+                    Log.Error("Reading of region file failed! \nCanceling operation");
+                    return;
+                }
+
+                var countries = ds.GetLayerByName("ne_10m_admin_1_states_provinces");
+                Feature lastFoundFeature = null;
+                var feature = countries.GetNextFeature();
+                var nameIdx = feature.GetFieldIndex("name");
+                var adminIdx = feature.GetFieldIndex("admin");
+
+                foreach (var lvl20 in lvl20s)
+                {
+                    if (!lvl20.Latitude.HasValue ||  !lvl20.Longitude.HasValue)
+                    {
+                        Log.Information($"IfcSite {lvl20.ReferencedEntity!.GlobalId} has either no latitude or longitude");
+                        continue;
+                    }
+
+                    countries.ResetReading();
+
+                    var pointToTest = new OSGeo.OGR.Geometry(wkbGeometryType.wkbPoint);
+                    pointToTest.AddPoint_2D((double)lvl20.Longitude, (double)lvl20.Latitude);
+
+                    if (lastFoundFeature != null)
+                    {
+                        if (pointToTest.Within(lastFoundFeature.GetGeometryRef()))
+                        {
+                            lvl20.GeographicDescription = $"Site is located in {lastFoundFeature.GetFieldAsString(adminIdx)} in Region {lastFoundFeature.GetFieldAsString(nameIdx)}";
+                            continue;
+                        }
+                    }
+
+                    while(feature != null)
+                    {
+                        if (pointToTest.Within(feature.GetGeometryRef()))
+                        {
+                            lastFoundFeature = feature;
+                            lvl20.GeographicDescription = $"Site is located in {feature.GetFieldAsString(adminIdx)} in Region {feature.GetFieldAsString(nameIdx)}";
+                        }
+                        feature = countries.GetNextFeature();
+                    }
+                }
+            }
+        }
+
+        private void checkElevationConsistency()
+        {
+            var siteElevDict = new Dictionary<string, double>();
+            var sitePlcmtZ = new Dictionary<string, double>();
+            var contextPlcmtElev = new Dictionary<string, double>();
+            double? mapConvHeight = null;
+            foreach (var site in this.model.Instances.OfType<IIfcSite>().ToList())
+            {
+                var elevation = site.RefElevation;
+                if (elevation.HasValue)
+                {
+                    siteElevDict.Add(site.GlobalId, elevation.Value);
+                }
+
+                var plcmt = site.ObjectPlacement;
+                if (plcmt.Z().HasValue)
+                {
+                    sitePlcmtZ.Add(site.GlobalId, plcmt.Z()!.Value);
+                }
+            }
+
+            foreach (var context in this.model.Instances.OfType<IIfcGeometricRepresentationContext>().
+                Where(ctx => ctx.ExpressType.ToString() != "IfcGeometricRepresentationSubContext").ToList())
+            {
+                var plcmt = context.WorldCoordinateSystem;
+                if (plcmt is IIfcAxis2Placement3D)
+                {
+                    var plcmt3D = (IIfcAxis2Placement3D)plcmt;
+                    //var contextType = context.ContextType != null ? (string)context.ContextType : "noTypeSpecified";
+                    //if (contextPlcmtElev.ContainsKey(contextType)) { }
+                    if (plcmt3D.Location == null) { contextPlcmtElev.Add($"#{context.EntityLabel}", 0); }
+                    else { contextPlcmtElev.Add($"#{context.EntityLabel}", plcmt3D.Location.Z); }
+                    
+                }
+            }
+
+            if (this.model.SchemaVersion == Xbim.Common.Step21.XbimSchemaVersion.Ifc4 || this.model.SchemaVersion == Xbim.Common.Step21.XbimSchemaVersion.Ifc4x1)
+            {
+                foreach( var mapConv in this.model.Instances.OfType<IIfcMapConversion>().ToList())
+                {
+                    mapConvHeight = mapConv.OrthogonalHeight;
+                }
+            }
+
+            if (this.GenProps != null)
+            {
+                this.GenProps.SiteElevDict = siteElevDict;
+                this.GenProps.SitePlcmtZDict = sitePlcmtZ;
+                this.GenProps.ContextPlcmtElev = contextPlcmtElev;
+                this.GenProps.mapConvHeight = mapConvHeight;
+            }
+            else
+            {
+                this.GenProps = new GeneralProperties();
+                this.GenProps.SiteElevDict = siteElevDict;
+                this.GenProps.SitePlcmtZDict = sitePlcmtZ;
+                this.GenProps.ContextPlcmtElev = contextPlcmtElev;
+                this.GenProps.mapConvHeight = mapConvHeight; 
+            }
+        }
+        
         private void checkForLevel10()
         {
 
@@ -149,7 +315,29 @@ namespace IFCGeorefShared
                     lvl20.Longitude = site.RefLongitude.Value.AsDouble;
                     lvl20.Elevation =  site.RefElevation.HasValue ? site.RefElevation.Value: null;
                     lvl20.ReferencedEntity = site;
-                    lvl20.IsFullFilled  = true;
+                    lvl20.IsFullFilled = true;
+
+                    if (!(-90 < lvl20.Latitude && lvl20.Latitude < 90 ))
+                    {
+                        Log.Error($"Latitude not in range of -90 - 90 Degree. Latitude is: {lvl20.Latitude}");
+                        lvl20.IsFullFilled = false;
+                    }
+                    if (!(-180 < lvl20.Longitude && lvl20.Longitude < 180))
+                    {
+                        Log.Error($"Longitude not in range of -180 - 180 Degree. Longitude is: {lvl20.Longitude}");
+                        lvl20.IsFullFilled = false;
+                    }
+
+                    if (lvl20.IsFullFilled)
+                    {
+
+                    }
+
+                    if (lvl20.Elevation == 0)
+                    {
+                        Log.Warning($"Elevation might not be properly specified");
+                    }
+                    
                 }
                 else
                 {
@@ -221,6 +409,7 @@ namespace IFCGeorefShared
                 lvl40.IsFullFilled = false;
                 lvl40.project = proj;
                 lvl40.context = context;
+                lvl40.trueNorth = context.TrueNorth;
 
                 //lvl50.mapConversion = this.model.Instances.OfType<IIfcMapConversion>().ToList();
 
@@ -229,7 +418,9 @@ namespace IFCGeorefShared
                 {
                     
                     var wcs = (IIfcAxis2Placement3D)wcsPlcmt;
+                    lvl40.wcs = wcs;
                     var location = wcs.Location;
+                    
 
                     if (location.X > 0 || location.Y > 0 || location.Z > 0) 
                     {
@@ -254,6 +445,20 @@ namespace IFCGeorefShared
                         {
                             lvl50.MapConversion = mapConv;
                             lvl50.IsFullFilled = true;
+                            if (0.9 < mapConv.Scale && mapConv.Scale < 1.1)
+                            {
+                                Log.Warning("Scale of map conversion is between 0.9 and 1.1. This might not be used for conversion of units.");
+                            }
+                            if (mapConv.XAxisAbscissa != null || mapConv.XAxisOrdinate != null)
+                            {
+                                if (context.TrueNorth != null)
+                                {
+                                    var angleTrueNorth = Math.Atan2(context.TrueNorth.Y, context.TrueNorth.X);
+                                    var angleMapConv = Math.Atan2((double)mapConv.XAxisOrdinate, (double)mapConv.XAxisAbscissa);
+                                    Log.Warning("Ifc file contains both true north from the geometric representation context and a rotation angle from the map conversion");
+                                    Log.Warning($"True north is: {angleTrueNorth} and map conversion rotation is: {angleMapConv}");
+                                }
+                            }
                         }
                     }
                 }
@@ -278,11 +483,29 @@ namespace IFCGeorefShared
         {
             var sb = new StringBuilder();
 
-            string header = $"IFCGeoRefChecker protocoll for file {this.model.FileName} \n" +
-                            $"IfcVersion: {this.model.SchemaVersion} \n" +
-                            $"Checked on {this.TimeChecked}";
+            sb.AppendLine($"IFCGeoRefChecker protocoll for file {this.model.FileName}");
+            sb.AppendLine($"IfcVersion: {this.model.SchemaVersion}");
+            sb.AppendLine($"Checked on {this.TimeChecked}");
+            sb.AppendLine($"Maximum coordinates are X: {this.GenProps.X} Y: {this.GenProps.Y} Z: {this.GenProps.Z}");
+            sb.AppendLine();
+            sb.AppendLine($"Ref elevation and Placement Z-Values of site are: ");//+ String.Join(' ', this.GenProps.SiteElevDict!.Values.ToList()));
+            foreach (var site in this.GenProps.SitePlcmtZDict)
+            {
+                var elevation = this.GenProps.SiteElevDict.ContainsKey(site.Key) ? Invariant($"{GenProps.SiteElevDict[site.Key]}") : "not specified";
+                sb.AppendLine($"GUID: {site.Key}\t\t RefElevation: {elevation}\t\tPlacement Z-coordinates: {site.Value}");
+            }
+            sb.AppendLine();
 
-            sb.AppendLine(header);
+            sb.AppendLine($"IfcGeometricRepresentationContext placement z-coordinates are:"); // + String.Join(' ', this.GenProps.ContextPlcmtElev!.Values.ToList()));
+            foreach (var context in this.GenProps.ContextPlcmtElev)
+            {
+                sb.AppendLine($"Context {context.Key}\t\t Placement Z-coordinate: {context.Value}");
+            }
+
+            sb.AppendLine();
+            if (this.GenProps.mapConvHeight != null) { sb.AppendLine($"Map Conversion orthoghonal height is: {this.GenProps.mapConvHeight}"); }
+
+
             sb.AppendLine();
             sb.AppendLine(starLine);
             sb.AppendLine();
@@ -375,25 +598,34 @@ namespace IFCGeorefShared
                 {
                     sb.AppendLine($"Geographic location specified by Entity #{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
                     sb.AppendLine(Invariant($"Latitude: {(lvl20!.Latitude != null ? lvl20!.Latitude : "not specified!")} \t\tLongitude: {(lvl20!.Longitude != null ? lvl20!.Longitude : "not specified!")}"));
-                    sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : "not specified")}"));
+                    sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : "not specified!")}"));
+                    _ = lvl20.GeographicDescription != null ? sb.AppendLine($"According to these coordinates this {lvl20.GeographicDescription}") : null;
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef20 is fulfilled \u2713");
                 }
                 else
                 {
-                    sb.AppendLine($"No geographic location found for Entity #{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"No (valid) geographic location found for Entity #{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
+                    sb.AppendLine(Invariant($"Latitude: {(lvl20!.Latitude != null ? lvl20!.Latitude : "not specified!")} \t\tLongitude: {(lvl20!.Longitude != null ? lvl20!.Longitude : "not specified!")}"));
+                    sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : "not specified!")}"));
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef20 is not fulfilled");
                 }
+
+                sb.AppendLine();
+                sb.AppendLine(dashLine);
+                sb.AppendLine();
             }
 
             if (this.LoGeoRef20.Count < 1)
             {
                 sb.AppendLine($"Checked file does not contain any site!");
+                sb.AppendLine();
+                sb.AppendLine(dashLine);
+                sb.AppendLine();
             }
 
-            sb.AppendLine();
-            sb.AppendLine(dashLine);
+            
             sb.AppendLine();
             sb.AppendLine(starLine);
             sb.AppendLine();
@@ -424,13 +656,13 @@ namespace IFCGeorefShared
                     if (lvl30.plcmt.GetType().Name == "IfcAxis2Placement3D")
                     {
                         var plcmt = (IIfcAxis2Placement3D)lvl30.plcmt;
-                        sb.AppendLine(Invariant($"Direction of X-axis is {(plcmt.RefDirection == null ? "1 / 0 / 0" : $"{plcmt.RefDirection.X} / {plcmt.RefDirection.Y} / {plcmt.RefDirection.Z}" )}"));
-                        sb.AppendLine(Invariant($"Direction of Z-axis is {(plcmt.Axis == null ? "0 / 0 / 1" : $"{plcmt.Axis.X} / {plcmt.Axis.Y} / {plcmt.Axis.Z}")}"));
+                        sb.AppendLine(Invariant($"Direction of X-axis is {(plcmt.RefDirection == null ? "(1 | 0 | 0)" : $"({plcmt.RefDirection.X} | {plcmt.RefDirection.Y} | {plcmt.RefDirection.Z})" )}"));
+                        sb.AppendLine(Invariant($"Direction of Z-axis is {(plcmt.Axis == null ? "(0 | 0 | 1)" : $"({plcmt.Axis.X} | {plcmt.Axis.Y} | {plcmt.Axis.Z}")})"));
                     }
                     else if (lvl30.plcmt.GetType().Name == "IfcAxis2Placement2D") 
                     {
                         var plcmt = (IIfcAxis2Placement2D)lvl30.plcmt;
-                        sb.AppendLine(Invariant($"Direction of X-axis is  {plcmt.RefDirection.X} / {plcmt.RefDirection.Y}"));
+                        sb.AppendLine(Invariant($"Direction of X-axis is  ({plcmt.RefDirection.X} | {plcmt.RefDirection.Y})"));
                     }
                     sb.AppendLine();
                     
@@ -481,7 +713,20 @@ namespace IFCGeorefShared
                     }
                     else 
                     {
-                        sb.AppendLine($"Attribute World Coordinate System of IfcGeometricRepresentationContext is not properly specified");
+                        sb.AppendLine($"Attribute World Coordinate System of IfcGeometricRepresentationContext is not used for georeferencing:");
+                        sb.AppendLine($"Coordinates of the location are:");
+                        sb.AppendLine($"X: {lvl40.wcs!.Location.X}");
+                        sb.AppendLine($"Y: {lvl40.wcs.Location.Y}");
+                        sb.AppendLine($"Z: {lvl40.wcs.Location.Z}");
+                        sb.AppendLine();
+                        if (lvl40.trueNorth != null)
+                        {
+                            sb.AppendLine($"True North is: ({lvl40.trueNorth.X} | {lvl40.trueNorth.Y})");
+                        }
+                        else
+                        {
+                            sb.AppendLine("True North is not specified. This defaults to (0 | 1)");
+                        }
                         sb.AppendLine();
                         sb.AppendLine("LoGeoref40 is not fulfilled");
                     }
@@ -530,6 +775,11 @@ namespace IFCGeorefShared
                     sb.AppendLine($"Rotation X-Axis Ordinate: {lvl50.MapConversion.XAxisOrdinate}");
                     sb.AppendLine($"Scale: {lvl50.MapConversion.Scale}");
 
+                    if (lvl50.MapConversion.Scale < 0.9 && lvl50.MapConversion.Scale < 1.1)
+                    {
+                        sb.AppendLine("Scale of map conversion is between 0.9 and 1.1. This might not be used for conversion of units.");
+                    }
+
                     sb.AppendLine();
 
                     sb.AppendLine($"Target CRS is: {lvl50.MapConversion.TargetCRS.Name}");
@@ -569,6 +819,19 @@ namespace IFCGeorefShared
         
         private string dashLine = "-------------------------------------------------------------------------------------------";
         private string starLine = "*******************************************************************************************";
+    }
+
+    public class GeneralProperties
+    {
+        public double? X { get; set; }
+        public double? Y { get; set; }
+        public double? Z { get; set; }
+
+        public IDictionary<string, double>? SiteElevDict { get; set; }
+        public IDictionary<string, double>? SitePlcmtZDict { get; set; }
+        public IDictionary<string, double>? ContextPlcmtElev { get; set; }
+        public double? mapConvHeight {get; set;} 
+
     }
 
     public class GeoRefCheckerResult

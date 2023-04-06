@@ -16,5 +16,31 @@
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level30.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level40.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level50.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.cpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.prj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.README.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.VERSION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
