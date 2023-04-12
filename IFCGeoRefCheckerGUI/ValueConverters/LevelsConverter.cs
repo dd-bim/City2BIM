@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xbim.Ifc4.Interfaces;
 
 namespace IFCGeoRefCheckerGUI.ValueConverters
 {
@@ -34,6 +35,18 @@ namespace IFCGeoRefCheckerGUI.ValueConverters
             return lvl10UI;
         }
 
+        public static Level20UI convertToLevel20UI(Level20 lvl20)
+        {
+            var lvl20UI = new Level20UI();
+
+            lvl20UI.Latitude = lvl20.Latitude;
+            lvl20UI.Longitude = lvl20.Longitude;
+            lvl20UI.Elevation = lvl20.Elevation;
+            lvl20UI.GUID = lvl20.ReferencedEntity?.GlobalId;
+
+            return lvl20UI;
+        }
+
         public static Level50UI convertToLevel50UI(Level50 lvl50)
         {
             var lvl50UI = new Level50UI();
@@ -54,6 +67,7 @@ namespace IFCGeoRefCheckerGUI.ValueConverters
 
             return lvl50UI;
         }
+
     }
 
     
