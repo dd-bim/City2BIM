@@ -453,10 +453,10 @@ namespace IFCGeorefShared
                             {
                                 if (context.TrueNorth != null)
                                 {
-                                    var angleTrueNorth = Math.Atan2(context.TrueNorth.Y, context.TrueNorth.X);
-                                    var angleMapConv = Math.Atan2((double)mapConv.XAxisOrdinate, (double)mapConv.XAxisAbscissa);
+                                    var angleTrueNorth = Math.Atan2(context.TrueNorth.X, context.TrueNorth.Y) * (180 / Math.PI);
+                                    var angleMapConv = Math.Atan2((double)mapConv.XAxisOrdinate, (double)mapConv.XAxisAbscissa) * (180/Math.PI);
                                     Log.Warning("Ifc file contains both true north from the geometric representation context and a rotation angle from the map conversion");
-                                    Log.Warning($"True north is: {angleTrueNorth} and map conversion rotation is: {angleMapConv}");
+                                    Log.Warning($"True north is: {angleTrueNorth}° and map conversion rotation is: {angleMapConv}°");
                                 }
                             }
                         }
