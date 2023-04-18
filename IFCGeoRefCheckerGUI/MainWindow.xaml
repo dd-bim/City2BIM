@@ -149,10 +149,12 @@
                     Padding="1,5,1,5" Command="{Binding checkViewModel.CheckIFC}" CommandParameter="{Binding filePanelViewModel.FilePaths}"
                     />
 
+            <!--
             <Button Content="Update File" Grid.Row="4" Command="{Binding OpenUpdateDialogCommand}"
                     Margin="10,10,10,10" Padding="1,5,1,5">
                 
             </Button>
+            -->
             
         </Grid>
 
