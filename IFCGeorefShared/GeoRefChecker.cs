@@ -167,7 +167,7 @@ namespace IFCGeorefShared
                 }
 
                 var countries = ds.GetLayerByName("ne_10m_admin_1_states_provinces");
-                Feature lastFoundFeature = null;
+                Feature? lastFoundFeature = null;
                 var feature = countries.GetNextFeature();
                 var nameIdx = feature.GetFieldIndex("name");
                 var adminIdx = feature.GetFieldIndex("admin");
@@ -454,7 +454,7 @@ namespace IFCGeorefShared
                                 if (context.TrueNorth != null)
                                 {
                                     var angleTrueNorth = Math.Atan2(context.TrueNorth.X, context.TrueNorth.Y) * (180 / Math.PI);
-                                    var angleMapConv = Math.Atan2((double)mapConv.XAxisOrdinate, (double)mapConv.XAxisAbscissa) * (180/Math.PI);
+                                    var angleMapConv = Math.Atan2((double)mapConv.XAxisOrdinate!, (double)mapConv.XAxisAbscissa!) * (180/Math.PI);
                                     Log.Warning("Ifc file contains both true north from the geometric representation context and a rotation angle from the map conversion");
                                     Log.Warning($"True north is: {angleTrueNorth}° and map conversion rotation is: {angleMapConv}°");
                                 }
@@ -486,18 +486,18 @@ namespace IFCGeorefShared
             sb.AppendLine($"IFCGeoRefChecker protocoll for file {this.model.FileName}");
             sb.AppendLine($"IfcVersion: {this.model.SchemaVersion}");
             sb.AppendLine($"Checked on {this.TimeChecked}");
-            sb.AppendLine($"Maximum coordinates are X: {this.GenProps.X} Y: {this.GenProps.Y} Z: {this.GenProps.Z}");
+            sb.AppendLine($"Maximum coordinates are X: {this.GenProps!.X} Y: {this.GenProps.Y} Z: {this.GenProps.Z}");
             sb.AppendLine();
             sb.AppendLine($"Ref elevation and Placement Z-Values of site are: ");//+ String.Join(' ', this.GenProps.SiteElevDict!.Values.ToList()));
-            foreach (var site in this.GenProps.SitePlcmtZDict)
+            foreach (var site in this.GenProps.SitePlcmtZDict!)
             {
-                var elevation = this.GenProps.SiteElevDict.ContainsKey(site.Key) ? Invariant($"{GenProps.SiteElevDict[site.Key]}") : "not specified";
+                var elevation = this.GenProps.SiteElevDict!.ContainsKey(site.Key) ? Invariant($"{GenProps.SiteElevDict[site.Key]}") : "not specified";
                 sb.AppendLine($"GUID: {site.Key}\t\t RefElevation: {elevation}\t\tPlacement Z-coordinates: {site.Value}");
             }
             sb.AppendLine();
 
             sb.AppendLine($"IfcGeometricRepresentationContext placement z-coordinates are:"); // + String.Join(' ', this.GenProps.ContextPlcmtElev!.Values.ToList()));
-            foreach (var context in this.GenProps.ContextPlcmtElev)
+            foreach (var context in this.GenProps.ContextPlcmtElev!)
             {
                 sb.AppendLine($"Context {context.Key}\t\t Placement Z-coordinate: {context.Value}");
             }

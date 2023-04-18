@@ -1,17 +1,15 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.2">
+﻿<Project Sdk="WixToolset.Sdk/4.0.0">
   <PropertyGroup>
     <DefineConstants Condition=" '$(Configuration)' == 'Debug' ">HarvestPath=..\DataCatPlugin\bin\Debug\net48</DefineConstants>
     <DefineConstants Condition=" '$(Configuration)' == 'Release' ">HarvestPath=..\DataCatPlugin\bin\Release\net48</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.2" />
-    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.0-rc.2" />
+    <PackageReference Include="WixToolset.Heat" Version="4.*" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.*" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataCatPlugin\DataCatPlugin.csproj">
-      <Name>DataCatPlugin</Name>
-    </ProjectReference>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DataCatPlugin\DataCatPlugin.csproj" />
+	</ItemGroup>
   <ItemGroup>
     <HarvestDirectory Include="$(SolutionDir)DataCatPlugin\bin\$(configuration)\net48\">
       <!--
@@ -33,13 +31,4 @@
   <ItemGroup>
     <None Include="DataCatPluginLicense.rtf" />
   </ItemGroup>
-  
-	<!--
-		<Target Name="HarvestTarget" AfterTargets="BeforeBuild">
-    <Message Text="hier bin ich" Importance="high" />
-    <Message Text="$(SolutionDir)DataCatPlugin\bin\$(configuration)\net48\" Importance="high" />		
-	
-		
-  </Target>
-  -->
 </Project>
