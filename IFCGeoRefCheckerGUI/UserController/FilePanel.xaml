@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="IFCGeoRefCheckerGUI.UserController.FilePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IFCGeoRefCheckerGUI.UserController"
+             xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <!--
+    <UserControl.DataContext>
+        <vm:FilePanelViewModel></vm:FilePanelViewModel>
+    </UserControl.DataContext>
+    -->
+    <Grid>
+        <GroupBox Header="Status report">
+            <Grid Margin="5,5,5,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Status:"></Label>
+                    <Label Content="0 file(s) loades"/>
+                    <Label Content="0 file(s) checked"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1">
+                    <Label Content="Loaded IFC-Files"></Label>
+                    <ListBox MinHeight="150" ItemsSource="{Binding FilePaths}" ScrollViewer.VerticalScrollBarVisibility="Auto" MaxHeight="150" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+                        <!--<ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Content}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate> -->
+                    </ListBox>
+                </StackPanel>
+                <!--<Label Content="Select loaded file for check overview and updating " Grid.Row="2"/>-->
+                <Button Grid.Row="2" Content="Load files" Command="{Binding AddIFCPathsCommand}"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>
