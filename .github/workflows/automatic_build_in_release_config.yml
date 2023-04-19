@@ -40,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: IfcGeoRefCheckerGUI
-          path: ./IFCGeoRefCheckerGUI/bin/Relase/net6.0-windows/
+          path: ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows/
