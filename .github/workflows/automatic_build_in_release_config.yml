@@ -59,4 +59,5 @@ jobs:
         with:
           upload_url: ${{steps.create-new-release.outputs.upload_url }}
           asset_path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-          
+          asset_name: CityBIM_fromRun${{ github.run_number }}
+          asset_content_type: application/octet-stream
