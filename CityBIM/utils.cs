@@ -91,6 +91,77 @@ namespace CityBIM
             return null;
         }
 
+        public static double getHTWDDProjectScale(Document doc)
+        {
+            Schema scaleSchema = getSchemaByName("HTWDD_ProjectScale");
+            if (scaleSchema == null) { return 1.0; }
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            IList<Element> dataStorageList = collector.OfClass(typeof(DataStorage)).ToElements();
+
+            foreach (var ds in dataStorageList)
+            {
+                Entity ent = ds.GetEntity(scaleSchema);
+
+                if (ent.IsValid())
+                {
+                    double scale = ent.Get<double>(scaleSchema.GetField("ProjectScale"), UnitTypeId.Custom);
+
+                    if (scale != 1.0) { return scale; }
+                    else { return 1.0;}
+                }
+            }
+
+            return 1.0;
+        }
+
+        public static void storeProjectScaleInExtensibleStorage(Document doc, double Scale)
+        {
+            using (Transaction trans = new Transaction(doc, "Store Project Scale"))
+            {
+                trans.Start();
+                Schema projectScaleSchema = getSchemaByName("HTWDD_ProjectScale");
+
+                if (projectScaleSchema == null)
+                {
+                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                    sb.SetSchemaName("HTWDD_ProjectScale");
+                    sb.SetReadAccessLevel(AccessLevel.Public);
+                    sb.SetWriteAccessLevel(AccessLevel.Public);
+
+                    FieldBuilder fb = sb.AddSimpleField("ProjectScale", typeof(double));
+                    var unitsNeeded = fb.NeedsUnits();
+                    fb.SetDocumentation("Field stores project scale used for UTM coordinate calculations");
+                    fb.SetSpec(SpecTypeId.Custom);
+                    projectScaleSchema = sb.Finish();
+                }
+
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                IList<Element> dataStorageList = collector.OfClass(typeof(DataStorage)).ToElements();
+
+                if (dataStorageList.Count > 0)
+                {
+                    foreach (var ds in dataStorageList)
+                    {
+                        var existingEnt = ds.GetEntity(projectScaleSchema);
+                        if (existingEnt.IsValid())
+                        {
+                            ds.DeleteEntity(projectScaleSchema);
+                        }
+                    }
+                }
+
+                Entity ent = new Entity(projectScaleSchema);
+                Field projectScaleField = projectScaleSchema.GetField("ProjectScale");
+                ent.Set<double>(projectScaleField, Scale, UnitTypeId.Custom);
+
+                DataStorage scaleIDStorage = DataStorage.Create(doc);
+                scaleIDStorage.SetEntity(ent);
+
+                trans.Commit();
+            }
+        }
+
         public static XYZ getProjectBasePointMeter(Document doc)
         {
             var projectBasePointFeet = BasePoint.GetProjectBasePoint(doc);
@@ -101,6 +172,18 @@ namespace CityBIM
         {
             ProjectPosition projectPositionOrigin = doc.ActiveProjectLocation.GetProjectPosition(XYZ.Zero);
             return projectPositionOrigin.Angle * 180 / System.Math.PI;
+        }
+
+        public static Transform getGlobalToRevitTransform(Document doc)
+        {
+            var pbp_feet = BasePoint.GetProjectBasePoint(doc).SharedPosition;
+            var angle_rad = doc.ActiveProjectLocation.GetProjectPosition(XYZ.Zero).Angle;
+
+            var trafoRot = Transform.CreateRotation(XYZ.BasisZ, -angle_rad);
+            var trafoTrans = Transform.CreateTranslation(-pbp_feet);
+            var trafo = trafoRot.Multiply(trafoTrans);
+
+            return trafo;
         }
 
         public static List<Dictionary<string, Dictionary<string, string>>> getSchemaAttributesForElement(Element element)
