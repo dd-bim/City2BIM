@@ -6,6 +6,7 @@
     <Product>CityBIM</Product>
     <Copyright>Copyright ©  2019</Copyright>
     <LangVersion>7.1</LangVersion>
+	  <UseWPF>true</UseWPF>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -101,77 +102,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
     <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="GUI\City2BIM\CityGML_ImportUI.xaml.cs">
-      <DependentUpon>CityGML_ImportUI.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\DTM2BIM\Terrain_ImportUI.xaml.cs">
-      <DependentUpon>Terrain_ImportUI.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\IFCExport\IfcExportDialog.xaml.cs">
-      <DependentUpon>IfcExportDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\Modify\LayerSelector.xaml.cs">
-      <DependentUpon>LayerSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\NAS2BIM\ImportDialogAlkis.xaml.cs">
-      <DependentUpon>ImportDialogAlkis.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\Properties\PropertyWindow.xaml.cs">
-      <DependentUpon>PropertyWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="GUI\XPlan2BIM\ImportXPlanDialog.xaml.cs">
-      <DependentUpon>ImportXPlanDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Localization.Designer.cs">
-      <DependentUpon>Localization.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="GUI\Georeferencing\Wpf_GeoRef_Form.xaml.cs">
-      <DependentUpon>Wpf_GeoRef_Form.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="ResourcePictures.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ResourcePictures.resx</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="GUI\City2BIM\CityGML_ImportUI.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\DTM2BIM\Terrain_ImportUI.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\Georeferencing\Wpf_GeoRef_Form.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\IFCExport\IfcExportDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\Modify\LayerSelector.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\NAS2BIM\ImportDialogAlkis.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\Properties\PropertyWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\XPlan2BIM\ImportXPlanDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="CityBIM.addin">
