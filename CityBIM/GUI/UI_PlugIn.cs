@@ -90,8 +90,8 @@ namespace CityBIM.GUI
             #region modify panel
 
             RibbonPanel panelModify = application.CreateRibbonPanel(tabName, "Modify");
-            PushButton buttonHideLayer = panelModify.AddItem(new PushButtonData("Hide surfaces.", "Hides surfaces", thisAssemblyPath, "CityBIM.GUI.Modify.Cmd_HideLayers")) as PushButton;
-            buttonHideLayer.ToolTip = "Hide surfaces by its theme.";
+            PushButton buttonHideLayer = panelModify.AddItem(new PushButtonData("Hide Objects.", "Hide Objects", thisAssemblyPath, "CityBIM.GUI.Modify.Cmd_HideLayers")) as PushButton;
+            buttonHideLayer.ToolTip = "Hide objects by their theme.";
             buttonHideLayer.LargeImage = getBitmapFromResx(ResourcePictures.HideLayerIcon_32px_96dpi);
             
             #endregion modify panel
