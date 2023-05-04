@@ -128,7 +128,7 @@ namespace CityBIM.GUI.City2BIM
                     }
 
                     //erstellt Revit-seitig die Geometrie und ordnet Attributwerte zu
-                    RevitCityBuilder cityModel = new CityBIM.Builder.RevitCityBuilder(doc, gmlBuildings, lowerCorner, attributes, importSettings.CodeTranslate);
+                    CityBuilder cityModel = new CityBuilder(doc, gmlBuildings, lowerCorner, attributes, importSettings.CodeTranslate);
 
                     if (importSettings.ImportGeomType == CityGeometry.Solid)
                         cityModel.CreateBuildings();
