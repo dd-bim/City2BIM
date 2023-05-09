@@ -42,17 +42,28 @@ jobs:
           name: IfcGeoRefCheckerGUI
           path: ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows/
           
-      - name: Create GitHub relase
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Create GitHub release
+      - uses: softprops/action-gh-release@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: Automatic release from action run ${{ github.run_number }}
-          files: |
+          files:
             ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
             ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-          
+          name: Automatic release from action run ${{ github.run_number }}
+            
+            
+            
+            
+#      - name: Create GitHub relase
+#        uses: "marvinpinto/action-automatic-releases@latest"
+#        with:
+#          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+#          automatic_release_tag: "latest"
+#          prerelease: true
+#          title: Automatic release from action run ${{ github.run_number }}
+#          files: |
+#            ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
+#            ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+#          
 #      - name: Create GitHub release
 #        id: create-new-release
 #        uses: actions/create-release@v1
