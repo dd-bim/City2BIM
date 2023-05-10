@@ -18,8 +18,8 @@ jobs:
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
         
-      #- name: Restore Packages
-      #  run: nuget restore GeospatialEngineeringBIM.sln
+      - name: Restore Packages
+        run: nuget restore GeospatialEngineeringBIM.sln
         
       - name: Build Solution
         run: msbuild.exe -restore GeospatialEngineeringBIM.sln /p:Configuration=Release
