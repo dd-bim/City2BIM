@@ -18,8 +18,8 @@ jobs:
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
         
-      - name: Restore Packages
-        run: nuget restore GeospatialEngineeringBIM.sln
+      #- name: Restore Packages
+      #  run: nuget restore GeospatialEngineeringBIM.sln
         
       - name: Build Solution
         run: msbuild.exe -restore GeospatialEngineeringBIM.sln /p:Configuration=Release
@@ -46,8 +46,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files:
-            ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
-            ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+            D:/a/City2BIM/City2BIM/DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
+            D:/a/City2BIM/City2BIM/CityBIM/CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
           name: Automatic release from action run ${{ github.run_number }}
           tag_name: ${{github.run_number}}
             
