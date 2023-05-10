@@ -30,11 +30,11 @@ jobs:
           name: DataCatPluginInstaller
           path: ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
          
-      - name: Upload CityBIMInstaller
-        uses: actions/upload-artifact@v3
-        with:
-          name: CityBIMInstaller
-          path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+      #- name: Upload CityBIMInstaller
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: CityBIMInstaller
+      #    path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
 
       - name: Upload IfcGeoRefChecker
         uses: actions/upload-artifact@v3
@@ -49,12 +49,26 @@ jobs:
           name: IfcGeoRefCheckerGUI
           path: ./download/IfcGeoRefCheckerGUI
           
+      
+      
+      
+      - name: Navigate to download folder
+        run: cd ./download/IfcGeoRefCheckerGUI
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+      
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+      
+      
+      
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi            
-            ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+            #./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
             D:/a/City2BIM/City2BIM/download/IfcGeoRefCheckerGUI/IfcGeoRefCheckerGUI.zip
             
           name: Automatic release from action run ${{ github.run_number }}
