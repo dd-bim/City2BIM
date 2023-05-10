@@ -46,7 +46,7 @@ jobs:
         id: download
         uses: actions/download-artifact@v3
         with:
-          name: IfcGeoRefCheckerGUI.zip
+          name: IfcGeoRefCheckerGUI
           path: ./download/IfcGeoRefCheckerGUI
           
       - name: Create GitHub release
@@ -55,7 +55,7 @@ jobs:
           files: |
             ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi            
             ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-            ${{steps.download.outputs.download-path}}/IfcGeoRefCheckerGUI.zip
+            D:/a/City2BIM/City2BIM/download/IfcGeoRefCheckerGUI/IfcGeoRefCheckerGUI.zip
             
           name: Automatic release from action run ${{ github.run_number }}
           tag_name: ${{github.run_number}}
