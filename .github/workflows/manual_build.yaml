@@ -3,7 +3,7 @@ name: manual_build
 on: 
     workflow_dispatch:
     push:
-      branches: Housekeeping
+      branches: master
 
 jobs:
   build:
@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-            ref: 'Housekeeping'
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.1
@@ -27,15 +25,54 @@ jobs:
         
       - name: Build Solution
         run: msbuild.exe -restore GeospatialEngineeringBIM.sln /p:Configuration=Release
-        
+              
       - name: Upload DataCatInstaller
         uses: actions/upload-artifact@v3
         with:
           name: DataCatPluginInstaller
           path: ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
-          
-      - name: Upload CityBIMInstaller
+         
+      #- name: Upload CityBIMInstaller
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: CityBIMInstaller
+      #    path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+
+      - name: Upload IfcGeoRefChecker
         uses: actions/upload-artifact@v3
         with:
-          name: CityBIMInstaller
-          path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+          name: IfcGeoRefCheckerGUI
+          path: ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows/
+          
+      - name: Download IfcGeoRefChecker
+        id: download
+        uses: actions/download-artifact@v3
+        with:
+          name: IfcGeoRefCheckerGUI
+          path: ./download/IfcGeoRefCheckerGUI
+          
+      
+      
+      
+      - name: Navigate to download folder
+        run: cd ./download/IfcGeoRefCheckerGUI
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+      
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+      
+      
+      
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi            
+            #./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+            D:/a/City2BIM/City2BIM/download/IfcGeoRefCheckerGUI/IfcGeoRefCheckerGUI.zip
+            
+          name: Automatic release from action run ${{ github.run_number }}
+          tag_name: ${{github.run_number}}
+            
