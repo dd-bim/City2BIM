@@ -10,6 +10,7 @@ using Autodesk.Revit.DB;
 using OSGeo.GDAL;
 using OSGeo.OGR;
 using Serilog;
+using Autodesk.Revit.UI;
 
 namespace CityBIM
 {
@@ -93,7 +94,7 @@ namespace CityBIM
 
         public static double getHTWDDProjectScale(Document doc)
         {
-            Schema scaleSchema = getSchemaByName("HTWDD_ProjectScale");
+            Schema scaleSchema = getSchemaByName("HTWDD_GeorefSchema");
             if (scaleSchema == null) { return 1.0; }
 
             FilteredElementCollector collector = new FilteredElementCollector(doc);
@@ -115,50 +116,144 @@ namespace CityBIM
             return 1.0;
         }
 
+        public static int getHTWDDEPSGCode(Document doc)
+        {
+            Schema scaleSchema = getSchemaByName("HTWDD_GeorefSchema");
+            if (scaleSchema == null) { return -999; }
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            IList<Element> dataStorageList = collector.OfClass(typeof(DataStorage)).ToElements();
+
+            foreach (var ds in dataStorageList)
+            {
+                Entity ent = ds.GetEntity(scaleSchema);
+
+                if (ent.IsValid())
+                {
+                    int epsg = ent.Get<int>(scaleSchema.GetField("EPSGCode"), UnitTypeId.Custom);
+
+                    if (epsg != 0) { return epsg; }
+                    else { return -999; }
+                }
+            }
+
+            return -999;
+        }
+
         public static void storeProjectScaleInExtensibleStorage(Document doc, double Scale)
         {
             using (Transaction trans = new Transaction(doc, "Store Project Scale"))
             {
                 trans.Start();
-                Schema projectScaleSchema = getSchemaByName("HTWDD_ProjectScale");
+                Schema geoRefSchema = getSchemaByName("HTWDD_GeorefSchema");
+                if (geoRefSchema == null) { geoRefSchema = createHTWGeorefSchema(doc); }
 
-                if (projectScaleSchema == null)
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                IList<Element> dataStorageList = collector.OfClass(typeof(DataStorage)).ToElements();
+
+                Entity existingEnt;
+                if (dataStorageList.Count > 0)
                 {
-                    SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
-                    sb.SetSchemaName("HTWDD_ProjectScale");
-                    sb.SetReadAccessLevel(AccessLevel.Public);
-                    sb.SetWriteAccessLevel(AccessLevel.Public);
-
-                    FieldBuilder fb = sb.AddSimpleField("ProjectScale", typeof(double));
-                    var unitsNeeded = fb.NeedsUnits();
-                    fb.SetDocumentation("Field stores project scale used for UTM coordinate calculations");
-                    fb.SetSpec(SpecTypeId.Custom);
-                    projectScaleSchema = sb.Finish();
+                    bool entityFound = false;
+                    foreach (var ds in dataStorageList)
+                    {
+                        existingEnt = ds.GetEntity(geoRefSchema);
+                        if (existingEnt.IsValid())
+                        {
+                            existingEnt.Set<double>("ProjectScale", Scale, UnitTypeId.Custom);
+                            ds.SetEntity(existingEnt);
+                            entityFound = true;
+                            break;                            
+                        }
+                    }
+                    if (!entityFound)
+                    {
+                        DataStorage geoRefStorage = DataStorage.Create(doc);
+                        Entity ent = new Entity(geoRefSchema);
+                        Field projectScaleField = geoRefSchema.GetField("ProjectScale");
+                        ent.Set<double>(projectScaleField, Scale, UnitTypeId.Custom);
+                        geoRefStorage.SetEntity(ent);
+                    }
                 }
+                else
+                {
+                    DataStorage geoRefStorage = DataStorage.Create(doc);
+                    Entity ent = new Entity(geoRefSchema);
+                    Field projectScaleField = geoRefSchema.GetField("ProjectScale");
+                    ent.Set<double>(projectScaleField, Scale, UnitTypeId.Custom);
+                    geoRefStorage.SetEntity(ent);
+                }
+
+                trans.Commit();
+            }
+        }
+
+        public static void storeEPSGCodeInExtensibleStorage(Document doc, int EPSGCode)
+        {
+            using (Transaction trans = new Transaction(doc, "Store EPSG Code"))
+            {
+                trans.Start();
+                Schema geoRefSchema = getSchemaByName("HTWDD_GeorefSchema");
+                if (geoRefSchema == null) { geoRefSchema = createHTWGeorefSchema(doc); }
 
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
                 IList<Element> dataStorageList = collector.OfClass(typeof(DataStorage)).ToElements();
 
                 if (dataStorageList.Count > 0)
                 {
+                    bool entityFound = false;
                     foreach (var ds in dataStorageList)
                     {
-                        var existingEnt = ds.GetEntity(projectScaleSchema);
+                        var existingEnt = ds.GetEntity(geoRefSchema);
                         if (existingEnt.IsValid())
                         {
-                            ds.DeleteEntity(projectScaleSchema);
+                            Field projectScaleField = geoRefSchema.GetField("EPSGCode");
+                            existingEnt.Set<int>(projectScaleField, EPSGCode);
+                            ds.SetEntity(existingEnt);
+                            entityFound = true;
+                            break;
                         }
                     }
+                    if (!entityFound)
+                    {
+                        DataStorage geoRefStorage = DataStorage.Create(doc);
+                        Entity ent = new Entity(geoRefSchema);
+                        Field projectScaleField = geoRefSchema.GetField("EPSGCode");
+                        ent.Set<int>(projectScaleField, EPSGCode, UnitTypeId.Custom);
+                        geoRefStorage.SetEntity(ent);
+                    }
+                }
+                else
+                {
+                    DataStorage geoRefStorage = DataStorage.Create(doc);
+                    Entity ent = new Entity(geoRefSchema);
+                    Field projectScaleField = geoRefSchema.GetField("EPSGCode");
+                    ent.Set<int>(projectScaleField, EPSGCode, UnitTypeId.Custom);
+                    geoRefStorage.SetEntity(ent);
                 }
 
-                Entity ent = new Entity(projectScaleSchema);
-                Field projectScaleField = projectScaleSchema.GetField("ProjectScale");
-                ent.Set<double>(projectScaleField, Scale, UnitTypeId.Custom);
-
-                DataStorage scaleIDStorage = DataStorage.Create(doc);
-                scaleIDStorage.SetEntity(ent);
-
                 trans.Commit();
+            }
+        }
+
+        public static Schema createHTWGeorefSchema(Document doc)
+        {
+            using (Transaction trans = new Transaction(doc, "create HTW Georef Schema"))
+            {
+                SchemaBuilder sb = new SchemaBuilder(Guid.NewGuid());
+                sb.SetSchemaName("HTWDD_GeorefSchema");
+                sb.SetReadAccessLevel(AccessLevel.Public);
+                sb.SetWriteAccessLevel(AccessLevel.Public);
+
+                FieldBuilder fbScale = sb.AddSimpleField("ProjectScale", typeof(double));
+                fbScale.SetSpec(SpecTypeId.Custom);
+                fbScale.SetDocumentation("Field stores project scale used for UTM coordinate calculations");
+                
+                FieldBuilder fbEPSG = sb.AddSimpleField("EPSGCode", typeof(int));
+                //fbEPSG.SetSpec(SpecTypeId.Custom);
+                fbEPSG.SetDocumentation("Field stores EPSG code of used CRS");                
+                
+                return sb.Finish();
             }
         }
 
