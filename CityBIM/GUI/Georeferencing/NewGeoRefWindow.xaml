@@ -1,0 +1,66 @@
+﻿<Window x:Class="CityBIM.GUI.Georeferencing.NewGeoRefWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CityBIM.GUI.Georeferencing"
+        mc:Ignorable="d"
+        xmlns:vm="clr-namespace:CityBIM.GUI.Georeferencing"
+        Title="NewGeoRefWindow" Width="800" SizeToContent="Height">
+
+    <Window.DataContext>
+        <vm:GeoRefViewModel></vm:GeoRefViewModel>
+    </Window.DataContext>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="5,5,5,5">
+            <GroupBox Header="Current Settings">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Eastings [m]" Grid.Row="0" Grid.Column="0"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Eastings}"/>
+                    <Label Content="Northings [m]" Grid.Row="1" Grid.Column="0"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Northings}"/>
+                    <Label Content="Elevation [m]" Grid.Row="2" Grid.Column="0"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Elevation}"/>
+                    <Label Content="True North [ ° ]" Grid.Row="3" Grid.Column="0"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding TrueNorth}"/>
+                    <Label Content="Project Scale" Grid.Row="4" Grid.Column="0"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ProjectScale}"/>
+                    <Label Content="EPSG-Code" Grid.Row="5" Grid.Column="0"/>
+                    <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding EPSGCode}"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        
+        <Grid Grid.Row="2" Margin="5,5,5,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Save" Padding="20,3,20,3" Margin="0,0,3,0" Click="Save_Click"/>
+            <Button Grid.Column="2" Content="Cancel" Padding="20,3,20,3" Margin="0,0,3,0" Height="24" Click="Cancel_Click"/>
+        </Grid>
+        
+    </Grid>
+</Window>
