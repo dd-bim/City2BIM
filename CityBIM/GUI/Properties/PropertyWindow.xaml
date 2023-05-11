@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:CityBIM.GUI.Properties"
              xmlns:lang="clr-namespace:CityBIM"
              mc:Ignorable="d" 
-             Width="600" MinWidth="600" MinHeight="700" Height="700" Title="{x:Static lang:Localization.PropertyWindow}">
+             Width="600" MinWidth="600" MinHeight="700" Height="700" Title="Properties for selected object">
     <StackPanel Margin="5">
         <Grid Margin="10" Height="600">
             <TabControl x:Name="tabs">
@@ -27,8 +27,8 @@
                 <ColumnDefinition Width="2*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button x:Name="id1" Margin="10 0 10 0" Content="{x:Static lang:Localization.PropertyWindow_id1}" Click="save_Click" Grid.Column="0"></Button>
-            <Button x:Name="id2" Margin="10 0 10 0" Content="{x:Static lang:Localization.PropertyWindow_id2}" Click="cancel_Click" Grid.Column="2"></Button>
+            <Button x:Name="id1" Margin="10 0 10 0" Content="save and close" Click="save_Click" Grid.Column="0"></Button>
+            <Button x:Name="id2" Margin="10 0 10 0" Content="cancel" Click="cancel_Click" Grid.Column="2"></Button>
         </Grid>
         
     </StackPanel>

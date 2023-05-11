@@ -20,43 +20,11 @@ namespace CityBIM.Reader
         {
             XDocument gmlDoc;
 
-            if (Prop_CityGML_settings.IsServerRequest)
-            {
-                //server url as specified (if no change VCS server will be called)
-                string wfsUrl = Prop_CityGML_settings.ServerUrl;
+            //local file path
+            var path = Prop_CityGML_settings.FileUrl;
 
-                //to ensure correct coordinate order (VCS response is always YXZ order)
-                Prop_CityGML_settings.IsGeodeticSystem = true;
-
-                //client class for xml-POST request from WFS server
-                WFSClient client = new WFSClient(wfsUrl);
-
-                //response with parameters: Site-Lon, Site-Lat, extent, max response of bldgs, CRS)
-                //Site coordinates from Revit.SiteLocation
-                //extent from used-defined def (default: 300 m)
-                //max response dependent of server settings (at VCS), currently 500
-                //CRS:  supported from server are currently: Pseudo-Mercator (3857), LatLon (4326), German National Systems: West(25832), East(25833)
-                //      supported by PlugIn are only the both German National Systems
-
-                if (Prop_GeoRefSettings.Epsg != "EPSG:25832" && Prop_GeoRefSettings.Epsg != "EPSG:25833")
-                    TaskDialog.Show("EPSG not supported!", "Only EPSG:25832 or EPSG:25833 will be supported by server. Please change the EPSG-Code in Georeferencing window.");
-
-                gmlDoc = client.getFeaturesCircle(Prop_CityGML_settings.ServerCoord[0], Prop_CityGML_settings.ServerCoord[1], Prop_CityGML_settings.Extent, 500, Prop_GeoRefSettings.Epsg);
-
-                if (Prop_CityGML_settings.SaveServerResponse)
-                {
-                    gmlDoc.Save(Prop_CityGML_settings.PathResponse + "\\" + Math.Round(Prop_CityGML_settings.ServerCoord[1], 4) + "_" + Math.Round(Prop_CityGML_settings.ServerCoord[0], 4) + ".gml");
-                }
-            }
-            else
-            {
-                //local file path
-                var path = Prop_CityGML_settings.FileUrl;
-
-                //Load XML document from local file
-                gmlDoc = XDocument.Load(path);
-
-            }
+            //Load XML document from local file
+            gmlDoc = XDocument.Load(path);
 
             var gmlRead = new CityGMLReader(gmlDoc, solid); /*gmlDoc,*/ /*, user-defined calculation parameters may from extended GUI or from config file*/
         

@@ -2,6 +2,7 @@
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using CityBIM.GUI.Georeferencing;
 
 namespace CityBIM.GUI
 {
@@ -14,11 +15,11 @@ namespace CityBIM.GUI
         {
             Document doc = revit.Application.ActiveUIDocument.Document;
 
-            Prop_GeoRefSettings.SetInitialSettings(doc);
-
-            var form = new GUI.Wpf_GeoRef_Form(doc);
-            form.ShowDialog();
-
+            var viewModel = new GeoRefViewModel(doc);
+            var dialog = new NewGeoRefWindow();
+            dialog.DataContext = viewModel;
+            var result = dialog.ShowDialog();
+            
             return Result.Succeeded;
         }
     }

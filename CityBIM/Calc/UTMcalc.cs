@@ -3,9 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 
-using GeographicLib;
-using GeographicLib.Projections;
-
 namespace CityBIM.Calc
 {
     public static class UTMcalc
@@ -14,13 +11,7 @@ namespace CityBIM.Calc
         public static readonly double UtmFalseEasting = 500000.0;
         public static readonly double UtmFalseNorthing = 10000000.0;
 
-        public static readonly Ellipsoid Grs80 = new Ellipsoid(GeographicLib.Constants.GRS80_a, 1/298.257222101);
-
-        private static readonly TransverseMercator utmGrs80 = new TransverseMercator(Grs80.EquatorialRadius, Grs80.Flattening, UtmScale);
-
         private static readonly string egm2008Path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", "/");
-
-        private static readonly GravityModel egm2008 = new GravityModel("egm2008", egm2008Path);
 
         public static readonly double Rho = 180.0 / Math.PI;
 
@@ -140,26 +131,6 @@ namespace CityBIM.Calc
             return value.ToString(fmt, CultureInfo.InvariantCulture);
         }
 
-        public static void UtmGrs80Forward(int zone, double lat, double lon, out double easting, out double northing, out double gamma, out double scale, out bool isSouth)
-        {
-            var lon0 = ZoneToLon0(zone);
-            (easting, northing) = utmGrs80.Forward(lon0, lat, lon, out gamma, out scale);
-            
-            easting += UtmFalseEasting;
-            isSouth = false;
-            if(northing < 0.0)
-            {
-                northing += UtmFalseNorthing;
-                isSouth = true;
-            }
-        }
-
-        public static void UtmGrs80Reverse(int zone, bool isSouth, double easting, double northing, out double lat, out double lon, out double gamma, out double scale)
-        {
-            var lon0 = ZoneToLon0(zone);
-            (lat, lon) = utmGrs80.Reverse(lon0, easting - UtmFalseEasting, isSouth ? northing - UtmFalseNorthing : northing, out gamma, out scale);
-        }
-
         public static long[] SplitSexagesimal(string geographyDegree)
         {
             long deg = long.Parse(geographyDegree.Substring(0, geographyDegree.IndexOf('°')));
@@ -174,47 +145,6 @@ namespace CityBIM.Calc
             long[] geograpgyDegreeSplit = new long[] { deg, min, sec, frac };
 
             return geograpgyDegreeSplit;
-        }
-
-        public static double GeoidHeight(double lat, double lon) => egm2008.GeoidHeight(lat, lon);
-
-        public static double GaussianRadiusOfCurvature(double lat)
-        {
-            var sin = Math.Sin(DegToRad(lat));
-            return Grs80.PolarRadius / (1.0 - (Grs80.EccentricitySq * sin * sin));
-        }
-
-        public static void GetGeoRef(bool isPosGeo, ref double lat, ref double lon, ref int? zone, ref double east, ref double north, ref bool isSouth,
-            double orthoHeight, bool isRotGeo, ref double geoAzi, ref double gridAzi, out double combinedScale)
-        {
-            double convergence, projScale;
-            if(isPosGeo)
-            {
-                zone = zone ?? LonToZone(lon);
-                UtmGrs80Forward(zone.Value, lat, lon, out east, out north, out convergence, out projScale, out isSouth);
-            }
-            else
-            {
-                zone = zone ?? int.MaxValue;
-                UtmGrs80Reverse(zone.Value, isSouth, east, north, out lat, out lon, out convergence, out projScale);
-            }
-
-            var radius = GaussianRadiusOfCurvature(lat);
-            var geoidHeight = GeoidHeight(lat, lon);
-            var heightScale = radius / (radius + orthoHeight + geoidHeight);
-
-            combinedScale = projScale * heightScale;
-
-            if(isRotGeo)
-            {
-                geoAzi = AzimuthToRange(geoAzi);
-                gridAzi = AzimuthToRange(geoAzi - convergence);
-            }
-            else
-            {
-                gridAzi = AzimuthToRange(gridAzi);
-                geoAzi = AzimuthToRange(gridAzi + convergence);
-            }
         }
     }
 }

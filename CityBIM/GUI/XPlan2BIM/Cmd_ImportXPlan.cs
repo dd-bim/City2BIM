@@ -31,7 +31,6 @@ namespace CityBIM.GUI
         {
             UIDocument uiDoc = revit.Application.ActiveUIDocument;
             Document doc = uiDoc.Document;
-            Prop_GeoRefSettings.SetInitialSettings(doc);
             //MetaInformation.createXPlanungSchema(doc);
 
             ElementId terrainId = utils.getHTWDDTerrainID(doc);

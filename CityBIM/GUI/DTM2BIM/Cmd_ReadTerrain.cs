@@ -34,9 +34,6 @@ namespace CityBIM.GUI
             //get revit document
             Document doc = revit.Application.ActiveUIDocument.Document;
 
-            //get georef settings based on revit document
-            Prop_GeoRefSettings.SetInitialSettings(doc);
-
             //init user controler (otherwise will not be able to init the window)
             uC.Dxf.Read ucDxf = new uC.Dxf.Read();
             uC.Grid.Read ucGrid = new uC.Grid.Read();

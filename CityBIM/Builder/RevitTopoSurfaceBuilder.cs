@@ -13,9 +13,8 @@ using BIMGISInteropLibs.IfcTerrain; // for dtm processing result handling
 
 namespace CityBIM.Builder
 {
-    internal class RevitTopoSurfaceBuilder
+    internal class RevitTopoSurfaceBuilder : RevitBuilder
     {
-        private readonly Document doc;
 
         /// <summary>
         /// return this value for error handling of import 
@@ -27,9 +26,9 @@ namespace CityBIM.Builder
         /// </summary>
         private bool importSuccesful { set; get; } = false;
 
-        public RevitTopoSurfaceBuilder(Document doc)
+        public RevitTopoSurfaceBuilder(Document doc) : base(doc)
         {
-            this.doc = doc;
+            
         }
 
         /// <summary>
@@ -201,10 +200,10 @@ namespace CityBIM.Builder
                 C2BPoint c2bPoint = new C2BPoint(pt.X, pt.Y, pt.Z);
 
                 //Transformation for revit
-                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(c2bPoint, true);
+                var unprojectedPt = GetUnprojectedPoint(c2bPoint);
 
                 //add to new list (as projected point)
-                revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));
+                revDTMpts.Add(GetRevitPt(unprojectedPt));
             }
 
             return revDTMpts;
@@ -222,9 +221,9 @@ namespace CityBIM.Builder
             foreach (var coord in coordinateList)
             {
                 C2BPoint c2bpoint = new C2BPoint(coord.X, coord.Y, coord.Z);
-                var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(c2bpoint, true);
+                var unprojectedPt = GetUnprojectedPoint(c2bpoint);
 
-                revDTMpts.Add(Revit_Build.GetRevPt(unprojectedPt));
+                revDTMpts.Add(GetRevitPt(unprojectedPt));
             }
             return revDTMpts;
         }

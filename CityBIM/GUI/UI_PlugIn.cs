@@ -34,12 +34,11 @@ namespace CityBIM.GUI
 
 
             Log.Information("CityBIM-Application started!");
-            //Log.Information("assumed log path is: " + assumedLogPath);
 
             #region Georef panel
 
             RibbonPanel panelGeoref = application.CreateRibbonPanel(tabName, "Georeferencing");
-            PushButton buttonGeoRef = panelGeoref.AddItem(new PushButtonData("Show Georef information", "Level of Georef", thisAssemblyPath, "CityBIM.GUI.Cmd_GeoRefUI")) as PushButton;
+            PushButton buttonGeoRef = panelGeoref.AddItem(new PushButtonData("Show Georef information", "Georeference Project", thisAssemblyPath, "CityBIM.GUI.Cmd_GeoRefUI")) as PushButton;
             buttonGeoRef.ToolTip = "Show georef information for current project.";
             buttonGeoRef.LargeImage = getBitmapFromResx(ResourcePictures.Georef_32px_96dpi);
 
@@ -90,8 +89,8 @@ namespace CityBIM.GUI
             #region modify panel
 
             RibbonPanel panelModify = application.CreateRibbonPanel(tabName, "Modify");
-            PushButton buttonHideLayer = panelModify.AddItem(new PushButtonData("Hide surfaces.", "Hides surfaces", thisAssemblyPath, "CityBIM.GUI.Modify.Cmd_HideLayers")) as PushButton;
-            buttonHideLayer.ToolTip = "Hide surfaces by its theme.";
+            PushButton buttonHideLayer = panelModify.AddItem(new PushButtonData("Hide Objects.", "Hide Objects", thisAssemblyPath, "CityBIM.GUI.Modify.Cmd_HideLayers")) as PushButton;
+            buttonHideLayer.ToolTip = "Hide objects by their theme.";
             buttonHideLayer.LargeImage = getBitmapFromResx(ResourcePictures.HideLayerIcon_32px_96dpi);
             
             #endregion modify panel
@@ -171,10 +170,5 @@ namespace CityBIM.GUI
 
             return img;
         }
-
-        //public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
