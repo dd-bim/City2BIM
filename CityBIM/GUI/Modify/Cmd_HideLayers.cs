@@ -20,7 +20,6 @@ namespace CityBIM.GUI.Modify
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Document doc = commandData.Application.ActiveUIDocument.Document;
-            Prop_GeoRefSettings.SetInitialSettings(doc);
 
             var view = commandData.Application.ActiveUIDocument.ActiveView;
 

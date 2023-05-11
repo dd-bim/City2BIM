@@ -26,7 +26,6 @@ namespace CityBIM.GUI
 
             UIDocument uiDoc = commandData.Application.ActiveUIDocument;
             Document doc = uiDoc.Document;
-            Prop_GeoRefSettings.SetInitialSettings(doc);
 
             ElementId terrainId = utils.getHTWDDTerrainID(doc);
 

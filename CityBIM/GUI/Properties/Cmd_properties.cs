@@ -25,8 +25,6 @@ namespace CityBIM.GUI.Properties
             UIDocument uiDoc = commandData.Application.ActiveUIDocument;
             Document doc = uiDoc.Document;
 
-            Prop_GeoRefSettings.SetInitialSettings(doc);
-
             try
             {
                 Selection sel = uiDoc.Selection;

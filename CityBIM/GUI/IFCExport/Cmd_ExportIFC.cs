@@ -26,8 +26,6 @@ namespace CityBIM.GUI
 
             UIDocument uiDoc = commandData.Application.ActiveUIDocument;
             Document doc = uiDoc.Document;
-            Prop_GeoRefSettings.SetInitialSettings(doc);
-
 
             var cityGMLBuildingList = utils.getIfc2CityGMLGuidDic(doc);
 
