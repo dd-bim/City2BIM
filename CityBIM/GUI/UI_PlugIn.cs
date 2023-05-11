@@ -34,12 +34,11 @@ namespace CityBIM.GUI
 
 
             Log.Information("CityBIM-Application started!");
-            //Log.Information("assumed log path is: " + assumedLogPath);
 
             #region Georef panel
 
             RibbonPanel panelGeoref = application.CreateRibbonPanel(tabName, "Georeferencing");
-            PushButton buttonGeoRef = panelGeoref.AddItem(new PushButtonData("Show Georef information", "Level of Georef", thisAssemblyPath, "CityBIM.GUI.Cmd_GeoRefUI")) as PushButton;
+            PushButton buttonGeoRef = panelGeoref.AddItem(new PushButtonData("Show Georef information", "Georeference Project", thisAssemblyPath, "CityBIM.GUI.Cmd_GeoRefUI")) as PushButton;
             buttonGeoRef.ToolTip = "Show georef information for current project.";
             buttonGeoRef.LargeImage = getBitmapFromResx(ResourcePictures.Georef_32px_96dpi);
 
@@ -171,10 +170,5 @@ namespace CityBIM.GUI
 
             return img;
         }
-
-        //public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
