@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lang="clr-namespace:CityBIM"
              mc:Ignorable="d" 
-             MinWidth="600" Width="600" MinHeight="500" Height="500" Title="{x:Static lang:Localization.LayerSelector}">
+             MinWidth="600" Width="600" MinHeight="500" Height="500" Title="Hide Objects">
     <StackPanel Margin="5">
         <Grid Margin="10" MaxHeight="430">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -30,16 +30,16 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="selectAll" Margin="10 0 10 0" Content="{x:Static lang:Localization.LayerSelector_selectAll}" Grid.Column="0" Click="selectAll_click"/>
-            <Button x:Name="unSelectAll" Margin="10 0 10 0" Content="{x:Static lang:Localization.LayerSelector_unSelectAll}" Grid.Column="1" Click="unSelectAll_click"/>
+            <Button x:Name="selectAll" Margin="10 0 10 0" Content="select all" Grid.Column="0" Click="selectAll_click"/>
+            <Button x:Name="unSelectAll" Margin="10 0 10 0" Content="unselect all" Grid.Column="1" Click="unSelectAll_click"/>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="apply" Margin="10 0 10 0" Content="{x:Static lang:Localization.LayerSelector_apply}" Grid.Column="0" Click="apply_click"/>
-            <Button x:Name="cancel" Margin="10 0 10 0" Content="{x:Static lang:Localization.LayerSelector_cancel}" Grid.Column="1" Click="cancel_click"/>
+            <Button x:Name="apply" Margin="10 0 10 0" Content="apply" Grid.Column="0" Click="apply_click"/>
+            <Button x:Name="cancel" Margin="10 0 10 0" Content="cancel" Grid.Column="1" Click="cancel_click"/>
         </Grid>
     </StackPanel>
 </Window>

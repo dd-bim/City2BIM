@@ -16,11 +16,11 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Label x:Name="FileLabel" Content="{x:Static lang:Localization.ImportDialogAlkis_FileLabel}" Grid.Column="0"></Label>
+                <Label x:Name="FileLabel" Content="File" Grid.Column="0"></Label>
                 <TextBox x:Name="filePathBox" Grid.Column="1"></TextBox>
-                <Button x:Name="browseButton" Content="{x:Static lang:Localization.ImportDialogAlkis_browseButton}" Grid.Column="2" Margin="10,0,0,0" Click="browseButton_Click"></Button>
+                <Button x:Name="browseButton" Content="browse" Grid.Column="2" Margin="10,0,0,0" Click="browseButton_Click"></Button>
             </Grid>
-            <GroupBox x:Name="id1" Header="{x:Static lang:Localization.ImportDialogAlkis_id1}" Margin="0,15,0,0">
+            <GroupBox x:Name="id1" Header="Layers to import" Margin="0,15,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*"/>
@@ -47,16 +47,16 @@
                     </Grid>
                     <Grid Grid.Column="1" Margin="5,0,0,0">
                         <StackPanel>
-                            <Button x:Name="selectAllBtn" Content="{x:Static lang:Localization.ImportDialogAlkis_selectAllBtn}" Grid.Row="1" Click="selectAllBtn_click" Margin="0,0,0,10"></Button>
-                            <Button x:Name="clearSelectionBtn" Content="{x:Static lang:Localization.ImportDialogAlkis_clearSelectionBtn}" Grid.Row="2" Click="clearSelectionBtn_click"></Button>
+                            <Button x:Name="selectAllBtn" Content="select all" Grid.Row="1" Click="selectAllBtn_click" Margin="0,0,0,10"></Button>
+                            <Button x:Name="clearSelectionBtn" Content="deselect all" Grid.Row="2" Click="clearSelectionBtn_click"></Button>
                         </StackPanel>
                     </Grid>
                 </Grid>
             </GroupBox>
-            <GroupBox x:Name="id2" Header="{x:Static lang:Localization.ImportDialogAlkis_id2}" Margin="0,15,0,0">
+            <GroupBox x:Name="id2" Header="Project on terrain" Margin="0,15,0,0">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox x:Name="drapeCheckBox" IsEnabled="False" Margin="0,5,0,0"></CheckBox>
-                    <Label x:Name="id3" Content="{x:Static lang:Localization.ImportDialogAlkis_id3}"/>
+                    <Label x:Name="id3" Content="Drape on imported terrain model"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox x:Name="GroupBoxFilter" Header="Spatial Filter" Margin="0,5,0,0">
@@ -72,7 +72,7 @@
 
                     <StackPanel Orientation="Horizontal">
                         <CheckBox x:Name="filterCheckBox" IsEnabled="True" VerticalAlignment="Center" Grid.Row="0" IsChecked="True"></CheckBox>
-                        <Label x:Name="filterLabel" Content="Use Spatial Filter" Grid.Row="0" Grid.Column="1"></Label>
+                        <Label x:Name="filterLabel" Content="Use Spatial Filter around project base point" Grid.Row="0" Grid.Column="1"></Label>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,5,0,0">
@@ -94,8 +94,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="importButton" Content="{x:Static lang:Localization.ImportDialogAlkis_importButton}" Click="importButton_click" Margin="0,0,150,0" ></Button>
-                <Button x:Name="cancelButton" Grid.Column="1" Content="{x:Static lang:Localization.ImportDialogAlkis_cancelButton}" Margin="150,0,0,0" Click="cancelButton_click" ></Button>
+                <Button x:Name="importButton" Content="import" Click="importButton_click" Margin="0,0,150,0" ></Button>
+                <Button x:Name="cancelButton" Grid.Column="1" Content="cancel" Margin="150,0,0,0" Click="cancelButton_click" ></Button>
             </Grid>
         </StackPanel>
     </Border>
