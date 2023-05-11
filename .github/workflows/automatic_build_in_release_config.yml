@@ -68,9 +68,8 @@ jobs:
         with:
           files: |
             ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi            
-            #./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-            D:/a/City2BIM/City2BIM/download/IfcGeoRefCheckerGUI/IfcGeoRefCheckerGUI.zip
-            
+            ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+            ./IfcGeoRefCheckerGUI/bin/Release/net6.0-windows/*     
           name: Automatic release from action run ${{ github.run_number }}
           tag_name: ${{github.run_number}}
             
