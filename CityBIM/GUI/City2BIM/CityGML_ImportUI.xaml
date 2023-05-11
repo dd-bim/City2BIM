@@ -5,27 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CityBIM.GUI.City2BIM"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Title="Import CityGML Data"
-             Height="450" Width="800" MinHeight="450" MinWidth="800">
+             d:DesignHeight="250" d:DesignWidth="800" Title="Import CityGML Data"
+             Height="250" Width="800" MinWidth="800" SizeToContent="Height">
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"></RowDefinition>
-            <RowDefinition Height="3*"></RowDefinition>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Margin="0,5,0,0" Orientation="Horizontal" Background="#FFE6E6E6">
-            <Label Content="Import CityGML from: " VerticalAlignment="Center"></Label>
-            <RadioButton GroupName="dataSource" Name="srcFile"  Checked="src_Checked" VerticalAlignment="Center" Margin="15,0,0,0">File</RadioButton>
-            <RadioButton GroupName="dataSource" Name="srcServer" Checked="src_Checked" VerticalAlignment="Center" Margin="15,0,0,0">Server</RadioButton>
-        </StackPanel>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="0" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
             </Grid.RowDefinitions>
-            <GroupBox Name="gB_File" Grid.Row="0" Header="File Options" IsEnabled="True">
+            <GroupBox Name="gB_File" Grid.Row="0" Header="File Options" IsEnabled="True" Margin="5,5,5,5">
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -37,76 +31,11 @@
                         <TextBox Name="filePath_Box" Grid.Column="1"></TextBox>
                         <Button Name="fileBrowse_Btn" Content="browse..." Click="fileBrowse_Btn_Click" Grid.Column="2" Margin="5,0,0,0"></Button>
                     </Grid>
-                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                        <Label Content="Order of Coordinates:"></Label>
-                        <RadioButton Name="ENHOrder_Radio" GroupName="coordinateOrder" Content="YXZ / ENH (Eastings, Northings, Height)" IsChecked="True" VerticalContentAlignment="Center" Padding="8,0,0,0" Margin="10,0,0,0"></RadioButton>
-                        <RadioButton Name="NEHOrder_Radio" GroupName="coordinateOrder" Content="XYZ / NEH (Northings, Eastings, Height)" VerticalContentAlignment="Center" Padding="0" Margin="10,0,0,0"></RadioButton>
-                    </StackPanel>
                 </StackPanel>
-            </GroupBox>
-            <GroupBox Name="gB_Server" Grid.Row="1" Header="Server Options" IsEnabled="False">
-                <Grid VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.33*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-
-                    <Label Content="URL:" Grid.Column="0" Margin="0,3"></Label>
-                    <TextBox Name="serverURL_Box" Text="https://hosting.virtualcitywfs.de/deutschland_viewer/wfs" IsReadOnly="True" Grid.Column="1" VerticalContentAlignment="Center" Margin="0,3"></TextBox>
-                    <Button Name="editURL_Btn" Content="edit URL" Click="editURL_click" Grid.Column="2" Margin="5,3,0,3"></Button>
-
-                    <Label Content="Center" Grid.Row="1" Grid.Column="0" Margin="0,3"></Label>
-                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0,3">
-                        <Label Content="Latitude"></Label>
-                        <TextBox Name="Lat_Box" IsReadOnly="True" MinWidth="150" Margin="0,3" VerticalContentAlignment="Center" />
-                        <Label Content="Longitude"></Label>
-                        <TextBox Name="Long_Box" IsReadOnly="True" MinWidth="150" Margin="0,3" VerticalContentAlignment="Center" ></TextBox>
-                    </StackPanel>
-                    <StackPanel Grid.Column="2" Grid.Row="1" Margin="0,3">
-                        <RadioButton Name="siteLocation" Content="from Site location" Checked="center_checked" GroupName="centerOptions"></RadioButton>
-                        <RadioButton Name="customLocation" Content="custom" Checked="center_checked" GroupName="centerOptions"></RadioButton>
-                    </StackPanel>
-
-                    <Label Content="Extent" Grid.Row="2" Grid.Column="0" Margin="0,3" ></Label>
-                    <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"></ColumnDefinition>
-                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0" Margin="0,0,40,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Name="extent_Box" Text="300" Grid.Column="0" Margin="0,3" VerticalContentAlignment="Center"/>
-                            <Label Grid.Column="1" Content="m" VerticalAlignment="Center"></Label>
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <CheckBox Name="response_Box" Grid.Column="0" VerticalAlignment="Center"></CheckBox>
-                            <Label Grid.Column="1" Content="save response" VerticalAlignment="Center"></Label>
-                            <TextBox Name="ResponsePath" Grid.Column="2" Margin="0,3"/>
-                            <Button Name="responseFolder_Btn" Click="responseFolder_Btn_Click" Grid.Column="3" Content="set folder" Padding="5,1" Margin="5,3,0,3"></Button>
-                        </Grid>
-
-                    </Grid>
-
-                </Grid>
             </GroupBox>
         </Grid>
 
-        <GroupBox Header="Import Options" Grid.Row="2">
+        <GroupBox Header="Import Options" Grid.Row="1" Margin="5,5,5,5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
@@ -133,9 +62,9 @@
             </Grid>
         </GroupBox>
 
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="2" Margin="5,5,5,5">
             <Button Name="import_Btn" Content="import" Click="import_Btn_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="15,5" Width="Auto"></Button>
-            <Button Name="cancel_Btn" Content="cancel" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="15,5" Click="cancelBtn_click" Width="Auto"></Button>
+            <Button Name="cancel_Btn" Content="cancel" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="15,5" Click="cancelBtn_click" Width="Auto" Margin="0,5,5,0"></Button>
         </Grid>
     </Grid>
 </Window>

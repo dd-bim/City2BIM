@@ -19,14 +19,12 @@ namespace CityBIM.GUI
 
         //user-defined extent properties
         private static double extent = 300.0;
-        private static double[] serverCoord = new double[2] { Prop_GeoRefSettings.WgsCoord[1], Prop_GeoRefSettings.WgsCoord[0] } ;
 
         public static double Extent { get => extent; set => extent = value; }
         public static bool IsServerRequest { get => isServerRequest; set => isServerRequest = value; }
         public static string ServerUrl { get => serverUrl; set => serverUrl = value; }
         public static string FileUrl { get => fileUrl; set => fileUrl = value; }
         public static bool IsGeodeticSystem { get => isGeodeticSystem; set => isGeodeticSystem = value; }
-        public static double[] ServerCoord { get => serverCoord; set => serverCoord = value; }
         public static CityGml_Codelist.Codelist CodelistName { get => codelistName; set => codelistName = value; }
         public static bool SaveServerResponse { get => saveServerResponse; set => saveServerResponse = value; }
         public static string PathResponse { get => pathResponse; set => pathResponse = value; }

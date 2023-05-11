@@ -39,31 +39,11 @@ namespace CityBIM.GUI.City2BIM
         {
             InitializeComponent();
             CityGML_ImportUI_Loaded();
-
-            Lat_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[0].ToString();
-            Long_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[1].ToString();
         }
 
         private void CityGML_ImportUI_Loaded()
         {
-            srcFile.IsChecked = true;
-            siteLocation.IsChecked = true;
-        }
-
-        private void src_Checked(object sender, RoutedEventArgs e)
-        {
-            RadioButton rb = sender as RadioButton;
-
-            if (rb.Name.Equals("srcFile"))
-            {
-                gB_File.IsEnabled = true;
-                gB_Server.IsEnabled = false;
-            }
-            else
-            {
-                gB_File.IsEnabled = false;
-                gB_Server.IsEnabled = true;
-            }
+            
         }
 
         private void cancelBtn_click(object sender, RoutedEventArgs e)
@@ -84,53 +64,11 @@ namespace CityBIM.GUI.City2BIM
             }
         }
 
-        private void responseFolder_Btn_Click(object sender, RoutedEventArgs e)
-        {
-            var folderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            folderDialog.ShowNewFolderButton = true;
-            folderDialog.ShowDialog();
-            ResponsePath.Text = folderDialog.SelectedPath;
-
-        }
-
-        private void editURL_click(object sender, RoutedEventArgs e)
-        {
-            serverURL_Box.IsReadOnly = false;
-        }
-
-        private void center_checked(object sender, RoutedEventArgs e)
-        {
-            RadioButton rb = sender as RadioButton;
-
-            if (rb.Name.Equals("siteLocation"))
-            {
-                Lat_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[0].ToString();
-                Long_Box.Text = CityBIM.GUI.Prop_GeoRefSettings.WgsCoord[1].ToString();
-                Lat_Box.IsReadOnly = true;
-                Long_Box.IsReadOnly = true;
-            }
-            else
-            {
-                Lat_Box.IsReadOnly = false;
-                Long_Box.IsReadOnly = false;
-            }
-        }
-
         private void import_Btn_Click(object sender, RoutedEventArgs e)
         {
             CityBIM.Builder.CoordOrder co = CityBIM.Builder.CoordOrder.ENH;
 
-            if (NEHOrder_Radio.IsChecked == true)
-            {
-                co = CityBIM.Builder.CoordOrder.NEH;
-            }
-
             CityBIM.Builder.CitySource cs = CityBIM.Builder.CitySource.File;
-
-            if (srcServer.IsChecked == true)
-            {
-                cs = CityBIM.Builder.CitySource.Server;
-            }
 
             BIMGISInteropLibs.CityGML.CityGml_Codelist.Codelist cl;
 
@@ -179,22 +117,16 @@ namespace CityBIM.GUI.City2BIM
             }
 
             bool saveServerResponse = false;
-            if (response_Box.IsChecked == true)
-            {
-                saveServerResponse = true;
-            }
-
+            
             var importSettings = new CityBIM.Builder.CityGMLImportSettings();
             importSettings.CoordOrder = co;
             importSettings.ImportSource = cs;
             importSettings.CodeTranslate = cl;
             importSettings.FilePath = filePath_Box.Text;
             importSettings.ImportGeomType = cg;
-            importSettings.serverURL = serverURL_Box.Text;
-            importSettings.FolderPath = ResponsePath.Text;
-            importSettings.CenterCoords = new double[] { Double.Parse(Lat_Box.Text), Double.Parse(Long_Box.Text) };
+            
+            
             importSettings.saveResponse = saveServerResponse;
-            importSettings.Extent = Double.Parse(extent_Box.Text);
 
             this.startImport = true;
             this.importSettings = importSettings;

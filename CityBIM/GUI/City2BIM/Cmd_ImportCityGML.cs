@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using System.Xml.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using Serilog;
 
@@ -26,8 +27,6 @@ namespace CityBIM.GUI.City2BIM
         {
             Document doc = revit.Application.ActiveUIDocument.Document;
 
-            Prop_GeoRefSettings.SetInitialSettings(doc);
-
             var dialog = new CityGML_ImportUI();
 
             dialog.ShowDialog();
@@ -44,6 +43,11 @@ namespace CityBIM.GUI.City2BIM
                         try
                         {
                             string path = importSettings.FilePath;
+                            if (!File.Exists(path))
+                            {
+                                TaskDialog.Show("Error", "Could not find a file for specified path");
+                                return Result.Failed;
+                            }
                             xdoc = XDocument.Load(path);
                         }
                         catch (Exception ex)
@@ -51,38 +55,6 @@ namespace CityBIM.GUI.City2BIM
                             Log.Error("Probleme while loading specified file during CityGML import. Is file a XML-File?");
                             Log.Error(ex.ToString());
                             TaskDialog.Show("Error", ex.ToString());
-                        }
-                        break;
-
-                    case CitySource.Server:
-                        try
-                        {
-                            //client class for xml-POST request from WFS server
-                            WFSClient client = new WFSClient(importSettings.serverURL);
-
-                            //response with parameters: Site-Lon, Site-Lat, extent, max response of bldgs, CRS)
-                            //Site coordinates from Revit.SiteLocation
-                            //extent from used-defined def (default: 300 m)
-                            //max response dependent of server settings (at VCS), currently 500
-                            //CRS:  supported from server are currently: Pseudo-Mercator (3857), LatLon (4326), German National Systems: West(25832), East(25833)
-                            //      supported by PlugIn are only the both German National Systems
-
-                            if (Prop_GeoRefSettings.Epsg != "EPSG:25832" && Prop_GeoRefSettings.Epsg != "EPSG:25833")
-                                TaskDialog.Show("EPSG not supported!", "Only EPSG:25832 or EPSG:25833 will be supported by server. Please change the EPSG-Code in Georeferencing window.");
-
-                            xdoc = client.getFeaturesCircle(importSettings.CenterCoords[1], importSettings.CenterCoords[0], importSettings.Extent, 500, Prop_GeoRefSettings.Epsg);
-
-                            if (importSettings.saveResponse)
-                            {
-                                xdoc.Save(importSettings.FolderPath + "\\" + Math.Round(importSettings.CenterCoords[0], 4) + "_" + Math.Round(importSettings.CenterCoords[1], 4) + ".gml");
-                            }
-                        }
-
-                        catch (Exception ex)
-                        {
-                            TaskDialog.Show("Error", "Could not process server request. See log-file for further information");
-                            Log.Error("Error during processing of CityGML Server Request");
-                            Log.Error(ex.ToString());
                         }
                         break;
 
