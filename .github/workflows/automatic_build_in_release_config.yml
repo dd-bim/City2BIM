@@ -42,24 +42,27 @@ jobs:
           name: IfcGeoRefCheckerGUI
           path: ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows/
           
-      - name: Download IfcGeoRefChecker
-        id: download
-        uses: actions/download-artifact@v3
-        with:
-          name: IfcGeoRefCheckerGUI
-          path: ./download/IfcGeoRefCheckerGUI
+      #- name: Download IfcGeoRefChecker
+      #  id: download
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: IfcGeoRefCheckerGUI
+      #    path: ./download/IfcGeoRefCheckerGUI
           
+      - name: CreateZipDestination
+        run: mkdir CheckerZipped
+        
+      - name: ZipOutput
+        run: Compress-Archive -Path ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows -DestinationPath ./CheckerZipped/Checker.zip
       
-      
-      
-      - name: Navigate to download folder
-        run: cd ./download/IfcGeoRefCheckerGUI
+      #- name: Navigate to download folder
+      #  run: cd ./download/IfcGeoRefCheckerGUI
       
       - name: Display structure of downloaded files
         run: ls -R
       
-      - name: Navigate to Workspace
-        run: cd $GITHUB_WORKSPACE
+      #- name: Navigate to Workspace
+      #  run: cd $GITHUB_WORKSPACE
       
       
       
@@ -69,7 +72,8 @@ jobs:
           files: |
             ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi            
             ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-            ./IfcGeoRefCheckerGUI/bin/Release/net6.0-windows/*     
+            ./CheckerZipped/Checker.zip
+            
           name: Automatic release from action run ${{ github.run_number }}
           tag_name: ${{github.run_number}}
             
