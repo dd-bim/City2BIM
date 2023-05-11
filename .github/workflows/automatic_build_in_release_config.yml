@@ -30,11 +30,11 @@ jobs:
           name: DataCatPluginInstaller
           path: ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
          
-      #- name: Upload CityBIMInstaller
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: CityBIMInstaller
-      #    path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
+      - name: Upload CityBIMInstaller
+        uses: actions/upload-artifact@v3
+        with:
+          name: CityBIMInstaller
+          path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
 
       - name: Upload IfcGeoRefChecker
         uses: actions/upload-artifact@v3
@@ -42,29 +42,11 @@ jobs:
           name: IfcGeoRefCheckerGUI
           path: ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows/
           
-      #- name: Download IfcGeoRefChecker
-      #  id: download
-      #  uses: actions/download-artifact@v3
-      #  with:
-      #    name: IfcGeoRefCheckerGUI
-      #    path: ./download/IfcGeoRefCheckerGUI
-          
       - name: CreateZipDestination
         run: mkdir CheckerZipped
         
       - name: ZipOutput
-        run: Compress-Archive -Path ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows -DestinationPath ./CheckerZipped/Checker.zip
-      
-      #- name: Navigate to download folder
-      #  run: cd ./download/IfcGeoRefCheckerGUI
-      
-      - name: Display structure of downloaded files
-        run: ls -R
-      
-      #- name: Navigate to Workspace
-      #  run: cd $GITHUB_WORKSPACE
-      
-      
+        run: Compress-Archive -Path ./IFCGeoRefCheckerGUI/bin/Release/net6.0-windows -DestinationPath ./CheckerZipped/IFCGeoRefChecker.zip  
       
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
@@ -72,41 +54,7 @@ jobs:
           files: |
             ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi            
             ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-            ./CheckerZipped/Checker.zip
+            ./CheckerZipped/IFCGeoRefChecker.zip
             
           name: Automatic release from action run ${{ github.run_number }}
           tag_name: ${{github.run_number}}
-            
-            
-            
-            
-#      - name: Create GitHub relase
-#        uses: "marvinpinto/action-automatic-releases@latest"
-#        with:
-#          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-#          automatic_release_tag: "latest"
-#          prerelease: true
-#          title: Automatic release from action run ${{ github.run_number }}
-#          files: |
-#            ./DataCatPlugin_Installer/bin/x64/Release/DataCatPlugin_Installer.msi
-#            ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-#          
-#      - name: Create GitHub release
-#        id: create-new-release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.run_number }}
-#          release_name: Automatic release from action run ${{github.run_number }}
-#          prerelease: true
-#          
-#      - name: Upload release asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{steps.create-new-release.outputs.upload_url }}
-#          asset_path: ./CityBIM_InstallerWix4/bin/x64/Release/CityBIM_InstallerWix4.msi
-#          asset_name: CityBIM_fromRun${{ github.run_number }}
-#          asset_content_type: application/octet-stream
