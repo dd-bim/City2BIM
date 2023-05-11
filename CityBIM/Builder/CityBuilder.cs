@@ -1,42 +1,37 @@
-﻿using Autodesk.Revit.DB;
-using BIMGISInteropLibs.Geometry;
-using BIMGISInteropLibs.Semantic;
-using BIMGISInteropLibs.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using System.Collections.ObjectModel;
-using CityBIM.GUI;
+
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.ExtensibleStorage;
+
 using BIMGISInteropLibs.CityGML;
+using BIMGISInteropLibs.Geometry;
+using BIMGISInteropLibs.Logging;
+using BIMGISInteropLibs.Semantic;
+using CityBIM.GUI;
+
 
 namespace CityBIM.Builder
 {
-    internal class RevitCityBuilder
+    internal class CityBuilder : RevitBuilder
     {
         private readonly C2BPoint gmlCorner;
-        private readonly Document doc;
-
         private readonly List<CityGml_Bldg> buildings;
         private readonly Dictionary<CityGml_Surface.FaceType, ElementId> colors;
-
         private readonly CityGml_Codelist.Codelist CodeTranslation;
 
-        public RevitCityBuilder(Document doc, List<CityGml_Bldg> buildings, C2BPoint gmlCorner, HashSet<BIMGISInteropLibs.Semantic.Xml_AttrRep> attributes, CityGml_Codelist.Codelist codeType = CityGml_Codelist.Codelist.none)
+        public CityBuilder(Document doc, List<CityGml_Bldg> buildings, C2BPoint gmlCorner, HashSet<BIMGISInteropLibs.Semantic.Xml_AttrRep> attributes, 
+            CityGml_Codelist.Codelist codeType = CityGml_Codelist.Codelist.none) : base(doc)
         {
-            this.doc = doc;
             this.buildings = buildings;
             this.gmlCorner = gmlCorner;
             this.CodeTranslation = codeType;
             this.colors = CreateColorAsMaterial();
 
-            createCityGMLSchema(this.doc, attributes);
-
+            createCityGMLSchema(doc, attributes);
         }
-
-
-        #region Solid to Revit incl. LOD1-Fallback
 
         /// <summary>
         /// Transforms c2b solids to Revit solid (closed volume)
@@ -126,8 +121,9 @@ namespace CityBIM.Builder
                 }
                 allLogs.AddRange(bldg.LogEntries);
             }
-            LogWriter.WriteLogFile(allLogs, true, all, success, error, errorLod1, fatalError);          
+            LogWriter.WriteLogFile(allLogs, true, all, success, error, errorLod1, fatalError);
         }
+
 
         private void CreateRevitRepresentation(string internalID, C2BSolid solid, List<CityGml_Surface> surfaces, Dictionary<Xml_AttrRep, string> bldgAttributes, string lod, Dictionary<Xml_AttrRep, string> partAttributes = null)
         {
@@ -145,7 +141,6 @@ namespace CityBIM.Builder
                 builder.Target = TessellatedShapeBuilderTarget.Solid;
 
                 builder.Fallback = TessellatedShapeBuilderFallback.Abort;
-
                 builder.Build();
 
                 TessellatedShapeBuilderResult result = builder.GetBuildResult();
@@ -155,7 +150,7 @@ namespace CityBIM.Builder
                     t.Start();
 
                     DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-                   
+
                     ds.ApplicationId = "Application id";
                     ds.ApplicationDataId = "Geometry object id";
 
@@ -191,12 +186,13 @@ namespace CityBIM.Builder
 
                     ds.SetEntity(entity);
                     SetRevitInternalParameters(internalID, lod, ds);
-                   
+
 
                     t.Commit();
                 }
             }
         }
+
 
         private void SetRevitInternalParameters(string guid, string comment, DirectShape ds)
         {
@@ -244,6 +240,8 @@ namespace CityBIM.Builder
 
             int i = 0;  //counter for ID (if more than one groundSurface, ID gets counter suffix: "_i")
 
+
+
             foreach (var groundSurface in groundSurfaces)
             {
                 string id = "";
@@ -255,7 +253,8 @@ namespace CityBIM.Builder
                 else
                     id = internalID;
 
-                List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(groundSurface.ExteriorPts, groundSurface.InteriorPts, out XYZ normal, gmlCorner);
+                List<CurveLoop> loopList = CreateExteriorCurveLoopList(groundSurface.ExteriorPts, groundSurface.InteriorPts, out XYZ normal, gmlCorner);
+
 
                 if (groundSurface.Facetype == CityGml_Surface.FaceType.outerCeiling)
                 {
@@ -273,13 +272,13 @@ namespace CityBIM.Builder
                         t.Start();
                         // create direct shape and assign the sphere shape
                         DirectShape ds = DirectShape.CreateElement(doc, new ElementId(BuiltInCategory.OST_Entourage));
-                        
-                            ds.SetShape(new GeometryObject[] { lod1bldg });
 
-                            ds = SetAttributeValues(ds, attributes);
-                            if (partAttributes != null)
-                                ds = SetAttributeValues(ds, partAttributes);
-                            ds.Pinned = true;
+                        ds.SetShape(new GeometryObject[] { lod1bldg });
+
+                        ds = SetAttributeValues(ds, attributes);
+                        if (partAttributes != null)
+                            ds = SetAttributeValues(ds, partAttributes);
+                        ds.Pinned = true;
 
                         if (height > 20)
                         {
@@ -303,7 +302,7 @@ namespace CityBIM.Builder
 
                         ds.SetEntity(entity);
                         SetRevitInternalParameters(id, "LOD1 (Fallback from LOD2)", ds);
-                        
+
 
                         t.Commit();
                     }
@@ -344,7 +343,7 @@ namespace CityBIM.Builder
                     }
                     exteriorHull.Add(new C2BPoint(convexHull.First().x, convexHull.First().y, groundHeight)); //for closed ring
 
-                    List<CurveLoop> loopListHull = Revit_Build.CreateExteriorCurveLoopList(exteriorHull, interiorHull, out XYZ normalHull, gmlCorner);
+                    List<CurveLoop> loopListHull = CreateExteriorCurveLoopList(exteriorHull, interiorHull, out XYZ normalHull, gmlCorner);
 
                     Solid lod1bldg = GeometryCreationUtilities.CreateExtrusionGeometry(loopListHull, -normalHull, extrHeight);
 
@@ -383,6 +382,7 @@ namespace CityBIM.Builder
                 i++;
             }
         }
+
 
         private List<TessellatedFace> CreateRevitFaceList(C2BSolid solid, List<CityGml_Surface> surfaces)
         {
@@ -441,9 +441,10 @@ namespace CityBIM.Builder
                 if (verticesXYZ.Contains(verticesXYZ[vid]))
                 {
                     //Transformation for revit
-                    var unprojectedPt = Calc.GeorefCalc.CalcUnprojectedPoint(verticesXYZ[vid].Position, Prop_CityGML_settings.IsGeodeticSystem, gmlCorner);
+                    var unprojectedPt = GetUnprojectedPoint(verticesXYZ[vid].Position, gmlCorner);
 
-                    var revPt = Revit_Build.GetRevPt(unprojectedPt);
+                    var unprojectedPt_feet = unprojectedPt / 0.3048;
+                    var revPt = this.trafo2RevitCS.OfPoint(new XYZ(unprojectedPt_feet.X, unprojectedPt_feet.Y, unprojectedPt_feet.Z));
 
                     facePoints.Add(revPt);
                 }
@@ -451,8 +452,6 @@ namespace CityBIM.Builder
 
             return facePoints;
         }
-
-        #endregion Solid to Revit incl. LOD1-Fallback
 
         #region Surfaces to Revit
         public void CreateBuildingsWithFaces()
@@ -519,7 +518,7 @@ namespace CityBIM.Builder
 
         private void CreateRevitFaceRepresentation(CityGml_Surface surface, Dictionary<Xml_AttrRep, string> bldgAttributes, string lod, Dictionary<Xml_AttrRep, string> partAttributes = null)
         {
-            List<CurveLoop> loopList = Revit_Build.CreateExteriorCurveLoopList(surface.ExteriorPts, surface.InteriorPts, out XYZ normal, gmlCorner);
+            List<CurveLoop> loopList = CreateExteriorCurveLoopList(surface.ExteriorPts, surface.InteriorPts, out XYZ normal, gmlCorner);
 
             double height = 0.01 / Prop_Revit.feetToM;
 
@@ -847,7 +846,8 @@ namespace CityBIM.Builder
         {
             var citySchema = utils.getSchemaByName("CityGMLImportSchema");
 
-            if (citySchema == null) {
+            if (citySchema == null)
+            {
 
                 //Create internal revit extensible storage scheme "CityGMLImportSchema" or check if already exists
                 using (Transaction trans = new Transaction(doc, "CityGML Schema Creation"))
@@ -890,11 +890,18 @@ namespace CityBIM.Builder
 
                 }
             }
-            return false;  
+            return false;
         }
     }
 
     #endregion Attributes and Colors to Revit
+
+    
+
+    public enum CitySource { File, Server }
+    public enum CityGeometry { Solid, Faces }
+    public enum CoordOrder { ENH, NEH }
+
 
     public class CityGMLImportSettings
     {
@@ -916,8 +923,4 @@ namespace CityBIM.Builder
 
         }
     }
-
-    public enum CitySource { File, Server}
-    public enum CityGeometry { Solid, Faces}
-    public enum CoordOrder { ENH, NEH}
 }
