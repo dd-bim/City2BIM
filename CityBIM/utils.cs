@@ -429,8 +429,6 @@ namespace CityBIM
         /// </summary>
         public enum rvtVersion
         {
-            R20 = 2020,
-            R21 = 2021,
             R22 = 2022,
             R23 = 2023,
             R24 = 2024,  
@@ -453,12 +451,6 @@ namespace CityBIM
 
             switch (num)
             {
-                case 2020:
-                    rV = rvtVersion.R20;
-                    break;
-                case 2021:
-                    rV = rvtVersion.R21;
-                    break;
                 case 2022:
                     rV = rvtVersion.R22;
                     break;
@@ -472,11 +464,8 @@ namespace CityBIM
                     rV = 0;
                     break;
             }
-
             return rV;
         }
-
-
     }
 
     public static class IfcGuid

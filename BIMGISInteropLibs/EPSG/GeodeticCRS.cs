@@ -125,7 +125,7 @@ namespace BIMGISInteropLibs.GeodeticCRS
             string requestString = "/v1/GeodeticCoordRefSystem/" + code.ToString() + "/";
 
             //build request as rest request
-            var request = new RestRequest(requestString, DataFormat.Json);
+            var request = new RestRequest(requestString, (Method)DataFormat.Json);
 
             //send request and get response
             var response = client.Execute(request) as RestResponse;
