@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="RestSharp" Version="106.15.0" />
-	<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2022.0.0" ExcludeAssets="runtime" />
+	<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2023.0.0" ExcludeAssets="runtime" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
     <PackageReference Include="Xbim.Essentials" Version="5.1.341" />

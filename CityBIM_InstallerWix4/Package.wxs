@@ -28,7 +28,7 @@
 			<Directory Id="AutodeskDir" Name="Autodesk">
 				<Directory Id="RevitDir" Name="Revit">
 					<Directory Id="AddinDir" Name="Addins">
-						<Directory Id="YearDir" Name="2022">
+						<Directory Id="YearDir" Name="2023">
 							<Directory Id="APPLICATIONFOLDER" Name="CityBIM" ComponentGuidGenerationSeed="{D2926053-BC1E-4980-8276-00FD3B563132}">
 							</Directory>
 						</Directory>

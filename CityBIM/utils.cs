@@ -432,6 +432,8 @@ namespace CityBIM
             R20 = 2020,
             R21 = 2021,
             R22 = 2022,
+            R23 = 2023,
+            R24 = 2024,  
             
             /// <summary>
             /// if this is selected give an information that it is currently not supported
@@ -459,6 +461,12 @@ namespace CityBIM
                     break;
                 case 2022:
                     rV = rvtVersion.R22;
+                    break;
+                case 2023:
+                    rV = rvtVersion.R23;
+                    break;
+                case 2024:
+                    rV = rvtVersion.R23;
                     break;
                 default:
                     rV = 0;

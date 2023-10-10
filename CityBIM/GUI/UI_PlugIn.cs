@@ -46,7 +46,7 @@ namespace CityBIM.GUI
 
             #region Terrain panel
             RibbonPanel panelTerrain = application.CreateRibbonPanel(tabName, "DTM2BIM");
-            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Import Terrian data", thisAssemblyPath, "CityBIM.GUI.Cmd_ReadTerrain")) as PushButton;
+            PushButton buttonDTM = panelTerrain.AddItem(new PushButtonData("DTM_Importer", "Import Terrain data", thisAssemblyPath, "CityBIM.GUI.Cmd_ReadTerrain")) as PushButton;
             buttonDTM.ToolTip = "Import functionality for Digital Terrain Models from different file formats.";
             buttonDTM.LargeImage = getBitmapFromResx(ResourcePictures.DTM_32px_96dpi);
             #endregion Terrain panel
