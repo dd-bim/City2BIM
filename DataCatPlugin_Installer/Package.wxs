@@ -32,21 +32,19 @@
 		<WixVariable Id="WixUILicenseRtf" Value="DataCatPluginLicense.rtf"/>
 		<ui:WixUI Id="WixUI_InstallDir"/>
 		
-		
-		<!-- Dirctory Structure -->
+		<!-- Directory Structure -->
 		<StandardDirectory Id="CommonAppDataFolder">
 			<Directory Id="AutodeskDir" Name="Autodesk">
 				<Directory Id="RevitDir" Name="Revit">
 					<Directory Id="AddinDir" Name="Addins">
-						<Directory Id="YearDir" Name="2022">
-							<Directory Id="APPLICATIONFOLDER" Name="DataCatPlugin">
+						<Directory Id="YearDir" Name="2023">
+							<Directory Id="APPLICATIONFOLDER" Name="DataCat">
 							</Directory>
 						</Directory>
 					</Directory>
 				</Directory>
 			</Directory>
 		</StandardDirectory>
-		
 		
   </Package>
 </Wix>
