@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Resources;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ using IFCGeorefShared;
 
 
 namespace IFCGeoRefCheckerGUI
-{
+{    
     class IfcCheckerService
     {
         public GeoRefChecker CheckIFC(string filePath) 

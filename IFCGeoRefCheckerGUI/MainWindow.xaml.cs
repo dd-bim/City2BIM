@@ -19,6 +19,7 @@ using Serilog.Sinks.RichTextBox.Themes;
 using Xbim.Common;
 using OSGeo.OGR;
 using IFCGeorefShared;
+using IFCGeorefShared.Levels;
 
 namespace IFCGeoRefCheckerGUI
 {
@@ -33,6 +34,21 @@ namespace IFCGeoRefCheckerGUI
         public MainWindow()
         {
             InitializeComponent();
+
+            SetWorkinDirBtn.Content = Properties.Resources.SET_WORKING_DIRECTORY;
+            LoadFilesBtn.Content = Properties.Resources.LOAD_IFC_FILES;
+            CheckFileBtn.Content = Properties.Resources.CHECK_SELECTED_FILE;
+            SetWorkDirGroupBox.Header = Properties.Resources.SET_WORKING_DIRECTORY;
+            WorkingDirLabel.Content = Properties.Resources.WORKING_DIRECTORY_LABEL;
+            PathTextBox.Text = Properties.Resources.PATH_TEXTBOX;
+            InputIFCGroupBox.Header = Properties.Resources.INPUT_IFC_FILES;
+            StatusLabel.Content = Properties.Resources.STATUS_LABEL;
+            LoadedIFCFilesLabel.Content = Properties.Resources.LOADED_IFC_FILES;
+            StatusReportGroupBox.Header = Properties.Resources.STATUS_REPORT;
+            ShowProtocolBtn.Content = Properties.Resources.SHOW_PROTOCOL;
+            LogOutputGroupBox.Header = Properties.Resources.LOG_OUTPUT;
+
+
             ((MainWindowViewModel)DataContext).checkViewModel.NoFileSelected += NoFileSelectedMessageBox;
             ((MainWindowViewModel)DataContext).checkViewModel.NoWorkingDirSelected += NoWorkingDirSelectedMessageBox;
             ((MainWindowViewModel)DataContext).checkViewModel.FileNotYetChecked += NotYetCheckedMessageBox;
@@ -120,6 +136,11 @@ namespace IFCGeoRefCheckerGUI
         private void LogBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             this.LogBox.ScrollToEnd();
+        }
+
+        private void CheckFileBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         /*private void Window_Loaded(object sender, RoutedEventArgs e)

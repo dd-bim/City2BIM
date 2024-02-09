@@ -109,6 +109,9 @@ namespace IFCGeorefShared
 
         private void checkGeneralProps()
         {
+            //Es werden immer Koordinaten als Warnung ausgegeben, die zur Georef genutzt werden (ab Level 30) -> Irritation beim Anwender (evtl. fachfremd)
+            //Vergleich zur jeweiligen Checkmethode notwendig -> keine Warnung, wenn Koordinaten in Checkmethode aufgerufen werden?
+
             var allCartPoints = model.Instances.OfType<IIfcCartesianPoint>().ToList();
             var allCartPointList2D = model.Instances.OfType<IIfcCartesianPointList2D>().ToList();
             var allCartPointList3D = model.Instances.OfType<IIfcCartesianPointList3D>().ToList();
@@ -706,7 +709,8 @@ namespace IFCGeorefShared
                         sb.AppendLine($"Y: {lvl40.wcs.Location.Y}");
                         sb.AppendLine($"Z: {lvl40.wcs.Location.Z}");
                         sb.AppendLine();
-                        sb.AppendLine($"True North is: {lvl40.trueNorth!.X} / {lvl40.trueNorth.Y} / {lvl40.trueNorth.Z}");
+                        sb.AppendLine($"True North is: {lvl40.trueNorth!.X} / {lvl40.trueNorth.Y}");
+                        //sb.AppendLine($"True North is: {lvl40.trueNorth!.X} / {lvl40.trueNorth.Y} / {lvl40.trueNorth.Z}"); //trueNorth.Z existiert nicht
 
                         sb.AppendLine();
                         sb.AppendLine("LoGeoRef40 is fulfilled ✓");
@@ -758,7 +762,7 @@ namespace IFCGeorefShared
 
             foreach (var lvl50 in this.LoGeoRef50)
             {
-                if (lvl50.MapConversion != null)
+                if (lvl50.MapConversion != null) //und Eastings > 0 und Northing > 0 ? -> in LoGeoRef Spezifikation nochmal Voraussetzungen prüfen
                 {
                     var targetCRS = lvl50.MapConversion.TargetCRS;
                     var eastings = lvl50.MapConversion.Eastings;

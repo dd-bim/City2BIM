@@ -31,7 +31,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
-                <GroupBox Header="Set working directory">
+                <GroupBox x:Name="SetWorkDirGroupBox" Header="Set working directory">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -41,8 +41,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Label Content="working directory" Grid.Row="0" Grid.Column="0"/>
-                        <TextBox Grid.Row="1" Grid.ColumnSpan="2" 
+                        <Label x:Name="WorkingDirLabel" Content="working directory" Grid.Row="0" Grid.Column="0"/>
+                        <TextBox x:Name="PathTextBox" Grid.Row="1" Grid.ColumnSpan="2" 
                                  Text="{Binding workingDirViewModel.WorkingDirPath, TargetNullValue='Please choose path!'}" 
                                  Margin="0,5,0,5" Padding="0,5,0,5" VerticalScrollBarVisibility="Auto" 
                                  VerticalContentAlignment="Center" />
@@ -52,7 +52,7 @@
 
             <!--        Status View Model       -->
             <Grid Grid.Row="1">
-                <GroupBox Header="Input IFC Files">
+                <GroupBox x:Name="InputIFCGroupBox" Header="Input IFC Files">
                     <Grid Margin="5,5,5,5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -61,12 +61,12 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <Label Content="Status:"></Label>
+                            <Label x:Name="StatusLabel" Content="Status:"></Label>
                             <Label Content="{Binding filePanelViewModel.FilePaths.Count, Mode=OneWay}" ContentStringFormat=" {0} file(s) loaded"/>
                             <Label Content="{Binding checkViewModel.NrOfChecks}" ContentStringFormat=" {0} file(s) checked"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1">
-                            <Label Content="Loaded IFC-Files"></Label>
+                            <Label x:Name="LoadedIFCFilesLabel" Content="Loaded IFC-Files"></Label>
                             <ListBox MinHeight="175" ScrollViewer.VerticalScrollBarVisibility="Auto" MaxHeight="150"
                                      ScrollViewer.HorizontalScrollBarVisibility="Auto" ItemsSource="{Binding filePanelViewModel.FilePaths}"
                                      SelectionMode="Single" SelectedItem="{Binding filePanelViewModel.SelectedPath}">
@@ -79,7 +79,7 @@
 
             <!--        Check View Model        -->
             <Grid Grid.Row="2">
-                <GroupBox Header="Status report">
+                <GroupBox x:Name="StatusReportGroupBox" Header="Status report">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -105,7 +105,7 @@
                         <Label Content="{Binding checkViewModel.CheckerResults.level40Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center"/>
                         <Label Content="{Binding checkViewModel.CheckerResults.level50Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center"/>
 
-                        <Button Content="Show protocoll" Grid.Column="3" Grid.Row="0" Command="{Binding checkViewModel.ShowLog}"></Button>
+                        <Button x:Name="ShowProtocolBtn" Content="Show protocol" Grid.Column="3" Grid.Row="0" Command="{Binding checkViewModel.ShowLog}"></Button>
                         
                     </Grid>
                 </GroupBox>
@@ -116,7 +116,7 @@
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <GroupBox Header="Log output" Margin="0,5,0,5">
+            <GroupBox x:Name="LogOutputGroupBox" Header="Log output" Margin="0,5,0,5">
                 <RichTextBox x:Name="LogBox" Margin="0,5,0,5" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextChanged="LogBox_TextChanged"></RichTextBox>
             </GroupBox>
         </Grid>
