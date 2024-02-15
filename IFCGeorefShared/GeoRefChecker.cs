@@ -481,7 +481,7 @@ namespace IFCGeorefShared
 
             return results;
         }
-    
+
         public void WriteProtocoll(string WorkingDirPath)
         {
             var sb = new StringBuilder();

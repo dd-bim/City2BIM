@@ -47,6 +47,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Resources.it.Designer.cs">
+      <DependentUpon>Resources.it.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Properties\Resources.pt.Designer.cs">
       <DependentUpon>Resources.pt.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -80,6 +85,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.it.resx">
+      <LastGenOutput>Resources.it.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.pt.resx">
       <LastGenOutput>Resources.pt.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

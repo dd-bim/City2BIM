@@ -47,9 +47,9 @@ namespace IFCGeoRefCheckerGUI.ViewModels
 
         public MainWindowViewModel() {
 
-            CultureInfo culture = new CultureInfo("de-DE");
-            System.Threading.Thread.CurrentThread.CurrentCulture = culture;
-            System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
+            //CultureInfo culture = new("de-DE");
+            //System.Threading.Thread.CurrentThread.CurrentCulture = culture;
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
 
             workingDirViewModel = new WorkingDirViewModel(this.eventAggregator);
             filePanelViewModel = new FilePanelViewModel(this.eventAggregator);
