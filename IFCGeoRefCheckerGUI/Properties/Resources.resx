@@ -159,7 +159,40 @@
   <data name="FILES_CHECKED_FORMAT" xml:space="preserve">
     <value>file(s) checked</value>
   </data>
-  <data name="PROTOCOL_HEADER" xml:space="preserve">
-    <value>IFCGeoRefChecker protocoll for file</value>
+  <data name="ProtocolHeader" xml:space="preserve">
+    <value>IFCGeoRefChecker protocoll for file {0}</value>
+  </data>
+  <data name="IfcVersion" xml:space="preserve">
+    <value>IfcVersion</value>
+  </data>
+  <data name="CheckedOn" xml:space="preserve">
+    <value>Checked on</value>
+  </data>
+  <data name="MaxCoordinates" xml:space="preserve">
+    <value>Maximum coordinates are</value>
+  </data>
+  <data name="RefElevationAndZ" xml:space="preserve">
+    <value>Ref elevation and Placement Z-Values of site are</value>
+  </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>not specified!</value>
+  </data>
+  <data name="PlacementZCoordinates" xml:space="preserve">
+    <value>Placement Z-coordinates</value>
+  </data>
+  <data name="MapConversion" xml:space="preserve">
+    <value>Map Conversion orthoghonal height is</value>
+  </data>
+  <data name="Fulfilled" xml:space="preserve">
+    <value>is fullfilled ✓</value>
+  </data>
+  <data name="NotFulfilled" xml:space="preserve">
+    <value>is not fulfilled</value>
+  </data>
+  <data name="With" xml:space="preserve">
+    <value>with</value>
+  </data>
+  <data name="PostalAddress" xml:space="preserve">
+    <value>Postal address referenced by Entity #</value>
   </data>
 </root>

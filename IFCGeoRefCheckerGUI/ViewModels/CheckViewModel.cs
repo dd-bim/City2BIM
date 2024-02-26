@@ -19,6 +19,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
     {
         IEventAggregator eventAggregator;
         List<Subscription>? eventSubscriptions;
+        ITranslator translator = new ResxConverter();
 
         private GeoRefCheckerResult checkerResults;
         public GeoRefCheckerResult CheckerResults
@@ -114,7 +115,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
         public event EventHandler? FileNotYetChecked;
 
         public CheckViewModel(IEventAggregator eventAggregator) 
-        { 
+        {
             this.eventAggregator = eventAggregator;
 
             this.eventSubscriptions = new List<Subscription>
@@ -171,7 +172,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                     Log.Information($"Starting to check {selectedPath}");
                     using (var model = IfcStore.Open(selectedPath))
                     {
-                        var checker = new GeoRefChecker(model);
+                        var checker = new GeoRefChecker(model, translator);
                         CheckerResults = checker.getCheckResults();
                         if (CheckerDict.ContainsKey(selectedPath))
                         {

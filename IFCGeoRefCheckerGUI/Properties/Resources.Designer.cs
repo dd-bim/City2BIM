@@ -70,6 +70,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Checked on ähnelt.
+        /// </summary>
+        internal static string CheckedOn {
+            get {
+                return ResourceManager.GetString("CheckedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die file(s) checked ähnelt.
         /// </summary>
         internal static string FILES_CHECKED_FORMAT {
@@ -84,6 +93,24 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string FILES_LOADED_FORMAT {
             get {
                 return ResourceManager.GetString("FILES_LOADED_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die is fullfilled ✓ ähnelt.
+        /// </summary>
+        internal static string Fulfilled {
+            get {
+                return ResourceManager.GetString("Fulfilled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die IfcVersion ähnelt.
+        /// </summary>
+        internal static string IfcVersion {
+            get {
+                return ResourceManager.GetString("IfcVersion", resourceCulture);
             }
         }
         
@@ -133,6 +160,51 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Map Conversion orthoghonal height is ähnelt.
+        /// </summary>
+        internal static string MapConversion {
+            get {
+                return ResourceManager.GetString("MapConversion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Maximum coordinates are ähnelt.
+        /// </summary>
+        internal static string MaxCoordinates {
+            get {
+                return ResourceManager.GetString("MaxCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die is not fulfilled ähnelt.
+        /// </summary>
+        internal static string NotFulfilled {
+            get {
+                return ResourceManager.GetString("NotFulfilled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die not specified! ähnelt.
+        /// </summary>
+        internal static string NotSpecified {
+            get {
+                return ResourceManager.GetString("NotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Placement Z-coordinates ähnelt.
+        /// </summary>
+        internal static string PlacementZCoordinates {
+            get {
+                return ResourceManager.GetString("PlacementZCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Please choose path! ähnelt.
         /// </summary>
         internal static string PLEASE_CHOOSE_PATH {
@@ -142,11 +214,29 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die IFCGeoRefChecker protocoll for file ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Postal address referenced by Entity # ähnelt.
         /// </summary>
-        internal static string PROTOCOL_HEADER {
+        internal static string PostalAddress {
             get {
-                return ResourceManager.GetString("PROTOCOL_HEADER", resourceCulture);
+                return ResourceManager.GetString("PostalAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die IFCGeoRefChecker protocoll for file {0} ähnelt.
+        /// </summary>
+        internal static string ProtocolHeader {
+            get {
+                return ResourceManager.GetString("ProtocolHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ref elevation and Placement Z-Values of site are ähnelt.
+        /// </summary>
+        internal static string RefElevationAndZ {
+            get {
+                return ResourceManager.GetString("RefElevationAndZ", resourceCulture);
             }
         }
         
@@ -183,6 +273,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string STATUS_REPORT {
             get {
                 return ResourceManager.GetString("STATUS_REPORT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die with ähnelt.
+        /// </summary>
+        internal static string With {
+            get {
+                return ResourceManager.GetString("With", resourceCulture);
             }
         }
         

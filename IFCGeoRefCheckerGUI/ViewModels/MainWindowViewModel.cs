@@ -55,7 +55,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
             filePanelViewModel = new FilePanelViewModel(this.eventAggregator);
             checkViewModel = new CheckViewModel(this.eventAggregator);
 
-            string? value = rm.GetString("LOAD_IFC_FILES");
+            //string? value = rm.GetString("LOAD_IFC_FILES");
 
             this.eventSubscriptions = new List<Subscription>
             {

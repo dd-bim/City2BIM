@@ -83,7 +83,6 @@ namespace IFCGeoRefCheckerGUI
             CheckFileBtn.Content = Properties.Resources.CHECK_SELECTED_FILE;
             SetWorkDirGroupBox.Header = Properties.Resources.SET_WORKING_DIRECTORY;
             WorkingDirLabel.Content = Properties.Resources.WORKING_DIRECTORY_LABEL;
-            //PathTextBox.Text = Properties.Resources.PATH_TEXTBOX;
             InputIFCGroupBox.Header = Properties.Resources.INPUT_IFC_FILES;
             StatusLabel.Content = Properties.Resources.STATUS_LABEL;
             LoadedIFCFilesLabel.Content = Properties.Resources.LOADED_IFC_FILES;

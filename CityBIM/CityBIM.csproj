@@ -235,5 +235,12 @@
     <Compile Remove="obj\x64\Revit2021_Debug\GUI\Properties\PropertyWindow.g.cs" />
     <Compile Remove="obj\x64\Revit2021_Debug\GUI\XPlan2BIM\ImportXPlanDialog.g.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="ResourcePictures.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResourcePictures.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
   <Import Project="..\CommonRevit\CommonRevit.projitems" Label="Shared" />
 </Project>

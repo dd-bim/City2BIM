@@ -159,7 +159,40 @@
   <data name="FILES_CHECKED_FORMAT" xml:space="preserve">
     <value>file controllati</value>
   </data>
-  <data name="PROTOCOL_HEADER" xml:space="preserve">
-    <value>Protocollo IFCGeoRefChecker per file</value>
+  <data name="ProtocolHeader" xml:space="preserve">
+    <value>Protocollo IFCGeoRefChecker per il file {0}</value>
+  </data>
+  <data name="IfcVersion" xml:space="preserve">
+    <value>IfcVersione</value>
+  </data>
+  <data name="CheckedOn" xml:space="preserve">
+    <value>Controllato</value>
+  </data>
+  <data name="MaxCoordinates" xml:space="preserve">
+    <value>Le coordinate massime sono</value>
+  </data>
+  <data name="RefElevationAndZ" xml:space="preserve">
+    <value>I valori Z dell'elevazione del riferimento e del posizionamento del sito sono</value>
+  </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>non specificato!</value>
+  </data>
+  <data name="PlacementZCoordinates" xml:space="preserve">
+    <value>Posizionamento delle coordinate Z</value>
+  </data>
+  <data name="MapConversion" xml:space="preserve">
+    <value>L'altezza ortogonale della Map Conversion è</value>
+  </data>
+  <data name="Fulfilled" xml:space="preserve">
+    <value>è soddisfatto ✓</value>
+  </data>
+  <data name="NotFulfilled" xml:space="preserve">
+    <value>non è soddisfatto</value>
+  </data>
+  <data name="With" xml:space="preserve">
+    <value>con</value>
+  </data>
+  <data name="PostalAddress" xml:space="preserve">
+    <value>Indirizzo postale a cui fa riferimento l'entità #</value>
   </data>
 </root>
