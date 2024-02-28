@@ -61,6 +61,24 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die According to these coordinates this ähnelt.
+        /// </summary>
+        internal static string AccordingCoordinates {
+            get {
+                return ResourceManager.GetString("AccordingCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Address ähnelt.
+        /// </summary>
+        internal static string Address {
+            get {
+                return ResourceManager.GetString("Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Check selected file ähnelt.
         /// </summary>
         internal static string CHECK_SELECTED_FILE {
@@ -75,6 +93,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string CheckedOn {
             get {
                 return ResourceManager.GetString("CheckedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Country ähnelt.
+        /// </summary>
+        internal static string Country {
+            get {
+                return ResourceManager.GetString("Country", resourceCulture);
             }
         }
         
@@ -102,6 +129,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string Fulfilled {
             get {
                 return ResourceManager.GetString("Fulfilled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Geographic location specified by Entity # ähnelt.
+        /// </summary>
+        internal static string GeographicLocation {
+            get {
+                return ResourceManager.GetString("GeographicLocation", resourceCulture);
             }
         }
         
@@ -178,6 +214,33 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No (valid) geographic location found for Entity # ähnelt.
+        /// </summary>
+        internal static string NoGeographicLocation {
+            get {
+                return ResourceManager.GetString("NoGeographicLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No postal address found for Entity # ähnelt.
+        /// </summary>
+        internal static string NoPostalAddress {
+            get {
+                return ResourceManager.GetString("NoPostalAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Checked file does not contain any site! ähnelt.
+        /// </summary>
+        internal static string NoSite {
+            get {
+                return ResourceManager.GetString("NoSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die is not fulfilled ähnelt.
         /// </summary>
         internal static string NotFulfilled {
@@ -196,7 +259,7 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Placement Z-coordinates ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Placement Z-coordinates are ähnelt.
         /// </summary>
         internal static string PlacementZCoordinates {
             get {
@@ -223,6 +286,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Postal code ähnelt.
+        /// </summary>
+        internal static string PostalCode {
+            get {
+                return ResourceManager.GetString("PostalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die IFCGeoRefChecker protocoll for file {0} ähnelt.
         /// </summary>
         internal static string ProtocolHeader {
@@ -237,6 +309,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string RefElevationAndZ {
             get {
                 return ResourceManager.GetString("RefElevationAndZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Region ähnelt.
+        /// </summary>
+        internal static string Region {
+            get {
+                return ResourceManager.GetString("Region", resourceCulture);
             }
         }
         
@@ -259,6 +340,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Site is located in ähnelt.
+        /// </summary>
+        internal static string SiteLocated {
+            get {
+                return ResourceManager.GetString("SiteLocated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Status: ähnelt.
         /// </summary>
         internal static string STATUS_LABEL {
@@ -273,6 +363,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string STATUS_REPORT {
             get {
                 return ResourceManager.GetString("STATUS_REPORT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Town ähnelt.
+        /// </summary>
+        internal static string Town {
+            get {
+                return ResourceManager.GetString("Town", resourceCulture);
             }
         }
         

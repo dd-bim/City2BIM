@@ -177,9 +177,6 @@
   <data name="NotSpecified" xml:space="preserve">
     <value>not specified!</value>
   </data>
-  <data name="PlacementZCoordinates" xml:space="preserve">
-    <value>Placement Z-coordinates</value>
-  </data>
   <data name="MapConversion" xml:space="preserve">
     <value>Map Conversion orthoghonal height is</value>
   </data>
@@ -194,5 +191,41 @@
   </data>
   <data name="PostalAddress" xml:space="preserve">
     <value>Postal address referenced by Entity #</value>
+  </data>
+  <data name="NoPostalAddress" xml:space="preserve">
+    <value>No postal address found for Entity #</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="Town" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Postal code</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="GeographicLocation" xml:space="preserve">
+    <value>Geographic location specified by Entity #</value>
+  </data>
+  <data name="AccordingCoordinates" xml:space="preserve">
+    <value>According to these coordinates this</value>
+  </data>
+  <data name="NoGeographicLocation" xml:space="preserve">
+    <value>No (valid) geographic location found for Entity #</value>
+  </data>
+  <data name="NoSite" xml:space="preserve">
+    <value>Checked file does not contain any site!</value>
+  </data>
+  <data name="PlacementZCoordinates" xml:space="preserve">
+    <value>Placement Z-coordinates are</value>
+  </data>
+  <data name="SiteLocated" xml:space="preserve">
+    <value>Site is located in</value>
   </data>
 </root>

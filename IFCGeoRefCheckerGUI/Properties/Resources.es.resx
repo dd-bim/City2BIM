@@ -177,9 +177,6 @@
   <data name="NotSpecified" xml:space="preserve">
     <value>No especificado!</value>
   </data>
-  <data name="PlacementZCoordinates" xml:space="preserve">
-    <value>Coordenadas Z de colocación</value>
-  </data>
   <data name="MapConversion" xml:space="preserve">
     <value>La altura ortogonal de Map Conversion es</value>
   </data>
@@ -194,5 +191,41 @@
   </data>
   <data name="PostalAddress" xml:space="preserve">
     <value>Dirección postal referenciada por la Entidad #</value>
+  </data>
+  <data name="NoPostalAddress" xml:space="preserve">
+    <value>No se encuentra ninguna dirección postal para la entidad #</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Región</value>
+  </data>
+  <data name="Town" xml:space="preserve">
+    <value>Ciudad</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Código Postal</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>DIRECCIÓN</value>
+  </data>
+  <data name="GeographicLocation" xml:space="preserve">
+    <value>Ubicación geográfica especificada por entidad #</value>
+  </data>
+  <data name="AccordingCoordinates" xml:space="preserve">
+    <value>Según estas coordenadas esto</value>
+  </data>
+  <data name="NoGeographicLocation" xml:space="preserve">
+    <value>No se encuentra una ubicación geográfica (válida) para entidad #</value>
+  </data>
+  <data name="NoSite" xml:space="preserve">
+    <value>¡El archivo marcado no contiene ningún sitio!</value>
+  </data>
+  <data name="PlacementZCoordinates" xml:space="preserve">
+    <value>Las coordenadas z de la propiedad son</value>
+  </data>
+  <data name="SiteLocated" xml:space="preserve">
+    <value>El sitio se encuentra en</value>
   </data>
 </root>

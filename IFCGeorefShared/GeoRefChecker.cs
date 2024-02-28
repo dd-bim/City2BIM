@@ -202,7 +202,7 @@ namespace IFCGeorefShared
                     {
                         if (pointToTest.Within(lastFoundFeature.GetGeometryRef()))
                         {
-                            lvl20.GeographicDescription = $"Site is located in {lastFoundFeature.GetFieldAsString(adminIdx)} in Region {lastFoundFeature.GetFieldAsString(nameIdx)}";
+                            lvl20.GeographicDescription = $"{_translationService.Translate("SiteLocated", CultureInfo.CurrentCulture)} {lastFoundFeature.GetFieldAsString(adminIdx)} in {_translationService.Translate("Region", CultureInfo.CurrentCulture)} {lastFoundFeature.GetFieldAsString(nameIdx)}";
                             continue;
                         }
                     }
@@ -212,7 +212,7 @@ namespace IFCGeorefShared
                         if (pointToTest.Within(feature.GetGeometryRef()))
                         {
                             lastFoundFeature = feature;
-                            lvl20.GeographicDescription = $"Site is located in {feature.GetFieldAsString(adminIdx)} in Region {feature.GetFieldAsString(nameIdx)}";
+                            lvl20.GeographicDescription = $"{_translationService.Translate("SiteLocated", CultureInfo.CurrentCulture)} {feature.GetFieldAsString(adminIdx)} in {_translationService.Translate("Region", CultureInfo.CurrentCulture)} {feature.GetFieldAsString(nameIdx)}";
                         }
                         feature = countries.GetNextFeature();
                     }
@@ -521,7 +521,7 @@ namespace IFCGeorefShared
             }
             sb.AppendLine();
 
-            sb.AppendLine($"IfcGeometricRepresentationContext {_translationService.Translate("PlacementZCoordinates", CultureInfo.CurrentCulture)} are:");
+            sb.AppendLine($"IfcGeometricRepresentationContext {_translationService.Translate("PlacementZCoordinates", CultureInfo.CurrentCulture)}:");
             //sb.AppendLine($"IfcGeometricRepresentationContext placement z-coordinates are:"); // + String.Join(' ', this.GenProps.ContextPlcmtElev!.Values.ToList()));
             foreach (var context in this.GenProps.ContextPlcmtElev!)
             {
@@ -583,11 +583,11 @@ namespace IFCGeorefShared
 
                     var PostalAddress = lvl10.PostalAddress;
 
-                    string info = $"Country: {(PostalAddress!.Country != "" ? PostalAddress!.Country : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\tRegion: {(PostalAddress!.Region != "" ? PostalAddress!.Region : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
-                    info += $"\nTown: {(PostalAddress!.Town != "" ? PostalAddress!.Town : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\tPostal Code: {(PostalAddress!.PostalCode != "" ? PostalAddress!.PostalCode : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
+                    string info = $"{_translationService.Translate("Country", CultureInfo.CurrentCulture)}: {(PostalAddress!.Country != "" ? PostalAddress!.Country : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\t{_translationService.Translate("Region", CultureInfo.CurrentCulture)}: {(PostalAddress!.Region != "" ? PostalAddress!.Region : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
+                    info += $"\n{_translationService.Translate("Town", CultureInfo.CurrentCulture)}: {(PostalAddress!.Town != "" ? PostalAddress!.Town : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\t{_translationService.Translate("PostalCode", CultureInfo.CurrentCulture)}: {(PostalAddress!.PostalCode != "" ? PostalAddress!.PostalCode : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
                     foreach(var line in PostalAddress.AddressLines)
                     {
-                        info += $"\nAddress: {(line.ToString() != "" ? line.ToString() : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
+                        info += $"\n{_translationService.Translate("Address", CultureInfo.CurrentCulture)}: {(line.ToString() != "" ? line.ToString() : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
                     }
                     sb.AppendLine(info);
 
@@ -596,7 +596,7 @@ namespace IFCGeorefShared
                 }
                 else
                 {
-                    sb.AppendLine($"No postal address found for Entity #{lvl10.ReferencedEntity!.EntityLabel} {lvl10.ReferencedEntity!.GetType().Name} with GUID {lvl10.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"{_translationService.Translate("NoPostalAddress", CultureInfo.CurrentCulture)}{lvl10.ReferencedEntity!.EntityLabel} {lvl10.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID {lvl10.ReferencedEntity.GlobalId}");
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef10 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}");
                 }
@@ -630,16 +630,16 @@ namespace IFCGeorefShared
             {
                 if (lvl20.IsFullFilled)
                 {
-                    sb.AppendLine($"Geographic location specified by Entity #{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"{_translationService.Translate("GeographicLocation", CultureInfo.CurrentCulture)}{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID {lvl20.ReferencedEntity.GlobalId}");
                     sb.AppendLine(Invariant($"Latitude: {(lvl20!.Latitude != null ? lvl20!.Latitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\tLongitude: {(lvl20!.Longitude != null ? lvl20!.Longitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
                     sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
-                    _ = lvl20.GeographicDescription != null ? sb.AppendLine($"According to these coordinates this {lvl20.GeographicDescription}") : null;
+                    _ = lvl20.GeographicDescription != null ? sb.AppendLine($"{_translationService.Translate("AccordingCoordinates", CultureInfo.CurrentCulture)} {lvl20.GeographicDescription}") : null;
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef20 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}");
                 }
                 else
                 {
-                    sb.AppendLine($"No (valid) geographic location found for Entity #{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} with GUID {lvl20.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"{_translationService.Translate("NoGeographicLocation", CultureInfo.CurrentCulture)}{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID {lvl20.ReferencedEntity.GlobalId}");
                     sb.AppendLine(Invariant($"Latitude: {(lvl20!.Latitude != null ? lvl20!.Latitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\tLongitude: {(lvl20!.Longitude != null ? lvl20!.Longitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
                     sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
                     sb.AppendLine();
@@ -653,7 +653,7 @@ namespace IFCGeorefShared
 
             if (this.LoGeoRef20.Count < 1)
             {
-                sb.AppendLine($"Checked file does not contain any site!");
+                sb.AppendLine($"{_translationService.Translate("NoSite", CultureInfo.CurrentCulture)}");
                 sb.AppendLine();
                 sb.AppendLine(dashLine);
                 sb.AppendLine();
@@ -684,7 +684,7 @@ namespace IFCGeorefShared
             {
                 if (lvl30.plcmt != null)
                 {
-                    sb.AppendLine($"Upper most entity of spatial structures is: #{lvl30.ReferencedEntity!.EntityLabel} {lvl30.ReferencedEntity!.GetType().Name} with GUID: {lvl30.ReferencedEntity.GlobalId}");
+                    sb.AppendLine($"Upper most entity of spatial structures is: #{lvl30.ReferencedEntity!.EntityLabel} {lvl30.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID: {lvl30.ReferencedEntity.GlobalId}");
                     sb.AppendLine((lvl30.IsFullFilled) ? $"Local placement of this entity has geographic context" : $"Local placement of this entity has no geographic context");
                     sb.AppendLine(Invariant($"Coordinates of the location are:\nX: {lvl30.plcmt.Location.X} \nY: {lvl30.plcmt.Location.Y} \nZ: {lvl30.plcmt.Location.Z}"));
                         
