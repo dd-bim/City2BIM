@@ -228,4 +228,40 @@
   <data name="SiteLocated" xml:space="preserve">
     <value>O local está localizado em</value>
   </data>
+  <data name="UpperEntity" xml:space="preserve">
+    <value>A entidade mais alta das estruturas espaciais é</value>
+  </data>
+  <data name="GeographicContext" xml:space="preserve">
+    <value>A colocação local desta entidade tem contexto geográfico.</value>
+  </data>
+  <data name="NoGeographicContext" xml:space="preserve">
+    <value>A colocação local desta entidade não tem contexto geográfico</value>
+  </data>
+  <data name="LocationCoordinates" xml:space="preserve">
+    <value>As coordenadas da localização são</value>
+  </data>
+  <data name="DirectionX" xml:space="preserve">
+    <value>Direção do eixo x é</value>
+  </data>
+  <data name="DirectionZ" xml:space="preserve">
+    <value>Direção do eixo z é</value>
+  </data>
+  <data name="TrueNorth" xml:space="preserve">
+    <value>True North é</value>
+  </data>
+  <data name="NoTrueNorth" xml:space="preserve">
+    <value>True North não é especificado. Isso padrão é</value>
+  </data>
+  <data name="ParametersWCS" xml:space="preserve">
+    <value>Parâmetros do sistema de coordenadas mundiais</value>
+  </data>
+  <data name="NoWCSGeoref" xml:space="preserve">
+    <value>Sistema de coordenadas mundiais de atributo de ifcgeometricRepresentationContext não é usado para a georeferação</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>referências</value>
+  </data>
+  <data name="OfType" xml:space="preserve">
+    <value>do tipo</value>
+  </data>
 </root>

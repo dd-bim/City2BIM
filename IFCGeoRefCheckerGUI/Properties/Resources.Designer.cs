@@ -106,6 +106,24 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Direction of X-axis is ähnelt.
+        /// </summary>
+        internal static string DirectionX {
+            get {
+                return ResourceManager.GetString("DirectionX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Direction of Z-axis is ähnelt.
+        /// </summary>
+        internal static string DirectionZ {
+            get {
+                return ResourceManager.GetString("DirectionZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die file(s) checked ähnelt.
         /// </summary>
         internal static string FILES_CHECKED_FORMAT {
@@ -129,6 +147,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string Fulfilled {
             get {
                 return ResourceManager.GetString("Fulfilled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Local placement of this entity has geographic context. ähnelt.
+        /// </summary>
+        internal static string GeographicContext {
+            get {
+                return ResourceManager.GetString("GeographicContext", resourceCulture);
             }
         }
         
@@ -187,6 +214,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Coordinates of the location are ähnelt.
+        /// </summary>
+        internal static string LocationCoordinates {
+            get {
+                return ResourceManager.GetString("LocationCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Log output ähnelt.
         /// </summary>
         internal static string LOG_OUTPUT {
@@ -210,6 +246,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string MaxCoordinates {
             get {
                 return ResourceManager.GetString("MaxCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Local placement of this entity has no geographic context ähnelt.
+        /// </summary>
+        internal static string NoGeographicContext {
+            get {
+                return ResourceManager.GetString("NoGeographicContext", resourceCulture);
             }
         }
         
@@ -250,11 +295,47 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die True North is not specified. This defaults to ähnelt.
+        /// </summary>
+        internal static string NoTrueNorth {
+            get {
+                return ResourceManager.GetString("NoTrueNorth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die not specified! ähnelt.
         /// </summary>
         internal static string NotSpecified {
             get {
                 return ResourceManager.GetString("NotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Attribute World Coordinate System of IfcGeometricRepresentationContext is not used for georeferencing ähnelt.
+        /// </summary>
+        internal static string NoWCSGeoref {
+            get {
+                return ResourceManager.GetString("NoWCSGeoref", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die of type ähnelt.
+        /// </summary>
+        internal static string OfType {
+            get {
+                return ResourceManager.GetString("OfType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Parameters of the World Coordinate System ähnelt.
+        /// </summary>
+        internal static string ParametersWCS {
+            get {
+                return ResourceManager.GetString("ParametersWCS", resourceCulture);
             }
         }
         
@@ -309,6 +390,15 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string RefElevationAndZ {
             get {
                 return ResourceManager.GetString("RefElevationAndZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die references ähnelt.
+        /// </summary>
+        internal static string Reference {
+            get {
+                return ResourceManager.GetString("Reference", resourceCulture);
             }
         }
         
@@ -372,6 +462,24 @@ namespace IFCGeoRefCheckerGUI.Properties {
         internal static string Town {
             get {
                 return ResourceManager.GetString("Town", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die True North is ähnelt.
+        /// </summary>
+        internal static string TrueNorth {
+            get {
+                return ResourceManager.GetString("TrueNorth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Upper most entity of spatial structures is ähnelt.
+        /// </summary>
+        internal static string UpperEntity {
+            get {
+                return ResourceManager.GetString("UpperEntity", resourceCulture);
             }
         }
         
