@@ -117,68 +117,151 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ALKISset_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\ALKISset_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CHECK_SELECTED_FILE" xml:space="preserve">
+    <value>Comprobar el archivo seleccionado</value>
   </data>
-  <data name="ALKIS_32px_96dpi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\ALKIS_32px_96dpi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LOAD_IFC_FILES" xml:space="preserve">
+    <value>Cargar archivos IFC</value>
   </data>
-  <data name="Attribute32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\Attribute32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SET_WORKING_DIRECTORY" xml:space="preserve">
+    <value>Establecer directorio de trabajo</value>
   </data>
-  <data name="citygml_32px_96dpi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\citygml_32px_96dpi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="INPUT_IFC_FILES" xml:space="preserve">
+    <value>Entrada de archivos IFC</value>
   </data>
-  <data name="citygml_set_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\citygml_set_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LOADED_IFC_FILES" xml:space="preserve">
+    <value>Archivos IFC cargados</value>
   </data>
-  <data name="DTM_32px_96dpi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\DTM_32px_96dpi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LOG_OUTPUT" xml:space="preserve">
+    <value>Salida de registro</value>
   </data>
-  <data name="Georef_32px_96dpi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\Georef_32px_96dpi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SHOW_PROTOCOL" xml:space="preserve">
+    <value>Mostrar protocolo</value>
   </data>
-  <data name="Georef_96dpi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>GUI\Georeferencing\img\Georef_96dpi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="STATUS_LABEL" xml:space="preserve">
+    <value>Estado:</value>
   </data>
-  <data name="HelpIcon_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\HelpIcon_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="STATUS_REPORT" xml:space="preserve">
+    <value>Informe de estado</value>
   </data>
-  <data name="HideLayerIcon_32px_96dpi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\HideLayerIcon_32px_96dpi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="PLEASE_CHOOSE_PATH" xml:space="preserve">
+    <value>¡Por favor elige el camino!</value>
   </data>
-  <data name="icon_georef10" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>GUI\Georeferencing\img\icon_georef10.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LANGUAGE_LABEL" xml:space="preserve">
+    <value>Seleccione el idioma:</value>
   </data>
-  <data name="icon_georef20" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>GUI\Georeferencing\img\icon_georef20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="WORKING_DIRECTORY_LABEL" xml:space="preserve">
+    <value>Directorio de trabajo</value>
   </data>
-  <data name="icon_georef50" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>GUI\Georeferencing\img\icon_georef50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="FILES_LOADED_FORMAT" xml:space="preserve">
+    <value>archivo(s) cargado(s)</value>
   </data>
-  <data name="IFC_32px_96dpi" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\IFC_32px_96dpi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="FILES_CHECKED_FORMAT" xml:space="preserve">
+    <value>archivo(s) comprobado(s)</value>
   </data>
-  <data name="LogIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\LogIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ProtocolHeader" xml:space="preserve">
+    <value>Protocolo IFCGeoRefChecker para el archivo {0}</value>
   </data>
-  <data name="loginIcon32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\loginIcon32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="IfcVersion" xml:space="preserve">
+    <value>Versión Ifc</value>
   </data>
-  <data name="overViewIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\overViewIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CheckedOn" xml:space="preserve">
+    <value>Comprobado</value>
   </data>
-  <data name="queryDataCat" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\queryDataCat.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MaxCoordinates" xml:space="preserve">
+    <value>Las coordenadas máximas son</value>
   </data>
-  <data name="Vermesser32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\Vermesser32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="RefElevationAndZ" xml:space="preserve">
+    <value>Los valores de elevación de referencia y ubicación Z del sitio son</value>
   </data>
-  <data name="XPlan_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>img\XPlan_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>No especificado!</value>
   </data>
-  <data name="LoGeoRef50IsNotFulfilled" xml:space="preserve">
-    <value>LoGeoRef50 is not fulfilled</value>
+  <data name="MapConversion" xml:space="preserve">
+    <value>La altura ortogonal de Map Conversion es</value>
+  </data>
+  <data name="Fulfilled" xml:space="preserve">
+    <value>está cumplido ✓</value>
+  </data>
+  <data name="NotFulfilled" xml:space="preserve">
+    <value>no se cumple</value>
+  </data>
+  <data name="With" xml:space="preserve">
+    <value>con</value>
+  </data>
+  <data name="PostalAddress" xml:space="preserve">
+    <value>Dirección postal referenciada por la Entidad #</value>
+  </data>
+  <data name="NoPostalAddress" xml:space="preserve">
+    <value>No se encuentra ninguna dirección postal para la entidad #</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Región</value>
+  </data>
+  <data name="Town" xml:space="preserve">
+    <value>Ciudad</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Código Postal</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>DIRECCIÓN</value>
+  </data>
+  <data name="GeographicLocation" xml:space="preserve">
+    <value>Ubicación geográfica especificada por entidad #</value>
+  </data>
+  <data name="AccordingCoordinates" xml:space="preserve">
+    <value>Según estas coordenadas esto</value>
+  </data>
+  <data name="NoGeographicLocation" xml:space="preserve">
+    <value>No se encuentra una ubicación geográfica (válida) para entidad #</value>
+  </data>
+  <data name="NoSite" xml:space="preserve">
+    <value>¡El archivo marcado no contiene ningún sitio!</value>
+  </data>
+  <data name="PlacementZCoordinates" xml:space="preserve">
+    <value>Las coordenadas z de la propiedad son</value>
+  </data>
+  <data name="SiteLocated" xml:space="preserve">
+    <value>El sitio se encuentra en</value>
+  </data>
+  <data name="UpperEntity" xml:space="preserve">
+    <value>La mayor entidad más superior de las estructuras espaciales es</value>
+  </data>
+  <data name="GeographicContext" xml:space="preserve">
+    <value>La colocación local de esta entidad tiene un contexto geográfico.</value>
+  </data>
+  <data name="NoGeographicContext" xml:space="preserve">
+    <value>La colocación local de esta entidad no tiene contexto geográfico</value>
+  </data>
+  <data name="LocationCoordinates" xml:space="preserve">
+    <value>Las coordenadas de la ubicación son</value>
+  </data>
+  <data name="DirectionX" xml:space="preserve">
+    <value>La dirección del eje x es</value>
+  </data>
+  <data name="DirectionZ" xml:space="preserve">
+    <value>La dirección del eje z es</value>
+  </data>
+  <data name="TrueNorth" xml:space="preserve">
+    <value>True North es</value>
+  </data>
+  <data name="NoTrueNorth" xml:space="preserve">
+    <value>True North no se especifica. Este valor predeterminado es</value>
+  </data>
+  <data name="ParametersWCS" xml:space="preserve">
+    <value>Parámetros del sistema de coordenadas mundiales</value>
+  </data>
+  <data name="NoWCSGeoref" xml:space="preserve">
+    <value>Attribute World Coordinate System of ifcGeometricRepresentationContext no se utiliza para la georreferenciación</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>referencias</value>
+  </data>
+  <data name="OfType" xml:space="preserve">
+    <value>de tipo</value>
   </data>
 </root>
