@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level40.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Levels\Level50.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TranslationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Shapefiles\Regions\ne_10m_admin_1_states_provinces.cpg">
