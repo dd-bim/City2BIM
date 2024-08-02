@@ -826,7 +826,11 @@ namespace IFCGeorefShared
                     sb.AppendLine($"{_translationService.Translate("TargetCRS", CultureInfo.CurrentCulture)} {lvl50.MapConversion.TargetCRS.Name}");
                     sb.AppendLine($"{_translationService.Translate("Description", CultureInfo.CurrentCulture)} {(lvl50.MapConversion.TargetCRS.Description.HasValue ? lvl50.MapConversion.TargetCRS.Description : "not specified")}");
                     sb.AppendLine($"{_translationService.Translate("GeoDatum", CultureInfo.CurrentCulture)} {(lvl50.MapConversion.TargetCRS.GeodeticDatum.HasValue ? lvl50.MapConversion.TargetCRS.GeodeticDatum : "not specified")}");
-                    sb.AppendLine($"{_translationService.Translate("VertDatum", CultureInfo.CurrentCulture)} {(lvl50.MapConversion.TargetCRS.VerticalDatum.HasValue ? lvl50.MapConversion.TargetCRS.VerticalDatum : "not specified")}");
+
+                    if (lvl50.ProjectedCRS4x3 != null)
+                    {
+                        sb.AppendLine($"{_translationService.Translate("VertDatum", CultureInfo.CurrentCulture)} {(lvl50.ProjectedCRS4x3.VerticalDatum.HasValue ? lvl50.ProjectedCRS4x3.VerticalDatum : "not specified")}");
+                    }
 
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef50 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}");

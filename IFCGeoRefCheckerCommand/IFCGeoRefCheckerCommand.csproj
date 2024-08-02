@@ -25,8 +25,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Xbim.Common" Version="5.1.341" />
-    <PackageReference Include="Xbim.Ifc" Version="5.1.341" />
+    <PackageReference Include="Xbim.Common" Version="6.0.445" />
+    <PackageReference Include="Xbim.Essentials" Version="6.0.445" />
+    <PackageReference Include="Xbim.Ifc" Version="6.0.445" />
   </ItemGroup>
 
   <ItemGroup>

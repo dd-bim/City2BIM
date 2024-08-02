@@ -27,9 +27,9 @@
     <PackageReference Include="GDAL" Version="3.6.3" />
     <PackageReference Include="GDAL.Native" Version="3.6.3" />
     <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" Version="1.1.0" />
-    <PackageReference Include="Xbim.Common" Version="5.1.341" />
-    <PackageReference Include="Xbim.Essentials" Version="5.1.341" />
-    <PackageReference Include="Xbim.Ifc" Version="5.1.341" />
+    <PackageReference Include="Xbim.Common" Version="6.0.445" />
+    <PackageReference Include="Xbim.Essentials" Version="6.0.445" />
+    <PackageReference Include="Xbim.Ifc" Version="6.0.445" />
   </ItemGroup>
 
   <ItemGroup>
