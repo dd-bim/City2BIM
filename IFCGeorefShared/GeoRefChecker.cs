@@ -808,25 +808,29 @@ namespace IFCGeorefShared
                     var xAxisAbscissa = lvl50.MapConversion.XAxisAbscissa;
                     var XaxisOrdinate = lvl50.MapConversion.XAxisOrdinate;
 
-                    sb.AppendLine($"IfcMapConversion defined in #{lvl50.MapConversion.EntityLabel} for {lvl50.context!.GetType().Name} (#{lvl50.context.EntityLabel}) for ContextType {lvl50.context.ContextType}");
-                    sb.AppendLine($"Translation Eastings: {lvl50.MapConversion.Eastings}");
-                    sb.AppendLine($"Translation Northings: {lvl50.MapConversion.Northings}");
-                    sb.AppendLine($"Translation Height: {lvl50.MapConversion.OrthogonalHeight}");
-                    sb.AppendLine($"Rotation X-Axis Abscissa: {lvl50.MapConversion.XAxisAbscissa}");
-                    sb.AppendLine($"Rotation X-Axis Ordinate: {lvl50.MapConversion.XAxisOrdinate}");
-                    sb.AppendLine($"Scale: {lvl50.MapConversion.Scale}");
+                    sb.AppendLine($"{_translationService.Translate("MapConversionDefined", CultureInfo.CurrentCulture)} #{lvl50.MapConversion.EntityLabel} for {lvl50.context!.GetType().Name} (#{lvl50.context.EntityLabel}) {_translationService.Translate("ContextType", CultureInfo.CurrentCulture)} {lvl50.context.ContextType}");
+                    sb.AppendLine($"{_translationService.Translate("TransEast", CultureInfo.CurrentCulture)} {lvl50.MapConversion.Eastings}");
+                    sb.AppendLine($"{_translationService.Translate("TransNorth", CultureInfo.CurrentCulture)} {lvl50.MapConversion.Northings}");
+                    sb.AppendLine($"{_translationService.Translate("TransHeight", CultureInfo.CurrentCulture)} {lvl50.MapConversion.OrthogonalHeight}");
+                    sb.AppendLine($"{_translationService.Translate("RotXAbs", CultureInfo.CurrentCulture)} {lvl50.MapConversion.XAxisAbscissa}");
+                    sb.AppendLine($"{_translationService.Translate("RotXOrd", CultureInfo.CurrentCulture)} {lvl50.MapConversion.XAxisOrdinate}");
+                    sb.AppendLine($"{_translationService.Translate("Scale", CultureInfo.CurrentCulture)} {lvl50.MapConversion.Scale}");
 
                     if (lvl50.MapConversion.Scale < 0.9 && lvl50.MapConversion.Scale < 1.1)
                     {
-                        sb.AppendLine("Scale of map conversion is between 0.9 and 1.1. This might not be used for conversion of units.");
+                        sb.AppendLine($"{_translationService.Translate("ScaleMapConversion", CultureInfo.CurrentCulture)}");
                     }
 
                     sb.AppendLine();
 
-                    sb.AppendLine($"Target CRS is: {lvl50.MapConversion.TargetCRS.Name}");
-                    sb.AppendLine($"Description: {(lvl50.MapConversion.TargetCRS.Description.HasValue ? lvl50.MapConversion.TargetCRS.Description : "not specified")}");
-                    sb.AppendLine($"Geodetic Datum: {(lvl50.MapConversion.TargetCRS.GeodeticDatum.HasValue ? lvl50.MapConversion.TargetCRS.GeodeticDatum : "not specified")}");
-                    sb.AppendLine($"Vertical Datum: {(lvl50.MapConversion.TargetCRS.VerticalDatum.HasValue ? lvl50.MapConversion.TargetCRS.VerticalDatum : "not specified")}");
+                    sb.AppendLine($"{_translationService.Translate("TargetCRS", CultureInfo.CurrentCulture)} {lvl50.MapConversion.TargetCRS.Name}");
+                    sb.AppendLine($"{_translationService.Translate("Description", CultureInfo.CurrentCulture)} {(lvl50.MapConversion.TargetCRS.Description.HasValue ? lvl50.MapConversion.TargetCRS.Description : "not specified")}");
+                    sb.AppendLine($"{_translationService.Translate("GeoDatum", CultureInfo.CurrentCulture)} {(lvl50.MapConversion.TargetCRS.GeodeticDatum.HasValue ? lvl50.MapConversion.TargetCRS.GeodeticDatum : "not specified")}");
+
+                    if (lvl50.ProjectedCRS4x3 != null)
+                    {
+                        sb.AppendLine($"{_translationService.Translate("VertDatum", CultureInfo.CurrentCulture)} {(lvl50.ProjectedCRS4x3.VerticalDatum.HasValue ? lvl50.ProjectedCRS4x3.VerticalDatum : "not specified")}");
+                    }
 
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef50 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}");
@@ -834,7 +838,7 @@ namespace IFCGeorefShared
                 }
                 else
                 {
-                    sb.AppendLine($"{(lvl50.context != null ? $"No IfcMapConversion specified by #{lvl50.context.EntityLabel} IfcGeometricRepresentationContext for ContextType {lvl50.context.ContextType}" : "Found no IfcGeometricRepresentationContext")}");
+                    sb.AppendLine($"{(lvl50.context != null ? $"{_translationService.Translate("NoMapConvBy", CultureInfo.CurrentCulture)}{lvl50.context.EntityLabel} IfcGeometricRepresentationContext {_translationService.Translate("ContextType", CultureInfo.CurrentCulture)} {lvl50.context.ContextType}" : $"{_translationService.Translate("FoundNo", CultureInfo.CurrentCulture)}")}");
                     sb.AppendLine();
                     sb.AppendLine($"LoGeoRef50 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}");
 
@@ -848,7 +852,7 @@ namespace IFCGeorefShared
 
             if (this.LoGeoRef50.Count < 1)
             {
-                sb.AppendLine("No IfcMapConversion specified in file");
+                sb.AppendLine($"{_translationService.Translate("NoMapConvIn", CultureInfo.CurrentCulture)}");
             }
 
             sb.AppendLine();

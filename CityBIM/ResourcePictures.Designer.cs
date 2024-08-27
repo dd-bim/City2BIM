@@ -201,15 +201,6 @@ namespace CityBIM {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die LoGeoRef50 is not fulfilled ähnelt.
-        /// </summary>
-        public static string LoGeoRef50IsNotFulfilled {
-            get {
-                return ResourceManager.GetString("LoGeoRef50IsNotFulfilled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap LogIcon {

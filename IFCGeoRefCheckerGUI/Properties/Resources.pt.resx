@@ -264,4 +264,52 @@
   <data name="OfType" xml:space="preserve">
     <value>do tipo</value>
   </data>
+  <data name="MapConversionDefined" xml:space="preserve">
+    <value>IfcmapConverSion definido em</value>
+  </data>
+  <data name="TransEast" xml:space="preserve">
+    <value>Lastes de tradução:</value>
+  </data>
+  <data name="TransNorth" xml:space="preserve">
+    <value>Tradução Northings:</value>
+  </data>
+  <data name="TransHeight" xml:space="preserve">
+    <value>Altura de tradução:</value>
+  </data>
+  <data name="Scale" xml:space="preserve">
+    <value>Escala:</value>
+  </data>
+  <data name="ScaleMapConversion" xml:space="preserve">
+    <value>A escala da conversão do mapa está entre 0,9 e 1,1. Isso pode não ser usado para conversão de unidades.</value>
+  </data>
+  <data name="TargetCRS" xml:space="preserve">
+    <value>Target CRS é:</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descrição:</value>
+  </data>
+  <data name="GeoDatum" xml:space="preserve">
+    <value>Datum geodésico:</value>
+  </data>
+  <data name="VertDatum" xml:space="preserve">
+    <value>Dado vertical:</value>
+  </data>
+  <data name="NoMapConvBy" xml:space="preserve">
+    <value>NO IFCMAPConverison especificado por #</value>
+  </data>
+  <data name="ContextType" xml:space="preserve">
+    <value>para contextType</value>
+  </data>
+  <data name="FoundNo" xml:space="preserve">
+    <value>Não encontrou o IFCGEOMETRICREPRESENTATIONCONTEXT</value>
+  </data>
+  <data name="NoMapConvIn" xml:space="preserve">
+    <value>NO IFCMAPCONVERSION especificado no arquivo</value>
+  </data>
+  <data name="RotXAbs" xml:space="preserve">
+    <value>ROTAÇÃO X-Eixo Abcissa:</value>
+  </data>
+  <data name="RotXOrd" xml:space="preserve">
+    <value>Ordenada de eixo x de rotação:</value>
+  </data>
 </root>

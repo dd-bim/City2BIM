@@ -5,6 +5,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+	  <SelfContained>true</SelfContained>
+	  <PublishReadyToRun>true</PublishReadyToRun>
+	  <PublishTrimmed>true</PublishTrimmed>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,8 +25,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Xbim.Common" Version="5.1.341" />
-    <PackageReference Include="Xbim.Ifc" Version="5.1.341" />
+    <PackageReference Include="Xbim.Common" Version="6.0.445" />
+    <PackageReference Include="Xbim.Essentials" Version="6.0.445" />
+    <PackageReference Include="Xbim.Ifc" Version="6.0.445" />
   </ItemGroup>
 
   <ItemGroup>

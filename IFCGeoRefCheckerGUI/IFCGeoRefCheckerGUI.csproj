@@ -2,11 +2,16 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ApplicationIcon>images\DD-BIM-ICON.ico</ApplicationIcon>
+            <StartupObject>IFCGeoRefCheckerGUI.App</StartupObject>
+	  <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+	  <SelfContained>true</SelfContained>
+	  <PublishReadyToRun>true</PublishReadyToRun>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +27,9 @@
     <PackageReference Include="GDAL" Version="3.6.3" />
     <PackageReference Include="GDAL.Native" Version="3.6.3" />
     <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" Version="1.1.0" />
-    <PackageReference Include="Xbim.Common" Version="5.1.341" />
-    <PackageReference Include="Xbim.Essentials" Version="5.1.341" />
-    <PackageReference Include="Xbim.Ifc" Version="5.1.341" />
+    <PackageReference Include="Xbim.Common" Version="6.0.445" />
+    <PackageReference Include="Xbim.Essentials" Version="6.0.445" />
+    <PackageReference Include="Xbim.Ifc" Version="6.0.445" />
   </ItemGroup>
 
   <ItemGroup>
