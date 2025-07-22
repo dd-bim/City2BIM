@@ -10,23 +10,7 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IxMilia.Dxf" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Npgsql" />
-    <PackageReference Include="RestSharp" />
-    <PackageReference Include="System.Collections.Immutable" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
-    <PackageReference Include="System.Text.Encoding.CodePages" />
-    <PackageReference Include="System.Text.Encodings.Web" />
-    <PackageReference Include="System.Text.Json" />
-    <PackageReference Include="System.Threading.Channels" />
-    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" />
-    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters.CoreServices" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" VersionOverride="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" VersionOverride="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj" />

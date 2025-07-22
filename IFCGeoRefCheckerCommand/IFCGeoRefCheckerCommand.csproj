@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -18,14 +18,12 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" />
     <PackageReference Include="GDAL" />
-    <PackageReference Include="GDAL.Native" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.File" />
     <PackageReference Include="Xbim.Common" />
     <PackageReference Include="Xbim.Essentials" />
     <PackageReference Include="Xbim.Ifc" />
-    <PackageReference Include="Xbim.Ifc4" VersionOverride="6.0.445" />
     <PackageReference Include="Xbim.Ifc2x3" VersionOverride="6.0.445" />
     <PackageReference Include="Xbim.IO.Esent" VersionOverride="6.0.445" />
     <PackageReference Include="Xbim.IO.MemoryModel" VersionOverride="6.0.445" />

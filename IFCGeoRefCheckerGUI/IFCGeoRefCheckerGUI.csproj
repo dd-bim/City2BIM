@@ -21,15 +21,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GDAL" />
-    <PackageReference Include="GDAL.Native" />
     <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" />
-    <PackageReference Include="Xbim.Common" />
-    <PackageReference Include="Xbim.Essentials" />
     <PackageReference Include="Xbim.Ifc" />
-    <PackageReference Include="Xbim.Ifc4" VersionOverride="6.0.445" />
-    <PackageReference Include="Xbim.Ifc2x3" VersionOverride="6.0.445" />
-    <PackageReference Include="Xbim.IO.Esent" VersionOverride="6.0.445" />
-    <PackageReference Include="Xbim.IO.MemoryModel" VersionOverride="6.0.445" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\DD-BIM-LOGO.png">

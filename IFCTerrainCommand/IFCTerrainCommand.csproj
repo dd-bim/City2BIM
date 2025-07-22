@@ -14,12 +14,14 @@
   <ItemGroup>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DD_BIM_ICON.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

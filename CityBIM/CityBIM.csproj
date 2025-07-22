@@ -31,44 +31,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GDAL" />
-    <PackageReference Include="GDAL.Native" />
-    <PackageReference Include="GeoJSON.Net" />
-    <PackageReference Include="ManagedEsent" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" />
-    <PackageReference Include="Microsoft.IdentityModel.Logging" />
     <PackageReference Include="netDXF" />
-    <PackageReference Include="NetTopologySuite" />
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Revit_All_Main_Versions_API_x64" ExcludeAssets="runtime" />
-    <PackageReference Include="Serilog" />
-    <PackageReference Include="Serilog.Sinks.File" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
-    <PackageReference Include="System.Security.AccessControl" />
     <PackageReference Include="System.Security.Permissions" />
-    <PackageReference Include="System.Text.Encoding.CodePages" />
-    <PackageReference Include="System.Text.Encodings.Web" />
-    <PackageReference Include="System.Text.Json" />
-    <PackageReference Include="Xbim.Common" />
-    <PackageReference Include="Xbim.Essentials" />
-    <PackageReference Include="Xbim.Ifc" />
-    <PackageReference Include="Xbim.Ifc2x3" />
-    <PackageReference Include="Xbim.Ifc4" />
-    <PackageReference Include="Xbim.IO.Esent" />
-    <PackageReference Include="Xbim.IO.MemoryModel" />
-    <PackageReference Include="Xbim.Tessellator" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
