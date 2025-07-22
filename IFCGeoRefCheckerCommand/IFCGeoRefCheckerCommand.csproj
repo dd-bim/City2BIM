@@ -1,40 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
-	  <SelfContained>true</SelfContained>
-	  <PublishReadyToRun>true</PublishReadyToRun>
-	  <PublishTrimmed>true</PublishTrimmed>
-	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishTrimmed>true</PublishTrimmed>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="doc\**" />
     <EmbeddedResource Remove="doc\**" />
     <None Remove="doc\**" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="GDAL" Version="3.6.3" />
-    <PackageReference Include="GDAL.Native" Version="3.6.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Xbim.Common" Version="6.0.445" />
-    <PackageReference Include="Xbim.Essentials" Version="6.0.445" />
-    <PackageReference Include="Xbim.Ifc" Version="6.0.445" />
+    <PackageReference Include="CommandLineParser" />
+    <PackageReference Include="GDAL" />
+    <PackageReference Include="GDAL.Native" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Xbim.Common" />
+    <PackageReference Include="Xbim.Essentials" />
+    <PackageReference Include="Xbim.Ifc" />
+    <PackageReference Include="Xbim.Ifc4" VersionOverride="6.0.445" />
+    <PackageReference Include="Xbim.Ifc2x3" VersionOverride="6.0.445" />
+    <PackageReference Include="Xbim.IO.Esent" VersionOverride="6.0.445" />
+    <PackageReference Include="Xbim.IO.MemoryModel" VersionOverride="6.0.445" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="input\" />
     <Folder Include="workingDir\" />
   </ItemGroup>
-
   <Import Project="..\IFCGeorefShared\IFCGeorefShared.projitems" Label="Shared" />
-
 </Project>

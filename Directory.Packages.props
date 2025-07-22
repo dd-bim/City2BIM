@@ -1,0 +1,81 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="CommandLineParser" Version="2.9.1" />
+    <PackageVersion Include="GDAL" Version="3.11.3" />
+    <PackageVersion Include="GDAL.Native" Version="3.11.3" />
+    <PackageVersion Include="GeoJSON.Net" Version="1.4.1" />
+    <PackageVersion Include="IxMilia.Dxf" Version="0.8.4" />
+    <PackageVersion Include="ManagedEsent" Version="2.0.0" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.IdentityModel.Abstractions" Version="8.13.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.13.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.Logging" Version="8.13.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.13.0" />
+    <PackageVersion Include="netDxf" Version="2023.11.10" />
+    <PackageVersion Include="NetTopologySuite" Version="2.6.0" />
+    <PackageVersion Include="NetTopologySuite.Features" Version="2.2.0" />
+    <PackageVersion Include="NetTopologySuite.IO.GeoJSON" Version="4.0.0" />
+    <PackageVersion Include="NetTopologySuite.IO.PostGis" Version="2.1.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Npgsql" Version="9.0.3" />
+    <PackageVersion Include="Npgsql.LegacyPostgis" Version="6.0.0-preview7" />
+    <PackageVersion Include="Npgsql.NetTopologySuite" Version="9.0.3" />
+    <PackageVersion Include="RestSharp" Version="112.1.0" />
+    <PackageVersion Include="RestSharp.Serializers.NewtonsoftJson" Version="112.1.0" />
+    <PackageVersion Include="Revit_All_Main_Versions_API_x64" Version="2026.0.0" />
+    <PackageVersion Include="Serilog" Version="4.3.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageVersion Include="Serilog.Sinks.RichTextBox.Wpf" Version="1.1.0" />
+    <PackageVersion Include="System.Buffers" Version="4.5.1" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.7" />
+    <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.7" />
+    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.7" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
+    <PackageVersion Include="System.Memory" Version="4.5.5" />
+    <PackageVersion Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
+    <PackageVersion Include="System.Security.AccessControl" Version="6.0.1" />
+    <PackageVersion Include="System.Security.Permissions" Version="9.0.7" />
+    <PackageVersion Include="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageVersion Include="System.Text.Encoding.CodePages" Version="9.0.7" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.7" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.7" />
+    <PackageVersion Include="System.Threading.Channels" Version="9.0.7" />
+    <PackageVersion Include="System.Threading.Tasks" Version="4.3.0" />
+    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
+    <PackageVersion Include="Xbim.Common" Version="6.0.521" />
+    <PackageVersion Include="Xbim.Essentials" Version="6.0.521" />
+    <PackageVersion Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
+    <PackageVersion Include="Xbim.Ifc" Version="6.0.521" />
+    <PackageVersion Include="Xbim.Ifc2x3" Version="6.0.521" />
+    <PackageVersion Include="Xbim.Ifc4" Version="6.0.521" />
+    <PackageVersion Include="Xbim.IO.Esent" Version="6.0.521" />
+    <PackageVersion Include="Xbim.IO.MemoryModel" Version="6.0.521" />
+    <PackageVersion Include="Xbim.Tessellator" Version="6.0.521" />
+    <PackageVersion Include="Microsoft.AspNetCore.SystemWebAdapters" Version="2.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.SystemWebAdapters.CoreServices" Version="2.0.0" />
+    <PackageVersion Include="System.ServiceModel.Primitives" Version="8.1.2" />
+    <PackageVersion Include="System.ServiceModel.Http" Version="8.1.2" />
+    <PackageVersion Include="System.ServiceModel.Duplex" Version="6.0.0" />
+    <PackageVersion Include="System.ServiceModel.NetTcp" Version="8.1.2" />
+    <PackageVersion Include="System.ServiceModel.Security" Version="6.0.0" />
+    <PackageVersion Include="System.ServiceModel.Federation" Version="8.1.2" />
+  </ItemGroup>
+</Project>

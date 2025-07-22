@@ -1,37 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-		<UseWindowsForms>true</UseWindowsForms>
-		<ApplicationIcon>images\DD-BIM-ICON.ico</ApplicationIcon>
-            <StartupObject>IFCGeoRefCheckerGUI.App</StartupObject>
-	  <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
-	  <SelfContained>true</SelfContained>
-	  <PublishReadyToRun>true</PublishReadyToRun>
-	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>images\DD-BIM-ICON.ico</ApplicationIcon>
+    <StartupObject>IFCGeoRefCheckerGUI.App</StartupObject>
+    <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="images\DD-BIM-ICON.ico" />
     <None Remove="images\DD-BIM-LOGO.png" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="images\DD-BIM-ICON.ico" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="GDAL" Version="3.6.3" />
-    <PackageReference Include="GDAL.Native" Version="3.6.3" />
-    <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" Version="1.1.0" />
-    <PackageReference Include="Xbim.Common" Version="6.0.445" />
-    <PackageReference Include="Xbim.Essentials" Version="6.0.445" />
-    <PackageReference Include="Xbim.Ifc" Version="6.0.445" />
+    <PackageReference Include="GDAL" />
+    <PackageReference Include="GDAL.Native" />
+    <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" />
+    <PackageReference Include="Xbim.Common" />
+    <PackageReference Include="Xbim.Essentials" />
+    <PackageReference Include="Xbim.Ifc" />
+    <PackageReference Include="Xbim.Ifc4" VersionOverride="6.0.445" />
+    <PackageReference Include="Xbim.Ifc2x3" VersionOverride="6.0.445" />
+    <PackageReference Include="Xbim.IO.Esent" VersionOverride="6.0.445" />
+    <PackageReference Include="Xbim.IO.MemoryModel" VersionOverride="6.0.445" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="images\DD-BIM-LOGO.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -40,7 +39,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -50,7 +48,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Resources.it.Designer.cs">
       <DependentUpon>Resources.it.resx</DependentUpon>
@@ -88,7 +85,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.it.resx">
       <LastGenOutput>Resources.it.Designer.cs</LastGenOutput>
@@ -115,7 +111,5 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
   <Import Project="..\IFCGeorefShared\IFCGeorefShared.projitems" Label="Shared" />
-
 </Project>

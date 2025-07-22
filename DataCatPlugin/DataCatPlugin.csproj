@@ -1,20 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-	<UseWPF>true</UseWPF>
-	<Configurations>Debug;Release;Debug_All</Configurations>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Configurations>Debug;Release;Debug_All</Configurations>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="RestSharp" Version="106.15.0" />
-	<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2023.0.0" ExcludeAssets="runtime" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
-    <PackageReference Include="Xbim.Essentials" Version="5.1.341" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="RestSharp" />
+    <PackageReference Include="Revit_All_Main_Versions_API_x64" ExcludeAssets="runtime" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="Xbim.Essentials" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="GUI\DataCatalogEditorWindow.xaml.cs">
       <DependentUpon>DataCatalogEditorWindow.xaml</DependentUpon>
@@ -40,17 +37,14 @@
       <DependentUpon>ResourceImages.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="ResourceImages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourceImages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
   <Import Project="..\CommonRevit\CommonRevit.projitems" Label="Shared" />
-
-	<!--<Choose>
+  <!--<Choose>
 		<When Condition=" '$(RevitVersion)' == '2021'">
 			<ItemGroup>
 				<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2021.*" ExcludeAssets="runtime" />
@@ -86,5 +80,4 @@
 		<MSBuild Projects="$(AssemblyName).csproj" Properties="RevitVersion=2022;OutputPath=$(OutRvt2022)"></MSBuild>
 		<MSBuild Projects="$(AssemblyName).csproj" Properties="RevitVersion=2023;OutputPath=$(OutRvt2023)"></MSBuild>
 	</Target>-->
-	
 </Project>
