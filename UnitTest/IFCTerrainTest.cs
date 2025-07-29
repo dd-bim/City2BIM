@@ -44,14 +44,14 @@ namespace UnitTest
                     {
                         //open dxf file
                         DxfFile dxf = DxfFile.Load(fileStream);
-                        var DEMLayers = dxf.Layers.Where(item => Regex.IsMatch(item.Name ?? "", @"DEM|DGM", RegexOptions.IgnoreCase)).ToList(); // for Testing we search for Layers named DEM/DGM
+                        var DEMLayers = dxf.Layers.Where(item => Regex.IsMatch(item.Name ?? "", @"DEM|DGM|TIN", RegexOptions.IgnoreCase)).ToList(); // for Testing we search for Layers named DEM/DGM
                         if(DEMLayers.Count <= numTries)
                         {
                             Assert.True(false, "File contains no convertable DEM/DGM Layer");
                             numTries = 0;
                             return;
                         }
-                        config.readPoints = true;
+                        //config.readPoints = true;
                         config.layer = DEMLayers[numTries].Name; 
                     }
                     config.fileType = IfcTerrainFileType.DXF;
@@ -72,7 +72,7 @@ namespace UnitTest
             // Temp-Output
             string resultsDir = Path.Combine(AppContext.BaseDirectory, "TestArtifacts");
             Directory.CreateDirectory(resultsDir);
-            string suffix = $"{config.outIFCType}_{config.outSurfaceType}" +
+            string suffix = $"{config.fileType}_{config.outIFCType}_{config.outSurfaceType}" +
                             $"{(config.breakline == true ? "_BL" : "")}" +
                             $"_{config.logeoref}";
             config.destFileName = Path.Combine(resultsDir, $"{Path.GetFileNameWithoutExtension(config.fileName)}_{suffix}.ifc"); 
@@ -116,7 +116,9 @@ namespace UnitTest
             TestFiles.SelectMany(file =>
             IFCVersions.SelectMany(version =>
             SurfaceOptions.Select(option =>
-            new object[] { file[0], version[0], option[0] }))); // extract inner items
+            new object[] { file[0], version[0], option[0] })))
+            .Where(combination => !(combination[2].Equals(SurfaceType.TIN) && 
+            (combination[1].Equals(IfcVersion.IFC2x3) || combination[1].Equals(IfcVersion.IFC4)))); // Remove Test using TIN with IFC2x3 and IFC4, as TIN is not supported in these versions
 
     }
 
