@@ -229,16 +229,56 @@ namespace BIMGISInteropLibs.DXF
             LogWriter.Add(LogType.verbose, "[DXF] read breaklines ...");
             foreach (var entity in dxfFile.Entities)
             {
-                if (entity.Layer == breaklineLayer && entity.EntityType.Equals(DxfEntityType.Line))
+                if (entity.Layer == breaklineLayer)
                 {
-                    var dxfLine = (DxfLine)entity;
+                    LineString line = null;
+                    if (entity.EntityType.Equals(DxfEntityType.Line))
+                    {
+                        var dxfLine = (DxfLine)entity;
 
-                    CoordinateZ pA = new CoordinateZ(dxfLine.P1.X * scale, dxfLine.P1.Y * scale, dxfLine.P1.Z * scale);
-                    CoordinateZ pE = new CoordinateZ(dxfLine.P2.X * scale, dxfLine.P2.Y * scale, dxfLine.P2.Z * scale);
-                    LineString line = new LineString(new CoordinateZ[] { pA, pE });
-
-                    lines.Add(line);
-                    LogWriter.Add(LogType.verbose, "[DXF] Breakline '"+line.Count+"' set.");
+                        CoordinateZ pA = new CoordinateZ(dxfLine.P1.X * scale, dxfLine.P1.Y * scale, dxfLine.P1.Z * scale);
+                        CoordinateZ pE = new CoordinateZ(dxfLine.P2.X * scale, dxfLine.P2.Y * scale, dxfLine.P2.Z * scale);
+                        line = new LineString(new CoordinateZ[] { pA, pE });
+                    }
+                    else if (entity.EntityType.Equals(DxfEntityType.Polyline))
+                    {
+                        var dxfLine = (DxfPolyline)entity;
+                        CoordinateZ[] coords = new CoordinateZ[dxfLine.Vertices.Count + (dxfLine.IsClosed ? 1 : 0)];
+                        int count = 0;
+                        foreach (var vert in dxfLine.Vertices)
+                        {
+                            coords[count] = new CoordinateZ(vert.Location.X * scale, vert.Location.Y * scale, vert.Location.Z * scale);
+                            count++;
+                        }
+                        if (dxfLine.IsClosed) coords[count] = coords[0];
+                        line = new LineString(coords);
+                    }
+                    else if (entity.EntityType.Equals(DxfEntityType.LwPolyline))
+                    {
+                        var dxfLine = (DxfLwPolyline)entity;
+                        CoordinateZ[] coords = new CoordinateZ[dxfLine.Vertices.Count + (dxfLine.IsClosed ? 1:0)];
+                        int count = 0;
+                        foreach (var vert in dxfLine.Vertices)
+                        {
+                            coords[count] = new CoordinateZ(vert.X * scale, vert.Y * scale,dxfLine.Elevation * scale);
+                            count++;
+                        }
+                        if (dxfLine.IsClosed) coords[count] = coords[0];
+                        line = new LineString(coords);
+                    }
+                    else if (entity.EntityType.Equals(DxfEntityType.Arc))
+                    {
+                        // TODO Enable Arc-Breakline support
+                    }
+                    else if (entity.EntityType.Equals(DxfEntityType.Circle))
+                    {
+                        // TODO Enable Circle-Breakline support
+                    }
+                    if(line != null)
+                    {
+                        lines.Add(line);
+                        LogWriter.Add(LogType.verbose, "[DXF] Breakline '" + line.Count + "' set.");
+                    }
                 }
             }
             res.lines = lines;
