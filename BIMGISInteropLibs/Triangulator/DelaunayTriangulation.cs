@@ -13,6 +13,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 
 namespace BIMGISInteropLibs.Triangulator
 {
+    [Obsolete("Use TriangleNETTriangulation instead.")]
     public class DelaunayTriangulation
     {
         /// <summary>

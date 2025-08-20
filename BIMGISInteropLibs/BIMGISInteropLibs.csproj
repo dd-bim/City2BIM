@@ -29,6 +29,7 @@
     <PackageReference Include="Npgsql.NetTopologySuite" />
     <PackageReference Include="RestSharp" />
     <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Speckle.Triangle" />
     <PackageReference Include="System.Collections.Immutable" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
     <PackageReference Include="System.Text.Encoding.CodePages" />

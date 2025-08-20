@@ -145,7 +145,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             else
             {
                 //dtm processing via delaunay triangulation
-                Triangulator.DelaunayTriangulation.triangulate(result);
+                Triangulator.TriangleNETTriangulation.triangulate(result);
             }
 
             //from here are the IFC writers

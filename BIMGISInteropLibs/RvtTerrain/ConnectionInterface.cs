@@ -85,7 +85,7 @@ namespace BIMGISInteropLibs.RvtTerrain
             if(resTerrain.currentConversion != DtmConversionType.conversion)
             {
                 Log.Information("A Delaunay triangulation will be calculated...");
-                Triangulator.DelaunayTriangulation.triangulate(resTerrain);
+                Triangulator.TriangleNETTriangulation.triangulate(resTerrain);
             }
 
             Log.Information("File read. Result => Faces (Triangles): " + resTerrain.triMap.Count + " Points: " + resTerrain.pointList);
