@@ -57,7 +57,7 @@ namespace BIMGISInteropLibs.DXF
             try
             {
                 //fileName will be given by Interface (IFCTerrainGUI or ~Revit~)
-                using (var fs = new FileStream(fileName, FileMode.Open))
+                using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
                 {
                     dxfFile = DxfFile.Load(fs);
 
@@ -268,11 +268,13 @@ namespace BIMGISInteropLibs.DXF
                     }
                     else if (entity.EntityType.Equals(DxfEntityType.Arc))
                     {
-                        // TODO Enable Arc-Breakline support
+                        var dxfArc = (DxfArc)entity;
+                        line = InterpolationHelper.InterpolateArc(dxfArc);
                     }
                     else if (entity.EntityType.Equals(DxfEntityType.Circle))
                     {
-                        // TODO Enable Circle-Breakline support
+                        var dxfCircle = (DxfCircle)entity;
+                        line = InterpolationHelper.InterpolateArc(dxfCircle);
                     }
                     if(line != null)
                     {

@@ -71,16 +71,15 @@ namespace BIMGISInteropLibs.Triangulator
             GeometryCollection faces;
             GeometryCollection breaklines;
             NetTopologySuite.Geometries.Geometry[] triangles;
-            var points = new Vertex3D[result.pointList.Count];
+            var points = new HashSet<Vertex3D>();
             //switch between different conversion types
             switch (result.currentConversion)
             {
                 default:
                     for (int i = 0; i < result.pointList.Count; i++)
                     {
-                        points[i] = new Vertex3D((float)result.pointList[i].X, (float)result.pointList[i].Y, (float)result.pointList[i].Z);
+                        points.Add(new Vertex3D((float)result.pointList[i].X, (float)result.pointList[i].Y, (float)result.pointList[i].Z));
                     }
-                    points = points.Distinct().ToArray();
                     //set points
                     builder.Points.AddRange(points);
                     break;
@@ -100,14 +99,10 @@ namespace BIMGISInteropLibs.Triangulator
                     break;
 
                 case IfcTerrain.DtmConversionType.points_breaklines:
-                    var pointData = new Dictionary<NetTopologySuite.Geometries.Point, float>();
                     for (int i = 0; i < result.pointList.Count; i++)
                     {
-                        points[i] = new Vertex3D((float)result.pointList[i].X, (float)result.pointList[i].Y, (float)result.pointList[i].Z);
+                        points.Add(new Vertex3D((float)result.pointList[i].X, (float)result.pointList[i].Y, (float)result.pointList[i].Z));
                     }
-                    points = points.Distinct().ToArray();
-                    //set points
-                    builder.Points.AddRange(points);
                     //Add Breaklines
                     for (int i = 0; i < result.lines.Count; i++)
                     {
@@ -115,9 +110,13 @@ namespace BIMGISInteropLibs.Triangulator
                         {
                             var Pt1 = new Vertex3D((float)result.lines[i][j].X, (float)result.lines[i][j].Y, (float)result.lines[i][j].Z);
                             var Pt2 = new Vertex3D((float)result.lines[i][j+1].X, (float)result.lines[i][j+1].Y, (float)result.lines[i][j + 1].Z);
+                            points.Add(Pt1);
+                            points.Add(Pt2);
                             builder.Segments.Add(new Segment(Pt1,Pt2));
                         }
                     }
+                    //set points
+                    builder.Points.AddRange(points);
                     break;
             }
 
