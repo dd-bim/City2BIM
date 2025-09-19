@@ -147,20 +147,6 @@
                           Height="25"
                           ToolTip="Please select IFC schema version!"
                           IsSynchronizedWithCurrentItem="True">
-                    
-                    <!-- trigger to disable IFC4.3 -->
-                    <ComboBox.ItemContainerStyle>
-                        <Style TargetType="ComboBoxItem">
-                            <Style.Triggers>
-                                <!-- disable value 2 (Ifc4dot3) (in this case the third item) -->
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
-                                             Value="2">
-                                    <Setter Property="IsEnabled"
-                                            Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ComboBox.ItemContainerStyle>
                 </ComboBox>
 
                 <!-- combo box to select shape representation (binded to config) -->

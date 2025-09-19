@@ -199,7 +199,20 @@ namespace BIMGISInteropLibs.IfcTerrain
                     break;
 
                 case IfcVersion.IFC4dot3:
-                    throw new NotImplementedException("IFC4.3 is not implemented yet.");
+                    model = config.geoElement.GetValueOrDefault()
+                        ? IFC.Ifc4x3.Geo.Create(
+                            result,
+                            config,
+                            writeInput,
+                            jSettings_DIN91931,
+                            jSettings_DIN18740)
+                        : IFC.Ifc4x3.Store.Create(
+                            result,
+                            config,
+                            writeInput,
+                            jSettings_DIN91931,
+                            jSettings_DIN18740);
+                    break;
             }
 
             //access to file writer
