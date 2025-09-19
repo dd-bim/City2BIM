@@ -14,11 +14,10 @@ using BimGisCad.Representation.Geometry;            //Axis
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using Xbim.Ifc4.MeasureResource;                //Enumeration for Unit
-using Xbim.Ifc4.ProductExtension;               //IfcSite
-using Xbim.Ifc4.Interfaces;                     //IfcElementComposition (ENUM)
-using Xbim.Ifc4.GeometryResource;               //Shape
-using Xbim.Ifc4.RepresentationResource;         //representation res
+using Xbim.Ifc4x3.MeasureResource;                //Enumeration for Unit
+using Xbim.Ifc4x3.ProductExtension;               //IfcSite
+using Xbim.Ifc4x3.GeometryResource;               //Shape
+using Xbim.Ifc4x3.RepresentationResource;         //representation res
 
 //embed IfcTerrain logic
 using BIMGISInteropLibs.IfcTerrain; //used for handling json settings
@@ -27,7 +26,7 @@ using BIMGISInteropLibs.IfcTerrain; //used for handling json settings
 using BIMGISInteropLibs.Logging;                                 //need for LogPair
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-namespace BIMGISInteropLibs.IFC.Ifc4
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
     public static class Site
     {

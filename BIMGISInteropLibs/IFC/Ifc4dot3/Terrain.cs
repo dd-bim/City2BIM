@@ -2,7 +2,6 @@
 //     Diese Datei wurde automatisch mit T4 generiert.
 //     Änderungen werden beim nächsten Generieren überschrieben.
 // </auto-generated>
-using Xbim.Ifc4.Interfaces;                     //Enum for Units
 
 using System;
 using System.Collections.Generic;
@@ -15,11 +14,11 @@ using BimGisCad.Representation.Geometry;
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using Xbim.Ifc4.MeasureResource;                //Enumeration for Unit
-using Xbim.Ifc4.ProductExtension;               //IfcSite
-using Xbim.Ifc4.RepresentationResource;         //IfcShapeRepresentation
+using Xbim.Ifc4x3.MeasureResource;           //Enumeration for Unit
+using Xbim.Ifc4x3.ProductExtension;          //IfcSite
+using Xbim.Ifc4x3.RepresentationResource;    //IfcShapeRepresentation
 
-namespace BIMGISInteropLibs.IFC.Ifc4
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
     /// <summary>
     /// 

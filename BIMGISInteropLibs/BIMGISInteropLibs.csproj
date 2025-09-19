@@ -46,4 +46,298 @@
   <ItemGroup>
     <ProjectReference Include="..\BimGisCad\BimGisCad.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="IFC\Ifc2x3\PropertySet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PropertySet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc2x3\ShapeRepresentation.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShapeRepresentation.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc2x3\ShellBasedSurfaceModel.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShellBasedSurfaceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\GeometricCurveSet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GeometricCurveSet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\LoGeoRef\Level50.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level50.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\PropertySet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PropertySet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\ShapeRepresentation.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShapeRepresentation.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\ShellBasedSurfaceModel.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShellBasedSurfaceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\Site.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Site.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\Store.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Store.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\Terrain.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Terrain.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\TriangulatedFaceSet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TriangulatedFaceSet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\TriangulatedIrregularNetwork.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TriangulatedIrregularNetwork.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\GeometricCurveSet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GeometricCurveSet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\LoGeoRef\Level50.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level50.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\PropertySet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PropertySet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\ShapeRepresentation.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShapeRepresentation.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\ShellBasedSurfaceModel.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShellBasedSurfaceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\Site.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Site.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\Store.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Store.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\Terrain.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Terrain.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\TriangulatedFaceSet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TriangulatedFaceSet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4\TriangulatedIrregularNetwork.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TriangulatedIrregularNetwork.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\Site.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Site.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\Level50.cs">
+      <DependentUpon>Level50.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\InitModel.cs">
+      <DependentUpon>InitModel.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\PropertySet.cs">
+      <DependentUpon>PropertySet.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\Store.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Store.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\Terrain.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Terrain.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\ShellBasedSurfaceModel.cs">
+      <DependentUpon>ShellBasedSurfaceModel.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\ShapeRepresentation.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShapeRepresentation.ttinclude</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="IFC\Ifc2x3\PropertySet.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PropertySet.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc2x3\ShapeRepresentation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ShapeRepresentation.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4dot3\GeometricCurveSet.tt">
+      <LastGenOutput>GeometricCurveSet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4dot3\LoGeoRef\Level50.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level50.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4dot3\PropertySet.tt">
+      <LastGenOutput>PropertySet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4dot3\ShellBasedSurfaceModel.tt">
+      <LastGenOutput>ShellBasedSurfaceModel.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4dot3\ShapeRepresentation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ShapeRepresentation.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4dot3\Site.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Site.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4dot3\Store.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Store.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4dot3\Terrain.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Terrain.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4dot3\TriangulatedFaceSet.tt">
+      <LastGenOutput>TriangulatedFaceSet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4dot3\TriangulatedIrregularNetwork.tt">
+      <LastGenOutput>TriangulatedIrregularNetwork.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4\LoGeoRef\Level50.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level50.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4\PropertySet.tt">
+      <LastGenOutput>PropertySet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4\ShapeRepresentation.tt">
+      <LastGenOutput>ShapeRepresentation.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4\ShellBasedSurfaceModel.tt">
+      <LastGenOutput>ShellBasedSurfaceModel.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4\GeometricCurveSet.tt">
+      <LastGenOutput>GeometricCurveSet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4\Site.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Site.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4\Store.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Store.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4\Terrain.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Terrain.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4\TriangulatedFaceSet.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TriangulatedFaceSet.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc2x3\ShellBasedSurfaceModel.tt">
+      <LastGenOutput>ShellBasedSurfaceModel.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4\TriangulatedIrregularNetwork.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TriangulatedIrregularNetwork.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\T4_Includes\Terrain.ttinclude">
+      <LastGenOutput>Terrain.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\Store.ttinclude">
+      <LastGenOutput>Store.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\Site.ttinclude">
+      <LastGenOutput>Site.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\Level50.ttinclude">
+      <LastGenOutput>Level50.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\PropertySet.ttinclude">
+      <LastGenOutput>PropertySet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\GeometricCurveSet.ttinclude">
+      <LastGenOutput>GeometricCurveSet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\TriangulatedIrregularNetwork.ttinclude">
+      <LastGenOutput>TriangulatedIrregularNetwork.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\TriangulatedFaceSet.ttinclude">
+      <LastGenOutput>TriangulatedFaceSet.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\ShellBasedSurfaceModel.ttinclude">
+      <LastGenOutput>ShellBasedSurfaceModel.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\T4_Includes\ShapeRepresentation.ttinclude">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ShapeRepresentation.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 </Project>

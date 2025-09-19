@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 //embed Xbmim
 using Xbim.Ifc;
-using Xbim.Ifc2x3.MeasureResource;                //IfcLabel
+using Xbim.Ifc4x3.MeasureResource;                //IfcLabel
 
-using Xbim.Ifc2x3.Kernel;                         //PropertySets
-using Xbim.Ifc2x3.PropertyResource;               //PSetResources
-using Xbim.Ifc2x3.ProductExtension;               //IfcSite (entity mapping)
+using Xbim.Ifc4x3.Kernel;                         //PropertySets
+using Xbim.Ifc4x3.PropertyResource;               //PSetResources
+using Xbim.Ifc4x3.ProductExtension;               //IfcSite (entity mapping)
 
 //embed IFCTerrain - JsonSettings (input values)
 using BIMGISInteropLibs.IfcTerrain;
 
-namespace BIMGISInteropLibs.IFC.Ifc2x3
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
     /// <summary>
     /// Class for creating property sets<para/>

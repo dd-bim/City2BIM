@@ -10,8 +10,8 @@ using System.Linq;
 using BimGisCad.Representation.Geometry.Elementary; //provides Vector
 
 //embed Xbim                                    //below selected examples that show why these are included
-using Xbim.Ifc4.GeometryResource;               //IfcAxis2Placement3D
-using Xbim.Ifc4.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
+using Xbim.Ifc4x3.GeometryResource;               //IfcAxis2Placement3D
+using Xbim.Ifc4x3.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
 
 //Transfer class for the reader (IFCTerrain)
 using BIMGISInteropLibs.IfcTerrain;
@@ -23,7 +23,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //NTS - geometry types
 using NetTopologySuite.Geometries;
 
-namespace BIMGISInteropLibs.IFC.Ifc4
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
     /// <summary>
     /// Classes for creating IfcGCS via TIN / MESH

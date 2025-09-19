@@ -10,17 +10,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 //embed Xbim                                    //below selected examples that show why these are included
-using Xbim.Ifc4.GeometryResource;               //IfcGeometricRepresentationItem
-using Xbim.Ifc4.RepresentationResource;         //IfcShapeRepresentation
+using Xbim.Ifc4x3.GeometryResource;               //IfcGeometricRepresentationItem
+using Xbim.Ifc4x3.RepresentationResource;         //IfcShapeRepresentation
 
 //Logging
 using BIMGISInteropLibs.Logging;                                 //need for LogPair
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-namespace BIMGISInteropLibs.IFC.Ifc4
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
     /// <summary>
-    /// class to create shape representation (IFC4)
+    /// class to create shape representation (Ifc4x3)
     /// </summary>
     public class ShapeRepresentation
     {

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using BimGisCad.Representation.Geometry.Elementary; //provides Vector
 
 using Xbim.Ifc;
-using Xbim.Ifc4.GeometricModelResource;
+using Xbim.Ifc4x3.GeometricModelResource;
 
 //Transfer class for the reader (IFCTerrain)
 using BIMGISInteropLibs.IfcTerrain;
@@ -21,7 +21,7 @@ using BIMGISInteropLibs.IfcTerrain;
 //NTS - geometry types
 using NetTopologySuite.Geometries;
 
-namespace BIMGISInteropLibs.IFC.Ifc4
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
     public class TriangulatedIrregularNetwork
     {

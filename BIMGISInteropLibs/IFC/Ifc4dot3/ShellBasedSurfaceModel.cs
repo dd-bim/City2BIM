@@ -10,9 +10,9 @@ using System.Linq;
 using BimGisCad.Representation.Geometry.Elementary; //provides Vector
 
 //embed Xbim                                    //below selected examples that show why these are included
-using Xbim.Ifc2x3.GeometryResource;               //IfcAxis2Placement3D
-using Xbim.Ifc2x3.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
-using Xbim.Ifc2x3.TopologyResource;               //IfcOpenShell
+using Xbim.Ifc4x3.GeometryResource;               //IfcAxis2Placement3D
+using Xbim.Ifc4x3.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
+using Xbim.Ifc4x3.TopologyResource;               //IfcOpenShell
 
 //Transfer class for the reader (IFCTerrain)
 using BIMGISInteropLibs.IfcTerrain;
@@ -24,7 +24,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //NTS
 using NetTopologySuite.Geometries;
 
-namespace BIMGISInteropLibs.IFC.Ifc2x3
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
     /// <summary>
     /// shape representation class<para/>

@@ -1,13 +1,16 @@
 ﻿//embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using Xbim.Ifc2x3.Kernel;                    //IfcProject
+using Xbim.Ifc4x3.Kernel;                         //IfcProject
 using Xbim.Common.Step21;                       //Enumeration to XbimShemaVersion
 using Xbim.IO;                                  //Enumeration to XbimStoreType
-using Xbim.Common;                              //ProjectUnits (Hint: support imperial (TODO: check if required)
-using Xbim.Ifc2x3.MeasureResource;           //Enumeration for Unit
+using Xbim.Common;
+using Xbim.Ifc4x3.MeasureResource;              //ProjectUnits
 
-namespace BIMGISInteropLibs.IFC.Ifc2x3
+namespace BIMGISInteropLibs.IFC.Ifc4x3
 {
+    /// <summary>
+    /// class to create IfcProject
+    /// </summary>
     public static class InitModel
     {
         /// <summary>
@@ -31,31 +34,36 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                 ApplicationDevelopersName = "HTW Dresden [DD-BIM]",
                 ApplicationFullName = "IFCTerrain",
                 ApplicationIdentifier = "DTM2IFC",
-                ApplicationVersion ="1.4.1",
-
+                ApplicationVersion = "1.4.1",
+                
                 //user information
                 EditorsFamilyName = editorsFamilyName,
                 EditorsGivenName = editorsGivenName,
                 EditorsOrganisationName = editorsOrganisationName
             };
             //write credentials to IfcStore (model)
-            var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc2X3, XbimStoreType.InMemoryModel);
+            var model = IfcStore.Create(credentials, XbimSchemaVersion.Ifc4x3, XbimStoreType.EsentDatabase);
 
             //Begin a transaction as all changes to a model are ACID
             using (var txn = model.BeginTransaction("Initialise Model"))
             {
                 //add file description to header
-                model.Header.FileDescription.Description.Add("ViewDefinition [CoordinationView_V2.0]");
+                model.Header.FileDescription.Description.Add("ViewDefinition [DesignTransferView_V1.0]");
 
                 //create a project
                 project = model.Instances.New<IfcProject>();
 
                 //set the units to SI (metres)
                 project.Initialize(ProjectUnits.SIUnitsUK);
+                
                 //set project Name
                 project.Name = projectName;
 
+                //set unit for Length to metre
                 project.UnitsInContext.SetOrChangeSiUnit(IfcUnitEnum.LENGTHUNIT, IfcSIUnitName.METRE, null);
+
+                //unit for angle remains unchanged and is output as "rad"
+                
                 //now commit the changes, else they will be rolled back at the end of the scope of the using statement
                 txn.Commit();
             }

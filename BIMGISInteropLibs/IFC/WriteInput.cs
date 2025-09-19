@@ -22,7 +22,7 @@ namespace BIMGISInteropLibs.IFC
         /// </summary>
         IFC4,
         /// <summary>
-        /// Placeholder for future implementation
+        /// Ifc Version 4x3
         /// </summary>
         IFC4dot3
     }
