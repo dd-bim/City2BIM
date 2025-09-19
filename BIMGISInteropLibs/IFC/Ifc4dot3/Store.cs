@@ -17,7 +17,7 @@ using BimGisCad.Representation.Geometry;            //Axis
 using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc4x3.GeometryResource;          //IfcAxis2Placement3D
 using Xbim.Ifc4x3.MeasureResource;           //IfcLabel
-using Xbim.Ifc4x3.ProductExtension;               //IfcSite
+using Xbim.Ifc4x3.ProductExtension;          //IfcSite
 using Xbim.Ifc4x3.RepresentationResource;    //IfcShapeRepresentation
 using Xbim.IO;                                  //StorageType
 
@@ -111,15 +111,15 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                     shape = ShellBasedSurfaceModel.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
                     break;
 
+                //IfcTIN
+                case SurfaceType.TIN:
+                    shape = TriangulatedIrregularNetwork.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
+                    break;
+
                 //IfcGCS
                 default:
                     shape = GeometricCurveSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
                     break;
-
-                case SurfaceType.TIN:
-                    throw new NotImplementedException();
-                    //shape = TriangulatedIrregularNetwork.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                    //break;
             }
             //write Shape Representation to model
             LogWriter.Add(LogType.verbose, "Write shape representation to IfcModel...");
