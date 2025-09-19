@@ -165,11 +165,17 @@
                         <Style TargetType="ComboBoxItem">
                             <Style.Triggers>
                                 <!-- disable IFC TIN (until implemented) -->
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
-                                             Value="TIN">
-                                    <Setter Property="IsEnabled"
-                                            Value="False" />
-                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
+                                                   Value="TIN" />
+                                        <!-- secound condition when 'IFC2x3' is selected -->
+                                        <Condition Binding="{Binding ElementName=cbIfcVersion, Path=SelectedIndex}"
+                                                   Value="0" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled" Value="False" />
+                                    <Setter Property="IsSelected" Value="False" />
+                                </MultiDataTrigger>
 
                                 <!-- diable IFC TFS if IFC2x3 (below with 'value 0') is selected-->
                                 <MultiDataTrigger>

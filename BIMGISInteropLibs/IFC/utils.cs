@@ -119,7 +119,7 @@ namespace BIMGISInteropLibs.IFC
             }
             else
             {
-                throw new NotImplementedException();
+                writeInput.SurfaceType = SurfaceType.TIN;
             }
 
             //logging
