@@ -19,6 +19,7 @@ namespace UnitTest
     {
         public static string TestDataPath = "D:\\DGM_Testdaten";
         public static int numTries = 0;
+        static bool readPoints = false;
         [Theory]
         [MemberData(nameof(TestCombinations))]
         public void ConversionTest(string FilePath, IfcVersion IFCVersion = IfcVersion.IFC4, SurfaceType surfaceType = SurfaceType.SBSM)
@@ -29,8 +30,10 @@ namespace UnitTest
                 filePath = FilePath,
                 fileName = Path.GetFileName(FilePath),
                 outSurfaceType = surfaceType,
-                outIFCType = IFCVersion
+                outIFCType = IFCVersion,
+                readPoints = readPoints
             };
+            if (readPoints) readPoints = false; //reset to default (false) for next try
             switch (Path.GetExtension(FilePath))
             {
                 case ".xml":
@@ -51,7 +54,6 @@ namespace UnitTest
                             numTries = 0;
                             return;
                         }
-                        //config.readPoints = true;
                         config.layer = DEMLayers[numTries].Name; 
                     }
                     config.fileType = IfcTerrainFileType.DXF;
@@ -82,10 +84,19 @@ namespace UnitTest
             bool result = conInt.mapProcess(config, null, null);
             if (!result)
             {
-                if (config.fileType == IfcTerrainFileType.DXF)
+                if (config.fileType == IfcTerrainFileType.DXF) //Try multiple options for DXf Files
                 {
-                    numTries++;
-                    ConversionTest(FilePath, IFCVersion, surfaceType);
+                    //retry 
+                    if (!readPoints) //with Processing via Points
+                    {
+                        readPoints = true;
+                        ConversionTest(FilePath, IFCVersion, surfaceType);
+                    }
+                    else //with next Layer
+                    {
+                        numTries++;
+                        ConversionTest(FilePath, IFCVersion, surfaceType);
+                    }
                     return;
                 }
                 Assert.True(false, "Mapping process failed. Check log for details.");

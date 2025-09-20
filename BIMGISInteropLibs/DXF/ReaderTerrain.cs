@@ -191,11 +191,8 @@ namespace BIMGISInteropLibs.DXF
                 //furthermore it is checked if it is a face
                 if (entity.Layer == dxfLayer && entity is DxfInsert point)
                 {
-                    //get point data
-                    var dxfPoint = new Point(point.Location.X * scale, point.Location.Y * scale, point.Location.Z * scale);
-                    
-                    //set point to point list
-                    pointList.Add(dxfPoint);
+                    //set point data
+                    terrain.addPoint(pointList, new Point(point.Location.X * scale, point.Location.Y * scale, point.Location.Z * scale));
 
                     //log
                     LogWriter.Add(LogType.verbose, "[DXF] Point data added.");
@@ -206,6 +203,12 @@ namespace BIMGISInteropLibs.DXF
                     int p1 = terrain.addPoint(pointList, new Point(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale));
                     int p2 = terrain.addPoint(pointList, new Point(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale));
                     int p3 = terrain.addPoint(pointList, new Point(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale));
+                }
+                else if (entity.Layer == dxfLayer && entity is DxfLine line)
+                {
+                    //set points from each line
+                    int p1 = terrain.addPoint(pointList, new Point(line.P1.X * scale, line.P1.Y * scale, line.P1.Z * scale));
+                    int p2 = terrain.addPoint(pointList, new Point(line.P2.X * scale, line.P2.Y * scale, line.P2.Z * scale));
                 }
             }
 
