@@ -20,8 +20,8 @@ namespace BIMGISInteropLibs.Geometry
         {
             if (!points.Contains(p))
             {
+                p.UserData = points.Count;
                 points.Add(p);
-                p.UserData = points.Count-1;
                 LogWriter.Add(LogType.verbose, "[READER] Unique point (" + p.UserData + ") added.");
                 return (int)p.UserData;
             }
