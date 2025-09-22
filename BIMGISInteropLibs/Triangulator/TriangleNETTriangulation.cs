@@ -52,6 +52,10 @@ namespace BIMGISInteropLibs.Triangulator
                 this.Label = vertex.Label;
                 Z = z;
             }
+            public static double Dist2D(TriangleNet.Geometry.Vertex v1, TriangleNet.Geometry.Vertex v2)
+            {
+                return Math.Sqrt(Math.Pow(v1.X - v2.X, 2.0) + Math.Pow(v1.Y - v2.Y, 2));
+            }
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace BIMGISInteropLibs.Triangulator
             var builder = new TriangleNet.Geometry.Polygon();
 
             //
-            LogWriter.Add(LogType.verbose, "[Detria] Delauny builder initalized.");
+            LogWriter.Add(LogType.verbose, "[Triangle.NET] Delauny builder initalized.");
 
             //create geometry collections
             GeometryCollection faces;
@@ -135,35 +139,63 @@ namespace BIMGISInteropLibs.Triangulator
             foreach (var vert in mesh.Vertices)
             {
                 var pt = vert as Vertex3D; //Check for 3D
-                if (pt == null) // Interpolate Z if 2D (Vertex was added by Triangulation)
+                if (pt == null) //No Z from input (Vertex was added by Triangulation)
                 {
-                    //loop through each line
-                    double newZ = 0.0;
-                    double minDist = double.MaxValue;
-                    LineString nearestLine = null;
-                    foreach (var line in result.lines)
+                    double newZ = double.NaN;
+                    if (result.lines is not null)  // Try to interpolate from nearest Breakline
                     {
-                        //check point is on line
-                        double dist = line.Distance(new NetTopologySuite.Geometries.Point(vert.X, vert.Y));
-                        if (dist < minDist)
+                        //loop through each line
+                        double minDist = double.MaxValue;
+                        LineString nearestLine = null;
+                        foreach (var line in result.lines)
                         {
-                            minDist = dist;
-                            nearestLine = line;
-                        }
-                    }
-                    if (nearestLine != null)
-                    {
-                        //Get nearest Segment of nearest Line
-                        for (int i = 0; i < nearestLine.NumPoints - 1; i++)
-                        {
-                            var segment = new LineSegment(nearestLine.GetCoordinateN(i), nearestLine.GetCoordinateN(i + 1));
-                            double distance = segment.Distance(nearestLine.Coordinate);
-
-                            if (distance <= minDist)
+                            //check point is on line
+                            double dist = line.Distance(new NetTopologySuite.Geometries.Point(vert.X, vert.Y));
+                            if (dist < minDist && dist < 0.5) //using 0.5m we enshure only not to use very far breakline
                             {
-                                newZ = NetTopologySuite.Triangulate.QuadEdge.Vertex.InterpolateZ(new Coordinate(vert.X, vert.Y), segment.P0, segment.P1);
+                                minDist = dist;
+                                nearestLine = line;
                             }
                         }
+                        if (nearestLine != null)
+                        {
+                            //Get nearest Segment of nearest Line
+                            for (int i = 0; i < nearestLine.NumPoints - 1; i++)
+                            {
+                                var segment = new LineSegment(nearestLine.GetCoordinateN(i), nearestLine.GetCoordinateN(i + 1));
+                                double distance = segment.Distance(nearestLine.Coordinate);
+
+                                if (distance <= minDist)
+                                {
+                                    newZ = NetTopologySuite.Triangulate.QuadEdge.Vertex.InterpolateZ(new Coordinate(vert.X, vert.Y), segment.P0, segment.P1);
+                                }
+                            }
+                        }
+                    }
+                    // fallback if no breaklines set or not close enough. Searching for connected points with Z and calculating distance weightened mean.
+                    if (double.IsNaN(newZ)) 
+                    {
+                        var trianglesWithVertex = mesh.Triangles.Where(triangle => 
+                            triangle.GetVertex(0).ID == vert.ID || 
+                            triangle.GetVertex(1).ID == vert.ID || 
+                            triangle.GetVertex(2).ID == vert.ID)
+                            .ToList();
+                        double SumDistancesToConnectedVerticesWithZ = 0;
+                        double SumHeightsOfConnectedVerticesWithZ = 0;
+                        foreach (var triangle in trianglesWithVertex)
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                var v = triangle.GetVertex(i) as Vertex3D;
+                                if (v != null)
+                                {
+                                    double dist = Vertex3D.Dist2D(v, vert);
+                                    SumHeightsOfConnectedVerticesWithZ += v.Z * dist;
+                                    SumDistancesToConnectedVerticesWithZ += dist;
+                                }
+                            }
+                        }
+                        newZ = SumDistancesToConnectedVerticesWithZ > 0 ? SumHeightsOfConnectedVerticesWithZ / SumDistancesToConnectedVerticesWithZ : 0.0;
                     }
                     cList.Add(new CoordinateZ(vert.X, vert.Y, newZ));
                 }
