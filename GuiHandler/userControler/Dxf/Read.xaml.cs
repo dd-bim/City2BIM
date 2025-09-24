@@ -1,5 +1,14 @@
-﻿using System;
+﻿//embed for file logging
+using BIMGISInteropLibs.Logging;                                    //acess to logger
+using IxMilia.Dxf; //need to handle dxf files
+//Include user-specific libraries from here onwards
+
+using Microsoft.Win32; //used for file handling
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel; //observable collection
+using System.ComponentModel; //used for background worker
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,22 +20,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.IO;
-
-//Include user-specific libraries from here onwards
-
-using Microsoft.Win32; //used for file handling
-using System.ComponentModel; //used for background worker
-using IxMilia.Dxf; //need to handle dxf files
-
-//embed for file logging
-using BIMGISInteropLibs.Logging;                                    //acess to logger
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log messages
-
 //shortcut to set logging messages
 using support = GuiHandler.GuiSupport;
-
-using System.Collections.ObjectModel; //observable collection
 
 namespace GuiHandler.userControler.Dxf
 {
@@ -163,6 +159,24 @@ namespace GuiHandler.userControler.Dxf
                 return; //do not add anything after this
             }
             return; //do not add anything after this
+        }
+        /// <summary>
+        /// Handles the selection change event for the layer selection ListBox.
+        /// </summary>
+        /// <remarks>Updates the configuration object to reflect the currently selected layers in the
+        /// ListBox. Ensure that the sender is a <see cref="ListBox"/> and that the selected items are of type <see
+        /// cref="string"/>.</remarks>
+        /// <param name="sender">The source of the event, typically the ListBox that triggered the event.</param>
+        /// <param name="e">The event data containing information about the selection change.</param>
+        private void lbDxfDtmLayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            var config = DataContext as BIMGISInteropLibs.IfcTerrain.Config;
+            if (listBox != null)
+            {
+                // Beispiel: Annahme, Ihr Config-Objekt heißt config und hat eine List<string> Layers
+                config.layer = listBox.SelectedItems.Cast<string>().ToArray();
+            }
         }
 
         /// <summary>

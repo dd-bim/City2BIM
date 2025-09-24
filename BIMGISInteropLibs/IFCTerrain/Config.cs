@@ -681,12 +681,12 @@ namespace BIMGISInteropLibs.IfcTerrain
         //for dxf processing
         #region DXF
         
-        private string _layer { get; set; }
+        private string[] _layer { get; set; }
 
         /// <summary>
-        /// Name of the layer that contains terrain information in an input DXF file
+        /// Names of the layers containing terrain information in an input DXF file
         /// </summary>
-        public string layer 
+        public string[] layer 
         { 
             get { return _layer; }
             set

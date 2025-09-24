@@ -102,7 +102,9 @@
                                  Height="150"
                                  ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}"
                                  IsSynchronizedWithCurrentItem="True"
-                                 SelectedItem="{Binding layer}" />
+                                 SelectedItem ="{Binding layer}"
+                                 SelectionMode="Extended" 
+                                 SelectionChanged="lbDxfDtmLayer_SelectionChanged"/>
 
                         <StackPanel Grid.Column="0"
                                     Grid.ColumnSpan="2"
