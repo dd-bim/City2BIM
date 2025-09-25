@@ -80,6 +80,8 @@ namespace BIMGISInteropLibs.Triangulator
             switch (result.currentConversion)
             {
                 default:
+                case IfcTerrain.DtmConversionType.points:
+                case IfcTerrain.DtmConversionType.points_breaklines:
                     for (int i = 0; i < result.pointList.Count; i++)
                     {
                         points.Add(new Vertex3D((float)result.pointList[i].X, (float)result.pointList[i].Y, (float)result.pointList[i].Z));
@@ -89,24 +91,27 @@ namespace BIMGISInteropLibs.Triangulator
                     break;
 
                 case IfcTerrain.DtmConversionType.faces:
-                    //faces = new GeometryCollection(result.triangleList.ToArray());
-                    //builder.SetPoints(faces);
-                    break;
-
                 case IfcTerrain.DtmConversionType.faces_breaklines:
-
-                    //faces = new GeometryCollection(result.triangleList.ToArray());
-                    //builder.SetSites(faces);
-
-                    //breaklines = new GeometryCollection(result.lines.ToArray());
-                    //builder.Constraints = breaklines;
-                    break;
-
-                case IfcTerrain.DtmConversionType.points_breaklines:
-                    for (int i = 0; i < result.pointList.Count; i++)
+                    #region Code not tested as these options are currently not in use.
+                    result.triangleList.ForEach(x =>
                     {
-                        points.Add(new Vertex3D((float)result.pointList[i].X, (float)result.pointList[i].Y, (float)result.pointList[i].Z));
-                    }
+                        Vertex3D[] points_ = new Vertex3D[x.NumPoints - 1];
+                        int i = 0;
+                        foreach (var c in x.Coordinates)
+                        {
+                            points_[i] = new Vertex3D(c.X, c.Y, c.Z);
+                            i++;
+                        }
+                        Contour contour = new(points_);
+                        builder.Add(contour);
+                    });
+                    #endregion
+                    break;
+            }
+            switch (result.currentConversion)
+            {
+                case IfcTerrain.DtmConversionType.faces_breaklines:
+                case IfcTerrain.DtmConversionType.points_breaklines:
                     //Add Breaklines
                     for (int i = 0; i < result.lines.Count; i++)
                     {
