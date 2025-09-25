@@ -1,20 +1,17 @@
-﻿using System;
+﻿//embed BimGisCad
+using BimGisCad.Representation.Geometry;            //handle placement
+using BimGisCad.Representation.Geometry.Elementary; //need to calc rotation
+//embed logging
+using BIMGISInteropLibs.Logging;                                 //need for LogPair
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-//embed BimGisCad
-using BimGisCad.Representation.Geometry;            //handle placement
-using BimGisCad.Representation.Geometry.Elementary; //need to calc rotation
-
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc4.GeometryResource;               //IfcAxis2Placement3D
 using Xbim.Ifc4.RepresentationResource;         //IfcGeometricRepresentationContext
-
-//embed logging
-using BIMGISInteropLibs.Logging;                                 //need for LogPair
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
 namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
@@ -59,6 +56,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                 //set true north prepared for ifc file
                 grc.TrueNorth = model.Instances.OfType<IfcDirection>().LastOrDefault();
 
+                //    grc.TrueNorth = model.Instances.New<IfcDirection>(c => c.SetXY(utils.getRotationVector(inputTrueNorth)[0], utils.getRotationVector(inputTrueNorth)[1]));
                 //commit otherwise need to roll back
                 txn.Commit();
                 return grc;

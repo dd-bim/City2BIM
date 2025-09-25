@@ -50,6 +50,11 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="IFC\Ifc2x3\LoGeoRef\Level30.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level30.tt</DependentUpon>
+    </Compile>
     <Compile Update="IFC\Ifc2x3\PropertySet.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -120,6 +125,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GeometricCurveSet.tt</DependentUpon>
     </Compile>
+    <Compile Update="IFC\Ifc4\LoGeoRef\Level30.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level30.tt</DependentUpon>
+    </Compile>
     <Compile Update="IFC\Ifc4\LoGeoRef\Level50.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -165,6 +175,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TriangulatedIrregularNetwork.tt</DependentUpon>
     </Compile>
+    <Compile Update="IFC\T4_Includes\Level30.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level30.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="IFC\T4_Includes\Site.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -207,6 +222,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="IFC\Ifc2x3\LoGeoRef\Level30.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level30.cs</LastGenOutput>
+    </None>
     <None Update="IFC\Ifc2x3\PropertySet.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PropertySet.cs</LastGenOutput>
@@ -255,6 +274,10 @@
       <LastGenOutput>TriangulatedIrregularNetwork.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="IFC\Ifc4\LoGeoRef\Level30.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level30.cs</LastGenOutput>
+    </None>
     <None Update="IFC\Ifc4\LoGeoRef\Level50.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Level50.cs</LastGenOutput>
@@ -298,6 +321,10 @@
     <None Update="IFC\Ifc4\TriangulatedIrregularNetwork.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TriangulatedIrregularNetwork.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\T4_Includes\Level30.ttinclude">
+      <LastGenOutput>Level30.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="IFC\T4_Includes\Terrain.ttinclude">
       <LastGenOutput>Terrain.cs</LastGenOutput>
