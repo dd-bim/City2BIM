@@ -1,5 +1,5 @@
 ﻿<#+
-public string GenerateTriangulatedFaceSet(string ifcNamespace, string ns, string ifcVersion)
+public string GenerateTriangulatedFaceSet(string ifcNamespace, string ifcVersion)
 {
     return $@"
 using System;
@@ -13,7 +13,7 @@ using BimGisCad.Representation.Geometry.Elementary; //provides Vector
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using {ifcNamespace}.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
+using Xbim.{ifcNamespace}.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
 
 //Transfer class for the reader (IFCTerrain)
 using BIMGISInteropLibs.IfcTerrain;
@@ -25,7 +25,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain;    //to set log
 //NTS - geometry types
 using NetTopologySuite.Geometries;
 
-namespace {ns}
+namespace BIMGISInteropLibs.IFC.{ifcNamespace}
 {{
     /// <summary>
     /// Class to provide methods to work with IfcTriangulatedFaceSet

@@ -2,6 +2,7 @@
 //     Diese Datei wurde automatisch mit T4 generiert.
 //     Änderungen werden beim nächsten Generieren überschrieben.
 // </auto-generated>
+using Xbim.Ifc4.Interfaces;                     //IfcElementComposition (ENUM)
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,6 @@ using BimGisCad.Representation.Geometry;            //Axis
 using Xbim.Ifc;                                 //IfcStore
 using Xbim.Ifc4.MeasureResource;                //Enumeration for Unit
 using Xbim.Ifc4.ProductExtension;               //IfcSite
-using Xbim.Ifc4.Interfaces;                     //IfcElementComposition (ENUM)
 using Xbim.Ifc4.GeometryResource;               //Shape
 using Xbim.Ifc4.RepresentationResource;         //representation res
 

@@ -1,5 +1,5 @@
 ﻿<#+
-public string GenerateShellBasedSurfaceModel(string ifcNamespace, string ns, string ifcVersion)
+public string GenerateShellBasedSurfaceModel(string ifcNamespace, string ifcVersion)
 {
     return $@"
 using System.Collections.Generic;
@@ -9,9 +9,9 @@ using System.Linq;
 using BimGisCad.Representation.Geometry.Elementary; //provides Vector
 
 //embed Xbim                                    //below selected examples that show why these are included
-using {ifcNamespace}.GeometryResource;               //IfcAxis2Placement3D
-using {ifcNamespace}.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
-using {ifcNamespace}.TopologyResource;               //IfcOpenShell
+using Xbim.{ifcNamespace}.GeometryResource;               //IfcAxis2Placement3D
+using Xbim.{ifcNamespace}.GeometricModelResource;         //IfcShellBasedSurfaceModel or IfcGeometricCurveSet
+using Xbim.{ifcNamespace}.TopologyResource;               //IfcOpenShell
 
 //Transfer class for the reader (IFCTerrain)
 using BIMGISInteropLibs.IfcTerrain;
@@ -23,7 +23,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 //NTS
 using NetTopologySuite.Geometries;
 
-namespace {ns}
+namespace BIMGISInteropLibs.IFC.{ifcNamespace}
 {{
     /// <summary>
     /// shape representation class<para/>

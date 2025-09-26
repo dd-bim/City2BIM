@@ -14,9 +14,9 @@ using BimGisCad.Representation.Geometry;
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using Xbim.Ifc4x3.MeasureResource;           //Enumeration for Unit
-using Xbim.Ifc4x3.ProductExtension;          //IfcSite
-using Xbim.Ifc4x3.RepresentationResource;    //IfcShapeRepresentation
+using Xbim.Ifc4x3.MeasureResource;                //Enumeration for Unit
+using Xbim.Ifc4x3.ProductExtension;               //IfcSite
+using Xbim.Ifc4x3.RepresentationResource;         //IfcShapeRepresentation
 
 namespace BIMGISInteropLibs.IFC.Ifc4x3
 {

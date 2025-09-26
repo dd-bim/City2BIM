@@ -1,5 +1,5 @@
 ﻿<#+
-public string GenerateStore(string ifcNamespace, string ns, string ifcVersion)
+public string GenerateStore(string ifcNamespace, string ifcVersion)
 {
     return $@"
 using System;
@@ -14,15 +14,15 @@ using BimGisCad.Representation.Geometry;            //Axis
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using {ifcNamespace}.GeometryResource;          //IfcAxis2Placement3D
-using {ifcNamespace}.MeasureResource;           //IfcLabel
-using {ifcNamespace}.ProductExtension;          //IfcSite
-using {ifcNamespace}.RepresentationResource;    //IfcShapeRepresentation
+using Xbim.{ifcNamespace}.GeometryResource;          //IfcAxis2Placement3D
+using Xbim.{ifcNamespace}.MeasureResource;           //IfcLabel
+using Xbim.{ifcNamespace}.ProductExtension;          //IfcSite
+using Xbim.{ifcNamespace}.RepresentationResource;    //IfcShapeRepresentation
 using Xbim.IO;                                  //StorageType
 
 using Xbim.Common;
 using Xbim.Common.Metadata;
-using {ifcNamespace}.GeometricModelResource;
+using Xbim.{ifcNamespace}.GeometricModelResource;
 using Xbim.IO.Step21;
 
  
@@ -33,7 +33,7 @@ using BIMGISInteropLibs.IfcTerrain; //used for handling json settings
 using BIMGISInteropLibs.Logging;                                 //need for LogPair
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-namespace {ns}
+namespace BIMGISInteropLibs.IFC.{ifcNamespace}
 {{
     public class Store
     {{

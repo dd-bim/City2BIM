@@ -1,5 +1,5 @@
 ﻿<#+
-public string GenerateTriangulatedIrregularNetwork(string ifcNamespace, string ns, string ifcVersion)
+public string GenerateTriangulatedIrregularNetwork(string ifcNamespace, string ifcVersion)
 {
     return $@"
 using System;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using BimGisCad.Representation.Geometry.Elementary; //provides Vector
 
 using Xbim.Ifc;
-using {ifcNamespace}.GeometricModelResource;
+using Xbim.{ifcNamespace}.GeometricModelResource;
 
 //Transfer class for the reader (IFCTerrain)
 using BIMGISInteropLibs.IfcTerrain;
@@ -20,7 +20,7 @@ using BIMGISInteropLibs.IfcTerrain;
 //NTS - geometry types
 using NetTopologySuite.Geometries;
 
-namespace {ns}
+namespace BIMGISInteropLibs.IFC.{ifcNamespace}
 {{
     public class TriangulatedIrregularNetwork
     {{

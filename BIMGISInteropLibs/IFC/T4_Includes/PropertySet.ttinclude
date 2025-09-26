@@ -1,5 +1,5 @@
 ﻿<#+
-public string GeneratePropertySet(string ifcNamespace, string ns, string ifcVersion)
+public string GeneratePropertySet(string ifcNamespace, string ifcVersion)
 {
     return $@"
 using System;
@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 //embed Xbmim
 using Xbim.Ifc;
-using {ifcNamespace}.MeasureResource;                //IfcLabel
+using Xbim.{ifcNamespace}.MeasureResource;                //IfcLabel
 
-using {ifcNamespace}.Kernel;                         //PropertySets
-using {ifcNamespace}.PropertyResource;               //PSetResources
-using {ifcNamespace}.ProductExtension;               //IfcSite (entity mapping)
+using Xbim.{ifcNamespace}.Kernel;                         //PropertySets
+using Xbim.{ifcNamespace}.PropertyResource;               //PSetResources
+using Xbim.{ifcNamespace}.ProductExtension;               //IfcSite (entity mapping)
 
 //embed IFCTerrain - JsonSettings (input values)
 using BIMGISInteropLibs.IfcTerrain;
 
-namespace {ns}
+namespace BIMGISInteropLibs.IFC.{ifcNamespace}
 {{
     /// <summary>
     /// Class for creating property sets<para/>

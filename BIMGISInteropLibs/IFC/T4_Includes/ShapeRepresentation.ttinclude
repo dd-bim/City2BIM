@@ -1,5 +1,5 @@
 ﻿<#+
-public string GenerateShapeRepresentation(string ifcNamespace, string ns, string ifcVersion)
+public string GenerateShapeRepresentation(string ifcNamespace, string ifcVersion)
 {
     return $@"
 using System;
@@ -9,14 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 //embed Xbim                                    //below selected examples that show why these are included
-using {ifcNamespace}.GeometryResource;               //IfcGeometricRepresentationItem
-using {ifcNamespace}.RepresentationResource;         //IfcShapeRepresentation
+using Xbim.{ifcNamespace}.GeometryResource;               //IfcGeometricRepresentationItem
+using Xbim.{ifcNamespace}.RepresentationResource;         //IfcShapeRepresentation
 
 //Logging
 using BIMGISInteropLibs.Logging;                                 //need for LogPair
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 
-namespace {ns}
+namespace BIMGISInteropLibs.IFC.{ifcNamespace}
 {{
     /// <summary>
     /// class to create shape representation ({ifcVersion})

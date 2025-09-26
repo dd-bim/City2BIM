@@ -1,5 +1,5 @@
 ﻿<#+
-public string GenerateTerrain(string ifcNamespace, string ns, string ifcVersion)
+public string GenerateTerrain(string ifcNamespace, string ifcVersion)
 {
     return $@"
 using System;
@@ -13,11 +13,11 @@ using BimGisCad.Representation.Geometry;
 
 //embed Xbim                                    //below selected examples that show why these are included
 using Xbim.Ifc;                                 //IfcStore
-using {ifcNamespace}.MeasureResource;                //Enumeration for Unit
-using {ifcNamespace}.ProductExtension;               //IfcSite
-using {ifcNamespace}.RepresentationResource;         //IfcShapeRepresentation
+using Xbim.{ifcNamespace}.MeasureResource;                //Enumeration for Unit
+using Xbim.{ifcNamespace}.ProductExtension;               //IfcSite
+using Xbim.{ifcNamespace}.RepresentationResource;         //IfcShapeRepresentation
 
-namespace {ns}
+namespace BIMGISInteropLibs.IFC.{ifcNamespace}
 {{
     /// <summary>
     /// 

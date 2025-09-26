@@ -175,6 +175,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TriangulatedIrregularNetwork.tt</DependentUpon>
     </Compile>
+    <Compile Update="IFC\T4_Includes\GeometricCurveSet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GeometricCurveSet.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="IFC\T4_Includes\Level30.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -219,6 +224,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ShapeRepresentation.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\TriangulatedFaceSet.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TriangulatedFaceSet.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\TriangulatedIrregularNetwork.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TriangulatedIrregularNetwork.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
