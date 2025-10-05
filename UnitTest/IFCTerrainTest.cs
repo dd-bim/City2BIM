@@ -54,7 +54,7 @@ namespace UnitTest
                             numTries = 0;
                             return;
                         }
-                        config.layer = DEMLayers[numTries].Name; 
+                        config.layer = new string[] { DEMLayers[numTries].Name }; 
                     }
                     config.fileType = IfcTerrainFileType.DXF;
                 break;
