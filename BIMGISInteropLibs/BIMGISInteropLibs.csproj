@@ -44,9 +44,6 @@
     <Content Include="DD_BIM_LOGO.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BimGisCad\BimGisCad.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +51,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Level30.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc2x3\LoGeoRef\Level40.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level40.tt</DependentUpon>
     </Compile>
     <Compile Update="IFC\Ifc2x3\PropertySet.cs">
       <DesignTime>True</DesignTime>
@@ -74,6 +76,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GeometricCurveSet.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\LoGeoRef\Level30.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level30.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\Ifc4dot3\LoGeoRef\Level40.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level40.tt</DependentUpon>
     </Compile>
     <Compile Update="IFC\Ifc4dot3\LoGeoRef\Level50.cs">
       <DesignTime>True</DesignTime>
@@ -130,6 +142,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Level30.tt</DependentUpon>
     </Compile>
+    <Compile Update="IFC\Ifc4\LoGeoRef\Level40.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Level40.tt</DependentUpon>
+    </Compile>
     <Compile Update="IFC\Ifc4\LoGeoRef\Level50.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -179,6 +196,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GeometricCurveSet.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="IFC\T4_Includes\Level40.cs">
+      <DependentUpon>Level40.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="IFC\T4_Includes\Level30.cs">
       <DesignTime>True</DesignTime>
@@ -241,6 +263,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Level30.cs</LastGenOutput>
     </None>
+    <None Update="IFC\Ifc2x3\LoGeoRef\Level40.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level40.cs</LastGenOutput>
+    </None>
     <None Update="IFC\Ifc2x3\PropertySet.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PropertySet.cs</LastGenOutput>
@@ -252,6 +278,14 @@
     <None Update="IFC\Ifc4dot3\GeometricCurveSet.tt">
       <LastGenOutput>GeometricCurveSet.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="IFC\Ifc4dot3\LoGeoRef\Level30.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level30.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4dot3\LoGeoRef\Level40.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level40.cs</LastGenOutput>
     </None>
     <None Update="IFC\Ifc4dot3\LoGeoRef\Level50.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -292,6 +326,10 @@
     <None Update="IFC\Ifc4\LoGeoRef\Level30.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Level30.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\Ifc4\LoGeoRef\Level40.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Level40.cs</LastGenOutput>
     </None>
     <None Update="IFC\Ifc4\LoGeoRef\Level50.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -336,6 +374,10 @@
     <None Update="IFC\Ifc4\TriangulatedIrregularNetwork.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TriangulatedIrregularNetwork.cs</LastGenOutput>
+    </None>
+    <None Update="IFC\T4_Includes\Level40.ttinclude">
+      <LastGenOutput>Level40.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="IFC\T4_Includes\Level30.ttinclude">
       <LastGenOutput>Level30.cs</LastGenOutput>
