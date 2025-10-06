@@ -151,13 +151,13 @@
                                     </MultiDataTrigger.Conditions>
                                     <!-- disable TFS -->
                                     <Setter Property="IsEnabled"
-                                            Value="False" /> 
+                                            Value="False" />
                                     <!-- remove selection from TFS -->
                                     <Setter Property="IsSelected"
                                             Value="False" />
                                 </MultiDataTrigger>
                             </Style.Triggers>
-                        </Style>   
+                        </Style>
                     </ComboBox.ItemContainerStyle>
                 </ComboBox>
             </DockPanel>
@@ -261,11 +261,10 @@
                     <!--#region rotation-->
                     <DockPanel x:Name="dpRotation">
                         <CheckBox x:Name="chkRotation"
-                                  Content="Rotation:"
-                                  VerticalAlignment="Center"
+                                  Content="Rotation [°]:"
                                   VerticalContentAlignment="Center"
                                   HorizontalContentAlignment="Right"
-                                  Width="70" />
+                                  Width="82" />
 
                         <!-- input box for rotation -->
                         <TextBox IsEnabled="{Binding ElementName=chkRotation, Path=IsChecked}"
@@ -319,7 +318,7 @@
                                   VerticalAlignment="Center"
                                   VerticalContentAlignment="Center"
                                   HorizontalContentAlignment="Right"
-                                  Width="70" />
+                                  Width="82" />
                         <TextBox IsEnabled="{Binding ElementName=chkScale, Path=IsChecked}"
                                  VerticalContentAlignment="Center"
                                  Margin="5,2"
