@@ -1,0 +1,121 @@
+﻿<#+
+public string GenerateFunctionTest(string ifcNamespace)
+{
+    string loGeoRef50Case = "";
+    if (ifcNamespace != "Ifc2x3")
+    {
+        loGeoRef50Case = $@"
+        case BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef50:
+                {{
+                    IfcGeometricRepresentationContext geomRepContext = BIMGISInteropLibs.IFC.{ifcNamespace}.LoGeoRef.Level50.Create(model, sitePlacement, config);
+                    if (geomRepContext.TrueNorth != null)
+                    {{
+                        Assert.Equal(1.0, geomRepContext.TrueNorth.X, digits); //If set, expecting TrueNorth as default
+                        Assert.Equal(0.0, geomRepContext.TrueNorth.Y, digits);
+                    }}
+                    if (geomRepContext.WorldCoordinateSystem is IfcAxis2Placement3D {{ RefDirection: IfcDirection dir }})
+                    {{
+                        Assert.Equal(1.0, dir.X, digits); //If set, expecting RefDirection as default
+                        Assert.Equal(0.0, dir.Y, digits);
+                    }}
+                    var mapConversion = model.Instances.OfType<IfcMapConversion>().FirstOrDefault(x => x.SourceCRS.Equals(geomRepContext));
+                    Assert.NotNull(mapConversion);
+                    Assert.NotNull(mapConversion.XAxisAbscissa);
+                    Assert.NotNull(mapConversion.XAxisOrdinate);
+                    Assert.Equal(expectedX, mapConversion.XAxisAbscissa.Value, digits);
+                    Assert.Equal(expectedY, mapConversion.XAxisOrdinate.Value, digits);
+                }}
+                break;
+       ";
+    }
+    return $@"
+using BimGisCad.Representation.Geometry;
+using BimGisCad.Representation.Geometry.Elementary;
+using BIMGISInteropLibs.IFC;
+using BIMGISInteropLibs.IFC.{ifcNamespace};
+using BIMGISInteropLibs.IfcTerrain;
+using Xbim.{ifcNamespace}.GeometricConstraintResource;
+using Xbim.{ifcNamespace}.GeometryResource;
+using Xbim.{ifcNamespace}.RepresentationResource;
+
+namespace UnitTest;
+
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+public class FunctionTest{ifcNamespace}
+{{
+    static internal int digits = 4; //number of digits for rounding in Assert.Equal
+    [Theory]
+    [MemberData(nameof(LoGeoRefRotationTestCases))]
+    public void RotationTest(BIMGISInteropLibs.IFC.LoGeoRef loGeoRef, double rotation, double expectedX, double expectedY) //expected values for RefDirection
+    {{
+        Axis2Placement3D sitePlacement = Axis2Placement3D.Create(Direction3.UnitZ, rotation);
+        Config config = new Config()
+        {{
+            projectName = ""Rotation Test"",
+        }};
+        LogWriter.initLogger(config);
+        var model = InitModel.Create(config.projectName, config.editorsFamilyName,
+                config.editorsGivenName, config.editorsOrganisationName, out var project);
+
+        switch (loGeoRef)
+        {{
+            {loGeoRef50Case}
+
+            //Level 40
+            case BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef40:
+                {{     
+                    IfcGeometricRepresentationContext geomRepContext = BIMGISInteropLibs.IFC.{ifcNamespace}.LoGeoRef.Level40.Create(model, sitePlacement);
+                    Assert.Equal(expectedY, geomRepContext.TrueNorth.X, digits); //Expecting RefDirection as default
+                    Assert.Equal(expectedX, geomRepContext.TrueNorth.Y, digits);
+                    if (geomRepContext.WorldCoordinateSystem is IfcAxis2Placement3D {{ RefDirection: IfcDirection dir }})
+                    {{
+                        Assert.Equal(1.0, dir.X, digits); //If set Expecting RefDirection as default
+                        Assert.Equal(0.0, dir.Y, digits);
+                    }}
+                }}
+                break;
+
+            //Level 30
+            default:
+                var site = Site.Create(model, ""Rotation Test Site"", loGeoRef, sitePlacement);
+                {{
+                    if (site.ObjectPlacement is IfcLocalPlacement {{ RelativePlacement: IfcAxis2Placement3D {{ RefDirection: IfcDirection dir }} }})
+                    {{
+                        Assert.Equal(expectedX, dir.X, digits);
+                        Assert.Equal(expectedY, dir.Y, digits);
+                    }}
+                    else
+                    {{
+                        Assert.True(false, ""ObjectPlacement/RelativePlacement/RefDirection type mismatch"");
+                    }}
+                }}
+                break;
+        }}
+    }}
+    public static IEnumerable<object[]> LoGeoRefValues()
+    {{
+        foreach (var value in Enum.GetValues(typeof(BIMGISInteropLibs.IFC.LoGeoRef)))
+            yield return new object[] {{ value }};
+    }}
+    public static IEnumerable<object[]> RotationTestCases()
+    {{
+        yield return new object[] {{ 30.0, 0.8660, -0.5 }};
+        yield return new object[] {{ 45.0, 0.7071, -0.7071 }};
+        yield return new object[] {{ 60.0, 0.5, -0.8660 }};
+        yield return new object[] {{ 90.0, 0.0, -1.0 }};
+        // weitere Werte nach Bedarf
+    }}
+    public static IEnumerable<object[]> LoGeoRefRotationTestCases()
+    {{
+        foreach (var loGeoRef in Enum.GetValues(typeof(BIMGISInteropLibs.IFC.LoGeoRef)))
+        {{
+            foreach (var testCase in RotationTestCases())
+            {{
+                yield return new object[] {{ loGeoRef, testCase[0], testCase[1], testCase[2] }};
+            }}
+        }}
+    }}
+}}
+";
+}
+#>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -24,6 +24,52 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="FunctionTest.ttinclude">
+      <LastGenOutput>FunctionTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="FunctionTestIfc4x3.tt">
+      <LastGenOutput>FunctionTestIfc4x3.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="FunctionTestIfc4.tt">
+      <LastGenOutput>FunctionTestIfc4.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="FunctionTestIfc2x3.tt">
+      <LastGenOutput>FunctionTestIfc2x3.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="FunctionTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestIfc4.cs">
+      <DependentUpon>FunctionTestIfc4.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="FunctionTestIfc2x3.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestIfc2x3.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestIfc4x3.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestIfc4x3.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
