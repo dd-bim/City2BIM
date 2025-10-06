@@ -543,7 +543,7 @@ namespace BIMGISInteropLibs.IfcTerrain
         private double? _trueNorth { get; set; } = 0.0;
 
         /// <summary>
-        /// rotation against true north
+        /// clockwise rotation of project north relative to Geo-System (TrueNorth) (degree). 
         /// </summary>
         [DefaultValue(0.0)]
         public double? trueNorth

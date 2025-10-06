@@ -1,6 +1,16 @@
 ﻿<#+
 public string GenerateLevel30(string ifcNamespace, string ifcVersion)
 {
+    string cartesianLog;
+
+    if (ifcNamespace == "Ifc4x3")
+    {
+        cartesianLog = @"Easting: "" + p.P[0] + ""; Northing: "" + p.P[1] + ""; Height: "" + p.P[2]";
+    }
+    else
+    {
+        cartesianLog = @"Easting: "" + p.Location.X + ""; Northing: "" + p.Location.Y + ""; Height: "" + p.Location.Z";
+    }
     return $@"
 using System;
 using System.Collections.Generic;
@@ -43,7 +53,7 @@ namespace BIMGISInteropLibs.IFC.{ifcNamespace}.LoGeoRef
                 {{
                     //create IfcCartesianPoint by setting x y z
                     p.Location = model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(placement.Location.X, placement.Location.Y, placement.Location.Z));
-                    LogWriter.Add(LogType.verbose, ""IfcCartesianPoint (Easting: ""+p.Location.X + ""; Northing: "" + p.Location.Y  +""; Height: ""+ p.Location.Z + "") set!"" );
+                    LogWriter.Add(LogType.verbose, ""IfcCartesianPoint ({cartesianLog} + "") set!"");
 
                     //create IfcDirection - Axis
                     p.Axis = model.Instances.New<IfcDirection>(a => a.SetXYZ(placement.Axis.X, placement.Axis.Y, placement.Axis.Z));

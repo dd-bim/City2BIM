@@ -82,7 +82,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                 //Level 40
                 case IFC.LoGeoRef.LoGeoRef40:
                     site = Site.Create(model, siteName, config.logeoref, sitePlacement, refLatitude, refLongitude, refElevation);
-                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement, config.trueNorth.Value);
+                    geomRepContext = LoGeoRef.Level40.Create(model, sitePlacement);
                     break;
                 
                 default:

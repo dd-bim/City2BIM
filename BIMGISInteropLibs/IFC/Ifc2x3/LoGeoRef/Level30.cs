@@ -44,7 +44,7 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3.LoGeoRef
                 {
                     //create IfcCartesianPoint by setting x y z
                     p.Location = model.Instances.New<IfcCartesianPoint>(c => c.SetXYZ(placement.Location.X, placement.Location.Y, placement.Location.Z));
-                    LogWriter.Add(LogType.verbose, "IfcCartesianPoint (Easting: "+p.Location.X + "; Northing: " + p.Location.Y  +"; Height: "+ p.Location.Z + ") set!" );
+                    LogWriter.Add(LogType.verbose, "IfcCartesianPoint (Easting: " + p.Location.X + "; Northing: " + p.Location.Y + "; Height: " + p.Location.Z + ") set!");
 
                     //create IfcDirection - Axis
                     p.Axis = model.Instances.New<IfcDirection>(a => a.SetXYZ(placement.Axis.X, placement.Axis.Y, placement.Axis.Z));
