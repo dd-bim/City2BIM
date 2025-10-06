@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
-using BimGisCad.Representation.Geometry;
+﻿using BimGisCad.Representation.Geometry;
 using BimGisCad.Representation.Geometry.Elementary;
+using System;
+using System.Collections.Generic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BimGisCad.Representation.Geometry
 {
@@ -14,9 +16,15 @@ namespace BimGisCad.Representation.Geometry
         /// <summary>
         ///  Globales Koordinatensystem
         /// </summary>
-        public static Axis2Placement3D Standard => new Axis2Placement3D( Vector3.Zero, Direction3.UnitZ,Direction3.UnitX, false);
+        public static Axis2Placement3D Standard => new Axis2Placement3D(Vector3.Zero, Direction3.UnitZ, Direction3.UnitX, false);
         private Direction3 refDirection;
         private Direction3 axis;
+
+        /// <summary>
+        /// clockwise rotation of project north relative to Geo-System (TrueNorth) (degree).
+        /// See also <see cref="BIMGISInteropLibs.IfcTerrain.Config._trueNorth"/>
+        /// </summary>
+        private double rotation = 0.0;
 
         #endregion Fields
 
@@ -29,21 +37,19 @@ namespace BimGisCad.Representation.Geometry
         /// <param name="axis"></param>
         /// <param name="refDirection"></param>
         /// <param name="reCalcRefDirection"></param>
-        protected Axis2Placement3D(Vector3 location, Direction3 axis, Direction3 refDirection, bool reCalcRefDirection = true)
+        protected Axis2Placement3D(Vector3 location, Direction3 axis, Direction3 refDirection, bool reCalcRefDirection = false)
         {
             this.Location = location;
-            this.refDirection = reCalcRefDirection ? Direction3.Perp(axis, refDirection) : refDirection;
+            this.RefDirection = reCalcRefDirection ? Direction3.Perp(axis, refDirection) : refDirection;
             this.Axis = axis;
-            this.YAxis = Direction3.Create(Direction3.Cross(this.Axis, this.RefDirection));
         }
-
-        //private Axis2Placement3D(Vector3 location, Direction3 xAxis, Direction3 yAxis, Direction3 zAxis)
-        //{
-        //    this.Location = location;
-        //    this.RefDirection = xAxis;
-        //    this.YAxis = yAxis;
-        //    this.Axis = zAxis;
-        //}
+        protected Axis2Placement3D(Vector3 location, Direction3 axis, double rotation, bool reCalcRefDirection = false)
+        {
+            this.Location = location;
+            this.Rotation = rotation;
+            if (reCalcRefDirection) this.RefDirection = Direction3.Perp(axis, refDirection);
+            this.Axis = axis;
+        }
 
         #endregion Constructors
 
@@ -65,15 +71,51 @@ namespace BimGisCad.Representation.Geometry
             }
             set
             {
-                this.refDirection = Direction3.Perp(this.axis, value);
-                Direction3.Create(Direction3.Cross(this.axis, this.refDirection));
+                this.refDirection = value;
+                this.rotation = -Common.Rad2Deg(Math.Atan2(value.Y, value.X));
+                //this.refDirection = Direction3.Perp(this.axis, value);
+                //Direction3.Create(Direction3.Cross(this.axis, this.refDirection));
+            }
+        }
+        /// <summary>
+        /// clockwise rotation of project north relative to Geo-System (TrueNorth) (degree).
+        /// See also <see cref="BIMGISInteropLibs.IfcTerrain.Config._trueNorth"/>
+        /// </summary>
+        public double Rotation
+        {
+            get
+            {
+                return this.rotation;
+            }
+            set
+            {
+                this.rotation = value;
+                double ang = Common.Deg2Rad(-rotation); // negative because of RefDirection is relative to GeoCRS, while trueNorth is relative to ProjectCRS.
+                this.refDirection = Direction3.Create(Math.Cos(ang), Math.Sin(ang), 0, null);// First Cos, then Sin beacuse RefDirection is defined by X-Axis/Easting.   
+            }
+        }
+        /// <summary>
+        /// Direction of True North in local System
+        /// </summary>
+        public Direction2 TrueNorth
+        {
+            get
+            {
+                double ang = Common.Deg2Rad(-rotation); // negative because Rotation is relative to GeoCRS, while trueNorth is relative to ProjectCRS.
+                return Direction2.Create(Math.Sin(ang), Math.Cos(ang));
             }
         }
 
         /// <summary>
-        /// Y-Achse
+        /// Y-Achse (derived from Axis und RefDirection)
         /// </summary>
-        public Direction3 YAxis { get; }
+        public Direction3 YAxis
+        {
+            get
+            {
+                return Direction3.Create(Direction3.Cross(this.Axis, this.RefDirection));
+            }
+        }
 
         /// <summary>
         /// Z-Achse
@@ -87,8 +129,6 @@ namespace BimGisCad.Representation.Geometry
             set
             {
                 this.axis = value;
-                this.refDirection = Direction3.Perp(value, this.refDirection);
-                Direction3.Create(Direction3.Cross(this.axis, this.refDirection));
             }
         }
 
@@ -133,6 +173,15 @@ namespace BimGisCad.Representation.Geometry
         public static Axis2Placement3D Create(Direction3 axis, Direction3 refDirection) => new Axis2Placement3D(Vector3.Zero, axis, refDirection);
 
         /// <summary>
+        ///  Erzeugt 3D-System im Ursprung
+        /// </summary>
+        /// <param name="axis"> Z Achse </param>
+        /// <param name="rotation"> Rotation (degree) </param>
+        /// <returns>  </returns>
+        public static Axis2Placement3D Create(Direction3 axis, double rotation) => new Axis2Placement3D(Vector3.Zero, axis, rotation);
+
+
+        /// <summary>
         ///  Erzeugt 3D-System
         /// </summary>
         /// <param name="location"> Location</param>
@@ -151,7 +200,7 @@ namespace BimGisCad.Representation.Geometry
         /// <param name="axis2"></param>
         public static void GetAxes(Axis2Placement3D sys, AxisPlane axisPlane, out Direction3 axis1, out Direction3 axis2)
         {
-            switch(axisPlane)
+            switch (axisPlane)
             {
                 case AxisPlane.XY:
                     axis1 = sys.RefDirection;
@@ -317,7 +366,7 @@ namespace BimGisCad.Representation.Geometry
         /// Kombiniert mindestens zwei Systeme zu einem, Reihenfolge vom Kleinen ins Große (Ergebnis des kombinierten Systems ToGlobal, entspricht sys2.ToGlobal(sys1.ToGlobal(x)))
         /// </summary>
         public static Axis2Placement3D Combine(params Axis2Placement3D[] systems) => Combine(systems);
- 
+
         /// <summary>
         /// Kombiniert mindestens zwei Systeme zu einem, Reihenfolge vom Kleinen ins Große (Ergebnis des kombinierten Systems ToGlobal, entspricht sys2.ToGlobal(sys1.ToGlobal(x)))
         /// </summary>
