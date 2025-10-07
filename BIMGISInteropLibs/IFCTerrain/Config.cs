@@ -540,19 +540,19 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// set default value to 0 (no rotation)
         /// </summary>
         
-        private double? _trueNorth { get; set; } = 0.0;
+        private double? _rotation { get; set; } = 0.0;
 
         /// <summary>
         /// clockwise rotation of project north relative to Geo-System (TrueNorth) (degree). 
         /// </summary>
         [DefaultValue(0.0)]
-        public double? trueNorth
+        public double? rotation
         {
-            get { return _trueNorth; }
+            get { return _rotation; }
             set
             {
-                _trueNorth = value;
-                NotifyPropertyChanged(nameof(trueNorth));
+                _rotation = value;
+                NotifyPropertyChanged(nameof(rotation));
             }
         }
 

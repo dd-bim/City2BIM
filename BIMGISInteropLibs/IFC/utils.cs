@@ -96,8 +96,7 @@ namespace BIMGISInteropLibs.IFC
             //set center point as placement
             writeInput.Placement.Location = Vector3.Create(originX, originY, originZ);
             LogWriter.Add(LogType.debug, "Project center: X= " + originX + "; Y= " + originY + "; Z= " + originZ);
-            // Output Reihenfolge tauschen und stattdessen trueNorth + 90 übergeben
-            writeInput.Placement.RefDirection = Direction3.Create(utils.getRotationVector(config.trueNorth.GetValueOrDefault())[0], utils.getRotationVector(config.trueNorth.GetValueOrDefault())[1], 0, null);
+            writeInput.Placement.Rotation = config.rotation.Value;
             #endregion placement / georef
 
             #region shape representation

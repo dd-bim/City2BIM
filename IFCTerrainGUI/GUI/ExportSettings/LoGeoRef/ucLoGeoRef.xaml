@@ -271,9 +271,10 @@
                                  VerticalContentAlignment="Center"
                                  Margin="5,2"
                                  Height="20"
-                                 Style="{StaticResource ErrorToolTip}">
+                                 Style="{StaticResource ErrorToolTip}"
+                                 ToolTip="Set a clockwise rotation for Project relative to Geosystem">
                             <TextBox.Text>
-                                <Binding Path="trueNorth"
+                                <Binding Path="rotation"
                                          ConverterCulture="de-DE"
                                          StringFormat="F2"
                                          UpdateSourceTrigger="PropertyChanged">

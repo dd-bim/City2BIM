@@ -22,7 +22,7 @@ namespace BimGisCad.Representation.Geometry
 
         /// <summary>
         /// clockwise rotation of project north relative to Geo-System (TrueNorth) (degree).
-        /// See also <see cref="BIMGISInteropLibs.IfcTerrain.Config._trueNorth"/>
+        /// See also <see cref="BIMGISInteropLibs.IfcTerrain.Config._rotation"/>
         /// </summary>
         private double rotation = 0.0;
 
@@ -79,7 +79,7 @@ namespace BimGisCad.Representation.Geometry
         }
         /// <summary>
         /// clockwise rotation of project north relative to Geo-System (TrueNorth) (degree).
-        /// See also <see cref="BIMGISInteropLibs.IfcTerrain.Config._trueNorth"/>
+        /// See also <see cref="BIMGISInteropLibs.IfcTerrain.Config._rotation"/>
         /// </summary>
         public double Rotation
         {
