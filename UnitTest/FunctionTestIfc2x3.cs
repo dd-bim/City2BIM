@@ -17,7 +17,6 @@ namespace UnitTest;
 using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
 public class FunctionTestIfc2x3
 {
-    static internal int digits = 4; //number of digits for rounding in Assert.Equal
     [Theory]
     [MemberData(nameof(LoGeoRefRotationTestCases))]
     public void RotationTest(BIMGISInteropLibs.IFC.LoGeoRef loGeoRef, double rotation, double expectedX, double expectedY) //expected values for RefDirection
@@ -39,12 +38,12 @@ public class FunctionTestIfc2x3
             case BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef40:
                 {     
                     IfcGeometricRepresentationContext geomRepContext = BIMGISInteropLibs.IFC.Ifc2x3.LoGeoRef.Level40.Create(model, sitePlacement);
-                    Assert.Equal(expectedY, geomRepContext.TrueNorth.X, digits); //Expecting RefDirection as default
-                    Assert.Equal(expectedX, geomRepContext.TrueNorth.Y, digits);
+                    Assert.Equal(-expectedY, geomRepContext.TrueNorth.X, FunctionTestMain.digits); //Expecting RefDirection as default
+                    Assert.Equal(expectedX, geomRepContext.TrueNorth.Y, FunctionTestMain.digits);
                     if (geomRepContext.WorldCoordinateSystem is IfcAxis2Placement3D { RefDirection: IfcDirection dir })
                     {
-                        Assert.Equal(1.0, dir.X, digits); //If set Expecting RefDirection as default
-                        Assert.Equal(0.0, dir.Y, digits);
+                        Assert.Equal(1.0, dir.X, FunctionTestMain.digits); //If set Expecting RefDirection as default
+                        Assert.Equal(0.0, dir.Y, FunctionTestMain.digits);
                     }
                 }
                 break;
@@ -55,8 +54,8 @@ public class FunctionTestIfc2x3
                 {
                     if (site.ObjectPlacement is IfcLocalPlacement { RelativePlacement: IfcAxis2Placement3D { RefDirection: IfcDirection dir } })
                     {
-                        Assert.Equal(expectedX, dir.X, digits);
-                        Assert.Equal(expectedY, dir.Y, digits);
+                        Assert.Equal(expectedX, dir.X, FunctionTestMain.digits);
+                        Assert.Equal(expectedY, dir.Y, FunctionTestMain.digits);
                     }
                     else
                     {
@@ -66,24 +65,11 @@ public class FunctionTestIfc2x3
                 break;
         }
     }
-    public static IEnumerable<object[]> LoGeoRefValues()
-    {
-        foreach (var value in Enum.GetValues(typeof(BIMGISInteropLibs.IFC.LoGeoRef)))
-            yield return new object[] { value };
-    }
-    public static IEnumerable<object[]> RotationTestCases()
-    {
-        yield return new object[] { 30.0, 0.8660, -0.5 };
-        yield return new object[] { 45.0, 0.7071, -0.7071 };
-        yield return new object[] { 60.0, 0.5, -0.8660 };
-        yield return new object[] { 90.0, 0.0, -1.0 };
-        // weitere Werte nach Bedarf
-    }
     public static IEnumerable<object[]> LoGeoRefRotationTestCases()
     {
         foreach (var loGeoRef in Enum.GetValues(typeof(BIMGISInteropLibs.IFC.LoGeoRef)))
         {
-            foreach (var testCase in RotationTestCases())
+            foreach (var testCase in FunctionTestMain.RotationTestCases())
             {
                 yield return new object[] { loGeoRef, testCase[0], testCase[1], testCase[2] };
             }

@@ -55,15 +55,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>FunctionTest.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="FunctionTestIfc4.cs">
-      <DependentUpon>FunctionTestIfc4.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="FunctionTestIfc2x3.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>FunctionTestIfc2x3.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FunctionTestIfc4.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionTestIfc4.tt</DependentUpon>
     </Compile>
     <Compile Update="FunctionTestIfc4x3.cs">
       <DesignTime>True</DesignTime>
