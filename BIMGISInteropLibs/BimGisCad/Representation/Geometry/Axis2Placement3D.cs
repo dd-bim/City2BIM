@@ -2,6 +2,7 @@
 using BimGisCad.Representation.Geometry.Elementary;
 using System;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BimGisCad.Representation.Geometry
@@ -20,12 +21,6 @@ namespace BimGisCad.Representation.Geometry
         private Direction3 refDirection;
         private Direction3 axis;
 
-        /// <summary>
-        /// clockwise rotation of project north relative to Geo-System (TrueNorth) (degree).
-        /// See also <see cref="BIMGISInteropLibs.IfcTerrain.Config._rotation"/>
-        /// </summary>
-        private double rotation = 0.0;
-
         #endregion Fields
 
         #region Constructors
@@ -41,13 +36,6 @@ namespace BimGisCad.Representation.Geometry
         {
             this.Location = location;
             this.RefDirection = reCalcRefDirection ? Direction3.Perp(axis, refDirection) : refDirection;
-            this.Axis = axis;
-        }
-        protected Axis2Placement3D(Vector3 location, Direction3 axis, double rotation, bool reCalcRefDirection = false)
-        {
-            this.Location = location;
-            this.Rotation = rotation;
-            if (reCalcRefDirection) this.RefDirection = Direction3.Perp(axis, refDirection);
             this.Axis = axis;
         }
 
@@ -72,7 +60,6 @@ namespace BimGisCad.Representation.Geometry
             set
             {
                 this.refDirection = value;
-                this.rotation = -Common.Rad2Deg(Math.Atan2(value.Y, value.X));
                 //this.refDirection = Direction3.Perp(this.axis, value);
                 //Direction3.Create(Direction3.Cross(this.axis, this.refDirection));
             }
@@ -83,15 +70,10 @@ namespace BimGisCad.Representation.Geometry
         /// </summary>
         public double Rotation
         {
-            get
-            {
-                return this.rotation;
-            }
             set
             {
-                this.rotation = value;
-                double ang = Common.Deg2Rad(-rotation); // negative because of RefDirection is relative to GeoCRS, while trueNorth is relative to ProjectCRS.
-                this.refDirection = Direction3.Create(Math.Cos(ang), Math.Sin(ang), 0, null);// First Cos, then Sin beacuse RefDirection is defined by X-Axis/Easting.   
+                double ang = Common.Deg2Rad(value);
+                this.refDirection = Direction3.Create(Math.Cos(ang), -Math.Sin(ang), 0, null);// First Cos, then Sin beacuse RefDirection is defined by X-Axis/Easting (+90°). sin(x+90) = cos(x); cos(x+90)=-sin(x)    
             }
         }
         /// <summary>
@@ -101,8 +83,7 @@ namespace BimGisCad.Representation.Geometry
         {
             get
             {
-                double ang = Common.Deg2Rad(-rotation); // negative because Rotation is relative to GeoCRS, while trueNorth is relative to ProjectCRS.
-                return Direction2.Create(Math.Sin(ang), Math.Cos(ang));
+                return Direction2.Create(-refDirection.Y, refDirection.X); //refDirection 90 counterclockwise
             }
         }
 
@@ -176,9 +157,15 @@ namespace BimGisCad.Representation.Geometry
         ///  Erzeugt 3D-System im Ursprung
         /// </summary>
         /// <param name="axis"> Z Achse </param>
-        /// <param name="rotation"> Rotation (degree) </param>
+        /// <param name="rotation"> clockwise rotation of project north relative to Geo-System (TrueNorth) (degree).</param>
         /// <returns>  </returns>
-        public static Axis2Placement3D Create(Direction3 axis, double rotation) => new Axis2Placement3D(Vector3.Zero, axis, rotation);
+        public static Axis2Placement3D Create(Direction3 axis, double rotation)
+        {
+            var placement = new Axis2Placement3D(Vector3.Zero,axis,Direction3.UnitX);
+            placement.Rotation = rotation;
+            return placement;
+        }
+
 
 
         /// <summary>
