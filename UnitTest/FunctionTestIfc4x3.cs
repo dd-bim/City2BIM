@@ -38,20 +38,20 @@ public class FunctionTestIfc4x3
                     IfcGeometricRepresentationContext geomRepContext = BIMGISInteropLibs.IFC.Ifc4x3.LoGeoRef.Level50.Create(model, sitePlacement, config);
                     if (geomRepContext.TrueNorth != null)
                     {
-                        Assert.Equal(1.0, geomRepContext.TrueNorth.X, FunctionTestMain.digits); //If set, expecting TrueNorth as default
-                        Assert.Equal(0.0, geomRepContext.TrueNorth.Y, FunctionTestMain.digits);
+                        Assert.Equal(1.0, geomRepContext.TrueNorth.X, FunctionTestHelper.digits); //If set, expecting TrueNorth as default
+                        Assert.Equal(0.0, geomRepContext.TrueNorth.Y, FunctionTestHelper.digits);
                     }
                     if (geomRepContext.WorldCoordinateSystem is IfcAxis2Placement3D { RefDirection: IfcDirection dir })
                     {
-                        Assert.Equal(1.0, dir.X, FunctionTestMain.digits); //If set, expecting RefDirection as default
-                        Assert.Equal(0.0, dir.Y, FunctionTestMain.digits);
+                        Assert.Equal(1.0, dir.X, FunctionTestHelper.digits); //If set, expecting RefDirection as default
+                        Assert.Equal(0.0, dir.Y, FunctionTestHelper.digits);
                     }
                     var mapConversion = model.Instances.OfType<IfcMapConversion>().FirstOrDefault(x => x.SourceCRS.Equals(geomRepContext));
                     Assert.NotNull(mapConversion);
                     Assert.NotNull(mapConversion.XAxisAbscissa);
                     Assert.NotNull(mapConversion.XAxisOrdinate);
-                    Assert.Equal(expectedX, mapConversion.XAxisAbscissa.Value, FunctionTestMain.digits);
-                    Assert.Equal(expectedY, mapConversion.XAxisOrdinate.Value, FunctionTestMain.digits);
+                    Assert.Equal(expectedX, mapConversion.XAxisAbscissa.Value, FunctionTestHelper.digits);
+                    Assert.Equal(expectedY, mapConversion.XAxisOrdinate.Value, FunctionTestHelper.digits);
                 }
                 break;
        
@@ -60,12 +60,12 @@ public class FunctionTestIfc4x3
             case BIMGISInteropLibs.IFC.LoGeoRef.LoGeoRef40:
                 {     
                     IfcGeometricRepresentationContext geomRepContext = BIMGISInteropLibs.IFC.Ifc4x3.LoGeoRef.Level40.Create(model, sitePlacement);
-                    Assert.Equal(-expectedY, geomRepContext.TrueNorth.X, FunctionTestMain.digits); //Expecting RefDirection as default
-                    Assert.Equal(expectedX, geomRepContext.TrueNorth.Y, FunctionTestMain.digits);
+                    Assert.Equal(-expectedY, geomRepContext.TrueNorth.X, FunctionTestHelper.digits); //Expecting RefDirection as default
+                    Assert.Equal(expectedX, geomRepContext.TrueNorth.Y, FunctionTestHelper.digits);
                     if (geomRepContext.WorldCoordinateSystem is IfcAxis2Placement3D { RefDirection: IfcDirection dir })
                     {
-                        Assert.Equal(1.0, dir.X, FunctionTestMain.digits); //If set Expecting RefDirection as default
-                        Assert.Equal(0.0, dir.Y, FunctionTestMain.digits);
+                        Assert.Equal(1.0, dir.X, FunctionTestHelper.digits); //If set Expecting RefDirection as default
+                        Assert.Equal(0.0, dir.Y, FunctionTestHelper.digits);
                     }
                 }
                 break;
@@ -76,8 +76,8 @@ public class FunctionTestIfc4x3
                 {
                     if (site.ObjectPlacement is IfcLocalPlacement { RelativePlacement: IfcAxis2Placement3D { RefDirection: IfcDirection dir } })
                     {
-                        Assert.Equal(expectedX, dir.X, FunctionTestMain.digits);
-                        Assert.Equal(expectedY, dir.Y, FunctionTestMain.digits);
+                        Assert.Equal(expectedX, dir.X, FunctionTestHelper.digits);
+                        Assert.Equal(expectedY, dir.Y, FunctionTestHelper.digits);
                     }
                     else
                     {
@@ -91,7 +91,7 @@ public class FunctionTestIfc4x3
     {
         foreach (var loGeoRef in Enum.GetValues(typeof(BIMGISInteropLibs.IFC.LoGeoRef)))
         {
-            foreach (var testCase in FunctionTestMain.RotationTestCases())
+            foreach (var testCase in FunctionTestHelper.RotationTestCases())
             {
                 yield return new object[] { loGeoRef, testCase[0], testCase[1], testCase[2] };
             }
