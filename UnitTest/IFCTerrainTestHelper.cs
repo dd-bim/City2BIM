@@ -20,6 +20,7 @@ namespace UnitTest
         static internal int digits = 4; //number of digits for rounding in Assert.Equal
         public static IEnumerable<object[]> RotationTestCases()
         {
+            // angle in degrees, expected X, expected Y for RefDirection
             yield return new object[] { 30.0, 0.8660, -0.5 };
             yield return new object[] { 45.0, 0.7071, -0.7071 };
             yield return new object[] { 60.0, 0.5, -0.8660 };

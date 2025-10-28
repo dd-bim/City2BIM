@@ -73,7 +73,7 @@ namespace BimGisCad.Representation.Geometry
             set
             {
                 double ang = Common.Deg2Rad(value);
-                this.refDirection = Direction3.Create(Math.Cos(ang), -Math.Sin(ang), 0, null);// First Cos, then Sin beacuse RefDirection is defined by X-Axis/Easting (+90°). sin(x+90) = cos(x); cos(x+90)=-sin(x)    
+                this.refDirection = Direction3.Create(Math.Cos(ang), -Math.Sin(ang), 0, null);// First Cos, then -Sin because RefDirection is defined by X-Axis/Easting (+90°). sin(x+90) = cos(x); cos(x+90)=-sin(x)    
             }
         }
         /// <summary>
@@ -132,18 +132,7 @@ namespace BimGisCad.Representation.Geometry
         /// <returns>  </returns>
         public static Axis2Placement3D Create(Vector3 translation) => new Axis2Placement3D(translation, Direction3.UnitZ, Direction3.UnitX, false);
 
-        /// <summary>
-        ///  Erzeugt 3D-System aus 2D-System, mit Axis als Z-Achse
-        /// </summary>
-        /// <param name="placement"> 2D-System </param>
-        /// <param name="z"> evtl. Z-Wert Translation</param>
-        /// <returns>  </returns>
-        public static Axis2Placement3D Create(Axis2Placement2D placement, double z = 0.0)
-        {
-            var loc = Vector3.Create(placement.Location.X, placement.Location.Y, z);
-            var dir = Direction3.Create(placement.RefDirection.X, placement.RefDirection.Y, 0.0);
-            return new Axis2Placement3D(loc, Direction3.UnitZ, dir, false);
-        }
+
 
         /// <summary>
         ///  Erzeugt 3D-System im Ursprung
@@ -349,35 +338,6 @@ namespace BimGisCad.Representation.Geometry
         /// <returns></returns>
         public static Point3 ToReference(Axis2Placement3D system, Point3 local) => Direction3.RotateCol(system.RefDirection, system.YAxis, system.Axis, local) + system.Location;
 
-        /// <summary>
-        /// Kombiniert mindestens zwei Systeme zu einem, Reihenfolge vom Kleinen ins Große (Ergebnis des kombinierten Systems ToGlobal, entspricht sys2.ToGlobal(sys1.ToGlobal(x)))
-        /// </summary>
-        public static Axis2Placement3D Combine(params Axis2Placement3D[] systems) => Combine(systems);
-
-        /// <summary>
-        /// Kombiniert mindestens zwei Systeme zu einem, Reihenfolge vom Kleinen ins Große (Ergebnis des kombinierten Systems ToGlobal, entspricht sys2.ToGlobal(sys1.ToGlobal(x)))
-        /// </summary>
-        public static Axis2Placement3D Combine(IReadOnlyList<Axis2Placement3D> systems)
-        {
-            // Lösung mit Quaternionen, aufwändiger aber numerisch stabiler
-            var q = Quaternion.Create(systems[0].RefDirection, systems[0].YAxis, systems[0].Axis);
-            var t = systems[0].Location;
-
-            for (int i = 1; i < systems.Count; i++)
-            {
-                var qi = Quaternion.Create(systems[i].RefDirection, systems[i].YAxis, systems[i].Axis);
-                q = qi * q;
-                t = systems[i].Location + (qi * t);
-            }
-
-
-            // Lösung mit Achsen
-            //var dirX = Direction3.RotateCol(sys2.XAxis, sys2.YAxis, sys2.ZAxis, sys1.XAxis);
-            //var dirY = Direction3.RotateCol(sys2.XAxis, sys2.YAxis, sys2.ZAxis, sys1.YAxis);
-            //var t12 = sys2.Translation + Direction3.RotateCol(sys2.XAxis, sys2.YAxis, sys2.ZAxis, sys1.Translation);
-            // var dirZ = Direction3.Create(Vector3.Cross(dirX, dirY), true);
-            return new Axis2Placement3D(t, Quaternion.ZAxis(q), Quaternion.XAxis(q), false);
-        }
 
         public override string ToString() => string.Format("{0}, {1}, {2}", Location.ToString(), Axis.ToString(), refDirection.ToString());
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BimGisCad.Representation.Geometry.Linear;
+//using BimGisCad.Representation.Geometry.Linear;
 using static BimGisCad.Representation.Geometry.Elementary.Common;
 using System;
 using System.Globalization;
@@ -11,7 +11,7 @@ namespace BimGisCad.Representation.Geometry.Elementary
     /// <summary>
     ///  2-Dimensionaler Punkt
     /// </summary>
-    public struct Point2 : ILinear2//, IEquatable<Point2>
+    public struct Point2 //: ILinear2//, IEquatable<Point2>
     {
         #region Fields
 
@@ -92,55 +92,55 @@ namespace BimGisCad.Representation.Geometry.Elementary
         /// <returns></returns>
         public static Point2 Create(IReadOnlyList<double> xy, int startIndex = 0) => new Point2(xy[startIndex], xy[startIndex + 1]);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="linears"></param>
-        /// <param name="point"></param>
-        /// <param name="vv"></param>
-        /// <returns></returns>
-        public static bool Create(IReadOnlyList<ILinear2> linears, out Point2 point, out double vv)
-        {
-            var slv = new Solve2();
-            foreach(var lin in linears)
-            {
-                slv.AddRows(lin.PointEqu);
-            }
-            if(slv.Solve())
-            {
-                vv = slv.VV;
-                point = new Point2(slv.X[0], slv.X[1]);
-                return true;
-            }
-            point = default(Point2);
-            vv = double.NaN;
-            return false;
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="linears"></param>
+        ///// <param name="point"></param>
+        ///// <param name="vv"></param>
+        ///// <returns></returns>
+        //public static bool Create(IReadOnlyList<ILinear2> linears, out Point2 point, out double vv)
+        //{
+        //    var slv = new Solve2();
+        //    foreach(var lin in linears)
+        //    {
+        //        slv.AddRows(lin.PointEqu);
+        //    }
+        //    if(slv.Solve())
+        //    {
+        //        vv = slv.VV;
+        //        point = new Point2(slv.X[0], slv.X[1]);
+        //        return true;
+        //    }
+        //    point = default(Point2);
+        //    vv = double.NaN;
+        //    return false;
+        //}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public static bool Create(Line2 a, Line2 b, out Point2 point)
-        {
-            double det = Direction2.Det(a.Direction, b.Direction);
-            var diff = a.Position - b.Position;
-            if(det > TRIGTOL || det < -TRIGTOL)
-            {
-                var pa = a.Position + (Direction2.Det(b.Direction, diff) / det * a.Direction);
-                var pb = b.Position + (Direction2.Det(a.Direction, diff) / det * b.Direction);
-                point = new Point2((pa.X + pb.X) / 2.0, (pa.Y + pb.Y) / 2.0);
-                return true;
-            }
-            else
-            {
-                point = default(Point2);
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="a"></param>
+        ///// <param name="b"></param>
+        ///// <param name="point"></param>
+        ///// <returns></returns>
+        //public static bool Create(Line2 a, Line2 b, out Point2 point)
+        //{
+        //    double det = Direction2.Det(a.Direction, b.Direction);
+        //    var diff = a.Position - b.Position;
+        //    if(det > TRIGTOL || det < -TRIGTOL)
+        //    {
+        //        var pa = a.Position + (Direction2.Det(b.Direction, diff) / det * a.Direction);
+        //        var pb = b.Position + (Direction2.Det(a.Direction, diff) / det * b.Direction);
+        //        point = new Point2((pa.X + pb.X) / 2.0, (pa.Y + pb.Y) / 2.0);
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        point = default(Point2);
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// 

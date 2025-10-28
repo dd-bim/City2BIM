@@ -117,7 +117,7 @@ namespace BIMGISInteropLibs.IFC
             {
                 writeInput.SurfaceType = SurfaceType.TFS;
             }
-            else
+            else if (config.outSurfaceType == SurfaceType.TIN)
             {
                 writeInput.SurfaceType = SurfaceType.TIN;
             }

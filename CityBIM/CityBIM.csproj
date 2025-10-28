@@ -102,7 +102,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BimGisCad\BimGisCad.csproj" />
     <ProjectReference Include="..\BIMGISInteropLibs\BIMGISInteropLibs.csproj" />
     <ProjectReference Include="..\GuiHandler\GuiHandler.csproj" />
   </ItemGroup>

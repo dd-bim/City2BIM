@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using BimGisCad.Representation.Geometry.Linear;
+//using BimGisCad.Representation.Geometry.Linear;
 using static BimGisCad.Representation.Geometry.Elementary.Common;
 
 
@@ -11,7 +11,7 @@ namespace BimGisCad.Representation.Geometry.Elementary
     /// <summary>
     ///  3-Dimensionaler Punkt
     /// </summary>
-    public struct Point3 : ILinear3//, IEquatable<Point3>
+    public struct Point3 //: ILinear3//, IEquatable<Point3>
     {
         #region Fields
 
@@ -101,114 +101,114 @@ namespace BimGisCad.Representation.Geometry.Elementary
         /// <returns></returns>
         public static Point3 Create(IReadOnlyList<double> xyz, int startIndex = 0) => new Point3(xyz[startIndex], xyz[startIndex + 1], xyz[startIndex + 2]);
 
-        /// <summary>
-        /// Punkt als Schnittpunkt, wenn möglich
-        /// </summary>
-        /// <param name="plane"></param>
-        /// <param name="line"></param>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public static bool Create(Plane plane, Line3 line, out Point3 point)
-        {
-            double cos = Direction3.Dot(plane.Normal, line.Direction);
-            if(Math.Abs(cos) < TRIGTOL)
-            {
-                point = default(Point3);
-                return false;
-            }
-            double dist = Plane.DistanceToPlane(plane, line.Position) / cos;
-            point = new Point3(
-                line.Position.X - (dist * line.Direction.X),
-                line.Position.Y - (dist * line.Direction.Y),
-                line.Position.Z - (dist * line.Direction.Z));
-            return true;
-        }
+        ///// <summary>
+        ///// Punkt als Schnittpunkt, wenn möglich
+        ///// </summary>
+        ///// <param name="plane"></param>
+        ///// <param name="line"></param>
+        ///// <param name="point"></param>
+        ///// <returns></returns>
+        //public static bool Create(Plane plane, Line3 line, out Point3 point)
+        //{
+        //    double cos = Direction3.Dot(plane.Normal, line.Direction);
+        //    if(Math.Abs(cos) < TRIGTOL)
+        //    {
+        //        point = default(Point3);
+        //        return false;
+        //    }
+        //    double dist = Plane.DistanceToPlane(plane, line.Position) / cos;
+        //    point = new Point3(
+        //        line.Position.X - (dist * line.Direction.X),
+        //        line.Position.Y - (dist * line.Direction.Y),
+        //        line.Position.Z - (dist * line.Direction.Z));
+        //    return true;
+        //}
 
-        /// <summary>
-        /// Punkt als Schnittpunkt, wenn möglich
-        /// </summary>
-        /// <param name="a">Ebene 1</param>
-        /// <param name="b">Ebene 2</param>
-        /// <param name="c">Ebene 3</param>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public static bool Create(Plane a, Plane b, Plane c, out Point3 point)
-        {
-            var ab = Direction3.Cross(a.Normal, b.Normal);
-            if(Vector3.Norm2(ab) > TRIGTOL_SQUARED)
-            {
-                var bc = Direction3.Cross(b.Normal, c.Normal);
-                if(Vector3.Norm2(bc) > TRIGTOL_SQUARED)
-                {
-                    var ca = Direction3.Cross(c.Normal, a.Normal);
-                    if(Vector3.Norm2(ca) > TRIGTOL_SQUARED)
-                    {
-                        var v = (a.D * bc) + (b.D * ca) + (c.D * ab);
-                        double rdet = -3.0 / (Direction3.Dot(ab, c.Normal) + Direction3.Dot(bc, a.Normal) + Direction3.Dot(ca, b.Normal));
-                        point = new Point3(rdet * v.X, rdet * v.Y, rdet * v.Z);
-                        return true;
-                    }
-                }
-            }
-            point = default(Point3);
-            return false;
-        }
+        ///// <summary>
+        ///// Punkt als Schnittpunkt, wenn möglich
+        ///// </summary>
+        ///// <param name="a">Ebene 1</param>
+        ///// <param name="b">Ebene 2</param>
+        ///// <param name="c">Ebene 3</param>
+        ///// <param name="point"></param>
+        ///// <returns></returns>
+        //public static bool Create(Plane a, Plane b, Plane c, out Point3 point)
+        //{
+        //    var ab = Direction3.Cross(a.Normal, b.Normal);
+        //    if(Vector3.Norm2(ab) > TRIGTOL_SQUARED)
+        //    {
+        //        var bc = Direction3.Cross(b.Normal, c.Normal);
+        //        if(Vector3.Norm2(bc) > TRIGTOL_SQUARED)
+        //        {
+        //            var ca = Direction3.Cross(c.Normal, a.Normal);
+        //            if(Vector3.Norm2(ca) > TRIGTOL_SQUARED)
+        //            {
+        //                var v = (a.D * bc) + (b.D * ca) + (c.D * ab);
+        //                double rdet = -3.0 / (Direction3.Dot(ab, c.Normal) + Direction3.Dot(bc, a.Normal) + Direction3.Dot(ca, b.Normal));
+        //                point = new Point3(rdet * v.X, rdet * v.Y, rdet * v.Z);
+        //                return true;
+        //            }
+        //        }
+        //    }
+        //    point = default(Point3);
+        //    return false;
+        //}
 
-        /// <summary>
-        /// Punkt als Schnittpunkt, wenn möglich
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public static bool Create(Line3 a, Line3 b, out Point3 point)
-        {
-            var n = Direction3.Cross(a.Direction, b.Direction);
-            double sin2 = Vector3.Norm2(n);
-            if(sin2 < TRIGTOL_SQUARED)
-            // parallel
-            {
-                point = default(Point3);
-                return false;
-            }
-            var diff = b.Position - a.Position;
-            double dot = Vector3.Dot(diff, n);
-            if(!IsNearlyZeroSquared(dot * dot / sin2))
-            // windschief
-            {
-                point = default(Point3);
-                return false;
-            }
-            var pa = a.Position + (Direction3.Det(diff, b.Direction, n) * a.Direction);
-            var pb = b.Position + (Direction3.Det(diff, a.Direction, n) * b.Direction);
-            point = new Point3((pa.X + pb.X) / 2.0, (pa.Y + pb.Y) / 2.0, (pa.Z + pb.Z) / 2.0);
-            return true;
-        }
+        ///// <summary>
+        ///// Punkt als Schnittpunkt, wenn möglich
+        ///// </summary>
+        ///// <param name="a"></param>
+        ///// <param name="b"></param>
+        ///// <param name="point"></param>
+        ///// <returns></returns>
+        //public static bool Create(Line3 a, Line3 b, out Point3 point)
+        //{
+        //    var n = Direction3.Cross(a.Direction, b.Direction);
+        //    double sin2 = Vector3.Norm2(n);
+        //    if(sin2 < TRIGTOL_SQUARED)
+        //    // parallel
+        //    {
+        //        point = default(Point3);
+        //        return false;
+        //    }
+        //    var diff = b.Position - a.Position;
+        //    double dot = Vector3.Dot(diff, n);
+        //    if(!IsNearlyZeroSquared(dot * dot / sin2))
+        //    // windschief
+        //    {
+        //        point = default(Point3);
+        //        return false;
+        //    }
+        //    var pa = a.Position + (Direction3.Det(diff, b.Direction, n) * a.Direction);
+        //    var pb = b.Position + (Direction3.Det(diff, a.Direction, n) * b.Direction);
+        //    point = new Point3((pa.X + pb.X) / 2.0, (pa.Y + pb.Y) / 2.0, (pa.Z + pb.Z) / 2.0);
+        //    return true;
+        //}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="linears"></param>
-        /// <param name="point"></param>
-        /// <param name="vv"></param>
-        /// <returns></returns>
-        public static bool Create(IReadOnlyList<ILinear3> linears, out Point3 point, out double vv)
-        {
-            var slv = new Solve3();
-            foreach(var lin in linears)
-            {
-                slv.AddRows(lin.PointEqu);
-            }
-            if(slv.Solve())
-            {
-                vv = slv.VV;
-                point = new Point3(slv.X[0], slv.X[1], slv.X[2]);
-                return true;
-            }
-            point = default(Point3);
-            vv = double.NaN;
-            return false;
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="linears"></param>
+        ///// <param name="point"></param>
+        ///// <param name="vv"></param>
+        ///// <returns></returns>
+        //public static bool Create(IReadOnlyList<ILinear3> linears, out Point3 point, out double vv)
+        //{
+        //    var slv = new Solve3();
+        //    foreach(var lin in linears)
+        //    {
+        //        slv.AddRows(lin.PointEqu);
+        //    }
+        //    if(slv.Solve())
+        //    {
+        //        vv = slv.VV;
+        //        point = new Point3(slv.X[0], slv.X[1], slv.X[2]);
+        //        return true;
+        //    }
+        //    point = default(Point3);
+        //    vv = double.NaN;
+        //    return false;
+        //}
 
         /// <summary>
         /// 
