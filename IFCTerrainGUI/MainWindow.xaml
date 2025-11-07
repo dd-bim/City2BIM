@@ -193,6 +193,7 @@
 
             <!--PostGIS-->
             <TabItem x:Name="tabPagePostGis"
+                     Visibility="Collapsed"
                      Header="Database (PostGIS)"
                      TabIndex="4">
 

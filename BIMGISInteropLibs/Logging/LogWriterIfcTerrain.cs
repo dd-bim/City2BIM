@@ -23,11 +23,13 @@ namespace BIMGISInteropLibs.Logging
         /// </summary>
         private static Serilog.Core.Logger logger { get; set; }
 
+        private static bool bInitialized = false;
         /// <summary>
         /// init instance of log writer
         /// </summary>
         public static void initLogger(IfcTerrain.Config config)
         {
+            if (bInitialized) return;
             //get file path from config
             string path = config.logFilePath;
 
@@ -98,6 +100,7 @@ namespace BIMGISInteropLibs.Logging
 
             //set logging instance
             logger = results;
+            bInitialized = true;
         }
 
         /// <summary>
