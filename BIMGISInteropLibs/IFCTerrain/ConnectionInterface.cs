@@ -112,7 +112,11 @@ namespace BIMGISInteropLibs.IfcTerrain
             LogWriter.Add(LogType.debug, "Reading file completed.");
 
             #endregion reader
-            if(result.currentConversion == DtmConversionType.conversion)
+
+            //apply envelope if available
+            Envelope envelope = Common.GetEnvelope(config, result);
+            Common.ApplyEnvelope(result, envelope);
+            if (result.currentConversion == DtmConversionType.conversion && envelope.IsNull)
             {
                 LogWriter.Add(LogType.info, "Faces read: " + result.triMap.Count + " Points read: " + result.pointList.Count);
 
@@ -141,11 +145,11 @@ namespace BIMGISInteropLibs.IfcTerrain
                 result.origin = centroid;
             }
 
-            //if index map is not aviable triangulate
+            //if index map is not available triangulate
             else
             {
                 //dtm processing via delaunay triangulation
-                Triangulator.TriangleNETTriangulation.triangulate(result);
+                Triangulator.TriangleNETTriangulation.triangulate(result, envelope);
             }
 
             //from here are the IFC writers

@@ -136,7 +136,7 @@ namespace BIMGISInteropLibs.DXF
         private static void readFaces(DxfFile dxfFile, string[] dxfLayer, double scale, Result dxfResult)
         {
             //set conversion type (needed for processing via NTS
-            dxfResult.currentConversion = DtmConversionType.conversion;
+            dxfResult.currentConversion = DtmConversionType.conversion; // existing faces => no dtm-conversion needed
 
             var triMap = new HashSet<Triangulator.triangleMap>();
             var pointList = new HashSet<Point>();
@@ -225,7 +225,14 @@ namespace BIMGISInteropLibs.DXF
         private static void readBreaklines(DxfFile dxfFile, string breaklineLayer, double scale, Result res)
         {
             //set conversion type --> breaklines will be processed
-            res.currentConversion = DtmConversionType.points_breaklines;
+            if (res.currentConversion == DtmConversionType.points)
+            {
+                res.currentConversion = DtmConversionType.points_breaklines;
+            }
+            else if(res.currentConversion == DtmConversionType.conversion)
+            {
+                res.currentConversion = DtmConversionType.faces_breaklines;
+            }
 
             var lines = new List<LineString>();
 

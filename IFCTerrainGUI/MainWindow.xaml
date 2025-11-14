@@ -15,6 +15,7 @@
         xmlns:local="clr-namespace:IFCTerrainGUI"
         xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
         xmlns:LoGeoRef="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.LoGeoRef"
+        xmlns:Envelope="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Envelope"
         xmlns:ucIfcMetadata="clr-namespace:IFCTerrainGUI.GUI.ExportSettings.Metadata"
         xmlns:config="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
         x:Name="IFCTerrainGUI"
@@ -35,7 +36,7 @@
 
         <!-- get config to use in data binding (DIN 18740-6)-->
         <config:configDin18740 x:Key="configDin187406" />
-        
+
         <!-- get config to use in data binding (DIN SPEC 91391-2)-->
         <config:configDin91391 x:Key="configDin913912" />
 
@@ -81,19 +82,19 @@
             <RowDefinition Height="30" />
             <RowDefinition Height="7" />
             <RowDefinition Height="51" />
+            <RowDefinition Height="52*" />
+            <RowDefinition Height="52*" />
+            <RowDefinition Height="52*" />
+            <RowDefinition Height="52*" />
+            <RowDefinition Height="75*" />
+            <RowDefinition Height="60*" />
+            <RowDefinition Height="20*" />
             <RowDefinition Height="51*" />
             <RowDefinition Height="51*" />
             <RowDefinition Height="51*" />
             <RowDefinition Height="51*" />
             <RowDefinition Height="51*" />
             <RowDefinition Height="51*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
             <RowDefinition Height="50" />
             <RowDefinition Height="7" />
@@ -243,12 +244,23 @@
         <!-- add group box for georef -->
         <GroupBox Grid.Column="3"
                   Grid.Row="4"
-                  Grid.RowSpan="5"
+                  Grid.RowSpan="4"
                   Header="Georeferencing (LoGeoRef)"
                   Margin="0,0,0,5">
 
             <!-- add user controler for LoGeoRef -->
             <LoGeoRef:ucLoGeoRef DataContext="{Binding Source={StaticResource config}}" />
+        </GroupBox>
+
+        <!-- add group box for envelope -->
+        <GroupBox Grid.Column="3"
+          Grid.Row="8"
+          Grid.RowSpan="1"
+          Header="Envelope"
+          Margin="0,0,0,5">
+
+            <!-- add user controler for LoGeoRef -->
+            <Envelope:ucEnvelope DataContext="{Binding Source={StaticResource config}}" />
         </GroupBox>
 
         <!-- group box for meta data settings (placeholder only) -->
@@ -348,7 +360,7 @@
                                             Value="False" />
                                 </DataTrigger>
                             </Style.Triggers>
-                            
+
                         </Style>
                     </Button.Style>
                 </Button>

@@ -17,6 +17,33 @@ namespace UnitTest
 {
     public class IFCTerrainTest
     {
+        [Fact]
+        public void EnvelopeTest()
+        {
+            string filepath = "D:\\DGM_Testdaten\\07_eigen\\DGM_Eigen_25062025.dxf";
+            Config config = new Config()
+            {
+                filePath = filepath,
+                fileName = Path.GetFileName(filepath),
+                layer = new string[]{ "C-TINN-VIEW" },
+                outSurfaceType = SurfaceType.TIN,
+                outIFCType = IfcVersion.IFC4dot3,
+                readPoints = false,
+                fileType = IfcTerrainFileType.DXF,
+                customOrigin = true,
+                xOrigin = 600250,
+                yOrigin = 5650250,
+                xExtend = 0,
+                yExtend = 250,
+                destFileName = "D:\\Out\\test_env.ifc",
+                breakline = false,
+                breakline_layer = "_Linien"
+            };
+            ConnectionInterface conInt = new ConnectionInterface();
+            LogWriter.initLogger(config);
+            bool result = conInt.mapProcess(config, null, null);
+        }
+
         public static string TestDataPath = "D:\\DGM_Testdaten";
         public static int numTries = 0;
         static bool readPoints = false;

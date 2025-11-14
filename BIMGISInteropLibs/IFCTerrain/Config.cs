@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BIMGISInteropLibs.Logging; //include for verbosity level
-using System.ComponentModel;//interface property changed
+using System.ComponentModel;
+using NetTopologySuite.Geometries;//interface property changed
 
 namespace BIMGISInteropLibs.IfcTerrain
 {
@@ -244,10 +245,42 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
+        private double? _xExtend { get; set; } = 0.0;
+
+        /// <summary>
+        /// x - value of a user defined extend
+        /// </summary>
+        [DefaultValue(0.0)]
+        public double? xExtend
+        {
+            get { return _xExtend; }
+            set
+            {
+                _xExtend = value;
+                NotifyPropertyChanged(nameof(xExtend));
+            }
+        }
+
+        private double? _yExtend { get; set; } = 0.0;
+
+        /// <summary>
+        /// y - value of a user defined extend
+        /// </summary>
+        [DefaultValue(0.0)]
+        public double? yExtend
+        {
+            get { return _yExtend; }
+            set
+            {
+                _yExtend = value;
+                NotifyPropertyChanged(nameof(yExtend));
+            }
+        }
+
         #endregion
 
         #region metadata (mainly for storage in the IFC file).
-        
+
         private string _siteName { get; set; } = "Terrain";
         
         /// <summary>
