@@ -67,56 +67,24 @@ namespace BIMGISInteropLibs.ElevationGrid
                 //Create a file reader to trim points based on bounding box 
                 System.IO.StreamReader file = new System.IO.StreamReader(config.filePath);
 
-                switch (config.bBox.GetValueOrDefault())
+                while ((line = file.ReadLine()) != null)
                 {
-                    //case use of bounding box
-                    case true:
-                        while ((line = file.ReadLine()) != null)
-                        {
-                            //splite line data
-                            string[] str = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    //splite line data
+                    string[] str = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            //if line contains values (parse them to the specific values)
-                            if (str.Length > 2
-                                && double.TryParse(str[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double x)
-                                && double.TryParse(str[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
-                                && double.TryParse(str[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
-                            {
-                                //Filter coordinates by min and max values of the bounding box (x & y)
-                                if (y >= config.bbP2Y && y <= config.bbP1Y
-                                    && x >= config.bbP1X && x <= config.bbP2X)
-                                {
-                                    //Prepare Point Data for NetTopologySuite
-                                    if (config.invertedCRS.GetValueOrDefault())
-                                    { pointList.Add(new Point(y, x, z)); }
-                                    else { pointList.Add(new Point(x, y, z)); }
-
-                                }
-                            }
-                        }
-                        break;
-
-                    //case without bounding box
-                    case false:
-                        while ((line = file.ReadLine()) != null)
-                        {
-                            //splite line data
-                            string[] str = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                            //if line contains values (parse them to the specific values)
-                            if (str.Length > 2
-                                && double.TryParse(str[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double x)
-                                && double.TryParse(str[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
-                                && double.TryParse(str[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
-                            {
-                                //Prepare Point Data for NetTopologySuite
-                                if (config.invertedCRS.GetValueOrDefault())
-                                { pointList.Add(new Point(y, x, z)); }
-                                else { pointList.Add(new Point(x, y, z)); }
-                            }
-                        }
-                        break;
+                    //if line contains values (parse them to the specific values)
+                    if (str.Length > 2
+                        && double.TryParse(str[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double x)
+                        && double.TryParse(str[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double y)
+                        && double.TryParse(str[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double z))
+                    {
+                        //Prepare Point Data for NetTopologySuite
+                        if (config.invertedCRS.GetValueOrDefault())
+                        { pointList.Add(new Point(y, x, z)); }
+                        else { pointList.Add(new Point(x, y, z)); }
+                    }
                 }
+
                 //Log num of read points
                 LogWriter.Add(LogType.debug, "[Grid] - read points: " + pointList.Count);
 
