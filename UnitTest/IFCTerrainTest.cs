@@ -28,15 +28,15 @@ namespace UnitTest
                 layer = new string[]{ "C-TINN-VIEW" },
                 outSurfaceType = SurfaceType.TIN,
                 outIFCType = IfcVersion.IFC4dot3,
-                readPoints = false,
+                readPoints = true,
                 fileType = IfcTerrainFileType.DXF,
                 customOrigin = true,
                 xOrigin = 600250,
                 yOrigin = 5650250,
-                xExtend = 0,
+                xExtend = 250,
                 yExtend = 250,
                 destFileName = "D:\\Out\\test_env.ifc",
-                breakline = false,
+                breakline = true,
                 breakline_layer = "_Linien"
             };
             ConnectionInterface conInt = new ConnectionInterface();

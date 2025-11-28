@@ -146,7 +146,6 @@
                             <CheckBox Content="Yes"
                                       VerticalAlignment="Center"
                                       Margin="10,0"
-                                      IsEnabled="{Binding ElementName=lbDxfDtmLayer, Path=HasItems, Mode=OneWay}"
                                       IsChecked="{Binding breakline}" />
                         </StackPanel>
 

@@ -119,7 +119,7 @@ namespace BIMGISInteropLibs.Triangulator
 
             switch (result.currentConversion)
             {
-                //case IfcTerrain.DtmConversionType.faces_breaklines: //currently not supported
+                case IfcTerrain.DtmConversionType.faces_breaklines: //currently not supported
                 case IfcTerrain.DtmConversionType.points_breaklines:
                     points.Clear();
                     bool useEnvelope = envelope != null && !envelope.IsNull;
@@ -375,7 +375,7 @@ namespace BIMGISInteropLibs.Triangulator
                 var vertList = new List<TriangleNet.Geometry.Vertex>(loop.Count);
                 foreach (var pi in loop)
                 {
-                    if (pi < 0 || pi >= pointList.Count) { vertList.Clear(); break; }
+                    if (pi < 0 || pi >= tmp_pointList.Count) { vertList.Clear(); break; }
                     vertList.Add(tmp_pointList[pi]);
                     pointList.Remove(tmp_pointList[pi]);
                 }

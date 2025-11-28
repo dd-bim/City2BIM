@@ -25,15 +25,29 @@
         </Style>
     </UserControl.Resources>
     <DockPanel Margin="5"
-        IsEnabled="{Binding customOrigin, Mode=OneWay}">
-        <TextBlock Text="Extend-X [m]:" />
+          IsEnabled="{Binding customOrigin, Mode=OneWay}">
+        <TextBlock Text="Extend-X [m]:"
+               VerticalAlignment="Center"
+               Margin="0,0,6,0"
+               FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
+
         <TextBox Width="90"
-                         Text="{Binding xExtend, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource ErrorToolTip}" />
+             VerticalAlignment="Center"
+             VerticalContentAlignment="Center"
+             Padding="2"
+             Text="{Binding xExtend, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
+             Style="{StaticResource ErrorToolTip}" />
+
         <TextBlock Text="Extend-Y [m]:"
-                           Margin="5,0,0,0" />
+               Margin="5,0,0,0"
+               VerticalAlignment="Center"
+               FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=FontSize}" />
+
         <TextBox Width="90"
-                         Text="{Binding yExtend, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource ErrorToolTip}" />
+             VerticalAlignment="Center"
+             VerticalContentAlignment="Center"
+             Padding="2"
+             Text="{Binding yExtend, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
+             Style="{StaticResource ErrorToolTip}" />
     </DockPanel>
 </UserControl>
