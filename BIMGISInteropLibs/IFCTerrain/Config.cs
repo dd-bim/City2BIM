@@ -277,6 +277,22 @@ namespace BIMGISInteropLibs.IfcTerrain
             }
         }
 
+        private double? _zFilter { get; set; } = -1.0;
+
+        /// <summary>
+        /// Threshold for simplyfing triangulation - Vertices with less impact to the overall shape will be removed (value in meters). Default : -1 (no filtering)
+        /// </summary>
+        [DefaultValue(-1.0)]
+        public double? zFilter
+        {
+            get { return _zFilter; }
+            set
+            {
+                _zFilter = value;
+                NotifyPropertyChanged(nameof(zFilter));
+            }
+        }
+
         #endregion
 
         #region metadata (mainly for storage in the IFC file).

@@ -149,7 +149,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             else
             {
                 //dtm processing via delaunay triangulation
-                Triangulator.TriangleNETTriangulation.triangulate(result, envelope);
+                Triangulator.TriangleNETTriangulation.triangulate(result, config.zFilter.GetValueOrDefault(), envelope);
             }
 
             //from here are the IFC writers
