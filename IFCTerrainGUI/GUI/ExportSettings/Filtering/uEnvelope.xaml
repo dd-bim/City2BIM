@@ -37,7 +37,18 @@
                     VerticalContentAlignment="Center"
                     Padding="2"
                     Text="{Binding xExtend, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource ErrorToolTip}" />
+                    Style="{StaticResource ErrorToolTip}"
+                    ToolTipService.ShowOnDisabled="True">
+                    <TextBox.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="Crop mesh to X-Extend" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <TextBlock Text="Extend is relative to 'Custom origin' (needs to be set) from 'Georeferencing'. 0 is intepreted as no cropping (inf)" TextWrapping="Wrap"/>
+                                <TextBlock Text="0 is intepreted as no cropping (inf). If mesh is smaller, it gets extrapolated to extend size." TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </ToolTip>
+                    </TextBox.ToolTip>
+                </TextBox>
 
                 <TextBlock Text="Extend-Y [m]:"
                     Margin="5,0,6,0"
@@ -50,7 +61,18 @@
                     VerticalContentAlignment="Center"
                     Padding="2"
                     Text="{Binding yExtend, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource ErrorToolTip}" />
+                    Style="{StaticResource ErrorToolTip}"
+                    ToolTipService.ShowOnDisabled="True">
+                    <TextBox.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="Crop mesh to Y-Extend" FontWeight="Bold" Margin="0,0,0,4"/>
+                                <TextBlock Text="Extend is relative to 'Custom origin' (needs to be set) from 'Georeferencing'. 0 is intepreted as no cropping (inf)" TextWrapping="Wrap"/>
+                                <TextBlock Text="0 is intepreted as no cropping (inf). If mesh is smaller, it gets extrapolated to extend size." TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </ToolTip>
+                    </TextBox.ToolTip>
+                </TextBox>
             </DockPanel>
             <DockPanel Margin="0,3" IsEnabled="{Binding readPoints, Mode=OneWay}">
                 <TextBlock Text="Filter Tolerance [m]:"
@@ -64,7 +86,17 @@
                     VerticalContentAlignment="Center"
                     Padding="2"
                     Text="{Binding zFilter, ConverterCulture=de-DE, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource ErrorToolTip}" />
+                    Style="{StaticResource ErrorToolTip}"
+                    ToolTipService.ShowOnDisabled="True">
+                    <TextBox.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="Filter points by impact to resulting mesh." FontWeight="Bold" Margin="0,0,0,4"/>
+                                <TextBlock Text="(only available for point-input) If mesh-Z differs below that threshold, the point is removed." TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </ToolTip>
+                    </TextBox.ToolTip>
+                </TextBox>
             </DockPanel>
         </StackPanel>
     </Grid>
