@@ -7,7 +7,7 @@
              x:Class="GuiHandler.userControler.Dxf.Read"
              x:Name="ucDXF"
              mc:Ignorable="d"
-             d:DesignHeight="525"
+             d:DesignHeight="468"
              d:DesignWidth="385">
 
 
@@ -99,7 +99,7 @@
                         <ListBox x:Name="lbDxfDtmLayer"
                                  Grid.Row="1"
                                  Grid.Column="1"
-                                 Height="150"
+                                 Height="120"
                                  ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}"
                                  IsSynchronizedWithCurrentItem="True"
                                  SelectedItem ="{Binding layer}"
@@ -156,7 +156,7 @@
                         <ListBox x:Name="lbDxfBreaklineLayer"
                                  Grid.Row="1"
                                  Grid.Column="1"
-                                 Height="150"
+                                 Height="120"
                                  IsSynchronizedWithCurrentItem="False"
                                  IsEnabled="{Binding breakline, FallbackValue=False}"
                                  SelectedItem="{Binding breakline_layer}" />
