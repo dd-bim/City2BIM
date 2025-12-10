@@ -3,6 +3,7 @@ using BIMGISInteropLibs.Triangulator;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.Triangulate.QuadEdge;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -10,7 +11,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
-
 //using NetTopologySuite.Triangulate.Tri;
 using TriangleNet.Geometry;
 using TriangleNet.Meshing;
@@ -177,38 +177,83 @@ namespace BIMGISInteropLibs.Triangulator
                 LogWriter.Add(LogType.error, "[Triangle.NET] " + "Result mesh has no vertices");
             }
 
-            // Filter
+            // Filter (parallel, chunked + adjacency)
             if (filterZ >= 0.0)
             {
                 var tmpPointList = result.pointList.ToList();
-                foreach (var vert in mesh.Vertices.ToList())
+                var meshVertices = mesh.Vertices.OfType<Vertex3D>().ToList();
+                var meshEdges = mesh.Edges.ToList();
+
+                // Fast Lookup ID -> Vertex
+                var vertexById = meshVertices.Where(v => v != null).ToDictionary(v => v.ID, v => v);
+
+                // build Adjazenzlist (VertexID -> List of neighbour-IDs)
+                var adjacency = new Dictionary<int, List<int>>(meshVertices.Count);
+                foreach (var e in meshEdges)
                 {
-                    if (vert is not Vertex3D) continue;
-                    if (vert.Label != (int)VertexLabel.Input) continue;
-                    var vert3D = vert as Vertex3D;
-                    var edges = mesh.Edges.Where(e => e.P0 == vert3D.ID || e.P1 == vert3D.ID);
-                    if (edges.Count() < 3) continue;
-                    var connectedVerts = new List<Vertex3D>();
-                    foreach (var edge in edges)
+                    if (!adjacency.TryGetValue(e.P0, out var list0))
                     {
-                        var otherVertID = edge.P0 == vert3D.ID ? edge.P1 : edge.P0;
-                        var otherVert = mesh.Vertices.FirstOrDefault(v => v.ID == otherVertID) as Vertex3D;
-                        if (otherVert != null) connectedVerts.Add(otherVert);
+                        list0 = new List<int>();
+                        adjacency[e.P0] = list0;
+                    }
+                    list0.Add(e.P1);
+
+                    if (!adjacency.TryGetValue(e.P1, out var list1))
+                    {
+                        list1 = new List<int>();
+                        adjacency[e.P1] = list1;
+                    }
+                    list1.Add(e.P0);
+                }
+
+                var toRemoveIndices = new ConcurrentBag<int>();
+
+                var maxThreads = Math.Max(1, Environment.ProcessorCount - 1); // default number CPU-Cores - 1
+                var po = new ParallelOptions { MaxDegreeOfParallelism = maxThreads };
+
+                int chunkSize = 64;
+                var rangePartitioner = Partitioner.Create(0, meshVertices.Count, chunkSize);
+
+                Parallel.ForEach(rangePartitioner, po, range =>
+                {
+                    for (int i = range.Item1; i < range.Item2; i++)
+                    {
+                        var vert3D = meshVertices[i];
+                        if (vert3D is null) continue;
+                        if (vert3D.Label != (int)VertexLabel.Input) continue;
+                        if (vert3D.ID < 0) continue;
+
+                        if (!adjacency.TryGetValue(vert3D.ID, out var neighIds) || neighIds.Count < 3) continue;
+
+                        // collect neighbours als Vertex3D (fast Lookup)
+                        var connectedVerts = new List<Vertex3D>(neighIds.Count);
+                        foreach (var nid in neighIds)
+                {
+                            if (vertexById.TryGetValue(nid, out var otherVert) && otherVert is Vertex3D vv)
+                    {
+                                connectedVerts.Add(vv);
+                            }
                     }
                     if (connectedVerts.Count() < 3) continue;
+
                     var plane = FitPlane(connectedVerts);
                     double dist = plane.OrientedDistance(new CoordinateZ(vert3D.X, vert3D.Y, vert3D.Z));
                     if (Math.Abs(dist) <= filterZ)
                     {
-                        // remove vertex
-                        if (tmpPointList.Count <= vert3D.ID) continue;
-                        result.pointList.Remove(tmpPointList[vert3D.ID]);
+                            if (vert3D.ID >= 0 && vert3D.ID < tmpPointList.Count)
+                            {
+                                toRemoveIndices.Add(vert3D.ID);
+                            }
                     }
                 }
-                if (tmpPointList.Count != result.pointList.Count)
+                });
+
+                if (!toRemoveIndices.IsEmpty)
                 {
+                    var removeSet = new HashSet<int>(toRemoveIndices); // deduplicate
+                    result.pointList = tmpPointList.Where((p, idx) => !removeSet.Contains(idx)).ToList();
                     LogWriter.Add(LogType.info, "[Triangle.NET] Filtered points from " + tmpPointList.Count + " to " + result.pointList.Count);
-                    triangulate(result, -1.0, envelope); // re-triangulate if filter was applied
+                    triangulate(result, -1.0, envelope); // re-triangulate if filter applied
                     return;
                 }
             }
