@@ -177,85 +177,10 @@ namespace BIMGISInteropLibs.Triangulator
                 LogWriter.Add(LogType.error, "[Triangle.NET] " + "Result mesh has no vertices");
             }
 
-            // Filter (parallel, chunked + adjacency)
-            if (filterZ >= 0.0)
+            // Filter
+            if (filterZ >= 0.0 && FilterByZInfluence(result, mesh, filterZ))
             {
-                var tmpPointList = result.pointList.ToList();
-                var meshVertices = mesh.Vertices.OfType<Vertex3D>().ToList();
-                var meshEdges = mesh.Edges.ToList();
-
-                // Fast Lookup ID -> Vertex
-                var vertexById = meshVertices.Where(v => v != null).ToDictionary(v => v.ID, v => v);
-
-                // build Adjazenzlist (VertexID -> List of neighbour-IDs)
-                var adjacency = new Dictionary<int, List<int>>(meshVertices.Count);
-                foreach (var e in meshEdges)
-                {
-                    if (!adjacency.TryGetValue(e.P0, out var list0))
-                    {
-                        list0 = new List<int>();
-                        adjacency[e.P0] = list0;
-                    }
-                    list0.Add(e.P1);
-
-                    if (!adjacency.TryGetValue(e.P1, out var list1))
-                    {
-                        list1 = new List<int>();
-                        adjacency[e.P1] = list1;
-                    }
-                    list1.Add(e.P0);
-                }
-
-                var toRemoveIndices = new ConcurrentBag<int>();
-
-                var maxThreads = Math.Max(1, Environment.ProcessorCount - 1); // default number CPU-Cores - 1
-                var po = new ParallelOptions { MaxDegreeOfParallelism = maxThreads };
-
-                int chunkSize = 64;
-                var rangePartitioner = Partitioner.Create(0, meshVertices.Count, chunkSize);
-
-                Parallel.ForEach(rangePartitioner, po, range =>
-                {
-                    for (int i = range.Item1; i < range.Item2; i++)
-                    {
-                        var vert3D = meshVertices[i];
-                        if (vert3D is null) continue;
-                        if (vert3D.Label != (int)VertexLabel.Input) continue;
-                        if (vert3D.ID < 0) continue;
-
-                        if (!adjacency.TryGetValue(vert3D.ID, out var neighIds) || neighIds.Count < 3) continue;
-
-                        // collect neighbours als Vertex3D (fast Lookup)
-                        var connectedVerts = new List<Vertex3D>(neighIds.Count);
-                        foreach (var nid in neighIds)
-                {
-                            if (vertexById.TryGetValue(nid, out var otherVert) && otherVert is Vertex3D vv)
-                    {
-                                connectedVerts.Add(vv);
-                            }
-                    }
-                    if (connectedVerts.Count() < 3) continue;
-
-                    var plane = FitPlane(connectedVerts);
-                    double dist = plane.OrientedDistance(new CoordinateZ(vert3D.X, vert3D.Y, vert3D.Z));
-                    if (Math.Abs(dist) <= filterZ)
-                    {
-                            if (vert3D.ID >= 0 && vert3D.ID < tmpPointList.Count)
-                            {
-                                toRemoveIndices.Add(vert3D.ID);
-                            }
-                    }
-                }
-                });
-
-                if (!toRemoveIndices.IsEmpty)
-                {
-                    var removeSet = new HashSet<int>(toRemoveIndices); // deduplicate
-                    result.pointList = tmpPointList.Where((p, idx) => !removeSet.Contains(idx)).ToList();
-                    LogWriter.Add(LogType.info, "[Triangle.NET] Filtered points from " + tmpPointList.Count + " to " + result.pointList.Count);
-                    triangulate(result, -1.0, envelope); // re-triangulate if filter applied
-                    return;
-                }
+                triangulate(result, -1.0, envelope); // re-triangulate if filter applied
             }
 
             // process results
