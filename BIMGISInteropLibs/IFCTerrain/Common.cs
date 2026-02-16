@@ -68,95 +68,75 @@ namespace BIMGISInteropLibs.IfcTerrain
         public static void ApplyEnvelope(Result result, Envelope envelope)
         {
             if (result == null || envelope == null || envelope.IsNull) return;
-            var oldPoints = result.pointList;
-            if (oldPoints == null || oldPoints.Count == 0) return;
 
-            var newPoints = new List<NetTopologySuite.Geometries.Point>(oldPoints.Count);
-            var indexMap = new Dictionary<int, int>(oldPoints.Count);
-            bool bPointsModified = false; //flag if some point was modified
-            for (int i = 0; i < oldPoints.Count; i++)
-            {
-                var p = oldPoints[i];
-                if (p != null && envelope.Contains(p.X, p.Y))
-                {
-                    indexMap[i] = newPoints.Count;
-                    newPoints.Add(p);
-                }
-                else
-                {
-                    bPointsModified = true;
-                }
-            }
+            // 1) Cut triangle edges by envelope and add intersection points to pointList
 
-            //Cut Edges of existing triangles
+            // Geometry helpers
             GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 25833);
-
-            NetTopologySuite.Geometries.LinearRing envelopeRing = geometryFactory.CreateLinearRing([
-                        new Coordinate(envelope.MinX, envelope.MinY),
-                        new Coordinate(envelope.MinX, envelope.MaxY),
-                        new Coordinate(envelope.MaxX, envelope.MaxY),
-                        new Coordinate(envelope.MaxX, envelope.MinY),
-                        new Coordinate(envelope.MinX, envelope.MinY)]);
-            foreach (var tri in result.triMap)
+            NetTopologySuite.Geometries.LinearRing envelopeRing = geometryFactory.CreateLinearRing(new[]
             {
-                LineString line_a = geometryFactory.CreateLineString([oldPoints[tri.triValues[0]].Coordinate, oldPoints[tri.triValues[1]].Coordinate]);
-                LineString line_b = geometryFactory.CreateLineString([oldPoints[tri.triValues[1]].Coordinate, oldPoints[tri.triValues[2]].Coordinate]);
-                LineString line_c = geometryFactory.CreateLineString([oldPoints[tri.triValues[2]].Coordinate, oldPoints[tri.triValues[0]].Coordinate]);
-                foreach (var line in new LineString[] { line_a, line_b, line_c })
-                {
-                    var inter = envelopeRing.Intersection(line);
-                    if (!inter.IsEmpty && inter is Point pt)
-                    {
-                        pt.Z = line.StartPoint.Z + (line.EndPoint.Z - line.StartPoint.Z) * (pt.Distance(line.StartPoint) / line.Length);
-                        newPoints.Add(pt);
-                    }
-                }
-            }
+                new Coordinate(envelope.MinX, envelope.MinY),
+                new Coordinate(envelope.MinX, envelope.MaxY),
+                new Coordinate(envelope.MaxX, envelope.MaxY),
+                new Coordinate(envelope.MaxX, envelope.MinY),
+                new Coordinate(envelope.MinX, envelope.MinY)
+            });
 
-            // Check triangles -> remap indices or remove triangles with out-of-envelope points
-            bool bTriMapModified = false;
-            if (result.triMap != null && bPointsModified)
+            // 1.1) Collect unique undirected edges (IDs) from triMap
+            var edges = new HashSet<(int a, int b)>();
+            if (result.triMap != null)
             {
-                var newTriMap = new HashSet<Triangulator.triangleMap>();
                 foreach (var tri in result.triMap)
                 {
-                    var vals = tri.triValues;
-                    if (vals == null || vals.Length < 3) continue;
-
-                    bool skip = false;
-                    var newVals = new int[vals.Length];
-                    for (int k = 0; k < vals.Length; k++)
+                    var v = tri.triValues;
+                    if (v == null || v.Length < 3) continue;
+                    for (int e = 0; e < 3; e++)
                     {
-                        if (!indexMap.TryGetValue(vals[k], out int mapped))
-                        {
-                            skip = true;
-                            break;
-                        }
-                        newVals[k] = mapped;
+                        int a = v[e];
+                        int b = v[(e + 1) % 3];
+                        if (a == b) continue;
+                        var key = a < b ? (a, b) : (b, a);
+                        edges.Add(key);
                     }
-
-                    if (!skip)
-                    {
-                        newTriMap.Add(new Triangulator.triangleMap()
-                        {
-                            triNumber = tri.triNumber,
-                            triValues = newVals
-                        });
-                    }
-                    else
-                    {
-                        bTriMapModified = true;
-                    }
-
                 }
-                result.triMap = newTriMap;
             }
-            if (bTriMapModified && result.currentConversion == DtmConversionType.conversion)
+
+            // 1.2) Compute intersection points for each unique edge (but do NOT modify result.pointList yet)
+            var intersectionPoints = new List<NetTopologySuite.Geometries.Point>();
+            foreach (var (a, b) in edges)
             {
-                // if no conversion was needed before, but triangles were removed now, so set to faces
-                result.currentConversion = DtmConversionType.faces;
+                if (a < 0 || a >= result.pointList.Count || b < 0 || b >= result.pointList.Count) continue;
+
+                var line = geometryFactory.CreateLineString(new[]
+                {
+                    result.pointList[a].Coordinate,
+                    result.pointList[b].Coordinate
+                });
+
+                var inter = envelopeRing.Intersection(line);
+                if (inter.IsEmpty) continue;
+
+                if (inter is NetTopologySuite.Geometries.Point pt)
+                {
+                    // linear interpolation for Z
+                    pt.Z = line.StartPoint.Z + (line.EndPoint.Z - line.StartPoint.Z) * (pt.Distance(line.StartPoint) / line.Length);
+                    intersectionPoints.Add(pt);
+                }
             }
-            result.pointList = newPoints;
+
+            // 2) Determine original points outside envelope
+            var outsidePoints = new List<NetTopologySuite.Geometries.Point>();
+            foreach(var point in result.pointList)
+            {
+                if (!envelope.Contains(point.X, point.Y))
+                {
+                    outsidePoints.Add(point);
+                }
+            }
+            result.RemovePoints(outsidePoints);
+
+            // 3) Append intersection points as isolated (unconnected) points
+            result.pointList.AddRange(intersectionPoints);
         }
     }
 }

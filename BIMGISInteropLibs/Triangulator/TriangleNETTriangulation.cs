@@ -90,6 +90,8 @@ namespace BIMGISInteropLibs.Triangulator
 
                 case IfcTerrain.DtmConversionType.faces:
                 case IfcTerrain.DtmConversionType.faces_breaklines:
+                    var isolatedPoints = GetIsolatedPoints(result.triMap, ref points);
+                    builder.Points.AddRange(isolatedPoints); // add isolated (unconnected) points for triangulation
                     var contours = GetEdgeLoopsFromTriMap(result.triMap, ref points);
                     foreach (var contour in contours)
                     {
@@ -181,6 +183,7 @@ namespace BIMGISInteropLibs.Triangulator
             if (filterZ >= 0.0 && FilterByZInfluence(result, mesh, filterZ))
             {
                 triangulate(result, -1.0, envelope); // re-triangulate if filter applied
+                return;
             }
 
             // process results

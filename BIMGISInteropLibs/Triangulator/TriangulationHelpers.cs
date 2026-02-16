@@ -31,6 +31,41 @@ namespace BIMGISInteropLibs.Triangulator
             Envelope = 4
         }
 
+        internal static List<TriangleNet.Geometry.Vertex> GetIsolatedPoints(HashSet<triangleMap> triMap, ref List<TriangleNet.Geometry.Vertex> pointList)
+        {
+            if (triMap == null || pointList == null) return new List<TriangleNet.Geometry.Vertex>();
+            // collect used vertex IDs
+            var usedVertexIds = new HashSet<int>();
+            foreach (var t in triMap)
+            {
+                var v = t.triValues;
+                if (v == null || v.Length < 3) continue;
+                for (int i = 0; i < 3; i++)
+                {
+                    usedVertexIds.Add(v[i]);
+                }
+            }
+            // identify isolated points: indices not used in any triangle
+            var isolatedPoints = new List<TriangleNet.Geometry.Vertex>();
+            var tmp_pointList = new List<TriangleNet.Geometry.Vertex>(pointList);
+            for (int i = 0; i < tmp_pointList.Count; i++)
+            {
+                var pt = tmp_pointList[i];
+                if (pt == null) continue;
+
+                // Defensive: check if ID is valid and not used in triMap; if not used, remove from pointList and add to isolatedPoints
+                if (usedVertexIds.Contains(pt.ID)) continue;
+
+                // Save remove per ID (first find Index)
+                int idx = pointList.FindIndex(x => x != null && x.ID == pt.ID);
+                if (idx >= 0)
+                {
+                    isolatedPoints.Add(pointList[idx]);
+                    pointList.RemoveAt(idx);
+                }
+            }
+            return isolatedPoints;
+        }
         /// <summary>
         /// Find all edge loops from triangle map.
         /// 1. finding all edges with only one triangle
@@ -47,7 +82,6 @@ namespace BIMGISInteropLibs.Triangulator
             // 1) build undirected edge counts + collect directed edges
             var undirected = new Dictionary<(int a, int b), int>();
             var directed = new List<(int a, int b)>();
-
             foreach (var t in triMap)
             {
                 var v = t.triValues;
@@ -120,7 +154,6 @@ namespace BIMGISInteropLibs.Triangulator
             }
 
             if (loops.Count == 0) return new List<Contour>();
-            //loops = MergeLoopsBySharedVertices(loops);
             List<Contour> contours = new List<Contour>();
             int n = 0;
             List<TriangleNet.Geometry.Vertex> tmp_pointList = new List<TriangleNet.Geometry.Vertex>(pointList);
@@ -129,13 +162,14 @@ namespace BIMGISInteropLibs.Triangulator
                 var vertList = new List<TriangleNet.Geometry.Vertex>(loop.Count);
                 foreach (var pi in loop)
                 {
-                    if (pi < 0 || pi >= tmp_pointList.Count) { vertList.Clear(); break; }
-                    tmp_pointList[pi].Label = (int)VertexLabel.Contour;
-                    vertList.Add(tmp_pointList[pi]);
-                    pointList.Remove(tmp_pointList[pi]);
+                    var point = tmp_pointList.Find(p => p.ID == pi);
+                    point.Label = (int)VertexLabel.Contour;
+                    vertList.Add(point);
+                    pointList.Remove(point);
                 }
                 contours.Add(new Contour(vertList, n++));
             }
+
             return contours;
         }
 
@@ -296,14 +330,15 @@ namespace BIMGISInteropLibs.Triangulator
         /// <returns></returns>
         public static bool FilterByZInfluence(Result result, IMesh mesh, double filterZ)
         {
-            var tmpPointList = result.pointList.ToList();
+            if (result == null || mesh == null) return false;
+
             var meshVertices = mesh.Vertices.OfType<Vertex3D>().ToList();
             var meshEdges = mesh.Edges.ToList();
 
             // Fast Lookup ID -> Vertex
             var vertexById = meshVertices.Where(v => v != null).ToDictionary(v => v.ID, v => v);
 
-            // build Adjazenzlist (VertexID -> List of neighbour-IDs)
+            // build adjacency list (VertexID -> neighbour IDs)
             var adjacency = new Dictionary<int, List<int>>(meshVertices.Count);
             foreach (var e in meshEdges)
             {
@@ -324,12 +359,12 @@ namespace BIMGISInteropLibs.Triangulator
 
             var toRemoveIndices = new ConcurrentBag<int>();
 
-            var maxThreads = Math.Max(1, Environment.ProcessorCount - 1); // default number CPU-Cores - 1
+            var maxThreads = Math.Max(1, Environment.ProcessorCount - 1);
             var po = new ParallelOptions { MaxDegreeOfParallelism = maxThreads };
-            
+
             int chunkSize = 64;
             var rangePartitioner = Partitioner.Create(0, meshVertices.Count, chunkSize);
-            
+
             Parallel.ForEach(rangePartitioner, po, range =>
             {
                 for (int i = range.Item1; i < range.Item2; i++)
@@ -341,7 +376,6 @@ namespace BIMGISInteropLibs.Triangulator
 
                     if (!adjacency.TryGetValue(vert3D.ID, out var neighIds) || neighIds.Count < 3) continue;
 
-                    // collect neighbours als Vertex3D (fast Lookup)
                     var connectedVerts = new List<Vertex3D>(neighIds.Count);
                     foreach (var nid in neighIds)
                     {
@@ -356,7 +390,7 @@ namespace BIMGISInteropLibs.Triangulator
                     double dist = plane.OrientedDistance(new CoordinateZ(vert3D.X, vert3D.Y, vert3D.Z));
                     if (Math.Abs(dist) <= filterZ)
                     {
-                        if (vert3D.ID >= 0 && vert3D.ID < tmpPointList.Count)
+                        if (vert3D.ID >= 0 && vert3D.ID < result.pointList.Count)
                         {
                             toRemoveIndices.Add(vert3D.ID);
                         }
@@ -366,8 +400,8 @@ namespace BIMGISInteropLibs.Triangulator
 
             if (!toRemoveIndices.IsEmpty)
             {
-                var removeSet = new HashSet<int>(toRemoveIndices); // deduplicate
-                result.pointList = tmpPointList.Where((p, idx) => !removeSet.Contains(idx)).ToList();
+                // call index-based removal — deterministic remapping of triMap
+                result.RemovePoints(toRemoveIndices.Distinct().ToList());
                 return true;
             }
             return false;
