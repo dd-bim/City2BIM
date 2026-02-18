@@ -18,7 +18,7 @@ using NetTopologySuite.Geometries;
 
 namespace BIMGISInteropLibs.ElevationGrid
 {
-    class ReaderTerrain
+    public class ReaderTerrain
     {
         /// <summary>
         /// Reads out a grid file

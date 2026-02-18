@@ -20,7 +20,7 @@ using NetTopologySuite.Geometries; //geometries for further processing
 using BIMGISInteropLibs.Geometry;
 namespace BIMGISInteropLibs.CityGML
 {
-    class CityGMLReaderTerrain
+    public class CityGMLReaderTerrain
     {
         /// <summary>
         /// Reads DTM from a CityGML file<para/>

@@ -70,17 +70,13 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     //read out each triangle
                     foreach (var triangle in triMap)
                     {
-                        //first edge
                         g.Elements.Add(model.Instances.New<IfcPolyline>(
-                            p => p.Points.AddRange(new[] { cps[triangle.triValues[0]], cps[triangle.triValues[1]] })));
-
-                        //next edge
-                        g.Elements.Add(model.Instances.New<IfcPolyline>(
-                            p => p.Points.AddRange(new[] { cps[triangle.triValues[1]], cps[triangle.triValues[2]] })));
-
-                        //last edge (closing triangle)
-                        g.Elements.Add(model.Instances.New<IfcPolyline>(
-                            p => p.Points.AddRange(new[] { cps[triangle.triValues[2]], cps[triangle.triValues[0]] })));
+                            p => p.Points.AddRange(new[] { 
+                                cps[triangle.triValues[0]], 
+                                cps[triangle.triValues[1]],
+                                cps[triangle.triValues[2]],
+                                cps[triangle.triValues[0]],
+                                })));
                     }
                 });
 

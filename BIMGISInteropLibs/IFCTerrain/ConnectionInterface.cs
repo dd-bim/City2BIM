@@ -116,10 +116,9 @@ namespace BIMGISInteropLibs.IfcTerrain
             //apply envelope if available
             Envelope envelope = Common.GetEnvelope(config, result);
             Common.ApplyEnvelope(result, envelope);
+            LogWriter.Add(LogType.info, "Faces read: " + result.triMap.Count + " Points read: " + result.pointList.Count);
             if (result.currentConversion == DtmConversionType.conversion && envelope.IsNull)
             {
-                LogWriter.Add(LogType.info, "Faces read: " + result.triMap.Count + " Points read: " + result.pointList.Count);
-
                 //log
                 LogWriter.Add(LogType.info, "Processing via delaunay triangulation is not necessary.");
 
@@ -148,6 +147,11 @@ namespace BIMGISInteropLibs.IfcTerrain
             //if index map is not available triangulate
             else
             {
+                if (result.pointList.Count < 3)
+                {
+                    LogWriter.Add(LogType.info, "Less than three points loaded, delaunay triangulation not possible.");
+                    return false;
+                }
                 //dtm processing via delaunay triangulation
                 Triangulator.TriangleNETTriangulation.triangulate(result, config.zFilter.GetValueOrDefault(), envelope);
             }

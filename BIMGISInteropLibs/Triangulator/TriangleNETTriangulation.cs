@@ -182,6 +182,7 @@ namespace BIMGISInteropLibs.Triangulator
             // Filter
             if (filterZ >= 0.0 && FilterByZInfluence(result, mesh, filterZ))
             {
+                LogWriter.Add(LogType.info, "[Triangle.NET] " + "Filtered " + (mesh.Vertices.Count-result.pointList.Count) + " Vertices");
                 triangulate(result, -1.0, envelope); // re-triangulate if filter applied
                 return;
             }
@@ -223,7 +224,7 @@ namespace BIMGISInteropLibs.Triangulator
             }
             result.geomStore = new NetTopologySuite.Geometries.GeometryCollection(polygons.ToArray());
    
-            LogWriter.Add(LogType.verbose, "[Triangulate.NET] Number of unique coordinates: " + cList.Count);
+            LogWriter.Add(LogType.verbose, "[Triangle.NET] Number of unique coordinates: " + cList.Count);
 
             LogWriter.Add(LogType.info, "Points read: " + cList.Count + "; Triangles read: " + result.triMap.Count);
 

@@ -190,25 +190,30 @@ namespace BIMGISInteropLibs.DXF
                 //Check if the layer to be processed corresponds to the "current" entity
                 if (dxfLayer.Contains(entity.Layer))
                 {
-                //furthermore it is checked if it is a face
+                    //furthermore it is checked if it is a face
                     if (entity is DxfInsert point)
-                {
-                    //get point data
-                    var dxfPoint = new Point(point.Location.X * scale, point.Location.Y * scale, point.Location.Z * scale);
-                    
-                    //set point to point list
-                    pointList.Add(dxfPoint);
+                    {
+                        //get point data
+                        var dxfPoint = new Point(point.Location.X * scale, point.Location.Y * scale, point.Location.Z * scale);
+                        dxfPoint.UserData = pointList.Count;
+                        //set point to point list
+                        pointList.Add(dxfPoint);
 
-                    //log
-                    LogWriter.Add(LogType.verbose, "[DXF] Point data added.");
-                }
+                        //log
+                        LogWriter.Add(LogType.verbose, "[DXF] Point data added.");
+                    }
                     else if (entity is Dxf3DFace face)
-                {
-                    //set points from each face
-                    int p1 = terrain.addPoint(pointList, new Point(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale));
-                    int p2 = terrain.addPoint(pointList, new Point(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale));
-                    int p3 = terrain.addPoint(pointList, new Point(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale));
-                }
+                    {
+                        //set points from each face
+                        int p1 = terrain.addPoint(pointList, new Point(face.FirstCorner.X * scale, face.FirstCorner.Y * scale, face.FirstCorner.Z * scale));
+                        int p2 = terrain.addPoint(pointList, new Point(face.SecondCorner.X * scale, face.SecondCorner.Y * scale, face.SecondCorner.Z * scale));
+                        int p3 = terrain.addPoint(pointList, new Point(face.ThirdCorner.X * scale, face.ThirdCorner.Y * scale, face.ThirdCorner.Z * scale));
+                    }
+                    else if (entity is DxfLine line)
+                    {
+                        int p1 = terrain.addPoint(pointList, new Point(line.P1.X * scale, line.P1.Y * scale, line.P1.Z * scale));
+                        int p2 = terrain.addPoint(pointList, new Point(line.P2.X * scale, line.P2.Y * scale, line.P2.Z * scale));
+                    }
                 }
             }
 
