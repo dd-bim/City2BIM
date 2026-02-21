@@ -45,8 +45,8 @@ namespace BIMGISInteropLibs.IFC
     /// </summary>
     public enum SurfaceType
     {
-        GCS, 
-        SBSM, 
+        SBSM,
+        GCS,
         TFS,
         TIN
     }
