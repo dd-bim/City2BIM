@@ -17,6 +17,12 @@ using static BIMGISInteropLibs.Triangulator.TriangulationHelpers;
 
 namespace BIMGISInteropLibs.Triangulator
 {
+    public class triangleMap
+    {
+        public int triNumber { get; set; }
+        public int[] triValues { get; set; }
+    }
+
     internal class TriangulationHelpers
     {
         /// <summary>
