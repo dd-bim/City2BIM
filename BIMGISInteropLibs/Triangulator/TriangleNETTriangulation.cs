@@ -75,9 +75,15 @@ namespace BIMGISInteropLibs.Triangulator
             //add existing points
             for (int i = 0; i < result.pointList.Count; i++)
             {
-                points.Add(new Vertex3D(result.pointList[i].X, result.pointList[i].Y, result.pointList[i].Z) { ID = currentIndex++, Label = (int)VertexLabel.Input });
+                if (double.IsNaN(result.pointList[i].Z))
+                {
+                    points.Add(new TriangleNet.Geometry.Vertex(result.pointList[i].X, result.pointList[i].Y) { ID = currentIndex++, Label = (int)VertexLabel.Input });
+                }
+                else
+                {
+                    points.Add(new Vertex3D(result.pointList[i].X, result.pointList[i].Y, result.pointList[i].Z) { ID = currentIndex++, Label = (int)VertexLabel.Input });
+                }
             }
-
             // switch between different conversion types
             switch (result.currentConversion)
             {
@@ -93,10 +99,14 @@ namespace BIMGISInteropLibs.Triangulator
                     var isolatedPoints = GetIsolatedPoints(result.triMap, ref points);
                     builder.Points.AddRange(isolatedPoints); // add isolated (unconnected) points for triangulation
                     var contours = GetEdgeLoopsFromTriMap(result.triMap, ref points);
+                    HashSet<TriangleNet.Geometry.Vertex> contourVertices = new HashSet<TriangleNet.Geometry.Vertex>();
                     foreach (var contour in contours)
                     {
-                        builder.Add(contour, true); //We add as hole to prevent triangulation inside (keeping existing triangles)
+                        builder.Holes.Add(contour.FindInteriorPoint());//We add as hole to prevent triangulation inside (keeping existing triangles)
+                        contour.Points.ForEach(v => contourVertices.Add(v)); // keep track of contour vertices to avoid duplicates with isolated points
+                        builder.Segments.AddRange(contour.GetSegments());
                     }
+                    builder.Points.AddRange(contourVertices); // add contour points to builder
                     break;
             }
             // Add Envelope as outer boundary

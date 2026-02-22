@@ -285,8 +285,8 @@ namespace BIMGISInteropLibs.Triangulator
         public static Plane3D FitPlane(IEnumerable<Vertex3D> points)
         {
             var pts = points.ToList();
-            if (pts.Count < 3) throw new ArgumentException("Mindestens 3 Punkte nötig");
-
+            if (pts.Count < 3) throw new ArgumentException("need more than 2 points for plane fit");
+            if (pts.Any(p => double.IsNaN(p.X) || double.IsNaN(p.Y) || double.IsNaN(p.Z))) throw new ArgumentException("Point for plane fir contains NaN value");
             var normals = new List<(double nx, double ny, double nz)>();
 
             // For all triplets of points, compute normal vector
