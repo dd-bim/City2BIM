@@ -18,6 +18,10 @@ using Xbim.Ifc4x3.GeometricModelResource;
 //Transfer class for the reader (IFCTerrain)
 using BIMGISInteropLibs.IfcTerrain;
 
+//embed logging
+using BIMGISInteropLibs.Logging; //access to log writer
+using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log messages
+
 //NTS - geometry types
 using NetTopologySuite.Geometries;
 
@@ -43,6 +47,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                 {
                     for (int i = 0, j = 0; i < coordinates.Count; i++)
                     {
+                    if (result.cancellationTokenSource.IsCancellationRequested) return;
                     //add point to map
                     vmap.Add(i, j + 1);
 
@@ -71,6 +76,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                     //loop through each triangle in triangle map to get int value of point (index)
                     foreach (var triangle in triMap)
                     {
+                        if (result.cancellationTokenSource.IsCancellationRequested) return;
                         //get posotion
                         var fi = t.CoordIndex.GetAt(pos++);
 

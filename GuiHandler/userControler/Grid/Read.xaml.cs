@@ -38,7 +38,8 @@ namespace GuiHandler.userControler.Grid
             OpenFileDialog ofd = new OpenFileDialog();
 
             //set filtering so that the following selection is possible (these also represent only the selected files)
-            ofd.Filter = "Textfile *.txt|*.txt|XYZ *.xyz|*.xyz";
+            ofd.Filter = "Grid files (*.txt;*.xyz)|*.txt;*.xyz|Textfile *.txt|*.txt|XYZ *.xyz|*.xyz";
+            ofd.FilterIndex = 1;
 
             //opens the dialog window (if a file is selected, everything inside the loop is executed)
             if (ofd.ShowDialog() == true)

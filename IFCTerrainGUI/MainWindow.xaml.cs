@@ -30,6 +30,7 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 
 //shortcut to set logging messages
 using guiLog = GuiHandler.GuiSupport;
+using Newtonsoft.Json.Converters;
 
 namespace IFCTerrainGUI
 {
@@ -243,7 +244,8 @@ namespace IFCTerrainGUI
                     NullValueHandling = NullValueHandling.Ignore,
 
                     //ignore default values
-                    DefaultValueHandling = DefaultValueHandling.Ignore
+                    DefaultValueHandling = DefaultValueHandling.Ignore,
+                    Converters = new JsonConverter[] { new StringEnumConverter() }
                 });
 
                 //export json settings

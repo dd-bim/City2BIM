@@ -54,9 +54,14 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                 //storage for all points in dtm (will be commit with "sbsm")
                 var cpl = new List<IfcCartesianPoint>();
 
+                //write two remaining output parameter
+                representationIdentifier = RepresentationIdentifier.Body;
+                representationType = RepresentationType.SurfaceModel;
+
                 //loop to add all points in cpl and vmap
                 for (int i = 0, j = 0; i < coordinates.Count; i++)
                 {
+                    if (result.cancellationTokenSource.IsCancellationRequested) return null; 
                     vmap.Add(i, j);
                     var pt = coordinates[i];
                     cpl.Add(model.Instances.New<IfcCartesianPoint>(
@@ -80,6 +85,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                                 //Adding an IfcPolyLoop for each triangle (referenced to the respective point number).
                                 b.Bound = model.Instances.New<IfcPolyLoop>(p =>
                                 {
+                                    if (result.cancellationTokenSource.IsCancellationRequested) return;
                                     p.Polygon.Add(cpl[vmap[tri.triValues[0]]]);
                                     p.Polygon.Add(cpl[vmap[tri.triValues[1]]]);
                                     p.Polygon.Add(cpl[vmap[tri.triValues[2]]]);
@@ -88,10 +94,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                                 //Clockwise orientation (true)
                                 b.Orientation = true;
                             }))))))));
-
-                //write two remaining output parameter
-                representationIdentifier = RepresentationIdentifier.Body;
-                representationType = RepresentationType.SurfaceModel;
 
                 //finish transaction (according to ACID)
                 txn.Commit();

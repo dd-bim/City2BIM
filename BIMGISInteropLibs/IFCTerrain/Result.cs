@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using NetTopologySuite.Geometries;
@@ -47,6 +48,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// [FILE-WRITING] mapped int values (point indicies) 
         /// </summary>
         public HashSet<Triangulator.triangleMap> triMap { get; set; } = new HashSet<Triangulator.triangleMap>();
+
+        /// <summary>
+        /// Gets or sets the <see cref="CancellationTokenSource"/> used to signal cancellation for ongoing operations.
+        /// </summary>
+        public CancellationTokenSource cancellationTokenSource { get; set; } = new CancellationTokenSource();
 
         /// <summary>
         /// [IFCTerrain] exchange origin

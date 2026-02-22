@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.ExceptionServices;
 using System.IO;
 using System.Xml;
 
@@ -118,7 +118,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             Common.ApplyEnvelope(result, envelope);
             LogWriter.Add(LogType.info, "Faces read: " + result.triMap.Count + " Points read: " + result.pointList.Count);
             if (result.currentConversion == DtmConversionType.conversion && envelope.IsNull)
-            {
+            { 
                 //log
                 LogWriter.Add(LogType.info, "Processing via delaunay triangulation is not necessary.");
 
@@ -178,6 +178,15 @@ namespace BIMGISInteropLibs.IfcTerrain
             //init empty model
             Xbim.Ifc.IfcStore model = null;
 
+            // Catch errors from XBim
+            EventHandler<FirstChanceExceptionEventArgs> firstChanceHandler = (s, fe) =>
+            {
+                LogWriter.Add(LogType.error, fe.Exception.Message);
+                result.cancellationTokenSource.Cancel();
+            };
+            // register handler just before XBim operations
+            AppDomain.CurrentDomain.FirstChanceException += firstChanceHandler;
+
             //region for ifc writer control
             switch (config.outIFCType)
             {
@@ -222,6 +231,10 @@ namespace BIMGISInteropLibs.IfcTerrain
                             jSettings_DIN18740);
                     break;
             }
+
+            AppDomain.CurrentDomain.FirstChanceException -= firstChanceHandler;
+            result.cancellationTokenSource.TryReset();
+            if (model == null) return false;
 
             //access to file writer
             utils.WriteFile(model, config);

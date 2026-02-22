@@ -144,7 +144,11 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                     site = Site.Create(model, siteName, config.logeoref, sitePlacement, refLatitude, refLongitude, refElevation);
                     break;
             }
-
+            if (site == null)
+            {
+                LogWriter.Add(LogType.error, "site representation could not be created.");
+                return null;
+            }
             LogWriter.Add(LogType.verbose, "Entity IfcSite generated.");
 
             //needed (do not remove or change!)

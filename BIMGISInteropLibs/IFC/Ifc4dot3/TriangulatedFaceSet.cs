@@ -60,6 +60,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                     //process all points in tin
                     for (int i = 0, j = 0; i < coordinates.Count; i++)
                     {
+                        if (result.cancellationTokenSource.IsCancellationRequested) return;
                         //add point to dicitionary
                         vmap.Add(i, j + 1);
 
@@ -91,6 +92,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                     //loop through each triangle in triangle map to get int value of point (index)
                     foreach (var triangle in triMap)
                     {
+                        if (result.cancellationTokenSource.IsCancellationRequested) return;
                         //get posotion
                         var fi = t.CoordIndex.GetAt(pos++);
 

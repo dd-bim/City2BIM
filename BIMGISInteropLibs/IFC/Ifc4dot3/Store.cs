@@ -121,6 +121,11 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                     shape = GeometricCurveSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
                     break;
             }
+            if (shape == null)
+            {
+                LogWriter.Add(LogType.error, "shape representation could not be created.");
+                return null;
+            }
             //write Shape Representation to model
             LogWriter.Add(LogType.verbose, "Write shape representation to IfcModel...");
 

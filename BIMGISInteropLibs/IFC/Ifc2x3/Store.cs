@@ -75,6 +75,11 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     break;
 
             }
+            if (site == null)
+            {
+                LogWriter.Add(LogType.error, "site representation could not be created.");
+                return null;
+            }
             LogWriter.Add(LogType.verbose, "Entity IfcSite generated.");
 
             //init

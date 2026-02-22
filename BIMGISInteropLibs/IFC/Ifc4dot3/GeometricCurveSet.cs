@@ -43,16 +43,25 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
             //logging
             LogWriter.Add(LogType.verbose, "IfcGCS shape representation creation started...");
 
+            //write two remaining output parameter
+            representationIdentifier = RepresentationIdentifier.SurveyPoints;
+            representationType = RepresentationType.GeometricCurveSet;
+
             //begin a transaction
             using (var txn = model.BeginTransaction("Create DTM"))
             {
                 //IfcCartesianPoints create
-                var cps = coordinates.Select(
-                    p => model.Instances.New<IfcCartesianPoint>(
-                        c => c.SetXYZ(
-                            p.X - origin.X, 
+                var cps = new List<IfcCartesianPoint>();
+                foreach (var p in coordinates)
+                {
+                    if (result.cancellationTokenSource.IsCancellationRequested) return null;
+                    var cp = model.Instances.New<IfcCartesianPoint>(c =>
+                        c.SetXYZ(
+                            p.X - origin.X,
                             p.Y - origin.Y,
-                            p.Z - origin.Z))).ToList();
+                            p.Z - origin.Z));
+                    cps.Add(cp);
+                }
 
                 //create IfcGCS instance
                 var dtm = model.Instances.New<IfcGeometricCurveSet>(g =>
@@ -60,6 +69,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                     //read out each triangle
                     foreach (var triangle in triMap)
                     {
+                        if (result.cancellationTokenSource.IsCancellationRequested) return;
                         g.Elements.Add(model.Instances.New<IfcPolyline>(
                             p => p.Points.AddRange(new[] { 
                                 cps[triangle.triValues[0]], 
@@ -68,10 +78,6 @@ namespace BIMGISInteropLibs.IFC.Ifc4x3
                                 cps[triangle.triValues[0]] })));
                     }
                 });
-
-                //write two remaining output parameter
-                representationIdentifier = RepresentationIdentifier.SurveyPoints;
-                representationType = RepresentationType.GeometricCurveSet;
 
                 //logging
                 LogWriter.Add(LogType.verbose, "IfcGCS shape representation created.");
