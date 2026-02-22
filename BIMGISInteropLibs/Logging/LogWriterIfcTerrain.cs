@@ -24,6 +24,38 @@ namespace BIMGISInteropLibs.Logging
         private static Serilog.Core.Logger logger { get; set; }
 
         private static bool bInitialized = false;
+
+        private static readonly object syncLock = new object();
+        // optional external sink (tests can register ITestOutputHelper via a lambda)
+        private static Action<LogPair>? externalSink;
+
+        /// <summary>
+        /// Registers an external log sink to receive log entries as they are generated.
+        /// </summary>
+        /// <remarks>The specified sink will be invoked for each log entry. Registering a new sink replaces any previously
+        /// registered sink.</remarks>
+        /// <param name="sink">A delegate that processes log entries. Cannot be <see langword="null"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sink"/> is <see langword="null"/>.</exception>
+        public static void RegisterSink(Action<LogPair> sink)
+        {
+            if (sink == null) throw new ArgumentNullException(nameof(sink));
+            lock (syncLock)
+            {
+                externalSink = sink;
+            }
+        }
+
+        /// <summary>
+        /// removes current registered external sink.
+        /// </summary>
+        public static void UnregisterSink()
+        {
+            lock (syncLock)
+            {
+                externalSink = null;
+            }
+        }
+
         /// <summary>
         /// init instance of log writer
         /// </summary>
@@ -110,8 +142,16 @@ namespace BIMGISInteropLibs.Logging
         /// <param name="minLevel">min level for log output</param>
         public static void WriteLogFile()
         {
+            List<LogPair> toWrite;
+            lock (syncLock)
+            {
+                if (Entries.Count == 0) return;
+                toWrite = Entries.ToList();
+                Entries.Clear();
+            }
+
             //go through each logging message
-            foreach (var log in Entries)
+            foreach (var log in toWrite)
             {
                 //differentiation into the individual log types and set output message
                 switch (log.Type)
@@ -143,8 +183,6 @@ namespace BIMGISInteropLibs.Logging
                         }
                 }
             }
-            //clear all entries
-            Entries.Clear();
         }
         
         /// <summary>
@@ -152,11 +190,16 @@ namespace BIMGISInteropLibs.Logging
         /// </summary>
         public static void Add(LogType logType, string message)
         {
-            //set entrie
-            Entries.Add(new LogPair(logType, message));
+            var pair = new LogPair(logType, message);
+            lock (syncLock)
+            {
+                Entries.Add(pair);
+            }
 
             //console logging
             Console.WriteLine(message);
+
+            externalSink?.Invoke(pair);
 
             //write to log file
             WriteLogFile();

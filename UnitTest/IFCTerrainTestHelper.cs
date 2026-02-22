@@ -6,6 +6,7 @@ using IxMilia.Dxf;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Npgsql.Replication.TestDecoding;
 using System.ComponentModel;
+using System.Text;
 using System.Text.RegularExpressions;
 using Xbim.IO.Xml.BsConf;
 using Xunit.Abstractions;
@@ -15,6 +16,64 @@ using LogWriter = BIMGISInteropLibs.Logging.LogWriterIfcTerrain; //to set log me
 
 namespace UnitTest
 {
+    public sealed class TestOutputWriter : TextWriter
+    {
+        readonly ITestOutputHelper _output;
+        readonly StringBuilder _sb = new StringBuilder();
+
+        public TestOutputWriter(ITestOutputHelper output) => _output = output;
+        public override Encoding Encoding => Encoding.UTF8;
+
+        public override void Write(char value)
+        {
+            if (value == '\n')
+            {
+                if (_sb.Length > 0)
+                {
+                    _output.WriteLine(_sb.ToString().TrimEnd('\r'));
+                    _sb.Clear();
+                }
+            }
+            else
+            {
+                _sb.Append(value);
+            }
+        }
+
+        public override void Write(string? value)
+        {
+            if (string.IsNullOrEmpty(value)) return;
+            int start = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[i] == '\n')
+                {
+                    _sb.Append(value, start, i - start);
+                    _output.WriteLine(_sb.ToString().TrimEnd('\r'));
+                    _sb.Clear();
+                    start = i + 1;
+                }
+            }
+            if (start < value.Length) _sb.Append(value, start, value.Length - start);
+        }
+
+        public override void WriteLine(string? value)
+        {
+            Write(value);
+            Write('\n');
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_sb.Length > 0)
+            {
+                try { _output.WriteLine(_sb.ToString()); } catch { }
+                _sb.Clear();
+            }
+            base.Dispose(disposing);
+        }
+    }
+
     public class FunctionTestHelper
     {
         static internal int digits = 4; //number of digits for rounding in Assert.Equal
