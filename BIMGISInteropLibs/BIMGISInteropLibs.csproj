@@ -20,6 +20,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GDAL" />
+    <PackageReference Include="GDAL.Native" />
     <PackageReference Include="GeoJSON.Net" />
     <PackageReference Include="IxMilia.Dxf" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
