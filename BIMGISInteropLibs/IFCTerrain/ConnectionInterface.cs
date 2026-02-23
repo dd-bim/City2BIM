@@ -94,6 +94,9 @@ namespace BIMGISInteropLibs.IfcTerrain
                     };
                     break;
                     */
+                case IfcTerrainFileType.GeoTIFF:
+                    result = GeoTIFF.ReaderTerrain.readGeoTIFF(config);
+                    break;
             }
 
             //error handling

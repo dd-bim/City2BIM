@@ -6,8 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="CommandLineParser" Version="2.9.1" />
-    <PackageVersion Include="GDAL" Version="3.11.3" />
-    <PackageVersion Include="GDAL.Native" Version="3.11.3" />
+    <PackageVersion Include="GDAL" Version="3.12.1" />
+    <PackageVersion Include="Gdal.Core" Version="1.0.0" />
+    <PackageVersion Include="GDAL.Native" Version="3.12.1" />
     <PackageVersion Include="GeoJSON.Net" Version="1.4.1" />
     <PackageVersion Include="IxMilia.Dxf" Version="0.8.4" />
     <PackageVersion Include="ManagedEsent" Version="2.0.0" />

@@ -11,6 +11,7 @@
         xmlns:ucCityGml="clr-namespace:GuiHandler.userControler.CityGML;assembly=GuiHandler"
         xmlns:ucPostGIS="clr-namespace:GuiHandler.userControler.PostGIS;assembly=GuiHandler"
         xmlns:ucGeoJson="clr-namespace:GuiHandler.userControler.GeoJSON;assembly=GuiHandler"
+        xmlns:ucTiff="clr-namespace:GuiHandler.userControler.GeoTIFF;assembly=GuiHandler"
         xmlns:uC="clr-namespace:GuiHandler.userControler;assembly=GuiHandler"
         xmlns:local="clr-namespace:IFCTerrainGUI"
         xmlns:IfcTerrain="clr-namespace:BIMGISInteropLibs.IfcTerrain;assembly=BIMGISInteropLibs"
@@ -225,6 +226,13 @@
                      Header="JSON (GeoJSON)"
                      TabIndex="7">
                 <ucGeoJson:Read DataContext="{Binding Source={StaticResource config}}" />
+            </TabItem>
+            <!--LandXML-->
+            <TabItem x:Name="tabPageTiff"
+                Header="GeoTiff"
+                TabIndex="8">
+                <!--include the controller to read a Tiff file -->
+                <ucTiff:Read DataContext="{Binding Source={StaticResource config}}"/>
             </TabItem>
         </TabControl>
 

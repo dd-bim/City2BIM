@@ -11,6 +11,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>false</Optimize>
   </PropertyGroup>
+
+  <!-- Fallback für Architektur (wenn $(PlatformTarget) leer ist) -->
+  <PropertyGroup>
+    <InteropArch>$(PlatformTarget)</InteropArch>
+    <InteropArch Condition="'$(InteropArch)' == ''">x64</InteropArch>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -24,4 +31,16 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+
+  <Target Name="CopyInteropNativeLibraries" AfterTargets="Build">
+    <!-- rekursives Muster: kopiert alle DLLs unter ..\BIMGISInteropLibs\bin\<Configuration>\$(TargetFramework)\gdal\ -->
+    <ItemGroup>
+      <_InteropNativeFiles Include="..\BIMGISInteropLibs\bin\$(Configuration)\$(TargetFramework)\gdal\$(InteropArch)\*.dll" />
+    </ItemGroup>
+
+    <Message Importance="High" Text="Copying Interop native files: @(_InteropNativeFiles) to $(OutputPath)" Condition="'@(_InteropNativeFiles)' != ''" />
+    <Message Importance="High" Text="No interop native files found in ..\BIMGISInteropLibs\bin\$(Configuration)\$(TargetFramework)\gdal (check build of Interop project)" Condition="'@(_InteropNativeFiles)' == ''" />
+
+    <Copy SourceFiles="@(_InteropNativeFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" ContinueOnError="false" />
+  </Target>
 </Project>

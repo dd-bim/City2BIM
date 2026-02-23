@@ -46,7 +46,11 @@ namespace BIMGISInteropLibs.IfcTerrain
         /// <summary>
         /// GeoJSON
         /// </summary>
-        GeoJSON
+        GeoJSON,
+        /// <summary>
+        /// GeoTIFF
+        /// </summary>
+        GeoTIFF
     }
 
     /// <summary>
