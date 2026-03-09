@@ -111,15 +111,14 @@ namespace BIMGISInteropLibs.IFC.Ifc4
                     shape = ShellBasedSurfaceModel.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
                     break;
 
-                //IfcTIN
-                case SurfaceType.TIN:
-                    shape = TriangulatedIrregularNetwork.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
-                    break;
-
                 //IfcGCS
-                default:
+                case SurfaceType.GCS:
                     shape = GeometricCurveSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
                     break;
+
+                default:
+                    LogWriter.Add(LogType.error, $"Shape representation {config.outSurfaceType} is not supported for IFC version {config.outIFCType}");
+                    return null;
             }
             if (shape == null)
             {

@@ -113,11 +113,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Site.tt</DependentUpon>
     </Compile>
-    <Compile Update="IFC\Ifc4dot3\Store.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Store.tt</DependentUpon>
-    </Compile>
     <Compile Update="IFC\Ifc4dot3\Terrain.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -167,11 +162,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ShellBasedSurfaceModel.tt</DependentUpon>
-    </Compile>
-    <Compile Update="IFC\Ifc4\Site.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Site.tt</DependentUpon>
     </Compile>
     <Compile Update="IFC\Ifc4\Store.cs">
       <DesignTime>True</DesignTime>
@@ -227,11 +217,6 @@
       <DependentUpon>PropertySet.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="IFC\T4_Includes\Store.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Store.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="IFC\T4_Includes\Terrain.cs">
       <DesignTime>True</DesignTime>
@@ -308,10 +293,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Site.cs</LastGenOutput>
     </None>
-    <None Update="IFC\Ifc4dot3\Store.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Store.cs</LastGenOutput>
-    </None>
     <None Update="IFC\Ifc4dot3\Terrain.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Terrain.cs</LastGenOutput>
@@ -352,10 +333,6 @@
       <LastGenOutput>GeometricCurveSet.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="IFC\Ifc4\Site.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Site.cs</LastGenOutput>
-    </None>
     <None Update="IFC\Ifc4\Store.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Store.cs</LastGenOutput>
@@ -386,10 +363,6 @@
     </None>
     <None Update="IFC\T4_Includes\Terrain.ttinclude">
       <LastGenOutput>Terrain.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="IFC\T4_Includes\Store.ttinclude">
-      <LastGenOutput>Store.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="IFC\T4_Includes\Site.ttinclude">

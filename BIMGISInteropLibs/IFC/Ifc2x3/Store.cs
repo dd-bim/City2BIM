@@ -98,9 +98,13 @@ namespace BIMGISInteropLibs.IFC.Ifc2x3
                     shape = ShellBasedSurfaceModel.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
                     break;
                 //IfcGCS (default)
-                default:
+                case SurfaceType.GCS:
                     shape = GeometricCurveSet.Create(model, sitePlacement.Location, result, out representationType, out representationIdentifier);
                     break;
+
+                default:
+                    LogWriter.Add(LogType.error, $"Shape representation {surfaceType} is not supported for IFC version 2x3");
+                    return null;
             }
 
             //create IfcShapeRepres

@@ -164,14 +164,25 @@
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
                             <Style.Triggers>
-                                <!-- disable IFC TIN (until implemented) -->
+                                <!-- disable IFC TIN for IFC4 -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
+                                                   Value="{x:Static Ifc:SurfaceType.TIN}" />
+                                        <Condition Binding="{Binding ElementName=cbIfcVersion, Path=SelectedItem}"
+                                                   Value="{x:Static Ifc:IfcVersion.IFC4}" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled" Value="False" />
+                                    <Setter Property="IsSelected" Value="False" />
+                                </MultiDataTrigger>
+                                <!-- disable IFC TIN for IFC2x3-->
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
                                                    Value="TIN" />
                                         <!-- secound condition when 'IFC2x3' is selected -->
                                         <Condition Binding="{Binding ElementName=cbIfcVersion, Path=SelectedIndex}"
-                                                   Value="0" />
+                                                   Value="{x:Static Ifc:IfcVersion.IFC2x3}" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="IsEnabled" Value="False" />
                                     <Setter Property="IsSelected" Value="False" />

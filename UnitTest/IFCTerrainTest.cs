@@ -138,6 +138,14 @@ namespace UnitTest
             bool result = conInt.mapProcess(config, null, null);
             if (!result)
             {
+                if (config.outSurfaceType == SurfaceType.TIN & (config.outIFCType == IfcVersion.IFC2x3 || config.outIFCType == IfcVersion.IFC4)
+                    || (config.outSurfaceType == SurfaceType.TFS && config.outIFCType == IfcVersion.IFC2x3))
+                {
+                    // return with warning, as this combination is not supported by the mapping process, but the process itself worked as expected
+                    LogWriter.Add(BIMGISInteropLibs.Logging.LogType.warning,
+                        $"Shape representation {config.outSurfaceType} is not supported for IFC version {config.outIFCType}. Test skipped for this combination.");
+                    return;
+                }
                 if (config.fileType == IfcTerrainFileType.DXF) //Try multiple options for DXf Files
                 {
                     //retry 
@@ -164,7 +172,7 @@ namespace UnitTest
         }
 
         public static IEnumerable<object[]> TestFiles => 
-            new[] {".gml", ".dxf", ".txt", ".xyz", ".reb", ".out" }
+            new[] {".gml", ".dxf", ".txt", ".xyz", ".tif", ".tiff", ".reb", ".out" }
             .SelectMany(ext => Directory.EnumerateFiles(TestDataPath, "*" + ext, SearchOption.AllDirectories))
             .Select(path => new object[] { path });
 
@@ -185,8 +193,6 @@ namespace UnitTest
                 Version = (IfcVersion)v[0],
                 Surface = (SurfaceType)s[0]
             })))
-            .Where(c => !(c.Surface == SurfaceType.TIN &&
-                 (c.Version == IfcVersion.IFC2x3 || c.Version == IfcVersion.IFC4))) // Remove Test using TIN with IFC2x3 and IFC4, as TIN is not supported in these versions
             .Select(c => new object[] { IFCTerrainTest.testId++, c.File, c.Version, c.Surface }); 
 
         // EnvelopeCombinations: kombiniert TestFiles mit zFilter- und Extend-Werten
@@ -237,6 +243,11 @@ namespace UnitTest
                         fileType = IfcTerrainFileType.Grid;
                         break;
 
+                    case ".tif":
+                    case ".tiff":
+                        res = BIMGISInteropLibs.GeoTIFF.ReaderTerrain.readGeoTIFF(new Config() { filePath = path, fileName = Path.GetFileName(path) });
+                        fileType = IfcTerrainFileType.GeoTIFF;
+                        break;
                     case ".reb":
                         res = BIMGISInteropLibs.REB.ReaderTerrain.readDtm(new Config() { filePath = path, fileName = Path.GetFileName(path) });
                         fileType = IfcTerrainFileType.REB;

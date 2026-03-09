@@ -184,7 +184,7 @@ namespace BIMGISInteropLibs.IfcTerrain
             // Catch errors from XBim
             EventHandler<FirstChanceExceptionEventArgs> firstChanceHandler = (s, fe) =>
             {
-                LogWriter.Add(LogType.error, fe.Exception.Message);
+                LogWriter.Add(LogType.error, $"[{fe.Exception.Source}] {fe.Exception.Message}");
                 result.cancellationTokenSource.Cancel();
             };
             // register handler just before XBim operations

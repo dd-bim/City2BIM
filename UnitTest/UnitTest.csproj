@@ -8,7 +8,13 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
-
+    
+  <!-- Fallback für Architektur (wenn $(PlatformTarget) leer ist) -->
+  <PropertyGroup>
+    <InteropArch>$(PlatformTarget)</InteropArch>
+    <InteropArch Condition="'$(InteropArch)' == ''">x64</InteropArch>
+  </PropertyGroup>
+		
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
@@ -71,5 +77,14 @@
       <DependentUpon>FunctionTestIfc4x3.tt</DependentUpon>
     </Compile>
   </ItemGroup>
+	<Target Name="CopyInteropNativeLibraries" AfterTargets="Build">
+		<ItemGroup>
+			<_InteropNativeFiles Include="..\BIMGISInteropLibs\bin\$(Configuration)\$(TargetFramework)\gdal\$(InteropArch)\*.dll" />
+		</ItemGroup>
 
+		<Message Importance="High" Text="Copying Interop native files: @(_InteropNativeFiles) to $(OutputPath)" Condition="'@(_InteropNativeFiles)' != ''" />
+		<Message Importance="High" Text="No interop native files found in ..\BIMGISInteropLibs\bin\$(Configuration)\$(TargetFramework)\gdal\$(InteropArch) (check build of Interop project)" Condition="'@(_InteropNativeFiles)' == ''" />
+
+		<Copy SourceFiles="@(_InteropNativeFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" ContinueOnError="false" />
+	</Target>
 </Project>
