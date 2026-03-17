@@ -3,7 +3,6 @@
 using BIMGISInteropLibs.Logging;
 using NetTopologySuite.Geometries;
 using OSGeo.GDAL;
-using OSGeo.OSR;
 using System;
 using System.Collections.Generic;
 using System.IO;
