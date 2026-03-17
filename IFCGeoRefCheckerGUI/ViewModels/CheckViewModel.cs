@@ -48,21 +48,6 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                 }
             }
         }
-
-        private string? workingDir;
-
-        public string? WorkingDir
-        {
-            get => workingDir;
-            set
-            {
-                if (workingDir != value)
-                {
-                    workingDir = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
         
         private bool isChecking { get; set; }
         public bool IsChecking
@@ -111,7 +96,6 @@ namespace IFCGeoRefCheckerGUI.ViewModels
         public DelegateCommand ShowLog { get; set; }
 
         public event EventHandler? NoFileSelected;
-        public event EventHandler? NoWorkingDirSelected;
         public event EventHandler? FileNotYetChecked;
 
         public CheckViewModel(IEventAggregator eventAggregator) 
@@ -121,7 +105,6 @@ namespace IFCGeoRefCheckerGUI.ViewModels
             this.eventSubscriptions = new List<Subscription>
             {
                 eventAggregator.Subscribe<SelectedPathMessageObject>(spmo => NewPathReceived(spmo.SelectedPath)),
-                eventAggregator.Subscribe<SelectedWorkingDirMessageObject>(swdmo => NewWorkingDirReceived(swdmo.WorkingDir))
             };
             //this.eventSubscriptions = eventAggregator.Subscribe<SelectedPathMessageObject>(spmo => NewPathReceived(spmo.SelectedPath));
 
@@ -144,11 +127,6 @@ namespace IFCGeoRefCheckerGUI.ViewModels
             }
         }
 
-        private void NewWorkingDirReceived(string? workingDir)
-        {
-            this.WorkingDir = workingDir;
-        }
-
         private async void ExecCheck(object o)
         {
                 await IfcCheckService();
@@ -161,10 +139,6 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                 if (String.IsNullOrEmpty(selectedPath))
                 {
                     NoFileSelected?.Invoke(this, EventArgs.Empty);
-                }
-                else if (String.IsNullOrEmpty(WorkingDir) || !System.IO.Directory.Exists(workingDir))
-                {
-                    NoWorkingDirSelected?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
@@ -183,8 +157,8 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                             CheckerDict.Add(selectedPath, checker);
                             this.NrOfChecks = CheckerDict.Count;
                         }
-                        Log.Information($"Writing check protocol to {WorkingDir}");
-                        checker.WriteProtocoll(WorkingDir!);
+                        Log.Information($"Writing check protocol to {selectedPath}");
+                        checker.WriteProtocoll(Path.GetDirectoryName(selectedPath)!);
                     }
                     this.IsChecking = false;
                     Log.Information($"Finished checking {selectedPath}");

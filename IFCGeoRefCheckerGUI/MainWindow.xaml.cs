@@ -49,7 +49,6 @@ namespace IFCGeoRefCheckerGUI
             LanguageComboBox.SelectedIndex = 0;
 
             ((MainWindowViewModel)DataContext).checkViewModel.NoFileSelected += NoFileSelectedMessageBox;
-            ((MainWindowViewModel)DataContext).checkViewModel.NoWorkingDirSelected += NoWorkingDirSelectedMessageBox;
             ((MainWindowViewModel)DataContext).checkViewModel.FileNotYetChecked += NotYetCheckedMessageBox;
             ((MainWindowViewModel)DataContext).OpenUpdateDialog += handleOpenDialogRequest;
             
@@ -78,11 +77,8 @@ namespace IFCGeoRefCheckerGUI
         public void UpdateUITexts()
         {
             LanguageLabel.Content = Properties.Resources.LANGUAGE_LABEL;
-            SetWorkinDirBtn.Content = Properties.Resources.SET_WORKING_DIRECTORY;
             LoadFilesBtn.Content = Properties.Resources.LOAD_IFC_FILES;
             CheckFileBtn.Content = Properties.Resources.CHECK_SELECTED_FILE;
-            SetWorkDirGroupBox.Header = Properties.Resources.SET_WORKING_DIRECTORY;
-            WorkingDirLabel.Content = Properties.Resources.WORKING_DIRECTORY_LABEL;
             InputIFCGroupBox.Header = Properties.Resources.INPUT_IFC_FILES;
             StatusLabel.Content = Properties.Resources.STATUS_LABEL;
             LoadedIFCFilesLabel.Content = Properties.Resources.LOADED_IFC_FILES;
@@ -96,10 +92,6 @@ namespace IFCGeoRefCheckerGUI
             MessageBox.Show("No file was selected!", "Missing file", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        public void NoWorkingDirSelectedMessageBox(object? sender, EventArgs args)
-        {
-            MessageBox.Show("No valid working directory was selected!", "Missing Working Directory", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
         public void NotYetCheckedMessageBox(object? sender, EventArgs args)
         {
             MessageBox.Show("Selected File was not yet checked!", "Missing check result", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -119,19 +111,6 @@ namespace IFCGeoRefCheckerGUI
                 {
                     ((MainWindowViewModel)DataContext).filePanelViewModel.FilePaths.Add(fileName);
                 }
-            }
-        }
-
-        private void SetWorkinDirBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog();
-
-            var dialogResult = dialog.ShowDialog();
-
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                ((MainWindowViewModel)DataContext).workingDirViewModel.WorkingDirPath = dialog.SelectedPath;
-                Log.Information($"Working Directory changed to {dialog.SelectedPath}");
             }
         }
 
@@ -165,59 +144,6 @@ namespace IFCGeoRefCheckerGUI
         {
             this.LogBox.ScrollToEnd();
         }
-
-        private void CheckFileBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        /*private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            var vm = ((MainWindowViewModel)DataContext);
-
-            var selectedFile = vm.SelectedPath;
-
-            if ( selectedFile == null )
-            {
-                this.NoFileSelectedMessageBox(this, EventArgs.Empty);
-            }
-
-            else if (!vm.checkViewModel.CheckerDict.ContainsKey(selectedFile))
-            {
-                this.NotYetCheckedMessageBox(this, EventArgs.Empty);
-            }
-
-            ((MainWindowViewModel)DataContext).OpenUpdateDialog += (s, ev) =>
-            {
-                UpdateGeoRefWindow dialog = new UpdateGeoRefWindow();
-                dialog.Show();
-            };
-        }*/
-
-        /*
-        private RichTextBoxConsoleTheme customTheme = new RichTextBoxConsoleTheme
-        (
-            new Dictionary<RichTextBoxThemeStyle, RichTextBoxConsoleThemeStyle>
-            {
-                [RichTextBoxThemeStyle.Text] = new RichTextBoxConsoleThemeStyle { Foreground = "#000000" },
-                [RichTextBoxThemeStyle.SecondaryText] = new RichTextBoxConsoleThemeStyle { Foreground = "#808080" },
-                [RichTextBoxThemeStyle.TertiaryText] = new RichTextBoxConsoleThemeStyle { Foreground = "#808080" },
-                [RichTextBoxThemeStyle.Invalid] = new RichTextBoxConsoleThemeStyle { Foreground = "#ffff00" },
-                [RichTextBoxThemeStyle.Null] = new RichTextBoxConsoleThemeStyle { Foreground = "#696969" },
-                [RichTextBoxThemeStyle.Name] = new RichTextBoxConsoleThemeStyle { Foreground = "#696969" },
-                [RichTextBoxThemeStyle.String] = new RichTextBoxConsoleThemeStyle { Foreground = "#696969" },
-                [RichTextBoxThemeStyle.Number] = new RichTextBoxConsoleThemeStyle { Foreground = "#696969" },
-                [RichTextBoxThemeStyle.Boolean] = new RichTextBoxConsoleThemeStyle { Foreground = "#696969" },
-                [RichTextBoxThemeStyle.Scalar] = new RichTextBoxConsoleThemeStyle { Foreground = "#696969" },
-                [RichTextBoxThemeStyle.LevelVerbose] = new RichTextBoxConsoleThemeStyle { Foreground = "#c0c0c0", Background = "#808080" },
-                [RichTextBoxThemeStyle.LevelDebug] = new RichTextBoxConsoleThemeStyle { Foreground = "#ffffff", Background = "#808080" },
-                [RichTextBoxThemeStyle.LevelInformation] = new RichTextBoxConsoleThemeStyle { Foreground = "#ffffff", Background = "#0000ff" },
-                [RichTextBoxThemeStyle.LevelWarning] = new RichTextBoxConsoleThemeStyle { Foreground = "#808080", Background = "#ffff00" },
-                [RichTextBoxThemeStyle.LevelError] = new RichTextBoxConsoleThemeStyle { Foreground = "#ffffff", Background = "#ff0000" },
-                [RichTextBoxThemeStyle.LevelFatal] = new RichTextBoxConsoleThemeStyle { Foreground = "#ffffff", Background = "#ff0000" },
-            }
-        );
-        */
 
     }
 }

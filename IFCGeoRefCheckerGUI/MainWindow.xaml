@@ -37,25 +37,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" >
-                <GroupBox x:Name="SetWorkDirGroupBox" Header="Set working directory">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Label x:Name="WorkingDirLabel" Content="Working directory" Grid.Row="0" Grid.Column="0"/>
-                        <TextBox x:Name="PathTextBox" Grid.Row="1" Grid.ColumnSpan="2" 
-                                 Text="{Binding workingDirViewModel.WorkingDirPath, TargetNullValue='Please choose path!'}" 
-                                 Margin="0,5,0,5" Padding="0,5,0,5" VerticalScrollBarVisibility="Auto" 
-                                 VerticalContentAlignment="Center" />
-                    </Grid>
-                </GroupBox>
-            </Grid>
+            <Grid Grid.Row="0" />
 
             <!--        Status View Model       -->
             <Grid Grid.Row="1">
@@ -147,12 +129,6 @@
                     SelectionChanged="LanguageComboBox_SelectionChanged" Grid.Row="2"
                     Margin="10,0,10,10" Padding="1,5,1,5"/>
 
-
-            <Button x:Name="SetWorkinDirBtn"  Grid.Row="3"
-                    Content="Set working directory" Margin="10,10,10,10"
-                    Padding="1,5,1,5" Click="SetWorkinDirBtn_Click" 
-                    />
-            
 
             <Button x:Name="LoadFilesBtn"  Grid.Row="4"
                     Content="Load IFC-Files" Margin="10,10,10,10"
