@@ -130,7 +130,7 @@ namespace BIMGISInteropLibs.IFC.Ifc4
             //loop for different LoGeoRef's
             switch (config.logeoref)
             {
-                //Level 50 - TODO
+                //Level 50
                 case IFC.LoGeoRef.LoGeoRef50:
                     site = Site.Create(model, siteName, config.logeoref , sitePlacement, refLatitude, refLongitude, refElevation);
                     geomRepContext = LoGeoRef.Level50.Create(model, sitePlacement, config);

@@ -55,6 +55,11 @@ namespace BIMGISInteropLibs.IFC.Ifc4.LoGeoRef
                     //create IfcDirection - Axis
                     p.Axis = model.Instances.New<IfcDirection>(a => a.SetXYZ(placement.Axis.X, placement.Axis.Y, placement.Axis.Z));
                     LogWriter.Add(LogType.verbose, "IfcDirection - Axis (Easting: " + p.Axis.X + "; Northing: " + p.Axis.Y + "; Height: " + p.Axis.Z + ") set!");
+
+                    //create IfcDirection - RefDirection
+                    p.RefDirection = model.Instances.New<IfcDirection>(a => a.SetXYZ(placement.RefDirection.X, placement.RefDirection.Y, placement.RefDirection.Z));
+                    LogWriter.Add(LogType.verbose, "IfcDirection - RefDirection (Easting: " + p.Axis.X + "; Northing: " + p.Axis.Y + "; Height: " + p.Axis.Z + ") set!");
+
                 });
 
                 //set true north prepared for ifc file
