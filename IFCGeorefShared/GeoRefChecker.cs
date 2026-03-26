@@ -275,22 +275,13 @@ namespace IFCGeorefShared
                 }
             }
 
-            if (this.GenProps != null)
-            {
+            if (this.GenProps == null) this.GenProps = new GeneralProperties();
+
                 this.GenProps.SiteElevDict = siteElevDict;
                 this.GenProps.SitePlcmtZDict = sitePlcmtZ;
                 this.GenProps.ContextPlcmtElev = contextPlcmtElev;
                 this.GenProps.mapConvHeight = mapConvHeight;
             }
-            else
-            {
-                this.GenProps = new GeneralProperties();
-                this.GenProps.SiteElevDict = siteElevDict;
-                this.GenProps.SitePlcmtZDict = sitePlcmtZ;
-                this.GenProps.ContextPlcmtElev = contextPlcmtElev;
-                this.GenProps.mapConvHeight = mapConvHeight; 
-            }
-        }
         
         private void checkForLevel10()
         {
@@ -379,7 +370,7 @@ namespace IFCGeorefShared
             foreach (var entity in BuildingsAndSites)
             {
                 var localPlcm = (IIfcLocalPlacement)entity.ObjectPlacement;
-
+                if (localPlcm == null) continue;
                 var level30 = new Level30();
                 level30.ReferencedEntity = entity;
 
@@ -438,10 +429,9 @@ namespace IFCGeorefShared
                 //lvl50.mapConversion = this.model.Instances.OfType<IIfcMapConversion>().ToList();
 
                 var wcsPlcmt = context.WorldCoordinateSystem;
-                if (wcsPlcmt != null)
+                if (wcsPlcmt != null && wcsPlcmt is IIfcAxis2Placement3D wcs)
                 {
                     
-                    var wcs = (IIfcAxis2Placement3D)wcsPlcmt;
                     lvl40.wcs = wcs;
                     var location = wcs.Location;
                     
@@ -463,9 +453,7 @@ namespace IFCGeorefShared
                 {
                     if (oper != null)
                     {
-                        var mapConv = (IIfcMapConversion)oper;
-
-                        if (mapConv != null)
+                        if (oper is IIfcMapConversion mapConv)
                         {
                             lvl50.MapConversion = mapConv;
                             lvl50.IsFullFilled = true;
@@ -485,6 +473,7 @@ namespace IFCGeorefShared
                             }
                         }
                     }
+                }
                 }
                 this.LoGeoRef50.Add(lvl50);
             }
