@@ -95,6 +95,7 @@ namespace IFCGeorefShared
 
         public GeoRefChecker(IfcStore model, ITranslator translator) {
             this.model = model;
+            this.ifcVersion = this.model.SchemaVersion;
             BuildingsAndSites = new IIfcSpatialStructureElement[0]
                 .Concat(model.Instances.OfType<IIfcSite>())
                 .Concat(model.Instances.OfType<IIfcBuilding>()).ToList();
@@ -107,7 +108,6 @@ namespace IFCGeorefShared
             checkGeneralProps();
 
             this.TimeChecked = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
-            this.ifcVersion = this.model.SchemaVersion;
             this.FilePath = this.model.FileName;
 
             if (translator == null)
@@ -128,8 +128,17 @@ namespace IFCGeorefShared
 
             double maxX = 0, maxY = 0, maxZ = 0;
 
+            var allPlacementLocations = new List<IIfcCartesianPoint>();
+            allPlacementLocations.AddRange(this.LoGeoRef30
+                .Where(x => x.IsFullFilled && x.plcmt != null)
+                .Select(x => x.plcmt.Location!));
+            allPlacementLocations.AddRange(this.LoGeoRef40
+                .Where(x => x.IsFullFilled && x.wcs != null)
+                .Select(x => x.wcs.Location!));
+
             foreach (var pnt in allCartPoints)
             {
+                if (allPlacementLocations.Contains(pnt)) continue;
                 if (Math.Abs(pnt.X) > maxX) maxX = Math.Abs(pnt.X);
                 if (Math.Abs(pnt.Y) > maxY) maxY = Math.Abs(pnt.Y);
                 if (Math.Abs(pnt.Z) > maxZ) maxZ = Math.Abs(pnt.Z);
