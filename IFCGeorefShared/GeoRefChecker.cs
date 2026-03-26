@@ -456,6 +456,11 @@ namespace IFCGeorefShared
                         if (oper is IIfcMapConversion mapConv)
                         {
                             lvl50.MapConversion = mapConv;
+                            if (lvl50.MapConversion.Eastings == 0.0 && lvl50.MapConversion.Northings == 0.0)
+                            {
+                                Log.Warning("Translation Easting and Northing is 0. LoGeoRef50 is not fullfilled.");
+                                continue;
+                            }
                             lvl50.IsFullFilled = true;
                             if (0.9 < mapConv.Scale && mapConv.Scale < 1.1)
                             {
