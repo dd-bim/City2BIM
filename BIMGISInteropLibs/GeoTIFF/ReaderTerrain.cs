@@ -31,6 +31,54 @@ namespace BIMGISInteropLibs.GeoTIFF
             }
         }
 
+        private static void EnsureGdalNativePath()
+        {
+            // Bestimme Architektur-Ordner (x64/x86)
+            var arch = IntPtr.Size == 8 ? "x64" : "x86";
+
+            // Basis-Ausgabeverzeichnis der Anwendung
+            var baseDir = AppContext.BaseDirectory;
+
+            // Erwarteter Pfad, wenn Sie GDAL natives in "$(OutputPath)/gdal/<arch>/" kopieren
+            var gdalNativeDir = Path.Combine(baseDir, "gdal", arch);
+
+            if (Directory.Exists(gdalNativeDir))
+            {
+                var path = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+                // Nur hinzufügen, falls noch nicht vorhanden
+                var paths = path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+                if (!paths.Any(p => string.Equals(Path.GetFullPath(p).TrimEnd(Path.DirectorySeparatorChar), Path.GetFullPath(gdalNativeDir).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase)))
+                {
+                    var newPath = gdalNativeDir + Path.PathSeparator + path;
+                    Environment.SetEnvironmentVariable("PATH", newPath);
+                }
+            }
+
+            // GDAL_DATA (falls im Paket enthalten unter gdal/data oder gdal/<arch>/data)
+            var possibleGdalData = new[]
+            {
+                Path.Combine(baseDir, "gdal", "data"),
+                Path.Combine(baseDir, "gdal", arch, "data"),
+                Path.Combine(baseDir, "gdal", "share", "gdal"),
+                Path.Combine(baseDir, "share", "gdal")
+            };
+            var gdalDataDir = possibleGdalData.FirstOrDefault(Directory.Exists);
+            if (gdalDataDir != null)
+                Environment.SetEnvironmentVariable("GDAL_DATA", gdalDataDir);
+
+            // PROJ_LIB (Projektionen), falls vorhanden
+            var possibleProj = new[]
+            {
+                Path.Combine(baseDir, "gdal", "proj"),
+                Path.Combine(baseDir, "gdal", "share", "proj"),
+                Path.Combine(baseDir, "share", "proj"),
+                Path.Combine(baseDir, "share")
+            };
+            var projDir = possibleProj.FirstOrDefault(Directory.Exists);
+            if (projDir != null)
+                Environment.SetEnvironmentVariable("PROJ_LIB", projDir);
+        }
+
         private static bool readPointData(Config config, out Result result)
         {
             //Log successful reading
@@ -45,7 +93,8 @@ namespace BIMGISInteropLibs.GeoTIFF
             //set conversion type
             result.currentConversion = DtmConversionType.points;
             try
-            {                 
+            {
+                EnsureGdalNativePath();
                 Gdal.AllRegister();
 
                 using (Dataset ds = Gdal.Open(config.filePath, Access.GA_ReadOnly))
