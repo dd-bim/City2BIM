@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GDAL" />
+    <PackageReference Include="GDAL.Native" />
     <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" />
     <PackageReference Include="Xbim.Ifc" />
   </ItemGroup>

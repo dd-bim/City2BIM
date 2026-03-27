@@ -1,13 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
+using static System.FormattableString;
 using Xbim.Ifc4.Interfaces;
 
 namespace IFCGeorefShared.Levels
 {
 
-    internal class Level30 : Level00
+    public class Level30 : Level00, ILevelChecker<Level30>
     {
         public IIfcPlacement? plcmt;
+
+        public static string WriteLevelResult(GeoRefChecker checker, CultureInfo? culture = null)
+        => WriteLevelResult<Level30>(checker, culture);
+        protected override string Name => "LoGeoRef30";
+
+        /// <summary>
+        /// Checks each <see cref="Level30"/> context in the specified <see cref="GeoRefChecker"/> against GeoRef40 (<seealso href="https://github.com/dd-bim/City2BIM/wiki/Resources/GeoRefChecker/logeoref30.png"/>):
+        /// </summary>
+        /// <remarks>
+        /// Checks the IFC model for:
+        /// <list type="bullet"> 
+        /// <item><description><see cref="IIfcSpatialStructureElement.ObjectPlacement"/> is of type <see cref="IIfcLocalPlacement"/></description></item>
+        /// <item><description><see cref="IIfcLocalPlacement.PlacementRelTo"/> is <see langword="null"/></description></item>
+        /// <item><description>At least one of Locations (<see cref="IIfcCartesianPoint"/>) components is greather than zero</description></item>
+        /// </list>
+        /// </remarks>
+        /// <param name="geoRefChecker">The <see cref="GeoRefChecker"/> instance containing the level contexts to be checked. Cannot be <see
+        /// langword="null"/>.</param>
+        public static void CheckForLevel(GeoRefChecker geoRefChecker)
+        {
+            var BuildingsAndSites = new IIfcSpatialStructureElement[0]
+                .Concat(geoRefChecker.Model.Instances.OfType<IIfcSite>())
+                .Concat(geoRefChecker.Model.Instances.OfType<IIfcBuilding>()).ToList();
+            foreach (var entity in BuildingsAndSites)
+            {
+                var localPlcm = (IIfcLocalPlacement)entity.ObjectPlacement;
+                if (localPlcm == null) continue;
+                var lvl = new Level30();
+                lvl.ReferencedEntity = entity;
+
+                if (localPlcm.PlacementRelTo == null)
+                {
+
+                    lvl.plcmt = (IIfcPlacement)localPlcm.RelativePlacement;
+
+                    var location = lvl.plcmt.Location;
+                    if (location.X > 0.0 || location.Y > 0.0 || location.Z > 0.0)
+                    {
+                        lvl.IsFullFilled = true;
+                    }
+                    else
+                    { 
+                        lvl.RejectionMessage = $"All locations (#{lvl.plcmt.Location.EntityLabel}) components are zero. Not valid!"; 
+                    }
+                }
+                else
+                {
+                    lvl.RejectionMessage = $"IfcLocalPlacement #{localPlcm.EntityLabel} is relative to #{localPlcm.PlacementRelTo.EntityLabel}. Not valid!";
+                }
+                geoRefChecker.LoGeoRef30.Add(lvl);
+            }
+        }
+
+        public override string WriteInstanceResult(CultureInfo? culture = null)
+        {
+            var sb = new StringBuilder();
+            var _translationService = GeoRefChecker.TranslationService;
+            culture ??= CultureInfo.CurrentCulture;
+
+            sb.AppendLine($"{_translationService.Translate("UpperEntity", culture)}: #{ReferencedEntity!.EntityLabel} {ReferencedEntity!.GetType().Name} {_translationService.Translate("With", culture)} GUID: {ReferencedEntity.GlobalId}");
+            //sb.AppendLine(IsFullFilled ? $"{_translationService.Translate("GeographicContext", culture)}" : $"{_translationService.Translate("NoGeographicContext", culture)}");
+            if (IsFullFilled)
+            {
+                sb.AppendLine(Invariant($"{_translationService.Translate("LocationCoordinates", culture)}:\nX: {plcmt.Location.X} \nY: {plcmt.Location.Y} \nZ: {plcmt.Location.Z}"));
+
+                if (plcmt is IIfcAxis2Placement3D plcmt3D)
+                {
+                    sb.AppendLine(Invariant($"{_translationService.Translate("TrueNorth", culture)} {(plcmt3D.RefDirection == null ? _translationService.Translate("NotSpecified", culture) : Utils.TrueNorthFromRefDirection(plcmt3D.RefDirection).ToString("F1", culture) + "°")}"));
+                    sb.AppendLine(Invariant($"{_translationService.Translate("DirectionX", culture)} {(plcmt3D.RefDirection == null ? "(1 | 0 | 0)" : $"({plcmt3D.RefDirection.X} | {plcmt3D.RefDirection.Y} | {plcmt3D.RefDirection.Z})")}"));
+                    sb.AppendLine(Invariant($"{_translationService.Translate("DirectionZ", culture)} {(plcmt3D.Axis == null ? "(0 | 0 | 1)" : $"({plcmt3D.Axis.X} | {plcmt3D.Axis.Y} | {plcmt3D.Axis.Z}")})"));
+                }
+                else if (plcmt is IIfcAxis2Placement2D plcmt2D)
+                {
+                    sb.AppendLine(Invariant($"{_translationService.Translate("TrueNorth", culture)}: {(plcmt2D.RefDirection == null ? _translationService.Translate("NotSpecified", culture) : Utils.TrueNorthFromRefDirection(plcmt2D.RefDirection).ToString("F1", culture) + "°")}"));
+                    sb.AppendLine(Invariant($"{_translationService.Translate("DirectionX", culture)}  ({plcmt2D.RefDirection.X} | {plcmt2D.RefDirection.Y})"));
+                }
+            }
+            else
+            {
+                sb.AppendLine(RejectionMessage);
+            }
+
+            //Common section for all levels
+            sb.AppendLine();
+            sb.AppendLine($"{Name} {(IsFullFilled ? _translationService.Translate("Fulfilled", culture) : _translationService.Translate("NotFulfilled", culture))}");
+            sb.AppendLine(Utils.dashLine);
+            return sb.ToString();
+        }
     }
 }

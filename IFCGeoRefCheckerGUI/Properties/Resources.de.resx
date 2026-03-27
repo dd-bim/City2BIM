@@ -160,7 +160,7 @@
     <value>Datei(en) überprüft</value>
   </data>
   <data name="ProtocolHeader" xml:space="preserve">
-    <value>IFCGeoRefChecker-Protokoll für Datei {0}</value>
+    <value>IFCGeoRefChecker-Protokoll für Datei </value>
   </data>
   <data name="IfcVersion" xml:space="preserve">
     <value>IfcVersion</value>
@@ -168,8 +168,8 @@
   <data name="CheckedOn" xml:space="preserve">
     <value>Geprüft</value>
   </data>
-  <data name="MaxCoordinates" xml:space="preserve">
-    <value>Maximale Koordinaten sind</value>
+  <data name="MaxExtend" xml:space="preserve">
+    <value>Maximale Ausdehnungen sind</value>
   </data>
   <data name="RefElevationAndZ" xml:space="preserve">
     <value>Referenzhöhe und Z-Werte des Grundstücks sind</value>

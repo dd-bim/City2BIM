@@ -157,8 +157,9 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                             CheckerDict.Add(selectedPath, checker);
                             this.NrOfChecks = CheckerDict.Count;
                         }
-                        Log.Information($"Writing check protocol to {selectedPath}");
+                        Log.Information($"Writing check protocol ... ");
                         checker.WriteProtocoll(Path.GetDirectoryName(selectedPath)!);
+                        Log.Information($"to {checker.ProtocollPath}");
                     }
                     this.IsChecking = false;
                     Log.Information($"Finished checking {selectedPath}");

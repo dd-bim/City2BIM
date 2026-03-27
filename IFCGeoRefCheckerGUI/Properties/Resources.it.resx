@@ -144,14 +144,14 @@
   <data name="STATUS_REPORT" xml:space="preserve">
     <value>Rapporto sullo stato</value>
   </data>
+  <data name="WORKING_DIRECTORY_LABEL" xml:space="preserve">
+    <value>Directory di lavoro</value>
+  </data>
   <data name="PLEASE_CHOOSE_PATH" xml:space="preserve">
     <value>Scegli il percorso!</value>
   </data>
   <data name="LANGUAGE_LABEL" xml:space="preserve">
     <value>Seleziona la lingua:</value>
-  </data>
-  <data name="WORKING_DIRECTORY_LABEL" xml:space="preserve">
-    <value>Directory di lavoro</value>
   </data>
   <data name="FILES_LOADED_FORMAT" xml:space="preserve">
     <value>file caricati</value>
@@ -160,7 +160,7 @@
     <value>file controllati</value>
   </data>
   <data name="ProtocolHeader" xml:space="preserve">
-    <value>Protocollo IFCGeoRefChecker per il file {0}</value>
+    <value>Protocollo IFCGeoRefChecker per il file </value>
   </data>
   <data name="IfcVersion" xml:space="preserve">
     <value>IfcVersione</value>
@@ -168,7 +168,7 @@
   <data name="CheckedOn" xml:space="preserve">
     <value>Controllato</value>
   </data>
-  <data name="MaxCoordinates" xml:space="preserve">
+  <data name="MaxExtend" xml:space="preserve">
     <value>Le coordinate massime sono</value>
   </data>
   <data name="RefElevationAndZ" xml:space="preserve">
