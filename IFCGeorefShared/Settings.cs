@@ -32,52 +32,57 @@ namespace IFCGeorefShared
             return instance;
         }
 
+        private static void EnsureGdalNativePath()
+        {
+            // Bestimme Architektur-Ordner (x64/x86)
+            var arch = IntPtr.Size == 8 ? "x64" : "x86";
+
+            // Basis-Ausgabeverzeichnis der Anwendung
+            var baseDir = AppContext.BaseDirectory;
+
+            // Erwarteter Pfad, wenn Sie GDAL natives in "$(OutputPath)/gdal/<arch>/" kopieren
+            var gdalNativeDir = Path.Combine(baseDir, "gdal", arch);
+
+            if (Directory.Exists(gdalNativeDir))
+            {
+                var path = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+                // Nur hinzufügen, falls noch nicht vorhanden
+                var paths = path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+                if (!paths.Any(p => string.Equals(Path.GetFullPath(p).TrimEnd(Path.DirectorySeparatorChar), Path.GetFullPath(gdalNativeDir).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase)))
+                {
+                    var newPath = gdalNativeDir + Path.PathSeparator + path;
+                    Environment.SetEnvironmentVariable("PATH", newPath);
+                }
+            }
+
+            // GDAL_DATA (falls im Paket enthalten unter gdal/data oder gdal/<arch>/data)
+            var possibleGdalData = new[]
+            {
+                Path.Combine(baseDir, "gdal", "data"),
+                Path.Combine(baseDir, "gdal", arch, "data"),
+                Path.Combine(baseDir, "gdal", "share", "gdal"),
+                Path.Combine(baseDir, "share", "gdal")
+            };
+            var gdalDataDir = possibleGdalData.FirstOrDefault(Directory.Exists);
+            if (gdalDataDir != null)
+                Environment.SetEnvironmentVariable("GDAL_DATA", gdalDataDir);
+
+            // PROJ_LIB (Projektionen), falls vorhanden
+            var possibleProj = new[]
+            {
+                Path.Combine(baseDir, "gdal", "proj"),
+                Path.Combine(baseDir, "gdal", "share", "proj"),
+                Path.Combine(baseDir, "share", "proj"),
+                Path.Combine(baseDir, "share")
+            };
+            var projDir = possibleProj.FirstOrDefault(Directory.Exists);
+            if (projDir != null)
+                Environment.SetEnvironmentVariable("PROJ_LIB", projDir);
+        }
+
         public static bool configureOgr()
         {
-            string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase!).LocalPath;
-            string executingDirectory = Path.GetDirectoryName(executingAssemblyFile)!;
-
-            if (string.IsNullOrEmpty(executingDirectory))
-            {
-                Log.Error("cannot get executing directory");
-                throw new InvalidOperationException("cannot get executing directory");
-            }
-
-
-            string gdalPath = Path.Combine(executingDirectory, "gdal");
-            string nativePath = Path.Combine(gdalPath, "x64");
-            if (!Directory.Exists(nativePath))
-            {
-                Log.Error("Did not found GDAL-Directory!");
-                throw new DirectoryNotFoundException($"GDAL native directory not found at '{nativePath}'");
-            }
-
-            if (!File.Exists(Path.Combine(nativePath, "gdal_wrap.dll")))
-            {
-                Log.Error("Could not find gdal_wrap.dll in directory: " + nativePath);
-                throw new FileNotFoundException(
-                    $"GDAL native wrapper file not found at '{Path.Combine(nativePath, "gdal_wrap.dll")}'");
-            }
-
-
-            Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + nativePath);
-
-            // Set the additional GDAL environment variables.
-            string gdalData = Path.Combine(gdalPath, "data");
-            Environment.SetEnvironmentVariable("GDAL_DATA", gdalData);
-            Gdal.SetConfigOption("GDAL_DATA", gdalData);
-
-            string driverPath = Path.Combine(nativePath, "plugins");
-            Environment.SetEnvironmentVariable("GDAL_DRIVER_PATH", driverPath);
-            Gdal.SetConfigOption("GDAL_DRIVER_PATH", driverPath);
-
-            Environment.SetEnvironmentVariable("GEOTIFF_CSV", gdalData);
-            Gdal.SetConfigOption("GEOTIFF_CSV", gdalData);
-
-            string projSharePath = Path.Combine(gdalPath, "share");
-            Environment.SetEnvironmentVariable("PROJ_LIB", projSharePath);
-            Gdal.SetConfigOption("PROJ_LIB", projSharePath);
-            OSGeo.OSR.Osr.SetPROJSearchPaths(new[] { projSharePath });
+            EnsureGdalNativePath();
 
             Ogr.RegisterAll();
 
