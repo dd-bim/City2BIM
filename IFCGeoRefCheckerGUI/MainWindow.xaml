@@ -12,6 +12,7 @@
 
     <Window.Resources>
         <local:ResxConverter x:Key="ResxConverter" />
+        <local:BoolToSymbolConverter x:Key="BoolToSymbolConverter" />
     </Window.Resources>
 
 
@@ -88,11 +89,11 @@
                         <Label Content="LoGeoRef 40 (Project location)" Grid.Column="0" Grid.Row="3"/>
                         <Label Content="LoGeoRef 50 (CRS conversion)" Grid.Column="0" Grid.Row="4"/>
 
-                        <Label Content="{Binding checkViewModel.CheckerResults.level10Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level20Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level30Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level40Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level50Fulfilled, TargetNullValue='?'}" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level10Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level20Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level30Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level40Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level50Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center"/>
 
                         <Button x:Name="ShowProtocolBtn" Content="Show protocol" Grid.Column="3" Grid.Row="0" Command="{Binding checkViewModel.ShowLog}"></Button>
                         
