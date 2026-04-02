@@ -1,5 +1,4 @@
-﻿using OSGeo.GDAL;
-using OSGeo.OGR;
+﻿using OSGeo.OGR;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -32,21 +31,19 @@ namespace IFCGeorefShared
             return instance;
         }
 
-        private static void EnsureGdalNativePath()
+        public static bool configureOgr()
         {
-            // Bestimme Architektur-Ordner (x64/x86)
+            // Determine architecture
             var arch = IntPtr.Size == 8 ? "x64" : "x86";
 
-            // Basis-Ausgabeverzeichnis der Anwendung
             var baseDir = AppContext.BaseDirectory;
 
-            // Erwarteter Pfad, wenn Sie GDAL natives in "$(OutputPath)/gdal/<arch>/" kopieren
+            // Expected Dir, where GDAL.native copies gdal libraries
             var gdalNativeDir = Path.Combine(baseDir, "gdal", arch);
 
             if (Directory.Exists(gdalNativeDir))
             {
                 var path = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-                // Nur hinzufügen, falls noch nicht vorhanden
                 var paths = path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
                 if (!paths.Any(p => string.Equals(Path.GetFullPath(p).TrimEnd(Path.DirectorySeparatorChar), Path.GetFullPath(gdalNativeDir).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase)))
                 {
@@ -55,39 +52,20 @@ namespace IFCGeorefShared
                 }
             }
 
-            // GDAL_DATA (falls im Paket enthalten unter gdal/data oder gdal/<arch>/data)
-            var possibleGdalData = new[]
-            {
-                Path.Combine(baseDir, "gdal", "data"),
-                Path.Combine(baseDir, "gdal", arch, "data"),
-                Path.Combine(baseDir, "gdal", "share", "gdal"),
-                Path.Combine(baseDir, "share", "gdal")
-            };
-            var gdalDataDir = possibleGdalData.FirstOrDefault(Directory.Exists);
-            if (gdalDataDir != null)
-                Environment.SetEnvironmentVariable("GDAL_DATA", gdalDataDir);
-
-            // PROJ_LIB (Projektionen), falls vorhanden
+            // PROJ_LIB
             var possibleProj = new[]
             {
                 Path.Combine(baseDir, "gdal", "proj"),
                 Path.Combine(baseDir, "gdal", "share", "proj"),
                 Path.Combine(baseDir, "share", "proj"),
-                Path.Combine(baseDir, "share")
+                Path.Combine(baseDir, "gdal", "share")
             };
             var projDir = possibleProj.FirstOrDefault(Directory.Exists);
             if (projDir != null)
-                Environment.SetEnvironmentVariable("PROJ_LIB", projDir);
-        }
+                OSGeo.OSR.Osr.SetPROJSearchPath(projDir); //Use this GDAL method to set PROJ_LIB instead of environment variable!! second is not reliable!
 
-        public static bool configureOgr()
-        {
-            EnsureGdalNativePath();
-
-            Ogr.RegisterAll();
-
+            Ogr.RegisterAll();        
             return true;
         }
-
     }
 }
