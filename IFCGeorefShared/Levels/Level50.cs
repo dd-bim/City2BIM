@@ -15,7 +15,7 @@ namespace IFCGeorefShared.Levels
         public IfcRigidOperation? RigidOperation;
         public IfcProjectedCRS? ProjectedCRS4x3;
 
-        public static string WriteLevelResult(GeoRefChecker checker, CultureInfo? culture = null)
+        public static new string WriteLevelResult(GeoRefChecker checker, CultureInfo? culture = null)
         => WriteLevelResult<Level50>(checker, culture);
         protected override string Name => "LoGeoRef50";
 

@@ -9,7 +9,7 @@ using Xbim.Ifc4.Interfaces;
 namespace IFCGeorefShared.Levels
 {
 
-    public class Level30 : Level00, ILevelChecker<Level30>
+    public class Level30 : Level00, ILevel<Level30>
     {
         public IIfcPlacement? plcmt;
 

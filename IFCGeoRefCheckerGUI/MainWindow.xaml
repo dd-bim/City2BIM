@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:IFCGeoRefCheckerGUI"
         xmlns:props="clr-namespace:IFCGeoRefCheckerGUI.Properties"
         xmlns:vm="clr-namespace:IFCGeoRefCheckerGUI.ViewModels" x:Class="IFCGeoRefCheckerGUI.MainWindow"
+        xmlns:levels="clr-namespace:IFCGeorefShared.Levels"    
         mc:Ignorable="d"
         Title="IfcGeoRefChecker" Height="750" Width="650" MinWidth="650" MinHeight="750"
         >
@@ -13,6 +14,13 @@
     <Window.Resources>
         <local:ResxConverter x:Key="ResxConverter" />
         <local:BoolToSymbolConverter x:Key="BoolToSymbolConverter" />
+        <ContextMenu x:Key="LevelContextMenu" x:Shared="True" Opened="LevelContextMenu_Opening">
+            <MenuItem Header="Convert → LoGeoRef10" Tag="{x:Type levels:Level10}" Click="OnConvertMenuItemClick"/>
+            <MenuItem Header="Convert → LoGeoRef20" Tag="{x:Type levels:Level20}" Click="OnConvertMenuItemClick"/>
+            <MenuItem Header="Convert → LoGeoRef30" Tag="{x:Type levels:Level30}" Click="OnConvertMenuItemClick"/>
+            <MenuItem Header="Convert → LoGeoRef40" Tag="{x:Type levels:Level40}" Click="OnConvertMenuItemClick"/>
+            <MenuItem Header="Convert → LoGeoRef50" Tag="{x:Type levels:Level50}" Click="OnConvertMenuItemClick"/>
+        </ContextMenu>
     </Window.Resources>
 
 
@@ -89,11 +97,66 @@
                         <Label Content="LoGeoRef 40 (Project location)" Grid.Column="0" Grid.Row="3"/>
                         <Label Content="LoGeoRef 50 (CRS conversion)" Grid.Column="0" Grid.Row="4"/>
 
-                        <Label Content="{Binding checkViewModel.CheckerResults.level10Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level20Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level30Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level40Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center"/>
-                        <Label Content="{Binding checkViewModel.CheckerResults.level50Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level10Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" Tag="{x:Type levels:Level10}">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="ContextMenu" Value="{x:Null}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding checkViewModel.CheckerResults.level10Fulfilled}" Value="True">
+                                            <Setter Property="ContextMenu" Value="{StaticResource LevelContextMenu}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level20Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Tag="{x:Type levels:Level20}">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="ContextMenu" Value="{x:Null}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding checkViewModel.CheckerResults.level20Fulfilled}" Value="True">
+                                            <Setter Property="ContextMenu" Value="{StaticResource LevelContextMenu}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level30Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Tag="{x:Type levels:Level30}">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="ContextMenu" Value="{x:Null}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding checkViewModel.CheckerResults.level30Fulfilled}" Value="True">
+                                            <Setter Property="ContextMenu" Value="{StaticResource LevelContextMenu}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level40Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center" Tag="{x:Type levels:Level40}">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="ContextMenu" Value="{x:Null}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding checkViewModel.CheckerResults.level40Fulfilled}" Value="True">
+                                            <Setter Property="ContextMenu" Value="{StaticResource LevelContextMenu}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Label Content="{Binding checkViewModel.CheckerResults.level50Fulfilled, Converter={StaticResource BoolToSymbolConverter}, TargetNullValue='?'}" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center" Tag="{x:Type levels:Level50}">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="ContextMenu" Value="{x:Null}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding checkViewModel.CheckerResults.level50Fulfilled}" Value="True">
+                                            <Setter Property="ContextMenu" Value="{StaticResource LevelContextMenu}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
 
                         <Button x:Name="ShowProtocolBtn" Content="Show protocol" Grid.Column="3" Grid.Row="0" Command="{Binding checkViewModel.ShowLog}"></Button>
                         

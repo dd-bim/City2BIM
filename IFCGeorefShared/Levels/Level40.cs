@@ -10,7 +10,7 @@ using Xbim.Ifc4x3.RepresentationResource;
 
 namespace IFCGeorefShared.Levels
 {
-    public class Level40 : Level00, ILevelChecker<Level40>
+    public class Level40 : Level00, ILevel<Level40>
     {
         public IIfcGeometricRepresentationContext? context;
         public IIfcProject? project;

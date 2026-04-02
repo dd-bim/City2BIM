@@ -10,7 +10,7 @@ using Xbim.Ifc4.Interfaces;
 
 namespace IFCGeorefShared.Levels
 {
-    public class Level20 : Level00, IEquatable<Level20>, ILevelChecker<Level20>
+    public class Level20 : Level00, IEquatable<Level20>, ILevel<Level20>
     {
         public double? Latitude { get; set; }
 

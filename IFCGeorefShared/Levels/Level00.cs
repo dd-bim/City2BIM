@@ -15,6 +15,9 @@ namespace IFCGeorefShared.Levels
         public IIfcProduct? ReferencedEntity { get; set; }
 
         protected virtual string Name => "LoGeoRef00";
+
+        protected virtual IEnumerable<Type> AllowedConversions => Array.Empty<Type>();
+
         public abstract string WriteInstanceResult(CultureInfo? culture = null);
 
         /// <summary>
@@ -43,8 +46,22 @@ namespace IFCGeorefShared.Levels
             sb.AppendLine(Utils.starLine);
             return sb.ToString();
         }
+        public static IEnumerable<Type> GetAllowedConversions(Type? sourceType)
+        {
+            if (sourceType == null) return Array.Empty<Type>();
+            if (!typeof(Level00).IsAssignableFrom(sourceType)) return Array.Empty<Type>();
+
+            if (Activator.CreateInstance(sourceType) is Level00 instance)
+                return instance.AllowedConversions ?? Array.Empty<Type>();
+
+            return Array.Empty<Type>();
+        }
+        public virtual bool ConvertToLevel(Type targetLevelType, GeoRefChecker checker)
+        {
+            return false;
+        }
     }
-    public interface ILevelChecker<T> where T : Level00
+    public interface ILevel<T> where T : Level00
     {
         static abstract void CheckForLevel(GeoRefChecker checker);
     }

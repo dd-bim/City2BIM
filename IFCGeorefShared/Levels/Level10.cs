@@ -9,7 +9,7 @@ using Xbim.Ifc4.Kernel;
 
 namespace IFCGeorefShared.Levels
 {
-    public class Level10 : Level00, ILevelChecker<Level10>
+    public class Level10 : Level00, ILevel<Level10>
     {
 
         public IIfcPostalAddress? PostalAddress { get; set; }

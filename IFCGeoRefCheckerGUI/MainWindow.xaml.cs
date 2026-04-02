@@ -145,5 +145,40 @@ namespace IFCGeoRefCheckerGUI
             this.LogBox.ScrollToEnd();
         }
 
+        private void LevelContextMenu_Opening(object? sender, RoutedEventArgs e)
+        {
+            if (sender is not ContextMenu cm) return;
+            if (cm.PlacementTarget is not FrameworkElement fe) return;
+
+            var sourceType = fe.Tag as Type;
+            if (sourceType == null) return;
+
+            var allowed = Level00.GetAllowedConversions(sourceType); 
+
+            foreach (var item in cm.Items.OfType<MenuItem>())
+            {
+                if (allowed != null && item.Tag is Type targetType)
+                {
+                    item.IsEnabled = allowed.Contains(targetType) && !targetType.Equals(sourceType);
+                }
+                else
+                {
+                    item.IsEnabled = false;
+                }
+            }
+        }
+
+        private void OnConvertMenuItemClick(object? sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem mi) return;
+            if (mi.Parent is not ContextMenu cm || cm.PlacementTarget is not FrameworkElement placementTarget) return;
+
+            var sourceType = placementTarget.Tag as Type;
+            var targetType = mi.Tag as Type;
+            if (sourceType == null || targetType == null) return;
+
+            var vm = this.DataContext as ViewModels.MainWindowViewModel;
+            vm?.ChangeLevelCommand?.Execute((sourceType, targetType));
+        }
     }
 }
