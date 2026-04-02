@@ -1,4 +1,4 @@
-using IFCGeoRefCheckerGUI.Properties;
+﻿using IFCGeoRefCheckerGUI.Properties;
 using IFCGeorefShared;
 using System;
 using System.Globalization;
@@ -27,5 +27,18 @@ namespace IFCGeoRefCheckerGUI
         {
             return Resources.ResourceManager.GetString(key, culture);
         }
+    }
+    public class BoolToSymbolConverter : IValueConverter
+    {
+        // Converts bool? (boxed as bool or null) to symbols: true -> ✔, false -> ✖, null -> ?
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return "?";
+            if (value is bool b) return b ? "✔" : "✖";
+            return "?";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotSupportedException();
     }
 }

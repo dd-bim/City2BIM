@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "IFCGeoRefCheckerCommand": {
+      "commandName": "Project",
+      "commandLineArgs": "-f \"D:\\IFC_GeorefChecker_Testdaten\\IFC_BIM_FIT_CHEK\\ProjectTeam\\HTWD_GeoRef\\Haus3_PBP_pro_Gebiet_LoGeoRef50.ifc\""
+    }
+  }
+}

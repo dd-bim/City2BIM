@@ -169,7 +169,7 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die is fullfilled ✓ ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die is fulfilled ✓ ähnelt.
         /// </summary>
         internal static string Fulfilled {
             get {
@@ -286,11 +286,11 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Maximum coordinates are ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Maximum extends are ähnelt.
         /// </summary>
-        internal static string MaxCoordinates {
+        internal static string MaxExtend {
             get {
-                return ResourceManager.GetString("MaxCoordinates", resourceCulture);
+                return ResourceManager.GetString("MaxExtend", resourceCulture);
             }
         }
         
@@ -439,7 +439,7 @@ namespace IFCGeoRefCheckerGUI.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die IFCGeoRefChecker protocoll for file {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die IFCGeoRefChecker protocoll for file  ähnelt.
         /// </summary>
         internal static string ProtocolHeader {
             get {

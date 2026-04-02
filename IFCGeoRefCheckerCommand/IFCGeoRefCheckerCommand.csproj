@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" />
     <PackageReference Include="GDAL" />
+    <PackageReference Include="GDAL.Native" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.File" />
@@ -33,4 +34,5 @@
     <Folder Include="workingDir\" />
   </ItemGroup>
   <Import Project="..\IFCGeorefShared\IFCGeorefShared.projitems" Label="Shared" />
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>

@@ -120,20 +120,20 @@
   <data name="CHECK_SELECTED_FILE" xml:space="preserve">
     <value>Comprobar el archivo seleccionado</value>
   </data>
-  <data name="LOAD_IFC_FILES" xml:space="preserve">
-    <value>Cargar archivos IFC</value>
-  </data>
-  <data name="SET_WORKING_DIRECTORY" xml:space="preserve">
-    <value>Establecer directorio de trabajo</value>
-  </data>
   <data name="INPUT_IFC_FILES" xml:space="preserve">
     <value>Entrada de archivos IFC</value>
   </data>
   <data name="LOADED_IFC_FILES" xml:space="preserve">
     <value>Archivos IFC cargados</value>
   </data>
+  <data name="LOAD_IFC_FILES" xml:space="preserve">
+    <value>Cargar archivos IFC</value>
+  </data>
   <data name="LOG_OUTPUT" xml:space="preserve">
     <value>Salida de registro</value>
+  </data>
+  <data name="SET_WORKING_DIRECTORY" xml:space="preserve">
+    <value>Establecer directorio de trabajo</value>
   </data>
   <data name="SHOW_PROTOCOL" xml:space="preserve">
     <value>Mostrar protocolo</value>
@@ -144,14 +144,14 @@
   <data name="STATUS_REPORT" xml:space="preserve">
     <value>Informe de estado</value>
   </data>
+  <data name="WORKING_DIRECTORY_LABEL" xml:space="preserve">
+    <value>Directorio de trabajo</value>
+  </data>
   <data name="PLEASE_CHOOSE_PATH" xml:space="preserve">
     <value>¡Por favor elige el camino!</value>
   </data>
   <data name="LANGUAGE_LABEL" xml:space="preserve">
     <value>Seleccione el idioma:</value>
-  </data>
-  <data name="WORKING_DIRECTORY_LABEL" xml:space="preserve">
-    <value>Directorio de trabajo</value>
   </data>
   <data name="FILES_LOADED_FORMAT" xml:space="preserve">
     <value>archivo(s) cargado(s)</value>
@@ -160,7 +160,7 @@
     <value>archivo(s) comprobado(s)</value>
   </data>
   <data name="ProtocolHeader" xml:space="preserve">
-    <value>Protocolo IFCGeoRefChecker para el archivo {0}</value>
+    <value>Protocolo IFCGeoRefChecker para el archivo </value>
   </data>
   <data name="IfcVersion" xml:space="preserve">
     <value>Versión Ifc</value>
@@ -168,7 +168,7 @@
   <data name="CheckedOn" xml:space="preserve">
     <value>Comprobado</value>
   </data>
-  <data name="MaxCoordinates" xml:space="preserve">
+  <data name="MaxExtend" xml:space="preserve">
     <value>Las coordenadas máximas son</value>
   </data>
   <data name="RefElevationAndZ" xml:space="preserve">

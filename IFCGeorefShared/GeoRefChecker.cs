@@ -18,14 +18,26 @@ using OSGeo.OGR;
 using System.ComponentModel;
 using Xbim.Ifc.Extensions;
 using System.Resources;
+using Xbim.Ifc4x3.RepresentationResource;
+using static IFCGeorefShared.Utils;
 
 
 namespace IFCGeorefShared
 {
     public class GeoRefChecker
     {
-        private readonly TranslationService _translationService;
-
+        private static TranslationService? _translationService;
+        public static TranslationService TranslationService
+        {
+            get
+            {
+                if (_translationService == null)
+                {
+                    throw new InvalidOperationException("TranslationService has not been initialized.");
+                }
+                return _translationService;
+            }
+        }
         public string? TimeCheckedFileCreated { get; set; }
         public string? TimeChecked { get; set; }
 
@@ -72,8 +84,30 @@ namespace IFCGeorefShared
                 }
             }
         }
-        IList<Level30> LoGeoRef30 { get; set; } = new List<Level30>();
-        IList<Level40> LoGeoRef40 { get; set; } = new List<Level40>();
+        private IList<Level30> loGeoRef30 = new List<Level30>();
+        public IList<Level30> LoGeoRef30
+        {
+            get => loGeoRef30;
+            set
+            {
+                if (loGeoRef30 != value)
+                {
+                    loGeoRef30 = value;
+                }
+            }
+        }
+        private IList<Level40> loGeoRef40 = new List<Level40>();
+        public IList<Level40> LoGeoRef40
+        {
+            get => loGeoRef40;
+            set
+            {
+                if (loGeoRef40 != value)
+                {
+                    loGeoRef40 = value;
+                }
+            }
+        }
 
         private IList<Level50> loGeoRef50 = new List<Level50>();
         public IList<Level50> LoGeoRef50
@@ -87,10 +121,20 @@ namespace IFCGeorefShared
                 }
             }
         }
-
+        public IList<T> LoGeoRef<T>() where T : Level00
+        {
+            var t = typeof(T); 
+            if (t == typeof(Level10)) return (IList<T>)LoGeoRef10;
+            if (t == typeof(Level20)) return (IList<T>)LoGeoRef20;
+            if (t == typeof(Level30)) return (IList<T>)LoGeoRef30;
+            if (t == typeof(Level40)) return (IList<T>)LoGeoRef40;
+            if (t == typeof(Level50)) return (IList<T>)LoGeoRef50;
+            return new List<T>();
+        }
         public string FilePath { get; }
         public GeneralProperties? GenProps { get; set; }
         private IfcStore model { get; set; }
+        internal IfcStore Model => this.model;
         private List<IIfcSpatialStructureElement> BuildingsAndSites = new List<IIfcSpatialStructureElement>(); 
 
         public GeoRefChecker(IfcStore model, ITranslator translator) {
@@ -100,11 +144,12 @@ namespace IFCGeorefShared
                 .Concat(model.Instances.OfType<IIfcSite>())
                 .Concat(model.Instances.OfType<IIfcBuilding>()).ToList();
 
-            checkForLevel10();
-            checkForLevel20();
-            checkGeoLocation(this.LoGeoRef20);
-            checkForLevel30();
-            checkForLevel40And50();
+            Level10.CheckForLevel(this);
+            Level20.CheckForLevel(this);
+            Level20.CheckGeoLocation(this.LoGeoRef20);
+            Level30.CheckForLevel(this);
+            Level40.CheckForLevel(this);
+            Level50.CheckForLevel(this);
             checkGeneralProps();
 
             this.TimeChecked = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
@@ -114,18 +159,16 @@ namespace IFCGeorefShared
             {
                 throw new ArgumentNullException(nameof(translator));
             }
-                _translationService = new TranslationService(translator);
+            _translationService = new TranslationService(translator);
         }
 
         private void checkGeneralProps()
         {
-            //Es werden immer Koordinaten als Warnung ausgegeben, die zur Georef genutzt werden (ab Level 30) -> Irritation beim Anwender (evtl. fachfremd)
-            //Vergleich zur jeweiligen Checkmethode notwendig -> keine Warnung, wenn Koordinaten in Checkmethode aufgerufen werden?
 
             var allCartPoints = model.Instances.OfType<IIfcCartesianPoint>().ToList();
             var allCartPointList2D = model.Instances.OfType<IIfcCartesianPointList2D>().ToList();
             var allCartPointList3D = model.Instances.OfType<IIfcCartesianPointList3D>().ToList();
-
+            
             double maxX = 0, maxY = 0, maxZ = 0;
 
             var allPlacementLocations = new List<IIfcCartesianPoint>();
@@ -175,62 +218,6 @@ namespace IFCGeorefShared
 
         }
 
-        private void checkGeoLocation(IList<Level20> lvl20s) 
-        {
-            var hasResults = lvl20s.Any(x => x.IsFullFilled);
-            if (!hasResults) return;
-
-            using (DataSource ds = Ogr.Open(Settings.GetSettings().RegionPath, 0))
-            {
-                if (ds == null)
-                {
-                    Log.Error("Reading of region file failed! \nCanceling operation");
-                    return;
-                }
-
-                var countries = ds.GetLayerByName("ne_10m_admin_1_states_provinces");
-                Feature? lastFoundFeature = null;
-                var feature = countries.GetNextFeature();
-                var nameIdx = feature.GetFieldIndex("name");
-                var adminIdx = feature.GetFieldIndex("admin");
-
-                foreach (var lvl20 in lvl20s)
-                {
-                    if (!lvl20.Latitude.HasValue ||  !lvl20.Longitude.HasValue)
-                    {
-                        Log.Information($"IfcSite {lvl20.ReferencedEntity!.GlobalId} has either no latitude or longitude");
-                        continue;
-                    }
-
-                    countries.ResetReading();
-
-                    var pointToTest = new OSGeo.OGR.Geometry(wkbGeometryType.wkbPoint);
-                    pointToTest.AddPoint_2D((double)lvl20.Longitude, (double)lvl20.Latitude);
-
-                    if (lastFoundFeature != null)
-                    {
-                        if (pointToTest.Within(lastFoundFeature.GetGeometryRef()))
-                        {
-                            lvl20.GeographicDescription = $"Site is located in {lastFoundFeature.GetFieldAsString(adminIdx)} in Region {lastFoundFeature.GetFieldAsString(nameIdx)}";
-                            //lvl20.GeographicDescription = $"{_translationService.Translate("SiteLocated", CultureInfo.CurrentCulture)} {lastFoundFeature.GetFieldAsString(adminIdx)} in {_translationService.Translate("Region", CultureInfo.CurrentCulture)} {lastFoundFeature.GetFieldAsString(nameIdx)}";
-                            continue;
-                        }
-                    }
-
-                    while(feature != null)
-                    {
-                        if (pointToTest.Within(feature.GetGeometryRef()))
-                        {
-                            lastFoundFeature = feature;
-                            lvl20.GeographicDescription = $"Site is located in {feature.GetFieldAsString(adminIdx)} in Region {feature.GetFieldAsString(nameIdx)}";
-                            //lvl20.GeographicDescription = $"{_translationService.Translate("SiteLocated", CultureInfo.CurrentCulture)} {feature.GetFieldAsString(adminIdx)} in {_translationService.Translate("Region", CultureInfo.CurrentCulture)} {feature.GetFieldAsString(nameIdx)}";
-                        }
-                        feature = countries.GetNextFeature();
-                    }
-                }
-            }
-        }
-
         private void checkElevationConsistency()
         {
             var siteElevDict = new Dictionary<string, double>();
@@ -242,13 +229,13 @@ namespace IFCGeorefShared
                 var elevation = site.RefElevation;
                 if (elevation.HasValue)
                 {
-                    siteElevDict.Add(site.GlobalId, elevation.Value);
+                    siteElevDict.Add($"#{site.EntityLabel.ToString()}", elevation.Value);
                 }
 
                 var plcmt = site.ObjectPlacement;
                 if (plcmt.Z().HasValue)
                 {
-                    sitePlcmtZ.Add(site.GlobalId, plcmt.Z()!.Value);
+                    sitePlcmtZ.Add($"#{site.EntityLabel.ToString()}", plcmt.Z()!.Value);
                 }
             }
 
@@ -277,212 +264,12 @@ namespace IFCGeorefShared
 
             if (this.GenProps == null) this.GenProps = new GeneralProperties();
 
-                this.GenProps.SiteElevDict = siteElevDict;
-                this.GenProps.SitePlcmtZDict = sitePlcmtZ;
-                this.GenProps.ContextPlcmtElev = contextPlcmtElev;
-                this.GenProps.mapConvHeight = mapConvHeight;
-            }
-        
-        private void checkForLevel10()
-        {
-
-            foreach (var entity in BuildingsAndSites)
-            {
-                IIfcPostalAddress address = null!;
-                if (entity is IIfcSite)
-                {
-                    address = ((IIfcSite)entity).SiteAddress;
-                }
-                else if (entity is IIfcBuilding)
-                {
-                    address = ((IIfcBuilding)entity).BuildingAddress;
-                }
-
-                var level10 = new Level10();
-
-                if (address != null)
-                {
-                    level10.IsFullFilled = true;
-                    level10.PostalAddress = address;
-                    level10.ReferencedEntity = entity;
-                }
-                else
-                {
-                    level10.IsFullFilled = false;
-                    level10.PostalAddress = address;
-                    level10.ReferencedEntity = entity;
-                }
-                this.LoGeoRef10.Add(level10);
-            }   
+            this.GenProps.SiteElevDict = siteElevDict;
+            this.GenProps.SitePlcmtZDict = sitePlcmtZ;
+            this.GenProps.ContextPlcmtElev = contextPlcmtElev;
+            this.GenProps.mapConvHeight = mapConvHeight; 
         }
 
-        private void checkForLevel20()
-        {
-            var sites = BuildingsAndSites.OfType<IIfcSite>().ToList();
-
-            foreach (var site in sites)
-            {
-                var lvl20 = new Level20();
-
-                if (site.RefLatitude.HasValue && site.RefLongitude.HasValue)
-                {
-                    lvl20.Latitude = site.RefLatitude.Value.AsDouble;
-                    lvl20.Longitude = site.RefLongitude.Value.AsDouble;
-                    lvl20.Elevation =  site.RefElevation.HasValue ? site.RefElevation.Value: null;
-                    lvl20.ReferencedEntity = site;
-                    lvl20.IsFullFilled = true;
-
-                    if (!(-90 < lvl20.Latitude && lvl20.Latitude < 90 ))
-                    {
-                        Log.Error($"Latitude not in range of -90 - 90 Degree. Latitude is: {lvl20.Latitude}");
-                        lvl20.IsFullFilled = false;
-                    }
-                    if (!(-180 < lvl20.Longitude && lvl20.Longitude < 180))
-                    {
-                        Log.Error($"Longitude not in range of -180 - 180 Degree. Longitude is: {lvl20.Longitude}");
-                        lvl20.IsFullFilled = false;
-                    }
-
-                    if (lvl20.IsFullFilled)
-                    {
-
-                    }
-
-                    if (lvl20.Elevation == 0)
-                    {
-                        Log.Warning($"Elevation might not be properly specified");
-                    }
-                    
-                }
-                else
-                {
-                    lvl20.IsFullFilled = false;
-                    lvl20.ReferencedEntity = site;
-                }
-                
-                this.LoGeoRef20.Add(lvl20);
-
-            }
-        }
-
-        private void checkForLevel30() 
-        {
-            foreach (var entity in BuildingsAndSites)
-            {
-                var localPlcm = (IIfcLocalPlacement)entity.ObjectPlacement;
-                if (localPlcm == null) continue;
-                var level30 = new Level30();
-                level30.ReferencedEntity = entity;
-
-                if (localPlcm.PlacementRelTo == null)
-                {
-                    
-                    level30.plcmt = (IIfcPlacement)localPlcm.RelativePlacement;
-
-                    var location = level30.plcmt.Location;
-                    if (location.X > 0.0 || location.Y > 0.0 || location.Z > 0.0) 
-                    {
-                        level30.IsFullFilled = true;
-                    }
-                    else
-                    {
-                        level30.IsFullFilled = false;
-                    }
-                }
-                this.LoGeoRef30.Add(level30);
-            }
-        }
-
-        private void checkForLevel40And50()
-        {
-            var projects = this.model.Instances.OfType<IIfcProject>().ToList();
-
-            if (projects.Count != 1)
-            {
-                Log.Information("Ifc file does not contain an IfcProject. Invalid file!");
-                return;
-            }
-
-            var proj = projects.FirstOrDefault();
-
-            if (proj == null)
-            {
-                this.LoGeoRef40.Add(new Level40()
-                {
-                    IsFullFilled = false,
-                    project = null
-                }) ;
-                return;
-            }
-
-            var allCtx = proj.RepresentationContexts.OfType<IIfcGeometricRepresentationContext>();  //includes also inherited SubContexts (not necessary for this application)
-            var noSubCtx = allCtx.Where(ctx => ctx.ExpressType.ToString() != "IfcGeometricRepresentationSubContext").ToList(); //avoid subs (unneccessary overhead)
-
-            foreach (var context in noSubCtx)
-            {
-                var lvl40 = new Level40();
-                lvl40.IsFullFilled = false;
-                lvl40.project = proj;
-                lvl40.context = context;
-                lvl40.trueNorth = context.TrueNorth;
-
-                //lvl50.mapConversion = this.model.Instances.OfType<IIfcMapConversion>().ToList();
-
-                var wcsPlcmt = context.WorldCoordinateSystem;
-                if (wcsPlcmt != null && wcsPlcmt is IIfcAxis2Placement3D wcs)
-                {
-                    
-                    lvl40.wcs = wcs;
-                    var location = wcs.Location;
-                    
-
-                    if (location.X > 0 || location.Y > 0 || location.Z > 0) 
-                    {
-                        lvl40.IsFullFilled = true;    
-                    }
-                    
-                    this.LoGeoRef40.Add(lvl40);
-                }
-
-                var lvl50 = new Level50();
-                lvl50.IsFullFilled = false;
-                lvl50.context = context;
-                lvl50.project = proj;
-
-                foreach (var oper in lvl50.context.HasCoordinateOperation)
-                {
-                    if (oper != null)
-                    {
-                        if (oper is IIfcMapConversion mapConv)
-                        {
-                            lvl50.MapConversion = mapConv;
-                            if (lvl50.MapConversion.Eastings == 0.0 && lvl50.MapConversion.Northings == 0.0)
-                            {
-                                Log.Warning("Translation Easting and Northing is 0. LoGeoRef50 is not fullfilled.");
-                                continue;
-                            }
-                            lvl50.IsFullFilled = true;
-                            if (0.9 < mapConv.Scale && mapConv.Scale < 1.1)
-                            {
-                                Log.Warning("Scale of map conversion is between 0.9 and 1.1. This might not be used for conversion of units.");
-                            }
-                            if (mapConv.XAxisAbscissa != null || mapConv.XAxisOrdinate != null)
-                            {
-                                if (context.TrueNorth != null)
-                                {
-                                    var angleTrueNorth = Math.Atan2(context.TrueNorth.X, context.TrueNorth.Y) * (180 / Math.PI);
-                                    var angleMapConv = Math.Atan2((double)mapConv.XAxisOrdinate!, (double)mapConv.XAxisAbscissa!) * (180/Math.PI);
-                                    Log.Warning("Ifc file contains both true north from the geometric representation context and a rotation angle from the map conversion");
-                                    Log.Warning($"True north is: {angleTrueNorth}° and map conversion rotation is: {angleMapConv}°");
-                                }
-                            }
-                        }
-                    }
-                }
-                }
-                this.LoGeoRef50.Add(lvl50);
-            }
-        }
             
         public GeoRefCheckerResult getCheckResults()
         {
@@ -496,61 +283,88 @@ namespace IFCGeorefShared
 
             return results;
         }
+        public bool getCheckResult<T>() where T : Level00
+        {
+            var t = typeof(T);
+
+            if (t == typeof(Level10)) return this.LoGeoRef10.Any(x => x.IsFullFilled);
+            if (t == typeof(Level20)) return this.LoGeoRef20.Any(x => x.IsFullFilled);
+            if (t == typeof(Level30)) return this.LoGeoRef30.Any(x => x.IsFullFilled);
+            if (t == typeof(Level40)) return this.LoGeoRef40.Any(x => x.IsFullFilled);
+            if (t == typeof(Level50)) return this.LoGeoRef50.Any(x => x.IsFullFilled);
+
+            throw new NotSupportedException($"getCheckResult<{t.Name}> is not supported.");
+        }
 
         public void WriteProtocoll(string WorkingDirPath)
         {
+            var culture = new CultureInfo("en-US");
             var sb = new StringBuilder();
 
-            sb.AppendLine($"{_translationService.Translate("ProtocolHeader", CultureInfo.CurrentCulture)} {this.model.FileName}");
-            sb.AppendLine($"{_translationService.Translate("IfcVersion", CultureInfo.CurrentCulture)}: {this.model.SchemaVersion}");
-            sb.AppendLine($"{_translationService.Translate("CheckedOn", CultureInfo.CurrentCulture)}: {this.TimeChecked}");
-            sb.AppendLine($"{_translationService.Translate("MaxCoordinates", CultureInfo.CurrentCulture)}: X: {this.GenProps!.X} Y: {this.GenProps.Y} Z: {this.GenProps.Z}");
+            sb.AppendLine($"{_translationService.Translate("ProtocolHeader", culture)}");
+            sb.AppendLine($"{this.model.FileName}");
+            sb.AppendLine($"{_translationService.Translate("CheckedOn", culture)}: {this.TimeChecked}");
+            sb.AppendLine($"{_translationService.Translate("IfcVersion", culture)}: {this.model.SchemaVersion}");
             sb.AppendLine();
-            sb.AppendLine($"{_translationService.Translate("RefElevationAndZ", CultureInfo.CurrentCulture)}: ");
-
-
-            /*
-            sb.AppendLine($"IFCGeoRefChecker protocoll for file {this.model.FileName}");
-            sb.AppendLine($"IfcVersion: {this.model.SchemaVersion}");
-            sb.AppendLine($"Checked on {this.TimeChecked}");
-            sb.AppendLine($"Maximum coordinates are X: {this.GenProps!.X} Y: {this.GenProps.Y} Z: {this.GenProps.Z}");
+            var result = this.getCheckResults();
+            sb.AppendLine((result.level10Fulfilled == true) ? $"LoGeoRef10: ✔" : $"LoGeoRef10: ✖");
+            sb.AppendLine((result.level20Fulfilled == true) ? $"LoGeoRef20: ✔" : $"LoGeoRef20: ✖");
+            sb.AppendLine((result.level30Fulfilled == true) ? $"LoGeoRef30: ✔" : $"LoGeoRef30: ✖");
+            sb.AppendLine((result.level40Fulfilled == true) ? $"LoGeoRef40: ✔" : $"LoGeoRef40: ✖");
+            sb.AppendLine((result.level50Fulfilled == true) ? $"LoGeoRef50: ✔" : $"LoGeoRef50: ✖");
             sb.AppendLine();
-            sb.AppendLine($"Ref elevation and Placement Z-Values of site are: ");//+ String.Join(' ', this.GenProps.SiteElevDict!.Values.ToList()));
-            */
-            foreach (var site in this.GenProps.SitePlcmtZDict!)
+            sb.AppendLine($"{_translationService.Translate("MaxExtend", culture)}: X: {this.GenProps!.X} Y: {this.GenProps.Y} Z: {this.GenProps.Z}");
+            sb.AppendLine();
+            sb.AppendLine($"{_translationService.Translate("RefElevationAndZ", culture)}: ");
+            const string placeholder = "            ";
+            string section;
+            // Print Elevations for LoGeoRef30
+            if (result.level30Fulfilled == true)
             {
-                var elevation = this.GenProps.SiteElevDict!.ContainsKey(site.Key) ? Invariant($"{GenProps.SiteElevDict[site.Key]}") : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture);
-                sb.AppendLine($"GUID: {site.Key}\t\t RefElevation: {elevation}\t\t{_translationService.Translate("PlacementZCoordinates", CultureInfo.CurrentCulture)}: {site.Value}");
-                //var elevation = this.GenProps.SiteElevDict!.ContainsKey(site.Key) ? Invariant($"{GenProps.SiteElevDict[site.Key]}") : "not specified";
-                //sb.AppendLine($"GUID: {site.Key}\t\t RefElevation: {elevation}\t\tPlacement Z-coordinates: {site.Value}");
+                section = "LoGeoRef30: ";
+                foreach (var item in this.LoGeoRef30.Where(x => x.IsFullFilled))
+                {
+                    string RefElevation = (item.ReferencedEntity is IIfcSite site) ? $"#{site.EntityLabel.ToString()} RefElevation: {(site.RefElevation.HasValue ? site.RefElevation.Value.ToString() : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} " : "";
+                    string LocalPlacement = item.plcmt != null ? $"#{item.plcmt.EntityLabel.ToString()} LocalPlacement: {item.plcmt.Location.Z.ToString()}" : $"LocalPlacement: {_translationService.Translate("NotSpecified", CultureInfo.CurrentCulture)}";
+                    sb.AppendLine($"{section}{RefElevation}{LocalPlacement}");
+                    section = placeholder;
+                }
             }
-            sb.AppendLine();
-
-            sb.AppendLine($"IfcGeometricRepresentationContext {_translationService.Translate("PlacementZCoordinates", CultureInfo.CurrentCulture)}:");
-            //sb.AppendLine($"IfcGeometricRepresentationContext placement z-coordinates are:"); // + String.Join(' ', this.GenProps.ContextPlcmtElev!.Values.ToList()));
-            foreach (var context in this.GenProps.ContextPlcmtElev!)
+            // Print Elevations for LoGeoRef40
+            if (result.level40Fulfilled == true)
             {
-                sb.AppendLine($"Context {context.Key}\t\t {_translationService.Translate("PlacementZCoordinates", CultureInfo.CurrentCulture)}: {context.Value}");
-                //sb.AppendLine($"Context {context.Key}\t\t Placement Z-coordinate: {context.Value}");
+                section = "LoGeoRef40: ";
+                foreach (var item in this.LoGeoRef40.Where(x => x.IsFullFilled))
+                {
+                    if (item.wcs != null && item.wcs is IIfcAxis2Placement3D wcs3D)
+                    {
+                        sb.AppendLine($"{section}#{item.wcs.EntityLabel.ToString()} GeometricRepresentationContext: {wcs3D.P[2]}");
+                        section = placeholder;
+                    }
+                }
             }
-
-            sb.AppendLine();
-            if (this.GenProps.mapConvHeight != null) 
+            // Print Elevations for LoGeoRef50
+            if (result.level50Fulfilled == true)
             {
-                sb.AppendLine($"{_translationService.Translate("MapConversion", CultureInfo.CurrentCulture)}: {this.GenProps.mapConvHeight}");
-                //sb.AppendLine($"Map Conversion orthoghonal height is: {this.GenProps.mapConvHeight}");
+                section = "LoGeoRef50: ";
+                foreach (var item in this.LoGeoRef50.Where(x => x.IsFullFilled))
+                {
+                    string OrthogonalHeight = item.MapConversion != null ? $"#{item.MapConversion.EntityLabel.ToString()} MapConversion: {item.MapConversion.OrthogonalHeight.ToString()}" : $"MapConversion: {_translationService.Translate("NotSpecified", CultureInfo.CurrentCulture)}";
+                    string Height = item.RigidOperation != null ? $"#{item.RigidOperation.EntityLabel.ToString()} RigidOperation: {item.RigidOperation.Height.ToString()}" : $"RigidOperation: {_translationService.Translate("NotSpecified", CultureInfo.CurrentCulture)}";
+                    sb.AppendLine($"{section}{OrthogonalHeight} {Height}");
+                    section = placeholder;
+                }
             }
-
 
             sb.AppendLine();
             sb.AppendLine(starLine);
             sb.AppendLine();
             
-            sb.AppendLine(WriteResultLvl10());
-            sb.AppendLine(WriteResultLvl20());
-            sb.AppendLine(WriteResultLvl30());
-            sb.AppendLine(WriteResultLvl40());
-            sb.AppendLine(WriteResultLvl50());
+            sb.AppendLine(Level10.WriteLevelResult(this,culture));
+            sb.AppendLine(Level20.WriteLevelResult(this,culture));
+            sb.AppendLine(Level30.WriteLevelResult(this,culture));
+            sb.AppendLine(Level40.WriteLevelResult(this,culture));
+            sb.AppendLine(Level50.WriteLevelResult(this,culture));
 
             var protocoll = sb.ToString();
 
@@ -564,309 +378,7 @@ namespace IFCGeorefShared
 
             this.ProtocollPath = protocollOutPath;
 
-        }
-
-        private string WriteResultLvl10()
-        {
-            var sb = new StringBuilder();
-
-            var lvl10Result = this.getCheckResults().level10Fulfilled;
-            var result = (lvl10Result.HasValue && lvl10Result.Value) ? $"LoGeoRef10 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}" : $"LoGeoRef10 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}";
-            //var result = (lvl10Result.HasValue && lvl10Result.Value) ? $"LoGeoRef 10 is fulfilled \u2713" : $"LoGeoRef 10 is not fulfilled";
-            sb.AppendLine(result);
-            sb.AppendLine();
-            sb.AppendLine(dashLine);
-            sb.AppendLine();
-            
-            foreach (var lvl10 in this.LoGeoRef10)
-            {
-                if (lvl10.IsFullFilled)
-                {
-                    string header = $"{_translationService.Translate("PostalAddress", CultureInfo.CurrentCulture)}{lvl10.ReferencedEntity!.EntityLabel} {lvl10.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID {lvl10.ReferencedEntity.GlobalId}";
-                    //string header = $"Postal address referenced by Entity #{lvl10.ReferencedEntity!.EntityLabel} {lvl10.ReferencedEntity!.GetType().Name} with GUID {lvl10.ReferencedEntity.GlobalId}";
-                    sb.AppendLine(header);
-
-                    var PostalAddress = lvl10.PostalAddress;
-
-                    string info = $"{_translationService.Translate("Country", CultureInfo.CurrentCulture)}: {(PostalAddress!.Country != "" ? PostalAddress!.Country : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\t{_translationService.Translate("Region", CultureInfo.CurrentCulture)}: {(PostalAddress!.Region != "" ? PostalAddress!.Region : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
-                    info += $"\n{_translationService.Translate("Town", CultureInfo.CurrentCulture)}: {(PostalAddress!.Town != "" ? PostalAddress!.Town : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\t{_translationService.Translate("PostalCode", CultureInfo.CurrentCulture)}: {(PostalAddress!.PostalCode != "" ? PostalAddress!.PostalCode : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
-                    foreach(var line in PostalAddress.AddressLines)
-                    {
-                        info += $"\n{_translationService.Translate("Address", CultureInfo.CurrentCulture)}: {(line.ToString() != "" ? line.ToString() : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}";
-                    }
-                    sb.AppendLine(info);
-
-                    sb.AppendLine();
-                    sb.AppendLine($"LoGeoRef10 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}");
-                }
-                else
-                {
-                    sb.AppendLine($"{_translationService.Translate("NoPostalAddress", CultureInfo.CurrentCulture)}{lvl10.ReferencedEntity!.EntityLabel} {lvl10.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID {lvl10.ReferencedEntity.GlobalId}");
-                    sb.AppendLine();
-                    sb.AppendLine($"LoGeoRef10 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}");
-                }
-
-                sb.AppendLine();
-                sb.AppendLine(dashLine);
-                sb.AppendLine();
-                
-            }
-
-            sb.AppendLine(starLine);
-            sb.AppendLine();
-
-            return sb.ToString();
-        }
-
-        private string WriteResultLvl20()
-        {
-            var sb = new StringBuilder();
-
-            var lvl20Result = this.getCheckResults().level20Fulfilled;
-            var result = (lvl20Result.HasValue && lvl20Result.Value) ? $"LoGeoRef20 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}" : $"LoGeoRef20 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}";
-            //var result = (lvl20Result.HasValue && lvl20Result.Value) ? $"LoGeoRef 20 is fulfilled \u2713" : $"LoGeoRef 20 is not fulfilled";
-
-            sb.AppendLine(result);
-            sb.AppendLine();
-            sb.AppendLine(dashLine);
-            sb.AppendLine();
-
-            foreach (var lvl20 in this.LoGeoRef20)
-            {
-                if (lvl20.IsFullFilled)
-                {
-                    sb.AppendLine($"{_translationService.Translate("GeographicLocation", CultureInfo.CurrentCulture)}{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID {lvl20.ReferencedEntity.GlobalId}");
-                    sb.AppendLine(Invariant($"Latitude: {(lvl20!.Latitude != null ? lvl20!.Latitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\tLongitude: {(lvl20!.Longitude != null ? lvl20!.Longitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
-                    sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
-                    _ = lvl20.GeographicDescription != null ? sb.AppendLine($"{_translationService.Translate("AccordingCoordinates", CultureInfo.CurrentCulture)} {lvl20.GeographicDescription}") : null;
-                    sb.AppendLine();
-                    sb.AppendLine($"LoGeoRef20 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}");
-                }
-                else
-                {
-                    sb.AppendLine($"{_translationService.Translate("NoGeographicLocation", CultureInfo.CurrentCulture)}{lvl20.ReferencedEntity!.EntityLabel} {lvl20.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID {lvl20.ReferencedEntity.GlobalId}");
-                    sb.AppendLine(Invariant($"Latitude: {(lvl20!.Latitude != null ? lvl20!.Latitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))} \t\tLongitude: {(lvl20!.Longitude != null ? lvl20!.Longitude : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
-                    sb.AppendLine(Invariant($"Elevation: {(lvl20!.Elevation != null ? lvl20!.Elevation : _translationService.Translate("NotSpecified", CultureInfo.CurrentCulture))}"));
-                    sb.AppendLine();
-                    sb.AppendLine($"LoGeoRef20 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}");
-                }
-
-                sb.AppendLine();
-                sb.AppendLine(dashLine);
-                sb.AppendLine();
-            }
-
-            if (this.LoGeoRef20.Count < 1)
-            {
-                sb.AppendLine($"{_translationService.Translate("NoSite", CultureInfo.CurrentCulture)}");
-                sb.AppendLine();
-                sb.AppendLine(dashLine);
-                sb.AppendLine();
-            }
-
-            
-            sb.AppendLine();
-            sb.AppendLine(starLine);
-            sb.AppendLine();
-
-            return sb.ToString();
-        }
-
-        private string WriteResultLvl30()
-        {
-            var sb = new StringBuilder();
-
-            var lvl30Result = this.getCheckResults().level30Fulfilled;
-            var result = (lvl30Result.HasValue && lvl30Result.Value) ? $"LoGeoRef30 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}" : $"LoGeoRef30 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}";
-            //var result = (lvl30Result.HasValue && lvl30Result.Value) ? $"LoGeoRef30 is fulfilled \u2713" : $"LoGeoRef30 is not fulfilled";
-
-            sb.AppendLine(result);
-            sb.AppendLine();
-            sb.AppendLine(dashLine);
-            sb.AppendLine();
-
-            foreach (var lvl30 in this.LoGeoRef30)
-            {
-                if (lvl30.plcmt != null)
-                {
-                    sb.AppendLine($"{_translationService.Translate("UpperEntity", CultureInfo.CurrentCulture)}: #{lvl30.ReferencedEntity!.EntityLabel} {lvl30.ReferencedEntity!.GetType().Name} {_translationService.Translate("With", CultureInfo.CurrentCulture)} GUID: {lvl30.ReferencedEntity.GlobalId}");
-                    sb.AppendLine((lvl30.IsFullFilled) ? $"{_translationService.Translate("GeographicContext", CultureInfo.CurrentCulture)}" : $"{_translationService.Translate("NoGeographicContext", CultureInfo.CurrentCulture)}");
-                    sb.AppendLine(Invariant($"{_translationService.Translate("LocationCoordinates", CultureInfo.CurrentCulture)}:\nX: {lvl30.plcmt.Location.X} \nY: {lvl30.plcmt.Location.Y} \nZ: {lvl30.plcmt.Location.Z}"));
-                        
-                    if (lvl30.plcmt.GetType().Name == "IfcAxis2Placement3D")
-                    {
-                        var plcmt = (IIfcAxis2Placement3D)lvl30.plcmt;
-                        sb.AppendLine(Invariant($"{_translationService.Translate("DirectionX", CultureInfo.CurrentCulture)} {(plcmt.RefDirection == null ? "(1 | 0 | 0)" : $"({plcmt.RefDirection.X} | {plcmt.RefDirection.Y} | {plcmt.RefDirection.Z})" )}"));
-                        sb.AppendLine(Invariant($"{_translationService.Translate("DirectionZ", CultureInfo.CurrentCulture)} {(plcmt.Axis == null ? "(0 | 0 | 1)" : $"({plcmt.Axis.X} | {plcmt.Axis.Y} | {plcmt.Axis.Z}")})"));
-                    }
-                    else if (lvl30.plcmt.GetType().Name == "IfcAxis2Placement2D") 
-                    {
-                        var plcmt = (IIfcAxis2Placement2D)lvl30.plcmt;
-                        sb.AppendLine(Invariant($"{_translationService.Translate("DirectionX", CultureInfo.CurrentCulture)}  ({plcmt.RefDirection.X} | {plcmt.RefDirection.Y})"));
-                    }
-                    sb.AppendLine();
-
-                    sb.AppendLine((lvl30.IsFullFilled) ? $"LoGeoRef30 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}" : $"LoGeoRef30 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}");
-                    //sb.AppendLine((lvl30.IsFullFilled) ? $"LoGeoRef30 is fulfilled \u2713" : $"LoGeoRef30 is not fulfilled");
-
-                    sb.AppendLine();
-                    sb.AppendLine(dashLine);
-                    sb.AppendLine();
-                }
-            }
-
-            sb.AppendLine(starLine);
-            sb.AppendLine();
-
-            return sb.ToString();
-        }
-        
-        private string WriteResultLvl40()
-        {
-            var sb = new StringBuilder();
-
-            var lvl40Result = this.getCheckResults().level40Fulfilled;
-            var result = (lvl40Result.HasValue && lvl40Result.Value) ? $"LoGeoRef40 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}" : $"LoGeoRef40 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}";
-            //var result = (lvl40Result.HasValue && lvl40Result.Value) ? $"LoGeoRef40 is fulfilled \u2713" : $"LoGeoRef 40 is not fulfilled";
-
-            sb.AppendLine(result);
-            sb.AppendLine();
-            sb.AppendLine(dashLine);
-            sb.AppendLine();
-
-            foreach (var lvl40 in this.LoGeoRef40)
-            {
-                if (lvl40.context != null)
-                {
-                    sb.AppendLine($"IfcProject (#{lvl40.project!.EntityLabel}, {lvl40.project!.GlobalId}) {_translationService.Translate("Reference", CultureInfo.CurrentCulture)} IfcGeometricRepresentationContext (#{lvl40.context.EntityLabel}) {_translationService.Translate("OfType", CultureInfo.CurrentCulture)}: {lvl40.context.ContextType}");
-
-                    if (lvl40.IsFullFilled)
-                    {
-                        sb.AppendLine($"{_translationService.Translate("ParametersWCS", CultureInfo.CurrentCulture)}:");
-                        sb.AppendLine($"{_translationService.Translate("LocationCoordinates", CultureInfo.CurrentCulture)}:");
-                        sb.AppendLine($"X: {lvl40.wcs!.Location.X}");
-                        sb.AppendLine($"Y: {lvl40.wcs.Location.Y}");
-                        sb.AppendLine($"Z: {lvl40.wcs.Location.Z}");
-                        sb.AppendLine();
-                        sb.AppendLine($"{_translationService.Translate("TrueNorth", CultureInfo.CurrentCulture)}: {lvl40.trueNorth!.X} / {lvl40.trueNorth.Y}");
-                        //sb.AppendLine($"True North is: {lvl40.trueNorth!.X} / {lvl40.trueNorth.Y} / {lvl40.trueNorth.Z}"); //trueNorth.Z existiert nicht
-
-                        sb.AppendLine();
-                        sb.AppendLine($"LoGeoRef40 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}");
-                    }
-                    else 
-                    {
-                        sb.AppendLine($"{_translationService.Translate("NoWCSGeoref", CultureInfo.CurrentCulture)}:");
-                        sb.AppendLine($"{_translationService.Translate("LocationCoordinates", CultureInfo.CurrentCulture)}:");
-                        sb.AppendLine($"X: {lvl40.wcs!.Location.X}");
-                        sb.AppendLine($"Y: {lvl40.wcs.Location.Y}");
-                        sb.AppendLine($"Z: {lvl40.wcs.Location.Z}");
-                        sb.AppendLine();
-                        if (lvl40.trueNorth != null)
-                        {
-                            sb.AppendLine($"{_translationService.Translate("TrueNorth", CultureInfo.CurrentCulture)}: ({lvl40.trueNorth.X} | {lvl40.trueNorth.Y})");
-                        }
-                        else
-                        {
-                            sb.AppendLine($"{_translationService.Translate("NoTrueNorth", CultureInfo.CurrentCulture)} (0 | 1)");
-                        }
-                        sb.AppendLine();
-                        sb.AppendLine($"LoGeoref40 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}");
-                    }
-                }
-
-                sb.AppendLine();
-                sb.AppendLine(dashLine);
-                sb.AppendLine();
-            }
-
-            sb.AppendLine();
-            sb.AppendLine(starLine);
-            sb.AppendLine();
-
-            return sb.ToString();
-        }
-        
-        private string WriteResultLvl50()
-        {
-            var sb = new StringBuilder();
-
-            var lvl50Result = this.getCheckResults().level50Fulfilled;
-            var result = (lvl50Result.HasValue && lvl50Result.Value) ? $"LoGeoRef50 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}" : $"LoGeoRef50 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}";
-            //var result = (lvl50Result.HasValue && lvl50Result.Value) ? $"LoGeoRef50 is fulfilled \u2713" : $"LoGeoRef 50 is not fulfilled"; 
-
-            sb.AppendLine(result);
-            sb.AppendLine();
-            sb.AppendLine(dashLine);
-            sb.AppendLine();
-
-            foreach (var lvl50 in this.LoGeoRef50)
-            {
-                if (lvl50.MapConversion != null) //und Eastings > 0 und Northing > 0 ? -> in LoGeoRef Spezifikation nochmal Voraussetzungen prüfen
-                {
-                    var targetCRS = lvl50.MapConversion.TargetCRS;
-                    var eastings = lvl50.MapConversion.Eastings;
-                    var northings = lvl50.MapConversion.Northings;
-                    var height = lvl50.MapConversion.OrthogonalHeight;
-                    var xAxisAbscissa = lvl50.MapConversion.XAxisAbscissa;
-                    var XaxisOrdinate = lvl50.MapConversion.XAxisOrdinate;
-
-                    sb.AppendLine($"{_translationService.Translate("MapConversionDefined", CultureInfo.CurrentCulture)} #{lvl50.MapConversion.EntityLabel} for {lvl50.context!.GetType().Name} (#{lvl50.context.EntityLabel}) {_translationService.Translate("ContextType", CultureInfo.CurrentCulture)} {lvl50.context.ContextType}");
-                    sb.AppendLine($"{_translationService.Translate("TransEast", CultureInfo.CurrentCulture)} {lvl50.MapConversion.Eastings}");
-                    sb.AppendLine($"{_translationService.Translate("TransNorth", CultureInfo.CurrentCulture)} {lvl50.MapConversion.Northings}");
-                    sb.AppendLine($"{_translationService.Translate("TransHeight", CultureInfo.CurrentCulture)} {lvl50.MapConversion.OrthogonalHeight}");
-                    sb.AppendLine($"{_translationService.Translate("RotXAbs", CultureInfo.CurrentCulture)} {lvl50.MapConversion.XAxisAbscissa}");
-                    sb.AppendLine($"{_translationService.Translate("RotXOrd", CultureInfo.CurrentCulture)} {lvl50.MapConversion.XAxisOrdinate}");
-                    sb.AppendLine($"{_translationService.Translate("Scale", CultureInfo.CurrentCulture)} {lvl50.MapConversion.Scale}");
-
-                    if (lvl50.MapConversion.Scale < 0.9 && lvl50.MapConversion.Scale < 1.1)
-                    {
-                        sb.AppendLine($"{_translationService.Translate("ScaleMapConversion", CultureInfo.CurrentCulture)}");
-                    }
-
-                    sb.AppendLine();
-
-                    sb.AppendLine($"{_translationService.Translate("TargetCRS", CultureInfo.CurrentCulture)} {lvl50.MapConversion.TargetCRS.Name}");
-                    sb.AppendLine($"{_translationService.Translate("Description", CultureInfo.CurrentCulture)} {(lvl50.MapConversion.TargetCRS.Description.HasValue ? lvl50.MapConversion.TargetCRS.Description : "not specified")}");
-                    sb.AppendLine($"{_translationService.Translate("GeoDatum", CultureInfo.CurrentCulture)} {(lvl50.MapConversion.TargetCRS.GeodeticDatum.HasValue ? lvl50.MapConversion.TargetCRS.GeodeticDatum : "not specified")}");
-
-                    if (lvl50.ProjectedCRS4x3 != null)
-                    {
-                        sb.AppendLine($"{_translationService.Translate("VertDatum", CultureInfo.CurrentCulture)} {(lvl50.ProjectedCRS4x3.VerticalDatum.HasValue ? lvl50.ProjectedCRS4x3.VerticalDatum : "not specified")}");
-                    }
-
-                    sb.AppendLine();
-                    sb.AppendLine($"LoGeoRef50 {_translationService.Translate("Fulfilled", CultureInfo.CurrentCulture)}");
-
-                }
-                else
-                {
-                    sb.AppendLine($"{(lvl50.context != null ? $"{_translationService.Translate("NoMapConvBy", CultureInfo.CurrentCulture)}{lvl50.context.EntityLabel} IfcGeometricRepresentationContext {_translationService.Translate("ContextType", CultureInfo.CurrentCulture)} {lvl50.context.ContextType}" : $"{_translationService.Translate("FoundNo", CultureInfo.CurrentCulture)}")}");
-                    sb.AppendLine();
-                    sb.AppendLine($"LoGeoRef50 {_translationService.Translate("NotFulfilled", CultureInfo.CurrentCulture)}");
-
-                }
-
-                sb.AppendLine();
-                sb.AppendLine(dashLine);
-                sb.AppendLine();
-
-            }
-
-            if (this.LoGeoRef50.Count < 1)
-            {
-                sb.AppendLine($"{_translationService.Translate("NoMapConvIn", CultureInfo.CurrentCulture)}");
-            }
-
-            sb.AppendLine();
-            sb.AppendLine(starLine);
-            sb.AppendLine();
-
-            return sb.ToString();
-        }
-        
-        private string dashLine = "-------------------------------------------------------------------------------------------";
-        private string starLine = "*******************************************************************************************";
+        } 
     }
 
     public class GeneralProperties
