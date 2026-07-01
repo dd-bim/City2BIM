@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
+using Xbim.Ifc;
 
 namespace IFCGeorefShared
 {
@@ -16,6 +16,19 @@ namespace IFCGeorefShared
         public string RegionPath { get { return regionPath; } }
         
         private static Settings? instance;
+
+        public readonly XbimEditorCredentials EditorCredentials = new XbimEditorCredentials
+        {
+            ApplicationDevelopersName = "HTW Dresden [DD-BIM]",
+            ApplicationFullName = "GeoRefChecker",
+            //ApplicationIdentifier = "",
+            //ApplicationVersion = "",
+
+            //user information
+            EditorsFamilyName = Environment.UserName.Split('.').Last(),
+            //EditorsGivenName = editorsGivenName,
+            EditorsOrganisationName = "HTW Dresden - DD BIM"
+        };
 
         private Settings() 
         {

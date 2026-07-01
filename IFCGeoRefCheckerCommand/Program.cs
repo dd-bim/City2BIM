@@ -28,7 +28,7 @@ namespace IFCGeoRefCheckerCommand
                 }
 
                 Log.Information($"Opening and checking file {file}");
-                using (var model = IfcStore.Open(file))
+                using (var model = IfcStore.Open(file, Settings.GetSettings().EditorCredentials))
                 {
                     ITranslator translator = new DummyTranslator();
                     var checker = new GeoRefChecker(model, translator);

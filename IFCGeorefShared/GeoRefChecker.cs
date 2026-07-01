@@ -24,7 +24,7 @@ using static IFCGeorefShared.Utils;
 
 namespace IFCGeorefShared
 {
-    public class GeoRefChecker
+    public class GeoRefChecker : IDisposable
     {
         private static TranslationService? _translationService;
         public static TranslationService TranslationService
@@ -132,6 +132,8 @@ namespace IFCGeorefShared
             return new List<T>();
         }
         public string FilePath { get; }
+        private readonly bool ownsModel;
+        private bool disposed = false;
         public GeneralProperties? GenProps { get; set; }
         private IfcStore model { get; set; }
         internal IfcStore Model => this.model;
@@ -160,6 +162,33 @@ namespace IFCGeorefShared
                 throw new ArgumentNullException(nameof(translator));
             }
             _translationService = new TranslationService(translator);
+        }
+        /// <summary>
+        /// Create a new instance of <see cref="GeoRefChecker"/> with the specified <paramref name="model"/> and <paramref name="translator"/>, and specify whether the checker should take ownership of the model. If <paramref name="ownsModel"/> is set to <see langword="true"/>, the checker will dispose of the model when it is disposed. If set to <see langword="false"/>, the caller retains ownership and is responsible for disposing of the model. By default, ownership is not taken (<see langword="false"/>).
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="translator"></param>
+        /// <param name="ownsModel">Option to keep model ownership for further processing (do not use inside a "using" of the model)</param>
+        public GeoRefChecker(IfcStore model, ITranslator translator, bool ownsModel = false) : this(model, translator)
+        {
+            // Keep model ownership
+            this.ownsModel = ownsModel;
+        }
+        public void Dispose()
+        {
+            if (disposed) return;
+            disposed = true;
+            if (ownsModel)
+            {
+                try
+                {
+                    model?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Error disposing IfcStore in GeoRefChecker.");
+                }
+            }
         }
 
         private void checkGeneralProps()
@@ -296,7 +325,7 @@ namespace IFCGeorefShared
             throw new NotSupportedException($"getCheckResult<{t.Name}> is not supported.");
         }
 
-        public void WriteProtocoll(string WorkingDirPath)
+        public void WriteProtocoll(string? WorkingDirPath)
         {
             var culture = new CultureInfo("en-US");
             var sb = new StringBuilder();
@@ -368,8 +397,15 @@ namespace IFCGeorefShared
 
             var protocoll = sb.ToString();
 
-            string protocollFileName = Path.GetFileNameWithoutExtension(this.model.FileName) + "__CheckResult.txt";
-            string protocollOutPath = Path.Combine(WorkingDirPath, protocollFileName);
+            string protocollOutPath;
+            if (string.IsNullOrEmpty(WorkingDirPath))
+            {
+                protocollOutPath = ProtocollPath ?? Path.Combine(Path.GetDirectoryName(this.model.FileName) ?? "", Path.GetFileNameWithoutExtension(this.model.FileName) + "__CheckResult.txt");
+            }
+            else
+            {
+                protocollOutPath = Path.Combine(WorkingDirPath, Path.GetFileNameWithoutExtension(this.model.FileName) + "__CheckResult.txt");
+            }
 
             using (var file = File.CreateText(protocollOutPath))
             {
@@ -378,7 +414,22 @@ namespace IFCGeorefShared
 
             this.ProtocollPath = protocollOutPath;
 
-        } 
+        }
+
+        public void SaveModelAs(string path)
+        {
+            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
+            if (model == null) throw new InvalidOperationException("IfcStore is not available.");
+            try
+            {
+                model.SaveAs(path);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to save model to {Path}", path);
+                throw;
+            }
+        }
     }
 
     public class GeneralProperties

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
@@ -161,9 +162,43 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                 // Exception handling can be implemented here, e.g. logging the error or showing a message box to the user
             }
 
+            // prompt to save modified model
+            try
+            {
+                var defaultName = Path.GetFileNameWithoutExtension(checker.FilePath) + "_converted.ifc";
+                var dlg = new SaveFileDialog
+                {
+                    Title = "Save converted IFC as",
+                    Filter = "IFC files (*.ifc)|*.ifc|All files (*.*)|*.*",
+                    FileName = defaultName,
+                    InitialDirectory = Path.GetDirectoryName(checker.FilePath) ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                };
+
+                var result = dlg.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrEmpty(dlg.FileName))
+                {
+                    try
+                    {
+                        // Save via GeoRefChecker helper
+                        checker.SaveModelAs(dlg.FileName);
+                        checker.ProtocollPath = Path.Combine(Path.GetDirectoryName(dlg.FileName) ?? "", Path.GetFileNameWithoutExtension(dlg.FileName) + "__CheckResult.txt");
+                        System.Windows.MessageBox.Show($"Model saved to {dlg.FileName}", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.MessageBox.Show($"Failed to save model: {ex.Message}", "Save error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+
             // Update
             this.checkViewModel.CheckerDict[selPath] = checker;
             this.checkViewModel.CheckerResults = checker.getCheckResults();
+            checker.WriteProtocoll(null);
         }
     }
 }

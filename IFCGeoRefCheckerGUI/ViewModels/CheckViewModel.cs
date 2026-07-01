@@ -144,9 +144,8 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                 {
                     this.IsChecking = true;
                     Log.Information($"Starting to check {selectedPath}");
-                    using (var model = IfcStore.Open(selectedPath))
-                    {
-                        var checker = new GeoRefChecker(model, translator);
+                    var model = IfcStore.Open(selectedPath, Settings.GetSettings().EditorCredentials);
+                    var checker = new GeoRefChecker(model, translator, true);
                         CheckerResults = checker.getCheckResults();
                         if (CheckerDict.ContainsKey(selectedPath))
                         {
@@ -160,7 +159,7 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                         Log.Information($"Writing check protocol ... ");
                         checker.WriteProtocoll(Path.GetDirectoryName(selectedPath)!);
                         Log.Information($"to {checker.ProtocollPath}");
-                    }
+
                     this.IsChecking = false;
                     Log.Information($"Finished checking {selectedPath}");
                 }
