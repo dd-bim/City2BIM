@@ -3,10 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
-using static System.FormattableString;
+using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
-using Xbim.Ifc4x3.RepresentationResource;
+using static System.FormattableString;
+using System.Data.Common;
+using Xbim.Ifc4.GeometryResource;
+using Xbim.Ifc4.GeometricConstraintResource;
+using Xbim.Ifc4.RepresentationResource;
+using System.Transactions;
 
 namespace IFCGeorefShared.Levels
 {
@@ -20,6 +26,7 @@ namespace IFCGeorefShared.Levels
         public static string WriteLevelResult(GeoRefChecker checker, CultureInfo? culture = null)
         => WriteLevelResult<Level40>(checker, culture);
         protected override string Name => "LoGeoRef40";
+        protected override HashSet<Type> AllowedConversions => new HashSet<Type> { typeof(Level30) };
 
         /// <summary>
         /// Creates a collection of <see cref="Level40"/> / <see cref="Level50"/> instances from the geometric representation contexts of the
@@ -125,10 +132,95 @@ namespace IFCGeorefShared.Levels
                     {
                         lvl.RejectionMessage = $"All locations (#{wcs2D.Location.EntityLabel}) components are zero. Not valid!";
                         continue;
-                    }  
+                    }
                 }
                 geoRefChecker.LoGeoRef40.Add(lvl);
             }
+        }
+
+        public override bool ConvertToLevel(Type targetLevelType, GeoRefChecker checker)
+        {
+
+            if (!base.ConvertToLevel(targetLevelType, checker)) return false;
+
+            if (targetLevelType == typeof(Level30))
+            {
+                if(checker.getCheckResult<Level30>()) return false; //no need to convert if target level already fulfilled
+                var newLevel30 = new Level30
+                {
+                    IsFullFilled = true,
+                    ReferencedEntity = (IIfcProduct)project.Sites.First() ?? project.Buildings?.First(),
+                    plcmt = this.wcs
+                };
+                if (newLevel30.ReferencedEntity == null)
+                {
+                    Log.Warning("No IfcSite or IfcBuilding found to reference for Level30 conversion. Cannot convert!");
+                    return false;
+                }
+                var model = checker.Model;
+                using (var txn = model.BeginTransaction("Create ObjectPlacement [LoGeoRef30]"))
+                {
+                    newLevel30.ReferencedEntity.ObjectPlacement = model.Instances.New<IfcLocalPlacement>(lp =>
+                    {
+                        lp.RelativePlacement = (IfcAxis2Placement)wcs;
+                        lp.PlacementRelTo = null;
+                        if (lp.RelativePlacement is IfcAxis2Placement3D plcmt3D)
+                        {
+                            plcmt3D.RefDirection = Utils.RefDirectionFromTrueNorth<IfcDirection>(model, trueNorth);
+                            plcmt3D.Axis = plcmt3D.Axis ?? model.Instances.New<IfcDirection>(d => d.SetXYZ(0, 0, 1)); //set default axis if nothing set
+                        }
+                        else if (lp.RelativePlacement is IfcAxis2Placement2D plcmt2D)
+                        {
+                            plcmt2D.RefDirection = (IfcDirection)trueNorth;
+                        }
+                    });
+                    txn.Commit();
+                }
+                checker.LoGeoRef30.Add(newLevel30);
+                return true;
+            }
+            //else if (targetLevelType == typeof(Level50))
+            //{
+            //    var newLevel50 = new Level50
+            //    {
+            //        IsFullFilled = true,
+            //        context = project.RepresentationContexts.OfType<IIfcGeometricRepresentationContext>().FirstOrDefault(ctx => ctx.ContextType == "Model"),
+            //        ReferencedEntity = (IIfcProduct)project.Sites.First(),
+            //        Latitude = this.wcs.Location.X,
+
+            //        plcmt = this.wcs
+            //    };
+            //    var ctx1 = project.RepresentationContexts.OfType<IIfcGeometricRepresentationContext>().First(ctx => ctx.ContextType == "Model");
+            //    if (ctx1 == null)
+            //    {
+            //        Log.Warning("No IfcGeometricRepresentationContext with ContextType 'Model' found to reference for Level50 conversion. Cannot convert!");
+            //        return false;
+            //    }
+            //    var model = checker.Model;
+            //    using (var txn = model.BeginTransaction("Create Geometric Representation Context [LoGeoRef50]"))
+            //    {
+            //        var ctx = model.Instances.New<IfcGeometricRepresentationContext>(ctx =>
+            //        {
+            //            ctx.ContextType = "Model";
+            //            ctx.CoordinateSpaceDimension = 3;
+            //            ctx.TrueNorth = (IfcDirection)trueNorth;
+            //            ctx.WorldCoordinateSystem = (IfcAxis2Placement)wcs;
+            //        });
+            //        var crs = model.Instances.New<IfcProjectedCRS>(crs =>
+            //        {
+            //            crs.Name = "Placeholder CRS from GeorefChecker LoGeoRef50 conversion";
+            //        });
+            //        model.Instances.New<IfcMapConversion>(mc =>
+            //        {
+            //            mc.SourceCRS = ctx;
+            //            mc.TargetCRS = crs;
+            //            mc.EastingsDirection = Utils.RefDirectionFromTrueNorth<IfcDirection>(model, trueNorth);
+            //            mc.NorthingsDirection = model.Instances.New<IfcDirection>(d => d.SetXYZ(-Utils.EastingsDirectionFromTrueNorth(trueNorth), Utils.NorthingsDirectionFromTrueNorth(trueNorth), 0));
+            //            mc.Scale = 1;
+            //        });
+            //    }
+            //}
+            throw new NotImplementedException($"Conversion from {GetType().Name} to {targetLevelType.Name} is not implemented.");
         }
 
         public override string WriteInstanceResult(CultureInfo? culture = null)
@@ -171,6 +263,5 @@ namespace IFCGeorefShared.Levels
             sb.AppendLine(Utils.dashLine);
             return sb.ToString();
         }
-
     }
 }

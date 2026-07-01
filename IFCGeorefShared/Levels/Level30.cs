@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using static System.FormattableString;
+using Xbim.Ifc4.GeometryResource;
 using Xbim.Ifc4.Interfaces;
+using Xbim.Ifc4.RepresentationResource;
+using static System.FormattableString;
 
 namespace IFCGeorefShared.Levels
 {
@@ -16,6 +19,7 @@ namespace IFCGeorefShared.Levels
         public static string WriteLevelResult(GeoRefChecker checker, CultureInfo? culture = null)
         => WriteLevelResult<Level30>(checker, culture);
         protected override string Name => "LoGeoRef30";
+        protected override HashSet<Type> AllowedConversions => new HashSet<Type> { typeof(Level40) };
 
         /// <summary>
         /// Checks each <see cref="Level30"/> context in the specified <see cref="GeoRefChecker"/> against GeoRef40 (<seealso href="https://github.com/dd-bim/City2BIM/wiki/Resources/GeoRefChecker/logeoref30.png"/>):
@@ -63,6 +67,54 @@ namespace IFCGeorefShared.Levels
                 }
                 geoRefChecker.LoGeoRef30.Add(lvl);
             }
+        }
+
+        public override bool ConvertToLevel(Type targetLevelType, GeoRefChecker checker)
+        {
+            if (!base.ConvertToLevel(targetLevelType, checker)) return false;
+
+            if (targetLevelType == typeof(Level40))
+            {
+                if (checker.getCheckResult<Level40>()) return false; //no need to convert if target level already fulfilled
+
+                var newLevel40 = new Level40
+                {
+                    IsFullFilled = true,
+                    project = checker.Model.Instances.OfType<IIfcProject>().FirstOrDefault(),
+                    wcs = plcmt
+                };
+                if (newLevel40.project == null)
+                {
+                    Log.Warning("No project found for Level40 conversion. Cannot convert!");
+                    return false;
+                }
+                var model = checker.Model;
+                using (var txn = model.BeginTransaction("Create GeometricRepresentationContext [LoGeoRef40]"))
+                {
+                    IfcDirection? trueNorth = null;
+                    if (plcmt is IIfcAxis2Placement3D plcmt3D)
+                    {
+                        trueNorth = Utils.TrueNorthFromRefDirection<IfcDirection>(model, plcmt3D.RefDirection);
+                    }
+                    else if (plcmt is IIfcAxis2Placement2D plcmt2D)
+                    {
+                        trueNorth = Utils.TrueNorthFromRefDirection<IfcDirection>(model, plcmt2D.RefDirection);
+                    }
+                    newLevel40.context = model.Instances.New<IfcGeometricRepresentationContext>(ctx =>
+                    {
+                        ctx.CoordinateSpaceDimension = 3;
+                        ctx.ContextType = "Model";
+                        ctx.ContextIdentifier = "LoGeoRef40";
+                        ctx.WorldCoordinateSystem = (IfcAxis2Placement)plcmt;
+                        if (trueNorth is not null) ctx.TrueNorth = trueNorth;
+                    });
+                    model.Instances.OfType<IIfcProject>().First().RepresentationContexts.Add(newLevel40.context);
+                    txn.Commit();
+                }
+                checker.LoGeoRef40.Add(newLevel40);
+                return true;
+            }
+            throw new NotImplementedException($"Conversion from {GetType().Name} to {targetLevelType.Name} is not implemented.");
         }
 
         public override string WriteInstanceResult(CultureInfo? culture = null)

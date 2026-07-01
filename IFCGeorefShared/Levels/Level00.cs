@@ -58,7 +58,11 @@ namespace IFCGeorefShared.Levels
         }
         public virtual bool ConvertToLevel(Type targetLevelType, GeoRefChecker checker)
         {
-            return false;
+            if (targetLevelType == this.GetType()) return true; //level already fulfilled, no need to convert
+            if (AllowedConversions.Contains(targetLevelType) == false) return false; //cannot convert to target level if not in allowed conversions
+            if (IsFullFilled == false) return false; //cannot convert if level is not fulfilled
+
+            return true;
         }
     }
     public interface ILevel<T> where T : Level00

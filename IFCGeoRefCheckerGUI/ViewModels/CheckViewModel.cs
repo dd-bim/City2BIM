@@ -146,19 +146,19 @@ namespace IFCGeoRefCheckerGUI.ViewModels
                     Log.Information($"Starting to check {selectedPath}");
                     var model = IfcStore.Open(selectedPath, Settings.GetSettings().EditorCredentials);
                     var checker = new GeoRefChecker(model, translator, true);
-                        CheckerResults = checker.getCheckResults();
-                        if (CheckerDict.ContainsKey(selectedPath))
-                        {
-                            CheckerDict[selectedPath] = checker;
-                        }
-                        else
-                        {
-                            CheckerDict.Add(selectedPath, checker);
-                            this.NrOfChecks = CheckerDict.Count;
-                        }
-                        Log.Information($"Writing check protocol ... ");
-                        checker.WriteProtocoll(Path.GetDirectoryName(selectedPath)!);
-                        Log.Information($"to {checker.ProtocollPath}");
+                    CheckerResults = checker.getCheckResults();
+                    if (CheckerDict.ContainsKey(selectedPath))
+                    {
+                        CheckerDict[selectedPath] = checker;
+                    }
+                    else
+                    {
+                        CheckerDict.Add(selectedPath, checker);
+                        this.NrOfChecks = CheckerDict.Count;
+                    }
+                    Log.Information($"Writing check protocol ... ");
+                    checker.WriteProtocoll(Path.GetDirectoryName(selectedPath)!);
+                    Log.Information($"to {checker.ProtocollPath}");
 
                     this.IsChecking = false;
                     Log.Information($"Finished checking {selectedPath}");
